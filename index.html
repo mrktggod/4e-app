@@ -209,6 +209,26 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 /* Bell button in header */
 .bell-btn{width:34px;height:34px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;margin-right:6px}
 .bell-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--lime);border:1.5px solid var(--bg)}
+/* VOICE OVERLAY */
+.voice-overlay{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column;align-items:center}
+.voice-overlay.active{display:flex}
+.voice-header{width:100%;padding:20px 20px 0;display:flex;align-items:center;justify-content:center;position:relative}
+.voice-title{font-size:14px;color:var(--muted);font-weight:500;letter-spacing:0.3px}
+.voice-circle-wrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
+.voice-corners{position:absolute;inset:20px;pointer-events:none}
+.voice-corner{position:absolute;width:20px;height:20px;border-color:rgba(200,255,0,0.4);border-style:solid}
+.voice-corner.tl{top:0;left:0;border-width:2px 0 0 2px}
+.voice-corner.tr{top:0;right:0;border-width:2px 2px 0 0}
+.voice-corner.bl{bottom:0;left:0;border-width:0 0 2px 2px}
+.voice-corner.br{bottom:0;right:0;border-width:0 2px 2px 0}
+.voice-steps{width:100%;padding:0 28px 20px}
+.voice-step{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)}
+.voice-step:last-child{border-bottom:none}
+.voice-step-text{font-size:14px;color:var(--text)}
+.voice-step-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.voice-cancel{width:calc(100% - 32px);margin:0 16px 32px;padding:14px;border-radius:14px;background:#111110;border:none;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--lime);border-radius:50%;animation:spin 0.8s linear infinite}
 </style>
 </head>
 <body>
@@ -238,7 +258,6 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         <div class="bell-dot" id="bell-dot"></div>
       </div>
       <div class="user-avatar-btn" id="user-avatar-btn" onclick="openProfile()">?</div>
-      <div class="wave-btn" onclick="openAsk()" style="margin-left:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.5)" stroke-width="2"><path d="M2 12h2M6 8v8M10 5v14M14 9v6M18 7v10M22 12h-2"/></svg></div>
     </div>
     <div class="hero">
       <div class="hero-meta"><span class="hero-dot"></span><span>сегодня на радаре</span><span style="color:var(--border)">·</span><span>4е анализирует</span></div>
@@ -486,11 +505,50 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
+<!-- VOICE OVERLAY -->
+<div class="voice-overlay" id="voice-overlay">
+  <div class="voice-header">
+    <span class="voice-title" id="voice-title">4е анализирует</span>
+  </div>
+  <div class="voice-circle-wrap">
+    <div class="voice-corners">
+      <div class="voice-corner tl"></div>
+      <div class="voice-corner tr"></div>
+      <div class="voice-corner bl"></div>
+      <div class="voice-corner br"></div>
+    </div>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHAAAABwCAYAAADG3TsWAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDIgNzkuZjM1NGVmYywgMjAyMy8xMS8wOS0xMjowNTo1MyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI1LjMgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjYyNTMyMzYtYzliYS00MTZlLWIzNGMtZDA1MTc0NzM2ZTlhIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjI2MjUzMjM3LWM5YmEtNDE2ZS1iMzRjLWQwNTE3NDczNmU5YSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjM3YTM3OGY3LTMwZGYtNDMxYi04MWI3LWVlYWZjMTQ5YjgzMyIgc3RSZWYuZG9jdW1lbnRJRD0ieG1wLmRpZDozN2EzNzhmNy0zMGRmLTQzMWItODFiNy1lZWFmYzE0OWI4MzMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5tYVgsAAABwUlEQVR42uzBMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAMBuAABHgAAAABJRU5ErkJggg==" style="width:240px;height:240px;object-fit:contain" alt=""/>
+  </div>
+  <div class="voice-steps">
+    <div class="voice-step" id="vs-1">
+      <span class="voice-step-text">Собираю контекст</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="voice-step" id="vs-2">
+      <span class="voice-step-text">Проверяю дедлайны</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="voice-step" id="vs-3">
+      <span class="voice-step-text">Анализирую переписки</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="voice-step" id="vs-4">
+      <span class="voice-step-text">Формирую план</span>
+      <div class="voice-step-icon"><div class="spinner"></div></div>
+    </div>
+    <div class="voice-step" id="vs-5">
+      <span class="voice-step-text">Готовлю ответы</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
+    </div>
+  </div>
+  <button class="voice-cancel" onclick="closeVoice()">Отменить</button>
+</div>
+
 <!-- GLOBAL NAV -->
 <div class="bottom-nav hidden" id="global-nav">
   <div class="nav-item"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
   <div class="nav-item"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div></div>
-  <div class="nav-mic" onclick="openAsk()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c8ff00" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+  <div class="nav-mic" onclick="openVoice()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c8ff00" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
   <div class="nav-item" onclick="openCalendar()"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div></div>
   <div class="nav-item" onclick="openProfile()"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
 </div>
@@ -555,6 +613,48 @@ function openAsk(){showScreen('ask');}
 function openCalendar(){showScreen('calendar');renderCalendar();}
 function openProfile(){showScreen('profile');}
 function openNotifications(){showScreen('notifications');loadNotifications();}
+
+let voiceTimer = null;
+function openVoice(){
+  const overlay = document.getElementById('voice-overlay');
+  overlay.classList.add('active');
+  // Reset steps
+  const steps = [
+    {id:'vs-1', done:true},
+    {id:'vs-2', done:true},
+    {id:'vs-3', done:true},
+    {id:'vs-4', done:false},
+    {id:'vs-5', done:false}
+  ];
+  steps.forEach(s => {
+    const el = document.getElementById(s.id);
+    const icon = el.querySelector('.voice-step-icon');
+    if(s.done){
+      icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    } else if(s.id === 'vs-4') {
+      icon.innerHTML = '<div class="spinner"></div>';
+    } else {
+      icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
+    }
+  });
+  // Animate steps
+  voiceTimer = setTimeout(()=>{
+    document.getElementById('vs-4').querySelector('.voice-step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    document.getElementById('vs-5').querySelector('.voice-step-icon').innerHTML = '<div class="spinner"></div>';
+    document.getElementById('voice-title').textContent = '4е готовит ответ';
+  }, 1500);
+  voiceTimer = setTimeout(()=>{
+    document.getElementById('vs-5').querySelector('.voice-step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    document.getElementById('voice-title').textContent = '4е готов';
+    setTimeout(()=>{ closeVoice(); openAsk(); }, 800);
+  }, 3000);
+}
+
+function closeVoice(){
+  clearTimeout(voiceTimer);
+  document.getElementById('voice-overlay').classList.remove('active');
+  document.getElementById('voice-title').textContent = '4е анализирует';
+}
 
 function loadNotifications(){
   const list = document.getElementById('notif-list');
