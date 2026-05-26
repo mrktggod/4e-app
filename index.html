@@ -10,28 +10,23 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0f0f0d;--bg2:#1a1a17;--lime:#c8ff00;--lime2:rgba(200,255,0,0.12);--card:#f5f2e8;--text:#f0ede3;--muted:rgba(240,237,227,0.4);--border:rgba(240,237,227,0.08)}
 :root.light{--bg:#f0ece2;--bg2:#e8e4da;--lime:#111110;--lime2:rgba(15,15,13,0.08);--card:#ffffff;--text:#111110;--muted:rgba(20,20,18,0.4);--border:rgba(20,20,18,0.1)}
-:root.light .lime{color:#111110!important}
-:root.light .hero-dot{background:#111110}
-:root.light .avatar{background:#111110}
-:root.light .avatar svg{stroke:#c8ff00}
-:root.light .avatar-dot{border-color:var(--bg)}
 :root.light .tag-hot{background:#111110;color:#c8ff00}
 :root.light .t-done{background:#111110;color:#c8ff00}
 :root.light .p-got{background:#111110;color:#c8ff00}
 :root.light .setup-btn{background:#111110;color:#c8ff00}
 :root.light .a-copy{background:#111110;color:#c8ff00}
-:root.light .nav-mic{background:#111110}
 :root.light .nav-mic svg{stroke:#c8ff00}
-:root.light .bottom-nav{background:rgba(240,236,226,0.95)}
 :root.light .promises-count{color:#111110}
 :root.light .bubble-user{background:#111110;color:#c8ff00}
-:root.light .ask-send{background:#111110}
-:root.light .ask-send svg{stroke:#c8ff00}
 :root.light .tone-btn.active{background:#111110;color:#c8ff00;border-color:#111110}
-:root.light .variant.selected{border-color:#111110}
+:root.light .detail-write-btn{background:#111110;color:#f0ece2}
+:root.light .detail-done-btn{background:#111110;color:#c8ff00}
+:root.light .cal-tab.active{background:#111110;color:#c8ff00}
+:root.light .cal-day.today{background:#111110;color:#c8ff00}
+:root.light .cal-add-btn{background:#111110;color:#c8ff00}
 html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
-#app{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
-#setup{display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 28px;height:100%}
+#app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
+#setup{display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 28px;height:100%;background:var(--bg)}
 #setup.active{display:flex}
 .setup-title{font-family:'Unbounded',sans-serif;font-size:40px;font-weight:900;color:var(--lime);letter-spacing:-2px}
 .setup-sub{font-size:13px;color:var(--muted);text-align:center;line-height:1.6}
@@ -40,20 +35,12 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .setup-btn{width:100%;background:var(--lime);border:none;color:#0f0f0d;font-size:14px;font-weight:700;padding:16px;border-radius:14px;cursor:pointer;font-family:'Unbounded',sans-serif}
 .setup-note{font-size:11px;color:var(--muted);text-align:center;line-height:1.7}
 .setup-note a{color:rgba(200,255,0,0.6)}
-.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden;background:var(--bg)}
 .screen.active{display:flex}
-#home{background:var(--bg)}
-.home-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:16px}
+.home-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:96px}
 .home-scroll::-webkit-scrollbar{width:0}
 .header{padding:16px 20px 12px;display:flex;align-items:center}
-.avatar{width:40px;height:40px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
-.avatar-dot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;border-radius:50%;background:#00e676;border:2px solid var(--bg)}
-.logo-ball{width:40px;height:40px;flex-shrink:0;position:relative}
-.logo-ball .avatar-dot{position:absolute;bottom:1px;right:1px}
-/* halftone circle */
-.halftone-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
-.halftone-circle{width:110px;height:110px}
-.halftone-plus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;color:var(--lime);font-weight:300;line-height:1}
+.logo-ball{width:40px;height:40px;flex-shrink:0}
 .header-info{flex:1;padding-left:10px}
 .header-name{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
 .header-sub{font-size:10px;color:var(--muted)}
@@ -63,8 +50,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .hero-meta{font-size:11px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .hero-dot{width:5px;height:5px;border-radius:50%;background:var(--lime);display:inline-block;flex-shrink:0}
 .hero-title{font-family:'Russo One',sans-serif;font-size:54px;font-weight:400;line-height:0.92;letter-spacing:-1px;color:var(--text);text-transform:uppercase}
-.hero-title .lime{color:var(--lime)}
 .hero-sub{margin-top:12px;font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.halftone-wrap{width:110px;height:110px;flex-shrink:0}
 .section{margin:0 14px 12px}
 .tasks-card{background:var(--card);border-radius:22px;overflow:hidden}
 .task-row{display:flex;flex-direction:column;padding:13px 16px;border-bottom:1px solid rgba(15,15,13,0.07)}
@@ -107,18 +94,16 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .bottom-nav{position:fixed;bottom:16px;left:16px;right:16px;height:64px;background:#111110!important;border-radius:32px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:100;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
 .bottom-nav.hidden{display:none!important}
 .nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;width:44px;height:44px;border-radius:22px;opacity:0.6}
-.nav-item:active{opacity:1}
 .nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 .nav-icon svg{stroke:#f0ede3!important}
-.nav-mic{width:48px;height:48px;border-radius:50%;background:transparent;border:2px solid #c8ff00;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 12px rgba(200,255,0,0.25);opacity:1}
-#write,#ask{background:var(--bg)}
-.write-scroll{flex:1;overflow-y:auto;padding:0 16px 100px}
-.write-scroll::-webkit-scrollbar{width:0}
-.back-bar{padding:16px 16px 8px;display:flex;align-items:center;gap:12px}
+.nav-mic{width:48px;height:48px;border-radius:50%;background:transparent;border:2px solid #c8ff00;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:1}
+.back-bar{padding:16px 16px 8px;display:flex;align-items:center;gap:12px;flex-shrink:0}
 .back-btn{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .back-title{font-size:13px;font-weight:500;color:var(--text)}
 .back-sub{font-size:10px;color:var(--muted);margin-top:1px}
 .w-avatar{width:36px;height:36px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0f0f0d;flex-shrink:0}
+.write-scroll{flex:1;overflow-y:auto;padding:0 16px 32px}
+.write-scroll::-webkit-scrollbar{width:0}
 .ctx-block{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:10px}
 .ctx-lbl{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 .ctx-line{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
@@ -135,7 +120,6 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .tone-btn.active{background:var(--lime);color:#0f0f0d;border-color:var(--lime);font-weight:600}
 .variants-lbl{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
 .variant{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-bottom:6px;cursor:pointer}
-.variant:last-child{margin-bottom:0}
 .variant.selected{border-color:var(--lime)}
 .variant-txt{font-size:12px;color:var(--text);line-height:1.4}
 .variant-tag{font-size:10px;color:var(--muted);margin-top:4px}
@@ -150,16 +134,9 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .bubble-ai{align-self:flex-start;background:var(--bg2);border:1px solid var(--border);padding:10px 14px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.5;max-width:85%;color:var(--text)}
 .ask-bar{display:flex;gap:8px;align-items:flex-end;padding:12px 0 24px}
 .ask-field{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:13px;padding:10px 12px;outline:none;font-family:inherit;resize:none;line-height:1.4;max-height:100px}
-.ask-field:focus{border-color:rgba(200,255,0,0.4)}
 .ask-send{width:40px;height:40px;border-radius:50%;background:var(--lime);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted);margin:0 2px;animation:bounce 1.2s infinite}
-.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-5px);opacity:1}}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
-.toast.show{opacity:1}
 /* TASK DETAIL */
-#task-detail{background:var(--bg);position:relative}
-.detail-scroll{flex:1;overflow-y:auto;padding:0 20px 130px}
+.detail-scroll{flex:1;overflow-y:auto;padding:0 20px 16px}
 .detail-scroll::-webkit-scrollbar{width:0}
 .detail-num{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px;margin-bottom:6px}
 .detail-title{font-family:'Russo One',sans-serif;font-size:32px;color:var(--text);text-transform:uppercase;line-height:1.1;margin-bottom:6px;letter-spacing:-0.5px}
@@ -174,23 +151,16 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .detail-row-text{flex:1;font-size:13px;color:var(--text)}
 .detail-row-edit{font-size:16px;color:var(--muted);cursor:pointer}
 .detail-bottom{padding:12px 20px 28px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
-.detail-write-btn{width:100%;padding:14px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-family:'Inter',sans-serif}
+.detail-write-btn{width:100%;padding:14px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
 .detail-actions{display:flex;gap:8px}
 .detail-done-btn{flex:1;padding:12px;border-radius:14px;background:#c8ff00;border:none;color:#0f0f0d;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 .detail-snooze-btn{flex:1;padding:12px;border-radius:14px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-:root.light .detail-write-btn{background:#111110;color:#f0ece2}
-:root.light .detail-done-btn{background:#111110;color:#c8ff00}
 /* CALENDAR */
-#calendar{background:var(--bg)}
-.cal-scroll{flex:1;overflow-y:auto;padding:0 16px 100px}
-.cal-scroll::-webkit-scrollbar{width:0}
-#calendar{background:var(--bg)}
 .cal-scroll{flex:1;overflow-y:auto;padding:0 16px 16px}
 .cal-scroll::-webkit-scrollbar{width:0}
 .cal-tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:3px;margin-bottom:16px}
-.cal-tab{flex:1;padding:7px;border-radius:16px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;color:var(--muted);transition:all .15s}
+.cal-tab{flex:1;padding:7px;border-radius:16px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;color:var(--muted)}
 .cal-tab.active{background:var(--lime);color:#0f0f0d;font-weight:700}
-:root.light .cal-tab.active{background:#111110;color:#c8ff00}
 .cal-month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .cal-month-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
 .cal-nav-btn{width:28px;height:28px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -199,7 +169,6 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:20px}
 .cal-day{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:13px;font-weight:500;color:var(--text);cursor:pointer}
 .cal-day.today{background:var(--lime);color:#0f0f0d;font-weight:700}
-:root.light .cal-day.today{background:#111110;color:#c8ff00}
 .cal-day.other-month{color:var(--muted);opacity:0.4}
 .cal-day.selected{border:1.5px solid var(--lime)}
 .cal-events-title{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
@@ -207,10 +176,13 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .cal-event:last-child{border-bottom:none}
 .cal-event-time{font-size:12px;color:var(--muted);min-width:36px;padding-top:1px}
 .cal-event-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:4px}
-:root.light .cal-event-dot{background:#111110}
 .cal-event-name{font-size:14px;color:var(--text);font-weight:500}
-.cal-add-btn{width:100%;padding:14px;border-radius:14px;background:var(--lime);border:none;color:#0f0f0d;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;margin-top:8px;flex-shrink:0}
-:root.light .cal-add-btn{background:#111110;color:#c8ff00}
+.cal-add-btn{width:100%;padding:14px;border-radius:14px;background:var(--lime);border:none;color:#0f0f0d;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0}
+.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted);margin:0 2px;animation:bounce 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-5px);opacity:1}}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
@@ -229,29 +201,15 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="header">
       <div class="logo-ball">
         <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="ballGrad" cx="32%" cy="28%" r="70%">
-              <stop offset="0%" stop-color="#c8ff00"/>
-              <stop offset="30%" stop-color="#5a7a00"/>
-              <stop offset="65%" stop-color="#1a1a0a"/>
-              <stop offset="100%" stop-color="#050505"/>
-            </radialGradient>
-          </defs>
-          <circle cx="20" cy="20" r="19" fill="#080808"/>
-          <circle cx="20" cy="20" r="19" fill="url(#ballGrad)"/>
+          <defs><radialGradient id="ballGrad" cx="32%" cy="28%" r="70%"><stop offset="0%" stop-color="#c8ff00"/><stop offset="30%" stop-color="#5a7a00"/><stop offset="65%" stop-color="#1a1a0a"/><stop offset="100%" stop-color="#050505"/></radialGradient></defs>
+          <circle cx="20" cy="20" r="19" fill="#080808"/><circle cx="20" cy="20" r="19" fill="url(#ballGrad)"/>
         </svg>
       </div>
-      <div class="header-info">
-        <div class="header-name">4е</div>
-        <div class="header-sub">AI секретарь</div>
-      </div>
+      <div class="header-info"><div class="header-name">4е</div><div class="header-sub">AI секретарь</div></div>
       <button class="key-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
       <button class="key-btn" onclick="resetKey()">ключ</button>
-      <div class="wave-btn" onclick="openAsk()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.5)" stroke-width="2"><path d="M2 12h2M6 8v8M10 5v14M14 9v6M18 7v10M22 12h-2"/></svg>
-      </div>
+      <div class="wave-btn" onclick="openAsk()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.5)" stroke-width="2"><path d="M2 12h2M6 8v8M10 5v14M14 9v6M18 7v10M22 12h-2"/></svg></div>
     </div>
-
     <div class="hero">
       <div class="hero-meta"><span class="hero-dot"></span><span>сегодня на радаре</span><span style="color:var(--border)">·</span><span>4е анализирует</span></div>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
@@ -262,49 +220,22 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
             <span>· <span id="sub-deadline">загрузка...</span></span>
           </div>
         </div>
-        <div class="halftone-wrap"><img src="data:image/png;base64,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" style="width:110px;height:110px;object-fit:contain;opacity:0.9" alt=""/></div>        </div>
+        <div class="halftone-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHAAAABwCAYAAADG3TsWAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDIgNzkuZjM1NGVmYywgMjAyMy8xMS8wOS0xMjowNTo1MyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI1LjMgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjYyNTMyMzYtYzliYS00MTZlLWIzNGMtZDA1MTc0NzM2ZTlhIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjI2MjUzMjM3LWM5YmEtNDE2ZS1iMzRjLWQwNTE3NDczNmU5YSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjM3YTM3OGY3LTMwZGYtNDMxYi04MWI3LWVlYWZjMTQ5YjgzMyIgc3RSZWYuZG9jdW1lbnRJRD0ieG1wLmRpZDozN2EzNzhmNy0zMGRmLTQzMWItODFiNy1lZWFmYzE0OWI4MzMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5tYVgsAAABwUlEQVR42uzBMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAMBuAABHgAAAABJRU5ErkJggg==" style="width:110px;height:110px;object-fit:contain;opacity:0.9" alt="" onerror="this.style.display='none'"/></div>
       </div>
     </div>
-
-    <div class="section">
-      <div class="tasks-card" id="lime-card"><div class="empty-state">загружаю задачи...</div></div>
-    </div>
-
+    <div class="section"><div class="tasks-card" id="lime-card"><div class="empty-state">загружаю задачи...</div></div></div>
     <div class="section">
       <div class="promises-card">
-        <div class="promises-header">
-          <span class="promises-label">тебе должны</span>
-          <span class="promises-count" id="promise-count">0</span>
-        </div>
+        <div class="promises-header"><span class="promises-label">тебе должны</span><span class="promises-count" id="promise-count">0</span></div>
         <div id="promise-rows"><div class="promise-row"><span style="font-size:12px;color:var(--muted)">загружаю...</span></div></div>
       </div>
     </div>
-
     <div class="stats-row">
       <div class="stat stat-plain"><span class="stat-n" style="color:var(--text)" id="done-count">0</span><span class="stat-l">выполнено</span></div>
       <div class="stat stat-lime"><span class="stat-n" style="color:var(--lime)" id="tasks-count">0</span><span class="stat-l" style="color:rgba(200,255,0,0.5)">задач</span></div>
       <div class="stat stat-dark"><span class="stat-n" style="color:var(--lime)" id="promises-count">0</span><span class="stat-l">обещ.</span></div>
     </div>
   </div>
-</div>
-
-<!-- GLOBAL NAV - outside all screens -->
-<div class="bottom-nav" id="global-nav">
-    <div class="nav-item">
-      <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-    </div>
-    <div class="nav-item">
-      <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-    </div>
-    <div class="nav-mic" onclick="openAsk()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c8ff00" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-    </div>
-    <div class="nav-item" onclick="openCalendar()">
-      <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-    </div>
-    <div class="nav-item">
-      <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-    </div>
 </div>
 
 <div class="screen" id="write">
@@ -331,10 +262,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
     <div style="margin-bottom:8px">
       <div class="variants-lbl">или выбери вариант</div>
-      <div id="variants-list">
-        <div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div>
-        <div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div>
-      </div>
+      <div id="variants-list"><div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div><div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div></div>
     </div>
     <div class="action-row">
       <button class="a-copy" onclick="copyMsg()">скопировать</button>
@@ -358,6 +286,45 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
+<div class="screen" id="task-detail">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">Задача</div></div>
+    <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></div>
+  </div>
+  <div class="detail-scroll">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="detail-num" id="detail-num">01</div>
+      <span class="task-tag" id="detail-tag">скоро</span>
+    </div>
+    <div class="detail-title" id="detail-title">Задача</div>
+    <div class="detail-from" id="detail-from">из переписки</div>
+    <div class="detail-contact">
+      <div class="detail-contact-name">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span id="detail-person">Имя</span>
+      </div>
+      <div class="detail-tg-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div>
+    </div>
+    <div class="detail-section"><div class="detail-section-label">Описание</div><div class="detail-section-value" id="detail-desc">—</div></div>
+    <div class="detail-section">
+      <div class="detail-section-label">Дедлайн</div>
+      <div class="detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="detail-row-text" id="detail-deadline-text">не указан</span><span class="detail-row-edit">✎</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-label">Напомнить</div>
+      <div class="detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="detail-row-text">В день события, 09:00</span><span class="detail-row-edit">✎</span></div>
+    </div>
+  </div>
+  <div class="detail-bottom">
+    <button class="detail-write-btn" id="detail-write-btn">Написать в Telegram <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></button>
+    <div class="detail-actions">
+      <button class="detail-done-btn" id="detail-done-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Готово</button>
+      <button class="detail-snooze-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Позже</button>
+    </div>
+  </div>
+</div>
+
 <div class="screen" id="calendar">
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -376,98 +343,40 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         <div class="cal-nav-btn" onclick="calNav(1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
     </div>
-    <div class="cal-weekdays">
-      <div class="cal-weekday">ПН</div><div class="cal-weekday">ВТ</div><div class="cal-weekday">СР</div>
-      <div class="cal-weekday">ЧТ</div><div class="cal-weekday">ПТ</div><div class="cal-weekday">СБ</div><div class="cal-weekday">ВС</div>
-    </div>
+    <div class="cal-weekdays"><div class="cal-weekday">ПН</div><div class="cal-weekday">ВТ</div><div class="cal-weekday">СР</div><div class="cal-weekday">ЧТ</div><div class="cal-weekday">ПТ</div><div class="cal-weekday">СБ</div><div class="cal-weekday">ВС</div></div>
     <div class="cal-days" id="cal-days"></div>
     <div class="cal-events-title" id="cal-events-title">События</div>
     <div id="cal-events"></div>
   </div>
-  <div style="padding:12px 16px 28px;flex-shrink:0">
-    <button class="cal-add-btn">+ Новое событие</button>
-  </div>
+  <div style="padding:12px 16px 28px;flex-shrink:0"><button class="cal-add-btn">+ Новое событие</button></div>
+</div>
+
+<!-- GLOBAL NAV -->
+<div class="bottom-nav hidden" id="global-nav">
+  <div class="nav-item"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+  <div class="nav-item"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div></div>
+  <div class="nav-mic" onclick="openAsk()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c8ff00" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+  <div class="nav-item" onclick="openCalendar()"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div></div>
+  <div class="nav-item"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
 </div>
 
 </div>
-  <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">Задача</div></div>
-    <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-    </div>
-  </div>
-  <div class="detail-scroll">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div class="detail-num" id="detail-num">01</div>
-      <span class="task-tag" id="detail-tag">скоро</span>
-    </div>
-    <div class="detail-title" id="detail-title">Задача</div>
-    <div class="detail-from" id="detail-from">из переписки</div>
-    <div class="detail-contact" id="detail-contact">
-      <div class="detail-contact-name">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span id="detail-person">Имя</span>
-      </div>
-      <div class="detail-tg-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-section-label">Описание</div>
-      <div class="detail-section-value" id="detail-desc">—</div>
-    </div>
-    <div class="detail-section" id="detail-deadline-section">
-      <div class="detail-section-label">Дедлайн</div>
-      <div class="detail-row">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="detail-row-text" id="detail-deadline-text">не указан</span>
-        <span class="detail-row-edit">✎</span>
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-section-label">Напомнить</div>
-      <div class="detail-row">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span class="detail-row-text">В день события, 09:00</span>
-        <span class="detail-row-edit">✎</span>
-      </div>
-    </div>
-  </div>
-  <div class="detail-bottom">
-    <button class="detail-write-btn" id="detail-write-btn">
-      Написать в Telegram
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
-    </button>
-    <div class="detail-actions">
-      <button class="detail-done-btn" id="detail-done-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        Готово
-      </button>
-      <button class="detail-snooze-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Позже
-      </button>
-    </div>
-  </div>
-</div>
-
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const tg=window.Telegram?.WebApp;
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
 const API_KEY_K='chetam_key',WORKER='https://restless-lab-d737.shelckograff.workers.dev',CHAT_ID_K='chetam_chatid';
-let apiKey=localStorage.getItem(API_KEY_K)||'',chatId=localStorage.getItem(CHAT_ID_K)||'global',currentCtx={},currentTone='мягко',generatedMsg='',isGenerating=false;
+let apiKey=localStorage.getItem(API_KEY_K)||'',chatId=localStorage.getItem(CHAT_ID_K)||'global',currentCtx={},currentTone='мягко',generatedMsg='',isGenerating=false,allTasksCache=[];
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe;
 if(tgUser?.user?.id){chatId='user_'+tgUser.user.id;localStorage.setItem(CHAT_ID_K,chatId);}
 if(apiKey){showScreen('home');loadTasks();}else{document.getElementById('setup').classList.add('active');}
+
 document.getElementById('save-btn').onclick=()=>{
   const v=document.getElementById('api-input').value.trim();
   if(!v.startsWith('sk-ant-')){document.getElementById('api-input').style.borderColor='rgba(255,100,100,0.5)';return;}
   apiKey=v;localStorage.setItem(API_KEY_K,v);document.getElementById('setup').classList.remove('active');showScreen('home');loadTasks();
 };
-let allTasksCache = [];
 
 async function loadTasks(){
   try{
@@ -477,7 +386,7 @@ async function loadTasks(){
     const done=(tasks||[]).filter(t=>t.done);
     const outgoing=active.filter(t=>t.direction!=='incoming');
     const incoming=active.filter(t=>t.direction==='incoming');
-    allTasksCache = active;
+    allTasksCache=active;
     document.getElementById('tasks-count').textContent=outgoing.length;
     document.getElementById('promises-count').textContent=incoming.length;
     document.getElementById('promise-count').textContent=incoming.length;
@@ -494,13 +403,44 @@ async function loadTasks(){
     else{promiseRows.innerHTML=incoming.slice(0,5).map((t,i)=>{const age=getAge(t.date);return`<div class="promise-row" onclick="openTaskById('${t.id}',${i})" style="cursor:pointer"><div class="promise-top"><span class="promise-name">${e2(t.person)} — ${e2(t.text)}</span><span class="promise-age ${age.cls}">${age.text}</span></div><div class="promise-actions"><button class="p-btn p-remind" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','Напоминание','${e2(t.person)} обещал: ${e2(t.text)}')">напомнить</button><button class="p-btn p-got" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ получил</button></div></div>`;}).join('');}
   }catch(e){console.log('Ошибка:',e.message);}
 }
+
 function getAge(s){if(!s)return{text:'недавно',cls:'age-green'};const m={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};const p=s.split(' ');const d=p.length>=2?new Date(new Date().getFullYear(),m[p[1]]||0,parseInt(p[0])||1):new Date();const diff=Math.floor((Date.now()-d)/86400000);if(diff<=0)return{text:'сегодня',cls:'age-green'};if(diff===1)return{text:'вчера',cls:'age-yellow'};return{text:diff+' дн. назад',cls:'age-red'};}
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const s=document.getElementById(id);if(s){s.classList.add('active');s.scrollTop=0;}const nav=document.getElementById('global-nav');if(nav)nav.classList.toggle('hidden',id!=='home');const hs=document.querySelector('.home-scroll');if(hs)hs.style.paddingBottom=id==='home'?'96px':'16px';}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const s=document.getElementById(id);
+  if(s){s.classList.add('active');s.scrollTop=0;}
+  const nav=document.getElementById('global-nav');
+  if(nav)nav.classList.toggle('hidden',id!=='home');
+  const hs=document.querySelector('.home-scroll');
+  if(hs)hs.style.paddingBottom=id==='home'?'96px':'16px';
+}
 function goHome(){showScreen('home');loadTasks();}
-function resetKey(){localStorage.removeItem(API_KEY_K);apiKey='';document.getElementById('api-input').value='';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('setup').classList.add('active');}
+function resetKey(){localStorage.removeItem(API_KEY_K);apiKey='';document.getElementById('api-input').value='';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('setup').classList.add('active');const nav=document.getElementById('global-nav');if(nav)nav.classList.add('hidden');}
 function openAsk(){showScreen('ask');}
+function openCalendar(){showScreen('calendar');renderCalendar();}
+
+function openTaskById(taskId,idx){
+  const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];
+  if(!t){console.log('Задача не найдена',taskId,idx,allTasksCache);return;}
+  openTask(t,allTasksCache.indexOf(t));
+}
+function openTask(t,idx){
+  document.getElementById('detail-num').textContent=String(idx+1).padStart(2,'0');
+  document.getElementById('detail-tag').textContent=t.deadline?'горит':'скоро';
+  document.getElementById('detail-tag').className='task-tag '+(t.deadline?'tag-hot':'tag-med');
+  document.getElementById('detail-title').textContent=t.text||'—';
+  document.getElementById('detail-from').textContent='из переписки · '+(t.date||'');
+  document.getElementById('detail-person').textContent=t.person||'—';
+  document.getElementById('detail-desc').textContent=t.originalMsg||t.text||'—';
+  document.getElementById('detail-deadline-text').textContent=t.deadline||'не указан';
+  document.getElementById('detail-done-btn').onclick=()=>{markDoneKV(document.getElementById('detail-done-btn'),t.id);setTimeout(()=>{showScreen('home');loadTasks();},400);};
+  document.getElementById('detail-write-btn').onclick=()=>{openWrite(t.person,(t.person||'?')[0],t.text,t.text);};
+  showScreen('task-detail');
+}
+
 function openWrite(name,avatar,title,context){currentCtx={name,avatar,title,context};currentTone='мягко';document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tone-btn')[0]?.classList.add('active');document.getElementById('wt-title').textContent='написать — '+name;document.getElementById('wt-avatar').textContent=avatar;document.getElementById('ctx-text').textContent=context;document.getElementById('ctx-person').textContent=name+' · из переписки';document.getElementById('ctx-ai-note').textContent='анализирую...';document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';document.getElementById('variants-list').innerHTML='<div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div><div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div>';showScreen('write');generateMessage();}
 function setTone(tone,el){if(isGenerating)return;currentTone=tone;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');regenMsg();}
 function regenMsg(){document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';generateMessage();}
@@ -514,123 +454,37 @@ async function sendAsk(){const f=document.getElementById('ask-field');const v=f.
 document.getElementById('ask-field').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAsk();}});
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
-
-let currentTask = null;
-function openTaskById(taskId, idx){
-  const t = allTasksCache.find(x=>x.id===taskId) || allTasksCache[idx];
-  if(!t) return;
-  openTask(t, allTasksCache.indexOf(t));
-}
-function openTask(t, idx){
-  currentTask = t;
-  document.getElementById('detail-num').textContent = String(idx+1).padStart(2,'0');
-  document.getElementById('detail-tag').textContent = t.deadline ? 'горит' : 'скоро';
-  document.getElementById('detail-tag').className = 'task-tag ' + (t.deadline ? 'tag-hot' : 'tag-med');
-  document.getElementById('detail-title').textContent = t.text || '—';
-  document.getElementById('detail-from').textContent = 'из переписки · ' + (t.date || '');
-  document.getElementById('detail-person').textContent = t.person || '—';
-  document.getElementById('detail-desc').textContent = t.originalMsg || t.text || '—';
-  document.getElementById('detail-deadline-text').textContent = t.deadline || 'не указан';
-  document.getElementById('detail-done-btn').onclick = () => {
-    markDoneKV(document.getElementById('detail-done-btn'), t.id);
-    setTimeout(()=>{showScreen('home');loadTasks();}, 400);
-  };
-  document.getElementById('detail-write-btn').onclick = () => {
-    openWrite(t.person, (t.person||'?')[0], t.text, t.text);
-  };
-  showScreen('task-detail');
-}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 function toggleTheme(){const isLight=document.documentElement.classList.toggle('light');localStorage.setItem('theme',isLight?'light':'dark');document.getElementById('theme-btn').textContent=isLight?'🌙':'☀️';}
 (function(){if(localStorage.getItem('theme')==='light'){document.documentElement.classList.add('light');const b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
 
-// CALENDAR
-let calDate = new Date();
-let calView = 'week';
-const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-
-function openCalendar(){
-  showScreen('calendar');
-  renderCalendar();
-}
-
-function setCalView(v, el){
-  calView = v;
-  document.querySelectorAll('.cal-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderCalendar();
-}
-
-function calNav(dir){
-  if(calView==='month') calDate.setMonth(calDate.getMonth()+dir);
-  else calDate.setDate(calDate.getDate() + dir*7);
-  renderCalendar();
-}
-
+let calDate=new Date(),calView='week';
+const MONTHS_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+function setCalView(v,el){calView=v;document.querySelectorAll('.cal-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderCalendar();}
+function calNav(dir){if(calView==='month')calDate.setMonth(calDate.getMonth()+dir);else calDate.setDate(calDate.getDate()+dir*7);renderCalendar();}
 function renderCalendar(){
-  const now = new Date();
-  const y = calDate.getFullYear(), m = calDate.getMonth();
-  document.getElementById('cal-month-title').textContent = MONTHS_RU[m] + ' ' + y;
-
-  // Build days grid
-  const first = new Date(y, m, 1);
-  let startDay = first.getDay(); // 0=Sun
-  startDay = startDay === 0 ? 6 : startDay - 1; // Mon=0
-  const daysInMonth = new Date(y, m+1, 0).getDate();
-  const daysInPrev = new Date(y, m, 0).getDate();
-
-  let html = '';
-  // prev month days
-  for(let i = startDay-1; i >= 0; i--){
-    html += `<div class="cal-day other-month">${daysInPrev-i}</div>`;
-  }
-  // current month
-  for(let d = 1; d <= daysInMonth; d++){
-    const isToday = d===now.getDate() && m===now.getMonth() && y===now.getFullYear();
-    html += `<div class="cal-day${isToday?' today':''}" onclick="selectCalDay(${d})">${d}</div>`;
-  }
-  // next month
-  const total = startDay + daysInMonth;
-  const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
-  for(let d = 1; d <= remaining; d++){
-    html += `<div class="cal-day other-month">${d}</div>`;
-  }
-  document.getElementById('cal-days').innerHTML = html;
-
-  // Events from tasks
+  const now=new Date(),y=calDate.getFullYear(),m=calDate.getMonth();
+  document.getElementById('cal-month-title').textContent=MONTHS_RU[m]+' '+y;
+  const first=new Date(y,m,1);let startDay=first.getDay();startDay=startDay===0?6:startDay-1;
+  const daysInMonth=new Date(y,m+1,0).getDate(),daysInPrev=new Date(y,m,0).getDate();
+  let html='';
+  for(let i=startDay-1;i>=0;i--)html+=`<div class="cal-day other-month">${daysInPrev-i}</div>`;
+  for(let d=1;d<=daysInMonth;d++){const isToday=d===now.getDate()&&m===now.getMonth()&&y===now.getFullYear();html+=`<div class="cal-day${isToday?' today':''}" onclick="selectCalDay(${d})">${d}</div>`;}
+  const total=startDay+daysInMonth,remaining=total%7===0?0:7-(total%7);
+  for(let d=1;d<=remaining;d++)html+=`<div class="cal-day other-month">${d}</div>`;
+  document.getElementById('cal-days').innerHTML=html;
   renderCalEvents();
 }
-
 function renderCalEvents(){
-  // Show tasks that have deadlines as calendar events
-  const eventsEl = document.getElementById('cal-events');
-  const titleEl = document.getElementById('cal-events-title');
-  const d = calDate.getDate(), m = calDate.getMonth();
-  const months = {'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
-
-  // Get tasks from KV and show deadlines
+  const eventsEl=document.getElementById('cal-events'),titleEl=document.getElementById('cal-events-title');
   fetch(WORKER+'/tasks?chatId='+chatId).then(r=>r.json()).then(tasks=>{
-    const withDeadline = (tasks||[]).filter(t=>!t.done && t.deadline);
-    if(withDeadline.length===0){
-      eventsEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';
-      return;
-    }
-    titleEl.textContent = 'Дедлайны';
-    eventsEl.innerHTML = withDeadline.map(t=>`
-      <div class="cal-event">
-        <div class="cal-event-time">${t.deadline||''}</div>
-        <div class="cal-event-dot"></div>
-        <div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div>
-      </div>`).join('');
-  }).catch(()=>{
-    eventsEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';
-  });
+    const withDeadline=(tasks||[]).filter(t=>!t.done&&t.deadline);
+    if(withDeadline.length===0){eventsEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
+    titleEl.textContent='Дедлайны';
+    eventsEl.innerHTML=withDeadline.map(t=>`<div class="cal-event"><div class="cal-event-time">${t.deadline||''}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
+  }).catch(()=>{eventsEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';});
 }
-
-function selectCalDay(d){
-  document.querySelectorAll('.cal-day').forEach(el=>el.classList.remove('selected'));
-  event.target.classList.add('selected');
-}
+function selectCalDay(d){document.querySelectorAll('.cal-day').forEach(el=>el.classList.remove('selected'));event.target.classList.add('selected');}
 </script>
 </body>
 </html>
