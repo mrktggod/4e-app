@@ -26,15 +26,7 @@
 :root.light .cal-add-btn{background:#111110;color:#c8ff00}
 html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
 #app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
-#setup{display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 28px;height:100%;background:var(--bg)}
-#setup.active{display:flex}
-.setup-title{font-family:'Unbounded',sans-serif;font-size:40px;font-weight:900;color:var(--lime);letter-spacing:-2px}
-.setup-sub{font-size:13px;color:var(--muted);text-align:center;line-height:1.6}
-.setup-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:13px;padding:14px 16px;outline:none;font-family:monospace}
-.setup-input:focus{border-color:var(--lime)}
-.setup-btn{width:100%;background:var(--lime);border:none;color:#0f0f0d;font-size:14px;font-weight:700;padding:16px;border-radius:14px;cursor:pointer;font-family:'Unbounded',sans-serif}
-.setup-note{font-size:11px;color:var(--muted);text-align:center;line-height:1.7}
-.setup-note a{color:rgba(200,255,0,0.6)}
+#setup{display:none}
 .screen{display:none;flex-direction:column;height:100%;overflow:hidden;background:var(--bg)}
 .screen.active{display:flex}
 .home-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:96px}
@@ -207,7 +199,6 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       </div>
       <div class="header-info"><div class="header-name">4е</div><div class="header-sub">AI секретарь</div></div>
       <button class="key-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
-      <button class="key-btn" onclick="resetKey()">ключ</button>
       <div class="wave-btn" onclick="openAsk()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.5)" stroke-width="2"><path d="M2 12h2M6 8v8M10 5v14M14 9v6M18 7v10M22 12h-2"/></svg></div>
     </div>
     <div class="hero">
@@ -366,17 +357,13 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 <script>
 const tg=window.Telegram?.WebApp;
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
-const API_KEY_K='chetam_key',WORKER='https://restless-lab-d737.shelckograff.workers.dev',CHAT_ID_K='chetam_chatid';
-let apiKey=localStorage.getItem(API_KEY_K)||'',chatId=localStorage.getItem(CHAT_ID_K)||'global',currentCtx={},currentTone='мягко',generatedMsg='',isGenerating=false,allTasksCache=[];
+const WORKER='https://restless-lab-d737.shelckograff.workers.dev',CHAT_ID_K='chetam_chatid';
+let chatId=localStorage.getItem(CHAT_ID_K)||'global',currentCtx={},currentTone='мягко',generatedMsg='',isGenerating=false,allTasksCache=[];
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe;
 if(tgUser?.user?.id){chatId='user_'+tgUser.user.id;localStorage.setItem(CHAT_ID_K,chatId);}
-if(apiKey){showScreen('home');loadTasks();}else{document.getElementById('setup').classList.add('active');}
+showScreen('home');loadTasks();
 
-document.getElementById('save-btn').onclick=()=>{
-  const v=document.getElementById('api-input').value.trim();
-  if(!v.startsWith('sk-ant-')){document.getElementById('api-input').style.borderColor='rgba(255,100,100,0.5)';return;}
-  apiKey=v;localStorage.setItem(API_KEY_K,v);document.getElementById('setup').classList.remove('active');showScreen('home');loadTasks();
-};
+// setup removed - no API key needed
 
 async function loadTasks(){
   try{
@@ -418,7 +405,7 @@ function showScreen(id){
   if(hs)hs.style.paddingBottom=id==='home'?'96px':'16px';
 }
 function goHome(){showScreen('home');loadTasks();}
-function resetKey(){localStorage.removeItem(API_KEY_K);apiKey='';document.getElementById('api-input').value='';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('setup').classList.add('active');const nav=document.getElementById('global-nav');if(nav)nav.classList.add('hidden');}
+function resetKey(){showScreen('home');}
 function openAsk(){showScreen('ask');}
 function openCalendar(){showScreen('calendar');renderCalendar();}
 
@@ -444,13 +431,13 @@ function openTask(t,idx){
 function openWrite(name,avatar,title,context){currentCtx={name,avatar,title,context};currentTone='мягко';document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tone-btn')[0]?.classList.add('active');document.getElementById('wt-title').textContent='написать — '+name;document.getElementById('wt-avatar').textContent=avatar;document.getElementById('ctx-text').textContent=context;document.getElementById('ctx-person').textContent=name+' · из переписки';document.getElementById('ctx-ai-note').textContent='анализирую...';document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';document.getElementById('variants-list').innerHTML='<div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div><div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div>';showScreen('write');generateMessage();}
 function setTone(tone,el){if(isGenerating)return;currentTone=tone;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');regenMsg();}
 function regenMsg(){document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';generateMessage();}
-async function generateMessage(){if(!apiKey)return;isGenerating=true;const{name,context}=currentCtx;const prompt=`Составь сообщение в Telegram для ${name}.\nСитуация: ${context}\nТон: ${currentTone}\nJSON без markdown:\n{"ai_note":"что произошло","main":"основной вариант","short":"5-8 слов","formal":"официально"}`;try{const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});const d=await r.json();const raw=d.content?.[0]?.text||'';const match=raw.match(/\{[\s\S]*\}/);const parsed=match?JSON.parse(match[0]):{};generatedMsg=parsed.main||'';document.getElementById('ctx-ai-note').textContent=parsed.ai_note||'сообщение готово';document.getElementById('msg-text').textContent=parsed.main||'—';document.getElementById('variants-list').innerHTML=`<div class="variant" onclick="selectVariant(this,'${esc(parsed.short||'')}')"><div class="variant-txt">${esc(parsed.short||'')}</div><div class="variant-tag">коротко</div></div><div class="variant" onclick="selectVariant(this,'${esc(parsed.formal||'')}')"><div class="variant-txt">${esc(parsed.formal||'')}</div><div class="variant-tag">официально</div></div>`;}catch(e){document.getElementById('msg-text').textContent='Ошибка. Попробуй ещё раз.';}isGenerating=false;}
+async function generateMessage(){if(isGenerating)return;isGenerating=true;const{name,context}=currentCtx;const prompt=`Составь сообщение в Telegram для ${name}.\nСитуация: ${context}\nТон: ${currentTone}\nJSON без markdown:\n{"ai_note":"что произошло","main":"основной вариант","short":"5-8 слов","formal":"официально"}`;try{const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});const d=await r.json();const raw=d.content?.[0]?.text||'';const match=raw.match(/\{[\s\S]*\}/);const parsed=match?JSON.parse(match[0]):{};generatedMsg=parsed.main||'';document.getElementById('ctx-ai-note').textContent=parsed.ai_note||'сообщение готово';document.getElementById('msg-text').textContent=parsed.main||'—';document.getElementById('variants-list').innerHTML=`<div class="variant" onclick="selectVariant(this,'${esc(parsed.short||'')}')"><div class="variant-txt">${esc(parsed.short||'')}</div><div class="variant-tag">коротко</div></div><div class="variant" onclick="selectVariant(this,'${esc(parsed.formal||'')}')"><div class="variant-txt">${esc(parsed.formal||'')}</div><div class="variant-tag">официально</div></div>`;}catch(e){document.getElementById('msg-text').textContent='Ошибка. Попробуй ещё раз.';}isGenerating=false;}
 function esc(s){return(s||'').replace(/'/g,"&#39;").replace(/"/g,'&quot;');}
 function selectVariant(el,text){generatedMsg=text;document.getElementById('msg-text').textContent=text;document.querySelectorAll('.variant').forEach(v=>v.classList.remove('selected'));el.classList.add('selected');}
 function copyMsg(){const t=document.getElementById('msg-text').textContent;if(!t||t==='—')return;navigator.clipboard?.writeText(t).catch(()=>{});showToast('Скопировано ✓');}
 function editMsg(){const t=document.getElementById('msg-text');t.contentEditable='true';t.focus();showToast('Редактируй прямо здесь');}
 function appendMsg(text,role){const msgs=document.getElementById('ask-msgs');const d=document.createElement('div');d.className=role==='user'?'bubble-user':'bubble-ai';d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
-async function sendAsk(){const f=document.getElementById('ask-field');const v=f.value.trim();if(!v||isGenerating)return;f.value='';f.style.height='auto';appendMsg(v,'user');isGenerating=true;const lb=appendMsg('','ai');lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';try{const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:v}]})});const d=await r.json();lb.textContent=d.content?.[0]?.text||'Не удалось получить ответ.';}catch(e){lb.textContent='Ошибка. Проверь API ключ.';}isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;}
+async function sendAsk(){const f=document.getElementById('ask-field');const v=f.value.trim();if(!v||isGenerating)return;f.value='';f.style.height='auto';appendMsg(v,'user');isGenerating=true;const lb=appendMsg('','ai');lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';try{const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:v}]})});const d=await r.json();lb.textContent=d.content?.[0]?.text||'Не удалось получить ответ.';}catch(e){lb.textContent='Ошибка.';}isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;}
 document.getElementById('ask-field').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAsk();}});
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
