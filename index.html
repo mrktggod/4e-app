@@ -521,23 +521,23 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
   <div class="voice-steps">
     <div class="voice-step" id="vs-1">
-      <span class="voice-step-text">Собираю контекст</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <span class="voice-step-text">Распознаю речь</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
     </div>
     <div class="voice-step" id="vs-2">
-      <span class="voice-step-text">Проверяю дедлайны</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <span class="voice-step-text">Понимаю запрос</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
     </div>
     <div class="voice-step" id="vs-3">
-      <span class="voice-step-text">Анализирую переписки</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <span class="voice-step-text">Анализирую контекст</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
     </div>
     <div class="voice-step" id="vs-4">
-      <span class="voice-step-text">Формирую план</span>
-      <div class="voice-step-icon"><div class="spinner"></div></div>
+      <span class="voice-step-text">Формирую ответ</span>
+      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
     </div>
     <div class="voice-step" id="vs-5">
-      <span class="voice-step-text">Готовлю ответы</span>
+      <span class="voice-step-text">Готово</span>
       <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
     </div>
   </div>
@@ -615,42 +615,100 @@ function openProfile(){showScreen('profile');}
 function openNotifications(){showScreen('notifications');loadNotifications();}
 
 let voiceTimer = null;
+let recognition = null;
+
 function openVoice(){
   const overlay = document.getElementById('voice-overlay');
   overlay.classList.add('active');
-  // Reset steps
-  const steps = [
-    {id:'vs-1', done:true},
-    {id:'vs-2', done:true},
-    {id:'vs-3', done:true},
-    {id:'vs-4', done:false},
-    {id:'vs-5', done:false}
-  ];
-  steps.forEach(s => {
-    const el = document.getElementById(s.id);
-    const icon = el.querySelector('.voice-step-icon');
-    if(s.done){
-      icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-    } else if(s.id === 'vs-4') {
-      icon.innerHTML = '<div class="spinner"></div>';
-    } else {
-      icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
-    }
+  document.getElementById('voice-title').textContent = 'Говори...';
+
+  // Reset all steps to pending
+  ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach((id,i) => {
+    document.getElementById(id).querySelector('.voice-step-icon').innerHTML =
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
   });
-  // Animate steps
-  voiceTimer = setTimeout(()=>{
-    document.getElementById('vs-4').querySelector('.voice-step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-    document.getElementById('vs-5').querySelector('.voice-step-icon').innerHTML = '<div class="spinner"></div>';
-    document.getElementById('voice-title').textContent = '4е готовит ответ';
-  }, 1500);
-  voiceTimer = setTimeout(()=>{
-    document.getElementById('vs-5').querySelector('.voice-step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-    document.getElementById('voice-title').textContent = '4е готов';
-    setTimeout(()=>{ closeVoice(); openAsk(); }, 800);
-  }, 3000);
+
+  // Start speech recognition
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    document.getElementById('voice-title').textContent = 'Голос недоступен';
+    setTimeout(()=>{ closeVoice(); openAsk(); }, 1200);
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'ru-RU';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    document.getElementById('voice-title').textContent = 'Слушаю...';
+    setVoiceStep(0, 'spin');
+  };
+
+  recognition.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    document.getElementById('voice-title').textContent = '«' + text + '»';
+    setVoiceStep(0, 'done');
+    setVoiceStep(1, 'spin');
+    // Animate remaining steps then send
+    voiceTimer = setTimeout(()=>{ setVoiceStep(1,'done'); setVoiceStep(2,'spin'); }, 600);
+    voiceTimer = setTimeout(()=>{ setVoiceStep(2,'done'); setVoiceStep(3,'spin'); document.getElementById('voice-title').textContent = '4е анализирует...'; }, 1200);
+    voiceTimer = setTimeout(()=>{ setVoiceStep(3,'done'); setVoiceStep(4,'spin'); document.getElementById('voice-title').textContent = '4е отвечает...'; }, 2000);
+    voiceTimer = setTimeout(()=>{
+      setVoiceStep(4,'done');
+      document.getElementById('voice-title').textContent = 'Готово';
+      setTimeout(()=>{ closeVoice(); sendVoiceMessage(text); }, 600);
+    }, 2800);
+  };
+
+  recognition.onerror = (e) => {
+    document.getElementById('voice-title').textContent = 'Не расслышал, попробуй ещё';
+    setVoiceStep(0, 'done');
+    setTimeout(()=>{ closeVoice(); }, 1500);
+  };
+
+  recognition.onend = () => {
+    if(document.getElementById('voice-title').textContent === 'Слушаю...'){
+      document.getElementById('voice-title').textContent = 'Не расслышал';
+      setTimeout(()=>{ closeVoice(); }, 1200);
+    }
+  };
+
+  recognition.start();
+}
+
+function setVoiceStep(idx, state){
+  const ids = ['vs-1','vs-2','vs-3','vs-4','vs-5'];
+  const el = document.getElementById(ids[idx]);
+  if(!el) return;
+  const icon = el.querySelector('.voice-step-icon');
+  if(state === 'done'){
+    icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+  } else if(state === 'spin'){
+    icon.innerHTML = '<div class="spinner"></div>';
+  } else {
+    icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
+  }
+}
+
+function sendVoiceMessage(text){
+  showScreen('ask');
+  appendMsg(text, 'user');
+  isGenerating = true;
+  const lb = appendMsg('', 'ai');
+  lb.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
+  fetch(WORKER, {method:'POST', headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+    body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:800,
+      system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',
+      messages:[{role:'user', content:text}]})
+  }).then(r=>r.json()).then(d=>{
+    lb.textContent = d.content?.[0]?.text || 'Не удалось получить ответ.';
+  }).catch(()=>{ lb.textContent = 'Ошибка.'; }).finally(()=>{ isGenerating=false; document.getElementById('ask-msgs').scrollTop=9999; });
 }
 
 function closeVoice(){
+  if(recognition){ try{ recognition.stop(); }catch(e){} recognition=null; }
   clearTimeout(voiceTimer);
   document.getElementById('voice-overlay').classList.remove('active');
   document.getElementById('voice-title').textContent = '4е анализирует';
