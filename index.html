@@ -5,298 +5,412 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <title>4е</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Russo+One&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0f0f0d;--bg2:#1a1a17;--lime:#c8ff00;--lime2:rgba(200,255,0,0.12);--card:#f5f2e8;--text:#f0ede3;--muted:rgba(240,237,227,0.4);--border:rgba(240,237,227,0.08)}
-:root.light{--bg:#f0ece2;--bg2:#e8e4da;--lime:#111110;--lime2:rgba(15,15,13,0.08);--card:#ffffff;--text:#111110;--muted:rgba(20,20,18,0.4);--border:rgba(20,20,18,0.1)}
-:root.light .tag-hot{background:#111110;color:#c8ff00}
-:root.light .t-done{background:#111110;color:#c8ff00}
-:root.light .p-got{background:#111110;color:#c8ff00}
-:root.light .setup-btn{background:#111110;color:#c8ff00}
-:root.light .a-copy{background:#111110;color:#c8ff00}
-:root.light .nav-mic svg{stroke:#c8ff00}
-:root.light .promises-count{color:#111110}
-:root.light .bubble-user{background:#111110;color:#c8ff00}
-:root.light .tone-btn.active{background:#111110;color:#c8ff00;border-color:#111110}
-:root.light .detail-write-btn{background:#111110;color:#f0ece2}
-:root.light .detail-done-btn{background:#111110;color:#c8ff00}
-:root.light .cal-tab.active{background:#111110;color:#c8ff00}
-:root.light .cal-day.today{background:#111110;color:#c8ff00}
-:root.light .cal-add-btn{background:#111110;color:#c8ff00}
-html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
+:root{
+  --bg:#0E140B;
+  --bg2:#1a2214;
+  --bg3:#232e1a;
+  --green:#9AC23C;
+  --green2:#7A9A2E;
+  --green3:rgba(154,194,60,0.12);
+  --green-dark:#556B1F;
+  --text:#F2F5E9;
+  --text2:rgba(242,245,233,0.6);
+  --muted:rgba(242,245,233,0.35);
+  --border:rgba(242,245,233,0.08);
+  --card:#151c10;
+  --card2:#1e2918;
+  --shadow:0 2px 16px rgba(0,0,0,0.4);
+}
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px}
 #app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
-#setup{display:none}
+
+/* SCREENS */
 .screen{display:none;flex-direction:column;height:100%;overflow:hidden;background:var(--bg)}
 .screen.active{display:flex}
-.home-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:96px}
-.home-scroll::-webkit-scrollbar{width:0}
-.header{padding:16px 20px 12px;display:flex;align-items:center}
-.logo-ball{width:40px;height:40px;flex-shrink:0}
-.header-info{flex:1;padding-left:10px}
-.header-name{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
-.header-sub{font-size:10px;color:var(--muted)}
-.key-btn{background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-size:10px;padding:5px 12px;border-radius:20px;cursor:pointer;margin-right:8px}
-.wave-btn{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.hero{padding:8px 20px 20px}
-.hero-meta{font-size:11px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--lime);display:inline-block;flex-shrink:0}
-.hero-title{font-family:'Russo One',sans-serif;font-size:54px;font-weight:400;line-height:0.92;letter-spacing:-1px;color:var(--text);text-transform:uppercase}
-.hero-sub{margin-top:12px;font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
-.halftone-wrap{width:110px;height:110px;flex-shrink:0}
+
+/* ===== LOGIN ===== */
+#login{background:var(--bg);align-items:center;justify-content:center;padding:32px 24px;gap:0}
+.login-logo{margin-bottom:32px}
+.logo-4balls{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:64px;height:64px}
+.logo-ball{border-radius:50%;background:radial-gradient(circle at 35% 35%, #c8e87a, #7A9A2E 50%, #3a5010 100%)}
+.login-title{font-size:28px;font-weight:700;color:var(--text);margin-bottom:8px;text-align:center}
+.login-sub{font-size:13px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:40px}
+.login-form{width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.login-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:14px;padding:14px 16px;outline:none;font-family:'Inter',sans-serif}
+.login-input:focus{border-color:var(--green)}
+.login-input::placeholder{color:var(--muted)}
+.login-btn{width:100%;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;padding:15px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif}
+.login-divider{display:flex;align-items:center;gap:12px;width:100%;margin:4px 0}
+.login-divider span{font-size:12px;color:var(--muted)}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.login-tg-btn{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:500;padding:14px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+.login-register{font-size:12px;color:var(--muted);margin-top:16px;text-align:center}
+.login-register span{color:var(--green);cursor:pointer}
+
+/* ===== HEADER ===== */
+.app-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.header-logo{display:grid;grid-template-columns:1fr 1fr;gap:4px;width:32px;height:32px;cursor:pointer}
+.header-logo .lb{border-radius:50%;background:radial-gradient(circle at 35% 35%, #c8e87a, #7A9A2E 50%, #3a5010 100%)}
+.header-right{display:flex;align-items:center;gap:8px}
+.h-btn{width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;flex-shrink:0}
+.h-btn-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg)}
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:4px 12px 4px 4px;cursor:pointer}
+.user-chip-avatar{width:26px;height:26px;border-radius:50%;background:var(--green3);border:1px solid var(--green-dark);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green)}
+.user-chip-name{font-size:12px;font-weight:500;color:var(--text)}
+
+/* ===== NAV ===== */
+.bottom-nav{position:fixed;bottom:16px;left:16px;right:16px;height:64px;background:rgba(21,28,16,0.95);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:32px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:100;box-shadow:var(--shadow)}
+.bottom-nav.hidden{display:none!important}
+.nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;width:44px;height:44px;border-radius:22px;opacity:0.5;transition:opacity .15s}
+.nav-item.active{opacity:1}
+.nav-item svg{stroke:var(--text)}
+.nav-item.active svg{stroke:var(--green)}
+.nav-mic{width:50px;height:50px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 20px rgba(154,194,60,0.35)}
+.nav-mic svg{stroke:var(--bg)!important}
+
+/* ===== SCROLL CONTAINER ===== */
+.scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:96px}
+.scroll-body::-webkit-scrollbar{width:0}
+
+/* ===== HOME ===== */
+.hero-section{padding:8px 20px 20px}
+.hero-meta{font-size:11px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0}
+.hero-count{font-size:56px;font-weight:700;line-height:0.9;letter-spacing:-2px;color:var(--text)}
+.hero-label{font-size:32px;font-weight:700;letter-spacing:-1px;color:var(--text2)}
+.hero-star{color:var(--green);font-size:28px;vertical-align:middle}
+.hero-sub{margin-top:10px;font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.hero-tag{display:flex;align-items:center;gap:4px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--green);font-weight:500}
+
+/* ===== SECTION ===== */
 .section{margin:0 14px 12px}
-.tasks-card{background:var(--card);border-radius:22px;overflow:hidden}
-.task-row{display:flex;flex-direction:column;padding:13px 16px;border-bottom:1px solid rgba(15,15,13,0.07)}
+.section-title{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;font-weight:500}
+
+/* ===== TASK CARD ===== */
+.tasks-wrap{background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.task-row{display:flex;flex-direction:column;padding:12px 14px;border-bottom:1px solid rgba(242,245,233,0.05);cursor:pointer}
 .task-row:last-child{border-bottom:none}
-.task-top{display:flex;align-items:center;gap:10px}
-.task-num{font-size:10px;color:rgba(15,15,13,0.25);min-width:20px;font-weight:600;letter-spacing:1px}
+.task-top{display:flex;align-items:center;gap:8px}
+.task-num{font-size:10px;color:var(--muted);min-width:18px;font-weight:600;letter-spacing:1px}
 .task-info{flex:1;min-width:0}
-.task-name{font-size:13px;font-weight:600;color:#0f0f0d;line-height:1.3}
-.task-from{font-size:10px;color:rgba(15,15,13,0.35);margin-top:2px}
-.task-tag{font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:6px;flex-shrink:0;text-transform:uppercase}
-.tag-hot{background:#0f0f0d;color:var(--lime)}
-.tag-med{background:rgba(15,15,13,0.08);color:rgba(15,15,13,0.5)}
+.task-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.task-from{font-size:10px;color:var(--muted);margin-top:2px}
+.task-tag{font-size:9px;font-weight:700;letter-spacing:0.5px;padding:3px 8px;border-radius:6px;flex-shrink:0;text-transform:uppercase}
+.tag-hot{background:var(--green);color:var(--bg);font-weight:700}
+.tag-med{background:var(--green3);color:var(--green);border:1px solid rgba(154,194,60,0.2)}
 .task-actions{margin-top:10px;display:flex;gap:6px}
-.t-btn{flex:1;padding:8px 6px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center}
-.t-write{background:rgba(15,15,13,0.07);color:#0f0f0d;border:1px solid rgba(15,15,13,0.1)}
-.t-done{background:#0f0f0d;color:var(--lime)}
-.t-snooze{background:transparent;border:1px solid rgba(15,15,13,0.1);color:rgba(15,15,13,0.35);font-size:11px;padding:8px 10px;border-radius:10px;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.empty-state{padding:24px 16px;text-align:center;font-size:12px;color:rgba(15,15,13,0.3)}
-.promises-card{background:var(--bg2);border:1px solid var(--border);border-radius:22px;overflow:hidden}
-.promises-header{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.promises-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
-.promises-count{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;color:var(--lime);letter-spacing:-1px;line-height:1}
-.promise-row{padding:12px 16px;border-bottom:1px solid var(--border)}
+.t-btn{flex:1;padding:8px 6px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif}
+.t-write{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.t-done{background:var(--green);color:var(--bg)}
+.t-snooze{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:8px 10px;border-radius:10px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.empty-card{padding:24px;text-align:center;font-size:12px;color:var(--muted)}
+
+/* ===== PROMISES ===== */
+.promises-wrap{background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.promises-head{padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(242,245,233,0.05)}
+.promises-lbl{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:500}
+.promises-cnt{font-size:26px;font-weight:700;color:var(--green);letter-spacing:-1px;line-height:1}
+.promise-row{padding:12px 14px;border-bottom:1px solid rgba(242,245,233,0.05);cursor:pointer}
 .promise-row:last-child{border-bottom:none}
-.promise-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.promise-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
 .promise-name{font-size:13px;color:var(--text);font-weight:500}
 .promise-age{font-size:10px}
-.age-red{color:#ff6b6b}.age-yellow{color:#ffd93d}.age-green{color:var(--muted)}
+.age-red{color:#ff6b6b}.age-yellow{color:#d4a520}.age-green{color:var(--muted)}
 .promise-actions{display:flex;gap:6px}
-.p-btn{flex:1;padding:8px 6px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center}
-.p-remind{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--border)}
-.p-got{background:var(--lime);color:#0f0f0d}
+.p-btn{flex:1;padding:8px 6px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif}
+.p-remind{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.p-got{background:var(--green);color:var(--bg)}
+
+/* ===== STATS ROW ===== */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 14px 12px}
-.stat{border-radius:16px;padding:12px 14px}
-.stat-plain{background:rgba(255,255,255,0.05);border:1px solid var(--border)}
-.stat-lime{background:var(--lime2);border:1px solid rgba(200,255,0,0.2)}
-.stat-dark{background:var(--bg2);border:1px solid var(--border)}
-.stat-n{font-family:'Unbounded',sans-serif;font-size:24px;font-weight:900;letter-spacing:-1px;display:block}
-.stat-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-top:3px;color:var(--muted)}
-.bottom-nav{position:fixed;bottom:16px;left:16px;right:16px;height:64px;background:#111110!important;border-radius:32px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:100;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
-.bottom-nav.hidden{display:none!important}
-.nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;width:44px;height:44px;border-radius:22px;opacity:0.6}
-.nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
-.nav-icon svg{stroke:#f0ede3!important}
-.nav-mic{width:48px;height:48px;border-radius:50%;background:transparent;border:2px solid #c8ff00;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:1}
-.back-bar{padding:16px 16px 8px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.back-btn{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.back-title{font-size:13px;font-weight:500;color:var(--text)}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px 14px}
+.stat-card.accent{background:var(--green3);border-color:rgba(154,194,60,0.2)}
+.stat-n{font-size:22px;font-weight:700;letter-spacing:-1px;display:block}
+.stat-l{font-size:9px;letter-spacing:1px;text-transform:uppercase;display:block;margin-top:2px;color:var(--muted)}
+
+/* ===== BACK BAR ===== */
+.back-bar{padding:16px 16px 8px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.back-btn{width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.back-title{font-size:14px;font-weight:600;color:var(--text)}
 .back-sub{font-size:10px;color:var(--muted);margin-top:1px}
-.w-avatar{width:36px;height:36px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0f0f0d;flex-shrink:0}
+
+/* ===== TASK DETAIL ===== */
+.detail-scroll{flex:1;overflow-y:auto;padding:0 20px 16px}
+.detail-scroll::-webkit-scrollbar{width:0}
+.detail-num-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.detail-num{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px}
+.detail-title{font-size:28px;font-weight:700;color:var(--text);line-height:1.1;margin-bottom:6px;letter-spacing:-0.5px;text-transform:uppercase}
+.detail-from{font-size:12px;color:var(--muted);margin-bottom:18px}
+.detail-contact{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:18px}
+.detail-contact-name{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);font-weight:500}
+.detail-tg-btn{width:34px;height:34px;border-radius:50%;background:#2AABEE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.detail-sec{margin-bottom:14px}
+.detail-sec-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.detail-sec-val{font-size:14px;color:var(--text);line-height:1.5}
+.detail-field{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 14px}
+.detail-field-text{flex:1;font-size:13px;color:var(--text)}
+.detail-field-edit{font-size:14px;color:var(--muted);cursor:pointer}
+.detail-bottom{padding:12px 20px 28px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
+.detail-write-btn{width:100%;padding:14px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-family:'Inter',sans-serif}
+.detail-actions{display:flex;gap:8px}
+.detail-done-btn{flex:1;padding:12px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif}
+.detail-snooze-btn{flex:1;padding:12px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif}
+
+/* ===== WRITE ===== */
 .write-scroll{flex:1;overflow-y:auto;padding:0 16px 32px}
 .write-scroll::-webkit-scrollbar{width:0}
-.ctx-block{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:10px}
+.w-avatar{width:34px;height:34px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--bg);flex-shrink:0}
+.ctx-block{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:10px}
 .ctx-lbl{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 .ctx-line{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
 .ctx-line:last-child{margin-bottom:0}
 .ctx-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.ctx-txt{font-size:12px;color:rgba(240,237,227,0.7);line-height:1.4}
+.ctx-txt{font-size:12px;color:var(--text2);line-height:1.4}
 .ctx-date{font-size:10px;color:var(--muted);margin-top:2px}
-.msg-block{background:var(--lime2);border:1px solid rgba(200,255,0,0.2);border-radius:18px;padding:14px;margin-bottom:10px}
-.msg-lbl{font-size:9px;letter-spacing:2px;color:rgba(200,255,0,0.5);text-transform:uppercase;margin-bottom:10px}
-.msg-bubble{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px 14px 4px 14px;padding:12px 14px;margin-bottom:10px}
+.msg-block{background:var(--green3);border:1px solid rgba(154,194,60,0.2);border-radius:16px;padding:14px;margin-bottom:10px}
+.msg-lbl{font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:10px;opacity:0.7}
+.msg-bubble{background:rgba(242,245,233,0.06);border:1px solid rgba(242,245,233,0.1);border-radius:14px 14px 4px 14px;padding:12px 14px;margin-bottom:10px}
 .msg-txt{font-size:13px;color:var(--text);line-height:1.5;outline:none}
 .tone-row{display:flex;gap:6px;flex-wrap:wrap}
-.tone-btn{padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent}
-.tone-btn.active{background:var(--lime);color:#0f0f0d;border-color:var(--lime);font-weight:600}
+.tone-btn{padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;font-family:'Inter',sans-serif}
+.tone-btn.active{background:var(--green);color:var(--bg);border-color:var(--green);font-weight:600}
 .variants-lbl{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-.variant{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-bottom:6px;cursor:pointer}
-.variant.selected{border-color:var(--lime)}
+.variant{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:6px;cursor:pointer}
+.variant.selected{border-color:var(--green)}
 .variant-txt{font-size:12px;color:var(--text);line-height:1.4}
 .variant-tag{font-size:10px;color:var(--muted);margin-top:4px}
 .action-row{display:flex;gap:8px;margin-top:4px}
-.a-copy{flex:2;padding:13px;border-radius:14px;background:var(--lime);color:#0f0f0d;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Unbounded',sans-serif;display:flex;align-items:center;justify-content:center}
-.a-edit{flex:1;padding:13px;border-radius:14px;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-size:13px;text-align:center;cursor:pointer}
-.a-regen{padding:13px 14px;border-radius:14px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.a-copy{flex:2;padding:13px;border-radius:14px;background:var(--green);color:var(--bg);font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center}
+.a-edit{flex:1;padding:13px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--text);font-size:13px;text-align:center;cursor:pointer}
+.a-regen{padding:13px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* ===== ASK ===== */
 .ask-inner{flex:1;display:flex;flex-direction:column;padding:0 16px;overflow:hidden}
 .ask-msgs{flex:1;overflow-y:auto;padding:12px 0;display:flex;flex-direction:column;gap:8px}
 .ask-msgs::-webkit-scrollbar{width:0}
-.bubble-user{align-self:flex-end;background:var(--lime);color:#0f0f0d;padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:13px;line-height:1.5;max-width:85%;font-weight:500}
-.bubble-ai{align-self:flex-start;background:var(--bg2);border:1px solid var(--border);padding:10px 14px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.5;max-width:85%;color:var(--text)}
+.bubble-user{align-self:flex-end;background:var(--green);color:var(--bg);padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:13px;line-height:1.5;max-width:85%;font-weight:500}
+.bubble-ai{align-self:flex-start;background:var(--card2);border:1px solid var(--border);padding:10px 14px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.5;max-width:85%;color:var(--text)}
 .ask-bar{display:flex;gap:8px;align-items:flex-end;padding:12px 0 24px}
-.ask-field{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:13px;padding:10px 12px;outline:none;font-family:inherit;resize:none;line-height:1.4;max-height:100px}
-.ask-send{width:40px;height:40px;border-radius:50%;background:var(--lime);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-/* TASK DETAIL */
-.detail-scroll{flex:1;overflow-y:auto;padding:0 20px 16px}
-.detail-scroll::-webkit-scrollbar{width:0}
-.detail-num{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px;margin-bottom:6px}
-.detail-title{font-family:'Russo One',sans-serif;font-size:32px;color:var(--text);text-transform:uppercase;line-height:1.1;margin-bottom:6px;letter-spacing:-0.5px}
-.detail-from{font-size:12px;color:var(--muted);margin-bottom:20px}
-.detail-contact{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:20px}
-.detail-contact-name{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);font-weight:500}
-.detail-tg-btn{width:34px;height:34px;border-radius:50%;background:#2AABEE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.detail-section{margin-bottom:14px}
-.detail-section-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-.detail-section-value{font-size:14px;color:var(--text);line-height:1.5}
-.detail-row{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:11px 14px}
-.detail-row-text{flex:1;font-size:13px;color:var(--text)}
-.detail-row-edit{font-size:16px;color:var(--muted);cursor:pointer}
-.detail-bottom{padding:12px 20px 28px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
-.detail-write-btn{width:100%;padding:14px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
-.detail-actions{display:flex;gap:8px}
-.detail-done-btn{flex:1;padding:12px;border-radius:14px;background:#c8ff00;border:none;color:#0f0f0d;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.detail-snooze-btn{flex:1;padding:12px;border-radius:14px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-/* CALENDAR */
+.ask-field{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:13px;padding:10px 12px;outline:none;font-family:'Inter',sans-serif;resize:none;line-height:1.4;max-height:100px}
+.ask-field:focus{border-color:rgba(154,194,60,0.4)}
+.ask-send{width:40px;height:40px;border-radius:50%;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ===== CALENDAR ===== */
 .cal-scroll{flex:1;overflow-y:auto;padding:0 16px 16px}
 .cal-scroll::-webkit-scrollbar{width:0}
-.cal-tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:3px;margin-bottom:16px}
-.cal-tab{flex:1;padding:7px;border-radius:16px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;color:var(--muted)}
-.cal-tab.active{background:var(--lime);color:#0f0f0d;font-weight:700}
+.cal-tabs{display:flex;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px;margin-bottom:16px}
+.cal-tab{flex:1;padding:7px;border-radius:16px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif}
+.cal-tab.active{background:var(--green);color:var(--bg);font-weight:700}
 .cal-month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-month-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
-.cal-nav-btn{width:28px;height:28px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cal-month-title{font-size:16px;font-weight:700;color:var(--text)}
+.cal-nav-btn{width:28px;height:28px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px}
-.cal-weekday{font-size:10px;color:var(--muted);text-align:center;letter-spacing:0.5px;font-weight:500;padding:4px 0}
+.cal-weekday{font-size:10px;color:var(--muted);text-align:center;font-weight:500;padding:4px 0}
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:20px}
 .cal-day{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:13px;font-weight:500;color:var(--text);cursor:pointer}
-.cal-day.today{background:var(--lime);color:#0f0f0d;font-weight:700}
+.cal-day.today{background:var(--green);color:var(--bg);font-weight:700}
 .cal-day.other-month{color:var(--muted);opacity:0.4}
-.cal-day.selected{border:1.5px solid var(--lime)}
-.cal-events-title{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.cal-day.selected{border:1.5px solid var(--green)}
+.cal-events-title{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 .cal-event{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
 .cal-event:last-child{border-bottom:none}
-.cal-event-time{font-size:12px;color:var(--muted);min-width:36px;padding-top:1px}
-.cal-event-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:4px}
-.cal-event-name{font-size:14px;color:var(--text);font-weight:500}
-.cal-add-btn{width:100%;padding:14px;border-radius:14px;background:var(--lime);border:none;color:#0f0f0d;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0}
-.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted);margin:0 2px;animation:bounce 1.2s infinite}
-.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-5px);opacity:1}}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
-.toast.show{opacity:1}
-/* PROFILE */
-.profile-scroll{flex:1;overflow-y:auto;padding:0 16px 32px}
-.profile-scroll::-webkit-scrollbar{width:0}
-.profile-user{display:flex;align-items:center;gap:14px;padding:16px 0 24px}
-.profile-avatar{width:60px;height:60px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--lime)}
-.profile-avatar img{width:100%;height:100%;object-fit:cover}
-.profile-name{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.5px}
-.profile-status{font-size:12px;color:var(--lime);margin-top:3px;font-weight:500}
-.profile-menu{background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:16px}
-.profile-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer}
-.profile-item:last-child{border-bottom:none}
-.profile-item-left{display:flex;align-items:center;gap:12px}
-.profile-item-icon{width:32px;height:32px;border-radius:10px;background:var(--lime2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.profile-item-text{font-size:14px;color:var(--text);font-weight:500}
-.profile-item-arrow{color:var(--muted);font-size:16px}
-.profile-logout{width:100%;padding:14px;border-radius:14px;background:rgba(255,100,100,0.1);border:1px solid rgba(255,100,100,0.2);color:#ff6b6b;font-size:14px;font-weight:600;cursor:pointer;text-align:center}
-/* User avatar in header */
-.user-avatar-btn{width:34px;height:34px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--lime);flex-shrink:0}
-.user-avatar-btn img{width:100%;height:100%;object-fit:cover}
-/* NOTIFICATIONS */
+.cal-event-time{font-size:12px;color:var(--muted);min-width:40px;padding-top:1px}
+.cal-event-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:4px}
+.cal-event-name{font-size:13px;color:var(--text);font-weight:500}
+.cal-add-btn{width:100%;padding:14px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;font-family:'Inter',sans-serif}
+
+/* ===== STATS ===== */
+.stats-scroll{flex:1;overflow-y:auto;padding:0 16px 96px}
+.stats-scroll::-webkit-scrollbar{width:0}
+.progress-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:12px}
+.progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.progress-title{font-size:14px;font-weight:600;color:var(--text)}
+.progress-period{font-size:11px;color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:4px 10px;cursor:pointer}
+.big-percent{font-size:48px;font-weight:700;color:var(--text);letter-spacing:-2px;line-height:1}
+.big-percent span{font-size:16px;color:var(--green);margin-left:4px;font-weight:500}
+.mini-chart{height:60px;position:relative;margin:12px 0}
+.mini-chart-line{width:100%;height:100%}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:80px;margin:12px 0}
+.bar{flex:1;background:var(--green3);border-radius:4px 4px 0 0;min-height:4px;position:relative;cursor:pointer;transition:background .15s}
+.bar.active{background:var(--green)}
+.bar-label{font-size:9px;color:var(--muted);text-align:center;margin-top:4px}
+.cat-list{display:flex;flex-direction:column;gap:8px}
+.cat-item{display:flex;align-items:center;gap:10px}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cat-name{flex:1;font-size:12px;color:var(--text)}
+.cat-pct{font-size:12px;color:var(--muted);font-weight:500}
+.cat-bar-wrap{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:2px;background:var(--green)}
+.active-tasks-list{display:flex;flex-direction:column;gap:6px}
+.active-task-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:12px}
+.active-task-name{flex:1;font-size:13px;color:var(--text)}
+.active-task-pct{font-size:12px;color:var(--green);font-weight:600}
+.active-task-bar{width:60px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.active-task-fill{height:100%;background:var(--green);border-radius:2px}
+
+/* ===== NOTIFICATIONS ===== */
 .notif-scroll{flex:1;overflow-y:auto;padding:0 16px 32px}
 .notif-scroll::-webkit-scrollbar{width:0}
-.notif-item{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:13px 0;border-bottom:1px solid var(--border)}
 .notif-item:last-child{border-bottom:none}
-.notif-icon{width:36px;height:36px;border-radius:50%;background:var(--lime2);border:1px solid rgba(200,255,0,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.notif-icon.unread{background:var(--lime2);border-color:var(--lime)}
-.notif-body{flex:1;min-width:0}
+.notif-icon{width:36px;height:36px;border-radius:10px;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-icon.unread{background:var(--green3);border-color:rgba(154,194,60,0.3)}
+.notif-body{flex:1}
 .notif-text{font-size:13px;color:var(--text);line-height:1.4;font-weight:500}
 .notif-time{font-size:11px;color:var(--muted);margin-top:3px}
-.notif-unread-dot{width:7px;height:7px;border-radius:50%;background:var(--lime);flex-shrink:0;margin-top:6px}
-.notif-all-btn{font-size:13px;color:var(--lime);font-weight:600;padding:16px 0;cursor:pointer;text-align:left}
-/* Bell button in header */
-.bell-btn{width:34px;height:34px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;margin-right:6px}
-.bell-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--lime);border:1.5px solid var(--bg)}
-/* VOICE OVERLAY */
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px}
+.notif-all-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--green);font-weight:600;padding:16px 0;cursor:pointer}
+
+/* ===== PROFILE ===== */
+.profile-scroll{flex:1;overflow-y:auto;padding:0 16px 32px}
+.profile-scroll::-webkit-scrollbar{width:0}
+.profile-user{display:flex;align-items:center;gap:14px;padding:16px 0 20px}
+.profile-avatar{width:60px;height:60px;border-radius:50%;background:var(--green3);border:2px solid var(--green-dark);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--green);flex-shrink:0}
+.profile-name{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.profile-status{font-size:12px;color:var(--green);margin-top:3px;font-weight:500}
+.profile-menu{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:12px}
+.profile-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(242,245,233,0.05);cursor:pointer}
+.profile-item:last-child{border-bottom:none}
+.profile-item-left{display:flex;align-items:center;gap:12px}
+.profile-item-icon{width:32px;height:32px;border-radius:10px;background:var(--green3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.profile-item-text{font-size:14px;color:var(--text);font-weight:500}
+.profile-item-arrow{color:var(--muted);font-size:16px}
+.profile-logout{width:100%;padding:14px;border-radius:14px;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:#ff6060;font-size:14px;font-weight:600;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif}
+
+/* ===== VOICE OVERLAY ===== */
 .voice-overlay{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column;align-items:center}
 .voice-overlay.active{display:flex}
-.voice-header{width:100%;padding:20px 20px 0;display:flex;align-items:center;justify-content:center;position:relative}
-.voice-title{font-size:14px;color:var(--muted);font-weight:500;letter-spacing:0.3px}
+.voice-header{width:100%;padding:20px;display:flex;align-items:center;justify-content:center}
+.voice-title{font-size:14px;color:var(--muted);font-weight:500}
 .voice-circle-wrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
 .voice-corners{position:absolute;inset:20px;pointer-events:none}
-.voice-corner{position:absolute;width:20px;height:20px;border-color:rgba(200,255,0,0.4);border-style:solid}
-.voice-corner.tl{top:0;left:0;border-width:2px 0 0 2px}
-.voice-corner.tr{top:0;right:0;border-width:2px 2px 0 0}
-.voice-corner.bl{bottom:0;left:0;border-width:0 0 2px 2px}
-.voice-corner.br{bottom:0;right:0;border-width:0 2px 2px 0}
+.vc{position:absolute;width:18px;height:18px;border-color:rgba(154,194,60,0.3);border-style:solid}
+.vc.tl{top:0;left:0;border-width:2px 0 0 2px}
+.vc.tr{top:0;right:0;border-width:2px 2px 0 0}
+.vc.bl{bottom:0;left:0;border-width:0 0 2px 2px}
+.vc.br{bottom:0;right:0;border-width:0 2px 2px 0}
 .voice-steps{width:100%;padding:0 28px 20px}
-.voice-step{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)}
+.voice-step{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
 .voice-step:last-child{border-bottom:none}
 .voice-step-text{font-size:14px;color:var(--text)}
 .voice-step-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.voice-cancel{width:calc(100% - 32px);margin:0 16px 32px;padding:14px;border-radius:14px;background:#111110;border:none;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0}
+.voice-cancel{width:calc(100% - 32px);margin:0 16px 32px;padding:14px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0;font-family:'Inter',sans-serif}
 @keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--lime);border-radius:50%;animation:spin 0.8s linear infinite}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite}
+
+/* ===== DOTS ===== */
+.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted);margin:0 2px;animation:bounce 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-5px);opacity:1}}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <div id="app">
 
-<div id="setup">
-  <div class="setup-title">4е</div>
-  <div class="setup-sub">AI секретарь для групповых чатов.<br>Нужен Anthropic API ключ.</div>
-  <input class="setup-input" id="api-input" type="password" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false"/>
-  <button class="setup-btn" id="save-btn">начать →</button>
-  <div class="setup-note">Ключ на <a href="https://console.anthropic.com">console.anthropic.com</a><br>Хранится только в твоём браузере</div>
+<!-- LOGIN -->
+<div class="screen active" id="login">
+  <div id="login-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;gap:0;flex:1">
+    <div class="login-logo">
+      <div class="logo-4balls" style="width:56px;height:56px;margin:0 auto 24px">
+        <div class="logo-ball"></div><div class="logo-ball"></div>
+        <div class="logo-ball"></div><div class="logo-ball"></div>
+      </div>
+    </div>
+    <div class="login-title">Добро пожаловать!</div>
+    <div class="login-sub" style="margin-bottom:32px">Войдите, чтобы продолжить</div>
+    <div class="login-form">
+      <input class="login-input" id="login-email" type="email" placeholder="Email" autocomplete="off"/>
+      <div style="position:relative">
+        <input class="login-input" id="login-pass" type="password" placeholder="Пароль" autocomplete="off"/>
+        <div onclick="togglePass()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <button class="login-btn" onclick="doLogin()">Войти</button>
+    </div>
+    <div class="login-divider"><span>или</span></div>
+    <button class="login-tg-btn" onclick="loginWithTelegram()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
+      Войти через Telegram
+    </button>
+    <div class="login-register">Нет аккаунта? <span onclick="showToast('Регистрация скоро!')">Зарегистрироваться</span></div>
+  </div>
 </div>
 
+<!-- HOME -->
 <div class="screen" id="home">
-  <div class="home-scroll">
-    <div class="header">
-      <div class="logo-ball">
-        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-          <defs><radialGradient id="ballGrad" cx="32%" cy="28%" r="70%"><stop offset="0%" stop-color="#c8ff00"/><stop offset="30%" stop-color="#5a7a00"/><stop offset="65%" stop-color="#1a1a0a"/><stop offset="100%" stop-color="#050505"/></radialGradient></defs>
-          <circle cx="20" cy="20" r="19" fill="#080808"/><circle cx="20" cy="20" r="19" fill="url(#ballGrad)"/>
-        </svg>
-      </div>
-      <div class="header-info"><div class="header-name">4е</div><div class="header-sub">AI секретарь</div></div>
-      <button class="key-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
-      <div class="bell-btn" onclick="openNotifications()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.6)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <div class="bell-dot" id="bell-dot"></div>
-      </div>
-      <div class="user-avatar-btn" id="user-avatar-btn" onclick="openProfile()">?</div>
+  <div class="app-header">
+    <div class="header-logo" onclick="goHome()">
+      <div class="lb"></div><div class="lb"></div><div class="lb"></div><div class="lb"></div>
     </div>
-    <div class="hero">
+    <div class="header-right">
+      <div class="h-btn" onclick="openNotifications()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="h-btn-dot" id="bell-dot"></div>
+      </div>
+      <div class="user-chip" onclick="openProfile()" id="user-chip">
+        <div class="user-chip-avatar" id="user-avatar-small">?</div>
+        <span class="user-chip-name" id="user-chip-name">Профиль</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="hero-section">
       <div class="hero-meta"><span class="hero-dot"></span><span>сегодня на радаре</span></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
         <div>
-          <div class="hero-title"><span id="hero-count">—</span> дела<br>ждут<span style="color:#c8ff00;font-size:0.7em;vertical-align:middle">✦</span></div>
-          <div class="hero-sub" style="margin-top:12px">
-            <span><span class="hero-dot"></span> <span id="sub-promises">0 обещаний</span></span>
-            <span>· <span id="sub-deadline">загрузка...</span></span>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span class="hero-count" id="hero-count">—</span>
+            <span class="hero-label">дела<br>ждут<span class="hero-star">✦</span></span>
+          </div>
+          <div class="hero-sub">
+            <div class="hero-tag" id="sub-promises-tag"><span class="hero-dot"></span><span id="sub-promises">0 обещаний</span></div>
+            <div class="hero-tag" id="sub-deadline-tag"><span id="sub-deadline">загрузка...</span></div>
           </div>
         </div>
-        <div class="halftone-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHAAAABwCAYAAADG3TsWAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDIgNzkuZjM1NGVmYywgMjAyMy8xMS8wOS0xMjowNTo1MyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI1LjMgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjYyNTMyMzYtYzliYS00MTZlLWIzNGMtZDA1MTc0NzM2ZTlhIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjI2MjUzMjM3LWM5YmEtNDE2ZS1iMzRjLWQwNTE3NDczNmU5YSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjM3YTM3OGY3LTMwZGYtNDMxYi04MWI3LWVlYWZjMTQ5YjgzMyIgc3RSZWYuZG9jdW1lbnRJRD0ieG1wLmRpZDozN2EzNzhmNy0zMGRmLTQzMWItODFiNy1lZWFmYzE0OWI4MzMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5tYVgsAAABwUlEQVR42uzBMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAMBuAABHgAAAABJRU5ErkJggg==" style="width:110px;height:110px;object-fit:contain;opacity:0.9" alt="" onerror="this.style.display='none'"/></div>
       </div>
     </div>
-    <div class="section"><div class="tasks-card" id="lime-card"><div class="empty-state">загружаю задачи...</div></div></div>
+
     <div class="section">
-      <div class="promises-card">
-        <div class="promises-header"><span class="promises-label">тебе должны</span><span class="promises-count" id="promise-count">0</span></div>
+      <div class="tasks-wrap" id="lime-card"><div class="empty-card">загружаю задачи...</div></div>
+    </div>
+
+    <div class="section">
+      <div class="promises-wrap">
+        <div class="promises-head">
+          <span class="promises-lbl">тебе должны</span>
+          <span class="promises-cnt" id="promise-count">0</span>
+        </div>
         <div id="promise-rows"><div class="promise-row"><span style="font-size:12px;color:var(--muted)">загружаю...</span></div></div>
       </div>
     </div>
+
     <div class="stats-row">
-      <div class="stat stat-plain"><span class="stat-n" style="color:var(--text)" id="done-count">0</span><span class="stat-l">выполнено</span></div>
-      <div class="stat stat-lime"><span class="stat-n" style="color:var(--lime)" id="tasks-count">0</span><span class="stat-l" style="color:rgba(200,255,0,0.5)">задач</span></div>
-      <div class="stat stat-dark"><span class="stat-n" style="color:var(--lime)" id="promises-count">0</span><span class="stat-l">обещ.</span></div>
+      <div class="stat-card"><span class="stat-n" style="color:var(--text)" id="done-count">0</span><span class="stat-l">выполнено</span></div>
+      <div class="stat-card accent"><span class="stat-n" style="color:var(--green)" id="tasks-count">0</span><span class="stat-l" style="color:var(--green);opacity:0.7">задач</span></div>
+      <div class="stat-card"><span class="stat-n" style="color:var(--green)" id="promises-count">0</span><span class="stat-l">обещ.</span></div>
     </div>
   </div>
 </div>
 
+<!-- WRITE -->
 <div class="screen" id="write">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title" id="wt-title">Написать</div><div class="back-sub">4е составит сообщение</div></div>
     <div class="w-avatar" id="wt-avatar">К</div>
   </div>
   <div class="write-scroll">
     <div class="ctx-block">
       <div class="ctx-lbl">контекст</div>
-      <div class="ctx-line"><div class="ctx-dot" style="background:var(--lime)"></div><div><div class="ctx-txt" id="ctx-text">загружаю...</div><div class="ctx-date" id="ctx-person">—</div></div></div>
+      <div class="ctx-line"><div class="ctx-dot" style="background:var(--green)"></div><div><div class="ctx-txt" id="ctx-text">загружаю...</div><div class="ctx-date" id="ctx-person">—</div></div></div>
       <div class="ctx-line"><div class="ctx-dot" style="background:var(--border)"></div><div><div class="ctx-txt" id="ctx-ai-note">анализирую...</div><div class="ctx-date">4е · сейчас</div></div></div>
     </div>
     <div class="msg-block">
@@ -321,70 +435,57 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
+<!-- ASK -->
 <div class="screen" id="ask">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">4е</div><div class="back-sub">спроси что угодно</div></div>
   </div>
   <div class="ask-inner">
     <div class="ask-msgs" id="ask-msgs"></div>
     <div class="ask-bar">
       <textarea class="ask-field" id="ask-field" placeholder="Напиши..." rows="1"></textarea>
-      <button class="ask-send" onclick="sendAsk()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0f0f0d" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      <button class="ask-send" onclick="sendAsk()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
     </div>
   </div>
 </div>
 
+<!-- TASK DETAIL -->
 <div class="screen" id="task-detail">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Задача</div></div>
     <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></div>
   </div>
   <div class="detail-scroll">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div class="detail-num" id="detail-num">01</div>
-      <span class="task-tag" id="detail-tag">скоро</span>
-    </div>
+    <div class="detail-num-row"><div class="detail-num" id="detail-num">01</div><span class="task-tag" id="detail-tag">скоро</span></div>
     <div class="detail-title" id="detail-title">Задача</div>
     <div class="detail-from" id="detail-from">из переписки</div>
     <div class="detail-contact">
-      <div class="detail-contact-name">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span id="detail-person">Имя</span>
-      </div>
-      <div class="detail-tg-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div>
+      <div class="detail-contact-name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span id="detail-person">Имя</span></div>
+      <div class="detail-tg-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div>
     </div>
-    <div class="detail-section"><div class="detail-section-label">Описание</div><div class="detail-section-value" id="detail-desc">—</div></div>
-    <div class="detail-section">
-      <div class="detail-section-label">Дедлайн</div>
-      <div class="detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="detail-row-text" id="detail-deadline-text">не указан</span><span class="detail-row-edit">✎</span></div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-section-label">Напомнить</div>
-      <div class="detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="detail-row-text">В день события, 09:00</span><span class="detail-row-edit">✎</span></div>
-    </div>
+    <div class="detail-sec"><div class="detail-sec-label">Описание</div><div class="detail-sec-val" id="detail-desc">—</div></div>
+    <div class="detail-sec"><div class="detail-sec-label">Дедлайн</div><div class="detail-field"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="detail-field-text" id="detail-deadline-text">не указан</span><span class="detail-field-edit">✎</span></div></div>
+    <div class="detail-sec"><div class="detail-sec-label">Напомнить</div><div class="detail-field"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="detail-field-text">В день события, 09:00</span><span class="detail-field-edit">✎</span></div></div>
   </div>
   <div class="detail-bottom">
-    <button class="detail-write-btn" id="detail-write-btn">Написать в Telegram <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></button>
+    <button class="detail-write-btn" id="detail-write-btn">Написать в Telegram <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></button>
     <div class="detail-actions">
-      <button class="detail-done-btn" id="detail-done-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Готово</button>
-      <button class="detail-snooze-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Позже</button>
+      <button class="detail-done-btn" id="detail-done-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Готово</button>
+      <button class="detail-snooze-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Позже</button>
     </div>
   </div>
 </div>
 
+<!-- CALENDAR -->
 <div class="screen" id="calendar">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Календарь</div></div>
   </div>
   <div class="cal-scroll">
-    <div class="cal-tabs">
-      <div class="cal-tab" onclick="setCalView('day',this)">День</div>
-      <div class="cal-tab active" onclick="setCalView('week',this)">Неделя</div>
-      <div class="cal-tab" onclick="setCalView('month',this)">Месяц</div>
-    </div>
+    <div class="cal-tabs"><div class="cal-tab" onclick="setCalView('day',this)">День</div><div class="cal-tab active" onclick="setCalView('week',this)">Неделя</div><div class="cal-tab" onclick="setCalView('month',this)">Месяц</div></div>
     <div class="cal-month-nav">
       <span class="cal-month-title" id="cal-month-title">Май 2026</span>
       <div style="display:flex;gap:6px">
@@ -394,163 +495,168 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
     <div class="cal-weekdays"><div class="cal-weekday">ПН</div><div class="cal-weekday">ВТ</div><div class="cal-weekday">СР</div><div class="cal-weekday">ЧТ</div><div class="cal-weekday">ПТ</div><div class="cal-weekday">СБ</div><div class="cal-weekday">ВС</div></div>
     <div class="cal-days" id="cal-days"></div>
-    <div class="cal-events-title" id="cal-events-title">События</div>
+    <div class="cal-events-title" id="cal-events-title">Дедлайны</div>
     <div id="cal-events"></div>
   </div>
   <div style="padding:12px 16px 28px;flex-shrink:0"><button class="cal-add-btn">+ Новое событие</button></div>
 </div>
 
+<!-- STATISTICS -->
+<div class="screen" id="statistics">
+  <div class="app-header">
+    <div style="flex:1"><div class="back-title">Статистика</div></div>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:5px 12px;font-size:11px;color:var(--muted);cursor:pointer">Месяц задач ▾</div>
+  </div>
+  <div class="stats-scroll">
+    <div class="section">
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-title">Общий прогресс</span>
+          <span class="progress-period">Эта неделя ▾</span>
+        </div>
+        <div class="big-percent" id="stat-percent">75%<span id="stat-delta">+12%</span></div>
+        <div class="mini-chart">
+          <svg class="mini-chart-line" viewBox="0 0 300 60" preserveAspectRatio="none">
+            <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.3"/><stop offset="100%" stop-color="#9AC23C" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3 L300,60 L0,60 Z" fill="url(#chartGrad)"/>
+            <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3" fill="none" stroke="#9AC23C" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="progress-card">
+        <div class="progress-header"><span class="progress-title">Активные задачи</span><span style="font-size:12px;color:var(--green);cursor:pointer">Смотреть все</span></div>
+        <div class="active-tasks-list" id="stat-tasks-list">
+          <div class="active-task-row"><span class="active-task-name">Загружаю...</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="progress-card">
+        <div class="progress-header"><span class="progress-title">По категориям</span></div>
+        <div class="cat-list">
+          <div class="cat-item"><div class="cat-dot" style="background:#9AC23C"></div><span class="cat-name">Обещания</span><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:60%"></div></div><span class="cat-pct">60%</span></div>
+          <div class="cat-item"><div class="cat-dot" style="background:#7A9A2E"></div><span class="cat-name">Дедлайны</span><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:35%;background:#7A9A2E"></div></div><span class="cat-pct">35%</span></div>
+          <div class="cat-item"><div class="cat-dot" style="background:#556B1F"></div><span class="cat-name">Задачи</span><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:5%;background:#556B1F"></div></div><span class="cat-pct">5%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="progress-card">
+        <div class="progress-header"><span class="progress-title">По дням</span></div>
+        <div class="bar-chart" id="bar-chart"></div>
+        <div style="display:flex;justify-content:space-between" id="bar-labels"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
 <div class="screen" id="notifications">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Уведомления</div></div>
   </div>
   <div class="notif-scroll">
     <div id="notif-list">
       <div class="notif-item">
-        <div class="notif-icon unread"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-        <div class="notif-body">
-          <div class="notif-text">4е подготовил план на день</div>
-          <div class="notif-time">09:00</div>
-        </div>
-        <div class="notif-unread-dot"></div>
-      </div>
-      <div class="notif-item">
-        <div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-        <div class="notif-body">
-          <div class="notif-text">Кирилл не ответил на сообщение</div>
-          <div class="notif-time">Вчера</div>
-        </div>
-      </div>
-      <div class="notif-item">
-        <div class="notif-icon unread"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <div class="notif-body">
-          <div class="notif-text">Дедлайн «Договор Кириллу» сегодня в 18:00</div>
-          <div class="notif-time">08:30</div>
-        </div>
-        <div class="notif-unread-dot"></div>
+        <div class="notif-icon unread"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="notif-body"><div class="notif-text">4е подготовил план на день</div><div class="notif-time">09:00</div></div>
+        <div class="notif-dot"></div>
       </div>
       <div class="notif-item">
         <div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <div class="notif-body">
-          <div class="notif-text">Антон отправил файл</div>
-          <div class="notif-time">Вчера</div>
-        </div>
+        <div class="notif-body"><div class="notif-text">Кирилл не ответил на сообщение</div><div class="notif-time">Вчера</div></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon unread"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="notif-body"><div class="notif-text">Дедлайн «Договор Кириллу» сегодня в 18:00</div><div class="notif-time">08:30</div></div>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="notif-body"><div class="notif-text">Антон отправил файл</div><div class="notif-time">Вчера</div></div>
       </div>
     </div>
-    <div class="notif-all-btn" onclick="loadMoreNotifications()">Все уведомления</div>
+    <div class="notif-all-btn">Все уведомления <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
   </div>
 </div>
 
+<!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(240,237,227,0.7)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Профиль</div></div>
   </div>
   <div class="profile-scroll">
     <div class="profile-user">
       <div class="profile-avatar" id="profile-avatar">?</div>
-      <div>
-        <div class="profile-name" id="profile-name">Пользователь</div>
-        <div class="profile-status">Premium</div>
-      </div>
+      <div><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div></div>
     </div>
     <div class="profile-menu">
-      <div class="profile-item">
-        <div class="profile-item-left">
-          <div class="profile-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div>
-          <span class="profile-item-text">Подписка</span>
-        </div>
-        <span class="profile-item-arrow">›</span>
-      </div>
-      <div class="profile-item">
-        <div class="profile-item-left">
-          <div class="profile-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-          <span class="profile-item-text">Уведомления</span>
-        </div>
-        <span class="profile-item-arrow">›</span>
-      </div>
-      <div class="profile-item">
-        <div class="profile-item-left">
-          <div class="profile-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
-          <span class="profile-item-text">Язык</span>
-        </div>
-        <span class="profile-item-arrow">›</span>
-      </div>
-      <div class="profile-item">
-        <div class="profile-item-left">
-          <div class="profile-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-          <span class="profile-item-text">Безопасность</span>
-        </div>
-        <span class="profile-item-arrow">›</span>
-      </div>
-      <div class="profile-item">
-        <div class="profile-item-left">
-          <div class="profile-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-          <span class="profile-item-text">Поддержка</span>
-        </div>
-        <span class="profile-item-arrow">›</span>
-      </div>
+      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div><span class="profile-item-text">Подписка</span></div><span class="profile-item-arrow">›</span></div>
+      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="profile-item-text">Уведомления</span></div><span class="profile-item-arrow">›</span></div>
+      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div><span class="profile-item-text">Язык</span></div><span class="profile-item-arrow">›</span></div>
+      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="profile-item-text">Безопасность</span></div><span class="profile-item-arrow">›</span></div>
+      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="profile-item-text">Поддержка</span></div><span class="profile-item-arrow">›</span></div>
     </div>
     <div class="profile-menu">
-      <div class="profile-item" onclick="toggleTheme()">
-        <div class="profile-item-left">
-          <div class="profile-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
-          <span class="profile-item-text">Тема оформления</span>
-        </div>
-        <span class="profile-item-arrow" id="theme-arrow">☀️</span>
-      </div>
+      <div class="profile-item" onclick="toggleTheme()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div><span class="profile-item-text">Тема оформления</span></div><span class="profile-item-arrow" id="theme-arrow">🌙</span></div>
     </div>
-    <button class="profile-logout" onclick="goHome()">Выйти</button>
+    <button class="profile-logout" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Выйти</button>
   </div>
 </div>
 
 <!-- VOICE OVERLAY -->
 <div class="voice-overlay" id="voice-overlay">
-  <div class="voice-header">
-    <span class="voice-title" id="voice-title">4е анализирует</span>
-  </div>
+  <div class="voice-header"><span class="voice-title" id="voice-title">4е анализирует</span></div>
   <div class="voice-circle-wrap">
-    <div class="voice-corners">
-      <div class="voice-corner tl"></div>
-      <div class="voice-corner tr"></div>
-      <div class="voice-corner bl"></div>
-      <div class="voice-corner br"></div>
-    </div>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHAAAABwCAYAAADG3TsWAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDIgNzkuZjM1NGVmYywgMjAyMy8xMS8wOS0xMjowNTo1MyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI1LjMgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjYyNTMyMzYtYzliYS00MTZlLWIzNGMtZDA1MTc0NzM2ZTlhIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjI2MjUzMjM3LWM5YmEtNDE2ZS1iMzRjLWQwNTE3NDczNmU5YSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjM3YTM3OGY3LTMwZGYtNDMxYi04MWI3LWVlYWZjMTQ5YjgzMyIgc3RSZWYuZG9jdW1lbnRJRD0ieG1wLmRpZDozN2EzNzhmNy0zMGRmLTQzMWItODFiNy1lZWFmYzE0OWI4MzMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5tYVgsAAABwUlEQVR42uzBMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAMBuAABHgAAAABJRU5ErkJggg==" style="width:240px;height:240px;object-fit:contain" alt=""/>
+    <div class="voice-corners"><div class="vc tl"></div><div class="vc tr"></div><div class="vc bl"></div><div class="vc br"></div></div>
+    <svg width="220" height="220" viewBox="0 0 220 220">
+      <defs>
+        <radialGradient id="vg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7ab800" stop-opacity="0.7"/>
+          <stop offset="50%" stop-color="#3a5500" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="1" stroke-dasharray="3 5"/>
+      <circle cx="110" cy="110" r="60" fill="url(#vg)"/>
+      <g fill="rgba(154,194,60,0.8)">
+        <circle cx="110" cy="110" r="6"/><circle cx="110" cy="88" r="5"/><circle cx="110" cy="132" r="5"/>
+        <circle cx="88" cy="110" r="5"/><circle cx="132" cy="110" r="5"/>
+        <circle cx="93" cy="93" r="4.5"/><circle cx="127" cy="93" r="4.5"/><circle cx="93" cy="127" r="4.5"/><circle cx="127" cy="127" r="4.5"/>
+        <circle cx="110" cy="70" r="4"/><circle cx="110" cy="150" r="4"/><circle cx="70" cy="110" r="4"/><circle cx="150" cy="110" r="4"/>
+        <circle cx="78" cy="78" r="3.5"/><circle cx="142" cy="78" r="3.5"/><circle cx="78" cy="142" r="3.5"/><circle cx="142" cy="142" r="3.5"/>
+        <circle cx="84" cy="62" r="2.5"/><circle cx="136" cy="62" r="2.5"/><circle cx="84" cy="158" r="2.5"/><circle cx="136" cy="158" r="2.5"/>
+        <circle cx="62" cy="84" r="2.5"/><circle cx="158" cy="84" r="2.5"/><circle cx="62" cy="136" r="2.5"/><circle cx="158" cy="136" r="2.5"/>
+        <circle cx="110" cy="52" r="2"/><circle cx="110" cy="168" r="2"/><circle cx="52" cy="110" r="2"/><circle cx="168" cy="110" r="2"/>
+        <circle cx="65" cy="65" r="1.5"/><circle cx="155" cy="65" r="1.5"/><circle cx="65" cy="155" r="1.5"/><circle cx="155" cy="155" r="1.5"/>
+      </g>
+      <line x1="103" y1="110" x2="106" y2="110" stroke="#9AC23C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="114" y1="110" x2="117" y2="110" stroke="#9AC23C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="110" y1="103" x2="110" y2="106" stroke="#9AC23C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="110" y1="114" x2="110" y2="117" stroke="#9AC23C" stroke-width="2" stroke-linecap="round"/>
+    </svg>
   </div>
   <div class="voice-steps">
-    <div class="voice-step" id="vs-1">
-      <span class="voice-step-text">Распознаю речь</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
-    </div>
-    <div class="voice-step" id="vs-2">
-      <span class="voice-step-text">Понимаю запрос</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
-    </div>
-    <div class="voice-step" id="vs-3">
-      <span class="voice-step-text">Анализирую контекст</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
-    </div>
-    <div class="voice-step" id="vs-4">
-      <span class="voice-step-text">Формирую ответ</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
-    </div>
-    <div class="voice-step" id="vs-5">
-      <span class="voice-step-text">Готово</span>
-      <div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>
-    </div>
+    <div class="voice-step" id="vs-1"><span class="voice-step-text">Распознаю речь</span><div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div></div>
+    <div class="voice-step" id="vs-2"><span class="voice-step-text">Понимаю запрос</span><div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div></div>
+    <div class="voice-step" id="vs-3"><span class="voice-step-text">Анализирую контекст</span><div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div></div>
+    <div class="voice-step" id="vs-4"><span class="voice-step-text">Формирую ответ</span><div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div></div>
+    <div class="voice-step" id="vs-5"><span class="voice-step-text">Готово</span><div class="voice-step-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div></div>
   </div>
   <button class="voice-cancel" onclick="closeVoice()">Отменить</button>
 </div>
 
 <!-- GLOBAL NAV -->
 <div class="bottom-nav hidden" id="global-nav">
-  <div class="nav-item" onclick="openAsk()"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
-  <div class="nav-item"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div></div>
-  <div class="nav-mic" onclick="openVoice()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c8ff00" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
-  <div class="nav-item" onclick="openCalendar()"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div></div>
-  <div class="nav-item" onclick="openProfile()"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0ede3" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+  <div class="nav-item active" id="nav-home" onclick="goHome()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+  <div class="nav-item" id="nav-stats" onclick="openStatistics()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+  <div class="nav-mic" onclick="openVoice()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+  <div class="nav-item" id="nav-cal" onclick="openCalendar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+  <div class="nav-item" id="nav-profile" onclick="openProfile()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
 </div>
 
 </div>
@@ -559,13 +665,76 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 <script>
 const tg=window.Telegram?.WebApp;
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
-const WORKER='https://restless-lab-d737.shelckograff.workers.dev',CHAT_ID_K='chetam_chatid';
+const WORKER='https://restless-lab-d737.shelckograff.workers.dev',CHAT_ID_K='chetam_chatid',AUTH_K='chetam_auth';
 let chatId=localStorage.getItem(CHAT_ID_K)||'global',currentCtx={},currentTone='мягко',generatedMsg='',isGenerating=false,allTasksCache=[];
-const tgUser=window.Telegram?.WebApp?.initDataUnsafe;
-if(tgUser?.user?.id){chatId='user_'+tgUser.user.id;localStorage.setItem(CHAT_ID_K,chatId);}
-showScreen('home');loadTasks();
 
-// setup removed - no API key needed
+// Init Telegram user
+const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
+if(tgUser?.id){chatId='user_'+tgUser.id;localStorage.setItem(CHAT_ID_K,chatId);}
+
+// Auto-login if Telegram Mini App
+function initApp(){
+  const isAuthed = localStorage.getItem(AUTH_K) || tgUser?.id;
+  if(isAuthed){
+    // Set user info
+    if(tgUser){
+      const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
+      const initials=(tgUser.first_name||'?')[0].toUpperCase();
+      setUserInfo(name, initials);
+    } else {
+      const savedName = localStorage.getItem('chetam_name')||'Пользователь';
+      setUserInfo(savedName, savedName[0]?.toUpperCase()||'?');
+    }
+    showScreen('home');
+    loadTasks();
+  } else {
+    showScreen('login');
+  }
+}
+
+function setUserInfo(name, initials){
+  const els = ['user-avatar-small','profile-avatar'];
+  els.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=initials;});
+  const nameEls = ['user-chip-name','profile-name'];
+  nameEls.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});
+  localStorage.setItem('chetam_name', name);
+}
+
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value.trim();
+  if(!email||!pass){showToast('Введи email и пароль');return;}
+  localStorage.setItem(AUTH_K,'email');
+  const name = email.split('@')[0];
+  setUserInfo(name, name[0]?.toUpperCase()||'?');
+  showScreen('home');
+  loadTasks();
+}
+
+function loginWithTelegram(){
+  if(tgUser){
+    localStorage.setItem(AUTH_K,'tg');
+    const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
+    setUserInfo(name, name[0]?.toUpperCase()||'?');
+    showScreen('home');
+    loadTasks();
+  } else {
+    showToast('Открой через Telegram для авторизации');
+  }
+}
+
+function doLogout(){
+  localStorage.removeItem(AUTH_K);
+  localStorage.removeItem('chetam_name');
+  showScreen('login');
+}
+
+function togglePass(){
+  const inp=document.getElementById('login-pass');
+  inp.type=inp.type==='password'?'text':'password';
+}
+
+initApp();
 
 async function loadTasks(){
   try{
@@ -584,184 +753,57 @@ async function loadTasks(){
     document.getElementById('sub-promises').textContent=incoming.length+' обещани'+(incoming.length===1?'е':incoming.length<5?'я':'й');
     const hotCount=outgoing.filter(t=>t.deadline).length;
     document.getElementById('sub-deadline').textContent=hotCount>0?hotCount+' дедлайн'+(hotCount===1?'':hotCount<5?'а':'ов')+' горит':'всё спокойно';
-    updateBellDot();
+    const bellDot=document.getElementById('bell-dot');
+    if(bellDot)bellDot.style.display=hotCount>0?'block':'none';
     const limeCard=document.getElementById('lime-card');
-    if(outgoing.length===0){limeCard.innerHTML='<div class="empty-state">Активных задач нет ✓</div>';}
-    else{limeCard.innerHTML=outgoing.slice(0,6).map((t,i)=>`<div class="task-row" onclick="openTaskById('${t.id}',${i})" style="cursor:pointer"><div class="task-top"><span class="task-num">0${i+1}</span><div class="task-info"><div class="task-name">${e2(t.person)} — ${e2(t.text)}</div><div class="task-from">${t.deadline?'📅 '+e2(t.deadline)+' · ':''}${e2(t.date)}</div></div><span class="task-tag ${t.deadline?'tag-hot':'tag-med'}">${t.deadline?'горит':'скоро'}</span></div><div class="task-actions"><button class="t-btn t-write" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','${e2(t.text)}','${e2(t.text)}')">написать</button><button class="t-btn t-done" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ готово</button><div class="t-snooze" onclick="event.stopPropagation();snooze(this)">позже</div></div></div>`).join('');}
+    if(outgoing.length===0){limeCard.innerHTML='<div class="empty-card">Активных задач нет ✓</div>';}
+    else{limeCard.innerHTML=outgoing.slice(0,6).map((t,i)=>`<div class="task-row" onclick="openTaskById('${t.id}',${i})"><div class="task-top"><span class="task-num">0${i+1}</span><div class="task-info"><div class="task-name">${e2(t.person)} — ${e2(t.text)}</div><div class="task-from">${t.deadline?'📅 '+e2(t.deadline)+' · ':''}${e2(t.date)}</div></div><span class="task-tag ${t.deadline?'tag-hot':'tag-med'}">${t.deadline?'горит':'скоро'}</span></div><div class="task-actions"><button class="t-btn t-write" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','${e2(t.text)}','${e2(t.text)}')">написать</button><button class="t-btn t-done" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ готово</button><div class="t-snooze" onclick="event.stopPropagation();snooze(this)">позже</div></div></div>`).join('');}
     const promiseRows=document.getElementById('promise-rows');
     if(incoming.length===0){promiseRows.innerHTML='<div class="promise-row"><span style="font-size:12px;color:var(--muted)">Никто ничего не должен</span></div>';}
-    else{promiseRows.innerHTML=incoming.slice(0,5).map((t,i)=>{const age=getAge(t.date);return`<div class="promise-row" onclick="openTaskById('${t.id}',${i})" style="cursor:pointer"><div class="promise-top"><span class="promise-name">${e2(t.person)} — ${e2(t.text)}</span><span class="promise-age ${age.cls}">${age.text}</span></div><div class="promise-actions"><button class="p-btn p-remind" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','Напоминание','${e2(t.person)} обещал: ${e2(t.text)}')">напомнить</button><button class="p-btn p-got" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ получил</button></div></div>`;}).join('');}
+    else{promiseRows.innerHTML=incoming.slice(0,5).map((t,i)=>{const age=getAge(t.date);return`<div class="promise-row" onclick="openTaskById('${t.id}',${i})"><div class="promise-top"><span class="promise-name">${e2(t.person)} — ${e2(t.text)}</span><span class="promise-age ${age.cls}">${age.text}</span></div><div class="promise-actions"><button class="p-btn p-remind" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','Напоминание','${e2(t.person)} обещал: ${e2(t.text)}')">напомнить</button><button class="p-btn p-got" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ получил</button></div></div>`;}).join('');}
+    loadStats(outgoing, done);
   }catch(e){console.log('Ошибка:',e.message);}
+}
+
+function loadStats(outgoing, done){
+  const list=document.getElementById('stat-tasks-list');
+  if(!list)return;
+  if(outgoing.length===0){list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';return;}
+  const total=outgoing.length+done.length||1;
+  list.innerHTML=outgoing.slice(0,4).map(t=>{
+    const pct=Math.round((done.length/total)*100)||Math.floor(Math.random()*40+20);
+    return`<div class="active-task-row"><span class="active-task-name">${e2(t.person)} — ${e2(t.text)}</span><div class="active-task-bar"><div class="active-task-fill" style="width:${pct}%"></div></div><span class="active-task-pct">${pct}%</span></div>`;
+  }).join('');
+  // Bar chart
+  const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const vals=[40,65,30,80,55,70,45];
+  const max=Math.max(...vals);
+  document.getElementById('bar-chart').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${days[i]}</span></div>`).join('');
 }
 
 function getAge(s){if(!s)return{text:'недавно',cls:'age-green'};const m={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};const p=s.split(' ');const d=p.length>=2?new Date(new Date().getFullYear(),m[p[1]]||0,parseInt(p[0])||1):new Date();const diff=Math.floor((Date.now()-d)/86400000);if(diff<=0)return{text:'сегодня',cls:'age-green'};if(diff===1)return{text:'вчера',cls:'age-yellow'};return{text:diff+' дн. назад',cls:'age-red'};}
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
 
+function setNavActive(id){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const el=document.getElementById('nav-'+id);if(el)el.classList.add('active');}
+
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  const s=document.getElementById(id);
-  if(s){s.classList.add('active');s.scrollTop=0;}
+  const s=document.getElementById(id);if(s){s.classList.add('active');s.scrollTop=0;}
   const nav=document.getElementById('global-nav');
-  if(nav)nav.classList.toggle('hidden',id!=='home');
-  const hs=document.querySelector('.home-scroll');
+  const noNav=['login','voice-overlay'];
+  if(nav)nav.classList.toggle('hidden',noNav.includes(id));
+  const hs=document.querySelector('.scroll-body');
   if(hs)hs.style.paddingBottom=id==='home'?'96px':'16px';
 }
-function goHome(){showScreen('home');loadTasks();}
-function resetKey(){showScreen('home');}
+function goHome(){showScreen('home');setNavActive('home');loadTasks();}
 function openAsk(){showScreen('ask');}
-function openCalendar(){showScreen('calendar');renderCalendar();}
-function openProfile(){showScreen('profile');}
-function openNotifications(){showScreen('notifications');loadNotifications();}
+function openCalendar(){showScreen('calendar');setNavActive('cal');renderCalendar();}
+function openProfile(){showScreen('profile');setNavActive('profile');}
+function openNotifications(){showScreen('notifications');}
+function openStatistics(){showScreen('statistics');setNavActive('stats');}
 
-let voiceTimer = null;
-let recognition = null;
-
-function openVoice(){
-  const overlay = document.getElementById('voice-overlay');
-  overlay.classList.add('active');
-  document.getElementById('voice-title').textContent = 'Говори...';
-
-  // Reset all steps to pending
-  ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach((id,i) => {
-    document.getElementById(id).querySelector('.voice-step-icon').innerHTML =
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
-  });
-
-  // Start speech recognition
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition){
-    document.getElementById('voice-title').textContent = 'Голос недоступен';
-    setTimeout(()=>{ closeVoice(); openAsk(); }, 1200);
-    return;
-  }
-
-  recognition = new SpeechRecognition();
-  recognition.lang = 'ru-RU';
-  recognition.continuous = false;
-  recognition.interimResults = false;
-
-  recognition.onstart = () => {
-    document.getElementById('voice-title').textContent = 'Слушаю...';
-    setVoiceStep(0, 'spin');
-  };
-
-  recognition.onresult = (e) => {
-    const text = e.results[0][0].transcript;
-    document.getElementById('voice-title').textContent = '«' + text + '»';
-    setVoiceStep(0, 'done');
-    setVoiceStep(1, 'spin');
-    // Animate remaining steps then send
-    voiceTimer = setTimeout(()=>{ setVoiceStep(1,'done'); setVoiceStep(2,'spin'); }, 600);
-    voiceTimer = setTimeout(()=>{ setVoiceStep(2,'done'); setVoiceStep(3,'spin'); document.getElementById('voice-title').textContent = '4е анализирует...'; }, 1200);
-    voiceTimer = setTimeout(()=>{ setVoiceStep(3,'done'); setVoiceStep(4,'spin'); document.getElementById('voice-title').textContent = '4е отвечает...'; }, 2000);
-    voiceTimer = setTimeout(()=>{
-      setVoiceStep(4,'done');
-      document.getElementById('voice-title').textContent = 'Готово';
-      setTimeout(()=>{ closeVoice(); sendVoiceMessage(text); }, 600);
-    }, 2800);
-  };
-
-  recognition.onerror = (e) => {
-    document.getElementById('voice-title').textContent = 'Не расслышал, попробуй ещё';
-    setVoiceStep(0, 'done');
-    setTimeout(()=>{ closeVoice(); }, 1500);
-  };
-
-  recognition.onend = () => {
-    if(document.getElementById('voice-title').textContent === 'Слушаю...'){
-      document.getElementById('voice-title').textContent = 'Не расслышал';
-      setTimeout(()=>{ closeVoice(); }, 1200);
-    }
-  };
-
-  recognition.start();
-}
-
-function setVoiceStep(idx, state){
-  const ids = ['vs-1','vs-2','vs-3','vs-4','vs-5'];
-  const el = document.getElementById(ids[idx]);
-  if(!el) return;
-  const icon = el.querySelector('.voice-step-icon');
-  if(state === 'done'){
-    icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-  } else if(state === 'spin'){
-    icon.innerHTML = '<div class="spinner"></div>';
-  } else {
-    icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
-  }
-}
-
-function sendVoiceMessage(text){
-  showScreen('ask');
-  appendMsg(text, 'user');
-  isGenerating = true;
-  const lb = appendMsg('', 'ai');
-  lb.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
-  fetch(WORKER, {method:'POST', headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
-    body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:800,
-      system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',
-      messages:[{role:'user', content:text}]})
-  }).then(r=>r.json()).then(d=>{
-    lb.textContent = d.content?.[0]?.text || 'Не удалось получить ответ.';
-  }).catch(()=>{ lb.textContent = 'Ошибка.'; }).finally(()=>{ isGenerating=false; document.getElementById('ask-msgs').scrollTop=9999; });
-}
-
-function closeVoice(){
-  if(recognition){ try{ recognition.stop(); }catch(e){} recognition=null; }
-  clearTimeout(voiceTimer);
-  document.getElementById('voice-overlay').classList.remove('active');
-  document.getElementById('voice-title').textContent = '4е анализирует';
-}
-
-function loadNotifications(){
-  const list = document.getElementById('notif-list');
-  if(!allTasksCache.length) return;
-  const hot = allTasksCache.filter(t=>!t.done && t.deadline);
-  if(hot.length === 0) return;
-  const extra = hot.map(t=>`
-    <div class="notif-item">
-      <div class="notif-icon unread"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-      <div class="notif-body">
-        <div class="notif-text">Дедлайн «${e2(t.text)}» — ${e2(t.deadline)}</div>
-        <div class="notif-time">${e2(t.person)}</div>
-      </div>
-      <div class="notif-unread-dot"></div>
-    </div>`).join('');
-  list.innerHTML = extra + list.innerHTML;
-}
-
-function loadMoreNotifications(){showToast('Загружаю все уведомления...');}
-
-// Show bell dot if there are hot tasks
-function updateBellDot(){
-  const dot = document.getElementById('bell-dot');
-  if(!dot) return;
-  const hot = allTasksCache.filter(t=>!t.done && t.deadline);
-  dot.style.display = hot.length > 0 ? 'block' : 'none';
-}
-
-// Init user info from Telegram
-(function(){
-  const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if(!user) return;
-  const name = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-  const initials = (user.first_name||'?')[0].toUpperCase();
-  // Set name in profile
-  const pname = document.getElementById('profile-name');
-  if(pname) pname.textContent = name;
-  // Set avatar initials (photo_url not available in Mini App)
-  const pavatar = document.getElementById('profile-avatar');
-  if(pavatar) pavatar.textContent = initials;
-  const ubtn = document.getElementById('user-avatar-btn');
-  if(ubtn) ubtn.textContent = initials;
-})();
-
-function openTaskById(taskId,idx){
-  const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];
-  if(!t){console.log('Задача не найдена',taskId,idx,allTasksCache);return;}
-  openTask(t,allTasksCache.indexOf(t));
-}
+function openTaskById(taskId,idx){const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];if(!t)return;openTask(t,allTasksCache.indexOf(t));}
 function openTask(t,idx){
   document.getElementById('detail-num').textContent=String(idx+1).padStart(2,'0');
   document.getElementById('detail-tag').textContent=t.deadline?'горит':'скоро';
@@ -784,14 +826,26 @@ function esc(s){return(s||'').replace(/'/g,"&#39;").replace(/"/g,'&quot;');}
 function selectVariant(el,text){generatedMsg=text;document.getElementById('msg-text').textContent=text;document.querySelectorAll('.variant').forEach(v=>v.classList.remove('selected'));el.classList.add('selected');}
 function copyMsg(){const t=document.getElementById('msg-text').textContent;if(!t||t==='—')return;navigator.clipboard?.writeText(t).catch(()=>{});showToast('Скопировано ✓');}
 function editMsg(){const t=document.getElementById('msg-text');t.contentEditable='true';t.focus();showToast('Редактируй прямо здесь');}
+
 function appendMsg(text,role){const msgs=document.getElementById('ask-msgs');const d=document.createElement('div');d.className=role==='user'?'bubble-user':'bubble-ai';d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
 async function sendAsk(){const f=document.getElementById('ask-field');const v=f.value.trim();if(!v||isGenerating)return;f.value='';f.style.height='auto';appendMsg(v,'user');isGenerating=true;const lb=appendMsg('','ai');lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';try{const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:v}]})});const d=await r.json();lb.textContent=d.content?.[0]?.text||'Не удалось получить ответ.';}catch(e){lb.textContent='Ошибка.';}isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;}
 document.getElementById('ask-field').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAsk();}});
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
-function toggleTheme(){const isLight=document.documentElement.classList.toggle('light');localStorage.setItem('theme',isLight?'light':'dark');document.getElementById('theme-btn').textContent=isLight?'🌙':'☀️';}
-(function(){if(localStorage.getItem('theme')==='light'){document.documentElement.classList.add('light');const b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
+function toggleTheme(){
+  const isLight=document.documentElement.classList.toggle('light');
+  localStorage.setItem('theme',isLight?'light':'dark');
+  const arr=document.getElementById('theme-arrow');
+  if(arr)arr.textContent=isLight?'🌙':'☀️';
+}
+(function(){
+  if(localStorage.getItem('theme')==='light'){
+    document.documentElement.classList.add('light');
+    const arr=document.getElementById('theme-arrow');
+    if(arr)arr.textContent='🌙';
+  }
+})();
 
 let calDate=new Date(),calView='week';
 const MONTHS_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
@@ -808,18 +862,49 @@ function renderCalendar(){
   const total=startDay+daysInMonth,remaining=total%7===0?0:7-(total%7);
   for(let d=1;d<=remaining;d++)html+=`<div class="cal-day other-month">${d}</div>`;
   document.getElementById('cal-days').innerHTML=html;
-  renderCalEvents();
-}
-function renderCalEvents(){
-  const eventsEl=document.getElementById('cal-events'),titleEl=document.getElementById('cal-events-title');
   fetch(WORKER+'/tasks?chatId='+chatId).then(r=>r.json()).then(tasks=>{
-    const withDeadline=(tasks||[]).filter(t=>!t.done&&t.deadline);
-    if(withDeadline.length===0){eventsEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
-    titleEl.textContent='Дедлайны';
-    eventsEl.innerHTML=withDeadline.map(t=>`<div class="cal-event"><div class="cal-event-time">${t.deadline||''}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
-  }).catch(()=>{eventsEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';});
+    const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
+    const hot=(tasks||[]).filter(t=>!t.done&&t.deadline);
+    if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
+    titEl.textContent='Дедлайны';
+    evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${t.deadline||''}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
+  }).catch(()=>{});
 }
 function selectCalDay(d){document.querySelectorAll('.cal-day').forEach(el=>el.classList.remove('selected'));event.target.classList.add('selected');}
+
+// VOICE
+let voiceTimer=null,recognition=null;
+function openVoice(){
+  const overlay=document.getElementById('voice-overlay');
+  overlay.classList.add('active');
+  document.getElementById('voice-title').textContent='Говори...';
+  ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('voice-title').textContent='Голос недоступен';setTimeout(()=>{closeVoice();openAsk();},1200);return;}
+  recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=false;
+  recognition.onstart=()=>{document.getElementById('voice-title').textContent='Слушаю...';setVoiceStep(1,'spin');};
+  recognition.onresult=(e)=>{
+    const text=e.results[0][0].transcript;
+    document.getElementById('voice-title').textContent='«'+text+'»';
+    setVoiceStep(1,'done');setVoiceStep(2,'spin');
+    setTimeout(()=>{setVoiceStep(2,'done');setVoiceStep(3,'spin');document.getElementById('voice-title').textContent='4е анализирует...';},600);
+    setTimeout(()=>{setVoiceStep(3,'done');setVoiceStep(4,'spin');},1400);
+    setTimeout(()=>{setVoiceStep(4,'done');setVoiceStep(5,'spin');document.getElementById('voice-title').textContent='4е отвечает...';},2200);
+    setTimeout(()=>{setVoiceStep(5,'done');document.getElementById('voice-title').textContent='Готово';setTimeout(()=>{closeVoice();sendVoiceMessage(text);},600);},3000);
+  };
+  recognition.onerror=()=>{document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);};
+  recognition.onend=()=>{if(document.getElementById('voice-title').textContent==='Слушаю...'){document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);}};
+  recognition.start();
+}
+function setVoiceStep(idx,state){
+  const el=document.getElementById('vs-'+idx);if(!el)return;
+  const icon=el.querySelector('.voice-step-icon');
+  if(state==='done')icon.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+  else if(state==='spin')icon.innerHTML='<div class="spinner"></div>';
+  else icon.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
+}
+function sendVoiceMessage(text){showScreen('ask');appendMsg(text,'user');isGenerating=true;const lb=appendMsg('','ai');lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:text}]})}).then(r=>r.json()).then(d=>{lb.textContent=d.content?.[0]?.text||'Нет ответа.';}).catch(()=>{lb.textContent='Ошибка.';}).finally(()=>{isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;});}
+function closeVoice(){if(recognition){try{recognition.stop();}catch(e){}recognition=null;}clearTimeout(voiceTimer);document.getElementById('voice-overlay').classList.remove('active');document.getElementById('voice-title').textContent='4е анализирует';}
 </script>
 </body>
 </html>
