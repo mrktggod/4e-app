@@ -1748,16 +1748,19 @@ function openTask(t,idx){
 function openWrite(name,avatar,title,context){currentCtx={name,avatar,title,context};currentTone='мягко';document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tone-btn')[0]?.classList.add('active');document.getElementById('wt-title').textContent='написать — '+name;document.getElementById('wt-avatar').textContent=avatar;document.getElementById('ctx-text').textContent=context;document.getElementById('ctx-person').textContent=name+' · из переписки';document.getElementById('ctx-ai-note').textContent='анализирую...';document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';document.getElementById('variants-list').innerHTML='<div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div><div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div>';showScreen('write');generateMessage();}
 function setTone(tone,el){if(isGenerating)return;currentTone=tone;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');regenMsg();}
 function regenMsg(){document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';generateMessage();}
-function parseAIText(d){
-  if(d.content&&d.content[0]?.text) return d.content[0].text;
-  if(d.completion) return d.completion;
-  if(d.error) return null;
-  if(typeof d==='string') return d;
-  return null;
-}
 async function aiCall(body){
   const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify(body)});
-  return r.json();
+  const text=await r.text();
+  console.log('[4е Worker response]',r.status,text.slice(0,500));
+  try{return JSON.parse(text);}catch(e){return {_raw:text};}
+}
+function parseAIText(d){
+  if(d._raw) return '⚠️ Worker вернул: '+d._raw.slice(0,200);
+  if(d.content&&d.content[0]?.text) return d.content[0].text;
+  if(d.completion) return d.completion;
+  if(d.error) return '⚠️ API ошибка: '+(d.error.message||JSON.stringify(d.error));
+  if(typeof d==='string') return d;
+  return '⚠️ Неизвестный формат: '+JSON.stringify(d).slice(0,200);
 }
 async function generateMessage(){
   if(isGenerating)return;isGenerating=true;
