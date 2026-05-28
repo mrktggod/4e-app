@@ -1748,7 +1748,33 @@ function openTask(t,idx){
 function openWrite(name,avatar,title,context){currentCtx={name,avatar,title,context};currentTone='мягко';document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tone-btn')[0]?.classList.add('active');document.getElementById('wt-title').textContent='написать — '+name;document.getElementById('wt-avatar').textContent=avatar;document.getElementById('ctx-text').textContent=context;document.getElementById('ctx-person').textContent=name+' · из переписки';document.getElementById('ctx-ai-note').textContent='анализирую...';document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';document.getElementById('variants-list').innerHTML='<div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div><div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div>';showScreen('write');generateMessage();}
 function setTone(tone,el){if(isGenerating)return;currentTone=tone;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');regenMsg();}
 function regenMsg(){document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';generateMessage();}
-async function generateMessage(){if(isGenerating)return;isGenerating=true;const{name,context}=currentCtx;const prompt=`Составь сообщение в Telegram для ${name}.\nСитуация: ${context}\nТон: ${currentTone}\nJSON без markdown:\n{"ai_note":"что произошло","main":"основной вариант","short":"5-8 слов","formal":"официально"}`;try{const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});const d=await r.json();const raw=d.content?.[0]?.text||'';const match=raw.match(/\{[\s\S]*\}/);const parsed=match?JSON.parse(match[0]):{};generatedMsg=parsed.main||'';document.getElementById('ctx-ai-note').textContent=parsed.ai_note||'сообщение готово';document.getElementById('msg-text').textContent=parsed.main||'—';document.getElementById('variants-list').innerHTML=`<div class="variant" onclick="selectVariant(this,'${esc(parsed.short||'')}')"><div class="variant-txt">${esc(parsed.short||'')}</div><div class="variant-tag">коротко</div></div><div class="variant" onclick="selectVariant(this,'${esc(parsed.formal||'')}')"><div class="variant-txt">${esc(parsed.formal||'')}</div><div class="variant-tag">официально</div></div>`;}catch(e){document.getElementById('msg-text').textContent='Ошибка. Попробуй ещё раз.';}isGenerating=false;}
+function parseAIText(d){
+  if(d.content&&d.content[0]?.text) return d.content[0].text;
+  if(d.completion) return d.completion;
+  if(d.error) return null;
+  if(typeof d==='string') return d;
+  return null;
+}
+async function aiCall(body){
+  const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify(body)});
+  return r.json();
+}
+async function generateMessage(){
+  if(isGenerating)return;isGenerating=true;
+  const{name,context}=currentCtx;
+  const prompt=`Составь сообщение в Telegram для ${name}.\nСитуация: ${context}\nТон: ${currentTone}\nJSON без markdown:\n{"ai_note":"что произошло","main":"основной вариант","short":"5-8 слов","formal":"официально"}`;
+  try{
+    const d=await aiCall({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]});
+    const raw=parseAIText(d)||'';
+    const match=raw.match(/\{[\s\S]*\}/);
+    const parsed=match?JSON.parse(match[0]):{};
+    generatedMsg=parsed.main||'';
+    document.getElementById('ctx-ai-note').textContent=parsed.ai_note||'сообщение готово';
+    document.getElementById('msg-text').textContent=parsed.main||'—';
+    document.getElementById('variants-list').innerHTML=`<div class="variant" onclick="selectVariant(this,'${esc(parsed.short||'')}')"><div class="variant-txt">${esc(parsed.short||'')}</div><div class="variant-tag">коротко</div></div><div class="variant" onclick="selectVariant(this,'${esc(parsed.formal||'')}')"><div class="variant-txt">${esc(parsed.formal||'')}</div><div class="variant-tag">официально</div></div>`;
+  }catch(e){document.getElementById('msg-text').textContent='Ошибка. Попробуй ещё раз.';console.error(e);}
+  isGenerating=false;
+}
 function esc(s){return(s||'').replace(/'/g,"&#39;").replace(/"/g,'&quot;');}
 function selectVariant(el,text){generatedMsg=text;document.getElementById('msg-text').textContent=text;document.querySelectorAll('.variant').forEach(v=>v.classList.remove('selected'));el.classList.add('selected');}
 function copyMsg(){const t=document.getElementById('msg-text').textContent;if(!t||t==='—')return;navigator.clipboard?.writeText(t).catch(()=>{});showToast('Скопировано ✓');}
@@ -1759,14 +1785,49 @@ function askQuick(text){
   document.getElementById('ask-field').value=text;
   sendAsk();
 }
-async function sendAsk(){const f=document.getElementById('ask-field');const v=f.value.trim();if(!v||isGenerating)return;f.value='';f.style.height='auto';
+async function sendAsk(){
+  const f=document.getElementById('ask-field');
+  const v=f.value.trim();
+  if(!v||isGenerating)return;
+  f.value='';f.style.height='auto';
   // Hide welcome on first message
   const welcome=document.getElementById('ask-welcome');
   if(welcome) welcome.style.display='none';
-  appendMsg(v,'user');isGenerating=true;const lb=appendMsg('','ai');lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
+  appendMsg(v,'user');
+  isGenerating=true;
+  const lb=appendMsg('','ai');
+  lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
   // Build system prompt with task context
-  const taskSummary=allTasksCache.length>0?'Активные задачи пользователя: '+allTasksCache.slice(0,5).map(t=>t.person+' — '+t.text+(t.deadline?' (дедлайн: '+t.deadline+')'  :'')).join('; '):'Активных задач нет.';
-  try{const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно. '+taskSummary,messages:[{role:'user',content:v}]})});const d=await r.json();lb.textContent=d.content?.[0]?.text||'Не удалось получить ответ.';}catch(e){lb.textContent='Ошибка.';}isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;}
+  const taskSummary=allTasksCache.length>0
+    ?'Активные задачи пользователя: '+allTasksCache.slice(0,5).map(t=>t.person+' — '+t.text+(t.deadline?' (дедлайн: '+t.deadline+')':'')).join('; ')
+    :'Активных задач нет.';
+  try{
+    const r=await fetch(WORKER,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно. '+taskSummary,
+        messages:[{role:'user',content:v}]
+      })
+    });
+    const d=await r.json();
+    // Handle different response shapes from the Worker proxy
+    let text='';
+    if(d.content&&d.content[0]?.text) text=d.content[0].text;
+    else if(d.completion) text=d.completion;
+    else if(d.error) text='Ошибка: '+( d.error.message||JSON.stringify(d.error));
+    else if(typeof d==='string') text=d;
+    else text=JSON.stringify(d);
+    lb.textContent=text||'Пустой ответ от сервера.';
+  }catch(e){
+    lb.textContent='Нет соединения. Проверь интернет и попробуй снова.';
+    console.error('sendAsk error:',e);
+  }
+  isGenerating=false;
+  document.getElementById('ask-msgs').scrollTop=9999;
+}
 document.getElementById('ask-field').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAsk();}});
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
@@ -1841,7 +1902,19 @@ function setVoiceStep(idx,state){
   else if(state==='spin')icon.innerHTML='<div class="spinner"></div>';
   else icon.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
 }
-function sendVoiceMessage(text){showScreen('ask');appendMsg(text,'user');isGenerating=true;const lb=appendMsg('','ai');lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:text}]})}).then(r=>r.json()).then(d=>{lb.textContent=d.content?.[0]?.text||'Нет ответа.';}).catch(()=>{lb.textContent='Ошибка.';}).finally(()=>{isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;});}
+function sendVoiceMessage(text){
+  showScreen('ask');
+  const welcome=document.getElementById('ask-welcome');
+  if(welcome) welcome.style.display='none';
+  appendMsg(text,'user');
+  isGenerating=true;
+  const lb=appendMsg('','ai');
+  lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
+  aiCall({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:text}]})
+    .then(d=>{lb.textContent=parseAIText(d)||'Нет ответа.';})
+    .catch(()=>{lb.textContent='Нет соединения.';})
+    .finally(()=>{isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;});
+}
 function closeVoice(){if(recognition){try{recognition.stop();}catch(e){}recognition=null;}clearTimeout(voiceTimer);document.getElementById('voice-overlay').classList.remove('active');document.getElementById('voice-title').textContent='4е анализирует';}
 
 // ===== SUBSCREEN NAVIGATION =====
