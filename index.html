@@ -1755,19 +1755,19 @@ async function aiCall(body){
   try{return JSON.parse(text);}catch(e){return {_raw:text};}
 }
 function parseAIText(d){
-  if(d._raw) return '⚠️ Worker вернул: '+d._raw.slice(0,200);
+  if(d._raw) return d._raw.slice(0,300);
   if(d.content&&d.content[0]?.text) return d.content[0].text;
   if(d.completion) return d.completion;
-  if(d.error) return '⚠️ API ошибка: '+(d.error.message||JSON.stringify(d.error));
+  if(d.error) return 'Ошибка: '+(d.error.message||JSON.stringify(d.error));
   if(typeof d==='string') return d;
-  return '⚠️ Неизвестный формат: '+JSON.stringify(d).slice(0,200);
+  return JSON.stringify(d).slice(0,200);
 }
 async function generateMessage(){
   if(isGenerating)return;isGenerating=true;
   const{name,context}=currentCtx;
   const prompt=`Составь сообщение в Telegram для ${name}.\nСитуация: ${context}\nТон: ${currentTone}\nJSON без markdown:\n{"ai_note":"что произошло","main":"основной вариант","short":"5-8 слов","formal":"официально"}`;
   try{
-    const d=await aiCall({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]});
+    const d=await aiCall({model:'claude-sonnet-4-5',max_tokens:600,messages:[{role:'user',content:prompt}]});
     const raw=parseAIText(d)||'';
     const match=raw.match(/\{[\s\S]*\}/);
     const parsed=match?JSON.parse(match[0]):{};
@@ -1809,7 +1809,7 @@ async function sendAsk(){
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-5',
         max_tokens:800,
         system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно. '+taskSummary,
         messages:[{role:'user',content:v}]
@@ -1913,7 +1913,7 @@ function sendVoiceMessage(text){
   isGenerating=true;
   const lb=appendMsg('','ai');
   lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
-  aiCall({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:text}]})
+  aiCall({model:'claude-sonnet-4-5',max_tokens:800,system:'Ты — 4е, AI секретарь. Отвечай коротко, по-русски, дружелюбно.',messages:[{role:'user',content:text}]})
     .then(d=>{lb.textContent=parseAIText(d)||'Нет ответа.';})
     .catch(()=>{lb.textContent='Нет соединения.';})
     .finally(()=>{isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;});
