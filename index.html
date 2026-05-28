@@ -49,6 +49,22 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .login-tg-btn{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:500;padding:14px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
 .login-register{font-size:12px;color:var(--muted);margin-top:16px;text-align:center}
 .login-register span{color:var(--green);cursor:pointer}
+/* Auth tabs */
+.login-tabs{display:flex;background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:3px;margin-bottom:20px;width:100%}
+.login-tab{flex:1;padding:9px;border-radius:13px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:all .15s}
+.login-tab.active{background:var(--green);color:var(--bg)}
+/* Trial badge */
+.trial-badge{background:var(--green3);border:1px solid rgba(154,194,60,0.25);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--green);font-weight:600;text-align:center}
+/* Trial banner in profile */
+.trial-banner{background:var(--green3);border:1px solid rgba(154,194,60,0.2);border-radius:16px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.trial-banner-text{flex:1}
+.trial-banner-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:2px}
+.trial-banner-sub{font-size:11px;color:var(--text2)}
+.trial-expired-banner{background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.trial-expired-title{font-size:13px;font-weight:700;color:#ff6060;margin-bottom:4px}
+.trial-expired-sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+/* Loading btn state */
+.login-btn:disabled{opacity:0.6;cursor:not-allowed}
 
 /* ===== HEADER ===== */
 .app-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
@@ -664,24 +680,44 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         <div class="logo-ball"></div><div class="logo-ball"></div>
       </div>
     </div>
-    <div class="login-title">Добро пожаловать!</div>
-    <div class="login-sub" style="margin-bottom:32px">Войдите, чтобы продолжить</div>
-    <div class="login-form">
+
+    <!-- tabs -->
+    <div class="login-tabs">
+      <div class="login-tab active" id="tab-login" onclick="switchAuthTab('login')">Войти</div>
+      <div class="login-tab" id="tab-register" onclick="switchAuthTab('register')">Регистрация</div>
+    </div>
+
+    <!-- LOGIN form -->
+    <div id="form-login" class="login-form">
       <input class="login-input" id="login-email" type="email" placeholder="Email" autocomplete="off"/>
       <div style="position:relative">
         <input class="login-input" id="login-pass" type="password" placeholder="Пароль" autocomplete="off"/>
-        <div onclick="togglePass()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted)">
+        <div onclick="togglePass('login-pass')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
       </div>
-      <button class="login-btn" onclick="doLogin()">Войти</button>
+      <button class="login-btn" id="login-submit-btn" onclick="doLogin()">Войти</button>
     </div>
+
+    <!-- REGISTER form -->
+    <div id="form-register" class="login-form" style="display:none">
+      <input class="login-input" id="reg-name" type="text" placeholder="Имя" autocomplete="off"/>
+      <input class="login-input" id="reg-email" type="email" placeholder="Email" autocomplete="off"/>
+      <div style="position:relative">
+        <input class="login-input" id="reg-pass" type="password" placeholder="Пароль (мин. 6 символов)" autocomplete="off"/>
+        <div onclick="togglePass('reg-pass')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <div class="trial-badge">🎁 30 дней Premium бесплатно</div>
+      <button class="login-btn" id="reg-submit-btn" onclick="doRegister()">Создать аккаунт</button>
+    </div>
+
     <div class="login-divider"><span>или</span></div>
     <button class="login-tg-btn" onclick="loginWithTelegram()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
       Войти через Telegram
     </button>
-    <div class="login-register">Нет аккаунта? <span onclick="showToast('Регистрация скоро!')">Зарегистрироваться</span></div>
   </div>
 </div>
 
@@ -955,6 +991,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="profile-avatar" id="profile-avatar">?</div>
       <div><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div></div>
     </div>
+    <!-- trial banner injected here by JS -->
+    <div id="trial-banner-wrap"></div>
     <div class="profile-menu">
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div><span class="profile-item-text">Подписка</span></div><span class="profile-item-arrow">›</span></div>
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="profile-item-text">Уведомления</span></div><span class="profile-item-arrow">›</span></div>
@@ -1515,48 +1553,57 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 <script>
 const tg=window.Telegram?.WebApp;
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
-const WORKER='https://restless-lab-d737.shelckograff.workers.dev',CHAT_ID_K='chetam_chatid',AUTH_K='chetam_auth';
-let chatId=localStorage.getItem(CHAT_ID_K)||'global',currentCtx={},currentTone='мягко',generatedMsg='',isGenerating=false,allTasksCache=[];
-
-// Init Telegram user
-const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
-if(tgUser?.id){chatId='user_'+tgUser.id;localStorage.setItem(CHAT_ID_K,chatId);}
-
-// Auto-login if Telegram Mini App
+const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
+const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
+let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
+let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
 
-const SYS_BASE=`Ты — 4, персональный AI-секретарь. Отвечай коротко, по-русски, дружелюбно.
+const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-ЧТО ТЫ ДЕЛАЕШЬ:
-- Помогаешь управлять задачами и обещаниями
-- Напоминаешь о дедлайнах и договорённостях
-- Составляешь сообщения и ответы в Telegram
-- Советуешь как лучше поступить в рабочих ситуациях
-- Отвечаешь на вопросы по задачам пользователя
+// ── helpers ──────────────────────────────────────────────────
+function getToken(){ return localStorage.getItem(TOKEN_K); }
 
-ЧТО ТЫ НЕ ДЕЛАЕШЬ (перенаправляй в поддержку):
-- Не добавляешь новые функции в приложение
-- Не меняешь интерфейс, дизайн или настройки приложения
-- Не интегрируешь сторонние сервисы и API
-- Не даёшь технические инструкции по изменению кода
-- Не обсуждаешь разработку приложения
+function authHeaders(){
+  const h={'Content-Type':'application/json','anthropic-version':'2023-06-01'};
+  const t=getToken(); if(t) h['x-token']=t;
+  return h;
+}
 
-Если пользователь просит что-то из списка "не делаешь" — вежливо объясни что это выходит за рамки твоих задач, и предложи написать в поддержку прямо из приложения: Профиль → Поддержка → Написать в поддержку. Не больше 2 предложений.`;
-function initApp(){
-  const isAuthed = localStorage.getItem(AUTH_K) || tgUser?.id;
-  if(isAuthed){
-    if(tgUser){
-      const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
-      const initials=(tgUser.first_name||'?')[0].toUpperCase();
-      setUserInfo(name, initials);
-    } else {
-      const savedName = localStorage.getItem('chetam_name')||'Пользователь';
-      setUserInfo(savedName, savedName[0]?.toUpperCase()||'?');
-    }
+// ── init ─────────────────────────────────────────────────────
+async function initApp(){
+  const tg=window.Telegram?.WebApp;
+  if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
+
+  const token=getToken();
+  if(token){
+    try{
+      const r=await fetch(WORKER+'/auth/me',{headers:authHeaders()});
+      const d=await r.json();
+      if(d.ok){
+        currentUser=d.user;
+        chatId='user_'+currentUser.id;
+        applyUserInfo();
+        showScreen('home');
+        loadTasks();
+        return;
+      }
+    }catch(e){}
+    // token invalid — clear and fall through
+    localStorage.removeItem(TOKEN_K);
+  }
+
+  if(tgUser?.id){
+    // Telegram Mini App — auto-login stub (can be extended)
+    currentUser={name:tgUser.first_name,email:'',trialActive:true,trialLeft:30};
+    chatId='user_'+tgUser.id;
+    applyUserInfo();
     showScreen('home');
     loadTasks();
-  } else if(!localStorage.getItem(ONBOARD_K)){
-    // First-time user — show onboarding
+    return;
+  }
+
+  if(!localStorage.getItem(ONBOARD_K)){
     showScreen('onboarding');
     obInit();
   } else {
@@ -1564,30 +1611,106 @@ function initApp(){
   }
 }
 
-function setUserInfo(name, initials){
-  const els = ['user-avatar-small','profile-avatar'];
-  els.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=initials;});
-  const nameEls = ['user-chip-name','profile-name'];
-  nameEls.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});
-  localStorage.setItem('chetam_name', name);
+function applyUserInfo(){
+  if(!currentUser) return;
+  const name=currentUser.name||currentUser.email||'Пользователь';
+  const initials=(name[0]||'?').toUpperCase();
+  ['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=initials;});
+  ['user-chip-name','profile-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});
+  renderTrialBanner();
 }
 
-function doLogin(){
+function renderTrialBanner(){
+  const wrap=document.getElementById('trial-banner-wrap');
+  if(!wrap||!currentUser) return;
+  if(currentUser.trialActive){
+    const days=currentUser.trialLeft||0;
+    wrap.innerHTML=`<div class="trial-banner">
+      <div style="font-size:22px">🎁</div>
+      <div class="trial-banner-text">
+        <div class="trial-banner-title">Premium активен · осталось ${days} ${pluralDays(days)}</div>
+        <div class="trial-banner-sub">Все функции открыты бесплатно</div>
+      </div>
+    </div>`;
+  } else {
+    wrap.innerHTML=`<div class="trial-expired-banner">
+      <div class="trial-expired-title">⏰ Пробный период истёк</div>
+      <div class="trial-expired-sub">Добавление новых задач недоступно. Оформи подписку, чтобы продолжить.</div>
+      <button class="login-btn" style="padding:10px;font-size:13px" onclick="showToast('Подписка скоро!')">Оформить подписку</button>
+    </div>`;
+  }
+}
+
+function pluralDays(n){
+  if(n%10===1&&n%100!==11) return 'день';
+  if([2,3,4].includes(n%10)&&![12,13,14].includes(n%100)) return 'дня';
+  return 'дней';
+}
+
+// ── auth tab switch ───────────────────────────────────────────
+function switchAuthTab(tab){
+  document.getElementById('form-login').style.display=tab==='login'?'flex':'none';
+  document.getElementById('form-register').style.display=tab==='register'?'flex':'none';
+  document.getElementById('tab-login').classList.toggle('active',tab==='login');
+  document.getElementById('tab-register').classList.toggle('active',tab==='register');
+}
+
+// ── register ─────────────────────────────────────────────────
+async function doRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value.trim();
+  if(!name||!email||!pass){showToast('Заполни все поля');return;}
+  const btn=document.getElementById('reg-submit-btn');
+  btn.disabled=true; btn.textContent='Создаём аккаунт...';
+  try{
+    const r=await fetch(WORKER+'/auth/register',{method:'POST',headers:authHeaders(),body:JSON.stringify({name,email,password:pass})});
+    const d=await r.json();
+    if(d.ok){
+      localStorage.setItem(TOKEN_K,d.token);
+      currentUser=d.user;
+      chatId='user_'+currentUser.id;
+      applyUserInfo();
+      localStorage.setItem(ONBOARD_K,'1');
+      showScreen('home');
+      loadTasks();
+      showToast('Добро пожаловать! 30 дней Premium 🎁');
+    } else {
+      showToast(d.error||'Ошибка регистрации');
+    }
+  }catch(e){showToast('Нет соединения');}
+  btn.disabled=false; btn.textContent='Создать аккаунт';
+}
+
+// ── login ─────────────────────────────────────────────────────
+async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value.trim();
   if(!email||!pass){showToast('Введи email и пароль');return;}
-  localStorage.setItem(AUTH_K,'email');
-  const name = email.split('@')[0];
-  setUserInfo(name, name[0]?.toUpperCase()||'?');
-  showScreen('home');
-  loadTasks();
+  const btn=document.getElementById('login-submit-btn');
+  btn.disabled=true; btn.textContent='Входим...';
+  try{
+    const r=await fetch(WORKER+'/auth/login',{method:'POST',headers:authHeaders(),body:JSON.stringify({email,password:pass})});
+    const d=await r.json();
+    if(d.ok){
+      localStorage.setItem(TOKEN_K,d.token);
+      currentUser=d.user;
+      chatId='user_'+currentUser.id;
+      applyUserInfo();
+      showScreen('home');
+      loadTasks();
+    } else {
+      showToast(d.error||'Ошибка входа');
+    }
+  }catch(e){showToast('Нет соединения');}
+  btn.disabled=false; btn.textContent='Войти';
 }
 
 function loginWithTelegram(){
   if(tgUser){
-    localStorage.setItem(AUTH_K,'tg');
-    const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
-    setUserInfo(name, name[0]?.toUpperCase()||'?');
+    currentUser={name:tgUser.first_name,email:'',trialActive:true,trialLeft:30};
+    chatId='user_'+tgUser.id;
+    applyUserInfo();
     showScreen('home');
     loadTasks();
   } else {
@@ -1596,14 +1719,15 @@ function loginWithTelegram(){
 }
 
 function doLogout(){
-  localStorage.removeItem(AUTH_K);
-  localStorage.removeItem('chetam_name');
+  localStorage.removeItem(TOKEN_K);
+  currentUser=null;
+  chatId='global';
   showScreen('login');
 }
 
-function togglePass(){
-  const inp=document.getElementById('login-pass');
-  inp.type=inp.type==='password'?'text':'password';
+function togglePass(id){
+  const inp=document.getElementById(id||'login-pass');
+  if(inp) inp.type=inp.type==='password'?'text':'password';
 }
 
 // ===== ONBOARDING =====
@@ -1671,9 +1795,36 @@ function obDone(){
 
 initApp();
 
+const SYS_BASE=`Ты — 4, персональный AI-секретарь. Отвечай коротко, по-русски, дружелюбно.
+
+ЧТО ТЫ ДЕЛАЕШЬ:
+- Помогаешь управлять задачами и обещаниями
+- Напоминаешь о дедлайнах и договорённостях
+- Составляешь сообщения и ответы в Telegram
+- Советуешь как лучше поступить в рабочих ситуациях
+- Отвечаешь на вопросы по задачам пользователя
+
+ЧТО ТЫ НЕ ДЕЛАЕШЬ (перенаправляй в поддержку):
+- Не добавляешь новые функции в приложение
+- Не меняешь интерфейс, дизайн или настройки приложения
+- Не интегрируешь сторонние сервисы и API
+- Не даёшь технические инструкции по изменению кода
+- Не обсуждаешь разработку приложения
+
+Если пользователь просит что-то из списка "не делаешь" — вежливо объясни что это выходит за рамки твоих задач, и предложи написать в поддержку: Профиль → Поддержка → Написать в поддержку. Не больше 2 предложений.`;
+
+function checkTrial(){
+  if(currentUser && currentUser.trialActive===false){
+    showToast('Пробный период истёк. Оформи подписку.');
+    openProfile();
+    return false;
+  }
+  return true;
+}
+
 async function loadTasks(){
   try{
-    const res=await fetch(WORKER+'/tasks?chatId='+chatId);
+    const res=await fetch(WORKER+'/tasks?chatId='+chatId, {headers: getToken()?{'x-token':getToken()}:{}});
     const tasks=await res.json();
     const active=(tasks||[]).filter(t=>!t.done);
     const done=(tasks||[]).filter(t=>t.done);
@@ -1691,11 +1842,13 @@ async function loadTasks(){
     const bellDot=document.getElementById('bell-dot');
     if(bellDot)bellDot.style.display=hotCount>0?'block':'none';
     const limeCard=document.getElementById('lime-card');
+    // trial expired — show banner instead of add actions
+    const trialOk=!currentUser||currentUser.trialActive!==false;
     if(outgoing.length===0){limeCard.innerHTML='<div class="empty-card">Активных задач нет ✓</div>';}
-    else{limeCard.innerHTML=outgoing.slice(0,6).map((t,i)=>`<div class="task-row" onclick="openTaskById('${t.id}',${i})"><div class="task-top"><span class="task-num">0${i+1}</span><div class="task-info"><div class="task-name">${e2(t.person)} — ${e2(t.text)}</div><div class="task-from">${t.deadline?'📅 '+e2(t.deadline)+' · ':''}${e2(t.date)}</div></div><span class="task-tag ${t.deadline?'tag-hot':'tag-med'}">${t.deadline?'горит':'скоро'}</span></div><div class="task-actions"><button class="t-btn t-write" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','${e2(t.text)}','${e2(t.text)}')">написать</button><button class="t-btn t-done" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ готово</button><div class="t-snooze" onclick="event.stopPropagation();snooze(this)">позже</div></div></div>`).join('');}
+    else{limeCard.innerHTML=outgoing.slice(0,6).map((t,i)=>`<div class="task-row" onclick="openTaskById('${t.id}',${i})"><div class="task-top"><span class="task-num">0${i+1}</span><div class="task-info"><div class="task-name">${e2(t.person)} — ${e2(t.text)}</div><div class="task-from">${t.deadline?'📅 '+e2(t.deadline)+' · ':''}${e2(t.date)}</div></div><span class="task-tag ${t.deadline?'tag-hot':'tag-med'}">${t.deadline?'горит':'скоро'}</span></div><div class="task-actions"><button class="t-btn t-write" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','${e2(t.text)}','${e2(t.text)}')">написать</button>${trialOk?`<button class="t-btn t-done" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ готово</button>`:''}<div class="t-snooze" onclick="event.stopPropagation();snooze(this)">позже</div></div></div>`).join('');}
     const promiseRows=document.getElementById('promise-rows');
     if(incoming.length===0){promiseRows.innerHTML='<div class="promise-row"><span style="font-size:12px;color:var(--muted)">Никто ничего не должен</span></div>';}
-    else{promiseRows.innerHTML=incoming.slice(0,5).map((t,i)=>{const age=getAge(t.date);return`<div class="promise-row" onclick="openTaskById('${t.id}',${i})"><div class="promise-top"><span class="promise-name">${e2(t.person)} — ${e2(t.text)}</span><span class="promise-age ${age.cls}">${age.text}</span></div><div class="promise-actions"><button class="p-btn p-remind" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','Напоминание','${e2(t.person)} обещал: ${e2(t.text)}')">напомнить</button><button class="p-btn p-got" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ получил</button></div></div>`;}).join('');}
+    else{promiseRows.innerHTML=incoming.slice(0,5).map((t,i)=>{const age=getAge(t.date);return`<div class="promise-row" onclick="openTaskById('${t.id}',${i})"><div class="promise-top"><span class="promise-name">${e2(t.person)} — ${e2(t.text)}</span><span class="promise-age ${age.cls}">${age.text}</span></div><div class="promise-actions"><button class="p-btn p-remind" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','Напоминание','${e2(t.person)} обещал: ${e2(t.text)}')">напомнить</button>${trialOk?`<button class="p-btn p-got" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ получил</button>`:''}</div></div>`;}).join('');}
     loadStats(outgoing, done);
   }catch(e){console.log('Ошибка:',e.message);}
 }
@@ -1718,7 +1871,7 @@ function loadStats(outgoing, done){
 
 function getAge(s){if(!s)return{text:'недавно',cls:'age-green'};const m={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};const p=s.split(' ');const d=p.length>=2?new Date(new Date().getFullYear(),m[p[1]]||0,parseInt(p[0])||1):new Date();const diff=Math.floor((Date.now()-d)/86400000);if(diff<=0)return{text:'сегодня',cls:'age-green'};if(diff===1)return{text:'вчера',cls:'age-yellow'};return{text:diff+' дн. назад',cls:'age-red'};}
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
-async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
+async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
 
 function setNavActive(id){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const el=document.getElementById('nav-'+id);if(el)el.classList.add('active');}
 
