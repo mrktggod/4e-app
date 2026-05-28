@@ -317,6 +317,91 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 
+/* ===== ONBOARDING ===== */
+#onboarding{background:var(--bg);overflow:hidden}
+.ob-wrap{display:flex;flex-direction:column;height:100%;width:100%}
+.ob-slides{flex:1;display:flex;transition:transform .42s cubic-bezier(.4,0,.2,1);will-change:transform}
+.ob-slide{min-width:100vw;width:100vw;display:flex;flex-direction:column;align-items:center;padding:0 24px;overflow:hidden}
+
+/* radar container */
+.ob-radar{position:relative;width:260px;height:260px;flex-shrink:0;margin:auto 0;margin-top:32px}
+.ob-brackets{position:absolute;inset:0;pointer-events:none}
+.ob-br{position:absolute;width:22px;height:22px;border-color:rgba(154,194,60,0.35);border-style:solid;border-width:0}
+.ob-br.tl{top:8px;left:8px;border-top-width:2px;border-left-width:2px;border-top-left-radius:4px}
+.ob-br.tr{top:8px;right:8px;border-top-width:2px;border-right-width:2px;border-top-right-radius:4px}
+.ob-br.bl{bottom:8px;left:8px;border-bottom-width:2px;border-left-width:2px;border-bottom-left-radius:4px}
+.ob-br.br{bottom:8px;right:8px;border-bottom-width:2px;border-right-width:2px;border-bottom-right-radius:4px}
+.ob-ring{position:absolute;border-radius:50%;border:1px dashed rgba(154,194,60,0.16)}
+.ob-ring.r1{inset:11%}
+.ob-ring.r2{inset:24%}
+.ob-sweep{position:absolute;inset:11%;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(154,194,60,0) 0deg,rgba(154,194,60,0) 300deg,rgba(154,194,60,0.2) 355deg,rgba(154,194,60,0) 360deg);
+  animation:obSweep 3.6s linear infinite}
+@keyframes obSweep{to{transform:rotate(360deg)}}
+.ob-dots{position:absolute;inset:0}
+.ob-glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:70px;height:70px;border-radius:50%;
+  background:radial-gradient(circle,rgba(154,194,60,0.5) 0%,rgba(154,194,60,0) 70%);
+  filter:blur(3px)}
+.ob-spark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  animation:obSparkPulse 2s ease-in-out infinite}
+@keyframes obSparkPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.7}}
+
+/* logo grid inside radar */
+.ob-logo-grid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:grid;grid-template-columns:1fr 1fr;gap:5px;width:48px;height:48px}
+.ob-ball{border-radius:50%;background:radial-gradient(circle at 32% 28%,#c8e87a 0%,#7A9A2E 46%,#3a5010 100%);
+  box-shadow:0 0 10px rgba(154,194,60,0.4)}
+
+/* feature icons on slide 1 */
+.ob-feature-icons{position:absolute;inset:0}
+.ob-fi{position:absolute;width:44px;height:44px;border-radius:14px;
+  background:var(--card2);border:1px solid rgba(154,194,60,0.2);
+  display:flex;align-items:center;justify-content:center;
+  animation:obFiFloat 3s ease-in-out infinite}
+.ob-fi:nth-child(2){animation-delay:.6s}
+.ob-fi:nth-child(3){animation-delay:1.2s}
+.ob-fi:nth-child(4){animation-delay:1.8s}
+@keyframes obFiFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* chat demo slide 2 */
+.ob-chat-demo{position:absolute;inset:16%;display:flex;flex-direction:column;gap:8px;justify-content:center;overflow:hidden}
+.ob-bubble{max-width:80%;padding:9px 13px;border-radius:16px;font-size:12px;line-height:1.4;font-weight:500}
+.ob-bubble-in{align-self:flex-start;background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:16px 16px 16px 4px}
+.ob-bubble-out{align-self:flex-end;background:var(--green);color:var(--bg);border-radius:16px 16px 4px 16px}
+
+/* stats demo slide 3 */
+.ob-stats-demo{position:absolute;inset:18%;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.ob-stat-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2)}
+.ob-stat-bar span:first-child{width:68px;text-align:right;font-weight:500;color:var(--muted);flex-shrink:0}
+.ob-stat-bar span:last-child{width:32px;color:var(--green);font-weight:700;flex-shrink:0}
+.ob-bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.ob-bar-fill{height:100%;width:var(--w,50%);background:var(--green);border-radius:3px;
+  animation:obBarGrow .8s var(--delay,0s) cubic-bezier(.4,0,.2,1) both}
+@keyframes obBarGrow{from{width:0}to{width:var(--w)}}
+
+/* text block */
+.ob-text{width:100%;padding:24px 0 0;flex-shrink:0}
+.ob-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--green);
+  background:rgba(154,194,60,0.1);border:1px solid rgba(154,194,60,0.2);
+  border-radius:20px;padding:4px 12px;margin-bottom:14px}
+.ob-title{font-size:28px;font-weight:800;color:var(--text);line-height:1.1;
+  letter-spacing:-0.8px;margin-bottom:12px}
+.ob-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:300px}
+
+/* bottom nav */
+.ob-bottom{flex-shrink:0;padding:20px 24px 40px;display:flex;flex-direction:column;gap:14px;align-items:center}
+.ob-dots-nav{display:flex;gap:6px;align-items:center}
+.ob-dot-nav{width:6px;height:6px;border-radius:3px;background:var(--border);cursor:pointer;transition:width .3s,background .3s}
+.ob-dot-nav.active{width:20px;background:var(--green)}
+.ob-btn{width:100%;padding:16px;border-radius:16px;background:var(--green);border:none;
+  color:var(--bg);font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;letter-spacing:0.2px;
+  box-shadow:0 4px 20px rgba(154,194,60,0.3);transition:transform .1s,box-shadow .1s}
+.ob-btn:active{transform:scale(0.98);box-shadow:0 2px 10px rgba(154,194,60,0.2)}
+.ob-skip{font-size:13px;color:var(--muted);cursor:pointer;padding:4px 16px}
+
 /* ===== SUBSCREEN SHARED ===== */
 .sub-scroll{flex:1;overflow-y:auto;padding:0 16px 40px}
 .sub-scroll::-webkit-scrollbar{width:0}
@@ -424,8 +509,154 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 <body>
 <div id="app">
 
+<!-- ONBOARDING -->
+<div class="screen" id="onboarding">
+  <div class="ob-wrap">
+    <!-- slides -->
+    <div class="ob-slides" id="ob-slides">
+
+      <!-- slide 0 -->
+      <div class="ob-slide">
+        <div class="ob-radar">
+          <div class="ob-brackets">
+            <div class="ob-br tl"></div><div class="ob-br tr"></div>
+            <div class="ob-br bl"></div><div class="ob-br br"></div>
+          </div>
+          <div class="ob-ring r1"></div>
+          <div class="ob-ring r2"></div>
+          <div class="ob-sweep"></div>
+          <div class="ob-dots" id="ob-dots-0"></div>
+          <div class="ob-glow"></div>
+          <div class="ob-spark">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M12 1.5c.6 5.3 4.2 8.9 9.5 9.5C16.2 11.6 12.6 15.2 12 20.5 11.4 15.2 7.8 11.6 2.5 11c5.3-.6 8.9-4.2 9.5-9.5Z" fill="var(--green)"/>
+            </svg>
+          </div>
+          <div class="ob-logo-grid">
+            <div class="ob-ball"></div><div class="ob-ball"></div>
+            <div class="ob-ball"></div><div class="ob-ball"></div>
+          </div>
+        </div>
+        <div class="ob-text">
+          <div class="ob-badge">AI‑секретарь</div>
+          <div class="ob-title">Твой личный<br>помощник 4е</div>
+          <div class="ob-sub">Следит за задачами, обещаниями и дедлайнами — пока ты занимаешься важным.</div>
+        </div>
+      </div>
+
+      <!-- slide 1 -->
+      <div class="ob-slide">
+        <div class="ob-radar">
+          <div class="ob-brackets">
+            <div class="ob-br tl"></div><div class="ob-br tr"></div>
+            <div class="ob-br bl"></div><div class="ob-br br"></div>
+          </div>
+          <div class="ob-ring r1"></div>
+          <div class="ob-ring r2"></div>
+          <div class="ob-feature-icons">
+            <div class="ob-fi" style="top:18%;left:50%;transform:translateX(-50%)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.7" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="ob-fi" style="top:42%;left:12%">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+            </div>
+            <div class="ob-fi" style="top:42%;right:12%">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.7" stroke-linecap="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+            </div>
+            <div class="ob-fi" style="bottom:18%;left:50%;transform:translateX(-50%)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg>
+            </div>
+          </div>
+          <div class="ob-glow"></div>
+          <div class="ob-spark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 1.5c.6 5.3 4.2 8.9 9.5 9.5C16.2 11.6 12.6 15.2 12 20.5 11.4 15.2 7.8 11.6 2.5 11c5.3-.6 8.9-4.2 9.5-9.5Z" fill="var(--green)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ob-text">
+          <div class="ob-badge">Задачи</div>
+          <div class="ob-title">Всегда знает,<br>кто что должен</div>
+          <div class="ob-sub">Парсит переписку в Telegram, сам создаёт задачи и напоминает о дедлайнах вовремя.</div>
+        </div>
+      </div>
+
+      <!-- slide 2 -->
+      <div class="ob-slide">
+        <div class="ob-radar">
+          <div class="ob-brackets">
+            <div class="ob-br tl"></div><div class="ob-br tr"></div>
+            <div class="ob-br bl"></div><div class="ob-br br"></div>
+          </div>
+          <div class="ob-ring r1"></div>
+          <div class="ob-ring r2"></div>
+          <div class="ob-chat-demo">
+            <div class="ob-bubble ob-bubble-in">Привет! Кирилл обещал прислать договор</div>
+            <div class="ob-bubble ob-bubble-out">Записал. Напомню через 2 дня ✓</div>
+            <div class="ob-bubble ob-bubble-in">Помоги написать ответ Антону</div>
+            <div class="ob-bubble ob-bubble-out">Готово — мягко и по делу 📝</div>
+          </div>
+          <div class="ob-glow"></div>
+        </div>
+        <div class="ob-text">
+          <div class="ob-badge">Чат с 4е</div>
+          <div class="ob-title">Советует,<br>пишет, помнит</div>
+          <div class="ob-sub">Помогает составить сообщение, напоминает об обещаниях и отвечает на любые вопросы голосом.</div>
+        </div>
+      </div>
+
+      <!-- slide 3 -->
+      <div class="ob-slide">
+        <div class="ob-radar">
+          <div class="ob-brackets">
+            <div class="ob-br tl"></div><div class="ob-br tr"></div>
+            <div class="ob-br bl"></div><div class="ob-br br"></div>
+          </div>
+          <div class="ob-ring r1"></div>
+          <div class="ob-ring r2"></div>
+          <div class="ob-stats-demo">
+            <div class="ob-stat-bar" style="--w:75%;--delay:0s">
+              <span>Выполнено</span><div class="ob-bar-track"><div class="ob-bar-fill"></div></div><span>75%</span>
+            </div>
+            <div class="ob-stat-bar" style="--w:48%;--delay:.15s">
+              <span>Обещания</span><div class="ob-bar-track"><div class="ob-bar-fill"></div></div><span>48%</span>
+            </div>
+            <div class="ob-stat-bar" style="--w:92%;--delay:.3s">
+              <span>В срок</span><div class="ob-bar-track"><div class="ob-bar-fill"></div></div><span>92%</span>
+            </div>
+          </div>
+          <div class="ob-glow"></div>
+          <div class="ob-spark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 1.5c.6 5.3 4.2 8.9 9.5 9.5C16.2 11.6 12.6 15.2 12 20.5 11.4 15.2 7.8 11.6 2.5 11c5.3-.6 8.9-4.2 9.5-9.5Z" fill="var(--green)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ob-text">
+          <div class="ob-badge">Аналитика</div>
+          <div class="ob-title">Видит картину<br>целиком</div>
+          <div class="ob-sub">Статистика задач, динамика по дням и прогресс по категориям — всё в одном месте.</div>
+        </div>
+      </div>
+
+    </div><!-- /ob-slides -->
+
+    <!-- bottom -->
+    <div class="ob-bottom">
+      <div class="ob-dots-nav">
+        <div class="ob-dot-nav active" id="obn-0" onclick="obGoTo(0)"></div>
+        <div class="ob-dot-nav" id="obn-1" onclick="obGoTo(1)"></div>
+        <div class="ob-dot-nav" id="obn-2" onclick="obGoTo(2)"></div>
+        <div class="ob-dot-nav" id="obn-3" onclick="obGoTo(3)"></div>
+      </div>
+      <button class="ob-btn" id="ob-btn" onclick="obNext()">Далее</button>
+      <div class="ob-skip" onclick="obSkip()">Пропустить</div>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN -->
-<div class="screen active" id="login">
+<div class="screen" id="login">
   <div id="login-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;gap:0;flex:1">
     <div class="login-logo">
       <div class="logo-4balls" style="width:56px;height:56px;margin:0 auto 24px">
@@ -1292,10 +1523,10 @@ const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
 if(tgUser?.id){chatId='user_'+tgUser.id;localStorage.setItem(CHAT_ID_K,chatId);}
 
 // Auto-login if Telegram Mini App
+const ONBOARD_K='chetam_onboarded';
 function initApp(){
   const isAuthed = localStorage.getItem(AUTH_K) || tgUser?.id;
   if(isAuthed){
-    // Set user info
     if(tgUser){
       const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
       const initials=(tgUser.first_name||'?')[0].toUpperCase();
@@ -1306,6 +1537,10 @@ function initApp(){
     }
     showScreen('home');
     loadTasks();
+  } else if(!localStorage.getItem(ONBOARD_K)){
+    // First-time user — show onboarding
+    showScreen('onboarding');
+    obInit();
   } else {
     showScreen('login');
   }
@@ -1352,6 +1587,69 @@ function togglePass(){
   const inp=document.getElementById('login-pass');
   inp.type=inp.type==='password'?'text':'password';
 }
+
+// ===== ONBOARDING =====
+let obCurrent = 0;
+const OB_TOTAL = 4;
+const OB_LABELS = ['Далее','Далее','Далее','Начать'];
+
+function obInit(){
+  // generate dot burst for slide 0
+  const container = document.getElementById('ob-dots-0');
+  if(container){
+    const rings=[{r:.16,n:4,d:7},{r:.30,n:8,d:5.5},{r:.44,n:12,d:4.5},{r:.58,n:12,d:3}];
+    rings.forEach((ring,ri)=>{
+      for(let i=0;i<ring.n;i++){
+        const a=(i/ring.n)*Math.PI*2+(ri%2?Math.PI/ring.n:0);
+        const x=50+Math.cos(a)*ring.r*50;
+        const y=50+Math.sin(a)*ring.r*50;
+        const dot=document.createElement('span');
+        dot.style.cssText=`position:absolute;left:${x}%;top:${y}%;width:${ring.d}px;height:${ring.d}px;margin-left:${-ring.d/2}px;margin-top:${-ring.d/2}px;border-radius:50%;background:var(--green);opacity:0.8;animation:obDotPulse 2.4s ease-in-out ${(ri*ring.n+i)*0.04}s infinite`;
+        container.appendChild(dot);
+      }
+    });
+  }
+  obRender();
+}
+
+function obRender(){
+  const slides=document.getElementById('ob-slides');
+  if(slides) slides.style.transform=`translateX(-${obCurrent*100}vw)`;
+  for(let i=0;i<OB_TOTAL;i++){
+    const d=document.getElementById('obn-'+i);
+    if(d) d.classList.toggle('active',i===obCurrent);
+  }
+  const btn=document.getElementById('ob-btn');
+  if(btn) btn.textContent=OB_LABELS[obCurrent]||'Далее';
+}
+
+function obGoTo(idx){
+  obCurrent=idx;
+  obRender();
+}
+
+function obNext(){
+  if(obCurrent<OB_TOTAL-1){
+    obCurrent++;
+    obRender();
+  } else {
+    obDone();
+  }
+}
+
+function obSkip(){ obDone(); }
+
+function obDone(){
+  localStorage.setItem(ONBOARD_K,'1');
+  showScreen('login');
+}
+
+// dot pulse keyframe injected dynamically
+(function(){
+  const s=document.createElement('style');
+  s.textContent='@keyframes obDotPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.5);opacity:0.3}}';
+  document.head.appendChild(s);
+})();
 
 initApp();
 
