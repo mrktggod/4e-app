@@ -329,7 +329,32 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
 @keyframes bounce{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-5px);opacity:1}}
 
-/* ===== TOAST ===== */
+/* ===== PAYMENT / SUBSCRIPTION ===== */
+.plan-status-card{background:var(--card);border:1px solid rgba(154,194,60,0.2);border-radius:20px;padding:18px;margin-bottom:12px}
+.plan-badge-active{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;background:rgba(154,194,60,0.15);color:var(--green);border:1px solid rgba(154,194,60,0.3);white-space:nowrap}
+.plan-badge-expired{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;background:rgba(255,80,80,0.1);color:#ff6060;border:1px solid rgba(255,80,80,0.2);white-space:nowrap}
+.plan-feature-row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(242,245,233,0.05)}
+.plan-feature-row:last-child{border-bottom:none}
+.plan-feat-icon{width:20px;height:20px;border-radius:6px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+.plan-feat-title{font-size:13px;font-weight:600;color:var(--text)}
+.plan-feat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+/* pricing cards */
+.pricing-card{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;position:relative;overflow:hidden}
+.pricing-card.selected{border-color:var(--green);background:var(--green3)}
+.pricing-name{font-size:15px;font-weight:700;color:var(--text)}
+.pricing-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.pricing-price{font-size:20px;font-weight:800;color:var(--text)}
+.pricing-per{font-size:10px;color:var(--muted);margin-top:1px}
+.pricing-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:.15s}
+.pricing-radio.selected{border-color:var(--green);background:var(--green)}
+.pricing-badge-save{position:absolute;top:10px;right:44px;font-size:10px;font-weight:700;background:var(--green);color:var(--bg);padding:2px 8px;border-radius:10px}
+/* order summary */
+.order-summary{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+/* payment badges */
+.pay-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--muted);font-weight:600}
+/* success animation */
+.success-anim{width:80px;height:80px;border-radius:50%;background:var(--green3);border:2px solid rgba(154,194,60,0.3);display:flex;align-items:center;justify-content:center;animation:successPop .5s cubic-bezier(.175,.885,.32,1.275) both}
+@keyframes successPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:12px;font-weight:600;padding:9px 20px;border-radius:20px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 
@@ -1015,32 +1040,151 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     <div style="flex:1"><div class="back-title">Подписка</div></div>
   </div>
   <div class="sub-scroll">
-    <div class="sub-plan-card">
-      <div class="sub-plan-logo">
-        <div class="logo-4balls" style="width:56px;height:56px;margin:0 auto">
+
+    <!-- Current plan status -->
+    <div class="plan-status-card" id="plan-status-card">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="logo-4balls" style="width:44px;height:44px;flex-shrink:0">
           <div class="logo-ball"></div><div class="logo-ball"></div>
           <div class="logo-ball"></div><div class="logo-ball"></div>
         </div>
+        <div style="flex:1">
+          <div id="plan-status-label" style="font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:1px">Текущий план</div>
+          <div id="plan-status-name" style="font-size:18px;font-weight:800;color:var(--green);letter-spacing:-0.5px">Premium</div>
+          <div id="plan-status-sub" style="font-size:11px;color:var(--muted);margin-top:2px">Загрузка...</div>
+        </div>
+        <div id="plan-status-badge" class="plan-badge-active">Активен</div>
       </div>
-      <div class="sub-plan-label">Текущий план</div>
-      <div class="sub-plan-name">Профессиональный</div>
-      <div style="text-align:left">
-        <div class="sub-feature"><div class="sub-feature-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-feature-text">Неограниченные задачи</span></div>
-        <div class="sub-feature"><div class="sub-feature-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-feature-text">Приоритетная поддержка</span></div>
-        <div class="sub-feature"><div class="sub-feature-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-feature-text">Аналитика и отчёты</span></div>
-        <div class="sub-feature"><div class="sub-feature-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-feature-text">Интеграции и API</span></div>
-        <div class="sub-feature"><div class="sub-feature-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-feature-text">Резервное копирование</span></div>
+      <!-- trial progress bar -->
+      <div id="trial-progress-wrap" style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px">
+          <span>Пробный период</span>
+          <span id="trial-days-label">30 дней</span>
+        </div>
+        <div style="background:var(--border);border-radius:4px;height:4px;overflow:hidden">
+          <div id="trial-progress-bar" style="height:100%;background:var(--green);border-radius:4px;transition:width .5s;width:100%"></div>
+        </div>
       </div>
-      <div class="sub-expiry">Действует до 24 мая 2026</div>
     </div>
-    <div class="sub-card">
-      <div class="sub-row" onclick="showToast('Управление подпиской...')">
-        <span style="font-size:14px;color:var(--text);font-weight:500">Управление подпиской</span>
-        <span class="sub-row-arrow">›</span>
+
+    <!-- Features list -->
+    <div class="sub-section-title">Что входит в Premium</div>
+    <div class="sub-card" style="padding:4px 0">
+      <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Неограниченные задачи</div><div class="plan-feat-sub">Добавляй сколько угодно задач и обещаний</div></div></div>
+      <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">AI-чат без ограничений</div><div class="plan-feat-sub">Спрашивай, советуйся, составляй сообщения</div></div></div>
+      <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Голосовой ввод</div><div class="plan-feat-sub">Диктуй задачи голосом</div></div></div>
+      <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Telegram-бот</div><div class="plan-feat-sub">Задачи приходят прямо из переписки</div></div></div>
+      <div class="plan-feature-row" style="border:none"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Аналитика и статистика</div><div class="plan-feat-sub">Прогресс, динамика, отчёты</div></div></div>
+    </div>
+
+    <!-- Pricing block -->
+    <div class="sub-section-title">Продлить подписку</div>
+    <div class="pricing-card" id="pricing-month" onclick="selectPlan('month')">
+      <div style="flex:1">
+        <div class="pricing-name">1 месяц</div>
+        <div class="pricing-desc">Автопродление каждый месяц</div>
       </div>
+      <div style="text-align:right">
+        <div class="pricing-price">990 ₽</div>
+        <div class="pricing-per">/ мес</div>
+      </div>
+      <div class="pricing-radio selected" id="radio-month"></div>
+    </div>
+    <div class="pricing-card" id="pricing-year" onclick="selectPlan('year')" style="margin-top:8px">
+      <div class="pricing-badge-save">Выгода 20%</div>
+      <div style="flex:1">
+        <div class="pricing-name">12 месяцев</div>
+        <div class="pricing-desc">Экономия 2 376 ₽ в год</div>
+      </div>
+      <div style="text-align:right">
+        <div class="pricing-price">792 ₽</div>
+        <div class="pricing-per">/ мес · 9 504 ₽/год</div>
+      </div>
+      <div class="pricing-radio" id="radio-year"></div>
+    </div>
+
+    <button class="ob-btn" style="margin-top:16px" onclick="openPayment()">
+      Оформить подписку
+    </button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6">
+      Безопасная оплата через CloudPayments<br>Отмена в любой момент
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== PAYMENT SCREEN ========== -->
+<div class="screen" id="payment">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showSubScreen('subscription')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">Оплата</div></div>
+  </div>
+  <div class="sub-scroll">
+    <!-- order summary -->
+    <div class="order-summary">
+      <div class="logo-4balls" style="width:40px;height:40px;flex-shrink:0">
+        <div class="logo-ball"></div><div class="logo-ball"></div>
+        <div class="logo-ball"></div><div class="logo-ball"></div>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:var(--text)" id="order-title">Premium · 1 месяц</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">Подписка на 4</div>
+      </div>
+      <div style="font-size:20px;font-weight:800;color:var(--green)" id="order-price">990 ₽</div>
+    </div>
+
+    <!-- what you get -->
+    <div class="sub-card" style="margin-bottom:16px">
+      <div class="sub-row" style="padding:10px 16px">
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Мгновенная активация</span></div>
+      </div>
+      <div class="sub-row" style="padding:10px 16px">
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Все функции Premium</span></div>
+      </div>
+      <div class="sub-row" style="padding:10px 16px;border:none">
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Отмена в любой момент</span></div>
+      </div>
+    </div>
+
+    <!-- CP Widget trigger -->
+    <button class="ob-btn" id="pay-btn" onclick="startPayment()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Оплатить картой
+    </button>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap">
+      <div class="pay-badge">Visa</div>
+      <div class="pay-badge">Mastercard</div>
+      <div class="pay-badge">МИР</div>
+      <div class="pay-badge">SberPay</div>
+      <div class="pay-badge">СБП</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span style="font-size:11px;color:var(--muted)">Защищено CloudPayments · SSL-шифрование</span>
     </div>
   </div>
 </div>
+
+<!-- ========== PAYMENT SUCCESS ========== -->
+<div class="screen" id="payment-success">
+  <div class="sub-scroll" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px">
+    <div class="success-anim" id="success-anim">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div style="font-size:24px;font-weight:800;color:var(--text);margin:20px 0 8px;letter-spacing:-0.5px">Оплата прошла!</div>
+    <div style="font-size:14px;color:var(--muted);line-height:1.6;max-width:260px;margin-bottom:32px">Premium активирован. Все функции уже доступны — задачи, AI-чат, голос.</div>
+    <div class="sub-card" style="width:100%;text-align:left;margin-bottom:24px">
+      <div style="padding:14px 16px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Подписка активна до</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text)" id="success-until">—</div>
+      </div>
+    </div>
+    <button class="ob-btn" onclick="showScreen('home');loadTasks()">Перейти в приложение</button>
+  </div>
+</div>
+
+
 
 <!-- ========== NOTIFICATIONS SETTINGS ========== -->
 <div class="screen" id="notif-settings">
@@ -1730,7 +1874,141 @@ function togglePass(id){
   if(inp) inp.type=inp.type==='password'?'text':'password';
 }
 
-// ===== ONBOARDING =====
+// ── CloudPayments config ──────────────────────────────────────
+// ⚠️ Замени на свой Public ID из личного кабинета CloudPayments
+const CP_PUBLIC_ID = 'pk_79ce41d62fd193a9962d0ee8090a3';
+const PLANS = {
+  month: { title: 'Premium · 1 месяц', price: 990,  months: 1  },
+  year:  { title: 'Premium · 12 месяцев', price: 9504, months: 12 },
+};
+let selectedPlan = 'month';
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  ['month','year'].forEach(p => {
+    const card  = document.getElementById('pricing-' + p);
+    const radio = document.getElementById('radio-' + p);
+    if (card)  card.classList.toggle('selected', p === plan);
+    if (radio) radio.classList.toggle('selected', p === plan);
+  });
+}
+
+function openPayment() {
+  const plan = PLANS[selectedPlan];
+  document.getElementById('order-title').textContent  = plan.title;
+  document.getElementById('order-price').textContent  = plan.price.toLocaleString('ru') + ' ₽';
+  showSubScreen('payment');
+}
+
+function startPayment() {
+  if (!currentUser) { showToast('Войди в аккаунт'); return; }
+  const plan = PLANS[selectedPlan];
+  const btn  = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.textContent = 'Открываю форму оплаты...';
+
+  // Загружаем скрипт CP если ещё не загружен
+  if (!window.cp) {
+    const s = document.createElement('script');
+    s.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js';
+    s.onload = () => launchWidget(plan, btn);
+    s.onerror = () => { showToast('Ошибка загрузки виджета'); btn.disabled = false; btn.textContent = 'Оплатить картой'; };
+    document.head.appendChild(s);
+  } else {
+    launchWidget(plan, btn);
+  }
+}
+
+function launchWidget(plan, btn) {
+  const widget = new cp.CloudPayments();
+  widget.pay('charge', {
+    publicId:    CP_PUBLIC_ID,
+    description: plan.title,
+    amount:      plan.price,
+    currency:    'RUB',
+    email:       currentUser.email || '',
+    accountId:   currentUser.id,
+    data: {
+      userId:   currentUser.id,
+      plan:     selectedPlan,
+      token:    getToken(),
+    },
+  }, {
+    onSuccess: () => {
+      btn.disabled = false;
+      btn.textContent = 'Оплатить картой';
+      onPaymentSuccess(plan);
+    },
+    onFail: (reason) => {
+      btn.disabled = false;
+      btn.textContent = 'Оплатить картой';
+      showToast('Оплата не прошла: ' + (reason || 'попробуй ещё раз'));
+    },
+    onComplete: () => {
+      btn.disabled = false;
+      btn.textContent = 'Оплатить картой';
+    },
+  });
+}
+
+function onPaymentSuccess(plan) {
+  // Обновляем юзера локально (Worker обновит через webhook)
+  if (currentUser) {
+    const months = plan?.months || 1;
+    currentUser.trialActive  = true;
+    currentUser.trialLeft    = months * 30;
+    currentUser.trialEndsAt  = Date.now() + months * 30 * 24 * 60 * 60 * 1000;
+    renderTrialBanner();
+    updateSubscriptionScreen();
+  }
+  // Показываем экран успеха
+  const until = new Date(currentUser.trialEndsAt);
+  const opts  = { day: 'numeric', month: 'long', year: 'numeric' };
+  const el    = document.getElementById('success-until');
+  if (el) el.textContent = until.toLocaleDateString('ru-RU', opts);
+  showSubScreen('payment-success');
+}
+
+function simulatePaymentSuccess() {
+  onPaymentSuccess(PLANS[selectedPlan]);
+}
+
+// Обновляем экран подписки данными из currentUser
+function updateSubscriptionScreen() {
+  if (!currentUser) return;
+  const nameEl   = document.getElementById('plan-status-name');
+  const subEl    = document.getElementById('plan-status-sub');
+  const badgeEl  = document.getElementById('plan-status-badge');
+  const barEl    = document.getElementById('trial-progress-bar');
+  const daysEl   = document.getElementById('trial-days-label');
+  const wrapEl   = document.getElementById('trial-progress-wrap');
+
+  if (currentUser.trialActive) {
+    const days = currentUser.trialLeft || 0;
+    if (nameEl)  nameEl.textContent  = 'Premium';
+    if (subEl)   subEl.textContent   = 'Осталось ' + days + ' ' + pluralDays(days);
+    if (badgeEl) { badgeEl.textContent = 'Активен'; badgeEl.className = 'plan-badge-active'; }
+    // progress bar (30 дней = 100%)
+    const pct = Math.min(100, Math.round((days / 30) * 100));
+    if (barEl)  barEl.style.width  = pct + '%';
+    if (daysEl) daysEl.textContent = days + ' ' + pluralDays(days);
+    // bar color — red if < 5 days
+    if (barEl)  barEl.style.background = days < 5 ? '#ff6060' : 'var(--green)';
+    if (wrapEl) wrapEl.style.display = 'block';
+  } else {
+    if (nameEl)  nameEl.textContent  = 'Истёк';
+    if (subEl)   subEl.textContent   = 'Оформи подписку чтобы продолжить';
+    if (badgeEl) { badgeEl.textContent = 'Истёк'; badgeEl.className = 'plan-badge-expired'; }
+    if (wrapEl)  wrapEl.style.display = 'none';
+  }
+}
+
+// Вызываем при открытии экрана подписки
+const _origShowSubScreen = showSubScreen;
+function showSubScreen(id) {
+  _origShowSubScreen(id);
+  if (id === 'subscription') updateSubscriptionScreen();
+}
 let obCurrent = 0;
 const OB_TOTAL = 4;
 const OB_LABELS = ['Далее','Далее','Далее','Начать'];
