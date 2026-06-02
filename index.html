@@ -154,6 +154,48 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .back-sub{font-size:10px;color:var(--muted);margin-top:1px}
 
 /* ===== TASK DETAIL ===== */
+/* ===== TASK DETAIL v2 ===== */
+.detail-hero{padding:4px 0 16px}
+.detail-badge-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.detail-badge{font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:20px;text-transform:uppercase}
+.badge-source{background:var(--bg3);color:var(--muted);border:1px solid var(--border)}
+.badge-hot{background:var(--green);color:var(--bg)}
+.badge-soon{background:var(--green3);color:var(--green);border:1px solid rgba(154,194,60,0.2)}
+.detail-task-title{font-size:24px;font-weight:800;color:var(--text);line-height:1.15;letter-spacing:-0.5px;margin-bottom:6px;word-break:break-word}
+.detail-meta-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.detail-meta-chip{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:3px 8px}
+
+/* Editable field */
+.detail-edit-field{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;padding:11px 14px;outline:none;font-family:'Inter',sans-serif;resize:none;line-height:1.5;min-height:44px}
+.detail-edit-field:focus{border-color:rgba(154,194,60,0.5)}
+.detail-edit-field::placeholder{color:var(--muted)}
+
+/* Tags */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag-chip{display:flex;align-items:center;gap:4px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--green);font-weight:600;cursor:pointer}
+.tag-chip .tag-x{color:rgba(154,194,60,0.5);font-size:12px;line-height:1}
+.tag-add{background:var(--card2);border:1px dashed var(--border);color:var(--muted);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.tag-input-wrap{display:flex;gap:6px;margin-top:8px}
+.tag-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;padding:8px 12px;outline:none;font-family:'Inter',sans-serif}
+.tag-input:focus{border-color:rgba(154,194,60,0.5)}
+.tag-input-wrap button{padding:8px 14px;border-radius:10px;background:var(--green);border:none;color:var(--bg);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* Reminder options */
+.reminder-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.reminder-opt{padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--card2);font-size:12px;color:var(--text);cursor:pointer;text-align:center;transition:all .15s}
+.reminder-opt.active{border-color:var(--green);background:var(--green3);color:var(--green);font-weight:600}
+.reminder-opt:active{transform:scale(0.97)}
+
+/* Source info block */
+.source-block{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.source-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.source-row+.source-row{margin-top:6px}
+.source-icon{width:20px;height:20px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Save btn */
+.detail-save-btn{width:100%;padding:13px;border-radius:14px;background:var(--green3);border:1px solid rgba(154,194,60,0.3);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif;margin-bottom:8px;transition:all .15s}
+.detail-save-btn:active{background:var(--green);color:var(--bg)}
+
 .detail-scroll{flex:1;overflow-y:auto;padding:0 20px 16px}
 .detail-scroll::-webkit-scrollbar{width:0}
 .detail-num-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
@@ -872,30 +914,91 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
-<!-- TASK DETAIL -->
+<!-- TASK DETAIL v2 -->
 <div class="screen" id="task-detail">
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Задача</div></div>
-    <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></div>
+    <button id="detail-save-top-btn" onclick="saveTaskEdits()" style="background:var(--green);border:none;color:var(--bg);font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:Inter,sans-serif">Сохранить</button>
   </div>
   <div class="detail-scroll">
-    <div class="detail-num-row"><div class="detail-num" id="detail-num">01</div><span class="task-tag" id="detail-tag">скоро</span></div>
-    <div class="detail-title" id="detail-title">Задача</div>
-    <div class="detail-from" id="detail-from">из переписки</div>
-    <div class="detail-contact">
-      <div class="detail-contact-name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span id="detail-person">Имя</span></div>
-      <div class="detail-tg-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div>
+
+    <!-- Hero -->
+    <div class="detail-hero">
+      <div class="detail-badge-row">
+        <span class="detail-badge badge-source" id="detail-source-badge">из переписки</span>
+        <span class="detail-badge" id="detail-urgency-badge">скоро</span>
+      </div>
+      <div class="detail-task-title" id="detail-title-v2" contenteditable="true" spellcheck="false">Задача</div>
+      <div class="detail-meta-row">
+        <div class="detail-meta-chip">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span id="detail-person-v2">—</span>
+        </div>
+        <div class="detail-meta-chip">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="detail-date-v2">—</span>
+        </div>
+        <div class="detail-meta-chip" id="detail-chat-chip" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span id="detail-chat-v2">чат</span>
+        </div>
+      </div>
     </div>
-    <div class="detail-sec"><div class="detail-sec-label">Описание</div><div class="detail-sec-val" id="detail-desc">—</div></div>
-    <div class="detail-sec"><div class="detail-sec-label">Дедлайн</div><div class="detail-field"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="detail-field-text" id="detail-deadline-text">не указан</span><span class="detail-field-edit">✎</span></div></div>
-    <div class="detail-sec"><div class="detail-sec-label">Напомнить</div><div class="detail-field"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="detail-field-text">В день события, 09:00</span><span class="detail-field-edit">✎</span></div></div>
+
+    <!-- Original message -->
+    <div class="detail-sec">
+      <div class="detail-sec-label">Оригинальное сообщение</div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.5;font-style:italic" id="detail-orig-msg">—</div>
+    </div>
+
+    <!-- Deadline -->
+    <div class="detail-sec">
+      <div class="detail-sec-label">Дедлайн</div>
+      <input class="detail-edit-field" id="detail-deadline-input" type="text" placeholder="например: 5 июня, 18:00" style="margin-top:0"/>
+    </div>
+
+    <!-- Tags -->
+    <div class="detail-sec">
+      <div class="detail-sec-label">Теги</div>
+      <div class="tags-wrap" id="detail-tags-wrap"></div>
+      <div class="tag-input-wrap" id="detail-tag-input-wrap" style="display:none">
+        <input class="tag-input" id="detail-tag-input" placeholder="Название тега..." maxlength="20"/>
+        <button onclick="addTagFromInput()">+</button>
+      </div>
+      <div class="tag-add" onclick="toggleTagInput()" style="margin-top:6px;display:inline-flex">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        добавить тег
+      </div>
+    </div>
+
+    <!-- Reminder -->
+    <div class="detail-sec">
+      <div class="detail-sec-label">Напоминание через бота</div>
+      <div class="reminder-grid" id="reminder-grid">
+        <div class="reminder-opt" onclick="setReminder('15min',this)">⏰ За 15 мин</div>
+        <div class="reminder-opt" onclick="setReminder('1hour',this)">⏰ За час</div>
+        <div class="reminder-opt" onclick="setReminder('1day',this)">📅 За день</div>
+        <div class="reminder-opt active" onclick="setReminder('none',this)">🔕 Без напоминания</div>
+      </div>
+      <div id="reminder-status" style="font-size:11px;color:var(--green);margin-top:8px;display:none"></div>
+    </div>
+
   </div>
   <div class="detail-bottom">
-    <button class="detail-write-btn" id="detail-write-btn">Написать в Telegram <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></button>
+    <button class="detail-write-btn" id="detail-write-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--green)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
+      Написать в Telegram
+    </button>
     <div class="detail-actions">
-      <button class="detail-done-btn" id="detail-done-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Готово</button>
-      <button class="detail-snooze-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Позже</button>
+      <button class="detail-done-btn" id="detail-done-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Готово
+      </button>
+      <button class="detail-snooze-btn" onclick="snoozeCurrentTask()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Позже
+      </button>
     </div>
   </div>
 </div>
@@ -2198,18 +2301,185 @@ function openNotifications(){showScreen('notifications');}
 function openStatistics(){showScreen('statistics');setNavActive('stats');}
 
 function openTaskById(taskId,idx){const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];if(!t)return;openTask(t,allTasksCache.indexOf(t));}
+// Текущая задача открытая на detail экране
+let currentDetailTask = null;
+let currentDetailTags = [];
+let currentDetailReminder = 'none';
+
 function openTask(t,idx){
-  document.getElementById('detail-num').textContent=String(idx+1).padStart(2,'0');
-  document.getElementById('detail-tag').textContent=t.deadline?'горит':'скоро';
-  document.getElementById('detail-tag').className='task-tag '+(t.deadline?'tag-hot':'tag-med');
-  document.getElementById('detail-title').textContent=t.text||'—';
-  document.getElementById('detail-from').textContent='из переписки · '+(t.date||'');
-  document.getElementById('detail-person').textContent=t.person||'—';
-  document.getElementById('detail-desc').textContent=t.originalMsg||t.text||'—';
-  document.getElementById('detail-deadline-text').textContent=t.deadline||'не указан';
-  document.getElementById('detail-done-btn').onclick=()=>{markDoneKV(document.getElementById('detail-done-btn'),t.id);setTimeout(()=>{showScreen('home');loadTasks();},400);};
-  document.getElementById('detail-write-btn').onclick=()=>{openWrite(t.person,(t.person||'?')[0],t.text,t.text);};
+  currentDetailTask = t;
+  currentDetailTags = t.tags ? [...t.tags] : [];
+  currentDetailReminder = t.reminder || 'none';
+
+  // Hero
+  const isHot = !!t.deadline;
+  const urgBadge = document.getElementById('detail-urgency-badge');
+  urgBadge.textContent = isHot ? 'горит' : 'скоро';
+  urgBadge.className = 'detail-badge ' + (isHot ? 'badge-hot' : 'badge-soon');
+
+  // Source badge
+  const srcBadge = document.getElementById('detail-source-badge');
+  if(t.chatId && t.chatId.startsWith('group_')) {
+    srcBadge.textContent = 'из группы';
+  } else {
+    srcBadge.textContent = 'из переписки';
+  }
+
+  // Title (editable)
+  document.getElementById('detail-title-v2').textContent = t.text || '—';
+
+  // Meta chips
+  document.getElementById('detail-person-v2').textContent = t.person || '—';
+  document.getElementById('detail-date-v2').textContent = t.date || '—';
+
+  // Chat chip — показываем chatId если групповая задача
+  const chatChip = document.getElementById('detail-chat-chip');
+  if(t.chatId && t.chatId.startsWith('group_')) {
+    chatChip.style.display = 'flex';
+    document.getElementById('detail-chat-v2').textContent = 'группа ' + t.chatId.replace('group_','').slice(-4);
+  } else {
+    chatChip.style.display = 'none';
+  }
+
+  // Original message
+  document.getElementById('detail-orig-msg').textContent = t.originalMsg || t.text || '—';
+
+  // Deadline input
+  document.getElementById('detail-deadline-input').value = t.deadline || '';
+
+  // Tags
+  renderDetailTags();
+
+  // Reminder
+  document.querySelectorAll('.reminder-opt').forEach(el => el.classList.remove('active'));
+  const activeOpt = document.querySelector(\`.reminder-opt[onclick*="\${currentDetailReminder}"]\`);
+  if(activeOpt) activeOpt.classList.add('active');
+  else document.querySelectorAll('.reminder-opt')[3]?.classList.add('active');
+
+  const reminderStatus = document.getElementById('reminder-status');
+  if(t.reminder && t.reminder !== 'none') {
+    const labels = {'15min':'За 15 минут','1hour':'За 1 час','1day':'За день'};
+    reminderStatus.textContent = '🔔 Напомним: ' + (labels[t.reminder] || t.reminder);
+    reminderStatus.style.display = 'block';
+  } else {
+    reminderStatus.style.display = 'none';
+  }
+
+  // Buttons
+  document.getElementById('detail-done-btn').onclick=()=>{
+    markDoneKV(document.getElementById('detail-done-btn'),t.id);
+    setTimeout(()=>{showScreen('home');loadTasks();},400);
+  };
+  document.getElementById('detail-write-btn').onclick=()=>{
+    openWrite(t.person,(t.person||'?')[0],t.text,t.text);
+  };
+
   showScreen('task-detail');
+}
+
+function renderDetailTags(){
+  const wrap = document.getElementById('detail-tags-wrap');
+  if(!wrap) return;
+  wrap.innerHTML = currentDetailTags.map((tag,i) =>
+    \`<div class="tag-chip" onclick="removeTag(\${i})">
+      #\${e2(tag)} <span class="tag-x">×</span>
+    </div>\`
+  ).join('');
+}
+
+function removeTag(idx){
+  currentDetailTags.splice(idx, 1);
+  renderDetailTags();
+}
+
+function toggleTagInput(){
+  const wrap = document.getElementById('detail-tag-input-wrap');
+  wrap.style.display = wrap.style.display === 'none' ? 'flex' : 'none';
+  if(wrap.style.display === 'flex') document.getElementById('detail-tag-input').focus();
+}
+
+function addTagFromInput(){
+  const inp = document.getElementById('detail-tag-input');
+  const val = (inp.value||'').trim().replace(/^#/,'');
+  if(!val) return;
+  if(!currentDetailTags.includes(val)) currentDetailTags.push(val);
+  inp.value = '';
+  renderDetailTags();
+  document.getElementById('detail-tag-input-wrap').style.display = 'none';
+}
+
+function setReminder(type, el){
+  currentDetailReminder = type;
+  document.querySelectorAll('.reminder-opt').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function snoozeCurrentTask(){
+  if(!currentDetailTask) return;
+  showToast('Отложено на завтра');
+  goHome();
+}
+
+async function saveTaskEdits(){
+  if(!currentDetailTask) return;
+  const newText = document.getElementById('detail-title-v2').textContent.trim();
+  const newDeadline = document.getElementById('detail-deadline-input').value.trim();
+
+  // Update local cache
+  const t = allTasksCache.find(x => x.id === currentDetailTask.id);
+  if(t){
+    t.text = newText || t.text;
+    t.deadline = newDeadline || null;
+    t.tags = [...currentDetailTags];
+    t.reminder = currentDetailReminder;
+  }
+
+  // Save to KV via Worker
+  try{
+    // Re-save the whole tasks array
+    await fetch(WORKER, {
+      method: 'POST',
+      headers: {...authHeaders(), 'x-action': 'update-task'},
+      body: JSON.stringify({
+        chatId,
+        taskId: currentDetailTask.id,
+        updates: {
+          text: newText || currentDetailTask.text,
+          deadline: newDeadline || null,
+          tags: [...currentDetailTags],
+          reminder: currentDetailReminder,
+        }
+      })
+    });
+
+    // If reminder set — send to bot
+    if(currentDetailReminder !== 'none'){
+      await setReminderOnWorker(currentDetailTask.id, newText || currentDetailTask.text, newDeadline, currentDetailReminder);
+    }
+
+    showToast('Сохранено ✓');
+    currentDetailTask = {...currentDetailTask, text: newText, deadline: newDeadline, tags: [...currentDetailTags], reminder: currentDetailReminder};
+    loadTasks();
+  } catch(e){
+    showToast('Ошибка сохранения');
+    console.error(e);
+  }
+}
+
+async function setReminderOnWorker(taskId, taskText, deadline, reminderType){
+  try{
+    await fetch(WORKER, {
+      method: 'POST',
+      headers: {...authHeaders(), 'x-action': 'set-reminder'},
+      body: JSON.stringify({
+        taskId,
+        taskText,
+        deadline,
+        reminderType,
+        chatId,
+      })
+    });
+  } catch(e){ console.error('set-reminder error:', e); }
 }
 
 function openWrite(name,avatar,title,context){currentCtx={name,avatar,title,context};currentTone='мягко';document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tone-btn')[0]?.classList.add('active');document.getElementById('wt-title').textContent='написать — '+name;document.getElementById('wt-avatar').textContent=avatar;document.getElementById('ctx-text').textContent=context;document.getElementById('ctx-person').textContent=name+' · из переписки';document.getElementById('ctx-ai-note').textContent='анализирую...';document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';document.getElementById('variants-list').innerHTML='<div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div><div class="variant"><div class="variant-txt dots"><span></span><span></span><span></span></div></div>';showScreen('write');generateMessage();}
