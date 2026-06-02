@@ -2380,11 +2380,9 @@ function openTask(t,idx){
 function renderDetailTags(){
   const wrap = document.getElementById('detail-tags-wrap');
   if(!wrap) return;
-  wrap.innerHTML = currentDetailTags.map((tag,i) =>
-    \`<div class="tag-chip" onclick="removeTag(\${i})">
-      #\${e2(tag)} <span class="tag-x">×</span>
-    </div>\`
-  ).join('');
+  wrap.innerHTML = currentDetailTags.map(function(tag,i){
+    return '<div class="tag-chip" onclick="removeTag(' + i + ')">#' + e2(tag) + ' <span class="tag-x">×</span></div>';
+  }).join('');
 }
 
 function removeTag(idx){
