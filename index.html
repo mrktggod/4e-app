@@ -587,6 +587,39 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .support-select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:14px;padding:14px 16px;outline:none;font-family:'Inter',sans-serif;appearance:none;cursor:pointer}
 
 .status-dot-green{width:8px;height:8px;border-radius:50%;background:#4caf50;display:inline-block}
+/* ===== NOTIFICATIONS v2 ===== */
+.notif-filters{display:flex;gap:6px;padding:0 0 12px;overflow-x:auto;flex-shrink:0}
+.notif-filters::-webkit-scrollbar{width:0;height:0}
+.notif-filter{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .15s}
+.notif-filter.active{background:var(--green);color:var(--bg);border-color:var(--green)}
+
+.notif-group-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:500;padding:16px 0 8px}
+
+.notif-card{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+.notif-card.unread{border-color:rgba(154,194,60,0.25);background:rgba(154,194,60,0.04)}
+.notif-card-header{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;cursor:pointer}
+.notif-card-icon{width:36px;height:36px;border-radius:10px;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-card.unread .notif-card-icon{background:var(--green3);border-color:rgba(154,194,60,0.3)}
+.notif-card-body{flex:1;min-width:0}
+.notif-card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.35}
+.notif-card-time{font-size:11px;color:var(--muted);margin-top:3px}
+.notif-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.notif-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.notif-chevron{font-size:12px;color:var(--muted);transition:transform .2s}
+.notif-chevron.open{transform:rotate(90deg)}
+
+/* Expanded detail */
+.notif-detail{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
+.notif-detail.open{display:block}
+.notif-detail-text{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px;padding-top:12px}
+.notif-actions{display:flex;gap:6px}
+.notif-act-btn{flex:1;padding:9px 8px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px}
+.notif-act-task{background:var(--green);color:var(--bg)}
+.notif-act-read{background:var(--card2);color:var(--text);border:1px solid var(--border)}
+.notif-act-del{background:rgba(255,80,80,0.08);color:#ff6060;border:1px solid rgba(255,80,80,0.15)}
+
+.notif-empty{text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)}
+
 </style>
 </head>
 <body>
@@ -1077,34 +1110,23 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
-<!-- NOTIFICATIONS -->
+<!-- NOTIFICATIONS v2 -->
 <div class="screen" id="notifications">
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Уведомления</div></div>
+    <div id="notif-unread-count" style="background:var(--green);color:var(--bg);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;display:none"></div>
   </div>
-  <div class="notif-scroll">
-    <div id="notif-list">
-      <div class="notif-item">
-        <div class="notif-icon unread"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <div class="notif-body"><div class="notif-text">4 подготовил план на день</div><div class="notif-time">09:00</div></div>
-        <div class="notif-dot"></div>
-      </div>
-      <div class="notif-item">
-        <div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <div class="notif-body"><div class="notif-text">Кирилл не ответил на сообщение</div><div class="notif-time">Вчера</div></div>
-      </div>
-      <div class="notif-item">
-        <div class="notif-icon unread"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-        <div class="notif-body"><div class="notif-text">Дедлайн «Договор Кириллу» сегодня в 18:00</div><div class="notif-time">08:30</div></div>
-        <div class="notif-dot"></div>
-      </div>
-      <div class="notif-item">
-        <div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <div class="notif-body"><div class="notif-text">Антон отправил файл</div><div class="notif-time">Вчера</div></div>
-      </div>
-    </div>
-    <div class="notif-all-btn">Все уведомления <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+  <!-- Filters -->
+  <div class="notif-filters" style="padding:0 16px 4px">
+    <button class="notif-filter active" onclick="filterNotifs('all',this)">Все</button>
+    <button class="notif-filter" onclick="filterNotifs('task',this)">Задачи</button>
+    <button class="notif-filter" onclick="filterNotifs('deadline',this)">Дедлайны</button>
+    <button class="notif-filter" onclick="filterNotifs('reminder',this)">Напоминания</button>
+    <button class="notif-filter" onclick="filterNotifs('system',this)">Система</button>
+  </div>
+  <div class="notif-scroll" id="notif-list-wrap" style="padding:0 16px 96px">
+    <div id="notif-list"></div>
   </div>
 </div>
 
@@ -2297,7 +2319,158 @@ function openAsk(){
 }
 function openCalendar(){showScreen('calendar');setNavActive('cal');renderCalendar();}
 function openProfile(){showScreen('profile');setNavActive('profile');}
-function openNotifications(){showScreen('notifications');}
+// ── NOTIFICATIONS DATA ──────────────────────────────────────────
+const NOTIF_DATA = [
+  { id:'n1', type:'reminder', title:'Напоминание: провести собрание для отдела маркетинга', detail:'Срок наступает через час. Задача была поставлена 2 июня в групповом чате.', time:'Сейчас', ts: Date.now() - 3*60000, unread:true, taskId:null },
+  { id:'n2', type:'deadline', title:'Дедлайн «Поставить задачу» сегодня в 18:00', detail:'Юрий взял на себя задачу 2 июня. Осталось менее 3 часов до дедлайна.', time:'08:30', ts: Date.now() - 60*60000, unread:true, taskId:null },
+  { id:'n3', type:'task', title:'4 зафиксировал новую задачу', detail:'Скачать и начать тестировать приложение — задача из группового чата. Исполнитель: все участники.', time:'09:00', ts: Date.now() - 3*60*60000, unread:false, taskId:null },
+  { id:'n4', type:'system', title:'Кирилл не ответил на сообщение', detail:'Вы отправили сообщение Кириллу 2 дня назад. Рекомендуем напомнить.', time:'Вчера', ts: Date.now() - 26*60*60000, unread:false, taskId:null },
+  { id:'n5', type:'task', title:'4 зафиксировал: Позвонить Марине', detail:'Обещание зафиксировано из группового чата -1003766490290. Исполнитель: Alex.', time:'Вчера', ts: Date.now() - 30*60*60000, unread:false, taskId:null },
+  { id:'n6', type:'deadline', title:'Дедлайн «Вернуть гугл» через день', detail:'Задача поставлена от Manman Manman. Срок наступает завтра.', time:'Вчера', ts: Date.now() - 48*60*60000, unread:false, taskId:null },
+];
+
+let notifFilter = 'all';
+let notifReadSet = new Set(JSON.parse(localStorage.getItem('notif_read') || '[]'));
+
+function openNotifications(){
+  showScreen('notifications');
+  renderNotifs();
+}
+
+function filterNotifs(type, el){
+  notifFilter = type;
+  document.querySelectorAll('.notif-filter').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderNotifs();
+}
+
+function renderNotifs(){
+  const list = document.getElementById('notif-list');
+  if(!list) return;
+
+  const filtered = notifFilter === 'all'
+    ? NOTIF_DATA
+    : NOTIF_DATA.filter(n => n.type === notifFilter);
+
+  if(filtered.length === 0){
+    list.innerHTML = '<div class="notif-empty">Нет уведомлений этого типа</div>';
+    return;
+  }
+
+  // Group by day
+  const now = Date.now();
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate()-1);
+
+  const groups = { today:[], yesterday:[], earlier:[] };
+  filtered.forEach(n => {
+    if(n.ts >= todayStart.getTime()) groups.today.push(n);
+    else if(n.ts >= yesterdayStart.getTime()) groups.yesterday.push(n);
+    else groups.earlier.push(n);
+  });
+
+  let html = '';
+  if(groups.today.length)     html += renderNotifGroup('Сегодня', groups.today);
+  if(groups.yesterday.length) html += renderNotifGroup('Вчера', groups.yesterday);
+  if(groups.earlier.length)   html += renderNotifGroup('Раньше', groups.earlier);
+
+  list.innerHTML = html;
+
+  // Unread count badge
+  const unreadCount = NOTIF_DATA.filter(n => n.unread && !notifReadSet.has(n.id)).length;
+  const badge = document.getElementById('notif-unread-count');
+  if(badge){
+    badge.textContent = unreadCount + ' новых';
+    badge.style.display = unreadCount > 0 ? 'block' : 'none';
+  }
+}
+
+function renderNotifGroup(label, items){
+  const icons = {
+    task:     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+    deadline: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    reminder: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+    system:   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  };
+
+  let html = '<div class="notif-group-label">' + label + '</div>';
+  items.forEach(n => {
+    const isRead = notifReadSet.has(n.id);
+    const isUnread = n.unread && !isRead;
+    const iconColor = isUnread ? 'var(--green)' : 'var(--muted)';
+    html += '<div class="notif-card' + (isUnread?' unread':'') + '" id="ncard-' + n.id + '">';
+    html += '<div class="notif-card-header" onclick="toggleNotif('' + n.id + '')">';
+    html += '<div class="notif-card-icon">' + (icons[n.type]||icons.system).replace('stroke="currentColor"','stroke="'+iconColor+'"') + '</div>';
+    html += '<div class="notif-card-body">';
+    html += '<div class="notif-card-title">' + e2(n.title) + '</div>';
+    html += '<div class="notif-card-time">' + e2(n.time) + '</div>';
+    html += '</div>';
+    html += '<div class="notif-card-right">';
+    if(isUnread) html += '<div class="notif-unread-dot"></div>';
+    html += '<span class="notif-chevron" id="nchev-' + n.id + '">›</span>';
+    html += '</div>';
+    html += '</div>';
+    // Detail panel
+    html += '<div class="notif-detail" id="ndet-' + n.id + '">';
+    html += '<div class="notif-detail-text">' + e2(n.detail) + '</div>';
+    html += '<div class="notif-actions">';
+    if(n.taskId || n.type === 'task' || n.type === 'deadline' || n.type === 'reminder'){
+      html += '<button class="notif-act-btn notif-act-task" onclick="notifGoToTask('' + n.id + '')">';
+      html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg> К задаче</button>';
+    }
+    html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead('' + n.id + '')">';
+    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Прочитано</button>';
+    html += '<button class="notif-act-btn notif-act-del" onclick="notifDelete('' + n.id + '')">';
+    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>';
+    html += '</div></div></div>';
+  });
+  return html;
+}
+
+function toggleNotif(id){
+  const det = document.getElementById('ndet-' + id);
+  const chev = document.getElementById('nchev-' + id);
+  if(!det) return;
+  const isOpen = det.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.notif-detail.open').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('.notif-chevron.open').forEach(c => c.classList.remove('open'));
+  if(!isOpen){
+    det.classList.add('open');
+    if(chev) chev.classList.add('open');
+    // Auto-mark as read on open
+    notifMarkRead(id, true);
+  }
+}
+
+function notifMarkRead(id, silent){
+  notifReadSet.add(id);
+  localStorage.setItem('notif_read', JSON.stringify([...notifReadSet]));
+  const card = document.getElementById('ncard-' + id);
+  if(card){
+    card.classList.remove('unread');
+    const dot = card.querySelector('.notif-unread-dot');
+    if(dot) dot.remove();
+  }
+  if(!silent) showToast('Отмечено как прочитанное');
+  // Update bell dot on home
+  const unread = NOTIF_DATA.filter(n => n.unread && !notifReadSet.has(n.id)).length;
+  const bellDot = document.getElementById('bell-dot');
+  if(bellDot) bellDot.style.display = unread > 0 ? 'block' : 'none';
+  const badge = document.getElementById('notif-unread-count');
+  if(badge){ badge.textContent = unread + ' новых'; badge.style.display = unread > 0 ? 'block' : 'none'; }
+}
+
+function notifDelete(id){
+  const card = document.getElementById('ncard-' + id);
+  if(card){ card.style.opacity='0'; card.style.transform='translateX(20px)'; card.style.transition='.2s'; setTimeout(()=>card.remove(), 200); }
+  showToast('Уведомление удалено');
+}
+
+function notifGoToTask(id){
+  showToast('Открываю задачу...');
+  goHome();
+}
 function openStatistics(){showScreen('statistics');setNavActive('stats');}
 
 function openTaskById(taskId,idx){const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];if(!t)return;openTask(t,allTasksCache.indexOf(t));}
