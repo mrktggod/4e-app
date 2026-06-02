@@ -2352,7 +2352,7 @@ function openTask(t,idx){
 
   // Reminder
   document.querySelectorAll('.reminder-opt').forEach(el => el.classList.remove('active'));
-  const activeOpt = document.querySelector(\`.reminder-opt[onclick*="\${currentDetailReminder}"]\`);
+  const activeOpt = Array.from(document.querySelectorAll('.reminder-opt')).find(el => (el.getAttribute('onclick')||'').includes(currentDetailReminder));
   if(activeOpt) activeOpt.classList.add('active');
   else document.querySelectorAll('.reminder-opt')[3]?.classList.add('active');
 
