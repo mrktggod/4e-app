@@ -1818,6 +1818,7 @@ async function doRegister(){
       localStorage.setItem(ONBOARD_K,'1');
       showScreen('home');
       loadTasks();
+      linkTelegram();
       showToast('Добро пожаловать! 30 дней Premium 🎁');
     } else {
       showToast(d.error||'Ошибка регистрации');
@@ -1843,6 +1844,7 @@ async function doLogin(){
       applyUserInfo();
       showScreen('home');
       loadTasks();
+      linkTelegram();
     } else {
       showToast(d.error||'Ошибка входа');
     }
@@ -1857,9 +1859,25 @@ function loginWithTelegram(){
     applyUserInfo();
     showScreen('home');
     loadTasks();
+    linkTelegram();
   } else {
     showToast('Открой через Telegram для авторизации');
   }
+}
+
+
+// Привязываем Telegram ID к аккаунту после логина
+async function linkTelegram() {
+  const tgId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+  if (!tgId || !getToken()) return;
+  try {
+    await fetch(WORKER + '/auth/link-telegram', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ telegramId: String(tgId) })
+    });
+    console.log('✅ Telegram linked:', tgId);
+  } catch(e) { console.log('link-telegram error:', e); }
 }
 
 function doLogout(){
