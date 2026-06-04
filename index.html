@@ -588,6 +588,30 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .support-select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:14px;padding:14px 16px;outline:none;font-family:'Inter',sans-serif;appearance:none;cursor:pointer}
 
 .status-dot-green{width:8px;height:8px;border-radius:50%;background:#4caf50;display:inline-block}
+/* ===== LOCK SCREEN ===== */
+#lock-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px}
+#lock-screen.active{display:flex}
+.lock-logo{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:52px;height:52px;margin-bottom:24px}
+.lock-logo .lb{border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)}
+.lock-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-0.5px}
+.lock-sub{font-size:13px;color:var(--muted);margin-bottom:40px;text-align:center}
+.lock-biometric-btn{width:80px;height:80px;border-radius:28px;background:var(--green3);border:2px solid rgba(154,194,60,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:20px;transition:all .15s}
+.lock-biometric-btn:active{transform:scale(0.95);background:var(--green);border-color:var(--green)}
+.lock-biometric-label{font-size:12px;color:var(--muted);margin-bottom:32px}
+.lock-pin-label{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+.lock-pin-dots{display:flex;gap:14px;margin-bottom:28px}
+.lock-pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);transition:all .15s}
+.lock-pin-dot.filled{background:var(--green);border-color:var(--green)}
+.lock-numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:260px}
+.lock-num{height:64px;border-radius:18px;background:var(--card2);border:1px solid var(--border);font-size:22px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;font-family:'Inter',sans-serif}
+.lock-num:active{background:var(--green3);border-color:rgba(154,194,60,0.3);transform:scale(0.95)}
+.lock-num.del{font-size:16px;color:var(--muted)}
+.lock-num.empty{background:transparent;border-color:transparent;pointer-events:none}
+.lock-error{font-size:12px;color:#ff6060;margin-top:12px;opacity:0;transition:opacity .2s}
+.lock-error.show{opacity:1}
+/* Setup lock screen */
+.lock-setup-card{background:var(--card2);border:1px solid rgba(154,194,60,0.2);border-radius:20px;padding:20px;width:100%;max-width:320px;text-align:center;margin-bottom:16px}
+
 .md-body{font-size:13px;line-height:1.6;color:var(--text)}
 .md-body p{margin:0 0 8px}.md-body p:last-child{margin-bottom:0}
 .md-body strong{font-weight:700}.md-body em{font-style:italic;color:var(--text2)}
@@ -1402,6 +1426,13 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         <span class="sub-row-arrow">›</span>
       </div>
     </div>
+    <div class="sub-section-title">Блокировка приложения</div>
+    <div class="sub-card" style="margin-bottom:12px">
+      <div class="sub-row" onclick="openLockSetup()">
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg></div><div><div class="sub-row-text">Блокировка приложения</div><div class="sub-row-sub" id="lock-status-sub">Настроить PIN и Face ID</div></div></div>
+        <span class="sub-row-arrow" id="lock-status-arrow">›</span>
+      </div>
+    </div>
     <div class="sub-section-title">Дополнительно</div>
     <div class="sub-card">
       <div class="sub-row" onclick="showToast('Выход со всех устройств...')">
@@ -1829,6 +1860,43 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   <div class="nav-item" id="nav-profile" onclick="openProfile()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
 </div>
 
+</div>
+
+<!-- ===== LOCK SCREEN ===== -->
+<div id="lock-screen">
+  <div class="lock-logo"><div class="lb"></div><div class="lb"></div><div class="lb"></div><div class="lb"></div></div>
+  <div class="lock-title">4</div>
+  <div class="lock-sub" id="lock-sub">Введи PIN или используй биометрию</div>
+  <div class="lock-biometric-btn" id="lock-bio-btn" onclick="tryBiometric()" style="display:none">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5">
+      <path d="M12 1C8 1 5 4 5 8v1M12 1c4 0 7 3 7 7v1"/>
+      <path d="M3 11c0 5 4 9 9 9s9-4 9-9"/>
+      <path d="M9 11c0 1.7 1.3 3 3 3s3-1.3 3-3V8c0-1.7-1.3-3-3-3S9 6.3 9 8v3z"/>
+    </svg>
+  </div>
+  <div class="lock-biometric-label" id="lock-bio-label" style="display:none">Face ID / Touch ID</div>
+  <div class="lock-pin-label">PIN-КОД</div>
+  <div class="lock-pin-dots" id="lock-pin-dots">
+    <div class="lock-pin-dot"></div>
+    <div class="lock-pin-dot"></div>
+    <div class="lock-pin-dot"></div>
+    <div class="lock-pin-dot"></div>
+  </div>
+  <div class="lock-numpad">
+    <div class="lock-num" onclick="lockPinInput(1)">1</div>
+    <div class="lock-num" onclick="lockPinInput(2)">2</div>
+    <div class="lock-num" onclick="lockPinInput(3)">3</div>
+    <div class="lock-num" onclick="lockPinInput(4)">4</div>
+    <div class="lock-num" onclick="lockPinInput(5)">5</div>
+    <div class="lock-num" onclick="lockPinInput(6)">6</div>
+    <div class="lock-num" onclick="lockPinInput(7)">7</div>
+    <div class="lock-num" onclick="lockPinInput(8)">8</div>
+    <div class="lock-num" onclick="lockPinInput(9)">9</div>
+    <div class="lock-num empty"></div>
+    <div class="lock-num" onclick="lockPinInput(0)">0</div>
+    <div class="lock-num del" onclick="lockPinDelete()">⌫</div>
+  </div>
+  <div class="lock-error" id="lock-error">Неверный PIN. Попробуй ещё раз.</div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -2961,6 +3029,252 @@ function filterFaq(q){
     item.style.display=text.includes(lq)||!q?'':'none';
   });
 }
+
+
+// ===== LOCK SCREEN =====
+const LOCK_PIN_KEY = 'app_lock_pin';
+const LOCK_BIO_KEY = 'app_lock_bio';
+const LOCK_ENABLED_KEY = 'app_lock_enabled';
+
+let lockPinBuffer = '';
+let lockMode = 'unlock'; // 'unlock' | 'setup' | 'setup_confirm'
+let lockPinSetupFirst = '';
+let lockUnlocked = false;
+
+function isLockEnabled() {
+  return !!localStorage.getItem(LOCK_PIN_KEY);
+}
+
+function showLockScreen() {
+  const screen = document.getElementById('lock-screen');
+  if(!screen) return;
+  lockMode = 'unlock';
+  lockPinBuffer = '';
+  updateLockDots();
+  screen.classList.add('active');
+
+  // Show biometric button if available and registered
+  const hasBio = localStorage.getItem(LOCK_BIO_KEY) === '1';
+  const bioBtn = document.getElementById('lock-bio-btn');
+  const bioLabel = document.getElementById('lock-bio-label');
+  if(bioBtn) bioBtn.style.display = hasBio ? 'flex' : 'none';
+  if(bioLabel) bioLabel.style.display = hasBio ? 'block' : 'none';
+
+  const sub = document.getElementById('lock-sub');
+  if(sub) sub.textContent = hasBio ? 'Введи PIN или используй биометрию' : 'Введи PIN-код';
+
+  // Auto-try biometric on open
+  if(hasBio) setTimeout(tryBiometric, 300);
+}
+
+function hideLockScreen() {
+  const screen = document.getElementById('lock-screen');
+  if(screen) screen.classList.remove('active');
+  lockUnlocked = true;
+}
+
+function lockPinInput(digit) {
+  if(lockPinBuffer.length >= 4) return;
+  lockPinBuffer += digit;
+  updateLockDots();
+
+  if(lockPinBuffer.length === 4) {
+    setTimeout(() => {
+      if(lockMode === 'unlock') {
+        const stored = localStorage.getItem(LOCK_PIN_KEY);
+        if(lockPinBuffer === stored) {
+          hideLockScreen();
+        } else {
+          showLockError();
+          lockPinBuffer = '';
+          updateLockDots();
+        }
+      } else if(lockMode === 'setup') {
+        lockPinSetupFirst = lockPinBuffer;
+        lockPinBuffer = '';
+        updateLockDots();
+        lockMode = 'setup_confirm';
+        const sub = document.getElementById('lock-sub');
+        if(sub) sub.textContent = 'Повтори PIN для подтверждения';
+      } else if(lockMode === 'setup_confirm') {
+        if(lockPinBuffer === lockPinSetupFirst) {
+          localStorage.setItem(LOCK_PIN_KEY, lockPinBuffer);
+          hideLockScreen();
+          showToast('PIN установлен ✓');
+          updateLockStatusUI();
+          // Try register biometric
+          registerBiometric();
+        } else {
+          showLockError('PIN не совпадает. Попробуй снова.');
+          lockPinBuffer = '';
+          lockPinSetupFirst = '';
+          lockMode = 'setup';
+          updateLockDots();
+          const sub = document.getElementById('lock-sub');
+          if(sub) sub.textContent = 'Придумай PIN-код из 4 цифр';
+        }
+      }
+    }, 80);
+  }
+}
+
+function lockPinDelete() {
+  if(lockPinBuffer.length > 0) {
+    lockPinBuffer = lockPinBuffer.slice(0, -1);
+    updateLockDots();
+  }
+}
+
+function updateLockDots() {
+  const dots = document.querySelectorAll('.lock-pin-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('filled', i < lockPinBuffer.length);
+  });
+  const err = document.getElementById('lock-error');
+  if(err && lockPinBuffer.length > 0) err.classList.remove('show');
+}
+
+function showLockError(msg) {
+  const err = document.getElementById('lock-error');
+  if(err) {
+    err.textContent = msg || 'Неверный PIN. Попробуй ещё раз.';
+    err.classList.add('show');
+    // Shake animation
+    const dots = document.getElementById('lock-pin-dots');
+    if(dots) {
+      dots.style.animation = 'none';
+      dots.offsetHeight;
+      dots.style.animation = 'lockShake 0.3s ease';
+    }
+  }
+}
+
+async function tryBiometric() {
+  if(!window.PublicKeyCredential) return;
+  try {
+    const credId = localStorage.getItem('webauthn_cred_id');
+    if(!credId) return;
+
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        rpId: window.location.hostname || 'localhost',
+        allowCredentials: [{
+          id: Uint8Array.from(atob(credId), c => c.charCodeAt(0)),
+          type: 'public-key',
+        }],
+        userVerification: 'required',
+        timeout: 30000,
+      }
+    });
+
+    if(assertion) {
+      hideLockScreen();
+      showToast('Face ID / Touch ID ✓');
+    }
+  } catch(e) {
+    console.log('Biometric error:', e.message);
+    // Silent fail — user can use PIN
+  }
+}
+
+async function registerBiometric() {
+  if(!window.PublicKeyCredential) return;
+  try {
+    const supported = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    if(!supported) return;
+
+    const userId = new Uint8Array(16);
+    crypto.getRandomValues(userId);
+    const challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        challenge,
+        rp: { name: '4 AI-секретарь', id: window.location.hostname || 'localhost' },
+        user: { id: userId, name: 'user', displayName: 'Пользователь' },
+        pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
+        authenticatorSelection: {
+          authenticatorAttachment: 'platform',
+          userVerification: 'required',
+        },
+        timeout: 30000,
+      }
+    });
+
+    if(cred) {
+      const credId = btoa(String.fromCharCode(...new Uint8Array(cred.rawId)));
+      localStorage.setItem('webauthn_cred_id', credId);
+      localStorage.setItem(LOCK_BIO_KEY, '1');
+      showToast('Face ID / Touch ID подключён ✓');
+    }
+  } catch(e) {
+    console.log('WebAuthn register error:', e.message);
+  }
+}
+
+function openLockSetup() {
+  if(isLockEnabled()) {
+    // If already set — offer to disable
+    if(confirm('Отключить блокировку приложения?')) {
+      localStorage.removeItem(LOCK_PIN_KEY);
+      localStorage.removeItem(LOCK_BIO_KEY);
+      localStorage.removeItem('webauthn_cred_id');
+      showToast('Блокировка отключена');
+      updateLockStatusUI();
+    }
+    return;
+  }
+  // Setup new PIN
+  lockMode = 'setup';
+  lockPinBuffer = '';
+  lockPinSetupFirst = '';
+  const screen = document.getElementById('lock-screen');
+  if(screen) screen.classList.add('active');
+  const sub = document.getElementById('lock-sub');
+  if(sub) sub.textContent = 'Придумай PIN-код из 4 цифр';
+  const bioBtn = document.getElementById('lock-bio-btn');
+  const bioLabel = document.getElementById('lock-bio-label');
+  if(bioBtn) bioBtn.style.display = 'none';
+  if(bioLabel) bioLabel.style.display = 'none';
+  updateLockDots();
+  const err = document.getElementById('lock-error');
+  if(err) err.classList.remove('show');
+}
+
+function updateLockStatusUI() {
+  const sub = document.getElementById('lock-status-sub');
+  const arrow = document.getElementById('lock-status-arrow');
+  if(isLockEnabled()) {
+    if(sub) sub.textContent = 'Включена · нажми чтобы отключить';
+    if(arrow) arrow.textContent = '✓';
+  } else {
+    if(sub) sub.textContent = 'Настроить PIN и Face ID';
+    if(arrow) arrow.textContent = '›';
+  }
+}
+
+// Inject shake keyframe
+(function(){
+  const s = document.createElement('style');
+  s.textContent = '@keyframes lockShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}';
+  document.head.appendChild(s);
+})();
+
+// Init lock on app start
+(function(){
+  if(isLockEnabled() && !lockUnlocked) {
+    // Wait for DOM then show lock
+    window.addEventListener('load', function() {
+      setTimeout(showLockScreen, 100);
+    });
+  }
+  updateLockStatusUI();
+})();
 
 // ===== SUPPORT =====
 function sendSupportMsg(){
