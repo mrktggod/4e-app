@@ -808,6 +808,56 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
+
+<!-- FORGOT PASSWORD -->
+<div class="screen" id="forgot-password">
+  <div id="forgot-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;gap:0;flex:1">
+    <div style="width:56px;height:56px;border-radius:20px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;text-align:center">Сброс пароля</div>
+    <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:32px">Введи email и мы отправим<br>ссылку для сброса пароля</div>
+    <div class="login-form" style="width:100%">
+      <input class="login-input" id="forgot-email" type="email" placeholder="Email" autocomplete="off"/>
+      <button class="login-btn" id="forgot-submit-btn" onclick="doForgotPassword()">Отправить ссылку</button>
+      <div style="text-align:center;margin-top:8px">
+        <span onclick="showScreen('login')" style="font-size:12px;color:var(--muted);cursor:pointer">← Вернуться ко входу</span>
+      </div>
+    </div>
+    <div id="forgot-success" style="display:none;text-align:center;padding:20px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);border-radius:16px;margin-top:16px;width:100%">
+      <div style="font-size:32px;margin-bottom:8px">📬</div>
+      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px">Письмо отправлено!</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">Проверь почту и перейди по ссылке в письме. Ссылка действительна 1 час.</div>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD -->
+<div class="screen" id="reset-password">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;gap:0;flex:1">
+    <div style="width:56px;height:56px;border-radius:20px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+    </div>
+    <div style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;text-align:center">Новый пароль</div>
+    <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:32px">Придумай надёжный пароль<br>минимум 6 символов</div>
+    <div class="login-form" style="width:100%">
+      <div style="position:relative">
+        <input class="login-input" id="reset-pass" type="password" placeholder="Новый пароль"/>
+        <div onclick="togglePass('reset-pass')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <div style="position:relative">
+        <input class="login-input" id="reset-pass2" type="password" placeholder="Повторите пароль"/>
+        <div onclick="togglePass('reset-pass2')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <button class="login-btn" id="reset-submit-btn" onclick="doResetPassword()">Сохранить пароль</button>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div class="screen" id="login">
   <div id="login-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;gap:0;flex:1">
@@ -834,6 +884,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         </div>
       </div>
       <button class="login-btn" id="login-submit-btn" onclick="doLogin()">Войти</button>
+      <div style="text-align:center;margin-top:4px"><span onclick="showForgotPassword()" style="font-size:12px;color:var(--green);cursor:pointer">Забыл пароль?</span></div>
     </div>
 
     <!-- REGISTER form -->
@@ -3275,6 +3326,87 @@ function updateLockStatusUI() {
   }
   updateLockStatusUI();
 })();
+
+
+// ── FORGOT / RESET PASSWORD ──────────────────────────────────
+
+function showForgotPassword(){
+  showScreen('forgot-password');
+  document.getElementById('forgot-success').style.display = 'none';
+  document.getElementById('forgot-inner').style.display = 'flex';
+  const emailEl = document.getElementById('forgot-email');
+  // Pre-fill email if was entered
+  const loginEmail = document.getElementById('login-email')?.value;
+  if(loginEmail && emailEl) emailEl.value = loginEmail;
+}
+
+async function doForgotPassword(){
+  const email = document.getElementById('forgot-email')?.value.trim();
+  if(!email){ showToast('Введи email'); return; }
+  const btn = document.getElementById('forgot-submit-btn');
+  btn.disabled = true; btn.textContent = 'Отправляем...';
+  try {
+    await fetch(WORKER + '/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    // Всегда показываем успех (не раскрываем существует ли email)
+    document.getElementById('forgot-inner').style.display = 'none';
+    document.getElementById('forgot-success').style.display = 'block';
+  } catch(e) {
+    showToast('Нет соединения');
+  }
+  btn.disabled = false; btn.textContent = 'Отправить ссылку';
+}
+
+// При открытии приложения — проверяем ?reset=TOKEN в URL
+(function checkResetToken(){
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('reset');
+  if(!token) return;
+  // Убираем токен из URL чтобы не залогировался
+  window.history.replaceState({}, '', window.location.pathname);
+  // Сохраняем токен для использования при сбросе
+  window._resetToken = token;
+  // Показываем экран сброса вместо обычного флоу
+  setTimeout(() => showScreen('reset-password'), 100);
+})();
+
+async function doResetPassword(){
+  const pass = document.getElementById('reset-pass')?.value;
+  const pass2 = document.getElementById('reset-pass2')?.value;
+  if(!pass || pass.length < 6){ showToast('Пароль минимум 6 символов'); return; }
+  if(pass !== pass2){ showToast('Пароли не совпадают'); return; }
+  const token = window._resetToken;
+  if(!token){ showToast('Токен не найден'); return; }
+
+  const btn = document.getElementById('reset-submit-btn');
+  btn.disabled = true; btn.textContent = 'Сохраняем...';
+  try {
+    const r = await fetch(WORKER + '/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password: pass }),
+    });
+    const d = await r.json();
+    if(d.ok){
+      localStorage.setItem(TOKEN_K, d.token);
+      currentUser = d.user;
+      chatId = 'user_' + currentUser.id;
+      applyUserInfo();
+      window._resetToken = null;
+      showScreen('home');
+      loadTasks();
+      showToast('Пароль изменён ✓');
+    } else {
+      showToast(d.error || 'Ошибка. Ссылка могла истечь.');
+    }
+  } catch(e) {
+    showToast('Нет соединения');
+  }
+  btn.disabled = false; btn.textContent = 'Сохранить пароль';
+}
 
 // ===== SUPPORT =====
 function sendSupportMsg(){
