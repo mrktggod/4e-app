@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <title>4</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -587,6 +588,18 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .support-select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:14px;padding:14px 16px;outline:none;font-family:'Inter',sans-serif;appearance:none;cursor:pointer}
 
 .status-dot-green{width:8px;height:8px;border-radius:50%;background:#4caf50;display:inline-block}
+.md-body{font-size:13px;line-height:1.6;color:var(--text)}
+.md-body p{margin:0 0 8px}.md-body p:last-child{margin-bottom:0}
+.md-body strong{font-weight:700}.md-body em{font-style:italic;color:var(--text2)}
+.md-body code{background:rgba(154,194,60,0.12);border:1px solid rgba(154,194,60,0.2);border-radius:6px;padding:1px 6px;font-size:12px;font-family:monospace;color:var(--green)}
+.md-body pre{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;overflow-x:auto;margin:8px 0}
+.md-body pre code{background:none;border:none;padding:0;color:var(--green)}
+.md-body ul,.md-body ol{padding-left:18px;margin:4px 0 8px}.md-body li{margin-bottom:3px}
+.md-body h1,.md-body h2,.md-body h3{font-weight:700;color:var(--text);margin:8px 0 4px}
+.md-body h1{font-size:16px}.md-body h2{font-size:14px}.md-body h3{font-size:13px}
+.md-body blockquote{border-left:3px solid var(--green);padding-left:10px;margin:6px 0;color:var(--text2)}
+.md-body a{color:var(--green);text-decoration:none}
+
 /* ===== NOTIFICATIONS v2 ===== */
 .notif-filters{display:flex;gap:6px;padding:0 0 12px;overflow-x:auto;flex-shrink:0}
 .notif-filters::-webkit-scrollbar{width:0;height:0}
@@ -1820,6 +1833,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 <div class="toast" id="toast"></div>
 
 <script>
+function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
+
 const tg=window.Telegram?.WebApp;
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
 const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
@@ -2685,7 +2700,7 @@ function selectVariant(el,text){generatedMsg=text;document.getElementById('msg-t
 function copyMsg(){const t=document.getElementById('msg-text').textContent;if(!t||t==='—')return;navigator.clipboard?.writeText(t).catch(()=>{});showToast('Скопировано ✓');}
 function editMsg(){const t=document.getElementById('msg-text');t.contentEditable='true';t.focus();showToast('Редактируй прямо здесь');}
 
-function appendMsg(text,role){const msgs=document.getElementById('ask-msgs');const d=document.createElement('div');d.className=role==='user'?'bubble-user':'bubble-ai';d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
+function appendMsg(text,role){const msgs=document.getElementById('ask-msgs');const d=document.createElement('div');d.className=role==='user'?'bubble-user':'bubble-ai';if(role==='ai'&&text){d.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}else{d.textContent=text;}msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
 function askQuick(text){
   document.getElementById('ask-field').value=text;
   sendAsk();
@@ -2725,7 +2740,7 @@ async function sendAsk(){
     else if(d.error) text='Ошибка: '+( d.error.message||JSON.stringify(d.error));
     else if(typeof d==='string') text=d;
     else text=JSON.stringify(d);
-    lb.textContent=text||'Пустой ответ от сервера.';
+    if(text){lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}else{lb.textContent='Пустой ответ от сервера.';}
   }catch(e){
     lb.textContent='Нет соединения. Проверь интернет и попробуй снова.';
     console.error('sendAsk error:',e);
@@ -2816,7 +2831,7 @@ function sendVoiceMessage(text){
   const lb=appendMsg('','ai');
   lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
   aiCall({model:'claude-sonnet-4-5',max_tokens:800,system:SYS_BASE,messages:[{role:'user',content:text}]})
-    .then(d=>{lb.textContent=parseAIText(d)||'Нет ответа.';})
+    .then(function(d){var t=parseAIText(d)||'';if(t){lb.innerHTML='<div class="md-body">'+parseMarkdown(t)+'</div>';}else{lb.textContent='Нет ответа.';}})
     .catch(()=>{lb.textContent='Нет соединения.';})
     .finally(()=>{isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;});
 }
