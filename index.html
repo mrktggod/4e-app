@@ -2453,53 +2453,62 @@ function openAsk(){
 }
 function openCalendar(){showScreen('calendar');setNavActive('cal');renderCalendar();}
 function openProfile(){showScreen('profile');setNavActive('profile');}
-// ── NOTIFICATIONS DATA ──────────────────────────────────────────
-const NOTIF_DATA = [
-  { id:'n1', type:'reminder', title:'Напоминание: провести собрание для отдела маркетинга', detail:'Срок наступает через час. Задача была поставлена 2 июня в групповом чате.', time:'Сейчас', ts: Date.now() - 3*60000, unread:true, taskId:null },
-  { id:'n2', type:'deadline', title:'Дедлайн «Поставить задачу» сегодня в 18:00', detail:'Юрий взял на себя задачу 2 июня. Осталось менее 3 часов до дедлайна.', time:'08:30', ts: Date.now() - 60*60000, unread:true, taskId:null },
-  { id:'n3', type:'task', title:'4 зафиксировал новую задачу', detail:'Скачать и начать тестировать приложение — задача из группового чата. Исполнитель: все участники.', time:'09:00', ts: Date.now() - 3*60*60000, unread:false, taskId:null },
-  { id:'n4', type:'system', title:'Кирилл не ответил на сообщение', detail:'Вы отправили сообщение Кириллу 2 дня назад. Рекомендуем напомнить.', time:'Вчера', ts: Date.now() - 26*60*60000, unread:false, taskId:null },
-  { id:'n5', type:'task', title:'4 зафиксировал: Позвонить Марине', detail:'Обещание зафиксировано из группового чата -1003766490290. Исполнитель: Alex.', time:'Вчера', ts: Date.now() - 30*60*60000, unread:false, taskId:null },
-  { id:'n6', type:'deadline', title:'Дедлайн «Вернуть гугл» через день', detail:'Задача поставлена от Manman Manman. Срок наступает завтра.', time:'Вчера', ts: Date.now() - 48*60*60000, unread:false, taskId:null },
-];
-
+// ── NOTIFICATIONS (реальные из KV) ───────────────────────────
 let notifFilter = 'all';
-let notifReadSet = new Set(JSON.parse(localStorage.getItem('notif_read') || '[]'));
+let notifCache = []; // кэш загруженных уведомлений
 
-function openNotifications(){
+async function openNotifications(){
   showScreen('notifications');
-  renderNotifs();
+  await loadNotifications();
+}
+
+async function loadNotifications(){
+  const list = document.getElementById('notif-list');
+  if(list) list.innerHTML = '<div class="notif-empty"><span class="dots"><span></span><span></span><span></span></span></div>';
+  if(!getToken()) { renderNotifs([]); return; }
+  try {
+    const res = await fetch(WORKER + '/notifications', { headers: authHeaders() });
+    if(!res.ok) throw new Error('not ok');
+    const data = await res.json();
+    notifCache = Array.isArray(data) ? data : [];
+  } catch(e) {
+    console.error('loadNotifications:', e);
+    notifCache = [];
+  }
+  renderNotifs(notifCache);
+  updateBellDot(notifCache);
 }
 
 function filterNotifs(type, el){
   notifFilter = type;
   document.querySelectorAll('.notif-filter').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  renderNotifs();
+  renderNotifs(notifCache);
 }
 
-function renderNotifs(){
+function renderNotifs(notifs){
   const list = document.getElementById('notif-list');
   if(!list) return;
 
-  const filtered = notifFilter === 'all'
-    ? NOTIF_DATA
-    : NOTIF_DATA.filter(n => n.type === notifFilter);
+  const filtered = notifFilter === 'all' ? notifs : notifs.filter(n => n.type === notifFilter);
 
   if(filtered.length === 0){
     list.innerHTML = '<div class="notif-empty">Нет уведомлений этого типа</div>';
     return;
   }
 
-  // Group by day
-  const now = Date.now();
-  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate()-1);
+  // Добавляем time-метку если нет
+  filtered.forEach(n => {
+    if(!n.time) n.time = formatNotifTime(n.ts);
+  });
 
+  // Группировка по дням
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const yestStart = new Date(todayStart); yestStart.setDate(yestStart.getDate()-1);
   const groups = { today:[], yesterday:[], earlier:[] };
   filtered.forEach(n => {
     if(n.ts >= todayStart.getTime()) groups.today.push(n);
-    else if(n.ts >= yesterdayStart.getTime()) groups.yesterday.push(n);
+    else if(n.ts >= yestStart.getTime()) groups.yesterday.push(n);
     else groups.earlier.push(n);
   });
 
@@ -2507,16 +2516,29 @@ function renderNotifs(){
   if(groups.today.length)     html += renderNotifGroup('Сегодня', groups.today);
   if(groups.yesterday.length) html += renderNotifGroup('Вчера', groups.yesterday);
   if(groups.earlier.length)   html += renderNotifGroup('Раньше', groups.earlier);
-
   list.innerHTML = html;
 
-  // Unread count badge
-  const unreadCount = NOTIF_DATA.filter(n => n.unread && !notifReadSet.has(n.id)).length;
+  // Счётчик непрочитанных
+  updateBellDot(notifCache);
   const badge = document.getElementById('notif-unread-count');
-  if(badge){
-    badge.textContent = unreadCount + ' новых';
-    badge.style.display = unreadCount > 0 ? 'block' : 'none';
-  }
+  const unread = notifCache.filter(n => n.unread).length;
+  if(badge){ badge.textContent = unread + ' новых'; badge.style.display = unread > 0 ? 'block' : 'none'; }
+}
+
+function formatNotifTime(ts){
+  if(!ts) return '';
+  const d = new Date(ts), now = new Date();
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  if(d >= todayStart) return d.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
+  const yest = new Date(todayStart); yest.setDate(yest.getDate()-1);
+  if(d >= yest) return 'Вчера ' + d.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
+  return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
+}
+
+function updateBellDot(notifs){
+  const unread = (notifs||[]).filter(n => n.unread).length;
+  const dot = document.getElementById('bell-dot');
+  if(dot) dot.style.display = unread > 0 ? 'block' : 'none';
 }
 
 function renderNotifGroup(label, items){
@@ -2571,28 +2593,32 @@ function toggleNotif(el){ var id=(typeof el==='string')?el:(el.closest?el.closes
   }
 }
 
-function notifMarkRead(el, silent){ var id=(typeof el==='string')?el:(el&&el.dataset)?el.dataset.nid:el;
-  notifReadSet.add(id);
-  localStorage.setItem('notif_read', JSON.stringify([...notifReadSet]));
+function notifMarkRead(el, silent){
+  var id=(typeof el==='string')?el:(el&&el.dataset)?el.dataset.nid:el;
+  if(!id) return;
+  // Обновляем локальный кэш
+  const n = notifCache.find(n => n.id === id);
+  if(n) n.unread = false;
   const card = document.getElementById('ncard-' + id);
-  if(card){
-    card.classList.remove('unread');
-    const dot = card.querySelector('.notif-unread-dot');
-    if(dot) dot.remove();
-  }
+  if(card){ card.classList.remove('unread'); const dot=card.querySelector('.notif-unread-dot'); if(dot)dot.remove(); }
   if(!silent) showToast('Отмечено как прочитанное');
-  // Update bell dot on home
-  const unread = NOTIF_DATA.filter(n => n.unread && !notifReadSet.has(n.id)).length;
-  const bellDot = document.getElementById('bell-dot');
-  if(bellDot) bellDot.style.display = unread > 0 ? 'block' : 'none';
+  updateBellDot(notifCache);
   const badge = document.getElementById('notif-unread-count');
+  const unread = notifCache.filter(n => n.unread).length;
   if(badge){ badge.textContent = unread + ' новых'; badge.style.display = unread > 0 ? 'block' : 'none'; }
+  // Сохраняем на сервере
+  if(getToken()) fetch(WORKER, { method:'POST', headers:{...authHeaders(),'x-action':'mark-notif-read'}, body:JSON.stringify({notifId:id}) }).catch(()=>{});
 }
 
-function notifDelete(el){ var id=(typeof el==='string')?el:el.dataset?.nid;
+function notifDelete(el){
+  var id=(typeof el==='string')?el:el.dataset?.nid;
+  if(!id) return;
+  notifCache = notifCache.filter(n => n.id !== id);
   const card = document.getElementById('ncard-' + id);
-  if(card){ card.style.opacity='0'; card.style.transform='translateX(20px)'; card.style.transition='.2s'; setTimeout(()=>card.remove(), 200); }
+  if(card){ card.style.opacity='0'; card.style.transform='translateX(20px)'; card.style.transition='.2s'; setTimeout(()=>card.remove(),200); }
   showToast('Уведомление удалено');
+  updateBellDot(notifCache);
+  if(getToken()) fetch(WORKER, { method:'POST', headers:{...authHeaders(),'x-action':'delete-notif'}, body:JSON.stringify({notifId:id}) }).catch(()=>{});
 }
 
 function notifGoToTask(el){ var id=(typeof el==='string')?el:el.dataset?.nid;
