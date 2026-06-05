@@ -70,7 +70,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 /* ===== HEADER ===== */
 .app-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .header-logo{display:grid;grid-template-columns:1fr 1fr;gap:4px;width:32px;height:32px;cursor:pointer}
-.header-logo .lb{border-radius:50%;background:radial-gradient(circle at 35% 35%, #c8e87a, #7A9A2E 50%, #3a5010 100%)}
+.header-logo .lb{border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)}
 .header-right{display:flex;align-items:center;gap:8px}
 .h-btn{width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;flex-shrink:0}
 .h-btn-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg)}
@@ -639,7 +639,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .header-bell{position:relative;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .header-bell-dot{position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--green);border:1.5px solid #0a0f07}
 .header-logo-center{position:absolute;left:50%;transform:translateX(-50%);display:grid;grid-template-columns:1fr 1fr;gap:4px;width:26px;height:26px}
-.header-logo-center .lb{border-radius:50%;background:var(--green);opacity:0.9}
+.header-logo-center .lb{border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%);box-shadow:0 0 8px rgba(154,194,60,0.3)}
 .user-chip-v2{display:flex;align-items:center;gap:5px;border-radius:20px;padding:3px 9px 3px 3px}
 .user-chip-v2 .avatar{width:20px;height:20px;border-radius:50%;background:rgba(154,194,60,0.15);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--green)}
 
@@ -949,8 +949,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   <div id="login-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;gap:0;flex:1">
     <div class="login-logo">
       <div class="logo-4balls" style="width:56px;height:56px;margin:0 auto 24px">
-        <div class="logo-ball"></div><div class="logo-ball"></div>
-        <div class="logo-ball"></div><div class="logo-ball"></div>
+        <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+        <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
       </div>
     </div>
 
@@ -1056,29 +1056,29 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 14px 90px 14px">
 
     <!-- Dashboard -->
-    <div class="dash-grid">
-      <div class="dash-card glass">
+    <div class="dash-grid" id="dash-grid">
+      <div class="dash-card glass" onclick="openStatistics()" style="cursor:pointer">
         <div class="dash-card-label">Выполнено</div>
         <div class="dash-nums">
           <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--green)" id="dash-done-today">0</div></div>
           <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-done-month">0</div></div>
         </div>
       </div>
-      <div class="dash-card glass">
+      <div class="dash-card glass" onclick="openStatistics()" style="cursor:pointer">
         <div class="dash-card-label">Задачи</div>
         <div class="dash-nums">
           <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--text)" id="dash-tasks-today">0</div></div>
           <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-tasks-month">0</div></div>
         </div>
       </div>
-      <div class="dash-card glass">
+      <div class="dash-card glass" onclick="openStatistics()" style="cursor:pointer">
         <div class="dash-card-label">Обещания</div>
         <div class="dash-nums">
           <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:rgba(242,245,233,0.75)" id="dash-prom-today">0</div></div>
           <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-prom-month">0</div></div>
         </div>
       </div>
-      <div class="dash-card glass-green">
+      <div class="dash-card glass-green" onclick="openStatistics()" style="cursor:pointer">
         <div class="dash-card-label green">Прогресс</div>
         <div class="dash-nums">
           <div><div class="dash-sub green">сегодня</div><div class="dash-num-today" style="color:var(--green)" id="dash-prog-today">—</div></div>
@@ -1091,7 +1091,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     <div style="margin-bottom:8px">
       <div class="tasks-header-v2">
         <div class="tasks-label-v2">Задачи</div>
-        <button class="tasks-add-btn glass" onclick="showToast('Добавить задачу...')">+ добавить</button>
+        <button class="tasks-add-btn glass" onclick="openQuickAdd()">+ добавить</button>
       </div>
       <div class="glass" style="border-radius:18px;overflow:hidden">
         <div id="lime-card"><div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">загружаю задачи...</div></div>
@@ -1168,8 +1168,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="ask-welcome" id="ask-welcome">
         <div class="ask-welcome-logo">
           <div class="logo-4balls" style="width:44px;height:44px;margin:0 auto 12px">
-            <div class="logo-ball"></div><div class="logo-ball"></div>
-            <div class="logo-ball"></div><div class="logo-ball"></div>
+            <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+            <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
           </div>
         </div>
         <div class="ask-welcome-title">Привет! Я 4</div>
@@ -1414,8 +1414,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="plan-status-card" id="plan-status-card">
       <div style="display:flex;align-items:center;gap:14px">
         <div class="logo-4balls" style="width:44px;height:44px;flex-shrink:0">
-          <div class="logo-ball"></div><div class="logo-ball"></div>
-          <div class="logo-ball"></div><div class="logo-ball"></div>
+          <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+          <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
         </div>
         <div style="flex:1">
           <div id="plan-status-label" style="font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:1px">Текущий план</div>
@@ -1492,8 +1492,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     <!-- order summary -->
     <div class="order-summary">
       <div class="logo-4balls" style="width:40px;height:40px;flex-shrink:0">
-        <div class="logo-ball"></div><div class="logo-ball"></div>
-        <div class="logo-ball"></div><div class="logo-ball"></div>
+        <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+        <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
       </div>
       <div style="flex:1">
         <div style="font-size:14px;font-weight:700;color:var(--text)" id="order-title">Premium · 1 месяц</div>
@@ -2107,6 +2107,21 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- QUICK ADD OVERLAY -->
+<div id="quick-add-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;align-items:flex-end;justify-content:center">
+  <div style="width:100%;max-width:480px;background:#0E140B;border-radius:24px 24px 0 0;padding:20px 20px 40px;border-top:1px solid rgba(242,245,233,0.08)">
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px">Новая задача</div>
+    <textarea id="quick-add-text" class="detail-edit-field" placeholder="Например: позвонить Антону завтра в 15:00..." style="width:100%;min-height:80px;margin-bottom:12px" autofocus></textarea>
+    <div style="display:flex;gap:8px">
+      <input id="quick-add-person" class="detail-edit-field" placeholder="Исполнитель (необязательно)" style="flex:1"/>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button onclick="submitQuickAdd()" style="flex:1;padding:13px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Добавить</button>
+      <button onclick="closeQuickAdd()" style="padding:13px 16px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:14px;cursor:pointer;font-family:Inter,sans-serif">Отмена</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
@@ -2620,8 +2635,8 @@ async function loadTasks(){
     } else {
       limeCard.innerHTML = outgoing.slice(0,6).map((t,i) => {
         const hot = !!t.deadline;
-        const dimClass = i === 0 ? '' : i === 1 ? 'mid' : 'dim';
-        return '<div class="task-row-v2 ' + dimClass + '" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
+        const dimStyle = i===0?'':('opacity:'+(i===1?'0.7':'0.4')+';');
+        return '<div class="task-row-v2" style="'+dimStyle+'cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
           '<span class="task-num-v2">0' + (i+1) + '</span>' +
           '<div style="flex:1">' +
             '<div class="task-name-v2' + (i>0?' muted':'') + '">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
@@ -2655,8 +2670,117 @@ async function loadTasks(){
       }
     }
 
+    selectedMonth = new Date().getMonth();
     loadStats(outgoing, done);
   }catch(e){console.log('Ошибка loadTasks:',e.message);}
+}
+
+
+// ── Quick Add ─────────────────────────────────────────────────
+function openQuickAdd(){
+  const overlay = document.getElementById('quick-add-overlay');
+  if(overlay){ overlay.style.display='flex'; setTimeout(()=>document.getElementById('quick-add-text')?.focus(),100); }
+}
+function closeQuickAdd(){
+  const overlay = document.getElementById('quick-add-overlay');
+  if(overlay) overlay.style.display='none';
+  document.getElementById('quick-add-text').value='';
+  document.getElementById('quick-add-person').value='';
+}
+async function submitQuickAdd(){
+  const text = (document.getElementById('quick-add-text')?.value||'').trim();
+  const person = (document.getElementById('quick-add-person')?.value||'').trim() || (currentUser?.name||'Я');
+  if(!text){ showToast('Введи текст задачи'); return; }
+  const task = {
+    id: Date.now().toString(),
+    text, person,
+    type: 'task', direction: 'outgoing',
+    date: new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'}),
+    done: false,
+  };
+  try {
+    await fetch(WORKER, {
+      method:'POST', headers:{...authHeaders(),'x-action':'save-task'},
+      body: JSON.stringify({chatId, task})
+    });
+    closeQuickAdd();
+    showToast('Задача добавлена ✓');
+    loadTasks();
+  } catch(e){ showToast('Ошибка сохранения'); }
+}
+
+// ── Month filter ──────────────────────────────────────────────
+let selectedMonth = new Date().getMonth();
+
+function selectMonth(idx, el){
+  selectedMonth = idx;
+  document.querySelectorAll('.month-btn').forEach(b=>{ b.classList.remove('active'); b.classList.add('inactive'); });
+  el.classList.remove('inactive'); el.classList.add('active');
+  renderTasksForMonth();
+}
+
+function renderTasksForMonth(){
+  const monthTasks = allTasksCache.filter(t => {
+    if(!t.date) return selectedMonth === new Date().getMonth();
+    // Parse Russian date string
+    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const parts = t.date.toLowerCase().split(' ');
+    const mIdx = months.indexOf(parts[1]);
+    return mIdx === selectedMonth;
+  });
+  const outgoing = monthTasks.filter(t=>!t.done&&t.direction!=='incoming');
+  const incoming = monthTasks.filter(t=>!t.done&&t.direction==='incoming');
+  const done = allTasksCache.filter(t=>t.done);
+
+  // Update hero count
+  const heroCount = document.getElementById('hero-count');
+  if(heroCount) heroCount.textContent = outgoing.length || '0';
+
+  // Update dashboard
+  const setEl=(id,val)=>{ const el=document.getElementById(id); if(el)el.textContent=val; };
+  setEl('dash-tasks-today', outgoing.length);
+  setEl('dash-prom-today', incoming.length);
+
+  // Re-render task list
+  const limeCard = document.getElementById('lime-card');
+  if(!limeCard) return;
+  if(outgoing.length === 0){
+    limeCard.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Нет задач за этот период</div>';
+  } else {
+    limeCard.innerHTML = outgoing.slice(0,6).map((t,i) => {
+      const hot = !!t.deadline;
+      const dimStyle = i===0?'':'opacity:'+(i===1?'0.7':'0.4')+';';
+      return '<div class="task-row-v2" style="' + dimStyle + 'cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
+        '<span class="task-num-v2">0' + (i+1) + '</span>' +
+        '<div style="flex:1">' +
+          '<div class="task-name-v2' + (i>0?' muted':'') + '">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
+          '<div class="task-date-v2">' + (t.deadline?'📅 '+e2(t.deadline):e2(t.date)) + '</div>' +
+        '</div>' +
+        '<span class="' + (hot?'task-tag-hot':'task-tag-soon') + '">' + (hot?'горит':'скоро') + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Re-render promises
+  const promRows = document.getElementById('promise-rows-v2');
+  if(promRows){
+    if(incoming.length===0){
+      promRows.innerHTML='<div style="padding:16px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Никто ничего не должен</div>';
+    } else {
+      promRows.innerHTML = incoming.slice(0,4).map((t,i)=>{
+        const age=getAge(t.date);
+        const isLate=age.cls==='age-red';
+        return '<div class="promise-row-v2">' +
+          '<div class="promise-avatar">'+(t.person||'?')[0].toUpperCase()+'</div>' +
+          '<div style="flex:1">' +
+            '<div class="promise-name-v2" style="cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
+            '<div class="'+(isLate?'promise-age-red':'task-date-v2')+'">'+age.text+'</div>' +
+          '</div>' +
+          '<button class="promise-remind-btn glass" data-person="'+e2(t.person)+'" data-text="'+e2(t.text)+'" onclick="promiseRemindClick(this)">напомнить</button>' +
+        '</div>';
+      }).join('');
+    }
+  }
 }
 
 function promiseRemindClick(btn){
