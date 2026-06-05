@@ -624,6 +624,92 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .md-body blockquote{border-left:3px solid var(--green);padding-left:10px;margin:6px 0;color:var(--text2)}
 .md-body a{color:var(--green);text-decoration:none}
 
+
+/* ===== GLASSMORPHISM HOME v2 ===== */
+.glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06)}
+.glass-green{background:rgba(154,194,60,0.07);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(154,194,60,0.12)}
+.glass-nav{background:rgba(10,15,7,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.05)}
+
+/* Home screen bg glow */
+#home{background:#0a0f07}
+.home-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(154,194,60,0.07) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* Header */
+.app-header-v2{padding:14px 16px 6px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;flex-shrink:0}
+.header-bell{position:relative;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.header-bell-dot{position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--green);border:1.5px solid #0a0f07}
+.header-logo-center{position:absolute;left:50%;transform:translateX(-50%);display:grid;grid-template-columns:1fr 1fr;gap:4px;width:26px;height:26px}
+.header-logo-center .lb{border-radius:50%;background:var(--green);opacity:0.9}
+.user-chip-v2{display:flex;align-items:center;gap:5px;border-radius:20px;padding:3px 9px 3px 3px}
+.user-chip-v2 .avatar{width:20px;height:20px;border-radius:50%;background:rgba(154,194,60,0.15);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--green)}
+
+/* Hero */
+.hero-v2{padding:4px 18px 10px;display:flex;align-items:flex-end;justify-content:space-between;position:relative;z-index:2;flex-shrink:0}
+.hero-v2-num{font-size:72px;font-weight:700;line-height:1;letter-spacing:-3px;color:var(--text)}
+.hero-v2-label{padding-bottom:6px}
+.hero-v2-label div{font-size:26px;font-weight:700;color:rgba(242,245,233,0.22);letter-spacing:-0.5px;line-height:1.1}
+.hero-v2-label .star{color:rgba(154,194,60,0.7)}
+.hero-badges{display:flex;flex-direction:column;gap:4px;align-items:flex-end;padding-bottom:6px}
+.hero-badge{border-radius:8px;padding:3px 8px;text-align:right}
+.hero-badge .badge-label{font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.hero-badge .badge-val{font-size:12px;font-weight:700}
+.hero-badge-hot .badge-label{color:rgba(154,194,60,0.5)}
+.hero-badge-hot .badge-val{color:var(--green)}
+.hero-badge-promises .badge-label{color:rgba(242,245,233,0.2)}
+.hero-badge-promises .badge-val{color:rgba(242,245,233,0.5)}
+
+/* Focus bar */
+.focus-bar{margin:0 16px 8px;border-radius:10px;padding:6px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:2}
+.focus-bar-text{font-size:11px;color:rgba(242,245,233,0.3)}
+.focus-bar-text span{color:var(--green);font-weight:600}
+.focus-bar-tag{font-size:10px;color:rgba(154,194,60,0.4);font-weight:500}
+
+/* Month slider */
+.month-slider{padding:0 16px 10px;overflow-x:auto;display:flex;gap:6px;scrollbar-width:none;flex-shrink:0;position:relative;z-index:2}
+.month-slider::-webkit-scrollbar{display:none}
+.month-btn{flex-shrink:0;padding:4px 12px;border-radius:16px;font-size:11px;cursor:pointer;border:none;font-family:Inter,sans-serif}
+.month-btn.active{background:var(--green);color:#0a0f07;font-weight:600}
+.month-btn.inactive{color:rgba(242,245,233,0.25);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)!important}
+
+/* Dashboard glass cards */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.dash-card{border-radius:16px;padding:11px 12px}
+.dash-card-label{font-size:9px;color:rgba(242,245,233,0.2);letter-spacing:1.5px;text-transform:uppercase;font-weight:500;margin-bottom:8px}
+.dash-card-label.green{color:rgba(154,194,60,0.4)}
+.dash-nums{display:flex;justify-content:space-between;align-items:flex-end}
+.dash-num-today{font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1}
+.dash-num-month{font-size:18px;font-weight:600;line-height:1;color:rgba(242,245,233,0.2)}
+.dash-sub{font-size:9px;margin-bottom:3px;color:rgba(242,245,233,0.2)}
+.dash-sub.green{color:rgba(242,245,233,0.15)}
+
+/* Tasks v2 */
+.tasks-header-v2{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.tasks-label-v2{font-size:9px;letter-spacing:2px;color:rgba(242,245,233,0.2);text-transform:uppercase;font-weight:500}
+.tasks-add-btn{border-radius:20px;padding:3px 10px;font-size:10px;color:rgba(242,245,233,0.3);cursor:pointer;border:none;font-family:Inter,sans-serif;background:transparent}
+.task-row-v2{display:flex;padding:11px 13px;gap:8px;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04)}
+.task-row-v2:last-child{border-bottom:none}
+.task-row-v2.dim{opacity:0.4}
+.task-row-v2.mid{opacity:0.7}
+.task-num-v2{font-size:10px;color:rgba(242,245,233,0.2);font-weight:600;min-width:18px}
+.task-name-v2{font-size:13px;font-weight:600;color:var(--text)}
+.task-name-v2.muted{font-weight:500;color:rgba(242,245,233,0.8)}
+.task-date-v2{font-size:10px;color:rgba(242,245,233,0.3);margin-top:2px}
+.task-tag-hot{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--green);color:#0a0f07;text-transform:uppercase}
+.task-tag-soon{font-size:9px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(154,194,60,0.1);color:rgba(154,194,60,0.7);border:1px solid rgba(154,194,60,0.15);text-transform:uppercase}
+
+/* Promises v2 */
+.promise-row-v2{display:flex;padding:10px 13px;gap:8px;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04)}
+.promise-row-v2:last-child{border-bottom:none}
+.promise-avatar{width:26px;height:26px;border-radius:50%;background:rgba(154,194,60,0.08);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(154,194,60,0.6);flex-shrink:0;border:1px solid rgba(154,194,60,0.1)}
+.promise-name-v2{font-size:13px;font-weight:500;color:rgba(242,245,233,0.85)}
+.promise-age-red{font-size:10px;color:rgba(255,100,100,0.6);margin-top:2px}
+.promise-remind-btn{font-size:10px;color:rgba(242,245,233,0.3);border-radius:8px;padding:3px 8px;cursor:pointer;border:none;font-family:Inter,sans-serif;background:transparent}
+
+/* Bottom nav v2 */
+.bottom-nav-v2{flex-shrink:0;padding:8px 14px 14px}
+.bottom-nav-v2 .nav-inner{border-radius:32px;display:flex;align-items:center;justify-content:space-around;padding:8px}
+.nav-mic-v2{width:50px;height:50px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(154,194,60,0.2)}
+
 /* ===== NOTIFICATIONS v2 ===== */
 .notif-filters{display:flex;gap:6px;padding:0 0 12px;overflow-x:auto;flex-shrink:0}
 .notif-filters::-webkit-scrollbar{width:0;height:0}
@@ -909,60 +995,130 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
-<!-- HOME -->
-<div class="screen" id="home">
-  <div class="app-header">
-    <div class="header-logo" onclick="goHome()">
-      <div class="lb"></div><div class="lb"></div><div class="lb"></div><div class="lb"></div>
-    </div>
-    <div class="header-right">
-      <div class="h-btn" onclick="openNotifications()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <div class="h-btn-dot" id="bell-dot"></div>
+<!-- HOME v2 glassmorphism -->
+<div class="screen" id="home" style="display:flex;flex-direction:column;overflow:hidden">
+  <div class="home-glow"></div>
+
+  <!-- Fixed top -->
+  <div style="flex-shrink:0;position:relative;z-index:2">
+
+    <!-- Header row -->
+    <div class="app-header-v2">
+      <div style="display:flex;align-items:center;gap:7px">
+        <div class="header-bell glass" onclick="openNotifications()" style="cursor:pointer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(242,245,233,0.5)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="header-bell-dot" id="bell-dot"></div>
+        </div>
+        <span style="font-size:10px;color:rgba(242,245,233,0.3)" id="home-date"></span>
       </div>
-      <div class="user-chip" onclick="openProfile()" id="user-chip">
-        <div class="user-chip-avatar" id="user-avatar-small">?</div>
-        <span class="user-chip-name" id="user-chip-name">Профиль</span>
+      <div class="header-logo-center">
+        <div class="lb"></div><div class="lb"></div><div class="lb"></div><div class="lb"></div>
+      </div>
+      <div class="user-chip-v2 glass" onclick="openProfile()" id="user-chip" style="cursor:pointer">
+        <div class="avatar" id="user-avatar-small">?</div>
+        <span style="font-size:11px;color:rgba(242,245,233,0.6)" id="user-chip-name">Профиль</span>
       </div>
     </div>
-  </div>
-  <div class="scroll-body">
-    <div class="hero-section">
-      <div class="hero-meta"><span class="hero-dot"></span><span>сегодня на радаре</span></div>
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-        <div>
-          <div style="display:flex;align-items:baseline;gap:8px">
-            <span class="hero-count" id="hero-count">—</span>
-            <span class="hero-label">дела<br>ждут<span class="hero-star">✦</span></span>
-          </div>
-          <div class="hero-sub">
-            <div class="hero-tag" id="sub-promises-tag"><span class="hero-dot"></span><span id="sub-promises">0 обещаний</span></div>
-            <div class="hero-tag" id="sub-deadline-tag"><span id="sub-deadline">загрузка...</span></div>
-          </div>
+
+    <!-- Hero -->
+    <div class="hero-v2">
+      <div style="display:flex;align-items:flex-end;gap:8px">
+        <span class="hero-v2-num" id="hero-count">—</span>
+        <div class="hero-v2-label">
+          <div>дел</div>
+          <div>ждут<span class="star">✦</span></div>
+        </div>
+      </div>
+      <div class="hero-badges">
+        <div class="hero-badge hero-badge-hot glass-green" id="hero-hot-badge" style="display:none">
+          <div class="badge-label">горит</div>
+          <div class="badge-val" id="hero-hot-count">0</div>
+        </div>
+        <div class="hero-badge hero-badge-promises glass" id="hero-promises-badge" style="display:none">
+          <div class="badge-label">должны</div>
+          <div class="badge-val" id="hero-promises-count">0</div>
         </div>
       </div>
     </div>
 
-    <div class="section">
-      <div class="tasks-wrap" id="lime-card"><div class="empty-card">загружаю задачи...</div></div>
+    <!-- Focus bar -->
+    <div class="focus-bar glass">
+      <span class="focus-bar-text" id="focus-bar-text">загружаю...</span>
+      <span class="focus-bar-tag">фокус дня</span>
     </div>
 
-    <div class="section">
-      <div class="promises-wrap">
-        <div class="promises-head">
-          <span class="promises-lbl">тебе должны</span>
-          <span class="promises-cnt" id="promise-count">0</span>
+    <!-- Month slider -->
+    <div class="month-slider" id="month-slider"></div>
+
+  </div>
+
+  <!-- Scrollable content -->
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 14px">
+
+    <!-- Dashboard -->
+    <div class="dash-grid">
+      <div class="dash-card glass">
+        <div class="dash-card-label">Выполнено</div>
+        <div class="dash-nums">
+          <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--green)" id="dash-done-today">0</div></div>
+          <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-done-month">0</div></div>
         </div>
-        <div id="promise-rows"><div class="promise-row"><span style="font-size:12px;color:var(--muted)">загружаю...</span></div></div>
+      </div>
+      <div class="dash-card glass">
+        <div class="dash-card-label">Задачи</div>
+        <div class="dash-nums">
+          <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--text)" id="dash-tasks-today">0</div></div>
+          <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-tasks-month">0</div></div>
+        </div>
+      </div>
+      <div class="dash-card glass">
+        <div class="dash-card-label">Обещания</div>
+        <div class="dash-nums">
+          <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:rgba(242,245,233,0.75)" id="dash-prom-today">0</div></div>
+          <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-prom-month">0</div></div>
+        </div>
+      </div>
+      <div class="dash-card glass-green">
+        <div class="dash-card-label green">Прогресс</div>
+        <div class="dash-nums">
+          <div><div class="dash-sub green">сегодня</div><div class="dash-num-today" style="color:var(--green)" id="dash-prog-today">—</div></div>
+          <div style="text-align:right"><div class="dash-sub green">за месяц</div><div class="dash-num-month" style="color:rgba(154,194,60,0.3)" id="dash-prog-month">—</div></div>
+        </div>
       </div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card"><span class="stat-n" style="color:var(--text)" id="done-count">0</span><span class="stat-l">выполнено</span></div>
-      <div class="stat-card accent"><span class="stat-n" style="color:var(--green)" id="tasks-count">0</span><span class="stat-l" style="color:var(--green);opacity:0.7">задач</span></div>
-      <div class="stat-card"><span class="stat-n" style="color:var(--green)" id="promises-count">0</span><span class="stat-l">обещ.</span></div>
+    <!-- Tasks -->
+    <div style="margin-bottom:8px">
+      <div class="tasks-header-v2">
+        <div class="tasks-label-v2">Задачи</div>
+        <button class="tasks-add-btn glass" onclick="showToast('Добавить задачу...')">+ добавить</button>
+      </div>
+      <div class="glass" style="border-radius:18px;overflow:hidden">
+        <div id="lime-card"><div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">загружаю задачи...</div></div>
+      </div>
+    </div>
+
+    <!-- Promises -->
+    <div style="margin-bottom:80px">
+      <div class="tasks-label-v2" style="margin-bottom:6px">Тебе должны <span style="color:var(--green);font-size:11px;letter-spacing:0" id="promise-count-v2"></span></div>
+      <div class="glass" style="border-radius:18px;overflow:hidden">
+        <div id="promise-rows-v2"><div style="padding:16px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">загружаю...</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Fixed bottom nav -->
+  <div class="bottom-nav-v2 glass-nav" style="position:absolute;bottom:0;left:0;right:0">
+    <div class="nav-inner glass">
+      <div class="nav-item" id="nav-ask" onclick="openAsk()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="nav-item" id="nav-stats" onclick="openStatistics()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div class="nav-mic-v2" onclick="openVoice()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+      <div class="nav-item" id="nav-cal" onclick="openCalendar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="nav-item" id="nav-brain" onclick="showToast('Заметки — скоро!')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.66Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.66Z"/></svg></div>
     </div>
   </div>
+
 </div>
 
 <!-- WRITE -->
@@ -2280,10 +2436,10 @@ function updateSubscriptionScreen() {
   }
 }
 
-// Вызываем при открытии экрана подписки
-const _origShowSubScreen = showSubScreen;
+// showSubScreen уже определена ниже — патч через переопределение после загрузки
 function showSubScreen(id) {
-  _origShowSubScreen(id);
+  // base impl will be overridden after DOMContentLoaded
+  _showSubScreenBase(id);
   if (id === 'subscription') updateSubscriptionScreen();
 }
 let obCurrent = 0;
@@ -2348,7 +2504,6 @@ function obDone(){
   document.head.appendChild(s);
 })();
 
-initApp();
 
 const SYS_BASE=`Ты — 4, персональный AI-секретарь. Отвечай коротко, по-русски, дружелюбно.
 
@@ -2367,6 +2522,9 @@ const SYS_BASE=`Ты — 4, персональный AI-секретарь. От
 - Не обсуждаешь разработку приложения
 
 Если пользователь просит что-то из списка "не делаешь" — вежливо объясни что это выходит за рамки твоих задач, и предложи написать в поддержку: Профиль → Поддержка → Написать в поддержку. Не больше 2 предложений.`;
+initApp();
+
+
 
 function checkTrial(){
   if(currentUser && currentUser.trialActive===false){
@@ -2378,6 +2536,26 @@ function checkTrial(){
 }
 
 async function loadTasks(){
+  // Init date
+  const dateEl = document.getElementById('home-date');
+  if(dateEl){
+    const now = new Date();
+    const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+    dateEl.textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()];
+  }
+  // Init month slider
+  const slider = document.getElementById('month-slider');
+  if(slider && !slider.dataset.init){
+    slider.dataset.init = '1';
+    const months = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+    const cur = new Date().getMonth();
+    let html = '';
+    for(let i = cur; i >= Math.max(0, cur-5); i--){
+      html += '<button class="month-btn ' + (i===cur?'active':'inactive') + '" onclick="selectMonth(' + i + ',this)">' + months[i] + '</button>';
+    }
+    slider.innerHTML = html;
+  }
   try{
     const res=await fetch(WORKER+'/tasks?chatId='+chatId, {headers: getToken()?{'x-token':getToken()}:{}});
     const tasks=await res.json();
@@ -2386,26 +2564,110 @@ async function loadTasks(){
     const outgoing=active.filter(t=>t.direction!=='incoming');
     const incoming=active.filter(t=>t.direction==='incoming');
     allTasksCache=active;
-    document.getElementById('tasks-count').textContent=outgoing.length;
-    document.getElementById('promises-count').textContent=incoming.length;
-    document.getElementById('promise-count').textContent=incoming.length;
-    document.getElementById('done-count').textContent=done.length;
-    document.getElementById('hero-count').textContent=outgoing.length;
-    document.getElementById('sub-promises').textContent=incoming.length+' обещани'+(incoming.length===1?'е':incoming.length<5?'я':'й');
     const hotCount=outgoing.filter(t=>t.deadline).length;
-    document.getElementById('sub-deadline').textContent=hotCount>0?hotCount+' дедлайн'+(hotCount===1?'':hotCount<5?'а':'ов')+' горит':'всё спокойно';
-    const bellDot=document.getElementById('bell-dot');
-    if(bellDot)bellDot.style.display=hotCount>0?'block':'none';
-    const limeCard=document.getElementById('lime-card');
-    // trial expired — show banner instead of add actions
-    const trialOk=!currentUser||currentUser.trialActive!==false;
-    if(outgoing.length===0){limeCard.innerHTML='<div class="empty-card">Активных задач нет ✓</div>';}
-    else{limeCard.innerHTML=outgoing.slice(0,6).map((t,i)=>`<div class="task-row" onclick="openTaskById('${t.id}',${i})"><div class="task-top"><span class="task-num">0${i+1}</span><div class="task-info"><div class="task-name">${e2(t.person)} — ${e2(t.text)}</div><div class="task-from">${t.deadline?'📅 '+e2(t.deadline)+' · ':''}${e2(t.date)}</div></div><span class="task-tag ${t.deadline?'tag-hot':'tag-med'}">${t.deadline?'горит':'скоро'}</span></div><div class="task-actions"><button class="t-btn t-write" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','${e2(t.text)}','${e2(t.text)}')">написать</button>${trialOk?`<button class="t-btn t-done" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ готово</button>`:''}<div class="t-snooze" onclick="event.stopPropagation();snooze(this)">позже</div></div></div>`).join('');}
-    const promiseRows=document.getElementById('promise-rows');
-    if(incoming.length===0){promiseRows.innerHTML='<div class="promise-row"><span style="font-size:12px;color:var(--muted)">Никто ничего не должен</span></div>';}
-    else{promiseRows.innerHTML=incoming.slice(0,5).map((t,i)=>{const age=getAge(t.date);return`<div class="promise-row" onclick="openTaskById('${t.id}',${i})"><div class="promise-top"><span class="promise-name">${e2(t.person)} — ${e2(t.text)}</span><span class="promise-age ${age.cls}">${age.text}</span></div><div class="promise-actions"><button class="p-btn p-remind" onclick="event.stopPropagation();openWrite('${e2(t.person)}','${(t.person||'?')[0]}','Напоминание','${e2(t.person)} обещал: ${e2(t.text)}')">напомнить</button>${trialOk?`<button class="p-btn p-got" onclick="event.stopPropagation();markDoneKV(this,'${t.id}')">✓ получил</button>`:''}</div></div>`;}).join('');}
+
+    // Hero
+    const heroCount = document.getElementById('hero-count');
+    if(heroCount) heroCount.textContent = outgoing.length || '0';
+
+    // Hot badge
+    const hotBadge = document.getElementById('hero-hot-badge');
+    const hotCountEl = document.getElementById('hero-hot-count');
+    if(hotBadge){ hotBadge.style.display = hotCount > 0 ? 'block' : 'none'; }
+    if(hotCountEl){ hotCountEl.textContent = hotCount + ' задач' + (hotCount===1?'а':''); }
+
+    // Promises badge
+    const promBadge = document.getElementById('hero-promises-badge');
+    const promCountEl = document.getElementById('hero-promises-count');
+    if(promBadge){ promBadge.style.display = incoming.length > 0 ? 'block' : 'none'; }
+    if(promCountEl){ promCountEl.textContent = incoming.length + ' обещ.'; }
+
+    // Focus bar
+    const focusEl = document.getElementById('focus-bar-text');
+    if(focusEl){
+      const hr = new Date().getHours();
+      const left = 22 - hr;
+      if(hotCount > 0) focusEl.innerHTML = '⏳ Осталось ' + left + ' ч · <span>' + hotCount + ' горят</span>';
+      else if(outgoing.length > 0) focusEl.innerHTML = '✓ ' + done.length + ' выполнено сегодня · ' + outgoing.length + ' активных';
+      else focusEl.innerHTML = '✅ Всё выполнено! Хороший день.';
+    }
+
+    // Dashboard
+    const setEl = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+    setEl('dash-done-today', done.length);
+    setEl('dash-done-month', done.length);
+    setEl('tasks-count', outgoing.length);
+    setEl('dash-tasks-today', outgoing.length);
+    setEl('dash-tasks-month', active.length);
+    setEl('promises-count', incoming.length);
+    setEl('promise-count', incoming.length);
+    setEl('dash-prom-today', incoming.length);
+    setEl('dash-prom-month', incoming.length);
+    const pct = active.length > 0 ? Math.round(done.length/(done.length+active.length)*100) : 0;
+    setEl('dash-prog-today', pct + '%');
+    setEl('dash-prog-month', pct + '%');
+    setEl('done-count', done.length);
+
+    // Bell dot
+    const bellDot = document.getElementById('bell-dot');
+    if(bellDot) bellDot.style.display = hotCount > 0 ? 'block' : 'none';
+
+    // Tasks list
+    const limeCard = document.getElementById('lime-card');
+    const trialOk = !currentUser || currentUser.trialActive !== false;
+    if(outgoing.length === 0){
+      limeCard.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Активных задач нет ✓</div>';
+    } else {
+      limeCard.innerHTML = outgoing.slice(0,6).map((t,i) => {
+        const hot = !!t.deadline;
+        const dimClass = i === 0 ? '' : i === 1 ? 'mid' : 'dim';
+        return '<div class="task-row-v2 ' + dimClass + '" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
+          '<span class="task-num-v2">0' + (i+1) + '</span>' +
+          '<div style="flex:1">' +
+            '<div class="task-name-v2' + (i>0?' muted':'') + '">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
+            '<div class="task-date-v2">' + (t.deadline ? '📅 '+e2(t.deadline) : e2(t.date)) + '</div>' +
+          '</div>' +
+          '<span class="' + (hot ? 'task-tag-hot' : 'task-tag-soon') + '">' + (hot ? 'горит' : 'скоро') + '</span>' +
+        '</div>';
+      }).join('');
+    }
+
+    // Promises
+    const promRows = document.getElementById('promise-rows-v2');
+    const promCountV2 = document.getElementById('promise-count-v2');
+    if(promCountV2) promCountV2.textContent = incoming.length > 0 ? '· ' + incoming.length : '';
+    if(promRows){
+      if(incoming.length === 0){
+        promRows.innerHTML = '<div style="padding:16px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Никто ничего не должен</div>';
+      } else {
+        promRows.innerHTML = incoming.slice(0,4).map((t,i) => {
+          const age = getAge(t.date);
+          const isLate = age.cls === 'age-red';
+          return '<div class="promise-row-v2' + (i>0?' style="opacity:0.7"':'') + '">' +
+            '<div class="promise-avatar">' + (t.person||'?')[0].toUpperCase() + '</div>' +
+            '<div style="flex:1">' +
+              '<div class="promise-name-v2">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
+              '<div class="' + (isLate ? 'promise-age-red' : 'task-date-v2') + '">' + age.text + '</div>' +
+            '</div>' +
+            '<button class="promise-remind-btn glass" data-person="' + e2(t.person) + '" data-text="' + e2(t.text) + '" onclick="promiseRemindClick(this)">напомнить</button>' +
+          '</div>';
+        }).join('');
+      }
+    }
+
     loadStats(outgoing, done);
-  }catch(e){console.log('Ошибка:',e.message);}
+  }catch(e){console.log('Ошибка loadTasks:',e.message);}
+}
+
+function promiseRemindClick(btn){
+  var person = btn.dataset.person;
+  var text = btn.dataset.text;
+  openWrite(person, (person||'?')[0], 'Напоминание', person + ' обещал: ' + text);
+}
+
+function selectMonth(idx, el){
+  document.querySelectorAll('.month-btn').forEach(b => { b.classList.remove('active'); b.classList.add('inactive'); });
+  el.classList.remove('inactive'); el.classList.add('active');
 }
 
 function loadStats(outgoing, done){
@@ -2983,7 +3245,7 @@ function sendVoiceMessage(text){
 function closeVoice(){if(recognition){try{recognition.stop();}catch(e){}recognition=null;}clearTimeout(voiceTimer);document.getElementById('voice-overlay').classList.remove('active');document.getElementById('voice-title').textContent='4 анализирует';}
 
 // ===== SUBSCREEN NAVIGATION =====
-function showSubScreen(id){
+function _showSubScreenBase(id){
   // Hide all screens
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const s=document.getElementById(id);
