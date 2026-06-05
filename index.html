@@ -996,7 +996,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 </div>
 
 <!-- HOME v2 glassmorphism -->
-<div class="screen" id="home" style="display:flex;flex-direction:column;overflow:hidden">
+<div class="screen" id="home" style="flex-direction:column;overflow:hidden;position:relative">
   <div class="home-glow"></div>
 
   <!-- Fixed top -->
@@ -1053,7 +1053,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 
   <!-- Scrollable content -->
-  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 14px">
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 14px 90px 14px">
 
     <!-- Dashboard -->
     <div class="dash-grid">
@@ -2695,9 +2695,11 @@ function setNavActive(id){document.querySelectorAll('.nav-item').forEach(n=>n.cl
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const s=document.getElementById(id);if(s){s.classList.add('active');s.scrollTop=0;}
+  // Hide global-nav (old nav) — we use bottom-nav-v2 on home, global-nav on other screens
   const nav=document.getElementById('global-nav');
-  const noNav=['login','voice-overlay'];
+  const noNav=['login','voice-overlay','home'];
   if(nav)nav.classList.toggle('hidden',noNav.includes(id));
+  // bottom-nav-v2 is inside #home so it's only visible when home is active — no action needed
   const hs=document.querySelector('.scroll-body');
   if(hs)hs.style.paddingBottom=id==='home'?'96px':'16px';
 }
