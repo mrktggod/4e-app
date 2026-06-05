@@ -1057,21 +1057,21 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
     <!-- Dashboard -->
     <div class="dash-grid" id="dash-grid">
-      <div class="dash-card glass" onclick="openStatistics()" style="cursor:pointer">
+      <div class="dash-card glass" onclick="openDoneList()" style="cursor:pointer">
         <div class="dash-card-label">Выполнено</div>
         <div class="dash-nums">
           <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--green)" id="dash-done-today">0</div></div>
           <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-done-month">0</div></div>
         </div>
       </div>
-      <div class="dash-card glass" onclick="openStatistics()" style="cursor:pointer">
+      <div class="dash-card glass" onclick="showScreen('home');setNavActive('home')" style="cursor:pointer">
         <div class="dash-card-label">Задачи</div>
         <div class="dash-nums">
           <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--text)" id="dash-tasks-today">0</div></div>
           <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-tasks-month">0</div></div>
         </div>
       </div>
-      <div class="dash-card glass" onclick="openStatistics()" style="cursor:pointer">
+      <div class="dash-card glass" onclick="openPromiseList()" style="cursor:pointer">
         <div class="dash-card-label">Обещания</div>
         <div class="dash-nums">
           <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:rgba(242,245,233,0.75)" id="dash-prom-today">0</div></div>
@@ -1225,8 +1225,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
     <!-- Original message -->
     <div class="detail-sec">
-      <div class="detail-sec-label">Оригинальное сообщение</div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.5;font-style:italic" id="detail-orig-msg">—</div>
+      <div class="detail-sec-label">Текст задачи</div>
+      <textarea class="detail-edit-field" id="detail-orig-msg" style="min-height:60px;font-style:normal" placeholder="Текст задачи..."></textarea>
     </div>
 
     <!-- Deadline -->
@@ -1246,6 +1246,17 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="tag-add" onclick="toggleTagInput()" style="margin-top:6px;display:inline-flex">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         добавить тег
+      </div>
+    </div>
+
+    <!-- AI Advice -->
+    <div class="detail-sec" id="detail-ai-sec">
+      <div class="detail-sec-label" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Совет от 4</span>
+        <button onclick="loadTaskAdvice()" style="font-size:10px;color:var(--green);background:transparent;border:none;cursor:pointer;font-family:Inter,sans-serif;padding:0">обновить ↻</button>
+      </div>
+      <div id="detail-ai-advice" style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.6;min-height:44px">
+        <span class="dots"><span></span><span></span><span></span></span>
       </div>
     </div>
 
@@ -2107,6 +2118,25 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- CONTACT PANEL -->
+<div id="contact-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;align-items:flex-end;justify-content:center">
+  <div style="width:100%;max-width:480px;background:#0E140B;border-radius:24px 24px 0 0;padding:24px 20px 40px;border-top:1px solid rgba(242,245,233,0.08)">
+    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px" id="contact-panel-name">Контакт</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:20px" id="contact-panel-task"></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button onclick="contactViaTelegram()" style="padding:13px;border-radius:14px;background:rgba(42,171,238,0.12);border:1px solid rgba(42,171,238,0.2);color:#2AABEE;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:10px;text-align:left">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
+        Написать в Telegram
+      </button>
+      <button onclick="contactViaWrite()" style="padding:13px;border-radius:14px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);color:var(--green);font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:10px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Составить сообщение с 4
+      </button>
+      <button onclick="closeContactPanel()" style="padding:13px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:14px;cursor:pointer;font-family:Inter,sans-serif">Отмена</button>
+    </div>
+  </div>
+</div>
+
 <!-- QUICK ADD OVERLAY -->
 <div id="quick-add-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;align-items:flex-end;justify-content:center">
   <div style="width:100%;max-width:480px;background:#0E140B;border-radius:24px 24px 0 0;padding:20px 20px 40px;border-top:1px solid rgba(242,245,233,0.08)">
@@ -2720,11 +2750,11 @@ function selectMonth(idx, el){
 }
 
 function renderTasksForMonth(){
-  const monthTasks = allTasksCache.filter(t => {
-    if(!t.date) return selectedMonth === new Date().getMonth();
-    // Parse Russian date string
-    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const parts = t.date.toLowerCase().split(' ');
+  const curMonth = new Date().getMonth();
+  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  const monthTasks = selectedMonth === curMonth ? allTasksCache : allTasksCache.filter(t => {
+    if(!t.date) return false;
+    const parts = t.date.toLowerCase().trim().split(' ');
     const mIdx = months.indexOf(parts[1]);
     return mIdx === selectedMonth;
   });
@@ -2773,7 +2803,7 @@ function renderTasksForMonth(){
         return '<div class="promise-row-v2">' +
           '<div class="promise-avatar">'+(t.person||'?')[0].toUpperCase()+'</div>' +
           '<div style="flex:1">' +
-            '<div class="promise-name-v2" style="cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
+            '<div class="promise-name-v2" style="cursor:pointer" data-tid="' + t.id + '" data-tidx="' + i + '" onclick="openTaskByEl(this)">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
             '<div class="'+(isLate?'promise-age-red':'task-date-v2')+'">'+age.text+'</div>' +
           '</div>' +
           '<button class="promise-remind-btn glass" data-person="'+e2(t.person)+'" data-text="'+e2(t.text)+'" onclick="promiseRemindClick(this)">напомнить</button>' +
@@ -3015,6 +3045,92 @@ function notifGoToTask(el){ var id=(typeof el==='string')?el:el.dataset?.nid;
 }
 function openStatistics(){showScreen('statistics');setNavActive('stats');}
 
+
+// ── Done list screen (выполненные) ──────────────────────────
+function openDoneList(){
+  const done = allTasksCache.filter(t=>t.done);
+  openFilteredTaskList('Выполнено', done, true);
+}
+
+function openPromiseList(){
+  const promises = allTasksCache.filter(t=>!t.done && t.direction==='incoming');
+  openFilteredTaskList('Обещания', promises, false);
+}
+
+function openFilteredTaskList(title, tasks, isDone){
+  // Reuse statistics screen with custom content
+  showScreen('statistics');
+  setNavActive('stats');
+  const scroll = document.querySelector('#statistics .stats-scroll');
+  if(!scroll) return;
+  if(!tasks.length){
+    scroll.innerHTML = '<div style="text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)">' + (isDone ? 'Нет выполненных задач' : 'Нет обещаний') + '</div>';
+    return;
+  }
+  scroll.innerHTML = '<div style="margin-bottom:16px">' +
+    tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(t.date) + (t.deadline?'  📅 '+e2(t.deadline):'') + '</div></div>' +
+      (isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="font-size:9px;color:var(--muted)">ждём</span>') +
+    '</div>'
+    ).join('') +
+  '</div>';
+}
+
+// ── Contact panel (напомнить / написать) ─────────────────────
+function openContactPanel(person, taskText, taskId){
+  const overlay = document.getElementById('contact-panel-overlay');
+  if(!overlay) return;
+  document.getElementById('contact-panel-name').textContent = person || 'Контакт';
+  document.getElementById('contact-panel-task').textContent = taskText || '';
+  overlay.dataset.person = person || '';
+  overlay.dataset.task = taskText || '';
+  overlay.style.display = 'flex';
+}
+
+function closeContactPanel(){
+  const overlay = document.getElementById('contact-panel-overlay');
+  if(overlay) overlay.style.display = 'none';
+}
+
+function contactViaTelegram(){
+  const person = document.getElementById('contact-panel-overlay').dataset.person || '';
+  const task = document.getElementById('contact-panel-overlay').dataset.task || '';
+  closeContactPanel();
+  // Try to open Telegram with pre-filled message
+  const msg = encodeURIComponent('Привет! Напоминаю про: ' + task);
+  window.open('https://t.me/share/url?url=&text=' + msg, '_blank');
+}
+
+function contactViaWrite(){
+  const person = document.getElementById('contact-panel-overlay').dataset.person || '';
+  const task = document.getElementById('contact-panel-overlay').dataset.task || '';
+  closeContactPanel();
+  openWrite(person, (person||'?')[0], task, person + ' обещал: ' + task);
+}
+
+// ── AI advice in task detail ──────────────────────────────────
+async function loadTaskAdvice(){
+  if(!currentDetailTask) return;
+  const el = document.getElementById('detail-ai-advice');
+  if(!el) return;
+  el.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
+  const t = currentDetailTask;
+  const prompt = 'Задача: ' + t.text + '. Исполнитель: ' + t.person + (t.deadline ? '. Дедлайн: ' + t.deadline : '') + '. Дай короткий практический совет (2-3 предложения) как лучше подойти к этой задаче или напомнить о ней.';
+  try {
+    const r = await fetch(WORKER, {method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:'Ты — краткий деловой помощник. Отвечай по-русски, конкретно, 2-3 предложения.',messages:[{role:'user',content:prompt}]})});
+    const d = await r.json();
+    const text = d.content?.[0]?.text || '';
+    el.innerHTML = text ? '<div class="md-body">' + parseMarkdown(text) + '</div>' : 'Нет ответа';
+  } catch(e){ el.textContent = 'Ошибка загрузки совета'; }
+}
+
+function openTaskByEl(el){
+  const taskId = el.dataset.tid;
+  const idx = parseInt(el.dataset.tidx)||0;
+  openTaskById(taskId, idx);
+}
+
 function openTaskById(taskId,idx){const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];if(!t)return;openTask(t,allTasksCache.indexOf(t));}
 // Текущая задача открытая на detail экране
 let currentDetailTask = null;
@@ -3047,17 +3163,22 @@ function openTask(t,idx){
   document.getElementById('detail-person-v2').textContent = t.person || '—';
   document.getElementById('detail-date-v2').textContent = t.date || '—';
 
-  // Chat chip — показываем chatId если групповая задача
+  // Chat chip
   const chatChip = document.getElementById('detail-chat-chip');
   if(t.chatId && t.chatId.startsWith('group_')) {
     chatChip.style.display = 'flex';
-    document.getElementById('detail-chat-v2').textContent = 'группа ' + t.chatId.replace('group_','').slice(-4);
+    const chatName = t.chatName || ('группа ···' + t.chatId.replace('group_','').slice(-4));
+    document.getElementById('detail-chat-v2').textContent = chatName;
+  } else if(t.chatId && t.chatId.startsWith('dm_')) {
+    chatChip.style.display = 'flex';
+    document.getElementById('detail-chat-v2').textContent = 'личка';
   } else {
     chatChip.style.display = 'none';
   }
 
-  // Original message
-  document.getElementById('detail-orig-msg').textContent = t.originalMsg || t.text || '—';
+  // Текст задачи (editable)
+  const origEl = document.getElementById('detail-orig-msg');
+  if(origEl) origEl.value = t.originalMsg || t.text || '';
 
   // Deadline input
   document.getElementById('detail-deadline-input').value = t.deadline || '';
@@ -3086,10 +3207,11 @@ function openTask(t,idx){
     setTimeout(()=>{showScreen('home');loadTasks();},400);
   };
   document.getElementById('detail-write-btn').onclick=()=>{
-    openWrite(t.person,(t.person||'?')[0],t.text,t.text);
+    openContactPanel(t.person, t.text, t.id);
   };
 
   showScreen('task-detail');
+  setTimeout(loadTaskAdvice, 400);
 }
 
 function renderDetailTags(){
@@ -3137,6 +3259,7 @@ async function saveTaskEdits(){
   if(!currentDetailTask) return;
   const newText = document.getElementById('detail-title-v2').textContent.trim();
   const newDeadline = document.getElementById('detail-deadline-input').value.trim();
+  const newOrigMsg = document.getElementById('detail-orig-msg')?.value?.trim();
 
   // Update local cache
   const t = allTasksCache.find(x => x.id === currentDetailTask.id);
@@ -3161,6 +3284,7 @@ async function saveTaskEdits(){
           deadline: newDeadline || null,
           tags: [...currentDetailTags],
           reminder: currentDetailReminder,
+          originalMsg: newOrigMsg || currentDetailTask.originalMsg,
         }
       })
     });
