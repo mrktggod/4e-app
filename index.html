@@ -747,19 +747,44 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 /* ===== CHATS SCREEN ===== */
 #chats{background:var(--bg)}
 #chat-conv{background:var(--bg)}
-.chats-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;flex-shrink:0}
-.chats-logo{display:grid;grid-template-columns:1fr 1fr;gap:2.5px;width:18px;height:18px}
+
+/* Messenger tabs */
+.msng-tabs{display:flex;align-items:center;gap:10px;padding:10px 14px 4px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.msng-tabs::-webkit-scrollbar{display:none}
+.msng-tab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;opacity:1;transition:opacity .15s}
+.msng-tab.inactive{opacity:0.3}
+.msng-tab-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.msng-tab-label{font-size:9px;font-weight:500;color:var(--muted);letter-spacing:0.3px}
+.msng-tab.active .msng-tab-label{color:var(--green)}
+.msng-tab-dot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-top:-2px}
+.msng-tab.inactive .msng-tab-dot{display:none}
+.msng-add-tab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0}
+.msng-add-icon{width:36px;height:36px;border-radius:12px;background:var(--card2);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted)}
+
+/* Chat list header */
+.chats-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;flex-shrink:0}
+.chats-logo{display:grid;grid-template-columns:1fr 1fr;gap:2.5px;width:16px;height:16px}
 .chats-logo span{background:var(--green);border-radius:50%;display:block}
-.chats-title{font-size:20px;font-weight:700;color:var(--text);margin-left:8px}
+.chats-title-wrap{display:flex;flex-direction:column}
+.chats-title{font-size:18px;font-weight:700;color:var(--text)}
+.chats-subtitle{font-size:10px;color:var(--muted);margin-top:1px}
+.chats-header-right{display:flex;align-items:center;gap:8px}
+.chats-gear{width:32px;height:32px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:16px;flex-shrink:0}
+.chats-gear:active{color:var(--green)}
+
+/* Search */
 .chats-srch{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:8px 12px;margin:0 14px 6px;flex-shrink:0}
 .chats-srch i{color:var(--muted);font-size:15px}
 .chats-srch input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:100%;font-family:'Inter',sans-serif}
 .chats-srch input::placeholder{color:var(--muted)}
 .chats-list{flex:1;overflow-y:auto}
 .chats-list::-webkit-scrollbar{width:0}
-.chat-row-item{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* Chat row */
+.chat-row-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .chat-row-item:active{background:var(--card2)}
-.chat-row-ava{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--text);flex-shrink:0}
+.chat-row-ava{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--text);flex-shrink:0;position:relative}
+.chat-row-msng{position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;border:2px solid var(--bg)}
 .chat-row-meta{flex:1;min-width:0}
 .chat-row-top{display:flex;justify-content:space-between;align-items:baseline;gap:4px;margin-bottom:3px}
 .chat-row-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -767,14 +792,16 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .chat-row-prev-wrap{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .chat-row-prev{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
 .chat-row-badge{background:var(--green);color:var(--bg);font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;flex-shrink:0}
+
+/* Conversation */
 .conv-nav{display:flex;align-items:center;gap:10px;padding:6px 12px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
-.conv-back{color:var(--green);font-size:24px;cursor:pointer;flex-shrink:0;padding:2px}
+.conv-back{color:var(--green);font-size:24px;cursor:pointer;flex-shrink:0;padding:2px;-webkit-tap-highlight-color:transparent}
 .conv-ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text);flex-shrink:0}
 .conv-info{flex:1;min-width:0}
 .conv-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .conv-sub{font-size:11px;color:var(--muted);margin-top:1px}
 .conv-acts{display:flex;gap:4px}
-.conv-act{color:var(--muted);font-size:20px;cursor:pointer;padding:4px}
+.conv-act{color:var(--muted);font-size:20px;cursor:pointer;padding:4px;-webkit-tap-highlight-color:transparent}
 .conv-act:active{color:var(--green)}
 .conv-msgs{flex:1;overflow-y:auto;padding:10px 10px 6px;display:flex;flex-direction:column;gap:5px}
 .conv-msgs::-webkit-scrollbar{width:0}
@@ -804,6 +831,18 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .conv-ico:active{color:var(--green)}
 .conv-send{width:40px;height:40px;border-radius:50%;background:var(--green);border:none;display:flex;align-items:center;justify-content:center;color:var(--bg);font-size:16px;cursor:pointer;flex-shrink:0}
 .conv-send:active{opacity:0.8}
+
+/* Messenger settings screen */
+#msng-settings{background:var(--bg)}
+.msng-set-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid rgba(242,245,233,0.05);cursor:pointer}
+.msng-set-item:last-child{border-bottom:none}
+.msng-set-icon{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.msng-set-info{flex:1}
+.msng-set-name{font-size:14px;font-weight:500;color:var(--text)}
+.msng-set-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.msng-set-status{font-size:11px;font-weight:600;padding:3px 9px;border-radius:8px}
+.msng-set-status.connected{background:var(--green3);color:var(--green);border:1px solid rgba(154,194,60,0.25)}
+.msng-set-status.soon{background:var(--card2);color:var(--muted);border:1px solid var(--border)}
 
 </style>
 </head>
@@ -2093,48 +2132,106 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
 <!-- CHATS LIST -->
 <div class="screen" id="chats">
-  <div class="chats-header">
-    <div style="display:flex;align-items:center">
-      <div class="chats-logo"><span></span><span></span><span></span><span></span></div>
-      <span class="chats-title">Чаты</span>
+  <!-- Messenger tabs -->
+  <div class="msng-tabs">
+    <div class="msng-tab active" onclick="filterByMessenger('tg',this)">
+      <div class="msng-tab-icon" style="background:#1a3a5c">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
+      </div>
+      <div class="msng-tab-label">Telegram</div>
+      <div class="msng-tab-dot"></div>
     </div>
-    <i class="ti ti-pencil" style="color:var(--green);font-size:20px;cursor:pointer" aria-hidden="true"></i>
+    <div class="msng-tab inactive" onclick="filterByMessenger('max',this)">
+      <div class="msng-tab-icon" style="background:#1a1a2e">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#7b61ff"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+      </div>
+      <div class="msng-tab-label">MAX</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('wa',this)">
+      <div class="msng-tab-icon" style="background:#1a2e1a">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L0 24l6.335-1.652A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.213-3.76.981 1.003-3.652-.233-.375A9.818 9.818 0 1 1 12 21.818z"/></svg>
+      </div>
+      <div class="msng-tab-label">WhatsApp</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('mail',this)">
+      <div class="msng-tab-icon" style="background:#2e1a1a">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e06060" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div class="msng-tab-label">Почта</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('vk',this)">
+      <div class="msng-tab-icon" style="background:#1a2a3e">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#4C75A3"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-.9-1.49.35v1.377c0 .552-.174.9-1.744.9-2.6 0-5.5-1.6-7.5-4.6C2.7 9.7 2.3 7 2.3 7c0-.174.174-.35.526-.35h1.744c.4 0 .55.17.7.6.77 2.2 2.07 4.13 2.6 4.13.2 0 .29-.1.29-.64V8.6c-.06-1.15-.67-1.25-.67-1.66 0-.2.16-.4.42-.4h2.75c.35 0 .47.18.47.57v3.06c0 .35.15.47.26.47.2 0 .37-.12.74-.49 1.14-1.28 1.96-3.25 1.96-3.25.11-.23.3-.44.7-.44h1.74c.53 0 .64.27.53.6-.22 1.02-2.35 4.02-2.35 4.02-.18.3-.24.43 0 .76.18.24.77.74 1.16 1.19.72.82 1.27 1.51 1.42 1.99.13.47-.1.71-.57.71z"/></svg>
+      </div>
+      <div class="msng-tab-label">ВКонтакте</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('ig',this)">
+      <div class="msng-tab-icon" style="background:#2e1a2e">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="url(#igGrad)"><defs><linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </div>
+      <div class="msng-tab-label">Instagram</div>
+    </div>
+    <div class="msng-add-tab" onclick="openMessengerSettings()">
+      <div class="msng-add-icon">+</div>
+      <div class="msng-tab-label" style="color:var(--muted)">Добавить</div>
+    </div>
   </div>
+
+  <!-- Header -->
+  <div class="chats-header">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="chats-logo"><span></span><span></span><span></span><span></span></div>
+      <div class="chats-title-wrap">
+        <span class="chats-title">Чаты</span>
+        <span class="chats-subtitle">Telegram · подключён</span>
+      </div>
+    </div>
+    <div class="chats-header-right">
+      <div class="chats-gear" onclick="openMessengerSettings()">
+        <i class="ti ti-settings" aria-hidden="true"></i>
+      </div>
+      <i class="ti ti-pencil" style="color:var(--green);font-size:20px;cursor:pointer" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <!-- Search -->
   <div class="chats-srch">
     <i class="ti ti-search" aria-hidden="true"></i>
     <input type="text" id="chats-search" placeholder="Поиск" oninput="filterChats(this.value)">
   </div>
+
+  <!-- Chat list -->
   <div class="chats-list" id="chats-list-wrap">
-    <div class="chat-row-item" onclick="openConv('Команда Маркетинг','8 участников','#1a8a52','КМ','mkt')">
-      <div class="chat-row-ava" style="background:#1a8a52">КМ</div>
+    <div class="chat-row-item" onclick="openConv('Команда Маркетинг','8 участников','#1a8a52','КМ','mkt','tg')">
+      <div class="chat-row-ava" style="background:#1a8a52">КМ<div class="chat-row-msng" style="background:#1a3a5c"><svg width="9" height="9" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div></div>
       <div class="chat-row-meta">
         <div class="chat-row-top"><span class="chat-row-name">Команда Маркетинг</span><span class="chat-row-time">12:34</span></div>
         <div class="chat-row-prev-wrap"><span class="chat-row-prev">Антон: пришлю отчёт до пятницы</span><div class="chat-row-badge">3</div></div>
       </div>
     </div>
-    <div class="chat-row-item" onclick="openConv('Клиент — Retail Pro','Андрей Коваль','#2a5aa0','АК','retail')">
-      <div class="chat-row-ava" style="background:#2a5aa0">АК</div>
+    <div class="chat-row-item" onclick="openConv('Клиент — Retail Pro','Андрей Коваль','#2a5aa0','АК','retail','tg')">
+      <div class="chat-row-ava" style="background:#2a5aa0">АК<div class="chat-row-msng" style="background:#1a3a5c"><svg width="9" height="9" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div></div>
       <div class="chat-row-meta">
         <div class="chat-row-top"><span class="chat-row-name">Клиент — Retail Pro</span><span class="chat-row-time">11:02</span></div>
         <div class="chat-row-prev">Я подготовлю договор к понедельнику</div>
       </div>
     </div>
-    <div class="chat-row-item" onclick="openConv('Разработка','5 участников','#7a3aa0','РЗ','dev')">
-      <div class="chat-row-ava" style="background:#7a3aa0">РЗ</div>
+    <div class="chat-row-item" onclick="openConv('Разработка','5 участников','#7a3aa0','РЗ','dev','tg')">
+      <div class="chat-row-ava" style="background:#7a3aa0">РЗ<div class="chat-row-msng" style="background:#1a3a5c"><svg width="9" height="9" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div></div>
       <div class="chat-row-meta">
         <div class="chat-row-top"><span class="chat-row-name">Разработка</span><span class="chat-row-time">вчера</span></div>
         <div class="chat-row-prev-wrap"><span class="chat-row-prev">Дедлайн деплоя — завтра 18:00</span><div class="chat-row-badge">1</div></div>
       </div>
     </div>
-    <div class="chat-row-item" onclick="openConv('Лена Соколова','Партнёр','#a05a2a','ЛС','lena')">
-      <div class="chat-row-ava" style="background:#a05a2a">ЛС</div>
+    <div class="chat-row-item" onclick="openConv('Лена Соколова','Партнёр','#a05a2a','ЛС','lena','tg')">
+      <div class="chat-row-ava" style="background:#a05a2a">ЛС<div class="chat-row-msng" style="background:#1a3a5c"><svg width="9" height="9" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div></div>
       <div class="chat-row-meta">
         <div class="chat-row-top"><span class="chat-row-name">Лена Соколова</span><span class="chat-row-time">вчера</span></div>
         <div class="chat-row-prev">Спасибо, жду от вас смету</div>
       </div>
     </div>
-    <div class="chat-row-item" onclick="openConv('Ops &amp; Logistics','3 участника','#8a3a3a','OL','ops')">
-      <div class="chat-row-ava" style="background:#8a3a3a">OL</div>
+    <div class="chat-row-item" onclick="openConv('Ops &amp; Logistics','3 участника','#8a3a3a','OL','ops','tg')">
+      <div class="chat-row-ava" style="background:#8a3a3a">OL<div class="chat-row-msng" style="background:#1a3a5c"><svg width="9" height="9" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div></div>
       <div class="chat-row-meta">
         <div class="chat-row-top"><span class="chat-row-name">Ops &amp; Logistics</span><span class="chat-row-time">пн</span></div>
         <div class="chat-row-prev">Буду в офисе до 17:00</div>
@@ -2169,6 +2266,56 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     <button class="conv-send" onclick="convSend()" aria-label="Отправить">
       <i class="ti ti-send" aria-hidden="true"></i>
     </button>
+  </div>
+</div>
+
+<!-- MESSENGER SETTINGS -->
+<div class="screen" id="msng-settings">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showScreen('chats')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">Мессенджеры</div><div class="back-sub">Управляй подключёнными каналами</div></div>
+  </div>
+  <div class="sub-scroll">
+    <div class="sub-section-title" style="margin-top:4px">Подключённые</div>
+    <div class="sub-card">
+      <div class="msng-set-item">
+        <div class="msng-set-icon" style="background:#1a3a5c"><svg width="22" height="22" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div>
+        <div class="msng-set-info"><div class="msng-set-name">Telegram</div><div class="msng-set-sub">@Denzel89bot · 5 групп подключено</div></div>
+        <span class="msng-set-status connected">Активен</span>
+      </div>
+    </div>
+    <div class="sub-section-title">Скоро</div>
+    <div class="sub-card">
+      <div class="msng-set-item">
+        <div class="msng-set-icon" style="background:#1a1a2e"><svg width="22" height="22" viewBox="0 0 24 24" fill="#7b61ff"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></div>
+        <div class="msng-set-info"><div class="msng-set-name">MAX</div><div class="msng-set-sub">Мессенджер от VK · в разработке</div></div>
+        <span class="msng-set-status soon">Скоро</span>
+      </div>
+      <div class="msng-set-item">
+        <div class="msng-set-icon" style="background:#1a2e1a"><svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L0 24l6.335-1.652A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.213-3.76.981 1.003-3.652-.233-.375A9.818 9.818 0 1 1 12 21.818z"/></svg></div>
+        <div class="msng-set-info"><div class="msng-set-name">WhatsApp</div><div class="msng-set-sub">Бизнес-аккаунт · в разработке</div></div>
+        <span class="msng-set-status soon">Скоро</span>
+      </div>
+      <div class="msng-set-item">
+        <div class="msng-set-icon" style="background:#2e1a1a"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e06060" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div class="msng-set-info"><div class="msng-set-name">Почта</div><div class="msng-set-sub">Gmail, Яндекс, Mail.ru · в разработке</div></div>
+        <span class="msng-set-status soon">Скоро</span>
+      </div>
+      <div class="msng-set-item">
+        <div class="msng-set-icon" style="background:#1a2a3e"><svg width="22" height="22" viewBox="0 0 24 24" fill="#4C75A3"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-.9-1.49.35v1.377c0 .552-.174.9-1.744.9-2.6 0-5.5-1.6-7.5-4.6C2.7 9.7 2.3 7 2.3 7c0-.174.174-.35.526-.35h1.744c.4 0 .55.17.7.6.77 2.2 2.07 4.13 2.6 4.13.2 0 .29-.1.29-.64V8.6c-.06-1.15-.67-1.25-.67-1.66 0-.2.16-.4.42-.4h2.75c.35 0 .47.18.47.57v3.06c0 .35.15.47.26.47.2 0 .37-.12.74-.49 1.14-1.28 1.96-3.25 1.96-3.25.11-.23.3-.44.7-.44h1.74c.53 0 .64.27.53.6-.22 1.02-2.35 4.02-2.35 4.02-.18.3-.24.43 0 .76.18.24.77.74 1.16 1.19.72.82 1.27 1.51 1.42 1.99.13.47-.1.71-.57.71z"/></svg></div>
+        <div class="msng-set-info"><div class="msng-set-name">ВКонтакте</div><div class="msng-set-sub">VK сообщения · в разработке</div></div>
+        <span class="msng-set-status soon">Скоро</span>
+      </div>
+      <div class="msng-set-item">
+        <div class="msng-set-icon" style="background:#2e1a2e"><svg width="22" height="22" viewBox="0 0 24 24" fill="url(#igGrad2)"><defs><linearGradient id="igGrad2" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="50%" stop-color="#dc2743"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
+        <div class="msng-set-info"><div class="msng-set-name">Instagram Direct</div><div class="msng-set-sub">В разработке</div></div>
+        <span class="msng-set-status soon">Скоро</span>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;padding:16px 0;line-height:1.6">
+      Хочешь конкретный мессенджер быстрее?<br>
+      <span style="color:var(--green);cursor:pointer" onclick="showSubScreen('write-support')">Напиши нам →</span>
+    </div>
   </div>
 </div>
 
@@ -4106,13 +4253,36 @@ function sendSupportMsg(){
 }
 
 
+
 // ===== CHATS MODULE =====
 const chatHistory={mkt:[{from:'them',ava:'#2a6aa0',ini:'АН',name:'Антон Н.',nc:'#5aacf0',text:'Напоминаю — отчёт по кампании нужен до пятницы. Я пришлю свою часть сегодня вечером.',time:'12:21',task:{text:'Антон пришлёт отчёт',sub:'🤝 Обещание · до пятницы'}},{from:'them',ava:'#8a3a8a',ini:'МС',name:'Маша С.',nc:'#d07ad0',text:'Окей! Я сделаю визуализацию данных к четвергу.',time:'12:24'},{from:'me',text:'Принято. Подготовлю финальный слайд после получения данных от Антона.',time:'12:29 ✓✓'},{from:'them',ava:'#2a6aa0',ini:'АН',name:'Антон Н.',nc:'#5aacf0',text:'Кто берёт на себя согласование с клиентом?',time:'12:34'}],retail:[{from:'them',ava:'#2a5aa0',ini:'АК',name:'Андрей К.',nc:'#6aaaf0',text:'Добрый день! Я подготовлю договор к понедельнику.',time:'11:02'},{from:'me',text:'Отлично, жду. Если нужна правка — пишите.',time:'11:10 ✓✓'}],dev:[{from:'them',ava:'#7a3aa0',ini:'ДМ',name:'Дима М.',nc:'#c07ad0',text:'Дедлайн деплоя — завтра 18:00. Всё готово со стороны бэка.',time:'вчера'},{from:'me',text:'Фронт почти готов, проверяю и пушу.',time:'вчера ✓✓'}],lena:[{from:'them',ava:'#a05a2a',ini:'ЛС',name:'Лена С.',nc:'#f0aa6a',text:'Спасибо за встречу! Жду от вас смету до конца недели.',time:'вчера'},{from:'me',text:'Обязательно подготовлю. Пришлю в среду.',time:'вчера ✓✓'}],ops:[{from:'them',ava:'#8a3a3a',ini:'ОР',name:'Олег Р.',nc:'#f07a7a',text:'Буду в офисе до 17:00. Если что-то срочное — пишите.',time:'пн'}]};
 const chatChips={mkt:['✦ Взять согласование','✦ Делегировать Маше','✦ Предложить созвон'],retail:['✦ Подтвердить получение','✦ Уточнить детали'],dev:['✦ Подтвердить готовность','✦ Спросить про тесты'],lena:['✦ Отправить смету','✦ Уточнить сроки'],ops:['✦ Ок, принял','✦ Буду до 16:00']};
 const chipTexts={'✦ Взять согласование':'Коллеги, я возьму согласование с клиентом на себя. Свяжусь завтра утром.','✦ Делегировать Маше':'Предлагаю Маше взять согласование — она уже в контакте с клиентом.','✦ Предложить созвон':'Предлагаю быстрый созвон сегодня в 16:00 — согласуем позицию.','✦ Подтвердить получение':'Принято, ждём договор к понедельнику.','✦ Уточнить детали':'Андрей, по каким пунктам ещё нужно согласование?','✦ Подтвердить готовность':'Отлично! Фронт тоже готов, пушу прямо сейчас.','✦ Спросить про тесты':'Тесты прошли? Можем деплоить?','✦ Отправить смету':'Лена, смету пришлю сегодня до конца дня.','✦ Уточнить сроки':'Лена, есть ли гибкость по срокам до пятницы?','✦ Ок, принял':'Принял, спасибо за инфо!','✦ Буду до 16:00':'Хорошо, я тоже буду в офисе до 16:00.'};
 let currentConvId=null;
-function openChats(){showScreen('chats');const nav=document.getElementById('global-nav');if(nav)nav.classList.add('hidden');}
-function openConv(name,sub,color,initials,id){
+
+function openChats(){
+  showScreen('chats');
+  const nav=document.getElementById('global-nav');
+  if(nav)nav.classList.add('hidden');
+}
+
+function openMessengerSettings(){
+  showScreen('msng-settings');
+  const nav=document.getElementById('global-nav');
+  if(nav)nav.classList.add('hidden');
+}
+
+function filterByMessenger(type,el){
+  document.querySelectorAll('.msng-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  // Future: filter chat list by messenger type
+  const sub=document.querySelector('.chats-subtitle');
+  const names={tg:'Telegram · подключён',max:'MAX · скоро',wa:'WhatsApp · скоро',mail:'Почта · скоро',vk:'ВКонтакте · скоро',ig:'Instagram · скоро'};
+  if(sub)sub.textContent=names[type]||'Telegram · подключён';
+  if(type!=='tg')showToast('Скоро будет доступно');
+}
+
+function openConv(name,sub,color,initials,id,messenger){
   currentConvId=id;
   document.getElementById('conv-ava').textContent=initials;
   document.getElementById('conv-ava').style.background=color;
@@ -4123,6 +4293,7 @@ function openConv(name,sub,color,initials,id){
   const nav=document.getElementById('global-nav');if(nav)nav.classList.add('hidden');
   setTimeout(()=>{const a=document.getElementById('conv-msgs-area');if(a)a.scrollTop=a.scrollHeight;},50);
 }
+
 function renderConvMsgs(id){
   const area=document.getElementById('conv-msgs-area');
   area.innerHTML='<div class="conv-day">Сегодня</div>';
@@ -4135,12 +4306,35 @@ function renderConvMsgs(id){
   });
   area.scrollTop=area.scrollHeight;
 }
-function renderConvChips(id){const area=document.getElementById('conv-chips-area');const chips=chatChips[id]||[];area.innerHTML=chips.map(c=>'<div class="conv-chip" onclick="convFillChip(this.dataset.chip)" data-chip="'+e2(c)+'">'+e2(c)+'</div>').join('');}
+
+function renderConvChips(id){
+  const area=document.getElementById('conv-chips-area');
+  const chips=chatChips[id]||[];
+  area.innerHTML=chips.map(c=>'<div class="conv-chip" onclick="convFillChip(this.dataset.chip)" data-chip="'+e2(c)+'">'+e2(c)+'</div>').join('');
+}
+
 function convFillChip(chip){document.getElementById('conv-textarea').value=chipTexts[chip]||chip.replace('✦ ','');}
-function convSend(){const ta=document.getElementById('conv-textarea'),txt=ta.value.trim();if(!txt||!currentConvId)return;const now=new Date(),t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');if(!chatHistory[currentConvId])chatHistory[currentConvId]=[];chatHistory[currentConvId].push({from:'me',text:txt,time:t+' ✓'});renderConvMsgs(currentConvId);ta.value='';}
+
+function convSend(){
+  const ta=document.getElementById('conv-textarea'),txt=ta.value.trim();
+  if(!txt||!currentConvId)return;
+  const now=new Date(),t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  if(!chatHistory[currentConvId])chatHistory[currentConvId]=[];
+  chatHistory[currentConvId].push({from:'me',text:txt,time:t+' ✓'});
+  renderConvMsgs(currentConvId);ta.value='';
+}
+
 function convKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();convSend();}}
-function filterChats(q){document.querySelectorAll('.chat-row-item').forEach(r=>{const name=r.querySelector('.chat-row-name')?.textContent.toLowerCase()||'';r.style.display=name.includes(q.toLowerCase())||!q?'':'none';});}
+
+function filterChats(q){
+  document.querySelectorAll('.chat-row-item').forEach(r=>{
+    const name=r.querySelector('.chat-row-name')?.textContent.toLowerCase()||'';
+    r.style.display=name.includes(q.toLowerCase())||!q?'':'none';
+  });
+}
+
 function openTaskFromChat(){showToast('Задача зафиксирована ботом ✓');setTimeout(goHome,800);}
+
 
 </script>
 </body>
