@@ -1417,7 +1417,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
 <!-- STATISTICS -->
 <div class="screen" id="statistics">
-  <div class="app-header">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Статистика</div></div>
     <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:5px 12px;font-size:11px;color:var(--muted);cursor:pointer">Месяц задач ▾</div>
   </div>
@@ -1650,6 +1651,10 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
 <!-- ========== PAYMENT SUCCESS ========== -->
 <div class="screen" id="payment-success">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showSubScreen('subscription')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">Оплата успешна</div></div>
+  </div>
   <div class="sub-scroll" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px">
     <div class="success-anim" id="success-anim">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -2132,65 +2137,16 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
 <!-- CHATS LIST -->
 <div class="screen" id="chats">
-  <!-- Messenger tabs -->
-  <div class="msng-tabs">
-    <div class="msng-tab active" onclick="filterByMessenger('tg',this)">
-      <div class="msng-tab-icon" style="background:#1a3a5c">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
-      </div>
-      <div class="msng-tab-label">Telegram</div>
-      <div class="msng-tab-dot"></div>
-    </div>
-    <div class="msng-tab inactive" onclick="filterByMessenger('max',this)">
-      <div class="msng-tab-icon" style="background:#1a1a2e">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#7b61ff"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
-      </div>
-      <div class="msng-tab-label">MAX</div>
-    </div>
-    <div class="msng-tab inactive" onclick="filterByMessenger('wa',this)">
-      <div class="msng-tab-icon" style="background:#1a2e1a">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L0 24l6.335-1.652A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.213-3.76.981 1.003-3.652-.233-.375A9.818 9.818 0 1 1 12 21.818z"/></svg>
-      </div>
-      <div class="msng-tab-label">WhatsApp</div>
-    </div>
-    <div class="msng-tab inactive" onclick="filterByMessenger('mail',this)">
-      <div class="msng-tab-icon" style="background:#2e1a1a">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e06060" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div class="msng-tab-label">Почта</div>
-    </div>
-    <div class="msng-tab inactive" onclick="filterByMessenger('vk',this)">
-      <div class="msng-tab-icon" style="background:#1a2a3e">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#4C75A3"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-.9-1.49.35v1.377c0 .552-.174.9-1.744.9-2.6 0-5.5-1.6-7.5-4.6C2.7 9.7 2.3 7 2.3 7c0-.174.174-.35.526-.35h1.744c.4 0 .55.17.7.6.77 2.2 2.07 4.13 2.6 4.13.2 0 .29-.1.29-.64V8.6c-.06-1.15-.67-1.25-.67-1.66 0-.2.16-.4.42-.4h2.75c.35 0 .47.18.47.57v3.06c0 .35.15.47.26.47.2 0 .37-.12.74-.49 1.14-1.28 1.96-3.25 1.96-3.25.11-.23.3-.44.7-.44h1.74c.53 0 .64.27.53.6-.22 1.02-2.35 4.02-2.35 4.02-.18.3-.24.43 0 .76.18.24.77.74 1.16 1.19.72.82 1.27 1.51 1.42 1.99.13.47-.1.71-.57.71z"/></svg>
-      </div>
-      <div class="msng-tab-label">ВКонтакте</div>
-    </div>
-    <div class="msng-tab inactive" onclick="filterByMessenger('ig',this)">
-      <div class="msng-tab-icon" style="background:#2e1a2e">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="url(#igGrad)"><defs><linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-      </div>
-      <div class="msng-tab-label">Instagram</div>
-    </div>
-    <div class="msng-add-tab" onclick="openMessengerSettings()">
-      <div class="msng-add-icon">+</div>
-      <div class="msng-tab-label" style="color:var(--muted)">Добавить</div>
-    </div>
-  </div>
 
-  <!-- Header -->
-  <div class="chats-header">
-    <div style="display:flex;align-items:center;gap:8px">
-      <div class="chats-logo"><span></span><span></span><span></span><span></span></div>
-      <div class="chats-title-wrap">
-        <span class="chats-title">Чаты</span>
-        <span class="chats-subtitle">Telegram · подключён</span>
-      </div>
+  <!-- Header with back + title + gear -->
+  <div class="back-bar" style="padding:12px 16px 8px">
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1">
+      <div class="back-title">Чаты</div>
+      <div class="back-sub" id="chats-subtitle">Telegram · подключён</div>
     </div>
-    <div class="chats-header-right">
-      <div class="chats-gear" onclick="openMessengerSettings()">
-        <i class="ti ti-settings" aria-hidden="true"></i>
-      </div>
-      <i class="ti ti-pencil" style="color:var(--green);font-size:20px;cursor:pointer" aria-hidden="true"></i>
+    <div class="chats-gear" onclick="openMessengerSettings()" title="Настройки мессенджеров">
+      <i class="ti ti-settings" aria-hidden="true"></i>
     </div>
   </div>
 
@@ -2198,6 +2154,35 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   <div class="chats-srch">
     <i class="ti ti-search" aria-hidden="true"></i>
     <input type="text" id="chats-search" placeholder="Поиск" oninput="filterChats(this.value)">
+  </div>
+
+  <!-- Messenger filter tabs (below search) -->
+  <div class="msng-tabs">
+    <div class="msng-tab active" onclick="filterByMessenger('tg',this)" title="Telegram">
+      <div class="msng-tab-icon" style="background:#1a3a5c"><svg width="20" height="20" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div>
+      <div class="msng-tab-label">Telegram</div>
+      <div class="msng-tab-dot"></div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('max',this)" title="MAX">
+      <div class="msng-tab-icon" style="background:#1a1a2e"><svg width="20" height="20" viewBox="0 0 24 24" fill="#7b61ff"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></div>
+      <div class="msng-tab-label">MAX</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('wa',this)" title="WhatsApp">
+      <div class="msng-tab-icon" style="background:#1a2e1a"><svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L0 24l6.335-1.652A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.371l-.36-.213-3.76.981 1.003-3.652-.233-.375A9.818 9.818 0 1 1 12 21.818z"/></svg></div>
+      <div class="msng-tab-label">WhatsApp</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('mail',this)" title="Почта">
+      <div class="msng-tab-icon" style="background:#2e1a1a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e06060" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <div class="msng-tab-label">Почта</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('vk',this)" title="ВКонтакте">
+      <div class="msng-tab-icon" style="background:#1a2a3e"><svg width="20" height="20" viewBox="0 0 24 24" fill="#4C75A3"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-.9-1.49.35v1.377c0 .552-.174.9-1.744.9-2.6 0-5.5-1.6-7.5-4.6C2.7 9.7 2.3 7 2.3 7c0-.174.174-.35.526-.35h1.744c.4 0 .55.17.7.6.77 2.2 2.07 4.13 2.6 4.13.2 0 .29-.1.29-.64V8.6c-.06-1.15-.67-1.25-.67-1.66 0-.2.16-.4.42-.4h2.75c.35 0 .47.18.47.57v3.06c0 .35.15.47.26.47.2 0 .37-.12.74-.49 1.14-1.28 1.96-3.25 1.96-3.25.11-.23.3-.44.7-.44h1.74c.53 0 .64.27.53.6-.22 1.02-2.35 4.02-2.35 4.02-.18.3-.24.43 0 .76.18.24.77.74 1.16 1.19.72.82 1.27 1.51 1.42 1.99.13.47-.1.71-.57.71z"/></svg></div>
+      <div class="msng-tab-label">ВКонтакте</div>
+    </div>
+    <div class="msng-tab inactive" onclick="filterByMessenger('ig',this)" title="Instagram">
+      <div class="msng-tab-icon" style="background:#2e1a2e"><svg width="20" height="20" viewBox="0 0 24 24"><defs><linearGradient id="igG" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="50%" stop-color="#dc2743"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><path fill="url(#igG)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
+      <div class="msng-tab-label">Instagram</div>
+    </div>
   </div>
 
   <!-- Chat list -->
@@ -2239,7 +2224,6 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
   </div>
 </div>
-
 <!-- CHAT CONVERSATION -->
 <div class="screen" id="chat-conv">
   <div class="conv-nav">
@@ -4276,7 +4260,7 @@ function filterByMessenger(type,el){
   document.querySelectorAll('.msng-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   // Future: filter chat list by messenger type
-  const sub=document.querySelector('.chats-subtitle');
+  const sub=document.getElementById('chats-subtitle');
   const names={tg:'Telegram · подключён',max:'MAX · скоро',wa:'WhatsApp · скоро',mail:'Почта · скоро',vk:'ВКонтакте · скоро',ig:'Instagram · скоро'};
   if(sub)sub.textContent=names[type]||'Telegram · подключён';
   if(type!=='tg')showToast('Скоро будет доступно');
