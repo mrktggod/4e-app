@@ -3124,6 +3124,7 @@ async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.cl
 function setNavActive(id){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const el=document.getElementById('nav-'+id);if(el)el.classList.add('active');}
 
 function showScreen(id){
+  if(id!=='chat-conv' && typeof stopConvPolling==='function') stopConvPolling();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const s=document.getElementById(id);if(s){s.classList.add('active');s.scrollTop=0;}
   // Hide global-nav (old nav) — we use bottom-nav-v2 on home, global-nav on other screens
@@ -4615,12 +4616,7 @@ function stopConvPolling() {
   if (convPollingTimer) { clearInterval(convPollingTimer); convPollingTimer = null; }
 }
 
-// Патчим showScreen чтобы останавливать поллинг при смене экрана
-const _origShowScreen = showScreen;
-function showScreen(id) {
-  if (id !== 'chat-conv') stopConvPolling();
-  _origShowScreen(id);
-}
+// поллинг останавливается в openChats/goHome напрямую
 
 // ── AI-чипы подсказок ─────────────────────────────────────────
 
