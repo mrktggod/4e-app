@@ -2439,6 +2439,7 @@ const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
+const notifReadSet = new Set();
 let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
 
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
