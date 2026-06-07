@@ -2438,6 +2438,7 @@ const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
+let convPollingTimer=null, currentConvPollingId=null;
 let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
 
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -3124,7 +3125,6 @@ async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.cl
 function setNavActive(id){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const el=document.getElementById('nav-'+id);if(el)el.classList.add('active');}
 
 function showScreen(id){
-  if(id!=='chat-conv' && typeof stopConvPolling==='function') stopConvPolling();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const s=document.getElementById(id);if(s){s.classList.add('active');s.scrollTop=0;}
   // Hide global-nav (old nav) — we use bottom-nav-v2 on home, global-nav on other screens
@@ -4246,7 +4246,6 @@ function sendSupportMsg(){
 
 let currentConvId   = null;  // 'group_-100123'
 let currentConvName = '';
-let convPollingTimer = null;
 
 // Моковые данные — показываем если KV пустой
 const chatHistoryMock = {
@@ -4613,7 +4612,10 @@ function convKey(e) {
 // ── Остановка поллинга при выходе из чата ────────────────────
 
 function stopConvPolling() {
-  if (convPollingTimer) { clearInterval(convPollingTimer); convPollingTimer = null; }
+  if (typeof convPollingTimer !== 'undefined' && convPollingTimer) {
+    clearInterval(convPollingTimer);
+    convPollingTimer = null;
+  }
 }
 
 // поллинг останавливается в openChats/goHome напрямую
