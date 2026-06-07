@@ -4239,86 +4239,421 @@ function sendSupportMsg(){
 
 
 
+
 // ===== CHATS MODULE =====
-const chatHistory={mkt:[{from:'them',ava:'#2a6aa0',ini:'АН',name:'Антон Н.',nc:'#5aacf0',text:'Напоминаю — отчёт по кампании нужен до пятницы. Я пришлю свою часть сегодня вечером.',time:'12:21',task:{text:'Антон пришлёт отчёт',sub:'🤝 Обещание · до пятницы'}},{from:'them',ava:'#8a3a8a',ini:'МС',name:'Маша С.',nc:'#d07ad0',text:'Окей! Я сделаю визуализацию данных к четвергу.',time:'12:24'},{from:'me',text:'Принято. Подготовлю финальный слайд после получения данных от Антона.',time:'12:29 ✓✓'},{from:'them',ava:'#2a6aa0',ini:'АН',name:'Антон Н.',nc:'#5aacf0',text:'Кто берёт на себя согласование с клиентом?',time:'12:34'}],retail:[{from:'them',ava:'#2a5aa0',ini:'АК',name:'Андрей К.',nc:'#6aaaf0',text:'Добрый день! Я подготовлю договор к понедельнику.',time:'11:02'},{from:'me',text:'Отлично, жду. Если нужна правка — пишите.',time:'11:10 ✓✓'}],dev:[{from:'them',ava:'#7a3aa0',ini:'ДМ',name:'Дима М.',nc:'#c07ad0',text:'Дедлайн деплоя — завтра 18:00. Всё готово со стороны бэка.',time:'вчера'},{from:'me',text:'Фронт почти готов, проверяю и пушу.',time:'вчера ✓✓'}],lena:[{from:'them',ava:'#a05a2a',ini:'ЛС',name:'Лена С.',nc:'#f0aa6a',text:'Спасибо за встречу! Жду от вас смету до конца недели.',time:'вчера'},{from:'me',text:'Обязательно подготовлю. Пришлю в среду.',time:'вчера ✓✓'}],ops:[{from:'them',ava:'#8a3a3a',ini:'ОР',name:'Олег Р.',nc:'#f07a7a',text:'Буду в офисе до 17:00. Если что-то срочное — пишите.',time:'пн'}]};
-const chatChips={mkt:['✦ Взять согласование','✦ Делегировать Маше','✦ Предложить созвон'],retail:['✦ Подтвердить получение','✦ Уточнить детали'],dev:['✦ Подтвердить готовность','✦ Спросить про тесты'],lena:['✦ Отправить смету','✦ Уточнить сроки'],ops:['✦ Ок, принял','✦ Буду до 16:00']};
-const chipTexts={'✦ Взять согласование':'Коллеги, я возьму согласование с клиентом на себя. Свяжусь завтра утром.','✦ Делегировать Маше':'Предлагаю Маше взять согласование — она уже в контакте с клиентом.','✦ Предложить созвон':'Предлагаю быстрый созвон сегодня в 16:00 — согласуем позицию.','✦ Подтвердить получение':'Принято, ждём договор к понедельнику.','✦ Уточнить детали':'Андрей, по каким пунктам ещё нужно согласование?','✦ Подтвердить готовность':'Отлично! Фронт тоже готов, пушу прямо сейчас.','✦ Спросить про тесты':'Тесты прошли? Можем деплоить?','✦ Отправить смету':'Лена, смету пришлю сегодня до конца дня.','✦ Уточнить сроки':'Лена, есть ли гибкость по срокам до пятницы?','✦ Ок, принял':'Принял, спасибо за инфо!','✦ Буду до 16:00':'Хорошо, я тоже буду в офисе до 16:00.'};
-let currentConvId=null;
+// Реальные данные из Cloudflare KV через Worker
 
-function openChats(){
+let currentConvId   = null;  // 'group_-100123'
+let currentConvName = '';
+let convPollingTimer = null;
+
+// Моковые данные — показываем если KV пустой
+const chatHistoryMock = {
+  mkt:    [{from:'them',ava:'#2a6aa0',ini:'АН',name:'Антон Н.',nc:'#5aacf0',text:'Напоминаю — отчёт по кампании нужен до пятницы. Я пришлю свою часть сегодня вечером.',time:'12:21',task:{text:'Антон пришлёт отчёт',sub:'🤝 Обещание · до пятницы'}},{from:'them',ava:'#8a3a8a',ini:'МС',name:'Маша С.',nc:'#d07ad0',text:'Окей! Я сделаю визуализацию данных к четвергу.',time:'12:24'},{from:'me',text:'Принято. Подготовлю финальный слайд после получения данных от Антона.',time:'12:29 ✓✓'},{from:'them',ava:'#2a6aa0',ini:'АН',name:'Антон Н.',nc:'#5aacf0',text:'Кто берёт на себя согласование с клиентом?',time:'12:34'}],
+  retail: [{from:'them',ava:'#2a5aa0',ini:'АК',name:'Андрей К.',nc:'#6aaaf0',text:'Добрый день! Я подготовлю договор к понедельнику.',time:'11:02'},{from:'me',text:'Отлично, жду. Если нужна правка — пишите.',time:'11:10 ✓✓'}],
+  dev:    [{from:'them',ava:'#7a3aa0',ini:'ДМ',name:'Дима М.',nc:'#c07ad0',text:'Дедлайн деплоя — завтра 18:00. Всё готово со стороны бэка.',time:'вчера'},{from:'me',text:'Фронт почти готов, проверяю и пушу.',time:'вчера ✓✓'}],
+  lena:   [{from:'them',ava:'#a05a2a',ini:'ЛС',name:'Лена С.',nc:'#f0aa6a',text:'Спасибо за встречу! Жду от вас смету до конца недели.',time:'вчера'},{from:'me',text:'Обязательно подготовлю. Пришлю в среду.',time:'вчера ✓✓'}],
+  ops:    [{from:'them',ava:'#8a3a3a',ini:'ОР',name:'Олег Р.',nc:'#f07a7a',text:'Буду в офисе до 17:00. Если что-то срочное — пишите.',time:'пн'}]
+};
+const chatChips = {
+  mkt:    ['✦ Взять согласование','✦ Делегировать Маше','✦ Предложить созвон'],
+  retail: ['✦ Подтвердить получение','✦ Уточнить детали'],
+  dev:    ['✦ Подтвердить готовность','✦ Спросить про тесты'],
+  lena:   ['✦ Отправить смету','✦ Уточнить сроки'],
+  ops:    ['✦ Ок, принял','✦ Буду до 16:00'],
+};
+const chipTexts = {
+  '✦ Взять согласование':   'Коллеги, я возьму согласование с клиентом на себя. Свяжусь завтра утром.',
+  '✦ Делегировать Маше':    'Предлагаю Маше взять согласование — она уже в контакте с клиентом.',
+  '✦ Предложить созвон':    'Предлагаю быстрый созвон сегодня в 16:00 — согласуем позицию.',
+  '✦ Подтвердить получение':'Принято, ждём договор к понедельнику.',
+  '✦ Уточнить детали':      'Андрей, по каким пунктам ещё нужно согласование?',
+  '✦ Подтвердить готовность':'Отлично! Фронт тоже готов, пушу прямо сейчас.',
+  '✦ Спросить про тесты':   'Тесты прошли? Можем деплоить?',
+  '✦ Отправить смету':      'Лена, смету пришлю сегодня до конца дня.',
+  '✦ Уточнить сроки':       'Лена, есть ли гибкость по срокам до пятницы?',
+  '✦ Ок, принял':           'Принял, спасибо за инфо!',
+  '✦ Буду до 16:00':        'Хорошо, я тоже буду в офисе до 16:00.',
+};
+
+// ── Открытие экрана чатов ─────────────────────────────────────
+
+function openChats() {
   showScreen('chats');
-  const nav=document.getElementById('global-nav');
-  if(nav)nav.classList.add('hidden');
+  const nav = document.getElementById('global-nav');
+  if (nav) nav.classList.add('hidden');
+  loadChatsList();
 }
 
-function openMessengerSettings(){
+function openMessengerSettings() {
   showScreen('msng-settings');
-  const nav=document.getElementById('global-nav');
-  if(nav)nav.classList.add('hidden');
+  const nav = document.getElementById('global-nav');
+  if (nav) nav.classList.add('hidden');
 }
 
-function filterByMessenger(type,el){
-  document.querySelectorAll('.msng-tab').forEach(t=>t.classList.remove('active'));
+// ── Загрузка списка чатов из KV ──────────────────────────────
+
+async function loadChatsList() {
+  const wrap = document.getElementById('chats-list-wrap');
+  if (!wrap) return;
+
+  // Показываем скелетон
+  wrap.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)"><span class="dots"><span></span><span></span><span></span></span></div>';
+
+  try {
+    const token = getToken();
+    if (!token) { renderMockChatsList(); return; }
+
+    const res   = await fetch(WORKER + '/chats', { headers: authHeaders() });
+    const chats = await res.json();
+
+    if (!Array.isArray(chats) || chats.length === 0) {
+      renderMockChatsList();
+      return;
+    }
+
+    // Сортируем по времени последнего сообщения
+    chats.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    renderChatsList(chats);
+
+  } catch (e) {
+    console.error('loadChatsList:', e);
+    renderMockChatsList();
+  }
+}
+
+function renderChatsList(chats) {
+  const wrap = document.getElementById('chats-list-wrap');
+  if (!wrap) return;
+
+  const tgIcon = '<svg width="9" height="9" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>';
+
+  const colors = ['#1a8a52','#2a5aa0','#7a3aa0','#a05a2a','#8a3a3a','#2a7a8a','#6a3a2a','#3a2a8a'];
+
+  wrap.innerHTML = chats.map((chat, i) => {
+    const initials = (chat.name || 'ЧА').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    const color    = colors[i % colors.length];
+    const time     = chat.updatedAt ? formatChatTime(chat.updatedAt) : '';
+    const preview  = e2(chat.preview || 'Нет сообщений');
+    return `<div class="chat-row-item" onclick="openConv('${e2(chat.name)}','Telegram группа','${color}','${initials}','${e2(chat.id)}','tg')">
+      <div class="chat-row-ava" style="background:${color}">${initials}<div class="chat-row-msng" style="background:#1a3a5c">${tgIcon}</div></div>
+      <div class="chat-row-meta">
+        <div class="chat-row-top"><span class="chat-row-name">${e2(chat.name)}</span><span class="chat-row-time">${time}</span></div>
+        <div class="chat-row-prev">${preview}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMockChatsList() {
+  const wrap = document.getElementById('chats-list-wrap');
+  if (!wrap) return;
+  const tgIcon = '<svg width="9" height="9" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>';
+  const mockChats = [
+    {name:'Команда Маркетинг', color:'#1a8a52', ini:'КМ', id:'mkt', prev:'Антон: пришлю отчёт до пятницы', time:'12:34', badge:3},
+    {name:'Клиент — Retail Pro', color:'#2a5aa0', ini:'АК', id:'retail', prev:'Я подготовлю договор к понедельнику', time:'11:02'},
+    {name:'Разработка', color:'#7a3aa0', ini:'РЗ', id:'dev', prev:'Дедлайн деплоя — завтра 18:00', time:'вчера', badge:1},
+    {name:'Лена Соколова', color:'#a05a2a', ini:'ЛС', id:'lena', prev:'Спасибо, жду от вас смету', time:'вчера'},
+    {name:'Ops &amp; Logistics', color:'#8a3a3a', ini:'OL', id:'ops', prev:'Буду в офисе до 17:00', time:'пн'},
+  ];
+  wrap.innerHTML = mockChats.map(c => `
+    <div class="chat-row-item" onclick="openConv('${c.name.replace(/&amp;/g,'&')}','Демо чат','${c.color}','${c.ini}','${c.id}','tg')">
+      <div class="chat-row-ava" style="background:${c.color}">${c.ini}<div class="chat-row-msng" style="background:#1a3a5c">${tgIcon}</div></div>
+      <div class="chat-row-meta">
+        <div class="chat-row-top"><span class="chat-row-name">${c.name}</span><span class="chat-row-time">${c.time}</span></div>
+        <div class="chat-row-prev-wrap"><span class="chat-row-prev">${c.prev}</span>${c.badge ? `<div class="chat-row-badge">${c.badge}</div>` : ''}</div>
+      </div>
+    </div>`).join('');
+}
+
+function formatChatTime(ts) {
+  const d   = new Date(ts);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 86400000 && d.getDate() === now.getDate()) {
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  }
+  if (diff < 172800000) return 'вчера';
+  const days = ['вс','пн','вт','ср','чт','пт','сб'];
+  return days[d.getDay()];
+}
+
+// ── Фильтр мессенджеров ───────────────────────────────────────
+
+function filterByMessenger(type, el) {
+  document.querySelectorAll('.msng-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  // Future: filter chat list by messenger type
-  const sub=document.getElementById('chats-subtitle');
-  const names={tg:'Telegram · подключён',max:'MAX · скоро',wa:'WhatsApp · скоро',mail:'Почта · скоро',vk:'ВКонтакте · скоро',ig:'Instagram · скоро'};
-  if(sub)sub.textContent=names[type]||'Telegram · подключён';
-  if(type!=='tg')showToast('Скоро будет доступно');
+  const sub   = document.getElementById('chats-subtitle');
+  const names = {tg:'Telegram · подключён',max:'MAX · скоро',wa:'WhatsApp · скоро',mail:'Почта · скоро',vk:'ВКонтакте · скоро',ig:'Instagram · скоро'};
+  if (sub) sub.textContent = names[type] || 'Telegram · подключён';
+  if (type !== 'tg') showToast('Скоро будет доступно');
 }
 
-function openConv(name,sub,color,initials,id,messenger){
-  currentConvId=id;
-  document.getElementById('conv-ava').textContent=initials;
-  document.getElementById('conv-ava').style.background=color;
-  document.getElementById('conv-name').textContent=name;
-  document.getElementById('conv-sub').textContent=sub;
-  renderConvMsgs(id);renderConvChips(id);
+// ── Открытие диалога ─────────────────────────────────────────
+
+function openConv(name, sub, color, initials, id, messenger) {
+  currentConvId   = id;
+  currentConvName = name;
+
+  document.getElementById('conv-ava').textContent      = initials;
+  document.getElementById('conv-ava').style.background = color;
+  document.getElementById('conv-name').textContent     = name;
+  document.getElementById('conv-sub').textContent      = sub;
+
+  // Очищаем старые сообщения
+  const area = document.getElementById('conv-msgs-area');
+  area.innerHTML = '<div class="conv-day">Сегодня</div><div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)"><span class="dots"><span></span><span></span><span></span></span></div>';
+
+  document.getElementById('conv-chips-area').innerHTML = '';
+
   showScreen('chat-conv');
-  const nav=document.getElementById('global-nav');if(nav)nav.classList.add('hidden');
-  setTimeout(()=>{const a=document.getElementById('conv-msgs-area');if(a)a.scrollTop=a.scrollHeight;},50);
+  const nav = document.getElementById('global-nav');
+  if (nav) nav.classList.add('hidden');
+
+  // Загружаем реальные сообщения
+  loadConvMessages(id);
+
+  // Запускаем поллинг каждые 5 сек
+  stopConvPolling();
+  convPollingTimer = setInterval(() => loadConvMessages(id, true), 5000);
+
+  // Показываем чипы подсказок
+  renderConvChips(id);
 }
 
-function renderConvMsgs(id){
-  const area=document.getElementById('conv-msgs-area');
-  area.innerHTML='<div class="conv-day">Сегодня</div>';
-  (chatHistory[id]||[]).forEach(m=>{
-    const row=document.createElement('div');
-    row.className='conv-mr'+(m.from==='me'?' me':'');
-    if(m.from==='me'){row.innerHTML='<div class="conv-mava" style="background:var(--green);color:var(--bg)">Вы</div><div class="conv-bub me">'+e2(m.text)+'<div class="conv-tm">'+e2(m.time)+'</div></div>';}
-    else{const pill=m.task?'<div class="conv-task-pill" onclick="openTaskFromChat()"><i class="ti ti-checkbox" aria-hidden="true"></i><div><div class="conv-pill-t">'+e2(m.task.text)+'</div><div class="conv-pill-s">'+e2(m.task.sub)+'</div></div></div>':'';row.innerHTML='<div class="conv-mava" style="background:'+m.ava+'">'+e2(m.ini)+'</div><div><div class="conv-bub them"><div class="conv-sndr" style="color:'+m.nc+'">'+e2(m.name)+'</div>'+e2(m.text)+'<div class="conv-tm">'+e2(m.time)+'</div></div>'+pill+'</div>';}
+// ── Загрузка истории сообщений из KV ─────────────────────────
+
+async function loadConvMessages(convId, silent = false) {
+  if (!convId) return;
+
+  // Определяем chatId для запроса:
+  // - если это реальный KV id (group_...) — запрашиваем напрямую
+  // - если это mock id (mkt, retail...) — показываем mock
+  const isMock = !convId.startsWith('group_') && !convId.startsWith('dm_');
+
+  if (isMock) {
+    if (!silent) renderMockMessages(convId);
+    return;
+  }
+
+  try {
+    const token = getToken();
+    if (!token) { if (!silent) renderMockMessages(null); return; }
+
+    const res      = await fetch(WORKER + '/messages?chatId=' + encodeURIComponent(convId), { headers: authHeaders() });
+    const messages = await res.json();
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      if (!silent) {
+        const area = document.getElementById('conv-msgs-area');
+        area.innerHTML = '<div class="conv-day">Сегодня</div><div style="padding:30px 20px;text-align:center;font-size:13px;color:var(--muted)">Сообщений пока нет.<br>Напиши первым!</div>';
+      }
+      return;
+    }
+
+    renderRealMessages(messages, silent);
+
+  } catch (e) {
+    console.error('loadConvMessages:', e);
+    if (!silent) renderMockMessages(null);
+  }
+}
+
+function renderRealMessages(messages, silent = false) {
+  const area = document.getElementById('conv-msgs-area');
+  if (!area) return;
+
+  // Получаем текущую позицию скролла
+  const wasAtBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 80;
+
+  area.innerHTML = '<div class="conv-day">Сегодня</div>';
+
+  messages.forEach(m => {
+    const row = document.createElement('div');
+    const isMe = m.isMe || false;
+    row.className = 'conv-mr' + (isMe ? ' me' : '');
+
+    const timeStr = formatMsgTime(m.ts);
+
+    if (isMe) {
+      row.innerHTML = `
+        <div class="conv-mava" style="background:var(--green);color:var(--bg)">Вы</div>
+        <div class="conv-bub me">${e2(m.text)}<div class="conv-tm">${timeStr} ✓✓</div></div>`;
+    } else {
+      const isBot = m.isBot || false;
+      const ava   = isBot ? 'var(--green3)' : '#2a5aa0';
+      const ini   = isBot ? '4' : (m.from || '?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const color = isBot ? 'rgba(154,194,60,0.7)' : '#6aaaf0';
+      row.innerHTML = `
+        <div class="conv-mava" style="background:${ava}">${ini}</div>
+        <div>
+          <div class="conv-bub them">
+            <div class="conv-sndr" style="color:${color}">${e2(m.from || '?')}</div>
+            ${e2(m.text)}
+            <div class="conv-tm">${timeStr}</div>
+          </div>
+        </div>`;
+    }
     area.appendChild(row);
   });
-  area.scrollTop=area.scrollHeight;
+
+  // Прокручиваем вниз если были внизу (или первая загрузка)
+  if (!silent || wasAtBottom) {
+    setTimeout(() => { area.scrollTop = area.scrollHeight; }, 30);
+  }
 }
 
-function renderConvChips(id){
-  const area=document.getElementById('conv-chips-area');
-  const chips=chatChips[id]||[];
-  area.innerHTML=chips.map(c=>'<div class="conv-chip" onclick="convFillChip(this.dataset.chip)" data-chip="'+e2(c)+'">'+e2(c)+'</div>').join('');
+function renderMockMessages(id) {
+  const area = document.getElementById('conv-msgs-area');
+  if (!area) return;
+  area.innerHTML = '<div class="conv-day">Сегодня</div>';
+
+  const msgs = id ? (chatHistoryMock[id] || []) : [];
+  if (!msgs.length) {
+    area.innerHTML += '<div style="padding:30px 20px;text-align:center;font-size:13px;color:var(--muted)">Нет сообщений</div>';
+    return;
+  }
+
+  msgs.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'conv-mr' + (m.from === 'me' ? ' me' : '');
+    if (m.from === 'me') {
+      row.innerHTML = `
+        <div class="conv-mava" style="background:var(--green);color:var(--bg)">Вы</div>
+        <div class="conv-bub me">${e2(m.text)}<div class="conv-tm">${e2(m.time)}</div></div>`;
+    } else {
+      const pill = m.task
+        ? `<div class="conv-task-pill" onclick="openTaskFromChat()">
+            <i class="ti ti-checkbox" aria-hidden="true"></i>
+            <div><div class="conv-pill-t">${e2(m.task.text)}</div><div class="conv-pill-s">${e2(m.task.sub)}</div></div>
+           </div>` : '';
+      row.innerHTML = `
+        <div class="conv-mava" style="background:${m.ava}">${e2(m.ini)}</div>
+        <div>
+          <div class="conv-bub them">
+            <div class="conv-sndr" style="color:${m.nc}">${e2(m.name)}</div>
+            ${e2(m.text)}
+            <div class="conv-tm">${e2(m.time)}</div>
+          </div>${pill}
+        </div>`;
+    }
+    area.appendChild(row);
+  });
+  area.scrollTop = area.scrollHeight;
 }
 
-function convFillChip(chip){document.getElementById('conv-textarea').value=chipTexts[chip]||chip.replace('✦ ','');}
-
-function convSend(){
-  const ta=document.getElementById('conv-textarea'),txt=ta.value.trim();
-  if(!txt||!currentConvId)return;
-  const now=new Date(),t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  if(!chatHistory[currentConvId])chatHistory[currentConvId]=[];
-  chatHistory[currentConvId].push({from:'me',text:txt,time:t+' ✓'});
-  renderConvMsgs(currentConvId);ta.value='';
+function formatMsgTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
 }
 
-function convKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();convSend();}}
+// ── Отправка сообщения ────────────────────────────────────────
 
-function filterChats(q){
-  document.querySelectorAll('.chat-row-item').forEach(r=>{
-    const name=r.querySelector('.chat-row-name')?.textContent.toLowerCase()||'';
-    r.style.display=name.includes(q.toLowerCase())||!q?'':'none';
+async function convSend() {
+  const ta  = document.getElementById('conv-textarea');
+  const txt = (ta.value || '').trim();
+  if (!txt || !currentConvId) return;
+
+  ta.value = '';
+  ta.style.height = 'auto';
+
+  const isMock = !currentConvId.startsWith('group_') && !currentConvId.startsWith('dm_');
+
+  if (isMock) {
+    // Демо режим — просто рендерим локально
+    const now = new Date();
+    const t   = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    if (!chatHistoryMock[currentConvId]) chatHistoryMock[currentConvId] = [];
+    chatHistoryMock[currentConvId].push({ from: 'me', text: txt, time: t + ' ✓' });
+    renderMockMessages(currentConvId);
+    return;
+  }
+
+  // Реальная отправка через Worker → Bot API → Telegram
+  const area = document.getElementById('conv-msgs-area');
+
+  // Оптимистично добавляем сообщение в UI
+  const row = document.createElement('div');
+  row.className = 'conv-mr me';
+  row.innerHTML = `
+    <div class="conv-mava" style="background:var(--green);color:var(--bg)">Вы</div>
+    <div class="conv-bub me">${e2(txt)}<div class="conv-tm">${formatMsgTime(Date.now())} ⏳</div></div>`;
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+
+  try {
+    const res  = await fetch(WORKER + '/messages/send', {
+      method:  'POST',
+      headers: authHeaders(),
+      body:    JSON.stringify({ chatId: currentConvId, text: txt }),
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      // Обновляем статус — убираем ⏳
+      const tm = row.querySelector('.conv-tm');
+      if (tm) tm.textContent = formatMsgTime(Date.now()) + ' ✓✓';
+    } else {
+      showToast('Ошибка отправки: ' + (data.error || 'неизвестно'));
+      row.style.opacity = '0.5';
+    }
+  } catch (e) {
+    console.error('convSend:', e);
+    showToast('Нет соединения');
+    row.style.opacity = '0.5';
+  }
+}
+
+function convKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); convSend(); }
+}
+
+// ── Остановка поллинга при выходе из чата ────────────────────
+
+function stopConvPolling() {
+  if (convPollingTimer) { clearInterval(convPollingTimer); convPollingTimer = null; }
+}
+
+// Патчим showScreen чтобы останавливать поллинг при смене экрана
+const _origShowScreen = showScreen;
+function showScreen(id) {
+  if (id !== 'chat-conv') stopConvPolling();
+  _origShowScreen(id);
+}
+
+// ── AI-чипы подсказок ─────────────────────────────────────────
+
+function renderConvChips(id) {
+  const area  = document.getElementById('conv-chips-area');
+  if (!area) return;
+  const chips = chatChips[id] || [];
+  area.innerHTML = chips.map(c =>
+    `<div class="conv-chip" onclick="convFillChip('${e2(c)}')">${e2(c)}</div>`
+  ).join('');
+}
+
+function convFillChip(chip) {
+  const ta = document.getElementById('conv-textarea');
+  if (ta) ta.value = chipTexts[chip] || chip.replace('✦ ', '');
+}
+
+// ── Поиск по чатам ────────────────────────────────────────────
+
+function filterChats(q) {
+  document.querySelectorAll('.chat-row-item').forEach(r => {
+    const name = r.querySelector('.chat-row-name')?.textContent.toLowerCase() || '';
+    r.style.display = !q || name.includes(q.toLowerCase()) ? '' : 'none';
   });
 }
 
-function openTaskFromChat(){showToast('Задача зафиксирована ботом ✓');setTimeout(goHome,800);}
+// ── Открытие задачи из чата ───────────────────────────────────
+
+function openTaskFromChat() {
+  showToast('Задача зафиксирована ботом ✓');
+  setTimeout(goHome, 800);
+}
+
 
 
 </script>
