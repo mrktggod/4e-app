@@ -1298,7 +1298,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Задача</div></div>
-    <button id="detail-save-top-btn" onclick="saveTaskEdits()" style="background:var(--green);border:none;color:var(--bg);font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:Inter,sans-serif">Сохранить</button>
+    <span style="font-size:11px;color:rgba(154,194,60,0.5)">автосохранение</span>
   </div>
   <div class="detail-scroll">
 
@@ -4674,6 +4674,7 @@ async function quickDoneTask(taskId, btn){
     btn.style.background='transparent';
   }
 }
+document.addEventListener('focusout',function(e){if(e.target.closest('#task-detail'))saveTaskEdits();});
 </script>
 </body>
 </html>
