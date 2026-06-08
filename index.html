@@ -4656,7 +4656,24 @@ function openTaskFromChat() {
 }
 
 
-
+async function quickDoneTask(taskId, btn){
+  btn.style.background='var(--green)';
+  btn.style.color='#0E140B';
+  btn.style.borderColor='var(--green)';
+  btn.disabled=true;
+  const row=btn.closest('.task-row-v2');
+  if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}
+  try{
+    await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});
+    showToast('Задача выполнена ✓');
+    setTimeout(loadTasks,600);
+  }catch(e){
+    showToast('Ошибка');
+    if(row){row.style.opacity='';row.style.pointerEvents='';}
+    btn.disabled=false;
+    btn.style.background='transparent';
+  }
+}
 </script>
 </body>
 </html>
