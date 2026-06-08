@@ -2980,7 +2980,8 @@ async function loadTasks(){
     }
 
     selectedMonth = new Date().getMonth();
-    loadStats(outgoing, done);
+  loadStats(outgoing, done);
+    setTimeout(function(){if(typeof _addCheckboxesToTaskRows==='function')_addCheckboxesToTaskRows();},150);
   }catch(e){console.log('Ошибка loadTasks:',e.message);}
 }
 
