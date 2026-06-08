@@ -2601,6 +2601,18 @@ function loginWithTelegram(){
     loadTasks();
     linkTelegram();
   } else {
+    // Открываем бота — он пришлёт ссылку для входа
+    window.open('https://t.me/Denzel89bot?start=login', '_blank');
+    showToast('Открой бота и нажми Start — получишь ссылку для входа');
+  }
+}
+    currentUser={name:tgUser.first_name,email:'',trialActive:true,trialLeft:30};
+    chatId='user_'+tgUser.id;
+    applyUserInfo();
+    showScreen('home');
+    loadTasks();
+    linkTelegram();
+  } else {
     showToast('Открой через Telegram для авторизации');
   }
 }
