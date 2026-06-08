@@ -2951,7 +2951,8 @@ async function loadTasks(){
             '<div class="task-name-v2' + (i>0?' muted':'') + '">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
             '<div class="task-date-v2">' + (t.deadline ? '📅 '+e2(t.deadline) : e2(t.date)) + '</div>' +
           '</div>' +
-          '<span class="' + (hot ? 'task-tag-hot' : 'task-tag-soon') + '">' + (hot ? 'горит' : 'скоро') + '</span>' +
+          '<span class="' + (hot ? 'task-tag-hot' : 'task-tag-soon') + '" style="margin-right:6px">' + (hot ? 'горит' : 'скоро') + '</span>' +
+          '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
         '</div>';
       }).join('');
     }
