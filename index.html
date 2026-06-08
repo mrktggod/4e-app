@@ -2975,8 +2975,9 @@ async function loadTasks(){
               '<div class="promise-name-v2">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
               '<div class="' + (isLate ? 'promise-age-red' : 'task-date-v2') + '">' + age.text + '</div>' +
             '</div>' +
-            '<button class="promise-remind-btn glass" data-person="' + e2(t.person) + '" data-text="' + e2(t.text) + '" onclick="promiseRemindClick(this)">напомнить</button>' +
-          '</div>';
+            '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
+'<button class="promise-remind-btn glass" data-person="' + e2(t.person) + '" data-text="' + e2(t.text) + '" onclick="promiseRemindClick(this)">напомнить</button>' +
+'</div>';
         }).join('');
       }
     }
