@@ -383,7 +383,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .plan-feat-title{font-size:13px;font-weight:600;color:var(--text)}
 .plan-feat-sub{font-size:11px;color:var(--muted);margin-top:2px}
 /* pricing cards */
-.pricing-card{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;position:relative;overflow:hidden}
+.pricing-card{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;position:relative;overflow:hidden;min-height:94px}
 .pricing-card.selected{border-color:var(--green);background:var(--green3)}
 .pricing-name{font-size:15px;font-weight:700;color:var(--text)}
 .pricing-desc{font-size:11px;color:var(--muted);margin-top:2px}
@@ -391,7 +391,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .pricing-per{font-size:10px;color:var(--muted);margin-top:1px}
 .pricing-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:.15s}
 .pricing-radio.selected{border-color:var(--green);background:var(--green)}
-.pricing-badge-save{position:absolute;top:10px;right:44px;font-size:10px;font-weight:700;background:var(--green);color:var(--bg);padding:2px 8px;border-radius:10px}
+.pricing-badge-save{position:absolute;top:10px;right:54px;font-size:10px;font-weight:700;background:var(--green);color:var(--bg);padding:2px 8px;border-radius:10px;z-index:2;white-space:nowrap}
 /* order summary */
 .order-summary{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
 /* payment badges */
@@ -3156,12 +3156,9 @@ function showScreen(id){
 function goHome(){showScreen('home');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));loadTasks();}
 function openAsk(){
   showScreen('ask');
-  setNavActive('ask');
-  // Show welcome only if no messages yet
-  const msgs=document.getElementById('ask-msgs');
-  const welcome=document.getElementById('ask-welcome');
-  const hasMessages=msgs && msgs.querySelectorAll('.bubble-user,.bubble-ai').length>0;
-  if(welcome) welcome.style.display=hasMessages?'none':'flex';
+  setNavActive('brain');
+  loadAskHistoryFromStorage();
+  renderAskHistory();
   // Focus field with small delay (Telegram keyboard)
   setTimeout(()=>{const f=document.getElementById('ask-field');if(f)f.focus();},300);
 }
@@ -3653,32 +3650,118 @@ function selectVariant(el,text){generatedMsg=text;document.getElementById('msg-t
 function copyMsg(){const t=document.getElementById('msg-text').textContent;if(!t||t==='—')return;navigator.clipboard?.writeText(t).catch(()=>{});showToast('Скопировано ✓');}
 function editMsg(){const t=document.getElementById('msg-text');t.contentEditable='true';t.focus();showToast('Редактируй прямо здесь');}
 
-// ── История чата (сохраняется в сессии) ───────────────────────
-let askHistory = []; // { role: 'user'|'assistant', content: string }
+// ── История чата (сохраняется в sessionStorage) ────────────────
+let askHistory = [];
 
-async function createTaskFromChat(taskData) {
-  const task = {
-    id: Date.now().toString(),
-    text: taskData.text,
-    person: taskData.person || (currentUser?.name || 'Я'),
-    deadline: taskData.deadline || null,
+function getAskHistoryKey(){
+  return 'ask_history_v3_' + (chatId || (currentUser?.id ? 'user_' + currentUser.id : 'global'));
+}
+
+function loadAskHistoryFromStorage(){
+  try{
+    const raw = sessionStorage.getItem(getAskHistoryKey()) || '[]';
+    const parsed = JSON.parse(raw);
+    askHistory = Array.isArray(parsed) ? parsed.slice(-20) : [];
+  }catch(e){ askHistory = []; }
+}
+
+function saveAskHistoryToStorage(){
+  try{
+    askHistory = askHistory.slice(-20);
+    sessionStorage.setItem(getAskHistoryKey(), JSON.stringify(askHistory));
+  }catch(e){ console.warn('saveAskHistoryToStorage:', e); }
+}
+
+function renderAskHistory(){
+  const msgs = document.getElementById('ask-msgs');
+  if(!msgs) return;
+  msgs.querySelectorAll('.bubble-user,.bubble-ai').forEach(el => el.remove());
+  const welcome = document.getElementById('ask-welcome');
+  if(welcome) welcome.style.display = askHistory.length ? 'none' : 'flex';
+  askHistory.forEach(m => appendMsg(m.content, m.role === 'assistant' ? 'ai' : 'user'));
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function normalizeTaskFromChat(taskData){
+  const text = String(taskData?.text || taskData?.task || '').trim();
+  const person = String(taskData?.person || taskData?.assignee || currentUser?.name || 'Я').trim();
+  let deadline = taskData?.deadline ?? null;
+  if(typeof deadline === 'string'){
+    deadline = deadline.trim();
+    if(!deadline || deadline.toLowerCase() === 'null' || deadline === 'без срока') deadline = null;
+  }
+  return {
+    id: Date.now().toString() + '_' + Math.random().toString(36).slice(2,7),
+    text,
+    person: person || 'Я',
+    deadline,
     type: 'task',
     direction: 'outgoing',
     date: new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long'}),
     done: false,
+    source: 'ai-chat'
   };
-  try {
-    await fetch(WORKER, {
-      method: 'POST',
-      headers: {...authHeaders(), 'x-action': 'save-task'},
-      body: JSON.stringify({chatId, task})
-    });
-    loadTasks();
-    return true;
-  } catch(e) {
-    console.error('createTaskFromChat:', e);
-    return false;
+}
+
+async function saveTaskToWorker(task){
+  const targetChatId = chatId || (currentUser?.id ? 'user_' + currentUser.id : 'global');
+  const res = await fetch(WORKER, {
+    method: 'POST',
+    headers: {...authHeaders(), 'x-action': 'save-task'},
+    body: JSON.stringify({chatId: targetChatId, task})
+  });
+  let data = null;
+  try{ data = await res.clone().json(); }catch(e){}
+  if(!res.ok || (data && data.ok === false)){
+    throw new Error((data && (data.error || data.message)) || ('HTTP ' + res.status));
   }
+  return data || {ok:true};
+}
+
+async function createTaskFromChat(taskData) {
+  const task = normalizeTaskFromChat(taskData);
+  if(!task.text) throw new Error('empty task text');
+  await saveTaskToWorker(task);
+  // Оптимистично обновляем локальный кэш, чтобы задача сразу была видна в контексте AI
+  allTasksCache = [task].concat((allTasksCache || []).filter(t => t.id !== task.id));
+  await loadTasks();
+  return task;
+}
+
+// Простая страховка: если модель не вернула <create_task>, но фраза явно похожа на задачу — создаем сами.
+function extractTaskFromUserText(text){
+  const raw = String(text || '').trim();
+  const lower = raw.toLowerCase();
+  const triggers = ['поставь задачу','создай задачу','добавь задачу','новая задача','запомни','напомни','надо ','нужно '];
+  const hasTrigger = triggers.some(t => lower.includes(t));
+  if(!hasTrigger) return null;
+
+  let cleaned = raw
+    .replace(/^(поставь|создай|добавь)\s+(новую\s+)?задачу\s*/i,'')
+    .replace(/^новая\s+задача[:\s-]*/i,'')
+    .replace(/^запомни[,\s:]*/i,'')
+    .replace(/^напомни\s*/i,'')
+    .trim();
+
+  if(cleaned.length < 3) return null;
+
+  let deadline = null;
+  const dlRules = [
+    [/\b(сегодня)\b/i, 'сегодня'],
+    [/\b(завтра)\b/i, 'завтра'],
+    [/\b(послезавтра)\b/i, 'послезавтра'],
+    [/\b(в понедельник|во вторник|в среду|в четверг|в пятницу|в субботу|в воскресенье)\b/i, m => m[1]],
+    [/\b(на следующей неделе)\b/i, 'на следующей неделе']
+  ];
+  for(const [re, val] of dlRules){
+    const m = cleaned.match(re);
+    if(m){ deadline = typeof val === 'function' ? val(m) : val; break; }
+  }
+
+  const time = cleaned.match(/\b(?:в|к)\s*(\d{1,2})(?::(\d{2}))?\b/i);
+  if(time) deadline = (deadline ? deadline + ' ' : '') + 'в ' + time[1] + (time[2] ? ':' + time[2] : ':00');
+
+  return { text: cleaned, person: currentUser?.name || 'Я', deadline };
 }
 
 function appendMsg(text,role){const msgs=document.getElementById('ask-msgs');const d=document.createElement('div');d.className=role==='user'?'bubble-user':'bubble-ai';if(role==='ai'&&text){d.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}else{d.textContent=text;}msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
@@ -3691,27 +3774,28 @@ async function sendAsk(){
   const v=f.value.trim();
   if(!v||isGenerating)return;
   f.value='';f.style.height='auto';
-  // Hide welcome on first message
+
   const welcome=document.getElementById('ask-welcome');
   if(welcome) welcome.style.display='none';
+
+  // На всякий случай подгружаем историю, если экран был переоткрыт
+  if(!askHistory.length) loadAskHistoryFromStorage();
+
   appendMsg(v,'user');
-  // Добавляем в историю
   askHistory.push({role:'user', content:v});
-  // Обрезаем историю до 20 сообщений
-  if(askHistory.length > 20) askHistory = askHistory.slice(-20);
+  saveAskHistoryToStorage();
 
   isGenerating=true;
   const lb=appendMsg('','ai');
   lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
 
-  // Контекст задач
   const taskSummary = allTasksCache.length > 0
-    ? 'Активные задачи: ' + allTasksCache.slice(0,8).map(t =>
-        t.person + ' — ' + t.text + (t.deadline ? ' (дедлайн: ' + t.deadline + ')' : '')
+    ? 'Активные задачи: ' + allTasksCache.slice(0,12).map(t =>
+        (t.person || 'Я') + ' — ' + t.text + (t.deadline ? ' (дедлайн: ' + t.deadline + ')' : ' (без срока)')
       ).join('; ')
     : 'Активных задач нет.';
 
-  const today = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long'});
+  const today = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 
   try{
     const r=await fetch(WORKER,{
@@ -3721,7 +3805,7 @@ async function sendAsk(){
         model:'claude-sonnet-4-6',
         max_tokens:1000,
         system: SYS_BASE + '\n\nСегодня: ' + today + '\n' + taskSummary,
-        messages: askHistory.slice(0,-1).concat([{role:'user', content: v}])
+        messages: askHistory.slice(-20)
       })
     });
     const d=await r.json();
@@ -3730,26 +3814,47 @@ async function sendAsk(){
     else if(d.error) text='Ошибка: '+(d.error.message||JSON.stringify(d.error));
     else text=JSON.stringify(d);
 
-    // Проверяем есть ли команда создать задачу
+    let createdTask = null;
     const taskMatch = text.match(/<create_task>([\s\S]*?)<\/create_task>/);
     if(taskMatch) {
       try {
         const taskData = JSON.parse(taskMatch[1]);
-        const ok = await createTaskFromChat(taskData);
-        // Убираем JSON-блок из текста ответа
+        createdTask = await createTaskFromChat(taskData);
         text = text.replace(/<create_task>[\s\S]*?<\/create_task>/g, '').trim();
-        if(!text) text = '✅ Задача «' + taskData.text + '» добавлена!';
-      } catch(e) { console.error('parse task json:', e); }
+      } catch(e) {
+        console.error('create task from AI json:', e);
+        text = 'Не смог сохранить задачу. Ошибка: ' + e.message;
+      }
+    } else {
+      const fallbackTask = extractTaskFromUserText(v);
+      if(fallbackTask){
+        try{
+          createdTask = await createTaskFromChat(fallbackTask);
+          // Если AI начал уточнять очевидную задачу — заменяем ответ на действие.
+          if(/хочешь|уточни|какую задачу|добавить это/i.test(text) || !text){
+            text = '';
+          }
+        }catch(e){
+          console.error('fallback create task:', e);
+        }
+      }
     }
 
-    // Добавляем ответ в историю
-    askHistory.push({role:'assistant', content: text});
+    if(createdTask){
+      const confirm = '✅ Задача «' + createdTask.text + '» добавлена' + (createdTask.deadline ? ' · ' + createdTask.deadline : '') + '.';
+      text = text ? (confirm + '\n\n' + text) : confirm;
+      showToast('Задача добавлена ✓');
+    }
+
+    askHistory.push({role:'assistant', content:text});
+    saveAskHistoryToStorage();
 
     if(text){lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}
-    else{lb.textContent='Пустой ответ от сервера.';}
+    else{lb.textContent='Готово.';}
   }catch(e){
     lb.textContent='Нет соединения. Проверь интернет и попробуй снова.';
-    askHistory.pop(); // убираем сообщение пользователя из истории при ошибке
+    askHistory.pop();
+    saveAskHistoryToStorage();
     console.error('sendAsk error:',e);
   }
   isGenerating=false;
@@ -3832,9 +3937,10 @@ function setVoiceStep(idx,state){
 function sendVoiceMessage(text){
   showScreen('ask');
   setNavActive('brain');
+  loadAskHistoryFromStorage();
+  renderAskHistory();
   const welcome=document.getElementById('ask-welcome');
   if(welcome) welcome.style.display='none';
-  // Направляем голос в тот же чат с историей
   document.getElementById('ask-field').value = text;
   sendAsk();
 }
