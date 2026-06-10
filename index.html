@@ -2833,21 +2833,33 @@ function obDone(){
 
 const SYS_BASE=`Ты — 4, персональный AI-секретарь. Отвечай коротко, по-русски, дружелюбно.
 
-ЧТО ТЫ ДЕЛАЕШЬ:
-- Помогаешь управлять задачами и обещаниями
-- Напоминаешь о дедлайнах и договорённостях
-- Составляешь сообщения и ответы в Telegram
-- Советуешь как лучше поступить в рабочих ситуациях
-- Отвечаешь на вопросы по задачам пользователя
+ЧТО ТЫ УМЕЕШЬ:
+- Создавать задачи прямо из чата — когда пользователь просит поставить задачу, уточни детали и создай её
+- Показывать сводку дел на день и неделю
+- Напоминать о дедлайнах и обещаниях
+- Составлять сообщения и ответы в Telegram
+- Советовать как лучше подойти к задаче или обещанию
+- Помнить контекст разговора в рамках сессии
 
-ЧТО ТЫ НЕ ДЕЛАЕШЬ (перенаправляй в поддержку):
+КАК СОЗДАВАТЬ ЗАДАЧИ:
+Если пользователь говорит "поставь задачу", "добавь задачу", "запомни" или описывает что нужно сделать — уточни:
+1. Что нужно сделать (если не ясно)
+2. Кто исполнитель (если не указан — спроси или используй "Я")
+3. Дедлайн (если не указан — спроси или оставь пустым)
+
+После уточнения ответь JSON-блоком в конце сообщения:
+<create_task>{"text":"текст задачи","person":"исполнитель","deadline":"дедлайн или null"}</create_task>
+
+Затем напиши подтверждение что задача создана.
+
+ВАЖНО: Если пользователь сразу дал все детали — не переспрашивай, сразу создай задачу с JSON-блоком.
+
+ЧТО ТЫ НЕ ДЕЛАЕШЬ:
 - Не добавляешь новые функции в приложение
-- Не меняешь интерфейс, дизайн или настройки приложения
-- Не интегрируешь сторонние сервисы и API
-- Не даёшь технические инструкции по изменению кода
-- Не обсуждаешь разработку приложения
+- Не меняешь интерфейс или код
+- Не интегрируешь сторонние сервисы
 
-Если пользователь просит что-то из списка "не делаешь" — вежливо объясни что это выходит за рамки твоих задач, и предложи написать в поддержку: Профиль → Поддержка → Написать в поддержку. Не больше 2 предложений.`;
+Если просят что-то из списка выше — предложи Профиль → Поддержка.`;
 initApp();
 
 
@@ -3641,6 +3653,34 @@ function selectVariant(el,text){generatedMsg=text;document.getElementById('msg-t
 function copyMsg(){const t=document.getElementById('msg-text').textContent;if(!t||t==='—')return;navigator.clipboard?.writeText(t).catch(()=>{});showToast('Скопировано ✓');}
 function editMsg(){const t=document.getElementById('msg-text');t.contentEditable='true';t.focus();showToast('Редактируй прямо здесь');}
 
+// ── История чата (сохраняется в сессии) ───────────────────────
+let askHistory = []; // { role: 'user'|'assistant', content: string }
+
+async function createTaskFromChat(taskData) {
+  const task = {
+    id: Date.now().toString(),
+    text: taskData.text,
+    person: taskData.person || (currentUser?.name || 'Я'),
+    deadline: taskData.deadline || null,
+    type: 'task',
+    direction: 'outgoing',
+    date: new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long'}),
+    done: false,
+  };
+  try {
+    await fetch(WORKER, {
+      method: 'POST',
+      headers: {...authHeaders(), 'x-action': 'save-task'},
+      body: JSON.stringify({chatId, task})
+    });
+    loadTasks();
+    return true;
+  } catch(e) {
+    console.error('createTaskFromChat:', e);
+    return false;
+  }
+}
+
 function appendMsg(text,role){const msgs=document.getElementById('ask-msgs');const d=document.createElement('div');d.className=role==='user'?'bubble-user':'bubble-ai';if(role==='ai'&&text){d.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}else{d.textContent=text;}msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
 function askQuick(text){
   document.getElementById('ask-field').value=text;
@@ -3655,35 +3695,61 @@ async function sendAsk(){
   const welcome=document.getElementById('ask-welcome');
   if(welcome) welcome.style.display='none';
   appendMsg(v,'user');
+  // Добавляем в историю
+  askHistory.push({role:'user', content:v});
+  // Обрезаем историю до 20 сообщений
+  if(askHistory.length > 20) askHistory = askHistory.slice(-20);
+
   isGenerating=true;
   const lb=appendMsg('','ai');
   lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
-  // Build system prompt with task context
-  const taskSummary=allTasksCache.length>0
-    ?'Активные задачи пользователя: '+allTasksCache.slice(0,5).map(t=>t.person+' — '+t.text+(t.deadline?' (дедлайн: '+t.deadline+')':'')).join('; ')
-    :'Активных задач нет.';
+
+  // Контекст задач
+  const taskSummary = allTasksCache.length > 0
+    ? 'Активные задачи: ' + allTasksCache.slice(0,8).map(t =>
+        t.person + ' — ' + t.text + (t.deadline ? ' (дедлайн: ' + t.deadline + ')' : '')
+      ).join('; ')
+    : 'Активных задач нет.';
+
+  const today = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long'});
+
   try{
     const r=await fetch(WORKER,{
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-5',
-        max_tokens:800,
-        system:SYS_BASE+'\n\n'+taskSummary,
-        messages:[{role:'user',content:v}]
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system: SYS_BASE + '\n\nСегодня: ' + today + '\n' + taskSummary,
+        messages: askHistory.slice(0,-1).concat([{role:'user', content: v}])
       })
     });
     const d=await r.json();
-    // Handle different response shapes from the Worker proxy
     let text='';
     if(d.content&&d.content[0]?.text) text=d.content[0].text;
-    else if(d.completion) text=d.completion;
-    else if(d.error) text='Ошибка: '+( d.error.message||JSON.stringify(d.error));
-    else if(typeof d==='string') text=d;
+    else if(d.error) text='Ошибка: '+(d.error.message||JSON.stringify(d.error));
     else text=JSON.stringify(d);
-    if(text){lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}else{lb.textContent='Пустой ответ от сервера.';}
+
+    // Проверяем есть ли команда создать задачу
+    const taskMatch = text.match(/<create_task>([\s\S]*?)<\/create_task>/);
+    if(taskMatch) {
+      try {
+        const taskData = JSON.parse(taskMatch[1]);
+        const ok = await createTaskFromChat(taskData);
+        // Убираем JSON-блок из текста ответа
+        text = text.replace(/<create_task>[\s\S]*?<\/create_task>/g, '').trim();
+        if(!text) text = '✅ Задача «' + taskData.text + '» добавлена!';
+      } catch(e) { console.error('parse task json:', e); }
+    }
+
+    // Добавляем ответ в историю
+    askHistory.push({role:'assistant', content: text});
+
+    if(text){lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}
+    else{lb.textContent='Пустой ответ от сервера.';}
   }catch(e){
     lb.textContent='Нет соединения. Проверь интернет и попробуй снова.';
+    askHistory.pop(); // убираем сообщение пользователя из истории при ошибке
     console.error('sendAsk error:',e);
   }
   isGenerating=false;
@@ -3765,16 +3831,12 @@ function setVoiceStep(idx,state){
 }
 function sendVoiceMessage(text){
   showScreen('ask');
+  setNavActive('brain');
   const welcome=document.getElementById('ask-welcome');
   if(welcome) welcome.style.display='none';
-  appendMsg(text,'user');
-  isGenerating=true;
-  const lb=appendMsg('','ai');
-  lb.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
-  aiCall({model:'claude-sonnet-4-5',max_tokens:800,system:SYS_BASE,messages:[{role:'user',content:text}]})
-    .then(function(d){var t=parseAIText(d)||'';if(t){lb.innerHTML='<div class="md-body">'+parseMarkdown(t)+'</div>';}else{lb.textContent='Нет ответа.';}})
-    .catch(()=>{lb.textContent='Нет соединения.';})
-    .finally(()=>{isGenerating=false;document.getElementById('ask-msgs').scrollTop=9999;});
+  // Направляем голос в тот же чат с историей
+  document.getElementById('ask-field').value = text;
+  sendAsk();
 }
 function closeVoice(){if(recognition){try{recognition.stop();}catch(e){}recognition=null;}clearTimeout(voiceTimer);document.getElementById('voice-overlay').classList.remove('active');document.getElementById('voice-title').textContent='4 анализирует';}
 
