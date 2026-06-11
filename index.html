@@ -2835,10 +2835,8 @@ function obDone(){
 
 
 const SYS_BASE=`Ты — 4, персональный AI-секретарь. Отвечай коротко, по-русски, дружелюбно.
-
 ГЛАВНЫЙ ПРИНЦИП:
 Ты не просто советуешь — ты помогаешь выполнять действия. Если пользователь просит поставить, добавить, запомнить, создать задачу или пишет фразу, похожую на дело, ты должен создать задачу.
-
 ЧТО ТЫ УМЕЕШЬ:
 - Создавать задачи прямо из чата.
 - Показывать сводку дел на день и неделю.
@@ -2846,33 +2844,64 @@ const SYS_BASE=`Ты — 4, персональный AI-секретарь. От
 - Составлять сообщения и ответы в Telegram.
 - Советовать, как лучше подойти к задаче или обещанию.
 - Учитывать контекст активных задач и историю текущего AI-чата.
-
 КАК СОЗДАВАТЬ ЗАДАЧИ:
 Если пользователь говорит "поставь задачу", "добавь задачу", "создай задачу", "запомни", "напомни", "надо", "нужно", "сделать" или просто описывает дело — создай задачу.
-
 Если не хватает деталей:
 - Если неясно, что нужно сделать — уточни.
 - Если исполнитель не указан — используй "Я".
 - Если дедлайн не указан — ставь deadline: null, не переспрашивай.
-
 После решения создать задачу обязательно добавь в конце ответа JSON-блок строго в таком формате:
 <create_task>{"text":"текст задачи","person":"исполнитель","deadline":null}</create_task>
-
 Если дедлайн есть, передай его строкой:
 <create_task>{"text":"текст задачи","person":"Я","deadline":"завтра"}</create_task>
-
+ДЕДЛАЙНЫ И СРОЧНОСТЬ:
+Когда в контексте задачи передан deadline или status — обязательно учитывай их в ответе.
+- Если status="burning" — задача горит, упомяни это явно.
+- Если deadline близко (сегодня, завтра) — предупреди пользователя.
+- Формат deadline в задачах: ISO строка (например "2026-06-12T18:00:00") или текст ("завтра", "в пятницу").
+- Если пользователь говорит "горит", "срочно", "сегодня до вечера" — ставь deadline на сегодня и добавь в текст задачи пометку о срочности.
 ВАЖНО:
 - Если пользователь дал понятную задачу — не переспрашивай, сразу создай.
 - Не говори, что не можешь создавать задачи.
 - Не отправляй пользователя создавать задачу вручную.
 - JSON-блок нужен системе, пользователь его не увидит.
-
 ЧТО ТЫ НЕ ДЕЛАЕШЬ:
 - Не добавляешь новые функции в приложение.
 - Не меняешь интерфейс или код.
 - Не интегрируешь сторонние сервисы.
-
 Если просят что-то из списка выше — предложи Профиль → Поддержка.`;
+
+Теперь найди в sendAsk строку где формируется taskSummary. Скинь её — там надо добавить передачу deadline и status в контекст.You said: вот этот кусок надо заменить?вот этот кусок надо заменить? const SYS_BASE=Ты — 4, персональный AI-секретарь. Отвечай коротко, по-русски, дружелюбно.
+ГЛАВНЫЙ ПРИНЦИП:
+Ты не просто советуешь — ты помогаешь выполнять действия. Если пользователь просит поставить, добавить, запомнить, создать задачу или пишет фразу, похожую на дело, ты должен создать задачу.
+ЧТО ТЫ УМЕЕШЬ:
+- Создавать задачи прямо из чата.
+- Показывать сводку дел на день и неделю.
+- Напоминать о дедлайнах и обещаниях.
+- Составлять сообщения и ответы в Telegram.
+- Советовать, как лучше подойти к задаче или обещанию.
+- Учитывать контекст активных задач и историю текущего AI-чата.
+КАК СОЗДАВАТЬ ЗАДАЧИ:
+Если пользователь говорит "поставь задачу", "добавь задачу", "создай задачу", "запомни", "напомни", "надо", "нужно", "сделать" или просто описывает дело — создай задачу.
+Если не хватает деталей:
+- Если неясно, что нужно сделать — уточни.
+- Если исполнитель не указан — используй "Я".
+- Если дедлайн не указан — ставь deadline: null, не переспрашивай.
+После решения создать задачу обязательно добавь в конце ответа JSON-блок строго в таком формате:
+<create_task>{"text":"текст задачи","person":"исполнитель","deadline":null}</create_task>
+Если дедлайн есть, передай его строкой:
+<create_task>{"text":"текст задачи","person":"Я","deadline":"завтра"}</create_task>
+ВАЖНО:
+- Если пользователь дал понятную задачу — не переспрашивай, сразу создай.
+- Не говори, что не можешь создавать задачи.
+- Не отправляй пользователя создавать задачу вручную.
+- JSON-блок нужен системе, пользователь его не увидит.
+ЧТО ТЫ НЕ ДЕЛАЕШЬ:
+- Не добавляешь новые функции в приложение.
+- Не меняешь интерфейс или код.
+- Не интегрируешь сторонние сервисы.
+Если просят что-то из списка выше — предложи Профиль → Поддержка.;
+initApp();Show more19:47Claude responded: Да, именно этот кусок.Да, именно этот кусок. Заменяй всё от const SYS_BASE=`` до ``; включительно на то что я дал выше. initApp(); оставь на месте — его не трогать.
 initApp();
 
 
@@ -3809,9 +3838,17 @@ async function sendAsk(){
 
   const activeTasks = (allTasksCache || []).filter(t => !t.done).slice(0,12);
   const taskSummary = activeTasks.length > 0
-    ? 'Активные задачи: ' + activeTasks.map(t =>
-        (t.person || 'Я') + ' — ' + t.text + (t.deadline ? ' (дедлайн: ' + t.deadline + ')' : ' (без дедлайна)')
-      ).join('; ')
+    ? 'Активные задачи: ' + activeTasks.map(t => {
+        const now = Date.now();
+        const dl = t.deadline ? new Date(t.deadline).getTime() : null;
+        const hoursLeft = dl ? Math.round((dl - now) / 36e5) : null;
+        const status = dl && dl < now ? 'просрочено' : (hoursLeft !== null && hoursLeft <= 24 ? 'burning' : null);
+        let info = (t.person || 'Я') + ' — ' + t.text;
+        if(t.deadline) info += ' (дедлайн: ' + t.deadline + ')';
+        else info += ' (без дедлайна)';
+        if(status) info += ' [status: ' + status + ']';
+        return info;
+      }).join('; ')
     : 'Активных задач нет.';
   const today = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 
@@ -3914,16 +3951,25 @@ function selectCalDay(d){document.querySelectorAll('.cal-day').forEach(el=>el.cl
 
 // VOICE
 let voiceTimer=null,recognition=null;
-function openVoice(){
+async function openVoice(){
   const overlay=document.getElementById('voice-overlay');
   overlay.classList.add('active');
   document.getElementById('voice-title').textContent='Говори...';
   ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){document.getElementById('voice-title').textContent='Голос недоступен';setTimeout(()=>{closeVoice();openAsk();},1200);return;}
+  try{
+    await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(e){
+    document.getElementById('voice-title').textContent='Нет доступа к микрофону';
+    setTimeout(closeVoice,1800);
+    return;
+  }
+  let resultReceived=false;
   recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=false;
   recognition.onstart=()=>{document.getElementById('voice-title').textContent='Слушаю...';setVoiceStep(1,'spin');};
   recognition.onresult=(e)=>{
+    resultReceived=true;
     const text=e.results[0][0].transcript;
     document.getElementById('voice-title').textContent='«'+text+'»';
     setVoiceStep(1,'done');setVoiceStep(2,'spin');
@@ -3932,8 +3978,12 @@ function openVoice(){
     setTimeout(()=>{setVoiceStep(4,'done');setVoiceStep(5,'spin');document.getElementById('voice-title').textContent='4 отвечает...';},2200);
     setTimeout(()=>{setVoiceStep(5,'done');document.getElementById('voice-title').textContent='Готово';setTimeout(()=>{closeVoice();sendVoiceMessage(text);},600);},3000);
   };
-  recognition.onerror=()=>{document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);};
-  recognition.onend=()=>{if(document.getElementById('voice-title').textContent==='Слушаю...'){document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);}};
+  recognition.onerror=(e)=>{
+    const messages={'not-allowed':'Нет доступа к микрофону','no-speech':'Ничего не услышал','network':'Ошибка сети','aborted':'Отменено'};
+    document.getElementById('voice-title').textContent=messages[e.error]||'Ошибка микрофона';
+    setTimeout(closeVoice,1800);
+  };
+  recognition.onend=()=>{if(!resultReceived&&document.getElementById('voice-title').textContent==='Слушаю...'){document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);}};
   recognition.start();
 }
 function setVoiceStep(idx,state){
