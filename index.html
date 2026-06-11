@@ -3922,9 +3922,17 @@ function selectCalDay(d){
   const sel=new Date(y,m,d);
   fetch(WORKER+'/tasks?chatId='+chatId).then(r=>r.json()).then(tasks=>{
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
+    const MONTHS_MAP={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
     const dayTasks=(tasks||[]).filter(t=>{
       if(t.done||!t.deadline)return false;
-      const td=new Date(t.deadline);
+      let td;
+      const parts=t.deadline.trim().split(' ');
+      if(parts.length>=2&&MONTHS_MAP[parts[1]]!==undefined){
+        const year=parts[2]?parseInt(parts[2]):sel.getFullYear();
+        td=new Date(year,MONTHS_MAP[parts[1]],parseInt(parts[0]));
+      } else {
+        td=new Date(t.deadline);
+      }
       return td.getDate()===sel.getDate()&&td.getMonth()===sel.getMonth()&&td.getFullYear()===sel.getFullYear();
     });
     titEl.textContent='Дедлайны — '+d+' '+['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'][m];
