@@ -3581,7 +3581,11 @@ async function saveTaskEdits(){
   const t = allTasksCache.find(x => x.id === currentDetailTask.id);
   if(t){
     t.text = newText || t.text;
-    t.deadline = newDeadline || null;
+    if(newDeadline){
+      const d=new Date(newDeadline);
+      const MONTHS_RU=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+      t.deadline=d.getDate()+' '+MONTHS_RU[d.getMonth()]+' '+d.getFullYear();
+    } else { t.deadline=null; }
     t.tags = [...currentDetailTags];
     t.reminder = currentDetailReminder;
   }
