@@ -2623,6 +2623,9 @@ async function linkTelegram() {
 
 function doLogout(){
   localStorage.removeItem(TOKEN_K);
+  sessionStorage.removeItem(askHistoryKey());
+  askHistory=[];
+  askHistoryLoaded=false;
   currentUser=null;
   chatId='global';
   showScreen('login');
