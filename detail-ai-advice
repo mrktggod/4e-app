@@ -3423,7 +3423,7 @@ async function loadTaskAdvice(){
   const t = currentDetailTask;
   const prompt = 'Задача: ' + t.text + '. Исполнитель: ' + t.person + (t.deadline ? '. Дедлайн: ' + t.deadline : '') + '. Дай короткий практический совет (2-3 предложения) как лучше подойти к этой задаче или напомнить о ней.';
   try {
-    const r = await fetch(WORKER, {method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+    const r = await fetch(WORKER + '/anthropic', {method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,system:'Ты — краткий деловой помощник. Отвечай по-русски, конкретно, 2-3 предложения.',messages:[{role:'user',content:prompt}]})});
     const d = await r.json();
     const text = d.content?.[0]?.text || '';
