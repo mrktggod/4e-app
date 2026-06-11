@@ -3487,7 +3487,17 @@ function openTask(t,idx){
   if(origEl) origEl.value = t.originalMsg || t.text || '';
 
   // Deadline input
-  document.getElementById('detail-deadline-input').value = t.deadline || '';
+  const dlInput = document.getElementById('detail-deadline-input');
+  if(t.deadline){
+    const MONTHS_MAP={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
+    const parts=t.deadline.trim().split(' ');
+    if(parts.length>=2&&MONTHS_MAP[parts[1]]!==undefined){
+      const year=parts[2]?parseInt(parts[2]):new Date().getFullYear();
+      const mo=String(MONTHS_MAP[parts[1]]+1).padStart(2,'0');
+      const da=String(parseInt(parts[0])).padStart(2,'0');
+      dlInput.value=year+'-'+mo+'-'+da;
+    } else { dlInput.value=t.deadline; }
+  } else { dlInput.value=''; }
 
   // Tags
   renderDetailTags();
