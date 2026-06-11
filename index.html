@@ -3951,16 +3951,17 @@ function selectCalDay(d){
     });
     titEl.textContent='Дедлайны — '+d+' '+['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'][m];
     if(dayTasks.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет задач на этот день</div>';return;}
-    evEl.innerHTML=dayTasks.map(t=>`<div class="cal-event" onclick="openTaskById('${t.id}',0)" style="cursor:pointer">
-      <div class="cal-event-time">${t.deadline||''}</div>
-      <div class="cal-event-dot"></div>
-      <div style="flex:1">
-        <div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div>
-        <div style="display:flex;gap:8px;margin-top:6px">
-          <button onclick="event.stopPropagation();markDoneKV(this,'${t.id}')" style="font-size:11px;padding:3px 10px;border-radius:8px;background:var(--green3);border:1px solid var(--green-dark);color:var(--green);cursor:pointer;font-family:Inter,sans-serif">✓ Готово</button>
-        </div>
-      </div>
-    </div>`).join('');
+    evEl.innerHTML=dayTasks.map(t=>{
+      const tid=t.id;
+      return '<div class="cal-event" onclick="openTaskById(\''+tid+'\',0)" style="cursor:pointer">'
+        +'<div class="cal-event-time">'+(t.deadline||'')+'</div>'
+        +'<div class="cal-event-dot"></div>'
+        +'<div style="flex:1">'
+        +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
+        +'<div style="display:flex;gap:8px;margin-top:6px">'
+        +'<button onclick="event.stopPropagation();markDoneKV(this,\''+tid+'\')" style="font-size:11px;padding:3px 10px;border-radius:8px;background:var(--green3);border:1px solid var(--green-dark);color:var(--green);cursor:pointer;font-family:Inter,sans-serif">✓ Готово</button>'
+        +'</div></div></div>';
+    }).join('');
   }).catch(()=>{});
 }
 
