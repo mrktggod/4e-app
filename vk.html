@@ -996,14 +996,23 @@ async function doRegister() {
   }
 }
 
-function enterApp() {
+async function enterApp() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
-  state.tasks = [...sampleTasks];
   loadProfile();
-  renderTasks();
   buildCalendar();
   buildStats();
+  try {
+    const chatId = 'user_' + (state.user.vkId ? 'vk_' + state.user.vkId : state.user.id);
+    const res = await fetch(WORKER_URL + '/tasks?chatId=' + chatId, {
+      headers: state.token ? { 'x-token': state.token } : {}
+    });
+    const data = await res.json();
+    state.tasks = Array.isArray(data) && data.length > 0 ? data : [...sampleTasks];
+  } catch(e) {
+    state.tasks = [...sampleTasks];
+  }
+  renderTasks();
 }
 
 function doLogout() {
