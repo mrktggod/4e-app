@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+п»ї<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -936,7 +936,7 @@ async function autoLoginVK(vkUser) {
       state.token = data.token;
       state.user = data.user;
       enterApp();
-    } else { showToast('Ошибка авторизации VK'); }
+    } else { showToast('пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ VK'); }
   } catch(e) {
     state.user = { name: vkUser.first_name + ' ' + (vkUser.last_name || ''), vkId: vkUser.id, plan: 'trial', trialDays: 30 };
     enterApp();
@@ -1004,14 +1004,10 @@ async function enterApp() {
   buildStats();
   try {
     const chatId = 'user_' + (state.user.vkId ? 'vk_' + state.user.vkId : state.user.id);
-    const res = await fetch(WORKER_URL + '/tasks?chatId=' + chatId, {
-      headers: state.token ? { 'x-token': state.token } : {}
-    });
+    const res = await fetch(WORKER_URL + '/tasks?chatId=' + chatId, { headers: state.token ? { 'x-token': state.token } : {} });
     const data = await res.json();
     state.tasks = Array.isArray(data) && data.length > 0 ? data : [...sampleTasks];
-  } catch(e) {
-    state.tasks = [...sampleTasks];
-  }
+  } catch(e) { state.tasks = [...sampleTasks]; }
   renderTasks();
 }
 
