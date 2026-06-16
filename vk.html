@@ -432,7 +432,7 @@ function doLogout() {
 // ── TASKS ──
 async function loadTasks() {
   try {
-    const url = WORKER + '/tasks?chatId=user_' + (state.user?.id || '');
+    const url = WORKER + '/tasks';
     const res = await fetch(url, { headers: state.token ? { 'x-token': state.token } : {} });
     const data = await res.json();
     state.tasks = Array.isArray(data.tasks) ? data.tasks : [];
