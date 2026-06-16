@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <title>4</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2487,6 +2488,7 @@ async function initApp(){
     return;
   }
 
+  try{if(window.vkBridge){await vkBridge.send("VKWebAppInit");const vkU=await vkBridge.send("VKWebAppGetUserInfo");const vkR=await fetch("https://restless-lab-d737.shelckograff.workers.dev/auth/vk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({vk_user_id:String(vkU.id),first_name:vkU.first_name,last_name:vkU.last_name||""})}).then(r=>r.json());if(vkR.token){localStorage.setItem("token",vkR.token);currentUser={name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};chatId="user_vk_"+vkU.id;applyUserInfo();showScreen("home");loadTasks();return;}}}catch(e){}
   if(!localStorage.getItem(ONBOARD_K)){
     showScreen('onboarding');
     obInit();
