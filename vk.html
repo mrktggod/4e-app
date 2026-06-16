@@ -1,13 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>4 · AI-секретарь</title>
-
-<!-- VK Bridge SDK -->
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-
 <style>
 :root {
   --bg: #0E140B;
@@ -24,822 +21,268 @@
   --radius-sm: 12px;
   --nav-h: 72px;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   padding-bottom: var(--nav-h);
 }
-
-/* ── LOGO ── */
-.logo {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3px;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-}
-.logo .b {
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #c8e87a, #7A9A2E 55%, #3a5010);
-  box-shadow: 0 0 8px rgba(154,194,60,0.4);
-}
-
-.logo-lg {
-  width: 64px;
-  height: 64px;
-  gap: 5px;
-}
-
-/* ── TOP BAR ── */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px 10px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--bg);
-}
+.logo { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; width: 36px; height: 36px; flex-shrink: 0; }
+.logo .b { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c8e87a, #7A9A2E 55%, #3a5010); box-shadow: 0 0 8px rgba(154,194,60,0.4); }
+.logo-lg { width: 56px; height: 56px; gap: 5px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px; position: sticky; top: 0; z-index: 100; background: var(--bg); }
 .topbar-left { display: flex; align-items: center; gap: 10px; }
 .topbar-title { font-size: 18px; font-weight: 600; }
 .topbar-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
-
-.icon-btn {
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg2);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  color: var(--text);
-}
-
-/* ── SCREENS ── */
+.icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
 .screen { display: none; padding: 0 16px 24px; }
 .screen.active { display: block; }
-
-/* ── CARDS ── */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
-}
-
-/* ── SECTION LABEL ── */
-.section-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin: 20px 0 10px;
-}
-
-/* ── STATS HEADER ── */
-.stats-header {
-  background: linear-gradient(135deg, var(--bg2), #1f2d14);
-  border: 1px solid rgba(154,194,60,0.15);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.stats-big { font-size: 48px; font-weight: 700; color: var(--green); line-height: 1; }
-.stats-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.stats-right { text-align: right; }
-.stats-delta { font-size: 14px; color: var(--green); font-weight: 600; }
-
-/* ── TASK CARD ── */
-.task-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.section-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin: 20px 0 10px; }
+.task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: border-color 0.2s; }
 .task-card:hover { border-color: rgba(154,194,60,0.25); }
-.task-check {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  flex-shrink: 0;
-  margin-top: 2px;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-  cursor: pointer;
-}
+.task-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; }
 .task-check.done { background: var(--green); border-color: var(--green); }
 .task-check.done::after { content: '✓'; font-size: 12px; color: #000; font-weight: 700; }
 .task-body { flex: 1; min-width: 0; }
 .task-title { font-size: 14px; font-weight: 500; line-height: 1.4; }
 .task-meta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-.tag {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  background: rgba(154,194,60,0.12);
-  color: var(--green);
-  font-weight: 500;
-}
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: rgba(154,194,60,0.12); color: var(--green); font-weight: 500; }
 .tag.deadline { background: rgba(224,92,92,0.12); color: #e05c5c; }
-.tag.done-tag { background: rgba(154,194,60,0.08); color: var(--muted); }
-
-/* ── BOTTOM NAV ── */
-.bottom-nav {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: var(--nav-h);
-  background: rgba(14,20,11,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 8px;
-  z-index: 200;
-}
-.nav-item {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  cursor: pointer; flex: 1;
-  padding: 8px 4px;
-  border-radius: var(--radius-sm);
-  transition: all 0.15s;
-  color: var(--muted);
-}
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(14,20,11,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; padding: 0 8px; z-index: 200; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; padding: 8px 4px; border-radius: var(--radius-sm); transition: all 0.15s; color: var(--muted); }
 .nav-item.active { color: var(--green); }
 .nav-item svg { width: 22px; height: 22px; }
 .nav-item span { font-size: 10px; font-weight: 500; }
-
-.nav-center {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: var(--green);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 0 20px rgba(154,194,60,0.4);
-  flex-shrink: 0;
-  transition: transform 0.15s;
-}
+.nav-center { width: 52px; height: 52px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 20px rgba(154,194,60,0.4); flex-shrink: 0; transition: transform 0.15s; }
 .nav-center:active { transform: scale(0.93); }
 .nav-center svg { color: #000; width: 22px; height: 22px; }
-
-/* ── CHAT ── */
-.chat-wrap {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 130px);
-}
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0 12px;
-}
-.msg {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-  align-items: flex-end;
-}
+.chat-wrap { display: flex; flex-direction: column; height: calc(100vh - 130px); }
+.chat-messages { flex: 1; overflow-y: auto; padding: 8px 0 12px; }
+.msg { display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-end; }
 .msg.user { flex-direction: row-reverse; }
-.msg-bubble {
-  max-width: 78%;
-  padding: 10px 14px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-.msg.ai .msg-bubble {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-bottom-left-radius: 4px;
-}
-.msg.user .msg-bubble {
-  background: var(--green);
-  color: #000;
-  border-bottom-right-radius: 4px;
-  font-weight: 500;
-}
-.msg-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-
-.chat-input-area {
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
-  padding: 12px 0 4px;
-  border-top: 1px solid var(--border);
-}
-.chat-input {
-  flex: 1;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 10px 16px;
-  font-size: 14px;
-  color: var(--text);
-  font-family: inherit;
-  resize: none;
-  outline: none;
-  max-height: 120px;
-  line-height: 1.4;
-}
+.msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+.msg.ai .msg-bubble { background: var(--bg2); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.msg.user .msg-bubble { background: var(--green); color: #000; border-bottom-right-radius: 4px; font-weight: 500; }
+.msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--bg2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.chat-input-area { display: flex; gap: 10px; align-items: flex-end; padding: 12px 0 4px; border-top: 1px solid var(--border); }
+.chat-input { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 22px; padding: 10px 16px; font-size: 14px; color: var(--text); font-family: inherit; resize: none; outline: none; max-height: 120px; line-height: 1.4; }
 .chat-input::placeholder { color: var(--muted); }
-.chat-send {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--green);
-  border: none;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: transform 0.15s;
-}
+.chat-send { width: 40px; height: 40px; border-radius: 50%; background: var(--green); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.15s; }
 .chat-send:active { transform: scale(0.9); }
 .chat-send svg { color: #000; width: 18px; height: 18px; }
-
-.typing-dots span {
-  display: inline-block;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--muted);
-  animation: dot 1.2s infinite;
-  margin: 0 2px;
-}
+.typing-dots span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: dot 1.2s infinite; margin: 0 2px; }
 .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
 .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes dot { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
-
-/* ── CALENDAR ── */
-.cal-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 16px;
-}
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-  margin-bottom: 20px;
-}
-.cal-day-name {
-  text-align: center;
-  font-size: 11px;
-  color: var(--muted);
-  padding: 4px 0;
-  font-weight: 500;
-}
-.cal-day {
-  aspect-ratio: 1;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.15s;
-  position: relative;
-}
+.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 20px; }
+.cal-day-name { text-align: center; font-size: 11px; color: var(--muted); padding: 4px 0; font-weight: 500; }
+.cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 13px; border-radius: 50%; cursor: pointer; transition: background 0.15s; position: relative; }
 .cal-day:hover { background: var(--bg2); }
 .cal-day.today { background: var(--green); color: #000; font-weight: 700; }
-.cal-day.has-task::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--green);
-}
+.cal-day.has-task::after { content: ''; position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: var(--green); }
 .cal-day.today::after { background: #000; }
 .cal-day.other-month { color: var(--muted); }
-.cal-day.selected { border: 1px solid var(--green); }
-
-/* ── BAR CHART ── */
-.bar-chart {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  height: 80px;
-  margin: 16px 0;
-}
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin: 16px 0; }
 .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.bar {
-  width: 100%;
-  background: rgba(154,194,60,0.2);
-  border-radius: 6px 6px 0 0;
-  position: relative;
-  overflow: hidden;
-}
-.bar-fill {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: var(--green);
-  border-radius: 6px 6px 0 0;
-  transition: height 0.6s ease;
-}
+.bar { width: 100%; background: rgba(154,194,60,0.2); border-radius: 6px 6px 0 0; position: relative; overflow: hidden; height: 80px; }
+.bar-fill { position: absolute; bottom: 0; left: 0; right: 0; background: var(--green); border-radius: 6px 6px 0 0; transition: height 0.6s ease; }
 .bar-label { font-size: 10px; color: var(--muted); }
-
-/* ── PROFILE ── */
-.avatar {
-  width: 60px; height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  color: #000;
-  flex-shrink: 0;
-}
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 0 20px;
-}
+.avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--green), var(--green-dark)); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #000; flex-shrink: 0; }
+.profile-header { display: flex; align-items: center; gap: 16px; padding: 16px 0 20px; }
 .profile-name { font-size: 20px; font-weight: 600; }
 .profile-email { font-size: 13px; color: var(--muted); margin-top: 2px; }
-
-.setting-row {
-  display: flex; align-items: center;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  gap: 12px;
-  transition: color 0.15s;
-}
+.setting-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; gap: 12px; transition: color 0.15s; }
 .setting-row:last-child { border-bottom: none; }
 .setting-row:hover { color: var(--green); }
 .setting-row .icon { color: var(--muted); flex-shrink: 0; }
 .setting-row .label { flex: 1; font-size: 14px; }
 .setting-row .arrow { color: var(--muted); }
-
-.trial-banner {
-  background: linear-gradient(135deg, rgba(154,194,60,0.15), rgba(58,80,16,0.3));
-  border: 1px solid rgba(154,194,60,0.3);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+.trial-banner { background: linear-gradient(135deg, rgba(154,194,60,0.15), rgba(58,80,16,0.3)); border: 1px solid rgba(154,194,60,0.3); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
 .trial-days { font-size: 28px; font-weight: 700; color: var(--green); }
-.trial-sub { font-size: 12px; color: var(--muted); }
-.trial-btn {
-  margin-left: auto;
-  background: var(--green);
-  color: #000;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 22px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* ── BUTTONS ── */
-.btn {
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 14px;
-  border-radius: 16px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.15s;
-  font-family: inherit;
-}
+.trial-btn { margin-left: auto; background: var(--green); color: #000; border: none; padding: 8px 14px; border-radius: 22px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: 16px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
 .btn-primary { background: var(--green); color: #000; }
 .btn-primary:active { transform: scale(0.97); }
-.btn-secondary {
-  background: var(--bg2);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-.btn-vk {
-  background: #4680C2;
-  color: #fff;
-}
+.btn-secondary { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
 .btn-danger { background: rgba(224,92,92,0.12); color: var(--danger); }
-
-/* ── AUTH ── */
-.auth-wrap {
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 24px;
-}
-.auth-tabs {
-  display: flex;
-  background: var(--bg2);
-  border-radius: 14px;
-  padding: 3px;
-  width: 100%;
-  margin-bottom: 24px;
-}
-.auth-tab {
-  flex: 1;
-  padding: 10px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: var(--muted);
-}
-.auth-tab.active { background: var(--card); color: var(--text); }
-.auth-input {
-  width: 100%;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 13px 16px;
-  font-size: 15px;
-  color: var(--text);
-  font-family: inherit;
-  outline: none;
-  margin-bottom: 12px;
-  transition: border-color 0.2s;
-}
+.auth-wrap { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; }
+.auth-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 13px 16px; font-size: 15px; color: var(--text); font-family: inherit; outline: none; margin-bottom: 10px; }
 .auth-input:focus { border-color: rgba(154,194,60,0.4); }
 .auth-input::placeholder { color: var(--muted); }
-.auth-divider {
-  display: flex; align-items: center; gap: 12px;
-  margin: 16px 0;
-  color: var(--muted); font-size: 12px;
-}
-.auth-divider::before, .auth-divider::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-.trial-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(154,194,60,0.12);
-  border: 1px solid rgba(154,194,60,0.2);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 12px;
-  color: var(--green);
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-/* ── PROGRESS BAR ── */
-.progress-bar {
-  width: 100%; height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-  margin: 8px 0;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--green);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-}
-
-/* ── TOAST ── */
-.toast {
-  position: fixed;
-  bottom: calc(var(--nav-h) + 12px);
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: #fff;
-  color: #000;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  opacity: 0;
-  transition: all 0.3s;
-  z-index: 500;
-  white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
+.auth-btn { width: 100%; padding: 14px; border-radius: 14px; background: var(--green); color: #000; font-size: 15px; font-weight: 700; border: none; cursor: pointer; font-family: inherit; margin-top: 4px; }
+.auth-tabs { display: flex; background: var(--bg2); border-radius: 14px; padding: 3px; width: 100%; margin-bottom: 24px; }
+.auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; border-radius: 11px; cursor: pointer; transition: all 0.2s; color: var(--muted); }
+.auth-tab.active { background: var(--card); color: var(--text); }
+.loader { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+.loader-logo { width: 64px; height: 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; animation: pulse 1.5s infinite; }
+.loader-logo .b { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c8e87a, #7A9A2E 55%, #3a5010); }
+@keyframes pulse { 0%,100%{opacity:0.6;transform:scale(0.95)} 50%{opacity:1;transform:scale(1)} }
+.loader p { color: var(--muted); font-size: 14px; }
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #fff; color: #000; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.25s; z-index: 9999; white-space: nowrap; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ── STAT GRID ── */
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.stat-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-}
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.stat-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
 .stat-num { font-size: 28px; font-weight: 700; color: var(--green); }
-.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-/* ── CATEGORY PILLS ── */
-.cat-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin-bottom: 16px;
-  padding-bottom: 2px;
-}
-.cat-pill {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all 0.15s;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-.cat-pill.active {
-  background: rgba(154,194,60,0.15);
-  border-color: rgba(154,194,60,0.3);
-  color: var(--green);
-}
-
-/* ── LOADING ── */
-.loading-orbs {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-}
-.loading-orbs .logo-lg {
-  animation: pulse-logo 2s ease-in-out infinite;
-}
-@keyframes pulse-logo {
-  0%,100% { opacity: 0.6; transform: scale(0.95); }
-  50% { opacity: 1; transform: scale(1.02); }
-}
-
-/* ── MISC ── */
-.flex { display: flex; }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.progress-bar { height: 4px; background: rgba(154,194,60,0.15); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.4s; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
-.gap-10 { gap: 10px; }
-.mt-8 { margin-top: 8px; }
-.mt-16 { margin-top: 16px; }
-.text-green { color: var(--green); }
 .text-muted { color: var(--muted); }
 .text-sm { font-size: 13px; }
 .text-xs { font-size: 11px; }
-.font-600 { font-weight: 600; }
-.w-full { width: 100%; }
+.mt-16 { margin-top: 16px; }
 </style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
-<div class="auth-wrap" id="authScreen">
-  <div style="margin-bottom:32px; text-align:center;">
-    <div class="logo logo-lg" style="margin:0 auto 16px;">
-      <div class="b"></div><div class="b"></div>
-      <div class="b"></div><div class="b"></div>
-    </div>
-    <div style="font-size:28px;font-weight:700;margin-bottom:4px;">4</div>
-    <div class="text-muted text-sm">AI‑секретарь для деловых чатов</div>
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-logo">
+    <div class="b"></div><div class="b"></div>
+    <div class="b"></div><div class="b"></div>
   </div>
+  <p>Загрузка...</p>
+</div>
 
-  <div class="trial-badge">⭐ 30 дней Premium бесплатно</div>
+<!-- AUTH -->
+<div class="auth-wrap" id="authScreen" style="display:none">
+  <div class="logo-lg logo" style="margin-bottom:16px">
+    <div class="b"></div><div class="b"></div>
+    <div class="b"></div><div class="b"></div>
+  </div>
+  <div style="font-size:26px;font-weight:700;margin-bottom:4px">4 · AI-секретарь</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:32px;text-align:center">Фиксирует задачи из чатов автоматически</div>
 
-  <div class="auth-tabs" style="margin-bottom:20px;">
-    <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Вход</div>
+  <div class="auth-tabs">
+    <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Войти</div>
     <div class="auth-tab" id="tabReg" onclick="switchTab('register')">Регистрация</div>
   </div>
 
-  <div id="loginForm" style="width:100%">
-    <input class="auth-input" type="email" id="loginEmail" placeholder="Email">
-    <input class="auth-input" type="password" id="loginPass" placeholder="Пароль">
-    <button class="btn btn-primary" style="margin-bottom:12px" onclick="doLogin()">Войти</button>
-    <div class="auth-divider">или</div>
-    <button class="btn btn-vk" onclick="doVKLogin()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14C20.67 22 22 20.67 22 15.07V8.93C22 3.33 20.67 2 15.07 2zm3.08 13.42h-1.56c-.59 0-.77-.47-1.83-1.54-1.06-1.06-1.47-.79-1.47.47v1.07H13c-2.25 0-3.71-1.4-3.71-3.13C9.29 9.66 11.33 8 13.5 8h.29v1.52c-1.56.11-2.27 1.11-2.27 2.21 0 1.01.58 2.1 2.14 2.1h.63V9.88c0-1.03.52-1.43 1.09-1.43.58 0 .97.41 1.66 1.11.75.76 1.76 1.71 2.71 1.71h1.42v.12c-.06.85-.81 2.03-2.02 2.03z"/></svg>
-      Войти через VK ID
-    </button>
+  <div id="loginForm">
+    <input class="auth-input" id="loginEmail" type="email" placeholder="Email">
+    <input class="auth-input" id="loginPass" type="password" placeholder="Пароль">
+    <button class="auth-btn" onclick="doLogin()">Войти</button>
   </div>
 
-  <div id="registerForm" style="width:100%;display:none">
-    <input class="auth-input" type="text" id="regName" placeholder="Ваше имя">
-    <input class="auth-input" type="email" id="regEmail" placeholder="Email">
-    <input class="auth-input" type="password" id="regPass" placeholder="Пароль (мин. 8 символов)">
-    <button class="btn btn-primary" style="margin-bottom:12px" onclick="doRegister()">Начать бесплатно</button>
-    <div class="auth-divider">или</div>
-    <button class="btn btn-vk" onclick="doVKLogin()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14C20.67 22 22 20.67 22 15.07V8.93C22 3.33 20.67 2 15.07 2zm3.08 13.42h-1.56c-.59 0-.77-.47-1.83-1.54-1.06-1.06-1.47-.79-1.47.47v1.07H13c-2.25 0-3.71-1.4-3.71-3.13C9.29 9.66 11.33 8 13.5 8h.29v1.52c-1.56.11-2.27 1.11-2.27 2.21 0 1.01.58 2.1 2.14 2.1h.63V9.88c0-1.03.52-1.43 1.09-1.43.58 0 .97.41 1.66 1.11.75.76 1.71 1.71 2.71 1.71h1.42v.12c-.06.85-.81 2.03-2.02 2.03z"/></svg>
-      Зарегистрироваться через VK ID
-    </button>
+  <div id="registerForm" style="display:none">
+    <input class="auth-input" id="regName" type="text" placeholder="Имя">
+    <input class="auth-input" id="regEmail" type="email" placeholder="Email">
+    <input class="auth-input" id="regPass" type="password" placeholder="Пароль (мин. 6 символов)">
+    <button class="auth-btn" onclick="doRegister()">Создать аккаунт</button>
   </div>
 </div>
 
 <!-- MAIN APP -->
 <div id="mainApp" style="display:none">
 
-<!-- TOP BAR -->
 <div class="topbar">
   <div class="topbar-left">
-    <div class="logo">
-      <div class="b"></div><div class="b"></div>
-      <div class="b"></div><div class="b"></div>
-    </div>
-    <div>
-      <div class="topbar-title">4</div>
-      <div class="topbar-sub">AI‑секретарь</div>
-    </div>
+    <div class="logo"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div>
+    <div><div class="topbar-title">4</div><div class="topbar-sub">AI-секретарь</div></div>
   </div>
-  <div class="icon-btn" onclick="navigate('profile')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  <div class="icon-btn" id="userChip" onclick="navigate('profile')" style="width:auto;border-radius:20px;padding:0 12px;gap:6px;font-size:13px;font-weight:600">
+    <div id="userInitial" style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Ю</div>
+    <span id="userName">...</span>
   </div>
 </div>
 
-<!-- HOME SCREEN -->
+<!-- HOME -->
 <div class="screen active" id="screen-home">
-  <div class="stats-header">
-    <div>
-      <div class="stats-big" id="taskCount">7</div>
-      <div class="stats-label">активных задач</div>
-    </div>
-    <div class="stats-right">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Эта неделя</div>
-      <div class="stats-delta">+3 сегодня</div>
-      <div class="progress-bar" style="margin-top:8px;width:120px">
-        <div class="progress-fill" style="width:71%"></div>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;">71% выполнено</div>
-    </div>
+  <div style="padding:8px 0 16px">
+    <div style="font-size:42px;font-weight:700;line-height:1"><span id="taskCount">0</span></div>
+    <div style="font-size:18px;color:var(--muted);margin-top:2px">дел ждут</div>
   </div>
-
-  <div class="cat-row">
-    <div class="cat-pill active" onclick="filterTasks('all', this)">Все</div>
-    <div class="cat-pill" onclick="filterTasks('promise', this)">🤝 Обещания</div>
-    <div class="cat-pill" onclick="filterTasks('deadline', this)">⏰ Дедлайны</div>
-    <div class="cat-pill" onclick="filterTasks('incoming', this)">📥 Входящие</div>
-    <div class="cat-pill" onclick="filterTasks('done', this)">✅ Выполнено</div>
-  </div>
-
-  <div id="taskList"></div>
-
-  <button class="btn btn-secondary mt-16" onclick="showToast('Подключите бота @Denzel89bot к вашему чату ВКонтакте')">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-    Как подключить бота?
-  </button>
+  <div class="section-label">Задачи</div>
+  <div id="taskList"><div class="text-muted text-sm" style="padding:20px 0;text-align:center">Загрузка...</div></div>
 </div>
 
-<!-- ASK SCREEN -->
+<!-- ASK -->
 <div class="screen" id="screen-ask">
   <div class="chat-wrap">
     <div class="chat-messages" id="chatMessages">
       <div class="msg ai">
-        <div class="msg-avatar">
-          <div class="logo" style="width:20px;height:20px;gap:2px">
-            <div class="b"></div><div class="b"></div>
-            <div class="b"></div><div class="b"></div>
-          </div>
-        </div>
-        <div class="msg-bubble">Привет! Я 4 — ваш AI‑секретарь. Могу помочь составить сообщение, дать совет по задаче или ответить на любой вопрос. Чем займёмся?</div>
+        <div class="msg-avatar"><div class="logo" style="width:20px;height:20px;gap:2px"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div></div>
+        <div class="msg-bubble">Привет! Я 4 — ваш AI-секретарь. Могу помочь с задачами, составить сообщение или дать совет. Чем займёмся?</div>
       </div>
     </div>
     <div class="chat-input-area">
-      <textarea class="chat-input" id="chatInput" placeholder="Спросите что‑нибудь..." rows="1"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
-        oninput="autoResize(this)"></textarea>
+      <textarea class="chat-input" id="chatInput" placeholder="Спросите что-нибудь..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}" oninput="autoResize(this)"></textarea>
       <button class="chat-send" onclick="sendMessage()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
   </div>
 </div>
 
-<!-- CALENDAR SCREEN -->
+<!-- CALENDAR -->
 <div class="screen" id="screen-calendar">
   <div class="cal-header">
     <button class="icon-btn" onclick="changeMonth(-1)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <div style="font-size:17px;font-weight:600" id="calMonthLabel"></div>
+    <div style="font-size:16px;font-weight:600" id="calMonthLabel"></div>
     <button class="icon-btn" onclick="changeMonth(1)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
   </div>
   <div class="cal-grid" id="calGrid"></div>
-
-  <div class="section-label">Задачи на выбранный день</div>
-  <div id="calTaskList"><div class="text-muted text-sm" style="padding:12px 0">Выберите день для просмотра задач</div></div>
+  <div class="section-label">Задачи на день</div>
+  <div id="calTaskList"><div class="text-muted text-sm" style="padding:12px 0">Выберите дату</div></div>
 </div>
 
-<!-- STATS SCREEN -->
+<!-- STATS -->
 <div class="screen" id="screen-stats">
   <div class="section-label" style="margin-top:0">Прогресс за неделю</div>
   <div class="stat-grid">
-    <div class="stat-item"><div class="stat-num">12</div><div class="stat-lbl">Задач выполнено</div></div>
-    <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Активных задач</div></div>
-    <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Дедлайн сегодня</div></div>
-    <div class="stat-item"><div class="stat-num">71%</div><div class="stat-lbl">Выполнено</div></div>
+    <div class="stat-item"><div class="stat-num" id="statDone">0</div><div class="stat-lbl">Выполнено</div></div>
+    <div class="stat-item"><div class="stat-num" id="statActive">0</div><div class="stat-lbl">Активных</div></div>
+    <div class="stat-item"><div class="stat-num" id="statPromise">0</div><div class="stat-lbl">Обещаний</div></div>
+    <div class="stat-item"><div class="stat-num" id="statPct">0%</div><div class="stat-lbl">Выполнено %</div></div>
   </div>
-
-  <div class="section-label">Активность по дням</div>
-  <div class="card">
-    <div class="bar-chart" id="barChart"></div>
-    <div style="display:flex;justify-content:space-between;margin-top:8px">
-      <span class="text-xs text-muted">Пн</span>
-      <span class="text-xs text-muted">Вт</span>
-      <span class="text-xs text-muted">Ср</span>
-      <span class="text-xs text-muted">Чт</span>
-      <span class="text-xs text-muted">Пт</span>
-      <span class="text-xs text-muted">Сб</span>
-      <span class="text-xs text-muted">Вс</span>
-    </div>
-  </div>
-
-  <div class="section-label">По категориям</div>
-  <div id="catStats"></div>
+  <div class="section-label">Активность</div>
+  <div class="card"><div class="bar-chart" id="barChart"></div></div>
 </div>
 
-<!-- PROFILE SCREEN -->
+<!-- PROFILE -->
 <div class="screen" id="screen-profile">
   <div class="profile-header">
     <div class="avatar" id="profileAvatar">И</div>
     <div>
-      <div class="profile-name" id="profileName">Иван Иванов</div>
-      <div class="profile-email" id="profileEmail">ivan@example.com</div>
+      <div class="profile-name" id="profileName">Пользователь</div>
+      <div class="profile-email" id="profileEmail"></div>
     </div>
   </div>
-
   <div class="trial-banner">
     <div>
-      <div class="trial-days" id="trialDays">23</div>
-      <div style="font-size:13px;font-weight:600;margin-top:2px;">дня триала</div>
-      <div class="trial-sub">Полный доступ ко всем функциям</div>
+      <div class="trial-days" id="trialDays">30</div>
+      <div style="font-size:13px;font-weight:600;margin-top:2px">дней триала</div>
+      <div style="font-size:12px;color:var(--muted)">Полный доступ</div>
     </div>
-    <button class="trial-btn" onclick="showToast('Оплата через CloudPayments')">Купить план</button>
+    <button class="trial-btn" onclick="showToast('Оплата скоро будет доступна')">Купить план</button>
   </div>
-
   <div class="card" style="padding:4px 16px">
-    <div class="setting-row" onclick="showToast('Настройки уведомлений')">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <div class="setting-row" onclick="showToast('Скоро')">
       <span class="label">Уведомления</span>
       <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    <div class="setting-row" onclick="showToast('Подписка и тарифы')">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    <div class="setting-row" onclick="showToast('Скоро')">
       <span class="label">Подписка</span>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span class="tag">Триал</span>
-        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-    </div>
-    <div class="setting-row" onclick="showToast('Настройки безопасности')">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span class="label">Безопасность</span>
       <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    <div class="setting-row" onclick="showToast('Выбор темы')">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
-      <span class="label">Тема оформления</span>
-      <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="setting-row" onclick="showToast('Поддержка')">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <div class="setting-row" onclick="showToast('Поддержка: @Denzel89bot')">
       <span class="label">Поддержка</span>
       <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
   </div>
-
-  <button class="btn btn-danger mt-16" onclick="doLogout()">Выйти из аккаунта</button>
+  <button class="btn btn-danger mt-16" onclick="doLogout()">Выйти</button>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- NAV -->
 <nav class="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="navigate('home')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -849,11 +292,9 @@ body {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     <span>Календарь</span>
   </div>
-
   <div class="nav-center" onclick="navigate('ask')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
   </div>
-
   <div class="nav-item" id="nav-stats" onclick="navigate('stats')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     <span>Статистика</span>
@@ -863,48 +304,90 @@ body {
     <span>Профиль</span>
   </div>
 </nav>
+</div>
 
-</div><!-- /mainApp -->
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── CONFIG ──
-const WORKER_URL = 'https://restless-lab-d737.shelckograff.workers.dev';
+const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
+const TOKEN_K = 'vk4_token';
 
-// ── STATE ──
-let state = {
-  user: null,
-  token: null,
-  tasks: [],
-  filter: 'all',
-  calDate: new Date(),
-  chatHistory: []
-};
+let state = { user: null, token: null, tasks: [], filter: 'all', calDate: new Date(), chatHistory: [] };
 
-// ── SAMPLE TASKS ──
-const sampleTasks = [
-  { id: 1, text: 'Прислать КП клиенту до пятницы', type: 'promise', subtype: 'outgoing', deadline: '2026-06-20', done: false },
-  { id: 2, text: 'Ждать макеты от дизайнера', type: 'promise', subtype: 'incoming', deadline: null, done: false },
-  { id: 3, text: 'Встреча с командой в 15:00', type: 'deadline', subtype: null, deadline: '2026-06-15', done: false },
-  { id: 4, text: 'Подготовить отчёт по проекту', type: 'task', subtype: null, deadline: '2026-06-18', done: false },
-  { id: 5, text: 'Оплатить счёт за сервер', type: 'deadline', subtype: null, deadline: '2026-06-17', done: false },
-  { id: 6, text: 'Позвонить Алексею по договору', type: 'promise', subtype: 'outgoing', deadline: null, done: false },
-  { id: 7, text: 'Созвониться с партнёрами', type: 'task', subtype: null, deadline: '2026-06-22', done: false },
-  { id: 8, text: 'Согласовать бюджет на Q3', type: 'task', subtype: null, deadline: null, done: true }
-];
-
-// ── VK BRIDGE INIT ──
-try {
-  vkBridge.send('VKWebAppInit');
-  vkBridge.subscribe(({ detail }) => {
-    if (detail.type === 'VKWebAppGetUserInfoResult') {
-      const u = detail.data;
-      autoLoginVK(u);
+// ── INIT ──
+window.addEventListener('load', async () => {
+  try {
+    await vkBridge.send('VKWebAppInit');
+    const savedToken = localStorage.getItem(TOKEN_K);
+    if (savedToken) {
+      try {
+        const r = await fetch(WORKER + '/auth/me', { headers: { 'x-token': savedToken } });
+        const d = await r.json();
+        if (d.ok) {
+          state.token = savedToken;
+          state.user = d.user;
+          enterApp();
+          return;
+        }
+      } catch(e) {}
+      localStorage.removeItem(TOKEN_K);
     }
-  });
-} catch(e) {}
+    // Try VK auto-login
+    try {
+      const vkUser = await vkBridge.send('VKWebAppGetUserInfo');
+      await autoLoginVK(vkUser);
+    } catch(e) {
+      showAuth();
+    }
+  } catch(e) {
+    showAuth();
+  }
+});
+
+async function autoLoginVK(vkUser) {
+  try {
+    const res = await fetch(WORKER + '/auth/vk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ vk_user_id: String(vkUser.id), first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
+    });
+    const data = await res.json();
+    if (data.token) {
+      state.token = data.token;
+      state.user = data.user;
+      localStorage.setItem(TOKEN_K, data.token);
+      enterApp();
+      return;
+    }
+  } catch(e) {}
+  showAuth();
+}
+
+function showAuth() {
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+}
+
+function enterApp() {
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  applyUser();
+  loadTasks();
+  buildCalendar();
+}
+
+function applyUser() {
+  if (!state.user) return;
+  const name = state.user.name || 'Пользователь';
+  document.getElementById('userName').textContent = name.split(' ')[0];
+  document.getElementById('userInitial').textContent = name[0].toUpperCase();
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileEmail').textContent = state.user.email || '';
+  document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
+  const trial = state.user.trialEndsAt ? Math.max(0, Math.ceil((state.user.trialEndsAt - Date.now()) / 86400000)) : 30;
+  document.getElementById('trialDays').textContent = trial;
+}
 
 // ── AUTH ──
 function switchTab(tab) {
@@ -914,59 +397,16 @@ function switchTab(tab) {
   document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
 }
 
-async function doVKLogin() {
-  try {
-    const result = await vkBridge.send('VKWebAppGetUserInfo');
-    autoLoginVK(result);
-  } catch(e) {
-    // In browser fallback — simulate VK user
-    autoLoginVK({ first_name: 'VK', last_name: 'Пользователь', id: 12345, email: 'vk@user.com' });
-  }
-}
-
-async function autoLoginVK(vkUser) {
-  try {
-    const res = await fetch(WORKER_URL + '/auth/vk', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vk_user_id: String(vkUser.id), first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
-    });
-    const data = await res.json();
-    if (data.token) {
-      state.token = data.token;
-      state.user = data.user;
-      enterApp();
-    } else { showToast('������ ����������� VK'); }
-  } catch(e) {
-    state.user = { name: vkUser.first_name + ' ' + (vkUser.last_name || ''), vkId: vkUser.id, plan: 'trial', trialDays: 30 };
-    enterApp();
-  }
-}
-
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
   if (!email || !pass) { showToast('Введите email и пароль'); return; }
-
   try {
-    const res = await fetch(WORKER_URL + '/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass })
-    });
+    const res = await fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) });
     const data = await res.json();
-    if (data.token) {
-      state.token = data.token;
-      state.user = data.user;
-      enterApp();
-    } else {
-      showToast(data.error || 'Ошибка входа');
-    }
-  } catch(e) {
-    // Demo mode
-    state.user = { name: 'Иван Иванов', email, plan: 'trial', trialDays: 23 };
-    enterApp();
-  }
+    if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
+    else showToast(data.error || 'Ошибка входа');
+  } catch(e) { showToast('Ошибка соединения'); }
 }
 
 async function doRegister() {
@@ -974,84 +414,48 @@ async function doRegister() {
   const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPass').value;
   if (!name || !email || !pass) { showToast('Заполните все поля'); return; }
-  if (pass.length < 8) { showToast('Пароль минимум 8 символов'); return; }
-
   try {
-    const res = await fetch(WORKER_URL + '/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password: pass })
-    });
+    const res = await fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) });
     const data = await res.json();
-    if (data.token) {
-      state.token = data.token;
-      state.user = data.user;
-      enterApp();
-    } else {
-      showToast(data.error || 'Ошибка регистрации');
-    }
-  } catch(e) {
-    state.user = { name, email, plan: 'trial', trialDays: 30 };
-    enterApp();
-  }
-}
-
-async function enterApp() {
-  document.getElementById('authScreen').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'block';
-  loadProfile();
-  buildCalendar();
-  buildStats();
-  try {
-    const chatId = 'user_' + (state.user.vkId ? 'vk_' + state.user.vkId : state.user.id);
-    const res = await fetch(WORKER_URL + '/tasks?chatId=' + chatId, { headers: state.token ? { 'x-token': state.token } : {} });
-    const data = await res.json();
-    state.tasks = Array.isArray(data) && data.length > 0 ? data : [...sampleTasks];
-  } catch(e) { state.tasks = [...sampleTasks]; }
-  renderTasks();
+    if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
+    else showToast(data.error || 'Ошибка регистрации');
+  } catch(e) { showToast('Ошибка соединения'); }
 }
 
 function doLogout() {
-  state.user = null; state.token = null;
-  document.getElementById('authScreen').style.display = 'flex';
+  localStorage.removeItem(TOKEN_K);
+  state.user = null; state.token = null; state.tasks = [];
   document.getElementById('mainApp').style.display = 'none';
-}
-
-// ── NAVIGATION ──
-const screens = ['home','ask','calendar','stats','profile'];
-const navMap = { home:'nav-home', calendar:'nav-calendar', stats:'nav-stats', profile:'nav-profile' };
-
-function navigate(id) {
-  screens.forEach(s => {
-    document.getElementById('screen-'+s).classList.toggle('active', s === id);
-  });
-  Object.entries(navMap).forEach(([s,n]) => {
-    document.getElementById(n).classList.toggle('active', s === id);
-  });
-  if (id === 'calendar') buildCalendar();
+  document.getElementById('authScreen').style.display = 'flex';
 }
 
 // ── TASKS ──
-function filterTasks(f, el) {
-  state.filter = f;
-  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
+async function loadTasks() {
+  try {
+    const url = WORKER + '/tasks?chatId=user_' + (state.user?.id || '');
+    const res = await fetch(url, { headers: state.token ? { 'x-token': state.token } : {} });
+    const data = await res.json();
+    state.tasks = Array.isArray(data.tasks) ? data.tasks : [];
+  } catch(e) { state.tasks = []; }
   renderTasks();
+  buildStats();
+}
+
+async function doneTask(id) {
+  try {
+    await fetch(WORKER, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-action': 'done-task', ...(state.token ? { 'x-token': state.token } : {}) }, body: JSON.stringify({ taskId: id }) });
+    await loadTasks();
+    showToast('Выполнено!');
+  } catch(e) { showToast('Ошибка'); }
 }
 
 function renderTasks() {
   const list = document.getElementById('taskList');
-  let tasks = state.tasks;
-  if (state.filter === 'done') tasks = tasks.filter(t => t.done);
-  else if (state.filter === 'promise') tasks = tasks.filter(t => t.type === 'promise' && !t.done);
-  else if (state.filter === 'deadline') tasks = tasks.filter(t => t.type === 'deadline' && !t.done);
-  else if (state.filter === 'incoming') tasks = tasks.filter(t => t.subtype === 'incoming' && !t.done);
-  else tasks = tasks.filter(t => !t.done);
-
-  list.innerHTML = tasks.length ? tasks.map(t => taskHTML(t)).join('') :
-    `<div class="text-muted text-sm" style="padding:20px 0 0;text-align:center">Задач нет 🎉</div>`;
-
-  document.getElementById('taskCount').textContent = state.tasks.filter(t => !t.done).length;
+  const active = state.tasks.filter(t => !t.done);
+  document.getElementById('taskCount').textContent = active.length;
+  list.innerHTML = active.length
+    ? active.map(t => taskHTML(t)).join('')
+    : '<div class="text-muted text-sm" style="padding:20px 0;text-align:center">Активных задач нет</div>';
 }
 
 function taskHTML(t) {
@@ -1059,27 +463,15 @@ function taskHTML(t) {
   const today = new Date().toISOString().slice(0,10);
   const overdue = t.deadline && t.deadline < today;
   return `<div class="task-card">
-    <div class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})"></div>
+    <div class="task-check" onclick="doneTask('${t.id}')"></div>
     <div class="task-body">
-      <div class="task-title ${t.done?'text-muted':''}">${t.text}</div>
+      <div class="task-title">${t.text || t.title || ''}</div>
       <div class="task-meta">
-        <span class="tag">${icons[t.type]||'📌'} ${typeLabel(t)}</span>
+        ${t.type ? `<span class="tag">${icons[t.type]||'📌'}</span>` : ''}
         ${t.deadline ? `<span class="tag ${overdue?'deadline':''}">${formatDate(t.deadline)}</span>` : ''}
-        ${t.done ? `<span class="tag done-tag">Выполнено</span>` : ''}
       </div>
     </div>
   </div>`;
-}
-
-function typeLabel(t) {
-  if (t.type === 'promise') return t.subtype === 'incoming' ? 'Входящее' : 'Обещание';
-  if (t.type === 'deadline') return 'Дедлайн';
-  return 'Задача';
-}
-
-function toggleTask(id) {
-  const t = state.tasks.find(x => x.id === id);
-  if (t) { t.done = !t.done; renderTasks(); showToast(t.done ? '✅ Выполнено!' : 'Возвращено в работу'); }
 }
 
 function formatDate(d) {
@@ -1087,6 +479,18 @@ function formatDate(d) {
   const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
   const dt = new Date(d);
   return `${dt.getDate()} ${months[dt.getMonth()]}`;
+}
+
+// ── NAVIGATION ──
+const screens = ['home','ask','calendar','stats','profile'];
+function navigate(id) {
+  screens.forEach(s => document.getElementById('screen-'+s).classList.toggle('active', s === id));
+  ['home','calendar','stats','profile'].forEach(s => {
+    const el = document.getElementById('nav-'+s);
+    if (el) el.classList.toggle('active', s === id);
+  });
+  if (id === 'calendar') buildCalendar();
+  if (id === 'stats') buildStats();
 }
 
 // ── CHAT ──
@@ -1098,74 +502,43 @@ async function sendMessage() {
   appendMsg('user', text);
   const typingId = appendTyping();
   state.chatHistory.push({ role: 'user', content: text });
-
   try {
-    const res = await fetch(WORKER_URL, {
+    const res = await fetch(WORKER, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(state.token ? { 'x-token': state.token } : {})
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу.',
-        messages: state.chatHistory
-      })
+      headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу.', messages: state.chatHistory })
     });
     const data = await res.json();
     removeTyping(typingId);
-    const reply = data.content?.[0]?.text || 'Извините, не смог получить ответ.';
+    const reply = data.content?.[0]?.text || 'Не смог получить ответ.';
     state.chatHistory.push({ role: 'assistant', content: reply });
     appendMsg('ai', reply);
-  } catch(e) {
-    removeTyping(typingId);
-    const fallbacks = [
-      'Понял! Записываю задачу. Хотите установить дедлайн?',
-      'Могу составить деловое сообщение на основе задачи. Кому адресовать?',
-      'Анализирую вашу ситуацию... Рекомендую приоритизировать дедлайн на пятницу.',
-    ];
-    appendMsg('ai', fallbacks[Math.floor(Math.random()*fallbacks.length)]);
-  }
+  } catch(e) { removeTyping(typingId); appendMsg('ai', 'Ошибка соединения. Попробуйте ещё раз.'); }
 }
 
 function appendMsg(role, text) {
   const wrap = document.getElementById('chatMessages');
-  const id = 'msg-' + Date.now();
-  wrap.innerHTML += `<div class="msg ${role}" id="${id}">
+  wrap.innerHTML += `<div class="msg ${role}">
     ${role === 'ai' ? `<div class="msg-avatar"><div class="logo" style="width:20px;height:20px;gap:2px"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div></div>` : ''}
     <div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>
   </div>`;
   wrap.scrollTop = wrap.scrollHeight;
-  return id;
 }
 
 function appendTyping() {
-  const wrap = document.getElementById('chatMessages');
   const id = 'typing-' + Date.now();
-  wrap.innerHTML += `<div class="msg ai" id="${id}">
-    <div class="msg-avatar"><div class="logo" style="width:20px;height:20px;gap:2px"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div></div>
-    <div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
-  </div>`;
+  const wrap = document.getElementById('chatMessages');
+  wrap.innerHTML += `<div class="msg ai" id="${id}"><div class="msg-avatar"><div class="logo" style="width:20px;height:20px;gap:2px"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div></div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>`;
   wrap.scrollTop = wrap.scrollHeight;
   return id;
 }
 
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
+function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
 
 // ── CALENDAR ──
 const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-
 function changeMonth(d) { state.calDate.setMonth(state.calDate.getMonth() + d); buildCalendar(); }
-
 function buildCalendar() {
   const d = state.calDate;
   document.getElementById('calMonthLabel').textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
@@ -1174,14 +547,9 @@ function buildCalendar() {
   const first = new Date(d.getFullYear(), d.getMonth(), 1);
   const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
   const taskDates = state.tasks.filter(t => t.deadline).map(t => t.deadline);
-
   let html = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(n => `<div class="cal-day-name">${n}</div>`).join('');
-
   let startDay = first.getDay() || 7;
-  for (let i = 1; i < startDay; i++) {
-    const d2 = new Date(first); d2.setDate(d2.getDate() - startDay + i);
-    html += `<div class="cal-day other-month">${d2.getDate()}</div>`;
-  }
+  for (let i = 1; i < startDay; i++) { const d2 = new Date(first); d2.setDate(d2.getDate() - startDay + i); html += `<div class="cal-day other-month">${d2.getDate()}</div>`; }
   for (let i = 1; i <= last.getDate(); i++) {
     const dt = new Date(d.getFullYear(), d.getMonth(), i);
     const iso = dt.toISOString().slice(0,10);
@@ -1191,55 +559,25 @@ function buildCalendar() {
   }
   grid.innerHTML = html;
 }
-
 function showDayTasks(dateStr) {
   const tasks = state.tasks.filter(t => t.deadline === dateStr);
   const list = document.getElementById('calTaskList');
-  if (!tasks.length) {
-    list.innerHTML = `<div class="text-muted text-sm" style="padding:12px 0">Нет задач на ${formatDate(dateStr)}</div>`;
-    return;
-  }
-  list.innerHTML = tasks.map(t => taskHTML(t)).join('');
+  list.innerHTML = tasks.length ? tasks.map(t => taskHTML(t)).join('') : `<div class="text-muted text-sm" style="padding:12px 0">Нет задач на ${formatDate(dateStr)}</div>`;
 }
 
 // ── STATS ──
 function buildStats() {
-  const days = [3, 5, 2, 7, 4, 1, 6];
-  const max = Math.max(...days);
-  const chart = document.getElementById('barChart');
-  chart.innerHTML = days.map(v => `
-    <div class="bar-wrap">
-      <div class="bar" style="height:${80}px">
-        <div class="bar-fill" style="height:${(v/max*100)}%"></div>
-      </div>
-    </div>`).join('');
-
-  const cats = [
-    { label: '🤝 Обещания', count: 3, color: 'var(--green)' },
-    { label: '⏰ Дедлайны', count: 2, color: '#e05c5c' },
-    { label: '📌 Задачи', count: 4, color: '#4680C2' },
-    { label: '📥 Входящие', count: 1, color: 'var(--muted)' },
-  ];
-  document.getElementById('catStats').innerHTML = cats.map(c => `
-    <div class="card" style="padding:12px 16px;margin-bottom:8px">
-      <div class="flex-between" style="margin-bottom:8px">
-        <span style="font-size:13px;font-weight:500">${c.label}</span>
-        <span style="font-size:13px;color:var(--muted)">${c.count}</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width:${c.count/10*100}%;background:${c.color}"></div>
-      </div>
-    </div>`).join('');
-}
-
-// ── PROFILE ──
-function loadProfile() {
-  if (!state.user) return;
-  const n = state.user.name || 'Пользователь';
-  document.getElementById('profileName').textContent = n;
-  document.getElementById('profileEmail').textContent = state.user.email || '';
-  document.getElementById('profileAvatar').textContent = n[0].toUpperCase();
-  document.getElementById('trialDays').textContent = state.user.trialDays || 30;
+  const done = state.tasks.filter(t => t.done).length;
+  const active = state.tasks.filter(t => !t.done).length;
+  const promise = state.tasks.filter(t => t.type === 'promise' && !t.done).length;
+  const pct = state.tasks.length ? Math.round(done / state.tasks.length * 100) : 0;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statPromise').textContent = promise;
+  document.getElementById('statPct').textContent = pct + '%';
+  const days = [active, done, promise, active+1, done+1, promise+1, active+2];
+  const max = Math.max(...days, 1);
+  document.getElementById('barChart').innerHTML = days.map(v => `<div class="bar-wrap"><div class="bar"><div class="bar-fill" style="height:${v/max*100}%"></div></div></div>`).join('');
 }
 
 // ── TOAST ──
