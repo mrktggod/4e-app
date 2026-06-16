@@ -503,7 +503,7 @@ async function sendMessage() {
   const typingId = appendTyping();
   state.chatHistory.push({ role: 'user', content: text });
   try {
-    const res = await fetch(WORKER, {
+    const res = await fetch(WORKER + '/anthropic', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу.', messages: state.chatHistory })
