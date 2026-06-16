@@ -372,7 +372,7 @@ function enterApp() {
   document.getElementById('loader').style.display = 'none';
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
-  applyUser();
+  applyUser(); state.chatHistory = JSON.parse(localStorage.getItem('vk4_chat_'+(state.user?.id||''))||'[]');
   loadTasks();
   buildCalendar();
 }
@@ -511,8 +511,8 @@ async function sendMessage() {
     const data = await res.json();
     removeTyping(typingId);
     const reply = data.content?.[0]?.text || 'Не смог получить ответ.';
-    state.chatHistory.push({ role: 'assistant', content: reply });
-    appendMsg('ai', reply);
+    state.chatHistory.push({ role: 'assistant', content: reply }); localStorage.setItem('vk4_chat_'+state.user?.id, JSON.stringify(state.chatHistory.slice(-20)));
+    appendMsg('ai', reply); loadTasks();
   } catch(e) { removeTyping(typingId); appendMsg('ai', 'Ошибка соединения. Попробуйте ещё раз.'); }
 }
 
