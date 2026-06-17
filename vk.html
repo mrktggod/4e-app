@@ -506,7 +506,7 @@ async function sendMessage() {
     const res = await fetch(WORKER + '/anthropic', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу. Не задавай уточняющих вопросов — сразу давай конкретный ответ. Для постановки задачи достаточно темы, исполнителя и срока.', messages: state.chatHistory })
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу. Не задавай уточняющих вопросов — сразу давай конкретный ответ. Текущие задачи пользователя: ' + JSON.stringify(state.tasks.slice(0,10).map(t=>({text:t.text||t.title,done:t.done,deadline:t.deadline}))) + '.', messages: state.chatHistory })
     });
     const data = await res.json();
     removeTyping(typingId);
