@@ -2445,6 +2445,7 @@ const notifReadSet = new Set();
 let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
 
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
+const tgInitData=window.Telegram?.WebApp?.initData||'';
 
 // ── helpers ──────────────────────────────────────────────────
 function getToken(){ return localStorage.getItem(TOKEN_K); }
@@ -2479,16 +2480,11 @@ async function initApp(){
   }
 
   if(tgUser?.id){
-    // Telegram Mini App — auto-login stub (can be extended)
-    currentUser={name:tgUser.first_name,email:'',trialActive:true,trialLeft:30};
-    chatId='user_'+tgUser.id;
-    applyUserInfo();
-    showScreen('home');
-    loadTasks();
+    await loginWithTelegram();
     return;
   }
 
-  try{if(window.vkBridge){await vkBridge.send("VKWebAppInit");const vkU=await vkBridge.send("VKWebAppGetUserInfo");const vkR=await fetch("https://restless-lab-d737.shelckograff.workers.dev/auth/vk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({vk_user_id:String(vkU.id),first_name:vkU.first_name,last_name:vkU.last_name||""})}).then(r=>r.json());if(vkR.token){localStorage.setItem("token",vkR.token);currentUser={name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};chatId="user_vk_"+vkU.id;applyUserInfo();showScreen("home");loadTasks();return;}}}catch(e){}
+  try{if(window.vkBridge){await vkBridge.send("VKWebAppInit");const vkU=await vkBridge.send("VKWebAppGetUserInfo");const vkR=await fetch("https://restless-lab-d737.shelckograff.workers.dev/auth/vk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams:window.location.search,first_name:vkU.first_name,last_name:vkU.last_name||""})}).then(r=>r.json());if(vkR.token){localStorage.setItem("token",vkR.token);currentUser={name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};chatId="user_vk_"+vkU.id;applyUserInfo();showScreen("home");loadTasks();return;}}}catch(e){}
   if(!localStorage.getItem(ONBOARD_K)){
     showScreen('onboarding');
     obInit();
@@ -2594,32 +2590,47 @@ async function doLogin(){
   btn.disabled=false; btn.textContent='Войти';
 }
 
-function loginWithTelegram(){
-  if(tgUser){
-    currentUser={name:tgUser.first_name,email:'',trialActive:true,trialLeft:30};
-    chatId='user_'+tgUser.id;
-    applyUserInfo();
-    showScreen('home');
-    loadTasks();
-    linkTelegram();
-  } else {
+async function loginWithTelegram(){
+  if(!tgUser||!tgInitData){
     window.open('https://t.me/Denzel89bot?start=login', '_blank');
     showToast('Открой бота и нажми Start — получишь ссылку для входа');
+    return;
+  }
+  try{
+    const r=await fetch(WORKER+'/auth/telegram',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({initData:tgInitData})
+    });
+    const d=await r.json();
+    if(d.ok&&d.token){
+      localStorage.setItem(TOKEN_K,d.token);
+      currentUser=d.user;
+      chatId='user_'+currentUser.id;
+      applyUserInfo();
+      localStorage.setItem(ONBOARD_K,'1');
+      showScreen('home');
+      loadTasks();
+      showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
+    } else {
+      showToast(d.error||'Ошибка Telegram авторизации');
+    }
+  }catch(e){
+    showToast('Нет соединения');
   }
 }
 
 
 // Привязываем Telegram ID к аккаунту после логина
 async function linkTelegram() {
-  const tgId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-  if (!tgId || !getToken()) return;
+  if (!tgInitData || !getToken()) return;
   try {
     await fetch(WORKER + '/auth/link-telegram', {
       method: 'POST',
       headers: authHeaders(),
-      body: JSON.stringify({ telegramId: String(tgId) })
+      body: JSON.stringify({ initData: tgInitData })
     });
-    console.log('✅ Telegram linked:', tgId);
+    console.log('✅ Telegram linked');
   } catch(e) { console.log('link-telegram error:', e); }
 }
 

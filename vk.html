@@ -349,7 +349,7 @@ async function autoLoginVK(vkUser) {
     const res = await fetch(WORKER + '/auth/vk', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vk_user_id: String(vkUser.id), first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
+      body: JSON.stringify({ launchParams: window.location.search, first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
     });
     const data = await res.json();
     if (data.token) {
