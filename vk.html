@@ -105,6 +105,13 @@ body {
 .identity-status.on { background: rgba(154,194,60,0.14); color: var(--green); }
 .identity-action { margin-top: 12px; padding: 11px; font-size: 13px; }
 .identity-hint { margin-top: 10px; font-size: 11px; line-height: 1.45; color: var(--muted); }
+.identity-challenge { display: none; margin-top: 12px; padding: 13px; border: 1px solid rgba(154,194,60,0.25); border-radius: 16px; background: rgba(154,194,60,0.08); }
+.identity-challenge.show { display: block; }
+.identity-challenge-title { font-size: 13px; font-weight: 700; color: var(--green); }
+.identity-challenge-text { margin-top: 5px; font-size: 12px; line-height: 1.45; color: var(--text); opacity: 0.86; }
+.identity-challenge-actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+.identity-challenge .btn { padding: 11px; font-size: 13px; border-radius: 14px; }
+.identity-challenge-warn { margin-top: 8px; font-size: 11px; line-height: 1.4; color: var(--muted); }
 .setting-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; gap: 12px; transition: color 0.15s; }
 .setting-row:last-child { border-bottom: none; }
 .setting-row:hover { color: var(--green); }
@@ -278,6 +285,15 @@ body {
   <div class="card">
     <div id="identityList"><div class="text-muted text-sm" style="padding:8px 0">Загрузка...</div></div>
     <button class="btn btn-secondary identity-action" onclick="refreshVKIdentity()">Обновить связь VK</button>
+    <div class="identity-challenge" id="identityChallengePanel">
+      <div class="identity-challenge-title" id="identityChallengeTitle">Нужно подтвердить объединение</div>
+      <div class="identity-challenge-text" id="identityChallengeText">Этот VK аккаунт уже связан с другим профилем. Подтвердите, что он ваш, затем объедините данные.</div>
+      <div class="identity-challenge-actions">
+        <button class="btn btn-secondary" id="identityChallengeCompleteBtn" onclick="completePendingLinkChallenge()">Подтвердить VK</button>
+        <button class="btn btn-primary" id="identityChallengeMergeBtn" onclick="mergePendingLinkChallenge()">Объединить данные</button>
+      </div>
+      <div class="identity-challenge-warn" id="identityChallengeWarn">Мы не объединяем аккаунты скрыто: перед переносом задач и истории нужен явный шаг подтверждения.</div>
+    </div>
     <div class="identity-hint">Email, VK и Telegram должны вести к одному профилю, чтобы задачи и история не распадались по разным аккаунтам.</div>
   </div>
   <div class="card" style="padding:4px 16px">
@@ -328,7 +344,7 @@ const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K = 'vk4_token';
 const AUTH_TIMEOUT_MS = 30000;
 
-let state = { user: null, token: null, tasks: [], identities: [], filter: 'all', calDate: new Date(), chatHistory: [] };
+let state = { user: null, token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
 
 function withTimeout(promise, ms) {
   return Promise.race([
@@ -365,6 +381,22 @@ function setButtonBusy(button, busy, label) {
     button.disabled = false;
     if (button.dataset.originalText) button.textContent = button.dataset.originalText;
   }
+}
+
+function linkChallengeHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.token) {
+    headers.Authorization = 'Bearer ' + state.token;
+    headers['x-token'] = state.token;
+  }
+  return headers;
+}
+
+function linkChallengeUrl(challenge, action) {
+  if (!challenge?.id) return '';
+  if (action === 'complete' && challenge.completeUrl) return challenge.completeUrl;
+  if (action === 'merge' && challenge.mergeUrl) return challenge.mergeUrl;
+  return `${WORKER}/v2/auth/link-challenges/${encodeURIComponent(challenge.id)}/${action}`;
 }
 
 function saveAuthToken(token) {
@@ -412,6 +444,12 @@ async function linkCurrentVK(silent = true) {
       })
     }), 10000);
     const data = await readJsonSafe(res);
+    if (data.requiresChallenge && data.challenge) {
+      state.pendingLinkChallenge = data.challenge;
+      renderLinkChallengePanel();
+      if (!silent) showToast('Нужно подтвердить объединение аккаунтов');
+      return false;
+    }
     if (data.ok) {
       if ((data.merged?.tasks || 0) > 0) {
         await loadTasks();
@@ -575,6 +613,95 @@ function renderIdentityRows(status = '') {
     </div>
     <div class="identity-status ${row.connected ? 'on' : ''}">${row.connected ? 'Подключён' : 'Нет'}</div>
   </div>`).join('');
+  renderLinkChallengePanel();
+}
+
+function renderLinkChallengePanel() {
+  const panel = document.getElementById('identityChallengePanel');
+  if (!panel) return;
+  const challenge = state.pendingLinkChallenge;
+  if (!challenge) {
+    panel.classList.remove('show');
+    return;
+  }
+  const targetProvider = challenge.targetProvider || challenge.target_provider || 'vk';
+  const provider = targetProvider === 'telegram' ? 'Telegram' : 'VK';
+  const completed = challenge.status === 'completed' || challenge.completedAt || challenge.completed_at;
+  panel.classList.add('show');
+  const title = document.getElementById('identityChallengeTitle');
+  const text = document.getElementById('identityChallengeText');
+  const completeBtn = document.getElementById('identityChallengeCompleteBtn');
+  const mergeBtn = document.getElementById('identityChallengeMergeBtn');
+  const warn = document.getElementById('identityChallengeWarn');
+  if (title) title.textContent = completed ? 'Можно объединить аккаунты' : 'Нужно подтвердить ' + provider;
+  if (text) text.textContent = completed
+    ? 'Подтверждение получено. Теперь можно перенести задачи, связи и историю в один профиль.'
+    : `Этот ${provider} аккаунт уже связан с другим профилем. Подтвердите, что он ваш.`;
+  if (completeBtn) {
+    completeBtn.style.display = completed ? 'none' : 'flex';
+    completeBtn.textContent = 'Подтвердить ' + provider;
+  }
+  if (mergeBtn) mergeBtn.style.display = completed ? 'flex' : 'none';
+  if (warn) warn.textContent = completed
+    ? 'После объединения старые сессии другого профиля будут закрыты, а данные перейдут в текущий профиль.'
+    : 'Мы не объединяем аккаунты скрыто: перед переносом задач и истории нужен явный шаг подтверждения.';
+}
+
+async function completePendingLinkChallenge() {
+  const challenge = state.pendingLinkChallenge;
+  if (!challenge?.id) { showToast('Нет активного подтверждения'); return; }
+  const targetProvider = challenge.targetProvider || challenge.target_provider || 'vk';
+  if (targetProvider !== 'vk') { showToast('Пока подтверждение доступно только для VK'); return; }
+  const button = document.getElementById('identityChallengeCompleteBtn');
+  setButtonBusy(button, true, 'Проверяем...');
+  try {
+    const launchParams = await getVkLaunchParams();
+    if (!launchParams) throw new Error('vk_launch_params_missing');
+    const res = await withTimeout(fetch(linkChallengeUrl(challenge, 'complete'), {
+      method: 'POST',
+      headers: linkChallengeHeaders(),
+      body: JSON.stringify({ launchParams })
+    }), 10000);
+    const data = await readJsonSafe(res);
+    if (!data.ok) throw new Error(data.error || 'challenge_complete_failed');
+    state.pendingLinkChallenge = data.challenge || { ...challenge, status: 'completed', completedAt: Date.now() };
+    renderLinkChallengePanel();
+    showToast('VK подтверждён');
+  } catch(e) {
+    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного' : 'Не удалось подтвердить VK');
+  } finally {
+    setButtonBusy(button, false);
+  }
+}
+
+async function mergePendingLinkChallenge() {
+  const challenge = state.pendingLinkChallenge;
+  if (!challenge?.id) { showToast('Нет активного объединения'); return; }
+  const button = document.getElementById('identityChallengeMergeBtn');
+  setButtonBusy(button, true, 'Объединяем...');
+  try {
+    const res = await withTimeout(fetch(linkChallengeUrl(challenge, 'merge'), {
+      method: 'POST',
+      headers: linkChallengeHeaders(),
+      body: JSON.stringify({ confirm: true })
+    }), 15000);
+    const data = await readJsonSafe(res);
+    if (data.mergeConflicts) {
+      showToast('Нужна ручная проверка конфликтов');
+      return;
+    }
+    if (!data.ok) throw new Error(data.error || 'challenge_merge_failed');
+    state.pendingLinkChallenge = null;
+    if (Array.isArray(data.identities)) state.identities = data.identities;
+    renderIdentityRows();
+    await loadIdentities().catch(() => {});
+    await loadTasks().catch(() => {});
+    showToast('Аккаунты объединены');
+  } catch(e) {
+    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного' : 'Не удалось объединить аккаунты');
+  } finally {
+    setButtonBusy(button, false);
+  }
 }
 
 async function loadIdentities() {
@@ -658,7 +785,7 @@ async function doRegister() {
 
 function doLogout() {
   localStorage.removeItem(TOKEN_K);
-  state.user = null; state.token = null; state.tasks = []; state.identities = [];
+  state.user = null; state.token = null; state.tasks = []; state.identities = []; state.pendingLinkChallenge = null;
   document.getElementById('mainApp').style.display = 'none';
   document.getElementById('authScreen').style.display = 'flex';
 }
