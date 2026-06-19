@@ -311,6 +311,7 @@ body {
 <script>
 const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K = 'vk4_token';
+const AUTH_TIMEOUT_MS = 30000;
 
 let state = { user: null, token: null, tasks: [], filter: 'all', calDate: new Date(), chatHistory: [] };
 
@@ -326,6 +327,28 @@ async function readJsonSafe(response) {
     return await response.json();
   } catch(e) {
     return { ok: false, error: response?.ok ? 'Некорректный ответ сервера' : 'Сервер временно недоступен' };
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[ch]);
+}
+
+function setButtonBusy(button, busy, label) {
+  if (!button) return;
+  if (busy) {
+    button.dataset.originalText = button.textContent || '';
+    button.disabled = true;
+    button.textContent = label || 'Ждём...';
+  } else {
+    button.disabled = false;
+    if (button.dataset.originalText) button.textContent = button.dataset.originalText;
   }
 }
 
@@ -475,11 +498,17 @@ async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
   if (!email || !pass) { showToast('Введите email и пароль'); return; }
+  const button = document.querySelector('#loginForm .auth-btn');
+  setButtonBusy(button, true, 'Входим...');
   let data;
   try {
-    const res = await withTimeout(fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) }), 10000);
+    const res = await withTimeout(fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) }), AUTH_TIMEOUT_MS);
     data = await readJsonSafe(res);
-  } catch(e) { showToast('Ошибка соединения'); }
+  } catch(e) {
+    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного, попробуйте ещё раз' : 'Ошибка соединения');
+  } finally {
+    setButtonBusy(button, false);
+  }
   if (!data) return;
   if (data.token) completeAuth(data.token, data.user);
   else showToast(data.error || 'Ошибка входа');
@@ -490,11 +519,17 @@ async function doRegister() {
   const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPass').value;
   if (!name || !email || !pass) { showToast('Заполните все поля'); return; }
+  const button = document.querySelector('#registerForm .auth-btn');
+  setButtonBusy(button, true, 'Создаём...');
   let data;
   try {
-    const res = await withTimeout(fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) }), 10000);
+    const res = await withTimeout(fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) }), AUTH_TIMEOUT_MS);
     data = await readJsonSafe(res);
-  } catch(e) { showToast('Ошибка соединения'); }
+  } catch(e) {
+    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного, попробуйте ещё раз' : 'Ошибка соединения');
+  } finally {
+    setButtonBusy(button, false);
+  }
   if (!data) return;
   if (data.token) completeAuth(data.token, data.user);
   else showToast(data.error || 'Ошибка регистрации');
@@ -540,10 +575,12 @@ function taskHTML(t) {
   const icons = { promise: t.subtype === 'incoming' ? '📥' : '🤝', deadline: '⏰', task: '📌' };
   const today = new Date().toISOString().slice(0,10);
   const overdue = t.deadline && t.deadline < today;
+  const taskId = String(t.id || '').replace(/'/g, "\\'");
+  const taskText = escapeHtml(t.text || t.title || '');
   return `<div class="task-card">
-    <div class="task-check" onclick="doneTask('${t.id}')"></div>
+    <div class="task-check" onclick="doneTask('${taskId}')"></div>
     <div class="task-body">
-      <div class="task-title">${t.text || t.title || ''}</div>
+      <div class="task-title">${taskText}</div>
       <div class="task-meta">
         ${t.type ? `<span class="tag">${icons[t.type]||'📌'}</span>` : ''}
         ${t.deadline ? `<span class="tag ${overdue?'deadline':''}">${formatDate(t.deadline)}</span>` : ''}
@@ -557,6 +594,59 @@ function formatDate(d) {
   const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
   const dt = new Date(d);
   return `${dt.getDate()} ${months[dt.getMonth()]}`;
+}
+
+function isTaskCommand(text) {
+  const value = String(text || '').trim().toLowerCase();
+  return /^(добавь|создай|поставь|запиши|зафиксируй|сохрани)\b.*\bзадач/.test(value) ||
+         /^(напомни|надо|нужно|сделать)\b/.test(value);
+}
+
+function normalizeTaskText(text) {
+  const cleaned = String(text || '')
+    .trim()
+    .replace(/^(добавь|создай|поставь|запиши|зафиксируй|сохрани)(\s+мне)?(\s+задач[ауиу]?)?\s*[:—-]?\s*/i, '')
+    .replace(/^(надо|нужно|сделать|напомни)\s*/i, '')
+    .trim();
+  return cleaned || String(text || '').trim();
+}
+
+function inferTaskDeadline(text) {
+  const value = String(text || '').toLowerCase();
+  const date = new Date();
+  if (/\bсегодня\b/.test(value)) return date.toISOString().slice(0, 10);
+  if (/\bзавтра\b/.test(value)) {
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().slice(0, 10);
+  }
+  return '';
+}
+
+async function maybeSaveTaskFromChat(text) {
+  if (!state.token || !isTaskCommand(text)) return false;
+  const taskText = normalizeTaskText(text);
+  if (!taskText || taskText.length < 2) return false;
+  const deadline = inferTaskDeadline(text);
+  const task = {
+    id: 'vk_chat_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    text: taskText,
+    title: taskText,
+    type: 'task',
+    done: false,
+    date: new Date().toISOString().slice(0, 10),
+    createdAt: Date.now(),
+    source: 'vk_chat'
+  };
+  if (deadline) task.deadline = deadline;
+  const res = await fetch(WORKER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-action': 'save-task', 'x-token': state.token },
+    body: JSON.stringify({ task })
+  });
+  const data = await readJsonSafe(res);
+  if (!data.ok) throw new Error(data.error || 'task_save_failed');
+  await loadTasks();
+  return true;
 }
 
 // ── NAVIGATION ──
@@ -580,6 +670,14 @@ async function sendMessage() {
   appendMsg('user', text);
   const typingId = appendTyping();
   state.chatHistory.push({ role: 'user', content: text });
+  let taskSaved = false;
+  try {
+    taskSaved = await maybeSaveTaskFromChat(text);
+    if (taskSaved) showToast('Задача добавлена');
+  } catch(e) {
+    console.warn('chat_task_save_error', e);
+    showToast('Не удалось добавить задачу');
+  }
   try {
     const res = await fetch(WORKER + '/anthropic', {
       method: 'POST',
@@ -590,15 +688,16 @@ async function sendMessage() {
     removeTyping(typingId);
     const reply = data.content?.[0]?.text || 'Не смог получить ответ.';
     state.chatHistory.push({ role: 'assistant', content: reply }); localStorage.setItem('vk4_chat_'+state.user?.id, JSON.stringify(state.chatHistory.slice(-20)));
-    appendMsg('ai', reply); loadTasks();
+    appendMsg('ai', reply); if (!taskSaved) loadTasks();
   } catch(e) { removeTyping(typingId); appendMsg('ai', 'Ошибка соединения. Попробуйте ещё раз.'); }
 }
 
 function appendMsg(role, text) {
   const wrap = document.getElementById('chatMessages');
+  const safeText = escapeHtml(text).replace(/\n/g,'<br>');
   wrap.innerHTML += `<div class="msg ${role}">
     ${role === 'ai' ? `<div class="msg-avatar"><div class="logo" style="width:20px;height:20px;gap:2px"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div></div>` : ''}
-    <div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>
+    <div class="msg-bubble">${safeText}</div>
   </div>`;
   wrap.scrollTop = wrap.scrollHeight;
 }
