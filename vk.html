@@ -96,6 +96,15 @@ body {
 .profile-header { display: flex; align-items: center; gap: 16px; padding: 16px 0 20px; }
 .profile-name { font-size: 20px; font-weight: 600; }
 .profile-email { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.identity-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.identity-row:last-child { border-bottom: none; }
+.identity-main { min-width: 0; }
+.identity-title { font-size: 14px; font-weight: 600; }
+.identity-sub { font-size: 12px; color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px; }
+.identity-status { flex-shrink: 0; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(242,245,233,0.08); color: var(--muted); }
+.identity-status.on { background: rgba(154,194,60,0.14); color: var(--green); }
+.identity-action { margin-top: 12px; padding: 11px; font-size: 13px; }
+.identity-hint { margin-top: 10px; font-size: 11px; line-height: 1.45; color: var(--muted); }
 .setting-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; gap: 12px; transition: color 0.15s; }
 .setting-row:last-child { border-bottom: none; }
 .setting-row:hover { color: var(--green); }
@@ -265,6 +274,12 @@ body {
     </div>
     <button class="trial-btn" onclick="showToast('Оплата скоро будет доступна')">Купить план</button>
   </div>
+  <div class="section-label">Подключённые аккаунты</div>
+  <div class="card">
+    <div id="identityList"><div class="text-muted text-sm" style="padding:8px 0">Загрузка...</div></div>
+    <button class="btn btn-secondary identity-action" onclick="refreshVKIdentity()">Обновить связь VK</button>
+    <div class="identity-hint">Email, VK и Telegram должны вести к одному профилю, чтобы задачи и история не распадались по разным аккаунтам.</div>
+  </div>
   <div class="card" style="padding:4px 16px">
     <div class="setting-row" onclick="showToast('Скоро')">
       <span class="label">Уведомления</span>
@@ -313,7 +328,7 @@ const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K = 'vk4_token';
 const AUTH_TIMEOUT_MS = 30000;
 
-let state = { user: null, token: null, tasks: [], filter: 'all', calDate: new Date(), chatHistory: [] };
+let state = { user: null, token: null, tasks: [], identities: [], filter: 'all', calDate: new Date(), chatHistory: [] };
 
 function withTimeout(promise, ms) {
   return Promise.race([
@@ -402,6 +417,7 @@ async function linkCurrentVK(silent = true) {
         await loadTasks();
         showToast('VK привязан, задачи объединены');
       }
+      await loadIdentities();
       return true;
     }
     if (!silent) showToast(data.error || 'VK не привязан');
@@ -500,6 +516,8 @@ function enterApp() {
   }
   state.chatHistory = readChatHistory(state.user?.id || '');
   loadTasks().catch((e) => console.warn('load_tasks_error', e));
+  renderIdentityRows('loading');
+  loadIdentities().catch((e) => console.warn('load_identities_error', e));
   try {
     buildCalendar();
   } catch(e) {
@@ -517,6 +535,70 @@ function applyUser() {
   document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
   const trial = state.user.trialEndsAt ? Math.max(0, Math.ceil((state.user.trialEndsAt - Date.now()) / 86400000)) : 30;
   document.getElementById('trialDays').textContent = trial;
+}
+
+function identityByProvider(provider) {
+  return state.identities.find((identity) => identity.provider === provider);
+}
+
+function identityValue(identity, fallbackLabel) {
+  if (!identity) return 'Не подключён';
+  if (identity.displayName) return identity.displayName;
+  if (identity.username) return '@' + identity.username;
+  if (identity.providerUserId) return fallbackLabel + ' ' + identity.providerUserId;
+  return 'Подключён';
+}
+
+function renderIdentityRows(status = '') {
+  const list = document.getElementById('identityList');
+  if (!list) return;
+  if (status === 'loading') {
+    list.innerHTML = '<div class="text-muted text-sm" style="padding:8px 0">Проверяем связи...</div>';
+    return;
+  }
+  if (status === 'error') {
+    list.innerHTML = '<div class="text-muted text-sm" style="padding:8px 0">Не удалось загрузить связи. Попробуйте обновить профиль.</div>';
+    return;
+  }
+  const web = identityByProvider('web');
+  const vk = identityByProvider('vk');
+  const telegram = identityByProvider('telegram');
+  const rows = [
+    { title: 'Email', value: state.user?.email || identityValue(web, 'Email'), connected: Boolean(state.user?.email || web) },
+    { title: 'VK', value: identityValue(vk, 'VK ID'), connected: Boolean(vk || state.user?.vkId) },
+    { title: 'Telegram', value: identityValue(telegram, 'TG ID'), connected: Boolean(telegram || state.user?.telegramId) }
+  ];
+  list.innerHTML = rows.map((row) => `<div class="identity-row">
+    <div class="identity-main">
+      <div class="identity-title">${escapeHtml(row.title)}</div>
+      <div class="identity-sub">${escapeHtml(row.value)}</div>
+    </div>
+    <div class="identity-status ${row.connected ? 'on' : ''}">${row.connected ? 'Подключён' : 'Нет'}</div>
+  </div>`).join('');
+}
+
+async function loadIdentities() {
+  if (!state.token) {
+    state.identities = [];
+    renderIdentityRows();
+    return;
+  }
+  const res = await fetch(WORKER + '/auth/identities', { headers: { 'x-token': state.token } });
+  const data = await readJsonSafe(res);
+  if (!data.ok) throw new Error(data.error || 'identity_load_failed');
+  state.identities = Array.isArray(data.identities) ? data.identities : [];
+  renderIdentityRows();
+}
+
+async function refreshVKIdentity() {
+  renderIdentityRows('loading');
+  const linked = await linkCurrentVK(false);
+  if (!linked) {
+    await loadIdentities().catch(() => renderIdentityRows('error'));
+    return;
+  }
+  await loadIdentities().catch(() => renderIdentityRows('error'));
+  showToast('Связи обновлены');
 }
 
 // ── AUTH ──
@@ -576,7 +658,7 @@ async function doRegister() {
 
 function doLogout() {
   localStorage.removeItem(TOKEN_K);
-  state.user = null; state.token = null; state.tasks = [];
+  state.user = null; state.token = null; state.tasks = []; state.identities = [];
   document.getElementById('mainApp').style.display = 'none';
   document.getElementById('authScreen').style.display = 'flex';
 }
