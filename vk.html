@@ -314,6 +314,21 @@ const TOKEN_K = 'vk4_token';
 
 let state = { user: null, token: null, tasks: [], filter: 'all', calDate: new Date(), chatHistory: [] };
 
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
+async function readJsonSafe(response) {
+  try {
+    return await response.json();
+  } catch(e) {
+    return { ok: false, error: response?.ok ? 'Некорректный ответ сервера' : 'Сервер временно недоступен' };
+  }
+}
+
 function searchLike(value) {
   if (!value || typeof value !== 'string') return '';
   const clean = value.startsWith('#') ? value.slice(1) : value;
@@ -343,7 +358,7 @@ async function getVkLaunchParams() {
 // ── INIT ──
 window.addEventListener('load', async () => {
   try {
-    await vkBridge.send('VKWebAppInit');
+    await withTimeout(vkBridge.send('VKWebAppInit'), 4000);
     const savedToken = localStorage.getItem(TOKEN_K);
     if (savedToken) {
       try {
@@ -360,8 +375,8 @@ window.addEventListener('load', async () => {
     }
     // Try VK auto-login
     try {
-      const vkUser = await vkBridge.send('VKWebAppGetUserInfo');
-      await autoLoginVK(vkUser);
+      const vkUser = await withTimeout(vkBridge.send('VKWebAppGetUserInfo'), 4000);
+      await withTimeout(autoLoginVK(vkUser), 10000);
     } catch(e) {
       showAuth();
     }
@@ -373,12 +388,12 @@ window.addEventListener('load', async () => {
 async function autoLoginVK(vkUser) {
   try {
     const launchParams = await getVkLaunchParams();
-    const res = await fetch(WORKER + '/auth/vk', {
+    const res = await withTimeout(fetch(WORKER + '/auth/vk', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ launchParams, first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
-    });
-    const data = await res.json();
+    }), 10000);
+    const data = await readJsonSafe(res);
     if (data.token) {
       state.token = data.token;
       state.user = data.user;
@@ -429,8 +444,8 @@ async function doLogin() {
   const pass = document.getElementById('loginPass').value;
   if (!email || !pass) { showToast('Введите email и пароль'); return; }
   try {
-    const res = await fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) });
-    const data = await res.json();
+    const res = await withTimeout(fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) }), 10000);
+    const data = await readJsonSafe(res);
     if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
     else showToast(data.error || 'Ошибка входа');
   } catch(e) { showToast('Ошибка соединения'); }
@@ -442,8 +457,8 @@ async function doRegister() {
   const pass = document.getElementById('regPass').value;
   if (!name || !email || !pass) { showToast('Заполните все поля'); return; }
   try {
-    const res = await fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) });
-    const data = await res.json();
+    const res = await withTimeout(fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) }), 10000);
+    const data = await readJsonSafe(res);
     if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
     else showToast(data.error || 'Ошибка регистрации');
   } catch(e) { showToast('Ошибка соединения'); }

@@ -2456,6 +2456,21 @@ function authHeaders(){
   return h;
 }
 
+function withTimeout(promise, ms){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms))
+  ]);
+}
+
+async function readJsonSafe(response){
+  try{
+    return await response.json();
+  }catch(e){
+    return {ok:false,error:response?.ok?'Некорректный ответ сервера':'Сервер временно недоступен'};
+  }
+}
+
 function searchLike(value){
   if(!value || typeof value!=='string') return '';
   const clean=value.startsWith('#')?value.slice(1):value;
@@ -2512,10 +2527,11 @@ async function initApp(){
 
   try{
     if(window.vkBridge){
-      await vkBridge.send("VKWebAppInit");
-      const vkU=await vkBridge.send("VKWebAppGetUserInfo");
+      await withTimeout(vkBridge.send("VKWebAppInit"),4000);
+      const vkU=await withTimeout(vkBridge.send("VKWebAppGetUserInfo"),4000);
       const launchParams=await getVkLaunchParams();
-      const vkR=await fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||""})}).then(r=>r.json());
+      const vkResp=await withTimeout(fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||""})}),10000);
+      const vkR=await readJsonSafe(vkResp);
       if(vkR.token){
         localStorage.setItem("token",vkR.token);
         currentUser=vkR.user||{name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};
@@ -2615,8 +2631,8 @@ async function doLogin(){
   const btn=document.getElementById('login-submit-btn');
   btn.disabled=true; btn.textContent='Входим...';
   try{
-    const r=await fetch(WORKER+'/auth/login',{method:'POST',headers:authHeaders(),body:JSON.stringify({email,password:pass})});
-    const d=await r.json();
+    const r=await withTimeout(fetch(WORKER+'/auth/login',{method:'POST',headers:authHeaders(),body:JSON.stringify({email,password:pass})}),10000);
+    const d=await readJsonSafe(r);
     if(d.ok){
       localStorage.setItem(TOKEN_K,d.token);
       currentUser=d.user;
