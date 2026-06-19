@@ -2456,6 +2456,32 @@ function authHeaders(){
   return h;
 }
 
+function searchLike(value){
+  if(!value || typeof value!=='string') return '';
+  const clean=value.startsWith('#')?value.slice(1):value;
+  return clean.startsWith('?')?clean:'?'+clean;
+}
+
+async function getVkLaunchParams(){
+  const candidates=[];
+  if(window.location.search) candidates.push(window.location.search);
+  if(window.location.hash) candidates.push(searchLike(window.location.hash));
+  try{
+    if(window.vkBridge?.send){
+      const bridgeParams=await vkBridge.send('VKWebAppGetLaunchParams');
+      const params=new URLSearchParams();
+      Object.entries(bridgeParams||{}).forEach(([key,value])=>{
+        if(value!==undefined&&value!==null) params.set(key,String(value));
+      });
+      const qs=params.toString();
+      if(qs) candidates.push('?'+qs);
+    }
+  }catch(e){}
+  return candidates.find(v=>v.includes('sign=')&&v.includes('vk_user_id'))||
+         candidates.find(v=>v.includes('vk_'))||
+         '';
+}
+
 // ── init ─────────────────────────────────────────────────────
 async function initApp(){
   const tg=window.Telegram?.WebApp;
@@ -2484,7 +2510,23 @@ async function initApp(){
     return;
   }
 
-  try{if(window.vkBridge){await vkBridge.send("VKWebAppInit");const vkU=await vkBridge.send("VKWebAppGetUserInfo");const vkR=await fetch("https://restless-lab-d737.shelckograff.workers.dev/auth/vk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams:window.location.search,first_name:vkU.first_name,last_name:vkU.last_name||""})}).then(r=>r.json());if(vkR.token){localStorage.setItem("token",vkR.token);currentUser={name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};chatId="user_vk_"+vkU.id;applyUserInfo();showScreen("home");loadTasks();return;}}}catch(e){}
+  try{
+    if(window.vkBridge){
+      await vkBridge.send("VKWebAppInit");
+      const vkU=await vkBridge.send("VKWebAppGetUserInfo");
+      const launchParams=await getVkLaunchParams();
+      const vkR=await fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||""})}).then(r=>r.json());
+      if(vkR.token){
+        localStorage.setItem("token",vkR.token);
+        currentUser=vkR.user||{name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};
+        chatId="user_"+currentUser.id;
+        applyUserInfo();
+        showScreen("home");
+        loadTasks();
+        return;
+      }
+    }
+  }catch(e){}
   if(!localStorage.getItem(ONBOARD_K)){
     showScreen('onboarding');
     obInit();

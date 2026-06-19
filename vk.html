@@ -314,6 +314,32 @@ const TOKEN_K = 'vk4_token';
 
 let state = { user: null, token: null, tasks: [], filter: 'all', calDate: new Date(), chatHistory: [] };
 
+function searchLike(value) {
+  if (!value || typeof value !== 'string') return '';
+  const clean = value.startsWith('#') ? value.slice(1) : value;
+  return clean.startsWith('?') ? clean : '?' + clean;
+}
+
+async function getVkLaunchParams() {
+  const candidates = [];
+  if (window.location.search) candidates.push(window.location.search);
+  if (window.location.hash) candidates.push(searchLike(window.location.hash));
+  try {
+    if (window.vkBridge?.send) {
+      const bridgeParams = await vkBridge.send('VKWebAppGetLaunchParams');
+      const params = new URLSearchParams();
+      Object.entries(bridgeParams || {}).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) params.set(key, String(value));
+      });
+      const qs = params.toString();
+      if (qs) candidates.push('?' + qs);
+    }
+  } catch(e) {}
+  return candidates.find((value) => value.includes('sign=') && value.includes('vk_user_id')) ||
+         candidates.find((value) => value.includes('vk_')) ||
+         '';
+}
+
 // ── INIT ──
 window.addEventListener('load', async () => {
   try {
@@ -346,10 +372,11 @@ window.addEventListener('load', async () => {
 
 async function autoLoginVK(vkUser) {
   try {
+    const launchParams = await getVkLaunchParams();
     const res = await fetch(WORKER + '/auth/vk', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ launchParams: window.location.search, first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
+      body: JSON.stringify({ launchParams, first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
     });
     const data = await res.json();
     if (data.token) {
