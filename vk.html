@@ -329,6 +329,32 @@ async function readJsonSafe(response) {
   }
 }
 
+function saveAuthToken(token) {
+  try {
+    localStorage.setItem(TOKEN_K, token);
+  } catch(e) {
+    console.warn('auth_token_storage_error', e);
+  }
+}
+
+function readChatHistory(userId) {
+  try {
+    const raw = localStorage.getItem('vk4_chat_' + (userId || ''));
+    const parsed = JSON.parse(raw || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch(e) {
+    console.warn('chat_history_parse_error', e);
+    return [];
+  }
+}
+
+function completeAuth(token, user) {
+  state.token = token;
+  state.user = user;
+  saveAuthToken(token);
+  enterApp();
+}
+
 function searchLike(value) {
   if (!value || typeof value !== 'string') return '';
   const clean = value.startsWith('#') ? value.slice(1) : value;
@@ -395,10 +421,7 @@ async function autoLoginVK(vkUser) {
     }), 10000);
     const data = await readJsonSafe(res);
     if (data.token) {
-      state.token = data.token;
-      state.user = data.user;
-      localStorage.setItem(TOKEN_K, data.token);
-      enterApp();
+      completeAuth(data.token, data.user);
       return;
     }
   } catch(e) {}
@@ -414,9 +437,18 @@ function enterApp() {
   document.getElementById('loader').style.display = 'none';
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
-  applyUser(); state.chatHistory = JSON.parse(localStorage.getItem('vk4_chat_'+(state.user?.id||''))||'[]');
-  loadTasks();
-  buildCalendar();
+  try {
+    applyUser();
+  } catch(e) {
+    console.warn('apply_user_error', e);
+  }
+  state.chatHistory = readChatHistory(state.user?.id || '');
+  loadTasks().catch((e) => console.warn('load_tasks_error', e));
+  try {
+    buildCalendar();
+  } catch(e) {
+    console.warn('build_calendar_error', e);
+  }
 }
 
 function applyUser() {
@@ -443,12 +475,14 @@ async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
   if (!email || !pass) { showToast('Введите email и пароль'); return; }
+  let data;
   try {
     const res = await withTimeout(fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) }), 10000);
-    const data = await readJsonSafe(res);
-    if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
-    else showToast(data.error || 'Ошибка входа');
+    data = await readJsonSafe(res);
   } catch(e) { showToast('Ошибка соединения'); }
+  if (!data) return;
+  if (data.token) completeAuth(data.token, data.user);
+  else showToast(data.error || 'Ошибка входа');
 }
 
 async function doRegister() {
@@ -456,12 +490,14 @@ async function doRegister() {
   const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPass').value;
   if (!name || !email || !pass) { showToast('Заполните все поля'); return; }
+  let data;
   try {
     const res = await withTimeout(fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) }), 10000);
-    const data = await readJsonSafe(res);
-    if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
-    else showToast(data.error || 'Ошибка регистрации');
+    data = await readJsonSafe(res);
   } catch(e) { showToast('Ошибка соединения'); }
+  if (!data) return;
+  if (data.token) completeAuth(data.token, data.user);
+  else showToast(data.error || 'Ошибка регистрации');
 }
 
 function doLogout() {
