@@ -378,6 +378,39 @@ function completeAuth(token, user) {
   enterApp();
 }
 
+async function linkCurrentVK(silent = true) {
+  if (!state.token) return false;
+  try {
+    const launchParams = await getVkLaunchParams();
+    if (!launchParams) return false;
+    let vkUser = {};
+    try {
+      vkUser = await withTimeout(vkBridge.send('VKWebAppGetUserInfo'), 4000);
+    } catch(e) {}
+    const res = await withTimeout(fetch(WORKER + '/auth/link-vk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-token': state.token },
+      body: JSON.stringify({
+        launchParams,
+        first_name: vkUser.first_name || '',
+        last_name: vkUser.last_name || ''
+      })
+    }), 10000);
+    const data = await readJsonSafe(res);
+    if (data.ok) {
+      if ((data.merged?.tasks || 0) > 0) {
+        await loadTasks();
+        showToast('VK привязан, задачи объединены');
+      }
+      return true;
+    }
+    if (!silent) showToast(data.error || 'VK не привязан');
+  } catch(e) {
+    if (!silent) showToast('Не удалось привязать VK');
+  }
+  return false;
+}
+
 function searchLike(value) {
   if (!value || typeof value !== 'string') return '';
   const clean = value.startsWith('#') ? value.slice(1) : value;
@@ -510,7 +543,10 @@ async function doLogin() {
     setButtonBusy(button, false);
   }
   if (!data) return;
-  if (data.token) completeAuth(data.token, data.user);
+  if (data.token) {
+    completeAuth(data.token, data.user);
+    linkCurrentVK(true).catch((e) => console.warn('vk_link_after_login_error', e));
+  }
   else showToast(data.error || 'Ошибка входа');
 }
 
@@ -531,7 +567,10 @@ async function doRegister() {
     setButtonBusy(button, false);
   }
   if (!data) return;
-  if (data.token) completeAuth(data.token, data.user);
+  if (data.token) {
+    completeAuth(data.token, data.user);
+    linkCurrentVK(true).catch((e) => console.warn('vk_link_after_register_error', e));
+  }
   else showToast(data.error || 'Ошибка регистрации');
 }
 
@@ -548,7 +587,7 @@ async function loadTasks() {
     const url = WORKER + '/tasks';
     const res = await fetch(url, { headers: state.token ? { 'x-token': state.token } : {} });
     const data = await res.json();
-    state.tasks = Array.isArray(data.tasks) ? data.tasks : [];
+    state.tasks = Array.isArray(data) ? data : (Array.isArray(data.tasks) ? data.tasks : []);
   } catch(e) { state.tasks = []; }
   renderTasks();
   buildStats();
