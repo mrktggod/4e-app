@@ -584,6 +584,14 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .sec-2fa-sub{font-size:11px;color:var(--text2);margin-top:3px}
 .danger-btn{width:100%;padding:13px;border-radius:14px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);color:#ff6060;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;margin-top:8px}
 
+/* ===== HOME FILTER TABS (Patch 02) ===== */
+.home-tab{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;white-space:nowrap;background:var(--card2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0}
+.home-tab.active{background:var(--green);border-color:var(--green);color:var(--bg);font-weight:700}
+.home-tab-dot{width:7px;height:7px;border-radius:50%;background:var(--bg)}
+.home-filter-tabs::-webkit-scrollbar{display:none}
+.focus-day-card{background:var(--card2);border:1px solid var(--border)}
+.stat-mini{background:var(--card2);border:1px solid var(--border)}
+
 /* ===== THEME ===== */
 .theme-preview{display:flex;gap:8px;margin-bottom:20px}
 .theme-card{flex:1;border-radius:14px;padding:12px;border:2px solid var(--border);cursor:pointer;transition:.15s}
@@ -1195,14 +1203,24 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       </div>
     </div>
 
-    <!-- Focus bar -->
-    <div class="focus-bar glass">
-      <span class="focus-bar-text" id="focus-bar-text">загружаю...</span>
-      <span class="focus-bar-tag">фокус дня</span>
+    <!-- ФИЛЬТР-ТАБЫ (Patch 02) -->
+    <div class="home-filter-tabs" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 16px 10px">
+      <button class="home-tab active" data-filter="today" onclick="setHomeFilter('today',this)">
+        <span class="home-tab-dot"></span>Сегодня
+      </button>
+      <button class="home-tab" data-filter="hot" onclick="setHomeFilter('hot',this)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/></svg>Горит
+      </button>
+      <button class="home-tab" data-filter="people" onclick="setHomeFilter('people',this)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Люди
+      </button>
+      <button class="home-tab" data-filter="week" onclick="setHomeFilter('week',this)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Неделя
+      </button>
+      <button class="home-tab" data-filter="month" onclick="setHomeFilter('month',this)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Месяц
+      </button>
     </div>
-
-    <!-- Month slider -->
-    <div class="month-slider" id="month-slider"></div>
 
   </div>
 
@@ -4465,6 +4483,39 @@ function setThemeChoice(theme, el){
   applyTheme(theme);
   localStorage.setItem('theme', theme);
   showToast('Тема изменена');
+}
+
+// ===== HOME FILTER (Patch 02) =====
+function setHomeFilter(filter, el){
+  document.querySelectorAll('.home-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const tasks = allTasksCache || [];
+  const limeCard = document.getElementById('lime-card');
+  if(!limeCard) return;
+  let filtered;
+  const now = new Date();
+  if(filter==='hot') filtered = tasks.filter(t=>t.deadline);
+  else if(filter==='people') filtered = tasks.filter(t=>t.person && t.person.trim());
+  else if(filter==='week'){
+    const weekEnd = new Date(now); weekEnd.setDate(weekEnd.getDate()+7);
+    filtered = tasks.filter(t=>{ if(!t.deadline) return false; const d=new Date(t.deadline); return d>=now && d<=weekEnd; });
+  } else if(filter==='month'){
+    filtered = tasks.filter(t=>{ if(!t.deadline) return false; const d=new Date(t.deadline); return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear(); });
+  } else { filtered = tasks; } // today = all active
+  if(filtered.length===0){
+    limeCard.innerHTML='<div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Нет задач по фильтру</div>';
+    return;
+  }
+  limeCard.innerHTML = filtered.slice(0,10).map((t,i)=>{
+    const hot=!!t.deadline;
+    return '<div class="task-row-v2" style="cursor:pointer" onclick="openTaskById(\''+t.id+'\','+i+')">'+
+      '<span class="task-num-v2">0'+(i+1)+'</span>'+
+      '<div style="flex:1"><div class="task-name-v2">'+e2(t.person)+' — '+e2(t.text)+'</div>'+
+      '<div class="task-date-v2">'+(t.deadline?'📅 '+e2(t.deadline):e2(t.date))+'</div></div>'+
+      '<span class="'+(hot?'task-tag-hot':'task-tag-soon')+'">'+(hot?'горит':'скоро')+'</span>'+
+      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0">✓</button>'+
+    '</div>';
+  }).join('');
 }
 
 function setAccent(color, el){
