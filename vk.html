@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>4 · AI-секретарь</title>
-<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script async src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <style>
 :root {
   --bg: #0E140B;
@@ -194,7 +194,7 @@ body {
     <button class="auth-btn" onclick="doRegister()">Создать аккаунт</button>
   </div>
 
-  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-simple-cors-20260620-2</div>
+  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-fast-boot-20260620-5</div>
   <button class="auth-debug-btn" onclick="runAuthDiagnostics('manual')">Проверить связь</button>
 </div>
 
@@ -347,7 +347,7 @@ body {
 <script>
 const WORKER = 'https://edge.4-ai.site';
 const TOKEN_K = 'vk4_token';
-const AUTH_BUILD = 'vk-auth-edge-domain-20260620-4';
+const AUTH_BUILD = 'vk-auth-fast-boot-20260620-5';
 const AUTH_TIMEOUT_MS = 25000;
 const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 10000;
 const AUTH_RETRY_DELAY_MS = 600;
@@ -442,6 +442,8 @@ async function runAuthDiagnostics(reason = 'manual') {
   setAuthDiagnostics(result);
   return result;
 }
+
+setAuthDiagnostics(`Связь: ${AUTH_BUILD} · ${WORKER}`);
 
 async function readJsonSafe(response) {
   try {
@@ -636,37 +638,75 @@ async function getVkLaunchParams() {
 }
 
 // ── INIT ──
-window.addEventListener('load', async () => {
-  try {
-    await withTimeout(vkBridge.send('VKWebAppInit'), 4000);
-    const savedToken = localStorage.getItem(TOKEN_K);
-    if (savedToken) {
-      try {
-        const r = await fetch(WORKER + '/auth/me', { headers: { 'x-token': savedToken } });
-        const d = await r.json();
-        if (d.ok) {
-          state.token = savedToken;
-          state.d1Token = null;
-          state.user = d.user;
-          enterApp();
-          return;
-        }
-      } catch(e) {}
-      localStorage.removeItem(TOKEN_K);
-    }
-    // Try VK auto-login
-    try {
-      const vkUser = await withTimeout(vkBridge.send('VKWebAppGetUserInfo'), 4000);
-      await withTimeout(autoLoginVK(vkUser), 10000);
-    } catch(e) {
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', () => {
+    bootstrapAuth().catch((e) => {
+      console.warn('auth_bootstrap_error', e);
       showAuth();
-    }
-  } catch(e) {
+    });
+  }, { once: true });
+} else {
+  bootstrapAuth().catch((e) => {
+    console.warn('auth_bootstrap_error', e);
     showAuth();
-  }
-});
+  });
+}
 
-async function autoLoginVK(vkUser) {
+async function waitForVkBridge(maxMs = 2500) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < maxMs) {
+    if (window.vkBridge?.send) return window.vkBridge;
+    await delay(100);
+  }
+  return window.vkBridge?.send ? window.vkBridge : null;
+}
+
+async function initVKBridge() {
+  const bridge = await waitForVkBridge(2500);
+  if (!bridge?.send) return false;
+  try {
+    await withTimeout(bridge.send('VKWebAppInit'), 2500);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+async function startVKAutoLogin(vkReadyPromise) {
+  try {
+    await vkReadyPromise;
+    if (state.token) return;
+    const bridge = window.vkBridge?.send ? window.vkBridge : await waitForVkBridge(1500);
+    if (!bridge?.send) return;
+    const vkUser = await withTimeout(bridge.send('VKWebAppGetUserInfo'), 3000);
+    await withTimeout(autoLoginVK(vkUser, false), 8000);
+  } catch(e) {}
+}
+
+async function bootstrapAuth() {
+  const vkReadyPromise = initVKBridge();
+  showAuth();
+
+  const savedToken = localStorage.getItem(TOKEN_K);
+  if (savedToken) {
+    try {
+      const r = await withTimeout(fetch(WORKER + '/auth/me', { headers: { 'x-token': savedToken } }), 2500);
+      const d = await r.json();
+      if (d.ok) {
+        state.token = savedToken;
+        state.d1Token = null;
+        state.user = d.user;
+        enterApp();
+        return;
+      }
+    } catch(e) {}
+    if (localStorage.getItem(TOKEN_K) === savedToken) localStorage.removeItem(TOKEN_K);
+  }
+
+  startVKAutoLogin(vkReadyPromise);
+}
+
+async function autoLoginVK(vkUser, showFallback = true) {
   try {
     const launchParams = await getVkLaunchParams();
     const res = await withTimeout(fetch(WORKER + '/auth/vk', {
@@ -680,7 +720,7 @@ async function autoLoginVK(vkUser) {
       return;
     }
   } catch(e) {}
-  showAuth();
+  if (showFallback) showAuth();
 }
 
 function showAuth() {
