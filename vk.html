@@ -343,6 +343,8 @@ body {
 const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K = 'vk4_token';
 const AUTH_TIMEOUT_MS = 30000;
+const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 12000;
+const AUTH_RETRY_DELAY_MS = 800;
 
 let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
 
@@ -351,6 +353,50 @@ function withTimeout(promise, ms) {
     promise,
     new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
   ]);
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function authFetchOptions(options = {}) {
+  return {
+    ...options,
+    cache: 'no-store',
+    credentials: 'omit'
+  };
+}
+
+async function fetchAuthWithRetry(url, options = {}, retries = 1) {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const timeoutMs = attempt === 0 && retries > 0 ? AUTH_FIRST_ATTEMPT_TIMEOUT_MS : AUTH_TIMEOUT_MS;
+      return await withTimeout(fetch(url, authFetchOptions(options)), timeoutMs);
+    } catch (error) {
+      lastError = error;
+      if (attempt < retries) await delay(AUTH_RETRY_DELAY_MS);
+    }
+  }
+  throw lastError;
+}
+
+async function postLegacyAuth(path, body, retries = 1) {
+  const res = await fetchAuthWithRetry(WORKER + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }, retries);
+  return readJsonSafe(res);
+}
+
+async function recoverRegisterSession(email, password) {
+  try {
+    const data = await postLegacyAuth('/auth/login', { email, password }, 0);
+    return data?.token ? data : null;
+  } catch (error) {
+    return null;
+  }
 }
 
 async function readJsonSafe(response) {
@@ -804,8 +850,7 @@ async function doLogin() {
   setButtonBusy(button, true, 'Входим...');
   let data;
   try {
-    const res = await withTimeout(fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) }), AUTH_TIMEOUT_MS);
-    data = await readJsonSafe(res);
+    data = await postLegacyAuth('/auth/login', { email, password: pass }, 1);
   } catch(e) {
     showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного, попробуйте ещё раз' : 'Ошибка соединения');
   } finally {
@@ -828,10 +873,10 @@ async function doRegister() {
   setButtonBusy(button, true, 'Создаём...');
   let data;
   try {
-    const res = await withTimeout(fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) }), AUTH_TIMEOUT_MS);
-    data = await readJsonSafe(res);
+    data = await postLegacyAuth('/auth/register', { name, email, password: pass }, 0);
   } catch(e) {
-    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного, попробуйте ещё раз' : 'Ошибка соединения');
+    if (e?.message === 'timeout') data = await recoverRegisterSession(email, pass);
+    if (!data) showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного, попробуйте ещё раз' : 'Ошибка соединения');
   } finally {
     setButtonBusy(button, false);
   }
