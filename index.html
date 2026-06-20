@@ -1484,6 +1484,17 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       <div id="detail-history-list" style="font-size:13px;color:var(--muted);padding:8px 0">История изменений пуста</div>
     </div>
 
+    <!-- Совет от 4 -->
+    <div id="detail-ai-sec" style="margin-top:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-weight:600">Совет от 4</span>
+        <button onclick="loadTaskAdvice()" style="font-size:11px;color:var(--green);background:transparent;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:0">обновить ↻</button>
+      </div>
+      <div id="detail-ai-advice" style="background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6;min-height:48px">
+        <span class="dots"><span></span><span></span><span></span></span>
+      </div>
+    </div>
+
   </div>
 
   <!-- Кнопки действий -->
@@ -4342,14 +4353,21 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 function toggleTheme(){
-  const isLight=document.documentElement.classList.toggle('light');
-  localStorage.setItem('theme',isLight?'light':'dark');
+  const current=document.documentElement.getAttribute('data-theme')||'dark';
+  const next=current==='dark'?'light':'dark';
+  applyTheme(next);
+  localStorage.setItem('theme',next);
   const arr=document.getElementById('theme-arrow');
-  if(arr)arr.textContent=isLight?'🌙':'☀️';
+  if(arr)arr.textContent=next==='light'?'🌙':'☀️';
+  ['dark','light','system'].forEach(t=>{
+    const r=document.getElementById('radio-'+t);
+    if(r)r.className='radio-wrap'+(t===next?' checked':'');
+  });
 }
 (function(){
-  if(localStorage.getItem('theme')==='light'){
-    document.documentElement.classList.add('light');
+  const t=localStorage.getItem('theme');
+  if(t==='light'){
+    document.documentElement.setAttribute('data-theme','light');
     const arr=document.getElementById('theme-arrow');
     if(arr)arr.textContent='🌙';
   }
