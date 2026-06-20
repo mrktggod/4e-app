@@ -131,6 +131,8 @@ body {
 .auth-input:focus { border-color: rgba(154,194,60,0.4); }
 .auth-input::placeholder { color: var(--muted); }
 .auth-btn { width: 100%; padding: 14px; border-radius: 14px; background: var(--green); color: #000; font-size: 15px; font-weight: 700; border: none; cursor: pointer; font-family: inherit; margin-top: 4px; }
+.auth-debug { width: 100%; margin-top: 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,0.03); color: var(--muted); font-size: 11px; line-height: 1.45; word-break: break-word; }
+.auth-debug-btn { width: 100%; margin-top: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg2); color: var(--text); font-size: 12px; font-weight: 600; font-family: inherit; }
 .auth-tabs { display: flex; background: var(--bg2); border-radius: 14px; padding: 3px; width: 100%; margin-bottom: 24px; }
 .auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; border-radius: 11px; cursor: pointer; transition: all 0.2s; color: var(--muted); }
 .auth-tab.active { background: var(--card); color: var(--text); }
@@ -191,6 +193,9 @@ body {
     <input class="auth-input" id="regPass" type="password" placeholder="Пароль (мин. 6 символов)">
     <button class="auth-btn" onclick="doRegister()">Создать аккаунт</button>
   </div>
+
+  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-simple-cors-20260620-2</div>
+  <button class="auth-debug-btn" onclick="runAuthDiagnostics('manual')">Проверить связь</button>
 </div>
 
 <!-- MAIN APP -->
@@ -342,9 +347,11 @@ body {
 <script>
 const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K = 'vk4_token';
-const AUTH_TIMEOUT_MS = 30000;
-const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 12000;
-const AUTH_RETRY_DELAY_MS = 800;
+const AUTH_BUILD = 'vk-auth-simple-cors-20260620-2';
+const AUTH_TIMEOUT_MS = 12000;
+const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 6000;
+const AUTH_RETRY_DELAY_MS = 600;
+const AUTH_DIAG_TIMEOUT_MS = 5000;
 
 let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
 
@@ -384,7 +391,7 @@ async function fetchAuthWithRetry(url, options = {}, retries = 1) {
 async function postLegacyAuth(path, body, retries = 1) {
   const res = await fetchAuthWithRetry(WORKER + path, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(body)
   }, retries);
   return readJsonSafe(res);
@@ -397,6 +404,43 @@ async function recoverRegisterSession(email, password) {
   } catch (error) {
     return null;
   }
+}
+
+function setAuthDiagnostics(message) {
+  const el = document.getElementById('authDiagnostics');
+  if (!el) return;
+  el.textContent = message;
+}
+
+function compactFetchError(error) {
+  if (error?.message === 'timeout') return 'timeout';
+  if (error?.name) return error.name;
+  return 'network';
+}
+
+async function diagnosticFetch(label, url, options = {}, timeoutMs = AUTH_DIAG_TIMEOUT_MS) {
+  const startedAt = Date.now();
+  try {
+    const res = await withTimeout(fetch(url, authFetchOptions(options)), timeoutMs);
+    return `${label}:${res.status}/${Date.now() - startedAt}ms`;
+  } catch (error) {
+    return `${label}:${compactFetchError(error)}/${Date.now() - startedAt}ms`;
+  }
+}
+
+async function runAuthDiagnostics(reason = 'manual') {
+  const origin = location.origin || 'null';
+  const online = navigator.onLine === false ? 'offline' : 'online';
+  setAuthDiagnostics(`Проверяем связь… ${AUTH_BUILD}`);
+  const ping = await diagnosticFetch('ping', `${WORKER}/?diag=${Date.now()}`, { method: 'GET' }, AUTH_DIAG_TIMEOUT_MS);
+  const auth = await diagnosticFetch('auth', `${WORKER}/auth/login?diag=${Date.now()}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: '{}'
+  }, AUTH_DIAG_TIMEOUT_MS + 2000);
+  const result = `${AUTH_BUILD} · ${reason} · ${online} · ${origin} · ${ping} · ${auth}`;
+  setAuthDiagnostics(result);
+  return result;
 }
 
 async function readJsonSafe(response) {
@@ -852,7 +896,12 @@ async function doLogin() {
   try {
     data = await postLegacyAuth('/auth/login', { email, password: pass }, 1);
   } catch(e) {
-    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного, попробуйте ещё раз' : 'Ошибка соединения');
+    if (e?.message === 'timeout') {
+      await runAuthDiagnostics('login-timeout');
+      showToast('Проблема связи. Код ниже формы');
+    } else {
+      showToast('Ошибка соединения');
+    }
   } finally {
     setButtonBusy(button, false);
   }
@@ -876,7 +925,12 @@ async function doRegister() {
     data = await postLegacyAuth('/auth/register', { name, email, password: pass }, 0);
   } catch(e) {
     if (e?.message === 'timeout') data = await recoverRegisterSession(email, pass);
-    if (!data) showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного, попробуйте ещё раз' : 'Ошибка соединения');
+    if (!data && e?.message === 'timeout') {
+      await runAuthDiagnostics('register-timeout');
+      showToast('Проблема связи. Код ниже формы');
+    } else if (!data) {
+      showToast('Ошибка соединения');
+    }
   } finally {
     setButtonBusy(button, false);
   }
