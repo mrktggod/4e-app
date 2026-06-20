@@ -9,17 +9,36 @@
 :root {
   --bg: #0E140B;
   --bg2: #1a2214;
+  --bg3: #233018;
   --green: #9AC23C;
   --green-dim: #7A9A2E;
   --green-dark: #3a5010;
   --text: #F2F5E9;
+  --text2: rgba(242,245,233,0.62);
   --muted: rgba(242,245,233,0.35);
   --border: rgba(242,245,233,0.08);
   --card: #151c10;
+  --card2: #1b2515;
   --danger: #e05c5c;
   --radius: 18px;
   --radius-sm: 12px;
   --nav-h: 72px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+html[data-theme="light"] {
+  --bg: #FFFFFF;
+  --bg2: #FBFCF7;
+  --bg3: #EEF4E3;
+  --green: #8FC51E;
+  --green-dim: #6A9E1F;
+  --green-dark: #3B5A0E;
+  --text: #171C10;
+  --text2: rgba(23,28,16,0.66);
+  --muted: rgba(23,28,16,0.42);
+  --border: rgba(26,34,16,0.10);
+  --card: #FFFFFF;
+  --card2: #F7FAF0;
+  --shadow: 0 10px 30px rgba(26,34,16,0.08);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -30,11 +49,13 @@ body {
   overflow-x: hidden;
   padding-bottom: var(--nav-h);
 }
+html[data-theme="light"] body { background: #FFFFFF; color: var(--text); }
 .logo { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; width: 36px; height: 36px; flex-shrink: 0; }
 .logo .b { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c8e87a, #7A9A2E 55%, #3a5010); box-shadow: 0 0 8px rgba(154,194,60,0.4); }
 .logo-lg { width: 56px; height: 56px; gap: 5px; }
 .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px; position: sticky; top: 0; z-index: 100; background: var(--bg); }
 .topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
 .topbar-title { font-size: 18px; font-weight: 600; }
 .topbar-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
@@ -42,7 +63,33 @@ body {
 .screen.active { display: block; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
 .section-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin: 20px 0 10px; }
+.home-redesign { position: relative; padding-top: 8px; }
+.home-glow { position: fixed; top: -90px; left: 50%; width: 280px; height: 280px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle, rgba(154,194,60,0.13), transparent 68%); pointer-events: none; z-index: -1; }
+html[data-theme="light"] .home-glow { background: radial-gradient(circle, rgba(190,235,0,0.18), transparent 68%); }
+.home-logo-center { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 34px; height: 34px; margin: 4px auto 18px; }
+.home-logo-center .b { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #d9ff64, #9AC23C 55%, #526f19); box-shadow: 0 0 10px rgba(154,194,60,0.45); }
+.home-filter-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 14px; scrollbar-width: none; }
+.home-filter-tabs::-webkit-scrollbar { display: none; }
+.home-pill { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text2); font-weight: 600; font-size: 13px; }
+.home-pill.active { background: var(--green); color: #101707; border-color: var(--green); box-shadow: 0 10px 26px rgba(154,194,60,0.22); }
+html[data-theme="light"] .home-pill { background: rgba(255,255,255,0.92); box-shadow: var(--shadow); }
+.focus-card-vk { display: grid; grid-template-columns: 58px 1fr 112px; gap: 12px; align-items: center; min-height: 124px; border-radius: 24px; padding: 16px; margin-bottom: 12px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.focus-orb { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--green); border: 1px solid rgba(154,194,60,0.32); background: radial-gradient(circle, rgba(154,194,60,0.16), transparent 68%); font-size: 28px; }
+.focus-kicker { font-size: 12px; font-weight: 800; letter-spacing: 0.16em; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
+.focus-title { font-size: 22px; line-height: 1.24; font-weight: 700; color: var(--text); }
+.planet-mini { position: relative; width: 118px; height: 82px; }
+.planet-mini::before { content: ''; position: absolute; width: 78px; height: 78px; right: 10px; top: 2px; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #d8ff5a, #8FC51E 48%, #24320f 78%); box-shadow: 0 0 24px rgba(154,194,60,0.36); }
+.planet-mini::after { content: ''; position: absolute; width: 118px; height: 34px; right: -3px; top: 25px; border-radius: 50%; border: 1px solid rgba(154,194,60,0.45); transform: rotate(-12deg); }
+.home-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+.home-stat { min-height: 92px; border-radius: 20px; padding: 12px 10px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.home-stat-label { font-size: 11px; color: var(--text2); margin-bottom: 12px; }
+.home-stat-num { font-size: 28px; font-weight: 800; color: var(--green); letter-spacing: -0.04em; }
+.home-stat-line { height: 3px; border-radius: 999px; margin-top: 10px; background: linear-gradient(90deg, var(--green), rgba(154,194,60,0.08)); }
+.task-card-v2 { min-height: 82px; align-items: center; border-radius: 20px; padding: 13px 14px; background: var(--card); box-shadow: var(--shadow); }
+.task-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text2); background: var(--card2); border: 1px solid var(--border); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.task-chevron { color: var(--muted); font-size: 28px; line-height: 1; flex-shrink: 0; }
 .task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: border-color 0.2s; }
+.task-card.task-card-v2 { min-height: 82px; align-items: center; border-radius: 20px; padding: 13px 14px; background: var(--card); box-shadow: var(--shadow); }
 .task-card:hover { border-color: rgba(154,194,60,0.25); }
 .task-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; }
 .task-check.done { background: var(--green); border-color: var(--green); }
@@ -53,6 +100,7 @@ body {
 .tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: rgba(154,194,60,0.12); color: var(--green); font-weight: 500; }
 .tag.deadline { background: rgba(224,92,92,0.12); color: #e05c5c; }
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(14,20,11,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; padding: 0 8px; z-index: 200; }
+html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-shadow: 0 -10px 30px rgba(26,34,16,0.08); }
 .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; padding: 8px 4px; border-radius: var(--radius-sm); transition: all 0.15s; color: var(--muted); }
 .nav-item.active { color: var(--green); }
 .nav-item svg { width: 22px; height: 22px; }
@@ -118,6 +166,23 @@ body {
 .setting-row .icon { color: var(--muted); flex-shrink: 0; }
 .setting-row .label { flex: 1; font-size: 14px; }
 .setting-row .arrow { color: var(--muted); }
+.setting-row .value { color: var(--muted); font-size: 13px; }
+.detail-header { display: flex; align-items: center; gap: 10px; padding: 8px 0 16px; }
+.detail-back { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg2); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.detail-title { font-size: 24px; line-height: 1.22; font-weight: 800; letter-spacing: -0.03em; }
+.detail-meta { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.detail-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin: 16px 0; }
+.detail-tab { flex: 1; padding: 11px 4px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.detail-tab.active { color: var(--text); border-bottom-color: var(--green); }
+.detail-panel { display: none; }
+.detail-panel.active { display: block; }
+.discussion-list { display: flex; flex-direction: column; gap: 8px; min-height: 70px; }
+.discussion-msg { padding: 10px 12px; border-radius: 16px; font-size: 13px; line-height: 1.45; border: 1px solid var(--border); background: var(--bg2); color: var(--text); }
+.discussion-msg.user { align-self: flex-end; background: var(--green); color: #101707; border-color: var(--green); max-width: 86%; }
+.discussion-msg.ai { align-self: flex-start; max-width: 92%; }
+.discussion-input-row { display: flex; gap: 8px; margin-top: 12px; }
+.discussion-input { flex: 1; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 14px; padding: 11px 13px; font: inherit; outline: none; }
+.discussion-send { width: 44px; border: none; border-radius: 14px; background: var(--green); color: #101707; font-weight: 800; cursor: pointer; }
 .trial-banner { background: linear-gradient(135deg, rgba(154,194,60,0.15), rgba(58,80,16,0.3)); border: 1px solid rgba(154,194,60,0.3); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
 .trial-days { font-size: 28px; font-weight: 700; color: var(--green); }
 .trial-btn { margin-left: auto; background: var(--green); color: #000; border: none; padding: 8px 14px; border-radius: 22px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -206,20 +271,86 @@ body {
     <div class="logo"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div>
     <div><div class="topbar-title">4</div><div class="topbar-sub">AI-секретарь</div></div>
   </div>
-  <div class="icon-btn" id="userChip" onclick="navigate('profile')" style="width:auto;border-radius:20px;padding:0 12px;gap:6px;font-size:13px;font-weight:600">
-    <div id="userInitial" style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Ю</div>
-    <span id="userName">...</span>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="themeToggleTop" onclick="toggleTheme()" aria-label="Сменить тему">☀</button>
+    <div class="icon-btn" id="userChip" onclick="navigate('profile')" style="width:auto;border-radius:20px;padding:0 12px;gap:6px;font-size:13px;font-weight:600">
+      <div id="userInitial" style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Ю</div>
+      <span id="userName">...</span>
+    </div>
   </div>
 </div>
 
 <!-- HOME -->
 <div class="screen active" id="screen-home">
-  <div style="padding:8px 0 16px">
-    <div style="font-size:42px;font-weight:700;line-height:1"><span id="taskCount">0</span></div>
-    <div style="font-size:18px;color:var(--muted);margin-top:2px">дел ждут</div>
+  <div class="home-redesign">
+    <div class="home-glow"></div>
+    <div class="home-logo-center"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div>
+
+    <div class="home-filter-tabs">
+      <div class="home-pill active">● Сегодня</div>
+      <div class="home-pill">♨ Горит</div>
+      <div class="home-pill">♙ Люди</div>
+      <div class="home-pill">□ Неделя</div>
+    </div>
+
+    <div class="focus-card-vk" onclick="navigate('home')">
+      <div class="focus-orb">✦</div>
+      <div>
+        <div class="focus-kicker">Фокус дня</div>
+        <div class="focus-title"><span id="focusTaskCount">0 задач</span><br>требуют внимания</div>
+      </div>
+      <div class="planet-mini" aria-hidden="true"></div>
+    </div>
+
+    <div class="home-stat-grid">
+      <div class="home-stat"><div class="home-stat-label">Выполнено</div><div class="home-stat-num" id="homeDone">0</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Задачи</div><div class="home-stat-num" id="homeActive">0</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Обещания</div><div class="home-stat-num" id="homePromises">0</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Прогресс</div><div class="home-stat-num" id="homeProgress">0%</div><div class="home-stat-line"></div></div>
+    </div>
+
+    <div style="display:none"><span id="taskCount">0</span></div>
+    <div class="section-label">Задачи</div>
+    <div id="taskList"><div class="text-muted text-sm" style="padding:20px 0;text-align:center">Загрузка...</div></div>
   </div>
-  <div class="section-label">Задачи</div>
-  <div id="taskList"><div class="text-muted text-sm" style="padding:20px 0;text-align:center">Загрузка...</div></div>
+</div>
+
+<!-- TASK DETAIL -->
+<div class="screen" id="screen-task-detail">
+  <div class="detail-header">
+    <button class="detail-back" onclick="navigate('home')" aria-label="Назад">‹</button>
+    <div>
+      <div class="detail-title" id="detailTaskTitle">Задача</div>
+      <div class="detail-meta" id="detailTaskMeta">—</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="flex-between" style="gap:12px">
+      <div>
+        <div class="text-xs text-muted">Статус</div>
+        <div id="detailTaskStatus" style="font-size:15px;font-weight:700;margin-top:4px">Активна</div>
+      </div>
+      <button class="btn btn-secondary" id="detailDoneBtn" style="width:auto;padding:10px 14px" onclick="doneCurrentTask()">Готово</button>
+    </div>
+    <div class="detail-tabs">
+      <button class="detail-tab active" onclick="switchTaskDetailTab('desc',this)">Описание</button>
+      <button class="detail-tab" onclick="switchTaskDetailTab('discuss',this)">Обсудить задачу</button>
+      <button class="detail-tab" onclick="switchTaskDetailTab('history',this)">История</button>
+    </div>
+    <div class="detail-panel active" id="task-detail-desc">
+      <div class="text-sm" id="detailTaskDescription" style="line-height:1.6;color:var(--text2)">—</div>
+    </div>
+    <div class="detail-panel" id="task-detail-discuss">
+      <div class="discussion-list" id="taskDiscussionList"></div>
+      <div class="discussion-input-row">
+        <input class="discussion-input" id="taskDiscussionInput" placeholder="Написать по задаче..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendTaskDiscussion()}">
+        <button class="discussion-send" onclick="sendTaskDiscussion()">→</button>
+      </div>
+    </div>
+    <div class="detail-panel" id="task-detail-history">
+      <div class="text-sm text-muted" id="detailTaskHistory">История изменений пока пуста</div>
+    </div>
+  </div>
 </div>
 
 <!-- ASK -->
@@ -302,6 +433,10 @@ body {
     <div class="identity-hint">Email, VK и Telegram должны вести к одному профилю, чтобы задачи и история не распадались по разным аккаунтам.</div>
   </div>
   <div class="card" style="padding:4px 16px">
+    <div class="setting-row" onclick="toggleTheme()">
+      <span class="label">Тема оформления</span>
+      <span class="value" id="themeLabel">Тёмная</span>
+    </div>
     <div class="setting-row" onclick="showToast('Скоро')">
       <span class="label">Уведомления</span>
       <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -347,6 +482,7 @@ body {
 <script>
 const WORKER = 'https://edge.4-ai.site';
 const TOKEN_K = 'vk4_token';
+const THEME_K = 'vk4_theme';
 const AUTH_BUILD = 'vk-auth-warmup-20260620-7';
 const AUTH_TIMEOUT_MS = 25000;
 const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 10000;
@@ -356,7 +492,40 @@ const AUTH_WARMUP_TIMEOUT_MS = 3500;
 const AUTH_WARMUP_RETRY_DELAY_MS = 700;
 const AUTH_DIAG_TIMEOUT_MS = 15000;
 
-let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [], authWarmupOk: false, authWarmupPromise: null };
+let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [], currentTask: null, authWarmupOk: false, authWarmupPromise: null };
+
+function applyTheme(theme) {
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = theme === 'light' || (theme === 'system' && !prefersDark) ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  const label = document.getElementById('themeLabel');
+  if (label) label.textContent = next === 'light' ? 'Светлая' : 'Тёмная';
+  const top = document.getElementById('themeToggleTop');
+  if (top) top.textContent = next === 'light' ? '☾' : '☀';
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem(THEME_K, next);
+  applyTheme(next);
+  showToast(next === 'light' ? 'Светлая тема' : 'Тёмная тема');
+}
+
+function getStoredThemeChoice() {
+  try { return localStorage.getItem(THEME_K) || ''; } catch(e) { return ''; }
+}
+
+function shouldFollowHostTheme() {
+  const choice = getStoredThemeChoice();
+  return !choice || choice === 'system';
+}
+
+function applyHostThemeScheme(scheme) {
+  if (!shouldFollowHostTheme()) return;
+  const isDark = scheme === 'space_gray' || scheme === 'vkcom_dark' || scheme === 'client_dark';
+  applyTheme(isDark ? 'dark' : 'light');
+}
 
 function withTimeout(promise, ms) {
   return Promise.race([
@@ -684,6 +853,8 @@ function warmupConnection() {
 }
 
 // ── INIT ──
+applyTheme(getStoredThemeChoice() || 'dark');
+
 if (document.readyState === 'loading') {
   window.addEventListener('DOMContentLoaded', () => {
     warmupConnection();
@@ -714,6 +885,15 @@ async function initVKBridge() {
   if (!bridge?.send) return false;
   try {
     await withTimeout(bridge.send('VKWebAppInit'), 2500);
+    try {
+      if (window.vkBridge?.subscribe) {
+        window.vkBridge.subscribe((event) => {
+          if (event?.detail?.type === 'VKWebAppUpdateConfig') applyHostThemeScheme(event.detail.data?.scheme);
+          if (event?.detail?.type === 'VKWebAppViewRestore') loadTasks().catch(() => {});
+        });
+      }
+      bridge.send('VKWebAppGetConfig').then((config) => applyHostThemeScheme(config?.scheme)).catch(() => {});
+    } catch(e) {}
     return true;
   } catch(e) {
     return false;
@@ -1066,19 +1246,31 @@ function renderTasks() {
   const list = document.getElementById('taskList');
   const active = state.tasks.filter(t => !t.done);
   document.getElementById('taskCount').textContent = active.length;
+  const focusCount = document.getElementById('focusTaskCount');
+  if (focusCount) focusCount.textContent = active.length + ' ' + pluralRu(active.length, 'задача', 'задачи', 'задач');
+  const homeActive = document.getElementById('homeActive');
+  if (homeActive) homeActive.textContent = active.length;
   list.innerHTML = active.length
-    ? active.map(t => taskHTML(t)).join('')
+    ? active.map((t, idx) => taskHTML(t, idx)).join('')
     : '<div class="text-muted text-sm" style="padding:20px 0;text-align:center">Активных задач нет</div>';
 }
 
-function taskHTML(t) {
+function pluralRu(n, one, few, many) {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}
+
+function taskHTML(t, idx = 0) {
   const icons = { promise: t.subtype === 'incoming' ? '📥' : '🤝', deadline: '⏰', task: '📌' };
   const today = new Date().toISOString().slice(0,10);
   const overdue = t.deadline && t.deadline < today;
   const taskId = String(t.id || '').replace(/'/g, "\\'");
   const taskText = escapeHtml(t.text || t.title || '');
-  return `<div class="task-card">
-    <div class="task-check" onclick="doneTask('${taskId}')"></div>
+  return `<div class="task-card task-card-v2" onclick="openTaskDetail('${taskId}')">
+    <div class="task-num">${idx + 1}</div>
     <div class="task-body">
       <div class="task-title">${taskText}</div>
       <div class="task-meta">
@@ -1086,6 +1278,8 @@ function taskHTML(t) {
         ${t.deadline ? `<span class="tag ${overdue?'deadline':''}">${formatDate(t.deadline)}</span>` : ''}
       </div>
     </div>
+    <div class="task-check" onclick="event.stopPropagation();doneTask('${taskId}')" title="Выполнить"></div>
+    <div class="task-chevron">›</div>
   </div>`;
 }
 
@@ -1150,7 +1344,112 @@ async function maybeSaveTaskFromChat(text) {
 }
 
 // ── NAVIGATION ──
-const screens = ['home','ask','calendar','stats','profile'];
+function taskDisplayTitle(task) {
+  return task?.text || task?.title || 'Задача';
+}
+
+function taskDiscussionKey(task) {
+  return 'vk4_task_discussion_' + (state.user?.id || 'anon') + '_' + String(task?.id || 'unknown');
+}
+
+function readTaskDiscussion(task) {
+  try {
+    return JSON.parse(localStorage.getItem(taskDiscussionKey(task)) || '[]');
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveTaskDiscussion(task, items) {
+  try {
+    localStorage.setItem(taskDiscussionKey(task), JSON.stringify(items.slice(-30)));
+  } catch(e) {}
+}
+
+function renderTaskDiscussion(task) {
+  const list = document.getElementById('taskDiscussionList');
+  if (!list) return;
+  const items = readTaskDiscussion(task);
+  if (!items.length) {
+    list.innerHTML = '<div class="text-sm text-muted">Обсуждения пока нет. Напишите вопрос по задаче — я помогу разложить следующий шаг.</div>';
+    return;
+  }
+  list.innerHTML = items.map((item) =>
+    `<div class="discussion-msg ${item.role === 'user' ? 'user' : 'ai'}">${escapeHtml(item.text || '')}</div>`
+  ).join('');
+}
+
+function openTaskDetail(taskId) {
+  const task = state.tasks.find((item) => String(item.id) === String(taskId));
+  if (!task) {
+    showToast('Задача не найдена');
+    return;
+  }
+  state.currentTask = task;
+  document.getElementById('detailTaskTitle').textContent = taskDisplayTitle(task);
+  document.getElementById('detailTaskMeta').textContent = [task.deadline ? formatDate(task.deadline) : '', task.type || 'task'].filter(Boolean).join(' · ') || 'Без срока';
+  document.getElementById('detailTaskStatus').textContent = task.done ? 'Выполнена' : 'Активна';
+  document.getElementById('detailTaskDescription').textContent = task.description || taskDisplayTitle(task);
+  document.getElementById('detailTaskHistory').textContent = task.createdAt ? 'Создана: ' + new Date(task.createdAt).toLocaleString('ru-RU') : 'История изменений пока пуста';
+  renderTaskDiscussion(task);
+  const firstTab = document.querySelector('#screen-task-detail .detail-tab');
+  switchTaskDetailTab('desc', firstTab);
+  navigate('task-detail');
+}
+
+function switchTaskDetailTab(id, el) {
+  document.querySelectorAll('#screen-task-detail .detail-tab').forEach((tab) => tab.classList.remove('active'));
+  if (el) el.classList.add('active');
+  ['desc','discuss','history'].forEach((name) => {
+    const panel = document.getElementById('task-detail-' + name);
+    if (panel) panel.classList.toggle('active', name === id);
+  });
+}
+
+async function doneCurrentTask() {
+  if (!state.currentTask) return;
+  await doneTask(state.currentTask.id);
+  navigate('home');
+}
+
+async function sendTaskDiscussion() {
+  const task = state.currentTask;
+  const input = document.getElementById('taskDiscussionInput');
+  const text = (input?.value || '').trim();
+  if (!task || !text) return;
+  input.value = '';
+  const items = readTaskDiscussion(task);
+  items.push({ role: 'user', text, at: Date.now() });
+  saveTaskDiscussion(task, items);
+  renderTaskDiscussion(task);
+  try {
+    const res = await fetch(WORKER + '/anthropic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 700,
+        system: 'Ты 4 — AI-секретарь. Пользователь обсуждает конкретную задачу. Отвечай кратко, практично, по-русски. Дай следующий шаг, риски или короткий план.',
+        messages: [
+          { role: 'user', content: 'Задача: ' + taskDisplayTitle(task) + '\nВопрос: ' + text }
+        ]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Я зафиксировал мысль. Следующий шаг — уточнить действие и срок.';
+    const fresh = readTaskDiscussion(task);
+    fresh.push({ role: 'ai', text: reply, at: Date.now() });
+    saveTaskDiscussion(task, fresh);
+    renderTaskDiscussion(task);
+  } catch(e) {
+    const fresh = readTaskDiscussion(task);
+    fresh.push({ role: 'ai', text: 'Не смог связаться с AI, но заметка по задаче сохранена локально.', at: Date.now() });
+    saveTaskDiscussion(task, fresh);
+    renderTaskDiscussion(task);
+  }
+}
+
+const screens = ['home','ask','calendar','stats','profile','task-detail'];
 function navigate(id) {
   screens.forEach(s => document.getElementById('screen-'+s).classList.toggle('active', s === id));
   ['home','calendar','stats','profile'].forEach(s => {
@@ -1252,6 +1551,14 @@ function buildStats() {
   document.getElementById('statActive').textContent = active;
   document.getElementById('statPromise').textContent = promise;
   document.getElementById('statPct').textContent = pct + '%';
+  const homeDone = document.getElementById('homeDone');
+  const homeActive = document.getElementById('homeActive');
+  const homePromises = document.getElementById('homePromises');
+  const homeProgress = document.getElementById('homeProgress');
+  if (homeDone) homeDone.textContent = done;
+  if (homeActive) homeActive.textContent = active;
+  if (homePromises) homePromises.textContent = promise;
+  if (homeProgress) homeProgress.textContent = pct + '%';
   const days = [active, done, promise, active+1, done+1, promise+1, active+2];
   const max = Math.max(...days, 1);
   document.getElementById('barChart').innerHTML = days.map(v => `<div class="bar-wrap"><div class="bar"><div class="bar-fill" style="height:${v/max*100}%"></div></div></div>`).join('');
