@@ -594,6 +594,19 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .home-filter-tabs::-webkit-scrollbar{display:none}
 .focus-day-card{background:var(--card2);border:1px solid var(--border)}
 .stat-mini{background:var(--card2);border:1px solid var(--border)}
+/* task rows (new home design) */
+.task-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.task-row:last-child{border-bottom:none}
+.task-num-badge{width:26px;height:26px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2);flex-shrink:0}
+.task-cat-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.cat-badge-work{background:var(--green3);color:var(--green)}
+.cat-badge-personal{background:rgba(154,194,60,0.06);color:var(--text2)}
+.task-row-body{flex:1;min-width:0}
+.task-row-title{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-row-meta{font-size:11px;color:var(--muted);margin-top:2px}
+/* h-btn for bell */
+.h-btn{width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.h-btn-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg)}
 
 /* ===== THEME ===== */
 .theme-preview{display:flex;gap:8px;margin-bottom:20px}
@@ -1183,50 +1196,24 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 <div class="screen" id="home" style="flex-direction:column;overflow:hidden;position:relative">
   <div class="home-glow"></div>
 
-  <!-- Fixed top -->
-  <div style="flex-shrink:0;position:relative;z-index:2">
-
-    <!-- Header row -->
-    <div class="app-header-v2">
-      <div style="display:flex;align-items:center;gap:7px">
-        <div class="header-bell glass" onclick="openNotifications()" style="cursor:pointer">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(242,245,233,0.5)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <div class="header-bell-dot" id="bell-dot"></div>
-        </div>
-        <span style="font-size:10px;color:rgba(242,245,233,0.3)" id="home-date"></span>
+  <!-- ШАПКА -->
+  <div style="flex-shrink:0;position:relative;z-index:2;padding:16px 20px 0">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="width:34px"></div>
+      <div class="header-logo-center" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:34px;height:34px">
+        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
       </div>
-      <div class="header-logo-center">
-        <div class="lb"></div><div class="lb"></div><div class="lb"></div><div class="lb"></div>
-      </div>
-      <div class="user-chip-v2 glass" onclick="openProfile()" id="user-chip" style="cursor:pointer">
-        <div class="avatar" id="user-avatar-small">?</div>
-        <span style="font-size:11px;color:rgba(242,245,233,0.6)" id="user-chip-name">Профиль</span>
+      <div class="h-btn" onclick="openNotifications()" style="position:relative;cursor:pointer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="h-btn-dot" id="bell-dot" style="display:none"></div>
       </div>
     </div>
 
-    <!-- Hero -->
-    <div class="hero-v2">
-      <div style="display:flex;align-items:flex-end;gap:8px">
-        <span class="hero-v2-num" id="hero-count">—</span>
-        <div class="hero-v2-label">
-          <div>дел</div>
-          <div>ждут<span class="star">✦</span></div>
-        </div>
-      </div>
-      <div class="hero-badges">
-        <div class="hero-badge hero-badge-hot glass-green" id="hero-hot-badge" style="display:none">
-          <div class="badge-label">горит</div>
-          <div class="badge-val" id="hero-hot-count">0</div>
-        </div>
-        <div class="hero-badge hero-badge-promises glass" id="hero-promises-badge" style="display:none">
-          <div class="badge-label">должны</div>
-          <div class="badge-val" id="hero-promises-count">0</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ФИЛЬТР-ТАБЫ (Patch 02) -->
-    <div class="home-filter-tabs" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 16px 10px">
+    <!-- ФИЛЬТР-ТАБЫ -->
+    <div class="home-filter-tabs" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:12px">
       <button class="home-tab active" data-filter="today" onclick="setHomeFilter('today',this)">
         <span class="home-tab-dot"></span>Сегодня
       </button>
@@ -1243,73 +1230,116 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Месяц
       </button>
     </div>
+  </div>
+
+  <!-- СКРОЛЛ -->
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 100px">
+
+    <!-- КАРТОЧКА ФОКУС ДНЯ -->
+    <div class="focus-day-card glass" style="border-radius:20px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:0;overflow:hidden;position:relative;min-height:90px;cursor:pointer" onclick="openFocusList()">
+      <div style="flex:1;z-index:1">
+        <div style="font-size:11px;color:var(--green);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Фокус дня</div>
+        <div style="font-size:18px;font-weight:700;color:var(--text);line-height:1.3" id="focus-day-text">загружаю...</div>
+      </div>
+      <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);opacity:.9">
+        <svg width="110" height="110" viewBox="0 0 220 220" class="globe-svg">
+          <defs>
+            <radialGradient id="globeGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#9AC23C" stop-opacity="0.9"/>
+              <stop offset="40%" stop-color="#5a8020" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#1a3000" stop-opacity="0.1"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="110" cy="110" rx="95" ry="30" fill="none" stroke="rgba(154,194,60,0.2)" stroke-width="1" class="globe-orbit" transform="rotate(-30 110 110)"/>
+          <ellipse cx="110" cy="110" rx="95" ry="30" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="1" class="globe-orbit" transform="rotate(30 110 110)"/>
+          <ellipse cx="110" cy="110" rx="95" ry="30" fill="none" stroke="rgba(154,194,60,0.1)" stroke-width="1" class="globe-orbit" transform="rotate(90 110 110)"/>
+          <circle cx="110" cy="110" r="65" fill="url(#globeGrad)"/>
+          <g class="globe-dot" fill="rgba(154,194,60,0.85)">
+            <circle cx="110" cy="110" r="5.5"/>
+            <circle cx="110" cy="85" r="4.5"/><circle cx="110" cy="135" r="4.5"/>
+            <circle cx="85" cy="110" r="4.5"/><circle cx="135" cy="110" r="4.5"/>
+            <circle cx="90" cy="90" r="4"/><circle cx="130" cy="90" r="4"/>
+            <circle cx="90" cy="130" r="4"/><circle cx="130" cy="130" r="4"/>
+            <circle cx="110" cy="65" r="3.5"/><circle cx="110" cy="155" r="3.5"/>
+            <circle cx="65" cy="110" r="3.5"/><circle cx="155" cy="110" r="3.5"/>
+            <circle cx="75" cy="75" r="3"/><circle cx="145" cy="75" r="3"/>
+            <circle cx="75" cy="145" r="3"/><circle cx="145" cy="145" r="3"/>
+          </g>
+          <g stroke="rgba(154,194,60,0.4)" stroke-width="0.8" fill="none">
+            <line x1="110" y1="110" x2="110" y2="85"/>
+            <line x1="110" y1="110" x2="135" y2="110"/>
+            <line x1="110" y1="110" x2="90" y2="90"/>
+            <line x1="110" y1="110" x2="130" y2="130"/>
+            <line x1="110" y1="85" x2="130" y2="90"/>
+            <line x1="85" y1="110" x2="90" y2="90"/>
+            <line x1="135" y1="110" x2="130" y2="90"/>
+          </g>
+        </svg>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="position:absolute;right:16px;bottom:16px;z-index:1"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <!-- СТАТИСТИКА -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+      <div class="stat-mini glass" onclick="openDoneList()" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Выполнено</div>
+        <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-done">—</div>
+        <div class="stat-mini-line" style="height:2px;background:var(--green);border-radius:1px;margin-top:6px;opacity:.4"></div>
+      </div>
+      <div class="stat-mini glass" style="border-radius:16px;padding:12px 10px;text-align:center">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Задачи</div>
+        <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-tasks">—</div>
+        <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
+      </div>
+      <div class="stat-mini glass" onclick="openPromiseList()" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Обещания</div>
+        <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-promises">—</div>
+        <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
+      </div>
+      <div class="stat-mini glass-green" onclick="openStatistics()" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
+        <div style="font-size:11px;color:var(--green);margin-bottom:4px">Прогресс</div>
+        <div style="position:relative;width:36px;height:36px;margin:0 auto">
+          <svg width="36" height="36" viewBox="0 0 36 36" style="transform:rotate(-90deg)">
+            <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="3"/>
+            <circle cx="18" cy="18" r="15" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="94" stroke-linecap="round" id="progress-arc"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)" id="stat-progress">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- СПИСОК ЗАДАЧ -->
+    <div class="glass" style="border-radius:20px;overflow:hidden">
+      <div id="home-task-list">
+        <div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">загружаю задачи...</div>
+      </div>
+      <div id="home-show-all-btn" onclick="toggleAllTasks()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2)">
+        <span id="home-show-all-label">Смотреть все дела</span>
+        <svg id="home-show-all-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
 
   </div>
 
-  <!-- Scrollable content -->
-  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 14px 90px 14px">
-
-    <!-- Dashboard -->
-    <div class="dash-grid" id="dash-grid">
-      <div class="dash-card glass" onclick="openDoneList()" style="cursor:pointer">
-        <div class="dash-card-label">Выполнено</div>
-        <div class="dash-nums">
-          <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--green)" id="dash-done-today">0</div></div>
-          <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-done-month">0</div></div>
-        </div>
-      </div>
-      <div class="dash-card glass" onclick="showScreen('home');setNavActive('home')" style="cursor:pointer">
-        <div class="dash-card-label">Задачи</div>
-        <div class="dash-nums">
-          <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:var(--text)" id="dash-tasks-today">0</div></div>
-          <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-tasks-month">0</div></div>
-        </div>
-      </div>
-      <div class="dash-card glass" onclick="openPromiseList()" style="cursor:pointer">
-        <div class="dash-card-label">Обещания</div>
-        <div class="dash-nums">
-          <div><div class="dash-sub">сегодня</div><div class="dash-num-today" style="color:rgba(242,245,233,0.75)" id="dash-prom-today">0</div></div>
-          <div style="text-align:right"><div class="dash-sub">за месяц</div><div class="dash-num-month" id="dash-prom-month">0</div></div>
-        </div>
-      </div>
-      <div class="dash-card glass-green" onclick="openStatistics()" style="cursor:pointer">
-        <div class="dash-card-label green">Прогресс</div>
-        <div class="dash-nums">
-          <div><div class="dash-sub green">сегодня</div><div class="dash-num-today" style="color:var(--green)" id="dash-prog-today">—</div></div>
-          <div style="text-align:right"><div class="dash-sub green">за месяц</div><div class="dash-num-month" style="color:rgba(154,194,60,0.3)" id="dash-prog-month">—</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tasks -->
-    <div style="margin-bottom:8px">
-      <div class="tasks-header-v2">
-        <div class="tasks-label-v2">Задачи</div>
-        <button class="tasks-add-btn glass" onclick="openQuickAdd()">+ добавить</button>
-      </div>
-      <div class="glass" style="border-radius:18px;overflow:hidden">
-        <div id="lime-card"><div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">загружаю задачи...</div></div>
-      </div>
-    </div>
-
-    <!-- Promises -->
-    <div style="margin-bottom:80px">
-      <div class="tasks-label-v2" style="margin-bottom:6px">Тебе должны <span style="color:var(--green);font-size:11px;letter-spacing:0" id="promise-count-v2"></span></div>
-      <div class="glass" style="border-radius:18px;overflow:hidden">
-        <div id="promise-rows-v2"><div style="padding:16px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">загружаю...</div></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Fixed bottom nav -->
+  <!-- НИЖНИЙ НАВ -->
   <div class="bottom-nav-v2 glass-nav" style="position:absolute;bottom:0;left:0;right:0">
     <div class="nav-inner glass">
-      <div class="nav-item" id="nav-ask" onclick="openChats()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-      <div class="nav-item" id="nav-stats" onclick="openStatistics()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-      <div class="nav-mic-v2" onclick="openVoice()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
-      <div class="nav-item" id="nav-cal" onclick="openCalendar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-      <div class="nav-item" id="nav-brain" onclick="openAsk()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.66Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.66Z"/></svg></div>
+      <div class="nav-item" id="nav-ask" onclick="openChats()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="nav-item" id="nav-stats" onclick="openStatistics()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="nav-mic-v2" onclick="openVoice()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </div>
+      <div class="nav-item" id="nav-tasks" onclick="showScreen('home');setNavActive('tasks')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><polyline points="9 11 11 13 15 9"/></svg>
+      </div>
+      <div class="nav-item" id="nav-brain" onclick="openAsk()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.66Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.66Z"/></svg>
+      </div>
     </div>
   </div>
 
@@ -3344,96 +3374,85 @@ async function loadTasks(){
     allTasksCache=active;
     const hotCount=outgoing.filter(t=>t.deadline).length;
 
-    // Hero
+    // Hero (legacy no-op)
     const heroCount = document.getElementById('hero-count');
     if(heroCount) heroCount.textContent = outgoing.length || '0';
 
-    // Hot badge
+    // Hot badge (legacy)
     const hotBadge = document.getElementById('hero-hot-badge');
     const hotCountEl = document.getElementById('hero-hot-count');
     if(hotBadge){ hotBadge.style.display = hotCount > 0 ? 'block' : 'none'; }
     if(hotCountEl){ hotCountEl.textContent = hotCount + ' задач' + (hotCount===1?'а':''); }
 
-    // Promises badge
+    // Promises badge (legacy)
     const promBadge = document.getElementById('hero-promises-badge');
     const promCountEl = document.getElementById('hero-promises-count');
     if(promBadge){ promBadge.style.display = incoming.length > 0 ? 'block' : 'none'; }
     if(promCountEl){ promCountEl.textContent = incoming.length + ' обещ.'; }
 
     // Focus bar
-    const focusEl = document.getElementById('focus-bar-text');
+    // Фокус дня
+    const focusEl = document.getElementById('focus-day-text');
     if(focusEl){
       const hr = new Date().getHours();
       const left = 22 - hr;
-      if(hotCount > 0) focusEl.innerHTML = '⏳ Осталось ' + left + ' ч · <span>' + hotCount + ' горят</span>';
-      else if(outgoing.length > 0) focusEl.innerHTML = '✓ ' + done.length + ' выполнено сегодня · ' + outgoing.length + ' активных';
-      else focusEl.innerHTML = '✅ Всё выполнено! Хороший день.';
+      if(hotCount > 0) focusEl.textContent = hotCount + ' задач' + (hotCount===1?'а':'') + ' горят · ' + left + ' ч до конца дня';
+      else if(outgoing.length > 0) focusEl.textContent = outgoing.length + ' задач · ' + done.length + ' выполнено сегодня';
+      else focusEl.textContent = 'Всё выполнено! Хороший день ✅';
     }
 
-    // Dashboard
+    // Stat cards
     const setEl = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
-    setEl('dash-done-today', done.length);
-    setEl('dash-done-month', done.length);
+    setEl('stat-done', done.length);
+    setEl('stat-tasks', outgoing.length);
+    setEl('stat-promises', incoming.length);
+    const pct = (done.length+active.length) > 0 ? Math.round(done.length/(done.length+active.length)*100) : 0;
+    setEl('stat-progress', pct + '%');
+    const arc = document.getElementById('progress-arc');
+    if(arc){ const offset = Math.round(94 * (1 - pct/100)); arc.setAttribute('stroke-dashoffset', offset); }
+    // legacy IDs (used by other screens)
     setEl('tasks-count', outgoing.length);
-    setEl('dash-tasks-today', outgoing.length);
-    setEl('dash-tasks-month', active.length);
     setEl('promises-count', incoming.length);
     setEl('promise-count', incoming.length);
-    setEl('dash-prom-today', incoming.length);
-    setEl('dash-prom-month', incoming.length);
-    const pct = active.length > 0 ? Math.round(done.length/(done.length+active.length)*100) : 0;
-    setEl('dash-prog-today', pct + '%');
-    setEl('dash-prog-month', pct + '%');
     setEl('done-count', done.length);
+    setEl('dash-done-today', done.length);
+    setEl('dash-tasks-today', outgoing.length);
+    setEl('dash-prom-today', incoming.length);
 
     // Bell dot
     const bellDot = document.getElementById('bell-dot');
     if(bellDot) bellDot.style.display = hotCount > 0 ? 'block' : 'none';
 
-    // Tasks list
-    const limeCard = document.getElementById('lime-card');
-    const trialOk = !currentUser || currentUser.trialActive !== false;
-    if(outgoing.length === 0){
-      limeCard.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Активных задач нет ✓</div>';
-    } else {
-      limeCard.innerHTML = outgoing.slice(0,6).map((t,i) => {
-        const hot = !!t.deadline;
-        const dimStyle = i===0?'':('opacity:'+(i===1?'0.7':'0.4')+';');
-        return '<div class="task-row-v2" style="'+dimStyle+'cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
-          '<span class="task-num-v2">0' + (i+1) + '</span>' +
-          '<div style="flex:1">' +
-            '<div class="task-name-v2' + (i>0?' muted':'') + '">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
-            '<div class="task-date-v2">' + (t.deadline ? '📅 '+e2(t.deadline) : e2(t.date)) + '</div>' +
-          '</div>' +
-          '<span class="' + (hot ? 'task-tag-hot' : 'task-tag-soon') + '" style="margin-right:6px">' + (hot ? 'горит' : 'скоро') + '</span>' +
-          '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
-        '</div>';
-      }).join('');
-    }
-
-    // Promises
-    const promRows = document.getElementById('promise-rows-v2');
-    const promCountV2 = document.getElementById('promise-count-v2');
-    if(promCountV2) promCountV2.textContent = incoming.length > 0 ? '· ' + incoming.length : '';
-    if(promRows){
-      if(incoming.length === 0){
-        promRows.innerHTML = '<div style="padding:16px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Никто ничего не должен</div>';
+    // Tasks list (new home-task-list)
+    const homeList = document.getElementById('home-task-list');
+    if(homeList){
+      const allTasks = [...outgoing, ...incoming];
+      if(allTasks.length === 0){
+        homeList.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Активных задач нет ✓</div>';
       } else {
-        promRows.innerHTML = incoming.slice(0,4).map((t,i) => {
-          const age = getAge(t.date);
-          const isLate = age.cls === 'age-red';
-          return '<div class="promise-row-v2' + (i>0?' style="opacity:0.7"':'') + '">' +
-            '<div class="promise-avatar">' + (t.person||'?')[0].toUpperCase() + '</div>' +
-            '<div style="flex:1">' +
-              '<div class="promise-name-v2" style="cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
-              '<div class="' + (isLate ? 'promise-age-red' : 'task-date-v2') + '">' + age.text + '</div>' +
+        const showAll = homeList.dataset.showAll === '1';
+        const slice = showAll ? allTasks : allTasks.slice(0,6);
+        homeList.innerHTML = slice.map((t,i) => {
+          const isPromise = t.direction === 'incoming';
+          const catClass = isPromise ? 'cat-badge-personal' : 'cat-badge-work';
+          const catLabel = isPromise ? 'должны' : (t.deadline ? 'горит' : 'задача');
+          return '<div class="task-row" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
+            '<div class="task-num-badge">' + (i+1) + '</div>' +
+            '<div class="task-row-body">' +
+              '<div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
+              '<div class="task-row-meta">' + (t.deadline ? '📅 ' + e2(t.deadline) : (t.date ? e2(t.date) : '')) + '</div>' +
             '</div>' +
-            '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
-'<button class="promise-remind-btn glass" data-person="' + e2(t.person) + '" data-text="' + e2(t.text) + '" onclick="promiseRemindClick(this)">напомнить</button>' +
-'</div>';
+            '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
+            '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0">✓</button>' +
+          '</div>';
         }).join('');
       }
     }
+
+    // Show-all button visibility
+    const showAllBtn = document.getElementById('home-show-all-btn');
+    const allHome = [...outgoing, ...incoming];
+    if(showAllBtn) showAllBtn.style.display = allHome.length > 6 ? 'flex' : 'none';
 
     selectedMonth = new Date().getMonth();
   loadStats(outgoing, done);
@@ -3498,40 +3517,42 @@ function renderTasksForMonth(){
   const incoming = monthTasks.filter(t=>!t.done&&t.direction==='incoming');
   const done = allTasksCache.filter(t=>t.done);
 
-  // Update hero count
+  // Update hero count (legacy)
   const heroCount = document.getElementById('hero-count');
   if(heroCount) heroCount.textContent = outgoing.length || '0';
 
-  // Update dashboard
+  // Update stat cards
   const setEl=(id,val)=>{ const el=document.getElementById(id); if(el)el.textContent=val; };
+  setEl('stat-tasks', outgoing.length);
+  setEl('stat-promises', incoming.length);
   setEl('dash-tasks-today', outgoing.length);
   setEl('dash-prom-today', incoming.length);
 
   // Re-render task list
-  const limeCard = document.getElementById('lime-card');
-  if(!limeCard) return;
-  if(outgoing.length === 0){
-    limeCard.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Нет задач за этот период</div>';
+  const homeList = document.getElementById('home-task-list');
+  if(!homeList) return;
+  const allTasks = [...outgoing, ...incoming];
+  if(allTasks.length === 0){
+    homeList.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Нет задач за этот период</div>';
   } else {
-    limeCard.innerHTML = outgoing.slice(0,6).map((t,i) => {
-      const hot = !!t.deadline;
-      const dimStyle = i===0?'':'opacity:'+(i===1?'0.7':'0.4')+';';
-      return '<div class="task-row-v2" style="' + dimStyle + 'cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
-        '<span class="task-num-v2">0' + (i+1) + '</span>' +
-        '<div style="flex:1">' +
-          '<div class="task-name-v2' + (i>0?' muted':'') + '">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
-          '<div class="task-date-v2">' + (t.deadline?'📅 '+e2(t.deadline):e2(t.date)) + '</div>' +
-        '</div>' +
-        '<span class="' + (hot?'task-tag-hot':'task-tag-soon') + '">' + (hot?'горит':'скоро') + '</span>' +
+    homeList.innerHTML = allTasks.slice(0,6).map((t,i) => {
+      const isPromise = t.direction==='incoming';
+      const catClass = isPromise?'cat-badge-personal':(t.deadline?'cat-badge-work':'cat-badge-personal');
+      const catLabel = isPromise?'должны':(t.deadline?'горит':'задача');
+      return '<div class="task-row" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
+        '<div class="task-num-badge">' + (i+1) + '</div>' +
+        '<div class="task-row-body"><div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
+        '<div class="task-row-meta">' + (t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):'')) + '</div></div>' +
+        '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
       '</div>';
     }).join('');
   }
 
-  // Re-render promises
+  // Re-render promises (legacy container, now hidden but keep for compat)
   const promRows = document.getElementById('promise-rows-v2');
   if(promRows){
     if(incoming.length===0){
-      promRows.innerHTML='<div style="padding:16px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Никто ничего не должен</div>';
+      promRows.innerHTML='<div style="padding:16px;text-align:center;font-size:12px;color:var(--muted)">Никто ничего не должен</div>';
     } else {
       promRows.innerHTML = incoming.slice(0,4).map((t,i)=>{
         const age=getAge(t.date);
@@ -4722,12 +4743,48 @@ function setThemeChoice(theme, el){
 }
 
 // ===== HOME FILTER (Patch 02) =====
+function openFocusList(){
+  // Показываем «горящие» задачи через фильтр
+  const hotTab = document.querySelector('.home-tab[data-filter="hot"]');
+  setHomeFilter('hot', hotTab);
+  if(hotTab) { document.querySelectorAll('.home-tab').forEach(t=>t.classList.remove('active')); hotTab.classList.add('active'); }
+}
+
+function toggleAllTasks(){
+  const homeList = document.getElementById('home-task-list');
+  const label = document.getElementById('home-show-all-label');
+  const arrow = document.getElementById('home-show-all-arrow');
+  if(!homeList) return;
+  const isExpanded = homeList.dataset.showAll === '1';
+  homeList.dataset.showAll = isExpanded ? '0' : '1';
+  if(label) label.textContent = isExpanded ? 'Смотреть все дела' : 'Свернуть';
+  if(arrow) arrow.style.transform = isExpanded ? '' : 'rotate(180deg)';
+  // Re-render with all tasks
+  const tasks = allTasksCache || [];
+  const outgoing = tasks.filter(t=>!t.done && t.direction!=='incoming');
+  const incoming = tasks.filter(t=>!t.done && t.direction==='incoming');
+  const allTasks = [...outgoing, ...incoming];
+  const slice = homeList.dataset.showAll === '1' ? allTasks : allTasks.slice(0,6);
+  homeList.innerHTML = slice.map((t,i)=>{
+    const isPromise = t.direction==='incoming';
+    const catClass = isPromise?'cat-badge-personal':(t.deadline?'cat-badge-work':'cat-badge-personal');
+    const catLabel = isPromise?'должны':(t.deadline?'горит':'задача');
+    return '<div class="task-row" onclick="openTaskById(\''+t.id+'\','+i+')">'+
+      '<div class="task-num-badge">'+(i+1)+'</div>'+
+      '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
+      '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
+      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
+      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0">✓</button>'+
+    '</div>';
+  }).join('');
+}
+
 function setHomeFilter(filter, el){
   document.querySelectorAll('.home-tab').forEach(t=>t.classList.remove('active'));
   if(el) el.classList.add('active');
   const tasks = allTasksCache || [];
-  const limeCard = document.getElementById('lime-card');
-  if(!limeCard) return;
+  const homeList = document.getElementById('home-task-list');
+  if(!homeList) return;
   let filtered;
   const now = new Date();
   if(filter==='hot') filtered = tasks.filter(t=>t.deadline);
@@ -4737,18 +4794,20 @@ function setHomeFilter(filter, el){
     filtered = tasks.filter(t=>{ if(!t.deadline) return false; const d=new Date(t.deadline); return d>=now && d<=weekEnd; });
   } else if(filter==='month'){
     filtered = tasks.filter(t=>{ if(!t.deadline) return false; const d=new Date(t.deadline); return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear(); });
-  } else { filtered = tasks; } // today = all active
+  } else { filtered = tasks; }
   if(filtered.length===0){
-    limeCard.innerHTML='<div style="padding:20px;text-align:center;font-size:12px;color:rgba(242,245,233,0.3)">Нет задач по фильтру</div>';
+    homeList.innerHTML='<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Нет задач по фильтру</div>';
     return;
   }
-  limeCard.innerHTML = filtered.slice(0,10).map((t,i)=>{
-    const hot=!!t.deadline;
-    return '<div class="task-row-v2" style="cursor:pointer" onclick="openTaskById(\''+t.id+'\','+i+')">'+
-      '<span class="task-num-v2">0'+(i+1)+'</span>'+
-      '<div style="flex:1"><div class="task-name-v2">'+e2(t.person)+' — '+e2(t.text)+'</div>'+
-      '<div class="task-date-v2">'+(t.deadline?'📅 '+e2(t.deadline):e2(t.date))+'</div></div>'+
-      '<span class="'+(hot?'task-tag-hot':'task-tag-soon')+'">'+(hot?'горит':'скоро')+'</span>'+
+  homeList.innerHTML = filtered.slice(0,10).map((t,i)=>{
+    const isPromise = t.direction==='incoming';
+    const catClass = isPromise?'cat-badge-personal':(t.deadline?'cat-badge-work':'cat-badge-personal');
+    const catLabel = isPromise?'должны':(t.deadline?'горит':'задача');
+    return '<div class="task-row" onclick="openTaskById(\''+t.id+'\','+i+')">'+
+      '<div class="task-num-badge">'+(i+1)+'</div>'+
+      '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
+      '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
+      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0">✓</button>'+
     '</div>';
   }).join('');
