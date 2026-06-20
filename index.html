@@ -27,6 +27,40 @@
   --card2:#1e2918;
   --shadow:0 2px 16px rgba(0,0,0,0.4);
 }
+
+[data-theme="light"] {
+  --bg:    #F5F7F0;
+  --bg2:   #EAEDE3;
+  --bg3:   #DDE3D4;
+  --green: #6A9E1F;
+  --green2:#527A17;
+  --green3:rgba(106,158,31,0.12);
+  --green-dark:#3B5A0E;
+  --text:  #1A2210;
+  --text2: rgba(26,34,16,0.6);
+  --muted: rgba(26,34,16,0.35);
+  --border:rgba(26,34,16,0.1);
+  --card:  #FFFFFF;
+  --card2: #F0F3E8;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+}
+[data-theme="light"] .glass{background:rgba(255,255,255,0.7);border-color:rgba(26,34,16,0.08)}
+[data-theme="light"] .glass-green{background:rgba(106,158,31,0.08);border-color:rgba(106,158,31,0.2)}
+[data-theme="light"] .glass-nav{background:rgba(245,247,240,0.85);border-color:rgba(26,34,16,0.08)}
+[data-theme="light"] .home-glow{background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(106,158,31,0.15),transparent 70%)}
+[data-theme="light"] .logo-ball,[data-theme="light"] .lb,[data-theme="light"] .header-logo .lb{background:radial-gradient(circle at 35% 35%,#8abf2a,#527A17 50%,#2d4a09 100%)}
+[data-theme="light"] .nav-item.active{color:var(--green)}
+[data-theme="light"] .nav-mic-v2{background:var(--green);box-shadow:0 4px 20px rgba(106,158,31,0.35)}
+[data-theme="light"] .task-row{border-bottom-color:rgba(26,34,16,0.06)}
+[data-theme="light"] .cat-badge-work{background:rgba(106,158,31,0.12);color:#3B5A0E}
+[data-theme="light"] .cat-badge-personal{background:rgba(106,158,31,0.08);color:#527A17}
+[data-theme="light"] input,[data-theme="light"] textarea,[data-theme="light"] select{color-scheme:light}
+[data-theme="light"] .back-bar{background:var(--bg);border-bottom-color:var(--border)}
+[data-theme="light"] .chat-row-item:hover{background:rgba(26,34,16,0.03)}
+[data-theme="light"] .voice-overlay{background:var(--bg)}
+[data-theme="light"] .globe-dot{fill:rgba(106,158,31,0.7)}
+[data-theme="light"] .globe-orbit{stroke:rgba(106,158,31,0.25)}
+
 html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px}
 #app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
 
@@ -4417,13 +4451,18 @@ function savePassword(){
 }
 
 // ===== THEME =====
+function applyTheme(theme){
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isLight = theme==='light' || (theme==='system' && !prefersDark);
+  document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+}
+
 function setThemeChoice(theme, el){
   ['dark','light','system'].forEach(t=>{
     const r=document.getElementById('radio-'+t);
     if(r) r.className='radio-wrap'+(t===theme?' checked':'');
   });
-  if(theme==='light') document.documentElement.classList.add('light');
-  else document.documentElement.classList.remove('light');
+  applyTheme(theme);
   localStorage.setItem('theme', theme);
   showToast('Тема изменена');
 }
@@ -4431,13 +4470,13 @@ function setThemeChoice(theme, el){
 function setAccent(color, el){
   document.querySelectorAll('.accent-dot').forEach(d=>d.classList.remove('selected'));
   el.classList.add('selected');
-  // Could update CSS var dynamically in future
   showToast('Акцентный цвет изменён');
 }
 
-// Init theme radios
+// Init theme radios + apply saved theme on load
 (function(){
   const saved=localStorage.getItem('theme')||'dark';
+  applyTheme(saved);
   ['dark','light','system'].forEach(t=>{
     const r=document.getElementById('radio-'+t);
     if(r) r.className='radio-wrap'+(t===saved?' checked':'');
