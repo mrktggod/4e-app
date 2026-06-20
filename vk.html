@@ -344,7 +344,7 @@ const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K = 'vk4_token';
 const AUTH_TIMEOUT_MS = 30000;
 
-let state = { user: null, token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
+let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
 
 function withTimeout(promise, ms) {
   return Promise.race([
@@ -385,10 +385,8 @@ function setButtonBusy(button, busy, label) {
 
 function linkChallengeHeaders() {
   const headers = { 'Content-Type': 'application/json' };
-  if (state.token) {
-    headers.Authorization = 'Bearer ' + state.token;
-    headers['x-token'] = state.token;
-  }
+  if (state.d1Token) headers.Authorization = 'Bearer ' + state.d1Token;
+  if (state.token) headers['x-token'] = state.token;
   return headers;
 }
 
@@ -421,8 +419,34 @@ function readChatHistory(userId) {
 function completeAuth(token, user) {
   state.token = token;
   state.user = user;
+  state.d1Token = null;
   saveAuthToken(token);
   enterApp();
+}
+
+async function syncD1AuthSession(silent = true) {
+  if (!state.token) return null;
+  try {
+    const res = await withTimeout(fetch(WORKER + '/v2/auth/legacy-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-token': state.token },
+      body: JSON.stringify({})
+    }), 8000);
+    const data = await readJsonSafe(res);
+    if (!data.ok || !data.token) {
+      if (res.status === 401) state.d1Token = null;
+      return null;
+    }
+    state.d1Token = data.token;
+    if (Array.isArray(data.identities)) {
+      state.identities = data.identities;
+      renderIdentityRows();
+    }
+    return state.d1Token;
+  } catch(e) {
+    if (!silent) showToast(e?.message === 'timeout' ? 'D1-сессия создаётся дольше обычного' : 'D1-сессия пока недоступна');
+    return null;
+  }
 }
 
 async function linkCurrentVK(silent = true) {
@@ -434,6 +458,36 @@ async function linkCurrentVK(silent = true) {
     try {
       vkUser = await withTimeout(vkBridge.send('VKWebAppGetUserInfo'), 4000);
     } catch(e) {}
+    const d1Token = state.d1Token || await syncD1AuthSession(true);
+    if (d1Token) {
+      const v2Res = await withTimeout(fetch(WORKER + '/v2/auth/link-vk', {
+        method: 'POST',
+        headers: linkChallengeHeaders(),
+        body: JSON.stringify({
+          launchParams,
+          first_name: vkUser.first_name || '',
+          last_name: vkUser.last_name || ''
+        })
+      }), 10000);
+      const v2Data = await readJsonSafe(v2Res);
+      if (v2Data.requiresChallenge && v2Data.challenge) {
+        state.pendingLinkChallenge = v2Data.challenge;
+        renderLinkChallengePanel();
+        if (!silent) showToast('Нужно подтвердить объединение аккаунтов');
+        return false;
+      }
+      if (v2Data.ok) {
+        if (Array.isArray(v2Data.identities)) state.identities = v2Data.identities;
+        renderIdentityRows();
+        if (!silent) showToast('VK привязан');
+        return true;
+      }
+      if (v2Res.status === 401) state.d1Token = null;
+      if (![401, 404, 503].includes(v2Res.status)) {
+        if (!silent) showToast(v2Data.error || 'VK не привязан');
+        return false;
+      }
+    }
     const res = await withTimeout(fetch(WORKER + '/auth/link-vk', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-token': state.token },
@@ -502,6 +556,7 @@ window.addEventListener('load', async () => {
         const d = await r.json();
         if (d.ok) {
           state.token = savedToken;
+          state.d1Token = null;
           state.user = d.user;
           enterApp();
           return;
@@ -555,6 +610,7 @@ function enterApp() {
   state.chatHistory = readChatHistory(state.user?.id || '');
   loadTasks().catch((e) => console.warn('load_tasks_error', e));
   renderIdentityRows('loading');
+  syncD1AuthSession(true).catch((e) => console.warn('d1_auth_sync_error', e));
   loadIdentities().catch((e) => console.warn('load_identities_error', e));
   try {
     buildCalendar();
@@ -652,6 +708,8 @@ async function completePendingLinkChallenge() {
   if (!challenge?.id) { showToast('Нет активного подтверждения'); return; }
   const targetProvider = challenge.targetProvider || challenge.target_provider || 'vk';
   if (targetProvider !== 'vk') { showToast('Пока подтверждение доступно только для VK'); return; }
+  if (!state.d1Token) await syncD1AuthSession(false);
+  if (!state.d1Token) { showToast('D1-сессия пока недоступна'); return; }
   const button = document.getElementById('identityChallengeCompleteBtn');
   setButtonBusy(button, true, 'Проверяем...');
   try {
@@ -677,6 +735,8 @@ async function completePendingLinkChallenge() {
 async function mergePendingLinkChallenge() {
   const challenge = state.pendingLinkChallenge;
   if (!challenge?.id) { showToast('Нет активного объединения'); return; }
+  if (!state.d1Token) await syncD1AuthSession(false);
+  if (!state.d1Token) { showToast('D1-сессия пока недоступна'); return; }
   const button = document.getElementById('identityChallengeMergeBtn');
   setButtonBusy(button, true, 'Объединяем...');
   try {
@@ -785,7 +845,7 @@ async function doRegister() {
 
 function doLogout() {
   localStorage.removeItem(TOKEN_K);
-  state.user = null; state.token = null; state.tasks = []; state.identities = []; state.pendingLinkChallenge = null;
+  state.user = null; state.token = null; state.d1Token = null; state.tasks = []; state.identities = []; state.pendingLinkChallenge = null;
   document.getElementById('mainApp').style.display = 'none';
   document.getElementById('authScreen').style.display = 'flex';
 }
