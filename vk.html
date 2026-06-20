@@ -347,11 +347,11 @@ body {
 <script>
 const WORKER = 'https://edge.4-ai.site';
 const TOKEN_K = 'vk4_token';
-const AUTH_BUILD = 'vk-auth-edge-domain-20260620-3';
-const AUTH_TIMEOUT_MS = 12000;
-const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 6000;
+const AUTH_BUILD = 'vk-auth-edge-domain-20260620-4';
+const AUTH_TIMEOUT_MS = 25000;
+const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 10000;
 const AUTH_RETRY_DELAY_MS = 600;
-const AUTH_DIAG_TIMEOUT_MS = 5000;
+const AUTH_DIAG_TIMEOUT_MS = 15000;
 
 let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
 
