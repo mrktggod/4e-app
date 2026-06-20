@@ -352,9 +352,11 @@ const AUTH_TIMEOUT_MS = 25000;
 const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 10000;
 const AUTH_RETRY_DELAY_MS = 600;
 const AUTH_LOGIN_RECOVERY_DELAY_MS = 900;
+const AUTH_WARMUP_TIMEOUT_MS = 3500;
+const AUTH_WARMUP_RETRY_DELAY_MS = 700;
 const AUTH_DIAG_TIMEOUT_MS = 15000;
 
-let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
+let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [], authWarmupOk: false, authWarmupPromise: null };
 
 function withTimeout(promise, ms) {
   return Promise.race([
@@ -396,6 +398,32 @@ async function postLegacyAuth(path, body, retries = 1) {
     body: JSON.stringify(body)
   }, retries);
   return readJsonSafe(res);
+}
+
+async function warmAuthConnection(reason = 'boot') {
+  if (state.authWarmupOk) return true;
+  if (state.authWarmupPromise) return state.authWarmupPromise;
+
+  state.authWarmupPromise = (async () => {
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        const res = await withTimeout(
+          fetch(`${WORKER}/?warmup=${Date.now()}_${attempt}_${reason}`, authFetchOptions({ method: 'GET' })),
+          AUTH_WARMUP_TIMEOUT_MS
+        );
+        if (res.ok) {
+          state.authWarmupOk = true;
+          return true;
+        }
+      } catch (error) {}
+      if (attempt < 1) await delay(AUTH_WARMUP_RETRY_DELAY_MS);
+    }
+    return false;
+  })().finally(() => {
+    state.authWarmupPromise = null;
+  });
+
+  return state.authWarmupPromise;
 }
 
 async function recoverLoginSession(email, password) {
@@ -706,6 +734,7 @@ async function startVKAutoLogin(vkReadyPromise) {
 async function bootstrapAuth() {
   const vkReadyPromise = initVKBridge();
   showAuth();
+  warmAuthConnection('boot').catch(() => {});
 
   const savedToken = localStorage.getItem(TOKEN_K);
   if (savedToken) {
@@ -951,9 +980,11 @@ async function doLogin() {
   const pass = document.getElementById('loginPass').value;
   if (!email || !pass) { showToast('Введите email и пароль'); return; }
   const button = document.querySelector('#loginForm .auth-btn');
-  setButtonBusy(button, true, 'Входим...');
+  setButtonBusy(button, true, 'Готовим связь...');
   let data;
   try {
+    await warmAuthConnection('login');
+    setButtonBusy(button, true, 'Входим...');
     data = await postLegacyAuth('/auth/login', { email, password: pass }, 1);
   } catch(e) {
     setButtonBusy(button, true, 'Проверяем вход...');
