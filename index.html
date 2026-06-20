@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <title>4</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -144,7 +145,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
 /* ===== TASK CARD ===== */
 .tasks-wrap{background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
-.task-row{display:flex;flex-direction:column;padding:12px 14px;border-bottom:1px solid rgba(242,245,233,0.05);cursor:pointer}
+.task-row{display:flex;flex-direction:row;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(242,245,233,0.05);cursor:pointer}
 .task-row:last-child{border-bottom:none}
 .task-top{display:flex;align-items:center;gap:8px}
 .task-num{font-size:10px;color:var(--muted);min-width:18px;font-weight:600;letter-spacing:1px}
@@ -1199,13 +1200,16 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
   <!-- ШАПКА -->
   <div style="flex-shrink:0;position:relative;z-index:2;padding:16px 20px 0">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div style="width:34px"></div>
+      <!-- Аватар / профиль -->
+      <div onclick="openProfile()" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
+      <!-- Лого по центру -->
       <div class="header-logo-center" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:34px;height:34px">
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
       </div>
+      <!-- Колокол -->
       <div class="h-btn" onclick="openNotifications()" style="position:relative;cursor:pointer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="h-btn-dot" id="bell-dot" style="display:none"></div>
@@ -1241,41 +1245,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
         <div style="font-size:11px;color:var(--green);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Фокус дня</div>
         <div style="font-size:18px;font-weight:700;color:var(--text);line-height:1.3" id="focus-day-text">загружаю...</div>
       </div>
-      <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);opacity:.9">
-        <svg width="110" height="110" viewBox="0 0 220 220" class="globe-svg">
-          <defs>
-            <radialGradient id="globeGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#9AC23C" stop-opacity="0.9"/>
-              <stop offset="40%" stop-color="#5a8020" stop-opacity="0.6"/>
-              <stop offset="100%" stop-color="#1a3000" stop-opacity="0.1"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="110" cy="110" rx="95" ry="30" fill="none" stroke="rgba(154,194,60,0.2)" stroke-width="1" class="globe-orbit" transform="rotate(-30 110 110)"/>
-          <ellipse cx="110" cy="110" rx="95" ry="30" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="1" class="globe-orbit" transform="rotate(30 110 110)"/>
-          <ellipse cx="110" cy="110" rx="95" ry="30" fill="none" stroke="rgba(154,194,60,0.1)" stroke-width="1" class="globe-orbit" transform="rotate(90 110 110)"/>
-          <circle cx="110" cy="110" r="65" fill="url(#globeGrad)"/>
-          <g class="globe-dot" fill="rgba(154,194,60,0.85)">
-            <circle cx="110" cy="110" r="5.5"/>
-            <circle cx="110" cy="85" r="4.5"/><circle cx="110" cy="135" r="4.5"/>
-            <circle cx="85" cy="110" r="4.5"/><circle cx="135" cy="110" r="4.5"/>
-            <circle cx="90" cy="90" r="4"/><circle cx="130" cy="90" r="4"/>
-            <circle cx="90" cy="130" r="4"/><circle cx="130" cy="130" r="4"/>
-            <circle cx="110" cy="65" r="3.5"/><circle cx="110" cy="155" r="3.5"/>
-            <circle cx="65" cy="110" r="3.5"/><circle cx="155" cy="110" r="3.5"/>
-            <circle cx="75" cy="75" r="3"/><circle cx="145" cy="75" r="3"/>
-            <circle cx="75" cy="145" r="3"/><circle cx="145" cy="145" r="3"/>
-          </g>
-          <g stroke="rgba(154,194,60,0.4)" stroke-width="0.8" fill="none">
-            <line x1="110" y1="110" x2="110" y2="85"/>
-            <line x1="110" y1="110" x2="135" y2="110"/>
-            <line x1="110" y1="110" x2="90" y2="90"/>
-            <line x1="110" y1="110" x2="130" y2="130"/>
-            <line x1="110" y1="85" x2="130" y2="90"/>
-            <line x1="85" y1="110" x2="90" y2="90"/>
-            <line x1="135" y1="110" x2="130" y2="90"/>
-          </g>
-        </svg>
-      </div>
+      <div id="planet-lottie" style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:130px;height:100px;pointer-events:none"></div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="position:absolute;right:16px;bottom:16px;z-index:1"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
 
@@ -3438,12 +3408,12 @@ async function loadTasks(){
           const catLabel = isPromise ? 'должны' : (t.deadline ? 'горит' : 'задача');
           return '<div class="task-row" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
             '<div class="task-num-badge">' + (i+1) + '</div>' +
+            '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
             '<div class="task-row-body">' +
               '<div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
               '<div class="task-row-meta">' + (t.deadline ? '📅 ' + e2(t.deadline) : (t.date ? e2(t.date) : '')) + '</div>' +
             '</div>' +
-            '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
-            '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0">✓</button>' +
+            '<svg style="width:16px;height:16px;flex-shrink:0;color:var(--text2);opacity:0.45" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
           '</div>';
         }).join('');
       }
@@ -3541,9 +3511,10 @@ function renderTasksForMonth(){
       const catLabel = isPromise?'должны':(t.deadline?'горит':'задача');
       return '<div class="task-row" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
         '<div class="task-num-badge">' + (i+1) + '</div>' +
+        '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
         '<div class="task-row-body"><div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
         '<div class="task-row-meta">' + (t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):'')) + '</div></div>' +
-        '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
+        '<svg style="width:16px;height:16px;flex-shrink:0;color:var(--text2);opacity:0.45" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</div>';
     }).join('');
   }
@@ -4771,10 +4742,10 @@ function toggleAllTasks(){
     const catLabel = isPromise?'должны':(t.deadline?'горит':'задача');
     return '<div class="task-row" onclick="openTaskById(\''+t.id+'\','+i+')">'+
       '<div class="task-num-badge">'+(i+1)+'</div>'+
+      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
       '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
-      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
-      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0">✓</button>'+
+      '<svg style="width:16px;height:16px;flex-shrink:0;color:var(--text2);opacity:0.45" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
     '</div>';
   }).join('');
 }
@@ -4805,10 +4776,10 @@ function setHomeFilter(filter, el){
     const catLabel = isPromise?'должны':(t.deadline?'горит':'задача');
     return '<div class="task-row" onclick="openTaskById(\''+t.id+'\','+i+')">'+
       '<div class="task-num-badge">'+(i+1)+'</div>'+
+      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
       '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
-      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
-      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0">✓</button>'+
+      '<svg style="width:16px;height:16px;flex-shrink:0;color:var(--text2);opacity:0.45" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
     '</div>';
   }).join('');
 }
@@ -5669,6 +5640,24 @@ document.addEventListener('focusout',function(e){if(e.target.closest('#task-deta
   window.openVKPayment=function(planId,amount){return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:'4 Premium',photo_url:''}),amount}).then(res=>{if(res.success&&typeof activatePremium==='function')activatePremium();}).catch(e=>console.warn('[VK Pay]',e));};
   vkBridge.send('VKWebAppGetClientVersion').then(res=>{if(res.platform==='web'||window.innerWidth>=680){document.body.classList.add('vk-desktop');document.body.setAttribute('data-vk-platform','desktop');}}).catch(()=>{if(window.innerWidth>=680)document.body.classList.add('vk-desktop');});
   console.log('[VK Adapter] Initialized');
+})();
+
+/* ── Planet Lottie Animation ── */
+var PLANET_ANIM_DATA = {"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":220,"nm":"planet hero animation","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":12,"nm":"planet highlight arc","ty":4,"sr":1,"ks":{"o":{"a":0,"k":100},"r":{"a":0,"k":0},"p":{"a":0,"k":[0,0,0]},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"sh","ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[195,68],[211,50],[241,48],[264,64],[274,91]],"c":false}},"nm":"arc path"},{"ty":"st","c":{"a":0,"k":[0.7764705882352941,0.9411764705882353,0,1]},"o":{"a":0,"k":58},"w":{"a":0,"k":1.6},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke"},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"arc"}],"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":11,"nm":"satellite front 04","ty":4,"sr":1,"ks":{"o":{"a":1,"k":[{"t":0,"s":[70],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":45,"s":[100],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":90,"s":[82],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":135,"s":[100],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":180,"s":[70],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}}]},"r":{"a":0,"k":0},"p":{"a":1,"k":[{"t":0,"s":[183.38,89.74,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":45,"s":[276.4,79.76,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":90,"s":[266.62,118.26,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":135,"s":[173.6,128.24,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":180,"s":[183.38,89.74,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}}]},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[6.2,6.2]},"d":1,"nm":"glow"},{"ty":"fl","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":18},"r":1,"nm":"Fill"},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"dot glow"},{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[2,2]},"d":1,"nm":"core"},{"ty":"fl","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":64},"r":1,"nm":"Fill"},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"dot core"}],"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":8,"nm":"satellite front 01","ty":4,"sr":1,"ks":{"o":{"a":1,"k":[{"t":0,"s":[70],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":45,"s":[100],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":90,"s":[82],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":135,"s":[100],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}},{"t":180,"s":[70],"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]}}]},"r":{"a":0,"k":0},"p":{"a":1,"k":[{"t":0,"s":[264.64,125.06,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":45,"s":[158.98,129.92,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":90,"s":[185.36,82.94,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":135,"s":[291.02,78.08,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":180,"s":[264.64,125.06,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}}]},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[13.33,13.33]},"d":1,"nm":"glow"},{"ty":"fl","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":18},"r":1,"nm":"Fill"},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"dot glow"},{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[4.3,4.3]},"d":1,"nm":"core"},{"ty":"fl","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":92},"r":1,"nm":"Fill"},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"dot core"}],"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":6,"nm":"planet sphere","ty":4,"sr":1,"ks":{"o":{"a":1,"k":[{"t":0,"s":[95]},{"t":90,"s":[100]},{"t":180,"s":[95]}]},"r":{"a":0,"k":0},"p":{"a":0,"k":[0,0,0]},"a":{"a":0,"k":[0,0,0]},"s":{"a":1,"k":[{"t":0,"s":[99,99,100]},{"t":90,"s":[101,101,100]},{"t":180,"s":[99,99,100]}]}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[124,124]},"d":1,"nm":"sphere"},{"ty":"gf","o":{"a":0,"k":100},"r":1,"bm":0,"g":{"p":3,"k":[0,0.776,0.941,0,0.34,0.118,0.227,0.047,1,0.02,0.031,0.02]},"s":{"a":0,"k":[-45,-50]},"e":{"a":0,"k":[58,58]},"t":2,"nm":"body gradient"},{"ty":"tr","p":{"a":0,"k":[225,104]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"body"}],"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":5,"nm":"thin rotating orbits","ty":4,"sr":1,"ks":{"o":{"a":0,"k":100},"r":{"a":0,"k":0},"p":{"a":0,"k":[0,0,0]},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[218,72]},"d":1,"nm":"orbit"},{"ty":"st","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":23},"w":{"a":0,"k":1},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke"},{"ty":"tr","p":{"a":0,"k":[225,104]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":1,"k":[{"t":0,"s":[-12],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":180,"s":[168],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}}]},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"orbit A"},{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[194,54]},"d":1,"nm":"orbit"},{"ty":"st","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":16},"w":{"a":0,"k":1},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke"},{"ty":"tr","p":{"a":0,"k":[225,104]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":1,"k":[{"t":0,"s":[7],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":180,"s":[-173],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}}]},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"orbit B"}],"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":1,"nm":"satellite behind 01","ty":4,"sr":1,"ks":{"o":{"a":1,"k":[{"t":0,"s":[70]},{"t":45,"s":[100]},{"t":90,"s":[82]},{"t":135,"s":[100]},{"t":180,"s":[70]}]},"r":{"a":0,"k":0},"p":{"a":1,"k":[{"t":0,"s":[314.68,92.25,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":45,"s":[214.46,142.31,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":90,"s":[135.32,115.75,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":135,"s":[235.54,65.69,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}},{"t":180,"s":[314.68,92.25,0],"i":{"x":[1],"y":[1]},"o":{"x":[0],"y":[0]}}]},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[9.92,9.92]},"d":1,"nm":"glow"},{"ty":"fl","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":18},"r":1,"nm":"Fill"},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"dot glow"},{"ty":"gr","it":[{"ty":"el","p":{"a":0,"k":[0,0]},"s":{"a":0,"k":[3.2,3.2]},"d":1,"nm":"core"},{"ty":"fl","c":{"a":0,"k":[0.776,0.941,0,1]},"o":{"a":0,"k":85},"r":1,"nm":"Fill"},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0},"nm":"Transform"}],"nm":"dot core"}],"ip":0,"op":180,"st":0,"bm":0}],"markers":[]};
+
+(function initPlanet(){
+  function start(){
+    var el = document.getElementById('planet-lottie');
+    if(!el) return;
+    if(typeof lottie !== 'undefined'){
+      lottie.loadAnimation({container:el,renderer:'svg',loop:true,autoplay:true,animationData:PLANET_ANIM_DATA});
+    } else {
+      // fallback: retry after lottie script loads
+      setTimeout(start, 500);
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', start);
+  else setTimeout(start, 100);
 })();
 </script>
 </body>
