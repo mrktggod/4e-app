@@ -194,7 +194,7 @@ body {
     <button class="auth-btn" onclick="doRegister()">Создать аккаунт</button>
   </div>
 
-  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-login-recovery-20260620-6</div>
+  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-warmup-20260620-7</div>
   <button class="auth-debug-btn" onclick="runAuthDiagnostics('manual')">Проверить связь</button>
 </div>
 
@@ -347,7 +347,7 @@ body {
 <script>
 const WORKER = 'https://edge.4-ai.site';
 const TOKEN_K = 'vk4_token';
-const AUTH_BUILD = 'vk-auth-login-recovery-20260620-6';
+const AUTH_BUILD = 'vk-auth-warmup-20260620-7';
 const AUTH_TIMEOUT_MS = 25000;
 const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 10000;
 const AUTH_RETRY_DELAY_MS = 600;
@@ -647,15 +647,25 @@ async function getVkLaunchParams() {
          '';
 }
 
+// ── WARMUP ── silent prefetch to establish DNS+TLS before first user tap
+function warmupConnection() {
+  try {
+    fetch(WORKER + '/', { method: 'GET', cache: 'no-store', credentials: 'omit', signal: AbortSignal.timeout(8000) })
+      .catch(() => {});
+  } catch(e) {}
+}
+
 // ── INIT ──
 if (document.readyState === 'loading') {
   window.addEventListener('DOMContentLoaded', () => {
+    warmupConnection();
     bootstrapAuth().catch((e) => {
       console.warn('auth_bootstrap_error', e);
       showAuth();
     });
   }, { once: true });
 } else {
+  warmupConnection();
   bootstrapAuth().catch((e) => {
     console.warn('auth_bootstrap_error', e);
     showAuth();
