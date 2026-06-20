@@ -29,9 +29,9 @@
 }
 
 [data-theme="light"] {
-  --bg:    #F5F7F0;
-  --bg2:   #EAEDE3;
-  --bg3:   #DDE3D4;
+  --bg:    #FFFFFF;
+  --bg2:   #FBFCF7;
+  --bg3:   #EEF4E3;
   --green: #6A9E1F;
   --green2:#527A17;
   --green3:rgba(106,158,31,0.12);
@@ -41,12 +41,12 @@
   --muted: rgba(26,34,16,0.35);
   --border:rgba(26,34,16,0.1);
   --card:  #FFFFFF;
-  --card2: #F0F3E8;
-  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --card2: #F7FAF0;
+  --shadow:0 8px 28px rgba(26,34,16,0.08);
 }
 [data-theme="light"] .glass{background:rgba(255,255,255,0.7);border-color:rgba(26,34,16,0.08)}
 [data-theme="light"] .glass-green{background:rgba(106,158,31,0.08);border-color:rgba(106,158,31,0.2)}
-[data-theme="light"] .glass-nav{background:rgba(245,247,240,0.85);border-color:rgba(26,34,16,0.08)}
+[data-theme="light"] .glass-nav{background:rgba(255,255,255,0.88);border-color:rgba(26,34,16,0.08)}
 [data-theme="light"] .home-glow{background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(106,158,31,0.15),transparent 70%)}
 [data-theme="light"] .logo-ball,[data-theme="light"] .lb,[data-theme="light"] .header-logo .lb{background:radial-gradient(circle at 35% 35%,#8abf2a,#527A17 50%,#2d4a09 100%)}
 [data-theme="light"] .nav-item.active{color:var(--green)}
@@ -63,6 +63,10 @@
 [data-theme="light"] .voice-overlay{background:var(--bg)}
 [data-theme="light"] .globe-dot{fill:rgba(106,158,31,0.7)}
 [data-theme="light"] .globe-orbit{stroke:rgba(106,158,31,0.25)}
+html[data-theme="light"],
+html[data-theme="light"] body{background:#FFFFFF;color:var(--text)}
+html[data-theme="light"] #app,
+html[data-theme="light"] .screen{background:var(--bg)}
 
 html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px}
 #app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;position:relative}
@@ -713,6 +717,25 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 /* Home screen bg glow */
 #home{background:#0a0f07}
 .home-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(154,194,60,0.07) 0%,transparent 70%);pointer-events:none;z-index:0}
+html[data-theme="light"] #home{background:#FFFFFF}
+html[data-theme="light"] .home-glow{background:radial-gradient(circle,rgba(190,235,0,0.18) 0%,rgba(190,235,0,0.08) 36%,transparent 70%)}
+html[data-theme="light"] .header-bell-dot{border-color:#FFFFFF}
+html[data-theme="light"] .hero-v2-label div{color:rgba(26,34,16,0.26)}
+html[data-theme="light"] .hero-badge-promises .badge-label,
+html[data-theme="light"] .dash-card-label,
+html[data-theme="light"] .tasks-label-v2{color:rgba(26,34,16,0.38)}
+html[data-theme="light"] .hero-badge-promises .badge-val,
+html[data-theme="light"] .dash-num-month,
+html[data-theme="light"] .dash-sub,
+html[data-theme="light"] .task-num-v2,
+html[data-theme="light"] .task-date-v2,
+html[data-theme="light"] .tasks-add-btn{color:rgba(26,34,16,0.46)}
+html[data-theme="light"] .focus-bar-text,
+html[data-theme="light"] .task-name-v2.muted,
+html[data-theme="light"] .promise-name-v2{color:rgba(26,34,16,0.72)}
+html[data-theme="light"] .month-btn.inactive{color:rgba(26,34,16,0.64);background:rgba(255,255,255,0.9);border-color:rgba(26,34,16,0.1)!important}
+html[data-theme="light"] .task-row-v2,
+html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)}
 
 /* Header */
 .app-header-v2{padding:14px 16px 6px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;flex-shrink:0}
@@ -1496,7 +1519,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
     <!-- Табы -->
     <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
       <button class="detail-tab active" id="tab-desc" onclick="switchDetailTab('desc',this)">Описание</button>
-      <button class="detail-tab" id="tab-comments" onclick="switchDetailTab('comments',this)">Комментарии</button>
+      <button class="detail-tab" id="tab-comments" onclick="switchDetailTab('comments',this)">Обсудить задачу</button>
       <button class="detail-tab" id="tab-history" onclick="switchDetailTab('history',this)">История</button>
     </div>
 
@@ -1509,9 +1532,9 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 
     <!-- Комментарии -->
     <div id="detail-tab-comments" style="display:none">
-      <div id="detail-comments-list" style="font-size:13px;color:var(--muted);padding:8px 0">Комментариев пока нет</div>
+      <div id="detail-comments-list" style="font-size:13px;color:var(--muted);padding:8px 0">Обсуждения пока нет</div>
       <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="detail-comment-input" placeholder="Написать комментарий..."
+        <input id="detail-comment-input" placeholder="Написать по задаче..."
           style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--text);outline:none;font-family:'Inter',sans-serif">
         <button onclick="addDetailComment()" style="background:var(--green);border:none;border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--bg)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -3936,7 +3959,7 @@ function openTask(t,idx){
 
   // Комментарии и история — сброс
   const commEl = document.getElementById('detail-comments-list');
-  if(commEl) commEl.textContent = 'Комментариев пока нет';
+  if(commEl) commEl.textContent = 'Обсуждения пока нет';
   const histEl = document.getElementById('detail-history-list');
   if(histEl) histEl.textContent = 'История изменений пуста';
 
@@ -3997,7 +4020,7 @@ function addDetailComment(){
   const text=(inp.value||'').trim();
   if(!text) return;
   const list=document.getElementById('detail-comments-list');
-  if(list.textContent==='Комментариев пока нет') list.textContent='';
+  if(list.textContent==='Обсуждения пока нет') list.textContent='';
   const div=document.createElement('div');
   div.style.cssText='padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)';
   div.textContent=text;
@@ -4741,6 +4764,21 @@ function applyTheme(theme){
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const isLight = theme==='light' || (theme==='system' && !prefersDark);
   document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+}
+
+function getStoredThemeChoice(){
+  try{return localStorage.getItem('theme') || '';}catch(e){return '';}
+}
+
+function shouldFollowHostTheme(){
+  const choice=getStoredThemeChoice();
+  return !choice || choice==='system';
+}
+
+function applyHostThemeScheme(scheme){
+  if(!shouldFollowHostTheme()) return;
+  const isDark=scheme==='space_gray'||scheme==='vkcom_dark'||scheme==='client_dark';
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
 }
 
 function setThemeChoice(theme, el){
@@ -5659,8 +5697,8 @@ document.addEventListener('focusout',function(e){if(e.target.closest('#task-deta
   window.vkAuth=function(){return vkBridge.send('VKWebAppGetUserInfo').then(user=>{const name=user.first_name+' '+user.last_name;const email='vk_'+user.id+'@vk.com';sessionStorage.setItem('vk_user_id',user.id);sessionStorage.setItem('vk_user_name',name);sessionStorage.setItem('vk_user_photo',user.photo_200||'');const nameEl=document.getElementById('user-chip-name');const avatarEl=document.getElementById('user-avatar-small');if(nameEl)nameEl.textContent=user.first_name;if(avatarEl)avatarEl.textContent=user.first_name[0].toUpperCase();return{name,email,id:user.id};});};
   const _origSS=window.showScreen;
   if(typeof _origSS==='function'){window.showScreen=function(id){if(id==='login'){window.vkAuth().then(()=>_origSS('home')).catch(()=>_origSS('login'));return;}_origSS(id);};}
-  vkBridge.subscribe(event=>{if(event.detail.type==='VKWebAppUpdateConfig'){const s=event.detail.data.scheme;const d=s==='space_gray'||s==='vkcom_dark'||s==='client_dark';document.documentElement.setAttribute('data-theme',d?'dark':'light');}if(event.detail.type==='VKWebAppViewRestore'){if(typeof loadTasks==='function')loadTasks();}});
-  vkBridge.send('VKWebAppGetConfig').then(c=>{const d=c.scheme==='space_gray'||c.scheme==='vkcom_dark';document.documentElement.setAttribute('data-theme',d?'dark':'light');}).catch(()=>{});
+  vkBridge.subscribe(event=>{if(event.detail.type==='VKWebAppUpdateConfig'){applyHostThemeScheme(event.detail.data.scheme);}if(event.detail.type==='VKWebAppViewRestore'){if(typeof loadTasks==='function')loadTasks();}});
+  vkBridge.send('VKWebAppGetConfig').then(c=>applyHostThemeScheme(c.scheme)).catch(()=>{});
   vkBridge.send('VKWebAppGetSafeAreaInsets').then(res=>{const i=res.insets;document.documentElement.style.setProperty('--safe-top',i.top+'px');document.documentElement.style.setProperty('--safe-bottom',i.bottom+'px');document.documentElement.style.setProperty('--safe-left',i.left+'px');document.documentElement.style.setProperty('--safe-right',i.right+'px');}).catch(()=>{document.documentElement.style.setProperty('--safe-top','0px');document.documentElement.style.setProperty('--safe-bottom','0px');});
   window.haptic=function(type){if(['success','warning','error'].includes(type)){vkBridge.send('VKWebAppTapticNotificationOccurred',{type}).catch(()=>{});}else{vkBridge.send('VKWebAppTapticImpactOccurred',{style:type||'light'}).catch(()=>{});}};
   document.addEventListener('click',function(e){const btn=e.target.closest('button,.nav-item,.nav-mic-v2,.task-row,.move-option');if(btn)window.haptic('light');},{passive:true});
@@ -5676,7 +5714,7 @@ document.addEventListener('focusout',function(e){if(e.target.closest('#task-deta
   const _si=localStorage.setItem.bind(localStorage);const _gi=localStorage.getItem.bind(localStorage);
   localStorage.setItem=function(key,value){_si(key,value);if(VK_KEYS.includes(key))window.vkStorageSet(key,value);};
   localStorage.getItem=function(key){if(VK_KEYS.includes(key)&&_vkCache[key]!==undefined)return _vkCache[key];return _gi(key);};
-  Promise.all(VK_KEYS.map(k=>vkBridge.send('VKWebAppStorageGet',{keys:[k]}).then(res=>{const item=res.keys.find(r=>r.key===k);if(item&&item.value){_vkCache[k]=item.value;_si(k,item.value);}}).catch(()=>{}))).then(()=>{const t=_vkCache['theme'];if(t)document.documentElement.setAttribute('data-theme',t);console.log('[VK Adapter] Storage preloaded',_vkCache);});
+  Promise.all(VK_KEYS.map(k=>vkBridge.send('VKWebAppStorageGet',{keys:[k]}).then(res=>{const item=res.keys.find(r=>r.key===k);if(item&&item.value){_vkCache[k]=item.value;_si(k,item.value);}}).catch(()=>{}))).then(()=>{const t=_vkCache['theme'];if(t)applyTheme(t);console.log('[VK Adapter] Storage preloaded',_vkCache);});
   window.openVKPayment=function(planId,amount){return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:'4 Premium',photo_url:''}),amount}).then(res=>{if(res.success&&typeof activatePremium==='function')activatePremium();}).catch(e=>console.warn('[VK Pay]',e));};
   vkBridge.send('VKWebAppGetClientVersion').then(res=>{if(res.platform==='web'||window.innerWidth>=680){document.body.classList.add('vk-desktop');document.body.setAttribute('data-vk-platform','desktop');}}).catch(()=>{if(window.innerWidth>=680)document.body.classList.add('vk-desktop');});
   console.log('[VK Adapter] Initialized');
