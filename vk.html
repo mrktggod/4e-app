@@ -194,7 +194,7 @@ body {
     <button class="auth-btn" onclick="doRegister()">Создать аккаунт</button>
   </div>
 
-  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-fast-boot-20260620-5</div>
+  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-login-recovery-20260620-6</div>
   <button class="auth-debug-btn" onclick="runAuthDiagnostics('manual')">Проверить связь</button>
 </div>
 
@@ -347,10 +347,11 @@ body {
 <script>
 const WORKER = 'https://edge.4-ai.site';
 const TOKEN_K = 'vk4_token';
-const AUTH_BUILD = 'vk-auth-fast-boot-20260620-5';
+const AUTH_BUILD = 'vk-auth-login-recovery-20260620-6';
 const AUTH_TIMEOUT_MS = 25000;
 const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 10000;
 const AUTH_RETRY_DELAY_MS = 600;
+const AUTH_LOGIN_RECOVERY_DELAY_MS = 900;
 const AUTH_DIAG_TIMEOUT_MS = 15000;
 
 let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [] };
@@ -397,9 +398,18 @@ async function postLegacyAuth(path, body, retries = 1) {
   return readJsonSafe(res);
 }
 
+async function recoverLoginSession(email, password) {
+  try {
+    await delay(AUTH_LOGIN_RECOVERY_DELAY_MS);
+    return await postLegacyAuth('/auth/login', { email, password }, 0);
+  } catch (error) {
+    return null;
+  }
+}
+
 async function recoverRegisterSession(email, password) {
   try {
-    const data = await postLegacyAuth('/auth/login', { email, password }, 0);
+    const data = await recoverLoginSession(email, password);
     return data?.token ? data : null;
   } catch (error) {
     return null;
@@ -936,10 +946,12 @@ async function doLogin() {
   try {
     data = await postLegacyAuth('/auth/login', { email, password: pass }, 1);
   } catch(e) {
-    if (e?.message === 'timeout') {
+    setButtonBusy(button, true, 'Проверяем вход...');
+    data = await recoverLoginSession(email, pass);
+    if (!data && e?.message === 'timeout') {
       await runAuthDiagnostics('login-timeout');
       showToast('Проблема связи. Код ниже формы');
-    } else {
+    } else if (!data) {
       showToast('Ошибка соединения');
     }
   } finally {
