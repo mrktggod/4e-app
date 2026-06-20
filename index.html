@@ -584,6 +584,13 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .sec-2fa-sub{font-size:11px;color:var(--text2);margin-top:3px}
 .danger-btn{width:100%;padding:13px;border-radius:14px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);color:#ff6060;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;margin-top:8px}
 
+/* ===== NEW SCREENS CSS (Patch 03) ===== */
+.nt-field-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.nt-field-row:last-child{border-bottom:none}
+.nt-field-row:hover{background:rgba(154,194,60,0.03)}
+.move-option{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.move-option:hover{background:rgba(154,194,60,0.03)}
+
 /* ===== HOME FILTER TABS (Patch 02) ===== */
 .home-tab{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;white-space:nowrap;background:var(--card2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0}
 .home-tab.active{background:var(--green);border-color:var(--green);color:var(--bg);font-weight:700}
@@ -2453,6 +2460,101 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
       Хочешь конкретный мессенджер быстрее?<br>
       <span style="color:var(--green);cursor:pointer" onclick="showSubScreen('write-support')">Напиши нам →</span>
     </div>
+  </div>
+</div>
+
+<!-- ─── НОВАЯ ЗАДАЧА (Patch 03) ─── -->
+<div class="screen" id="new-task">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">Новая задача</div></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:20px 16px 100px">
+    <div class="new-task-field-big glass" style="border-radius:16px;padding:16px;margin-bottom:16px">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">ЧТО НУЖНО СДЕЛАТЬ?</div>
+      <textarea id="nt-text" placeholder="Например: Подготовить отчёт по кампаниям для клиента" style="width:100%;background:transparent;border:none;color:var(--text);font-size:15px;font-weight:500;resize:none;outline:none;font-family:'Inter',sans-serif;line-height:1.5;min-height:60px" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+    </div>
+    <div class="glass" style="border-radius:16px;overflow:hidden;margin-bottom:16px">
+      <div class="nt-field-row" onclick="openDatePicker('nt-deadline')">
+        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg><span style="font-size:14px;color:var(--text2)">Срок</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><span id="nt-deadline-label" style="font-size:14px;color:var(--green);font-weight:500">Сегодня</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <input type="date" id="nt-deadline" style="display:none" onchange="updateNtDeadline(this.value)">
+      </div>
+      <div class="nt-field-row" onclick="openDirectionPicker()">
+        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span style="font-size:14px;color:var(--text2)">Направление</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><span id="nt-direction-label" style="font-size:14px;color:var(--green);font-weight:500">Работа</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="nt-field-row" onclick="openPersonPicker()">
+        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:14px;color:var(--text2)">Человек / ответственный</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><span id="nt-person-label" style="font-size:14px;color:var(--green);font-weight:500">Юрий</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="nt-field-row" style="cursor:default">
+        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span style="font-size:14px;color:var(--text2)">Комментарий</span></div>
+        <input id="nt-comment" placeholder="Необязательно" style="background:transparent;border:none;color:var(--text2);font-size:14px;text-align:right;outline:none;font-family:'Inter',sans-serif;width:140px">
+      </div>
+    </div>
+    <button onclick="saveNewTask()" style="width:100%;background:var(--green);border:none;color:var(--bg);font-size:15px;font-weight:700;padding:16px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Сохранить задачу</button>
+  </div>
+</div>
+
+<!-- ─── 4 ПОНЯЛ ЗАДАЧУ (Patch 03) ─── -->
+<div class="screen" id="task-confirm">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">4 понял задачу</div></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:24px 16px 100px;display:flex;flex-direction:column;align-items:center">
+    <div style="margin-bottom:24px">
+      <svg width="160" height="160" viewBox="0 0 220 220">
+        <defs><radialGradient id="confirmGlobe" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.9"/><stop offset="50%" stop-color="#3a6010" stop-opacity="0.5"/><stop offset="100%" stop-color="#0a1a00" stop-opacity="0.1"/></radialGradient></defs>
+        <ellipse cx="110" cy="110" rx="95" ry="28" fill="none" stroke="rgba(154,194,60,0.2)" stroke-width="1" transform="rotate(-25 110 110)"/>
+        <ellipse cx="110" cy="110" rx="95" ry="28" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="1" transform="rotate(25 110 110)"/>
+        <circle cx="110" cy="110" r="70" fill="url(#confirmGlobe)"/>
+        <g fill="rgba(154,194,60,0.8)"><circle cx="110" cy="110" r="6"/><circle cx="110" cy="82" r="5"/><circle cx="110" cy="138" r="5"/><circle cx="82" cy="110" r="5"/><circle cx="138" cy="110" r="5"/><circle cx="88" cy="88" r="4.5"/><circle cx="132" cy="88" r="4.5"/><circle cx="88" cy="132" r="4.5"/><circle cx="132" cy="132" r="4.5"/></g>
+        <g stroke="rgba(154,194,60,0.45)" stroke-width="1" fill="none"><line x1="110" y1="110" x2="110" y2="82"/><line x1="110" y1="110" x2="138" y2="110"/><line x1="110" y1="110" x2="88" y2="88"/><line x1="110" y1="110" x2="132" y2="132"/></g>
+      </svg>
+    </div>
+    <div style="font-size:17px;font-weight:700;color:var(--text);text-align:center;margin-bottom:20px;line-height:1.4;padding:0 16px" id="confirm-task-title">Проверить кнопку после правок</div>
+    <div class="glass" style="border-radius:16px;overflow:hidden;width:100%;margin-bottom:28px">
+      <div class="nt-field-row" style="pointer-events:none"><div style="display:flex;align-items:center;gap:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font-size:14px;color:var(--text2)">Срок</span></div><span id="confirm-task-date" style="font-size:14px;color:var(--green);font-weight:500">Сегодня</span></div>
+      <div class="nt-field-row" style="pointer-events:none"><div style="display:flex;align-items:center;gap:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span style="font-size:14px;color:var(--text2)">Направление</span></div><span id="confirm-task-dir" style="font-size:14px;color:var(--green);font-weight:500">Работа</span></div>
+      <div class="nt-field-row" style="pointer-events:none;border-bottom:none"><div style="display:flex;align-items:center;gap:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:14px;color:var(--text2)">Человек</span></div><span id="confirm-task-person" style="font-size:14px;color:var(--green);font-weight:500">Юрий</span></div>
+    </div>
+    <div style="display:flex;gap:12px;width:100%">
+      <button onclick="editTaskConfirm()" style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:600;padding:15px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Изменить</button>
+      <button onclick="confirmAndSaveTask()" style="flex:2;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;padding:15px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ПЕРЕНОС ЗАДАЧИ (Patch 03) ─── -->
+<div class="screen" id="task-move">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showScreen('task-detail')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">Перенос задачи</div></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 100px">
+    <div class="glass" style="border-radius:16px;overflow:hidden;margin-bottom:16px">
+      <div class="move-option" onclick="moveTaskTo('later')"><div><div style="font-size:14px;font-weight:500;color:var(--text)">Сегодня позже</div><div style="font-size:12px;color:var(--muted);margin-top:2px" id="move-later-sub">Сегодня, после 18:00</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="move-option" onclick="moveTaskTo('tomorrow')"><div><div style="font-size:14px;font-weight:500;color:var(--text)">Завтра</div><div style="font-size:12px;color:var(--muted);margin-top:2px" id="move-tomorrow-sub">загружаю...</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="move-option" onclick="moveTaskTo('week')"><div><div style="font-size:14px;font-weight:500;color:var(--text)">Через неделю</div><div style="font-size:12px;color:var(--muted);margin-top:2px" id="move-week-sub">загружаю...</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="move-option" style="border-bottom:none" onclick="openCustomDate()"><div><div style="font-size:14px;font-weight:500;color:var(--text)">Выбрать дату</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Указать вручную</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div>
+    <button onclick="confirmMoveTask()" style="width:100%;background:var(--green);border:none;color:var(--bg);font-size:15px;font-weight:700;padding:16px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Перенести задачу</button>
+  </div>
+</div>
+
+<!-- ─── ЗАДАЧА ЗАВЕРШЕНА (Patch 03) ─── -->
+<div class="screen" id="task-done">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center">
+    <div style="position:relative;width:120px;height:120px;margin-bottom:28px">
+      <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="3"/><circle cx="60" cy="60" r="54" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="339" stroke-dashoffset="339" stroke-linecap="round" style="transition:stroke-dashoffset 0.6s ease" id="done-circle"/></svg>
+      <svg width="48" height="48" viewBox="0 0 48 48" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .3s .5s" id="done-check"><polyline points="10 24 20 34 38 14" fill="none" stroke="var(--green)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div style="font-size:26px;font-weight:700;color:var(--text);margin-bottom:8px">Готово!</div>
+    <div style="font-size:15px;color:var(--text2);margin-bottom:6px">Задача завершена</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:48px">4 запомнил результат.</div>
+    <button onclick="goHome()" style="width:100%;background:var(--green);border:none;color:var(--bg);font-size:15px;font-weight:700;padding:16px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Отлично</button>
   </div>
 </div>
 
