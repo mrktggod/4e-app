@@ -4826,7 +4826,7 @@ function toggleAllTasks(){
       '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
       '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
-      '<svg style="width:16px;height:16px;flex-shrink:0;color:var(--text2);opacity:0.45" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
     '</div>';
   }).join('');
 }
@@ -4860,7 +4860,7 @@ function setHomeFilter(filter, el){
       '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
       '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
-      '<svg style="width:16px;height:16px;flex-shrink:0;color:var(--text2);opacity:0.45" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
     '</div>';
   }).join('');
 }
