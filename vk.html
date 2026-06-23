@@ -4,22 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>4 · AI-секретарь</title>
-<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script async src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <style>
 :root {
   --bg: #0E140B;
   --bg2: #1a2214;
+  --bg3: #233018;
   --green: #9AC23C;
   --green-dim: #7A9A2E;
   --green-dark: #3a5010;
   --text: #F2F5E9;
+  --text2: rgba(242,245,233,0.62);
   --muted: rgba(242,245,233,0.35);
   --border: rgba(242,245,233,0.08);
   --card: #151c10;
+  --card2: #1b2515;
   --danger: #e05c5c;
   --radius: 18px;
   --radius-sm: 12px;
   --nav-h: 72px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+html[data-theme="light"] {
+  --bg: #FFFFFF;
+  --bg2: #FBFCF7;
+  --bg3: #EEF4E3;
+  --green: #8FC51E;
+  --green-dim: #6A9E1F;
+  --green-dark: #3B5A0E;
+  --text: #171C10;
+  --text2: rgba(23,28,16,0.66);
+  --muted: rgba(23,28,16,0.42);
+  --border: rgba(26,34,16,0.10);
+  --card: #FFFFFF;
+  --card2: #F7FAF0;
+  --shadow: 0 10px 30px rgba(26,34,16,0.08);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -30,11 +49,13 @@ body {
   overflow-x: hidden;
   padding-bottom: var(--nav-h);
 }
+html[data-theme="light"] body { background: #FFFFFF; color: var(--text); }
 .logo { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; width: 36px; height: 36px; flex-shrink: 0; }
 .logo .b { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c8e87a, #7A9A2E 55%, #3a5010); box-shadow: 0 0 8px rgba(154,194,60,0.4); }
 .logo-lg { width: 56px; height: 56px; gap: 5px; }
 .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px; position: sticky; top: 0; z-index: 100; background: var(--bg); }
 .topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
 .topbar-title { font-size: 18px; font-weight: 600; }
 .topbar-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg2); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
@@ -42,7 +63,33 @@ body {
 .screen.active { display: block; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
 .section-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin: 20px 0 10px; }
+.home-redesign { position: relative; padding-top: 8px; }
+.home-glow { position: fixed; top: -90px; left: 50%; width: 280px; height: 280px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle, rgba(154,194,60,0.13), transparent 68%); pointer-events: none; z-index: -1; }
+html[data-theme="light"] .home-glow { background: radial-gradient(circle, rgba(190,235,0,0.18), transparent 68%); }
+.home-logo-center { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 34px; height: 34px; margin: 4px auto 18px; }
+.home-logo-center .b { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #d9ff64, #9AC23C 55%, #526f19); box-shadow: 0 0 10px rgba(154,194,60,0.45); }
+.home-filter-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 14px; scrollbar-width: none; }
+.home-filter-tabs::-webkit-scrollbar { display: none; }
+.home-pill { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text2); font-weight: 600; font-size: 13px; }
+.home-pill.active { background: var(--green); color: #101707; border-color: var(--green); box-shadow: 0 10px 26px rgba(154,194,60,0.22); }
+html[data-theme="light"] .home-pill { background: rgba(255,255,255,0.92); box-shadow: var(--shadow); }
+.focus-card-vk { display: grid; grid-template-columns: 58px 1fr 112px; gap: 12px; align-items: center; min-height: 124px; border-radius: 24px; padding: 16px; margin-bottom: 12px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.focus-orb { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--green); border: 1px solid rgba(154,194,60,0.32); background: radial-gradient(circle, rgba(154,194,60,0.16), transparent 68%); font-size: 28px; }
+.focus-kicker { font-size: 12px; font-weight: 800; letter-spacing: 0.16em; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
+.focus-title { font-size: 22px; line-height: 1.24; font-weight: 700; color: var(--text); }
+.planet-mini { position: relative; width: 118px; height: 82px; }
+.planet-mini::before { content: ''; position: absolute; width: 78px; height: 78px; right: 10px; top: 2px; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #d8ff5a, #8FC51E 48%, #24320f 78%); box-shadow: 0 0 24px rgba(154,194,60,0.36); }
+.planet-mini::after { content: ''; position: absolute; width: 118px; height: 34px; right: -3px; top: 25px; border-radius: 50%; border: 1px solid rgba(154,194,60,0.45); transform: rotate(-12deg); }
+.home-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+.home-stat { min-height: 92px; border-radius: 20px; padding: 12px 10px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.home-stat-label { font-size: 11px; color: var(--text2); margin-bottom: 12px; }
+.home-stat-num { font-size: 28px; font-weight: 800; color: var(--green); letter-spacing: -0.04em; }
+.home-stat-line { height: 3px; border-radius: 999px; margin-top: 10px; background: linear-gradient(90deg, var(--green), rgba(154,194,60,0.08)); }
+.task-card-v2 { min-height: 82px; align-items: center; border-radius: 20px; padding: 13px 14px; background: var(--card); box-shadow: var(--shadow); }
+.task-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text2); background: var(--card2); border: 1px solid var(--border); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.task-chevron { color: var(--muted); font-size: 28px; line-height: 1; flex-shrink: 0; }
 .task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: border-color 0.2s; }
+.task-card.task-card-v2 { min-height: 82px; align-items: center; border-radius: 20px; padding: 13px 14px; background: var(--card); box-shadow: var(--shadow); }
 .task-card:hover { border-color: rgba(154,194,60,0.25); }
 .task-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; }
 .task-check.done { background: var(--green); border-color: var(--green); }
@@ -53,6 +100,7 @@ body {
 .tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: rgba(154,194,60,0.12); color: var(--green); font-weight: 500; }
 .tag.deadline { background: rgba(224,92,92,0.12); color: #e05c5c; }
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(14,20,11,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; padding: 0 8px; z-index: 200; }
+html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-shadow: 0 -10px 30px rgba(26,34,16,0.08); }
 .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; padding: 8px 4px; border-radius: var(--radius-sm); transition: all 0.15s; color: var(--muted); }
 .nav-item.active { color: var(--green); }
 .nav-item svg { width: 22px; height: 22px; }
@@ -96,12 +144,45 @@ body {
 .profile-header { display: flex; align-items: center; gap: 16px; padding: 16px 0 20px; }
 .profile-name { font-size: 20px; font-weight: 600; }
 .profile-email { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.identity-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.identity-row:last-child { border-bottom: none; }
+.identity-main { min-width: 0; }
+.identity-title { font-size: 14px; font-weight: 600; }
+.identity-sub { font-size: 12px; color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px; }
+.identity-status { flex-shrink: 0; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(242,245,233,0.08); color: var(--muted); }
+.identity-status.on { background: rgba(154,194,60,0.14); color: var(--green); }
+.identity-action { margin-top: 12px; padding: 11px; font-size: 13px; }
+.identity-hint { margin-top: 10px; font-size: 11px; line-height: 1.45; color: var(--muted); }
+.identity-challenge { display: none; margin-top: 12px; padding: 13px; border: 1px solid rgba(154,194,60,0.25); border-radius: 16px; background: rgba(154,194,60,0.08); }
+.identity-challenge.show { display: block; }
+.identity-challenge-title { font-size: 13px; font-weight: 700; color: var(--green); }
+.identity-challenge-text { margin-top: 5px; font-size: 12px; line-height: 1.45; color: var(--text); opacity: 0.86; }
+.identity-challenge-actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+.identity-challenge .btn { padding: 11px; font-size: 13px; border-radius: 14px; }
+.identity-challenge-warn { margin-top: 8px; font-size: 11px; line-height: 1.4; color: var(--muted); }
 .setting-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; gap: 12px; transition: color 0.15s; }
 .setting-row:last-child { border-bottom: none; }
 .setting-row:hover { color: var(--green); }
 .setting-row .icon { color: var(--muted); flex-shrink: 0; }
 .setting-row .label { flex: 1; font-size: 14px; }
 .setting-row .arrow { color: var(--muted); }
+.setting-row .value { color: var(--muted); font-size: 13px; }
+.detail-header { display: flex; align-items: center; gap: 10px; padding: 8px 0 16px; }
+.detail-back { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg2); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.detail-title { font-size: 24px; line-height: 1.22; font-weight: 800; letter-spacing: -0.03em; }
+.detail-meta { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.detail-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin: 16px 0; }
+.detail-tab { flex: 1; padding: 11px 4px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.detail-tab.active { color: var(--text); border-bottom-color: var(--green); }
+.detail-panel { display: none; }
+.detail-panel.active { display: block; }
+.discussion-list { display: flex; flex-direction: column; gap: 8px; min-height: 70px; }
+.discussion-msg { padding: 10px 12px; border-radius: 16px; font-size: 13px; line-height: 1.45; border: 1px solid var(--border); background: var(--bg2); color: var(--text); }
+.discussion-msg.user { align-self: flex-end; background: var(--green); color: #101707; border-color: var(--green); max-width: 86%; }
+.discussion-msg.ai { align-self: flex-start; max-width: 92%; }
+.discussion-input-row { display: flex; gap: 8px; margin-top: 12px; }
+.discussion-input { flex: 1; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 14px; padding: 11px 13px; font: inherit; outline: none; }
+.discussion-send { width: 44px; border: none; border-radius: 14px; background: var(--green); color: #101707; font-weight: 800; cursor: pointer; }
 .trial-banner { background: linear-gradient(135deg, rgba(154,194,60,0.15), rgba(58,80,16,0.3)); border: 1px solid rgba(154,194,60,0.3); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
 .trial-days { font-size: 28px; font-weight: 700; color: var(--green); }
 .trial-btn { margin-left: auto; background: var(--green); color: #000; border: none; padding: 8px 14px; border-radius: 22px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -115,6 +196,8 @@ body {
 .auth-input:focus { border-color: rgba(154,194,60,0.4); }
 .auth-input::placeholder { color: var(--muted); }
 .auth-btn { width: 100%; padding: 14px; border-radius: 14px; background: var(--green); color: #000; font-size: 15px; font-weight: 700; border: none; cursor: pointer; font-family: inherit; margin-top: 4px; }
+.auth-debug { width: 100%; margin-top: 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,0.03); color: var(--muted); font-size: 11px; line-height: 1.45; word-break: break-word; }
+.auth-debug-btn { width: 100%; margin-top: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg2); color: var(--text); font-size: 12px; font-weight: 600; font-family: inherit; }
 .auth-tabs { display: flex; background: var(--bg2); border-radius: 14px; padding: 3px; width: 100%; margin-bottom: 24px; }
 .auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; border-radius: 11px; cursor: pointer; transition: all 0.2s; color: var(--muted); }
 .auth-tab.active { background: var(--card); color: var(--text); }
@@ -175,6 +258,9 @@ body {
     <input class="auth-input" id="regPass" type="password" placeholder="Пароль (мин. 6 символов)">
     <button class="auth-btn" onclick="doRegister()">Создать аккаунт</button>
   </div>
+
+  <div class="auth-debug" id="authDiagnostics">Связь: vk-auth-warmup-20260620-7</div>
+  <button class="auth-debug-btn" onclick="runAuthDiagnostics('manual')">Проверить связь</button>
 </div>
 
 <!-- MAIN APP -->
@@ -185,20 +271,86 @@ body {
     <div class="logo"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div>
     <div><div class="topbar-title">4</div><div class="topbar-sub">AI-секретарь</div></div>
   </div>
-  <div class="icon-btn" id="userChip" onclick="navigate('profile')" style="width:auto;border-radius:20px;padding:0 12px;gap:6px;font-size:13px;font-weight:600">
-    <div id="userInitial" style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Ю</div>
-    <span id="userName">...</span>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="themeToggleTop" onclick="toggleTheme()" aria-label="Сменить тему">☀</button>
+    <div class="icon-btn" id="userChip" onclick="navigate('profile')" style="width:auto;border-radius:20px;padding:0 12px;gap:6px;font-size:13px;font-weight:600">
+      <div id="userInitial" style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Ю</div>
+      <span id="userName">...</span>
+    </div>
   </div>
 </div>
 
 <!-- HOME -->
 <div class="screen active" id="screen-home">
-  <div style="padding:8px 0 16px">
-    <div style="font-size:42px;font-weight:700;line-height:1"><span id="taskCount">0</span></div>
-    <div style="font-size:18px;color:var(--muted);margin-top:2px">дел ждут</div>
+  <div class="home-redesign">
+    <div class="home-glow"></div>
+    <div class="home-logo-center"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div>
+
+    <div class="home-filter-tabs">
+      <div class="home-pill active">● Сегодня</div>
+      <div class="home-pill">♨ Горит</div>
+      <div class="home-pill">♙ Люди</div>
+      <div class="home-pill">□ Неделя</div>
+    </div>
+
+    <div class="focus-card-vk" onclick="navigate('home')">
+      <div class="focus-orb">✦</div>
+      <div>
+        <div class="focus-kicker">Фокус дня</div>
+        <div class="focus-title"><span id="focusTaskCount">0 задач</span><br>требуют внимания</div>
+      </div>
+      <div class="planet-mini" aria-hidden="true"></div>
+    </div>
+
+    <div class="home-stat-grid">
+      <div class="home-stat"><div class="home-stat-label">Выполнено</div><div class="home-stat-num" id="homeDone">0</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Задачи</div><div class="home-stat-num" id="homeActive">0</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Обещания</div><div class="home-stat-num" id="homePromises">0</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Прогресс</div><div class="home-stat-num" id="homeProgress">0%</div><div class="home-stat-line"></div></div>
+    </div>
+
+    <div style="display:none"><span id="taskCount">0</span></div>
+    <div class="section-label">Задачи</div>
+    <div id="taskList"><div class="text-muted text-sm" style="padding:20px 0;text-align:center">Загрузка...</div></div>
   </div>
-  <div class="section-label">Задачи</div>
-  <div id="taskList"><div class="text-muted text-sm" style="padding:20px 0;text-align:center">Загрузка...</div></div>
+</div>
+
+<!-- TASK DETAIL -->
+<div class="screen" id="screen-task-detail">
+  <div class="detail-header">
+    <button class="detail-back" onclick="navigate('home')" aria-label="Назад">‹</button>
+    <div>
+      <div class="detail-title" id="detailTaskTitle">Задача</div>
+      <div class="detail-meta" id="detailTaskMeta">—</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="flex-between" style="gap:12px">
+      <div>
+        <div class="text-xs text-muted">Статус</div>
+        <div id="detailTaskStatus" style="font-size:15px;font-weight:700;margin-top:4px">Активна</div>
+      </div>
+      <button class="btn btn-secondary" id="detailDoneBtn" style="width:auto;padding:10px 14px" onclick="doneCurrentTask()">Готово</button>
+    </div>
+    <div class="detail-tabs">
+      <button class="detail-tab active" onclick="switchTaskDetailTab('desc',this)">Описание</button>
+      <button class="detail-tab" onclick="switchTaskDetailTab('discuss',this)">Обсудить задачу</button>
+      <button class="detail-tab" onclick="switchTaskDetailTab('history',this)">История</button>
+    </div>
+    <div class="detail-panel active" id="task-detail-desc">
+      <div class="text-sm" id="detailTaskDescription" style="line-height:1.6;color:var(--text2)">—</div>
+    </div>
+    <div class="detail-panel" id="task-detail-discuss">
+      <div class="discussion-list" id="taskDiscussionList"></div>
+      <div class="discussion-input-row">
+        <input class="discussion-input" id="taskDiscussionInput" placeholder="Написать по задаче..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendTaskDiscussion()}">
+        <button class="discussion-send" onclick="sendTaskDiscussion()">→</button>
+      </div>
+    </div>
+    <div class="detail-panel" id="task-detail-history">
+      <div class="text-sm text-muted" id="detailTaskHistory">История изменений пока пуста</div>
+    </div>
+  </div>
 </div>
 
 <!-- ASK -->
@@ -265,7 +417,26 @@ body {
     </div>
     <button class="trial-btn" onclick="showToast('Оплата скоро будет доступна')">Купить план</button>
   </div>
+  <div class="section-label">Подключённые аккаунты</div>
+  <div class="card">
+    <div id="identityList"><div class="text-muted text-sm" style="padding:8px 0">Загрузка...</div></div>
+    <button class="btn btn-secondary identity-action" onclick="refreshVKIdentity()">Обновить связь VK</button>
+    <div class="identity-challenge" id="identityChallengePanel">
+      <div class="identity-challenge-title" id="identityChallengeTitle">Нужно подтвердить объединение</div>
+      <div class="identity-challenge-text" id="identityChallengeText">Этот VK аккаунт уже связан с другим профилем. Подтвердите, что он ваш, затем объедините данные.</div>
+      <div class="identity-challenge-actions">
+        <button class="btn btn-secondary" id="identityChallengeCompleteBtn" onclick="completePendingLinkChallenge()">Подтвердить VK</button>
+        <button class="btn btn-primary" id="identityChallengeMergeBtn" onclick="mergePendingLinkChallenge()">Объединить данные</button>
+      </div>
+      <div class="identity-challenge-warn" id="identityChallengeWarn">Мы не объединяем аккаунты скрыто: перед переносом задач и истории нужен явный шаг подтверждения.</div>
+    </div>
+    <div class="identity-hint">Email, VK и Telegram должны вести к одному профилю, чтобы задачи и история не распадались по разным аккаунтам.</div>
+  </div>
   <div class="card" style="padding:4px 16px">
+    <div class="setting-row" onclick="toggleTheme()">
+      <span class="label">Тема оформления</span>
+      <span class="value" id="themeLabel">Тёмная</span>
+    </div>
     <div class="setting-row" onclick="showToast('Скоро')">
       <span class="label">Уведомления</span>
       <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -309,58 +480,476 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-const WORKER = 'https://restless-lab-d737.shelckograff.workers.dev';
+const WORKER = 'https://edge.4-ai.site';
 const TOKEN_K = 'vk4_token';
+const THEME_K = 'vk4_theme';
+const AUTH_BUILD = 'vk-auth-warmup-20260620-7';
+const AUTH_TIMEOUT_MS = 25000;
+const AUTH_FIRST_ATTEMPT_TIMEOUT_MS = 10000;
+const AUTH_RETRY_DELAY_MS = 600;
+const AUTH_LOGIN_RECOVERY_DELAY_MS = 900;
+const AUTH_WARMUP_TIMEOUT_MS = 3500;
+const AUTH_WARMUP_RETRY_DELAY_MS = 700;
+const AUTH_DIAG_TIMEOUT_MS = 15000;
 
-let state = { user: null, token: null, tasks: [], filter: 'all', calDate: new Date(), chatHistory: [] };
+let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [], currentTask: null, authWarmupOk: false, authWarmupPromise: null };
+
+function applyTheme(theme) {
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = theme === 'light' || (theme === 'system' && !prefersDark) ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  const label = document.getElementById('themeLabel');
+  if (label) label.textContent = next === 'light' ? 'Светлая' : 'Тёмная';
+  const top = document.getElementById('themeToggleTop');
+  if (top) top.textContent = next === 'light' ? '☾' : '☀';
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem(THEME_K, next);
+  applyTheme(next);
+  showToast(next === 'light' ? 'Светлая тема' : 'Тёмная тема');
+}
+
+function getStoredThemeChoice() {
+  try { return localStorage.getItem(THEME_K) || ''; } catch(e) { return ''; }
+}
+
+function shouldFollowHostTheme() {
+  const choice = getStoredThemeChoice();
+  return !choice || choice === 'system';
+}
+
+function applyHostThemeScheme(scheme) {
+  if (!shouldFollowHostTheme()) return;
+  const isDark = scheme === 'space_gray' || scheme === 'vkcom_dark' || scheme === 'client_dark';
+  applyTheme(isDark ? 'dark' : 'light');
+}
+
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function authFetchOptions(options = {}) {
+  return {
+    ...options,
+    cache: 'no-store',
+    credentials: 'omit'
+  };
+}
+
+async function fetchAuthWithRetry(url, options = {}, retries = 1) {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const timeoutMs = attempt === 0 && retries > 0 ? AUTH_FIRST_ATTEMPT_TIMEOUT_MS : AUTH_TIMEOUT_MS;
+      return await withTimeout(fetch(url, authFetchOptions(options)), timeoutMs);
+    } catch (error) {
+      lastError = error;
+      if (attempt < retries) await delay(AUTH_RETRY_DELAY_MS);
+    }
+  }
+  throw lastError;
+}
+
+async function postLegacyAuth(path, body, retries = 1) {
+  const res = await fetchAuthWithRetry(WORKER + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(body)
+  }, retries);
+  return readJsonSafe(res);
+}
+
+async function warmAuthConnection(reason = 'boot') {
+  if (state.authWarmupOk) return true;
+  if (state.authWarmupPromise) return state.authWarmupPromise;
+
+  state.authWarmupPromise = (async () => {
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        const res = await withTimeout(
+          fetch(`${WORKER}/?warmup=${Date.now()}_${attempt}_${reason}`, authFetchOptions({ method: 'GET' })),
+          AUTH_WARMUP_TIMEOUT_MS
+        );
+        if (res.ok) {
+          state.authWarmupOk = true;
+          return true;
+        }
+      } catch (error) {}
+      if (attempt < 1) await delay(AUTH_WARMUP_RETRY_DELAY_MS);
+    }
+    return false;
+  })().finally(() => {
+    state.authWarmupPromise = null;
+  });
+
+  return state.authWarmupPromise;
+}
+
+async function recoverLoginSession(email, password) {
+  try {
+    await delay(AUTH_LOGIN_RECOVERY_DELAY_MS);
+    return await postLegacyAuth('/auth/login', { email, password }, 0);
+  } catch (error) {
+    return null;
+  }
+}
+
+async function recoverRegisterSession(email, password) {
+  try {
+    const data = await recoverLoginSession(email, password);
+    return data?.token ? data : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function setAuthDiagnostics(message) {
+  const el = document.getElementById('authDiagnostics');
+  if (!el) return;
+  el.textContent = message;
+}
+
+function compactFetchError(error) {
+  if (error?.message === 'timeout') return 'timeout';
+  if (error?.name) return error.name;
+  return 'network';
+}
+
+async function diagnosticFetch(label, url, options = {}, timeoutMs = AUTH_DIAG_TIMEOUT_MS) {
+  const startedAt = Date.now();
+  try {
+    const res = await withTimeout(fetch(url, authFetchOptions(options)), timeoutMs);
+    return `${label}:${res.status}/${Date.now() - startedAt}ms`;
+  } catch (error) {
+    return `${label}:${compactFetchError(error)}/${Date.now() - startedAt}ms`;
+  }
+}
+
+async function runAuthDiagnostics(reason = 'manual') {
+  const origin = location.origin || 'null';
+  const online = navigator.onLine === false ? 'offline' : 'online';
+  setAuthDiagnostics(`Проверяем связь… ${AUTH_BUILD}`);
+  const ping = await diagnosticFetch('ping', `${WORKER}/?diag=${Date.now()}`, { method: 'GET' }, AUTH_DIAG_TIMEOUT_MS);
+  const auth = await diagnosticFetch('auth', `${WORKER}/auth/login?diag=${Date.now()}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: '{}'
+  }, AUTH_DIAG_TIMEOUT_MS + 2000);
+  const result = `${AUTH_BUILD} · ${reason} · ${online} · ${origin} · ${ping} · ${auth}`;
+  setAuthDiagnostics(result);
+  return result;
+}
+
+setAuthDiagnostics(`Связь: ${AUTH_BUILD} · ${WORKER}`);
+
+async function readJsonSafe(response) {
+  try {
+    return await response.json();
+  } catch(e) {
+    return { ok: false, error: response?.ok ? 'Некорректный ответ сервера' : 'Сервер временно недоступен' };
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[ch]);
+}
+
+function setButtonBusy(button, busy, label) {
+  if (!button) return;
+  if (busy) {
+    button.dataset.originalText = button.textContent || '';
+    button.disabled = true;
+    button.textContent = label || 'Ждём...';
+  } else {
+    button.disabled = false;
+    if (button.dataset.originalText) button.textContent = button.dataset.originalText;
+  }
+}
+
+function linkChallengeHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.d1Token) headers.Authorization = 'Bearer ' + state.d1Token;
+  if (state.token) headers['x-token'] = state.token;
+  return headers;
+}
+
+function linkChallengeUrl(challenge, action) {
+  if (!challenge?.id) return '';
+  if (action === 'complete' && challenge.completeUrl) return challenge.completeUrl;
+  if (action === 'merge' && challenge.mergeUrl) return challenge.mergeUrl;
+  return `${WORKER}/v2/auth/link-challenges/${encodeURIComponent(challenge.id)}/${action}`;
+}
+
+function saveAuthToken(token) {
+  try {
+    localStorage.setItem(TOKEN_K, token);
+  } catch(e) {
+    console.warn('auth_token_storage_error', e);
+  }
+}
+
+function readChatHistory(userId) {
+  try {
+    const raw = localStorage.getItem('vk4_chat_' + (userId || ''));
+    const parsed = JSON.parse(raw || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch(e) {
+    console.warn('chat_history_parse_error', e);
+    return [];
+  }
+}
+
+function completeAuth(token, user) {
+  state.token = token;
+  state.user = user;
+  state.d1Token = null;
+  saveAuthToken(token);
+  enterApp();
+}
+
+async function syncD1AuthSession(silent = true) {
+  if (!state.token) return null;
+  try {
+    const res = await withTimeout(fetch(WORKER + '/v2/auth/legacy-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-token': state.token },
+      body: JSON.stringify({})
+    }), 8000);
+    const data = await readJsonSafe(res);
+    if (!data.ok || !data.token) {
+      if (res.status === 401) state.d1Token = null;
+      return null;
+    }
+    state.d1Token = data.token;
+    if (Array.isArray(data.identities)) {
+      state.identities = data.identities;
+      renderIdentityRows();
+    }
+    return state.d1Token;
+  } catch(e) {
+    if (!silent) showToast(e?.message === 'timeout' ? 'D1-сессия создаётся дольше обычного' : 'D1-сессия пока недоступна');
+    return null;
+  }
+}
+
+async function linkCurrentVK(silent = true) {
+  if (!state.token) return false;
+  try {
+    const launchParams = await getVkLaunchParams();
+    if (!launchParams) return false;
+    let vkUser = {};
+    try {
+      vkUser = await withTimeout(vkBridge.send('VKWebAppGetUserInfo'), 4000);
+    } catch(e) {}
+    const d1Token = state.d1Token || await syncD1AuthSession(true);
+    if (d1Token) {
+      const v2Res = await withTimeout(fetch(WORKER + '/v2/auth/link-vk', {
+        method: 'POST',
+        headers: linkChallengeHeaders(),
+        body: JSON.stringify({
+          launchParams,
+          first_name: vkUser.first_name || '',
+          last_name: vkUser.last_name || ''
+        })
+      }), 10000);
+      const v2Data = await readJsonSafe(v2Res);
+      if (v2Data.requiresChallenge && v2Data.challenge) {
+        state.pendingLinkChallenge = v2Data.challenge;
+        renderLinkChallengePanel();
+        if (!silent) showToast('Нужно подтвердить объединение аккаунтов');
+        return false;
+      }
+      if (v2Data.ok) {
+        if (Array.isArray(v2Data.identities)) state.identities = v2Data.identities;
+        renderIdentityRows();
+        if (!silent) showToast('VK привязан');
+        return true;
+      }
+      if (v2Res.status === 401) state.d1Token = null;
+      if (![401, 404, 503].includes(v2Res.status)) {
+        if (!silent) showToast(v2Data.error || 'VK не привязан');
+        return false;
+      }
+    }
+    const res = await withTimeout(fetch(WORKER + '/auth/link-vk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-token': state.token },
+      body: JSON.stringify({
+        launchParams,
+        first_name: vkUser.first_name || '',
+        last_name: vkUser.last_name || ''
+      })
+    }), 10000);
+    const data = await readJsonSafe(res);
+    if (data.requiresChallenge && data.challenge) {
+      state.pendingLinkChallenge = data.challenge;
+      renderLinkChallengePanel();
+      if (!silent) showToast('Нужно подтвердить объединение аккаунтов');
+      return false;
+    }
+    if (data.ok) {
+      if ((data.merged?.tasks || 0) > 0) {
+        await loadTasks();
+        showToast('VK привязан, задачи объединены');
+      }
+      await loadIdentities();
+      return true;
+    }
+    if (!silent) showToast(data.error || 'VK не привязан');
+  } catch(e) {
+    if (!silent) showToast('Не удалось привязать VK');
+  }
+  return false;
+}
+
+function searchLike(value) {
+  if (!value || typeof value !== 'string') return '';
+  const clean = value.startsWith('#') ? value.slice(1) : value;
+  return clean.startsWith('?') ? clean : '?' + clean;
+}
+
+async function getVkLaunchParams() {
+  const candidates = [];
+  if (window.location.search) candidates.push(window.location.search);
+  if (window.location.hash) candidates.push(searchLike(window.location.hash));
+  try {
+    if (window.vkBridge?.send) {
+      const bridgeParams = await vkBridge.send('VKWebAppGetLaunchParams');
+      const params = new URLSearchParams();
+      Object.entries(bridgeParams || {}).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) params.set(key, String(value));
+      });
+      const qs = params.toString();
+      if (qs) candidates.push('?' + qs);
+    }
+  } catch(e) {}
+  return candidates.find((value) => value.includes('sign=') && value.includes('vk_user_id')) ||
+         candidates.find((value) => value.includes('vk_')) ||
+         '';
+}
+
+// ── WARMUP ── silent prefetch to establish DNS+TLS before first user tap
+function warmupConnection() {
+  try {
+    fetch(WORKER + '/', { method: 'GET', cache: 'no-store', credentials: 'omit', signal: AbortSignal.timeout(8000) })
+      .catch(() => {});
+  } catch(e) {}
+}
 
 // ── INIT ──
-window.addEventListener('load', async () => {
-  try {
-    await vkBridge.send('VKWebAppInit');
-    const savedToken = localStorage.getItem(TOKEN_K);
-    if (savedToken) {
-      try {
-        const r = await fetch(WORKER + '/auth/me', { headers: { 'x-token': savedToken } });
-        const d = await r.json();
-        if (d.ok) {
-          state.token = savedToken;
-          state.user = d.user;
-          enterApp();
-          return;
-        }
-      } catch(e) {}
-      localStorage.removeItem(TOKEN_K);
-    }
-    // Try VK auto-login
-    try {
-      const vkUser = await vkBridge.send('VKWebAppGetUserInfo');
-      await autoLoginVK(vkUser);
-    } catch(e) {
-      showAuth();
-    }
-  } catch(e) {
-    showAuth();
-  }
-});
+applyTheme(getStoredThemeChoice() || 'dark');
 
-async function autoLoginVK(vkUser) {
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', () => {
+    warmupConnection();
+    bootstrapAuth().catch((e) => {
+      console.warn('auth_bootstrap_error', e);
+      showAuth();
+    });
+  }, { once: true });
+} else {
+  warmupConnection();
+  bootstrapAuth().catch((e) => {
+    console.warn('auth_bootstrap_error', e);
+    showAuth();
+  });
+}
+
+async function waitForVkBridge(maxMs = 2500) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < maxMs) {
+    if (window.vkBridge?.send) return window.vkBridge;
+    await delay(100);
+  }
+  return window.vkBridge?.send ? window.vkBridge : null;
+}
+
+async function initVKBridge() {
+  const bridge = await waitForVkBridge(2500);
+  if (!bridge?.send) return false;
   try {
-    const res = await fetch(WORKER + '/auth/vk', {
+    await withTimeout(bridge.send('VKWebAppInit'), 2500);
+    try {
+      if (window.vkBridge?.subscribe) {
+        window.vkBridge.subscribe((event) => {
+          if (event?.detail?.type === 'VKWebAppUpdateConfig') applyHostThemeScheme(event.detail.data?.scheme);
+          if (event?.detail?.type === 'VKWebAppViewRestore') loadTasks().catch(() => {});
+        });
+      }
+      bridge.send('VKWebAppGetConfig').then((config) => applyHostThemeScheme(config?.scheme)).catch(() => {});
+    } catch(e) {}
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+async function startVKAutoLogin(vkReadyPromise) {
+  try {
+    await vkReadyPromise;
+    if (state.token) return;
+    const bridge = window.vkBridge?.send ? window.vkBridge : await waitForVkBridge(1500);
+    if (!bridge?.send) return;
+    const vkUser = await withTimeout(bridge.send('VKWebAppGetUserInfo'), 3000);
+    await withTimeout(autoLoginVK(vkUser, false), 8000);
+  } catch(e) {}
+}
+
+async function bootstrapAuth() {
+  const vkReadyPromise = initVKBridge();
+  showAuth();
+  warmAuthConnection('boot').catch(() => {});
+
+  const savedToken = localStorage.getItem(TOKEN_K);
+  if (savedToken) {
+    try {
+      const r = await withTimeout(fetch(WORKER + '/auth/me', { headers: { 'x-token': savedToken } }), 2500);
+      const d = await r.json();
+      if (d.ok) {
+        state.token = savedToken;
+        state.d1Token = null;
+        state.user = d.user;
+        enterApp();
+        return;
+      }
+    } catch(e) {}
+    if (localStorage.getItem(TOKEN_K) === savedToken) localStorage.removeItem(TOKEN_K);
+  }
+
+  startVKAutoLogin(vkReadyPromise);
+}
+
+async function autoLoginVK(vkUser, showFallback = true) {
+  try {
+    const launchParams = await getVkLaunchParams();
+    const res = await withTimeout(fetch(WORKER + '/auth/vk', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vk_user_id: String(vkUser.id), first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
-    });
-    const data = await res.json();
+      body: JSON.stringify({ launchParams, first_name: vkUser.first_name, last_name: vkUser.last_name || '' })
+    }), 10000);
+    const data = await readJsonSafe(res);
     if (data.token) {
-      state.token = data.token;
-      state.user = data.user;
-      localStorage.setItem(TOKEN_K, data.token);
-      enterApp();
+      completeAuth(data.token, data.user);
       return;
     }
   } catch(e) {}
-  showAuth();
+  if (showFallback) showAuth();
 }
 
 function showAuth() {
@@ -372,9 +961,21 @@ function enterApp() {
   document.getElementById('loader').style.display = 'none';
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
-  applyUser(); state.chatHistory = JSON.parse(localStorage.getItem('vk4_chat_'+(state.user?.id||''))||'[]');
-  loadTasks();
-  buildCalendar();
+  try {
+    applyUser();
+  } catch(e) {
+    console.warn('apply_user_error', e);
+  }
+  state.chatHistory = readChatHistory(state.user?.id || '');
+  loadTasks().catch((e) => console.warn('load_tasks_error', e));
+  renderIdentityRows('loading');
+  syncD1AuthSession(true).catch((e) => console.warn('d1_auth_sync_error', e));
+  loadIdentities().catch((e) => console.warn('load_identities_error', e));
+  try {
+    buildCalendar();
+  } catch(e) {
+    console.warn('build_calendar_error', e);
+  }
 }
 
 function applyUser() {
@@ -389,6 +990,163 @@ function applyUser() {
   document.getElementById('trialDays').textContent = trial;
 }
 
+function identityByProvider(provider) {
+  return state.identities.find((identity) => identity.provider === provider);
+}
+
+function identityValue(identity, fallbackLabel) {
+  if (!identity) return 'Не подключён';
+  if (identity.displayName) return identity.displayName;
+  if (identity.username) return '@' + identity.username;
+  if (identity.providerUserId) return fallbackLabel + ' ' + identity.providerUserId;
+  return 'Подключён';
+}
+
+function renderIdentityRows(status = '') {
+  const list = document.getElementById('identityList');
+  if (!list) return;
+  if (status === 'loading') {
+    list.innerHTML = '<div class="text-muted text-sm" style="padding:8px 0">Проверяем связи...</div>';
+    return;
+  }
+  if (status === 'error') {
+    list.innerHTML = '<div class="text-muted text-sm" style="padding:8px 0">Не удалось загрузить связи. Попробуйте обновить профиль.</div>';
+    return;
+  }
+  const web = identityByProvider('web');
+  const vk = identityByProvider('vk');
+  const telegram = identityByProvider('telegram');
+  const rows = [
+    { title: 'Email', value: state.user?.email || identityValue(web, 'Email'), connected: Boolean(state.user?.email || web) },
+    { title: 'VK', value: identityValue(vk, 'VK ID'), connected: Boolean(vk || state.user?.vkId) },
+    { title: 'Telegram', value: identityValue(telegram, 'TG ID'), connected: Boolean(telegram || state.user?.telegramId) }
+  ];
+  list.innerHTML = rows.map((row) => `<div class="identity-row">
+    <div class="identity-main">
+      <div class="identity-title">${escapeHtml(row.title)}</div>
+      <div class="identity-sub">${escapeHtml(row.value)}</div>
+    </div>
+    <div class="identity-status ${row.connected ? 'on' : ''}">${row.connected ? 'Подключён' : 'Нет'}</div>
+  </div>`).join('');
+  renderLinkChallengePanel();
+}
+
+function renderLinkChallengePanel() {
+  const panel = document.getElementById('identityChallengePanel');
+  if (!panel) return;
+  const challenge = state.pendingLinkChallenge;
+  if (!challenge) {
+    panel.classList.remove('show');
+    return;
+  }
+  const targetProvider = challenge.targetProvider || challenge.target_provider || 'vk';
+  const provider = targetProvider === 'telegram' ? 'Telegram' : 'VK';
+  const completed = challenge.status === 'completed' || challenge.completedAt || challenge.completed_at;
+  panel.classList.add('show');
+  const title = document.getElementById('identityChallengeTitle');
+  const text = document.getElementById('identityChallengeText');
+  const completeBtn = document.getElementById('identityChallengeCompleteBtn');
+  const mergeBtn = document.getElementById('identityChallengeMergeBtn');
+  const warn = document.getElementById('identityChallengeWarn');
+  if (title) title.textContent = completed ? 'Можно объединить аккаунты' : 'Нужно подтвердить ' + provider;
+  if (text) text.textContent = completed
+    ? 'Подтверждение получено. Теперь можно перенести задачи, связи и историю в один профиль.'
+    : `Этот ${provider} аккаунт уже связан с другим профилем. Подтвердите, что он ваш.`;
+  if (completeBtn) {
+    completeBtn.style.display = completed ? 'none' : 'flex';
+    completeBtn.textContent = 'Подтвердить ' + provider;
+  }
+  if (mergeBtn) mergeBtn.style.display = completed ? 'flex' : 'none';
+  if (warn) warn.textContent = completed
+    ? 'После объединения старые сессии другого профиля будут закрыты, а данные перейдут в текущий профиль.'
+    : 'Мы не объединяем аккаунты скрыто: перед переносом задач и истории нужен явный шаг подтверждения.';
+}
+
+async function completePendingLinkChallenge() {
+  const challenge = state.pendingLinkChallenge;
+  if (!challenge?.id) { showToast('Нет активного подтверждения'); return; }
+  const targetProvider = challenge.targetProvider || challenge.target_provider || 'vk';
+  if (targetProvider !== 'vk') { showToast('Пока подтверждение доступно только для VK'); return; }
+  if (!state.d1Token) await syncD1AuthSession(false);
+  if (!state.d1Token) { showToast('D1-сессия пока недоступна'); return; }
+  const button = document.getElementById('identityChallengeCompleteBtn');
+  setButtonBusy(button, true, 'Проверяем...');
+  try {
+    const launchParams = await getVkLaunchParams();
+    if (!launchParams) throw new Error('vk_launch_params_missing');
+    const res = await withTimeout(fetch(linkChallengeUrl(challenge, 'complete'), {
+      method: 'POST',
+      headers: linkChallengeHeaders(),
+      body: JSON.stringify({ launchParams })
+    }), 10000);
+    const data = await readJsonSafe(res);
+    if (!data.ok) throw new Error(data.error || 'challenge_complete_failed');
+    state.pendingLinkChallenge = data.challenge || { ...challenge, status: 'completed', completedAt: Date.now() };
+    renderLinkChallengePanel();
+    showToast('VK подтверждён');
+  } catch(e) {
+    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного' : 'Не удалось подтвердить VK');
+  } finally {
+    setButtonBusy(button, false);
+  }
+}
+
+async function mergePendingLinkChallenge() {
+  const challenge = state.pendingLinkChallenge;
+  if (!challenge?.id) { showToast('Нет активного объединения'); return; }
+  if (!state.d1Token) await syncD1AuthSession(false);
+  if (!state.d1Token) { showToast('D1-сессия пока недоступна'); return; }
+  const button = document.getElementById('identityChallengeMergeBtn');
+  setButtonBusy(button, true, 'Объединяем...');
+  try {
+    const res = await withTimeout(fetch(linkChallengeUrl(challenge, 'merge'), {
+      method: 'POST',
+      headers: linkChallengeHeaders(),
+      body: JSON.stringify({ confirm: true })
+    }), 15000);
+    const data = await readJsonSafe(res);
+    if (data.mergeConflicts) {
+      showToast('Нужна ручная проверка конфликтов');
+      return;
+    }
+    if (!data.ok) throw new Error(data.error || 'challenge_merge_failed');
+    state.pendingLinkChallenge = null;
+    if (Array.isArray(data.identities)) state.identities = data.identities;
+    renderIdentityRows();
+    await loadIdentities().catch(() => {});
+    await loadTasks().catch(() => {});
+    showToast('Аккаунты объединены');
+  } catch(e) {
+    showToast(e?.message === 'timeout' ? 'Сервер отвечает дольше обычного' : 'Не удалось объединить аккаунты');
+  } finally {
+    setButtonBusy(button, false);
+  }
+}
+
+async function loadIdentities() {
+  if (!state.token) {
+    state.identities = [];
+    renderIdentityRows();
+    return;
+  }
+  const res = await fetch(WORKER + '/auth/identities', { headers: { 'x-token': state.token } });
+  const data = await readJsonSafe(res);
+  if (!data.ok) throw new Error(data.error || 'identity_load_failed');
+  state.identities = Array.isArray(data.identities) ? data.identities : [];
+  renderIdentityRows();
+}
+
+async function refreshVKIdentity() {
+  renderIdentityRows('loading');
+  const linked = await linkCurrentVK(false);
+  if (!linked) {
+    await loadIdentities().catch(() => renderIdentityRows('error'));
+    return;
+  }
+  await loadIdentities().catch(() => renderIdentityRows('error'));
+  showToast('Связи обновлены');
+}
+
 // ── AUTH ──
 function switchTab(tab) {
   document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
@@ -401,12 +1159,31 @@ async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
   if (!email || !pass) { showToast('Введите email и пароль'); return; }
+  const button = document.querySelector('#loginForm .auth-btn');
+  setButtonBusy(button, true, 'Готовим связь...');
+  let data;
   try {
-    const res = await fetch(WORKER + '/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) });
-    const data = await res.json();
-    if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
-    else showToast(data.error || 'Ошибка входа');
-  } catch(e) { showToast('Ошибка соединения'); }
+    await warmAuthConnection('login');
+    setButtonBusy(button, true, 'Входим...');
+    data = await postLegacyAuth('/auth/login', { email, password: pass }, 1);
+  } catch(e) {
+    setButtonBusy(button, true, 'Проверяем вход...');
+    data = await recoverLoginSession(email, pass);
+    if (!data && e?.message === 'timeout') {
+      await runAuthDiagnostics('login-timeout');
+      showToast('Проблема связи. Код ниже формы');
+    } else if (!data) {
+      showToast('Ошибка соединения');
+    }
+  } finally {
+    setButtonBusy(button, false);
+  }
+  if (!data) return;
+  if (data.token) {
+    completeAuth(data.token, data.user);
+    linkCurrentVK(true).catch((e) => console.warn('vk_link_after_login_error', e));
+  }
+  else showToast(data.error || 'Ошибка входа');
 }
 
 async function doRegister() {
@@ -414,17 +1191,33 @@ async function doRegister() {
   const email = document.getElementById('regEmail').value.trim();
   const pass = document.getElementById('regPass').value;
   if (!name || !email || !pass) { showToast('Заполните все поля'); return; }
+  const button = document.querySelector('#registerForm .auth-btn');
+  setButtonBusy(button, true, 'Создаём...');
+  let data;
   try {
-    const res = await fetch(WORKER + '/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password: pass }) });
-    const data = await res.json();
-    if (data.token) { state.token = data.token; state.user = data.user; localStorage.setItem(TOKEN_K, data.token); enterApp(); }
-    else showToast(data.error || 'Ошибка регистрации');
-  } catch(e) { showToast('Ошибка соединения'); }
+    data = await postLegacyAuth('/auth/register', { name, email, password: pass }, 0);
+  } catch(e) {
+    if (e?.message === 'timeout') data = await recoverRegisterSession(email, pass);
+    if (!data && e?.message === 'timeout') {
+      await runAuthDiagnostics('register-timeout');
+      showToast('Проблема связи. Код ниже формы');
+    } else if (!data) {
+      showToast('Ошибка соединения');
+    }
+  } finally {
+    setButtonBusy(button, false);
+  }
+  if (!data) return;
+  if (data.token) {
+    completeAuth(data.token, data.user);
+    linkCurrentVK(true).catch((e) => console.warn('vk_link_after_register_error', e));
+  }
+  else showToast(data.error || 'Ошибка регистрации');
 }
 
 function doLogout() {
   localStorage.removeItem(TOKEN_K);
-  state.user = null; state.token = null; state.tasks = [];
+  state.user = null; state.token = null; state.d1Token = null; state.tasks = []; state.identities = []; state.pendingLinkChallenge = null;
   document.getElementById('mainApp').style.display = 'none';
   document.getElementById('authScreen').style.display = 'flex';
 }
@@ -435,7 +1228,7 @@ async function loadTasks() {
     const url = WORKER + '/tasks';
     const res = await fetch(url, { headers: state.token ? { 'x-token': state.token } : {} });
     const data = await res.json();
-    state.tasks = Array.isArray(data.tasks) ? data.tasks : [];
+    state.tasks = Array.isArray(data) ? data : (Array.isArray(data.tasks) ? data.tasks : []);
   } catch(e) { state.tasks = []; }
   renderTasks();
   buildStats();
@@ -453,24 +1246,40 @@ function renderTasks() {
   const list = document.getElementById('taskList');
   const active = state.tasks.filter(t => !t.done);
   document.getElementById('taskCount').textContent = active.length;
+  const focusCount = document.getElementById('focusTaskCount');
+  if (focusCount) focusCount.textContent = active.length + ' ' + pluralRu(active.length, 'задача', 'задачи', 'задач');
+  const homeActive = document.getElementById('homeActive');
+  if (homeActive) homeActive.textContent = active.length;
   list.innerHTML = active.length
-    ? active.map(t => taskHTML(t)).join('')
+    ? active.map((t, idx) => taskHTML(t, idx)).join('')
     : '<div class="text-muted text-sm" style="padding:20px 0;text-align:center">Активных задач нет</div>';
 }
 
-function taskHTML(t) {
+function pluralRu(n, one, few, many) {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}
+
+function taskHTML(t, idx = 0) {
   const icons = { promise: t.subtype === 'incoming' ? '📥' : '🤝', deadline: '⏰', task: '📌' };
   const today = new Date().toISOString().slice(0,10);
   const overdue = t.deadline && t.deadline < today;
-  return `<div class="task-card">
-    <div class="task-check" onclick="doneTask('${t.id}')"></div>
+  const taskId = String(t.id || '').replace(/'/g, "\\'");
+  const taskText = escapeHtml(t.text || t.title || '');
+  return `<div class="task-card task-card-v2" onclick="openTaskDetail('${taskId}')">
+    <div class="task-num">${idx + 1}</div>
     <div class="task-body">
-      <div class="task-title">${t.text || t.title || ''}</div>
+      <div class="task-title">${taskText}</div>
       <div class="task-meta">
         ${t.type ? `<span class="tag">${icons[t.type]||'📌'}</span>` : ''}
         ${t.deadline ? `<span class="tag ${overdue?'deadline':''}">${formatDate(t.deadline)}</span>` : ''}
       </div>
     </div>
+    <div class="task-check" onclick="event.stopPropagation();doneTask('${taskId}')" title="Выполнить"></div>
+    <div class="task-chevron">›</div>
   </div>`;
 }
 
@@ -481,8 +1290,166 @@ function formatDate(d) {
   return `${dt.getDate()} ${months[dt.getMonth()]}`;
 }
 
+function isTaskCommand(text) {
+  const value = String(text || '').trim().toLowerCase();
+  return /^(добавь|создай|поставь|запиши|зафиксируй|сохрани)\b.*\bзадач/.test(value) ||
+         /^(напомни|надо|нужно|сделать)\b/.test(value);
+}
+
+function normalizeTaskText(text) {
+  const cleaned = String(text || '')
+    .trim()
+    .replace(/^(добавь|создай|поставь|запиши|зафиксируй|сохрани)(\s+мне)?(\s+задач[ауиу]?)?\s*[:—-]?\s*/i, '')
+    .replace(/^(надо|нужно|сделать|напомни)\s*/i, '')
+    .trim();
+  return cleaned || String(text || '').trim();
+}
+
+function inferTaskDeadline(text) {
+  const value = String(text || '').toLowerCase();
+  const date = new Date();
+  if (/\bсегодня\b/.test(value)) return date.toISOString().slice(0, 10);
+  if (/\bзавтра\b/.test(value)) {
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().slice(0, 10);
+  }
+  return '';
+}
+
+async function maybeSaveTaskFromChat(text) {
+  if (!state.token || !isTaskCommand(text)) return false;
+  const taskText = normalizeTaskText(text);
+  if (!taskText || taskText.length < 2) return false;
+  const deadline = inferTaskDeadline(text);
+  const task = {
+    id: 'vk_chat_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    text: taskText,
+    title: taskText,
+    type: 'task',
+    done: false,
+    date: new Date().toISOString().slice(0, 10),
+    createdAt: Date.now(),
+    source: 'vk_chat'
+  };
+  if (deadline) task.deadline = deadline;
+  const res = await fetch(WORKER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-action': 'save-task', 'x-token': state.token },
+    body: JSON.stringify({ task })
+  });
+  const data = await readJsonSafe(res);
+  if (!data.ok) throw new Error(data.error || 'task_save_failed');
+  await loadTasks();
+  return true;
+}
+
 // ── NAVIGATION ──
-const screens = ['home','ask','calendar','stats','profile'];
+function taskDisplayTitle(task) {
+  return task?.text || task?.title || 'Задача';
+}
+
+function taskDiscussionKey(task) {
+  return 'vk4_task_discussion_' + (state.user?.id || 'anon') + '_' + String(task?.id || 'unknown');
+}
+
+function readTaskDiscussion(task) {
+  try {
+    return JSON.parse(localStorage.getItem(taskDiscussionKey(task)) || '[]');
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveTaskDiscussion(task, items) {
+  try {
+    localStorage.setItem(taskDiscussionKey(task), JSON.stringify(items.slice(-30)));
+  } catch(e) {}
+}
+
+function renderTaskDiscussion(task) {
+  const list = document.getElementById('taskDiscussionList');
+  if (!list) return;
+  const items = readTaskDiscussion(task);
+  if (!items.length) {
+    list.innerHTML = '<div class="text-sm text-muted">Обсуждения пока нет. Напишите вопрос по задаче — я помогу разложить следующий шаг.</div>';
+    return;
+  }
+  list.innerHTML = items.map((item) =>
+    `<div class="discussion-msg ${item.role === 'user' ? 'user' : 'ai'}">${escapeHtml(item.text || '')}</div>`
+  ).join('');
+}
+
+function openTaskDetail(taskId) {
+  const task = state.tasks.find((item) => String(item.id) === String(taskId));
+  if (!task) {
+    showToast('Задача не найдена');
+    return;
+  }
+  state.currentTask = task;
+  document.getElementById('detailTaskTitle').textContent = taskDisplayTitle(task);
+  document.getElementById('detailTaskMeta').textContent = [task.deadline ? formatDate(task.deadline) : '', task.type || 'task'].filter(Boolean).join(' · ') || 'Без срока';
+  document.getElementById('detailTaskStatus').textContent = task.done ? 'Выполнена' : 'Активна';
+  document.getElementById('detailTaskDescription').textContent = task.description || taskDisplayTitle(task);
+  document.getElementById('detailTaskHistory').textContent = task.createdAt ? 'Создана: ' + new Date(task.createdAt).toLocaleString('ru-RU') : 'История изменений пока пуста';
+  renderTaskDiscussion(task);
+  const firstTab = document.querySelector('#screen-task-detail .detail-tab');
+  switchTaskDetailTab('desc', firstTab);
+  navigate('task-detail');
+}
+
+function switchTaskDetailTab(id, el) {
+  document.querySelectorAll('#screen-task-detail .detail-tab').forEach((tab) => tab.classList.remove('active'));
+  if (el) el.classList.add('active');
+  ['desc','discuss','history'].forEach((name) => {
+    const panel = document.getElementById('task-detail-' + name);
+    if (panel) panel.classList.toggle('active', name === id);
+  });
+}
+
+async function doneCurrentTask() {
+  if (!state.currentTask) return;
+  await doneTask(state.currentTask.id);
+  navigate('home');
+}
+
+async function sendTaskDiscussion() {
+  const task = state.currentTask;
+  const input = document.getElementById('taskDiscussionInput');
+  const text = (input?.value || '').trim();
+  if (!task || !text) return;
+  input.value = '';
+  const items = readTaskDiscussion(task);
+  items.push({ role: 'user', text, at: Date.now() });
+  saveTaskDiscussion(task, items);
+  renderTaskDiscussion(task);
+  try {
+    const res = await fetch(WORKER + '/anthropic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 700,
+        system: 'Ты 4 — AI-секретарь. Пользователь обсуждает конкретную задачу. Отвечай кратко, практично, по-русски. Дай следующий шаг, риски или короткий план.',
+        messages: [
+          { role: 'user', content: 'Задача: ' + taskDisplayTitle(task) + '\nВопрос: ' + text }
+        ]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Я зафиксировал мысль. Следующий шаг — уточнить действие и срок.';
+    const fresh = readTaskDiscussion(task);
+    fresh.push({ role: 'ai', text: reply, at: Date.now() });
+    saveTaskDiscussion(task, fresh);
+    renderTaskDiscussion(task);
+  } catch(e) {
+    const fresh = readTaskDiscussion(task);
+    fresh.push({ role: 'ai', text: 'Не смог связаться с AI, но заметка по задаче сохранена локально.', at: Date.now() });
+    saveTaskDiscussion(task, fresh);
+    renderTaskDiscussion(task);
+  }
+}
+
+const screens = ['home','ask','calendar','stats','profile','task-detail'];
 function navigate(id) {
   screens.forEach(s => document.getElementById('screen-'+s).classList.toggle('active', s === id));
   ['home','calendar','stats','profile'].forEach(s => {
@@ -502,6 +1469,14 @@ async function sendMessage() {
   appendMsg('user', text);
   const typingId = appendTyping();
   state.chatHistory.push({ role: 'user', content: text });
+  let taskSaved = false;
+  try {
+    taskSaved = await maybeSaveTaskFromChat(text);
+    if (taskSaved) showToast('Задача добавлена');
+  } catch(e) {
+    console.warn('chat_task_save_error', e);
+    showToast('Не удалось добавить задачу');
+  }
   try {
     const res = await fetch(WORKER + '/anthropic', {
       method: 'POST',
@@ -512,15 +1487,16 @@ async function sendMessage() {
     removeTyping(typingId);
     const reply = data.content?.[0]?.text || 'Не смог получить ответ.';
     state.chatHistory.push({ role: 'assistant', content: reply }); localStorage.setItem('vk4_chat_'+state.user?.id, JSON.stringify(state.chatHistory.slice(-20)));
-    appendMsg('ai', reply); loadTasks();
+    appendMsg('ai', reply); if (!taskSaved) loadTasks();
   } catch(e) { removeTyping(typingId); appendMsg('ai', 'Ошибка соединения. Попробуйте ещё раз.'); }
 }
 
 function appendMsg(role, text) {
   const wrap = document.getElementById('chatMessages');
+  const safeText = escapeHtml(text).replace(/\n/g,'<br>');
   wrap.innerHTML += `<div class="msg ${role}">
     ${role === 'ai' ? `<div class="msg-avatar"><div class="logo" style="width:20px;height:20px;gap:2px"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div></div>` : ''}
-    <div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>
+    <div class="msg-bubble">${safeText}</div>
   </div>`;
   wrap.scrollTop = wrap.scrollHeight;
 }
@@ -575,6 +1551,14 @@ function buildStats() {
   document.getElementById('statActive').textContent = active;
   document.getElementById('statPromise').textContent = promise;
   document.getElementById('statPct').textContent = pct + '%';
+  const homeDone = document.getElementById('homeDone');
+  const homeActive = document.getElementById('homeActive');
+  const homePromises = document.getElementById('homePromises');
+  const homeProgress = document.getElementById('homeProgress');
+  if (homeDone) homeDone.textContent = done;
+  if (homeActive) homeActive.textContent = active;
+  if (homePromises) homePromises.textContent = promise;
+  if (homeProgress) homeProgress.textContent = pct + '%';
   const days = [active, done, promise, active+1, done+1, promise+1, active+2];
   const max = Math.max(...days, 1);
   document.getElementById('barChart').innerHTML = days.map(v => `<div class="bar-wrap"><div class="bar"><div class="bar-fill" style="height:${v/max*100}%"></div></div></div>`).join('');
