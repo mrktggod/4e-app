@@ -2850,11 +2850,8 @@ if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
 const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
-<<<<<<< HEAD
-const LOGOUT_K='chetam_logged_out';
-=======
 const D1_TOKEN_K='chetam_d1_token';
->>>>>>> af531ee6009dc219d88ba9e34b8be0ad9e0d15c3
+const LOGOUT_K='chetam_logged_out';
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
 const notifReadSet = new Set();
@@ -2944,18 +2941,8 @@ async function initApp(){
     localStorage.removeItem(TOKEN_K);
   }
 
-<<<<<<< HEAD
   if(tgUser?.id && !localStorage.getItem(LOGOUT_K)){
-    // Telegram Mini App — auto-login stub (can be extended)
-    currentUser={name:tgUser.first_name,email:'',trialActive:true,trialLeft:30};
-    chatId='user_'+tgUser.id;
-    applyUserInfo();
-    showScreen('home');
-    loadTasks();
-=======
-  if(tgUser?.id){
     await loginWithTelegram();
->>>>>>> af531ee6009dc219d88ba9e34b8be0ad9e0d15c3
     return;
   }
 
@@ -3068,12 +3055,8 @@ async function doLogin(){
     const r=await withTimeout(fetch(WORKER+'/auth/login',{method:'POST',headers:authHeaders(),body:JSON.stringify({email,password:pass})}),10000);
     const d=await readJsonSafe(r);
     if(d.ok){
-<<<<<<< HEAD
-      localStorage.setItem(TOKEN_K,d.token);
-      localStorage.removeItem(LOGOUT_K);
-=======
       setLegacyToken(d.token);
->>>>>>> af531ee6009dc219d88ba9e34b8be0ad9e0d15c3
+      localStorage.removeItem(LOGOUT_K);
       currentUser=d.user;
       chatId='user_'+currentUser.id;
       applyUserInfo();
@@ -3133,11 +3116,8 @@ async function linkTelegram() {
 
 function doLogout(){
   localStorage.removeItem(TOKEN_K);
-<<<<<<< HEAD
-  localStorage.setItem(LOGOUT_K,'1');
-=======
   clearD1Token();
->>>>>>> af531ee6009dc219d88ba9e34b8be0ad9e0d15c3
+  localStorage.setItem(LOGOUT_K,'1');
   sessionStorage.removeItem(askHistoryKey());
   askHistory=[];
   askHistoryLoaded=false;
