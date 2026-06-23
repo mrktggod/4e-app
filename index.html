@@ -2942,8 +2942,9 @@ async function initApp(){
   }
 
   if(tgUser?.id && !localStorage.getItem(LOGOUT_K)){
-    await loginWithTelegram();
-    return;
+    const ok=await loginWithTelegram();
+    if(ok) return;
+    // если TG-логин не удался — падаем вниз на login/onboarding
   }
 
   try{
@@ -3072,9 +3073,9 @@ async function doLogin(){
 
 async function loginWithTelegram(){
   if(!tgUser||!tgInitData){
-    window.open('https://t.me/Denzel89bot?start=login', '_blank');
     showToast('Открой бота и нажми Start — получишь ссылку для входа');
-    return;
+    showScreen('login');
+    return false;
   }
   try{
     const r=await fetch(WORKER+'/auth/telegram',{
@@ -3092,11 +3093,16 @@ async function loginWithTelegram(){
       showScreen('home');
       loadTasks();
       showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
+      return true;
     } else {
       showToast(d.error||'Ошибка Telegram авторизации');
+      showScreen('login');
+      return false;
     }
   }catch(e){
     showToast('Нет соединения');
+    showScreen('login');
+    return false;
   }
 }
 
@@ -3118,12 +3124,8 @@ function doLogout(){
   localStorage.removeItem(TOKEN_K);
   clearD1Token();
   localStorage.setItem(LOGOUT_K,'1');
-  sessionStorage.removeItem(askHistoryKey());
-  askHistory=[];
-  askHistoryLoaded=false;
-  currentUser=null;
-  chatId='global';
-  showScreen('login');
+  sessionStorage.clear();
+  window.location.reload();
 }
 
 function togglePass(id){
