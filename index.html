@@ -2439,6 +2439,7 @@ if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
 const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
+const LOGOUT_K='chetam_logged_out';
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
 const notifReadSet = new Set();
@@ -2478,7 +2479,7 @@ async function initApp(){
     localStorage.removeItem(TOKEN_K);
   }
 
-  if(tgUser?.id){
+  if(tgUser?.id && !localStorage.getItem(LOGOUT_K)){
     // Telegram Mini App — auto-login stub (can be extended)
     currentUser={name:tgUser.first_name,email:'',trialActive:true,trialLeft:30};
     chatId='user_'+tgUser.id;
@@ -2581,6 +2582,7 @@ async function doLogin(){
     const d=await r.json();
     if(d.ok){
       localStorage.setItem(TOKEN_K,d.token);
+      localStorage.removeItem(LOGOUT_K);
       currentUser=d.user;
       chatId='user_'+currentUser.id;
       applyUserInfo();
@@ -2625,6 +2627,7 @@ async function linkTelegram() {
 
 function doLogout(){
   localStorage.removeItem(TOKEN_K);
+  localStorage.setItem(LOGOUT_K,'1');
   sessionStorage.removeItem(askHistoryKey());
   askHistory=[];
   askHistoryLoaded=false;
@@ -3094,7 +3097,8 @@ function renderTasksForMonth(){
           '<div class="task-name-v2' + (i>0?' muted':'') + '">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
           '<div class="task-date-v2">' + (t.deadline?'📅 '+e2(t.deadline):e2(t.date)) + '</div>' +
         '</div>' +
-        '<span class="' + (hot?'task-tag-hot':'task-tag-soon') + '">' + (hot?'горит':'скоро') + '</span>' +
+        '<span class="' + (hot?'task-tag-hot':'task-tag-soon') + '" style="margin-right:6px">' + (hot?'горит':'скоро') + '</span>' +
+        '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
       '</div>';
     }).join('');
   }
