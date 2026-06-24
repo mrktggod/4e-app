@@ -4417,14 +4417,13 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
   const askScreen=document.getElementById('ask');
   let keyboardOpen=false;
 
+  const askBar=document.querySelector('.ask-bar');
+
   function onKeyboardOpen(){
     keyboardOpen=true;
     if(nav)nav.classList.add('hidden');
-    // Подгоняем высоту экрана под visualViewport
-    if(window.visualViewport&&askScreen){
-      askScreen.style.height=window.visualViewport.height+'px';
-      askScreen.style.overflow='hidden';
-    }
+    // Убираем отступ под nav — теперь он не нужен
+    if(askBar)askBar.style.paddingBottom='10px';
   }
   function onKeyboardClose(){
     keyboardOpen=false;
@@ -4433,19 +4432,14 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
       const active=document.querySelector('.screen.active');
       const noNav=['login','voice','home'];
       if(nav&&active&&!noNav.includes(active.id))nav.classList.remove('hidden');
-      if(askScreen){askScreen.style.height='';askScreen.style.overflow='';}
+      // Возвращаем отступ под nav
+      if(askBar)askBar.style.paddingBottom='96px';
     },150);
   }
 
   field.addEventListener('focus',onKeyboardOpen);
   field.addEventListener('blur',onKeyboardClose);
 
-  // visualViewport — точное событие изменения высоты при появлении клавиатуры
-  if(window.visualViewport){
-    window.visualViewport.addEventListener('resize',()=>{
-      if(keyboardOpen&&askScreen)askScreen.style.height=window.visualViewport.height+'px';
-    });
-  }
 })();
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
