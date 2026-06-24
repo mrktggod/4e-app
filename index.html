@@ -2976,8 +2976,12 @@ async function initApp(){
 const ADMIN_EMAILS=['shelckograff@gmail.com'];
 const ADMIN_TG_IDS=['267468814'];
 function isAdmin(){
+  // Проверяем tgUser (доступен сразу из Telegram WebApp)
+  if(tgUser?.id&&ADMIN_TG_IDS.includes(String(tgUser.id))) return true;
   if(!currentUser) return false;
-  return ADMIN_EMAILS.includes(currentUser.email)||ADMIN_TG_IDS.includes(String(currentUser.telegramId||''));
+  return ADMIN_EMAILS.includes(currentUser.email)
+    ||ADMIN_TG_IDS.includes(String(currentUser.telegramId||''))
+    ||ADMIN_TG_IDS.includes(String(currentUser.id||''));
 }
 
 function applyUserInfo(){
@@ -3658,9 +3662,9 @@ function setNavActive(id){document.querySelectorAll('.nav-item').forEach(n=>n.cl
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const s=document.getElementById(id);if(s){s.classList.add('active');s.scrollTop=0;}
-  // Hide global-nav (old nav) — we use bottom-nav-v2 on home, global-nav on other screens
+  // Hide global-nav on screens that have their own nav or no nav needed
   const nav=document.getElementById('global-nav');
-  const noNav=['login','voice','home'];
+  const noNav=['login','voice','home','chats','msng-settings','chat-conv'];
   if(nav)nav.classList.toggle('hidden',noNav.includes(id));
   // bottom-nav-v2 is inside #home so it's only visible when home is active — no action needed
   const hs=document.querySelector('.scroll-body');
@@ -4060,7 +4064,7 @@ function completeTask(taskId){
   if(!taskId) return;
   const btn=document.getElementById('btn-task-complete');
   markDoneKV(btn, taskId);
-  setTimeout(()=>{showScreen('home');loadTasks();},500);
+  setTimeout(()=>{const cur=document.querySelector('.screen.active');if(!cur||cur.id==='task-detail'){showScreen('home');setNavActive('tasks');loadTasks();}},500);
 }
 
 function renderDetailTags(){
@@ -5336,9 +5340,8 @@ const chipTexts = {
 // ── Открытие экрана чатов ─────────────────────────────────────
 
 function openChats() {
+  console.log('[openChats] called');
   showScreen('chats');
-  const nav = document.getElementById('global-nav');
-  if (nav) nav.classList.add('hidden');
   loadChatsList();
 }
 
@@ -5706,7 +5709,7 @@ function filterChats(q) {
 
 function openTaskFromChat() {
   showToast('Задача зафиксирована ботом ✓');
-  setTimeout(goHome, 800);
+  setTimeout(()=>{const cur=document.querySelector('.screen.active');if(!cur||cur.id==='chat-conv')goHome();},800);
 }
 
 
