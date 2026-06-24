@@ -2973,12 +2973,25 @@ async function initApp(){
   }
 }
 
+const ADMIN_EMAILS=['shelckograff@gmail.com'];
+const ADMIN_TG_IDS=['267468814'];
+function isAdmin(){
+  if(!currentUser) return false;
+  return ADMIN_EMAILS.includes(currentUser.email)||ADMIN_TG_IDS.includes(String(currentUser.telegramId||''));
+}
+
 function applyUserInfo(){
   if(!currentUser) return;
   const name=currentUser.name||currentUser.email||'Пользователь';
   const initials=(name[0]||'?').toUpperCase();
   ['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=initials;});
   ['user-chip-name','profile-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});
+  // Мессенджер — только для admin
+  const show=isAdmin();
+  ['nav-ask','nav-chats'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=show?'':'none';});
+  // Кнопка «Чаты» в профиле
+  const profileChats=document.querySelector('.profile-item[onclick="openChats()"]');
+  if(profileChats)profileChats.style.display=show?'':'none';
   renderTrialBanner();
 }
 
