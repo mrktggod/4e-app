@@ -4410,6 +4410,22 @@ async function sendAsk(){
 }
 document.getElementById('ask-field').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAsk();}});
+// Прячем навигацию когда открыта клавиатура (фокус на поле ввода)
+document.getElementById('ask-field').addEventListener('focus',()=>{
+  const nav=document.getElementById('global-nav');
+  if(nav)nav.classList.add('hidden');
+});
+document.getElementById('ask-field').addEventListener('blur',()=>{
+  // Небольшая задержка — чтобы не мигало при тапе на кнопку отправки
+  setTimeout(()=>{
+    const nav=document.getElementById('global-nav');
+    if(nav&&!nav.classList.contains('hidden'))return;
+    // Показываем только если мы на экране где nav должен быть виден
+    const active=document.querySelector('.screen.active');
+    const noNav=['login','voice','home'];
+    if(nav&&active&&!noNav.includes(active.id))nav.classList.remove('hidden');
+  },150);
+});
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 function toggleTheme(){
