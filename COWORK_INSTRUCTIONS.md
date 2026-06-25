@@ -6,10 +6,10 @@
 
 | Файл карты | Для чего |
 |-----------|---------|
-| `FILE_MAP.md` | Главный индекс: список файлов, KV-схема, быстрый поиск |
-| `FILE_MAP_UI.md` | index.html (4928 строк) — где что находится |
-| `FILE_MAP_WORKER.md` | worker.js — все API, бизнес-правила |
-| `FILE_MAP_BOT.md` | bot.js, src/bot/* — команды, обработчики |
+| `FILE_MAP.md` | Главный индекс: список файлов, статусы частей проекта, быстрый поиск |
+| `FILE_MAP_UI.md` | index.html / vk.html / privacy.html — где что находится |
+| `FILE_MAP_WORKER.md` | статус worker-репозитория и известные API |
+| `FILE_MAP_BOT.md` | статус bot-репозитория `mrktggod/4e-bot` |
 
 Читай нужный FILE_MAP_*.md → найди строки → читай только их (offset + limit).
 При изменениях — обнови FILE_MAP (правила внутри FILE_MAP.md).
@@ -30,18 +30,15 @@
 ## Папки проекта
 
 ```
-C:\Users\shelc\Desktop\4\Версия\
-├── 4e-app\              ← Mini App (Telegram + VK)
-│   ├── index.html       ← Telegram Mini App
-│   ├── vk.html          ← VK Mini App
-│   └── DEVELOPMENT_LOG.md
-├── 4e-worker\           ← Cloudflare Worker + Telegram бот
-│   ├── worker.js        ← Worker (минифицирован)
-│   └── bot.js           ← Telegram бот
-└── docs\
-    ├── tasks\           ← задачи для Мимо (атомарные)
-    │   └── done\        ← выполненные задачи
-    └── TASK_TEMPLATE.md ← шаблон задачи
+/Users/alexku/Documents/4 проект/
+├── index.html           ← Telegram Mini App
+├── vk.html              ← VK Mini App
+├── privacy.html         ← Политика конфиденциальности
+├── FILE_MAP*.md         ← Карты файлов для агентов
+├── DEVELOPMENT_LOG.md   ← Канонический технический лог
+├── shared/              ← Общие логи, история, roadmap команды
+├── pm/                  ← Баги, backlog, QA, release checklist
+└── docs/tasks/          ← задачи для Мимо (атомарные)
 ```
 
 ---
@@ -52,13 +49,15 @@ C:\Users\shelc\Desktop\4\Версия\
 
 1. **git log** — что задеплоили
 ```
-cd C:\Users\shelc\Desktop\4\Версия\4e-app
+cd "/Users/alexku/Documents/4 проект"
 git log --oneline -10
 ```
 
 2. **Открытые проблемы** в DEVELOPMENT_LOG.md — раздел "Известные проблемы"
 
-3. **Выполненные задачи** в `docs/tasks/done/` — что сделал Мимо
+3. **Выполненные задачи** в `docs/tasks/done/`, если папка существует — что сделал Мимо
+4. **Командный журнал** в `shared/WORK_LOG.md`
+5. **Баги и QA** в `pm/bugs.md` и `pm/qa-checklist.md`
 
 ### После проверки:
 - Обнови раздел "Известные проблемы" в DEVELOPMENT_LOG.md

@@ -30,11 +30,16 @@ Worker: https://restless-lab-d737.shelckograff.workers.dev
   CLAUDE.md           ← Этот файл
   DEVELOPMENT_LOG.md  ← Канонический лог изменений
   AGENTS.md           ← Правила для агентов
-  CODEX_INSTRUCTIONS.md ← Детальные инструкции для Codex
+  FILE_MAP.md         ← Главная карта файлов для агентов
+  FILE_MAP_UI.md      ← Карта index.html / vk.html / privacy.html
   shared/
     ROADMAP.md        ← Стратегическая дорожная карта
     DEVELOPMENT_HISTORY.md ← Сводная история разработки
     WORK_LOG.md       ← Журнал задач команды (пишут все агенты)
+  pm/
+    bugs.md           ← Баги, входящие, отчёт для разработки
+    roadmap.md        ← PM-roadmap
+    qa-checklist.md   ← Smoke/regression checklist
 ```
 
 ## Команда агентов
@@ -74,9 +79,9 @@ Codex берёт одну задачу, делает, коммитит, стоп
 
 ## Навигация по index.html (5000+ строк)
 
-1. Сначала читай `FILE_MAP_UI.md` — там диапазоны строк по секциям
-2. Читай только нужную секцию через `offset` + `limit`
-3. CSS: строки 1–1300 | HTML: 1301–2800 | JS: 2801–4928
+1. Сначала читай `FILE_MAP.md`, затем `FILE_MAP_UI.md` — там диапазоны строк по секциям.
+2. Читай только нужную секцию через диапазоны строк.
+3. Текущая структура `index.html`: CSS 12–969 | HTML 971–2844 | JS 2845–5776.
 
 ## Текущие приоритеты (июнь 2026)
 
@@ -86,7 +91,7 @@ Codex берёт одну задачу, делает, коммитит, стоп
 - [ ] **Фаза 12** — починить email через Resend + сброс пароля
 
 Патчи лежат в: `C:\Users\shelc\Desktop\4\Версия\redesign\patches\`  
-Детальные инструкции: `CODEX_INSTRUCTIONS.md`
+Если локальных патчей нет в checkout, сначала уточнить источник патча и не искать `CODEX_INSTRUCTIONS.md` как обязательный файл репозитория.
 
 ## Перед началом работы
 
