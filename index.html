@@ -87,6 +87,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .login-input:focus{border-color:var(--green)}
 .login-input::placeholder{color:var(--muted)}
 .login-btn{width:100%;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;padding:15px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif}
+.form-error{display:none;font-size:12px;color:#ff6060;line-height:1.4;margin-top:-4px}
+.form-error.show{display:block}
 .login-divider{display:flex;align-items:center;gap:12px;width:100%;margin:4px 0}
 .login-divider span{font-size:12px;color:var(--muted)}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -1131,7 +1133,8 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
     <div style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;text-align:center">Сброс пароля</div>
     <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:32px">Введи email и мы отправим<br>ссылку для сброса пароля</div>
     <div class="login-form" style="width:100%">
-      <input class="login-input" id="forgot-email" type="email" placeholder="Email" autocomplete="off"/>
+      <input class="login-input" id="forgot-email" type="email" placeholder="Email" autocomplete="email" oninput="setForgotPasswordError('')"/>
+      <div class="form-error" id="forgot-email-error"></div>
       <button class="login-btn" id="forgot-submit-btn" onclick="doForgotPassword()">Отправить ссылку</button>
       <div style="text-align:center;margin-top:8px">
         <span onclick="showScreen('login')" style="font-size:12px;color:var(--muted);cursor:pointer">← Вернуться ко входу</span>
@@ -3691,7 +3694,7 @@ function showScreen(id){
   }
   // Hide global-nav on screens that have their own nav or no nav needed
   const nav=document.getElementById('global-nav');
-  const noNav=['login','voice','home','chats','msng-settings','chat-conv'];
+  const noNav=['onboarding','login','forgot-password','reset-password','voice','home','chats','msng-settings','chat-conv'];
   if(nav)nav.classList.toggle('hidden',noNav.includes(id));
   // bottom-nav-v2 is inside #home so it's only visible when home is active — no action needed
   const hs=document.querySelector('.scroll-body');
@@ -5240,26 +5243,58 @@ function showForgotPassword(){
   document.getElementById('forgot-success').style.display = 'none';
   document.getElementById('forgot-inner').style.display = 'flex';
   const emailEl = document.getElementById('forgot-email');
+  setForgotPasswordError('');
   // Pre-fill email if was entered
   const loginEmail = document.getElementById('login-email')?.value;
   if(loginEmail && emailEl) emailEl.value = loginEmail;
 }
 
+function setForgotPasswordError(message){
+  const err = document.getElementById('forgot-email-error');
+  const emailEl = document.getElementById('forgot-email');
+  if(err){
+    err.textContent = message || '';
+    err.classList.toggle('show', !!message);
+  }
+  if(emailEl) emailEl.style.borderColor = message ? '#ff6060' : '';
+}
+
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 async function doForgotPassword(){
   const email = document.getElementById('forgot-email')?.value.trim();
-  if(!email){ showToast('Введи email'); return; }
+  if(!email){
+    setForgotPasswordError('Введите email');
+    showToast('Введите email');
+    return;
+  }
+  if(!isValidEmail(email)){
+    setForgotPasswordError('Введите корректный email');
+    showToast('Введите корректный email');
+    return;
+  }
+  setForgotPasswordError('');
   const btn = document.getElementById('forgot-submit-btn');
   btn.disabled = true; btn.textContent = 'Отправляем...';
   try {
-    await fetch(WORKER + '/auth/forgot-password', {
+    const r = await fetch(WORKER + '/auth/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
-    // Всегда показываем успех (не раскрываем существует ли email)
-    document.getElementById('forgot-inner').style.display = 'none';
-    document.getElementById('forgot-success').style.display = 'block';
+    const d = await readJsonSafe(r);
+    if(r.ok && d.ok !== false){
+      // Не раскрываем существует ли email.
+      document.getElementById('forgot-inner').style.display = 'none';
+      document.getElementById('forgot-success').style.display = 'block';
+    } else {
+      setForgotPasswordError(d.error || 'Не удалось отправить письмо. Попробуйте позже.');
+      showToast(d.error || 'Не удалось отправить письмо');
+    }
   } catch(e) {
+    setForgotPasswordError('Нет соединения. Попробуйте ещё раз.');
     showToast('Нет соединения');
   }
   btn.disabled = false; btn.textContent = 'Отправить ссылку';

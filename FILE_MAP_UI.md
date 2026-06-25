@@ -7,70 +7,70 @@
 | Диапазон | Блок | Что внутри |
 | --- | --- | --- |
 | 1-11 | Head scripts | Telegram SDK, VK bridge, marked |
-| 12-970 | CSS | Тема, layout, экраны, карточки задач, чаты, профиль, responsive |
-| 972-2844 | HTML screens | Все экраны приложения и overlays |
-| 2846-5810 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
+| 12-973 | CSS | Тема, layout, экраны, карточки задач, чаты, профиль, responsive |
+| 975-2850 | HTML screens | Все экраны приложения и overlays |
+| 2852-5845 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
 
 ### HTML screens
 
 | Строка | Screen ID | Назначение |
 | ---: | --- | --- |
-| 976 | `onboarding` | Первый запуск |
-| 1123 | `forgot-password` | Запрос сброса пароля |
-| 1146 | `reset-password` | Новый пароль по токену |
-| 1172 | `login` | Вход и регистрация |
-| 1223 | `home` | Главный экран задач |
-| 1383 | `write` | Написать сообщение |
-| 1418 | `ask` | AI-чат |
-| 1453 | `task-detail` | Детали задачи |
-| 1586 | `calendar` | Календарь |
-| 1623 | `statistics` | Статистика |
-| 1675 | `notifications` | Уведомления |
-| 1695 | `profile` | Профиль |
-| 1725 | `subscription` | Подписка |
-| 1805 | `payment` | Оплата |
-| 1858 | `payment-success` | Успешная оплата |
-| 1882 | `notif-settings` | Настройки уведомлений |
-| 1930 | `security` | Безопасность |
-| 1976 | `privacy-center` | Центр приватности |
-| 2056 | `change-password` | Смена пароля |
-| 2089 | `sessions` | Сессии |
-| 2124 | `devices` | Устройства |
-| 2151 | `login-history` | История входов |
-| 2184 | `theme-settings` | Тема |
-| 2219 | `language-settings` | Язык |
-| 2268 | `support` | Поддержка |
-| 2314 | `faq` | FAQ |
-| 2363 | `write-support` | Сообщение в поддержку |
-| 2397 | `telegram-support` | Telegram-поддержка |
-| 2424 | `chats` | Список чатов |
-| 2524 | `chat-conv` | Переписка |
-| 2553 | `msng-settings` | Настройки мессенджеров |
-| 2603 | `new-task` | Новая задача |
-| 2637 | `task-confirm` | Подтверждение задачи |
-| 2667 | `task-move` | Перенос задачи |
-| 2684 | `task-done` | Завершение задачи |
-| 2698 | `voice` | Голосовой режим |
+| 981 | `onboarding` | Первый запуск |
+| 1128 | `forgot-password` | Запрос сброса пароля |
+| 1152 | `reset-password` | Новый пароль по токену |
+| 1178 | `login` | Вход и регистрация |
+| 1229 | `home` | Главный экран задач |
+| 1389 | `write` | Написать сообщение |
+| 1424 | `ask` | AI-чат |
+| 1459 | `task-detail` | Детали задачи |
+| 1592 | `calendar` | Календарь |
+| 1629 | `statistics` | Статистика |
+| 1681 | `notifications` | Уведомления |
+| 1701 | `profile` | Профиль |
+| 1731 | `subscription` | Подписка |
+| 1811 | `payment` | Оплата |
+| 1864 | `payment-success` | Успешная оплата |
+| 1888 | `notif-settings` | Настройки уведомлений |
+| 1936 | `security` | Безопасность |
+| 1982 | `privacy-center` | Центр приватности |
+| 2062 | `change-password` | Смена пароля |
+| 2095 | `sessions` | Сессии |
+| 2130 | `devices` | Устройства |
+| 2157 | `login-history` | История входов |
+| 2190 | `theme-settings` | Тема |
+| 2225 | `language-settings` | Язык |
+| 2274 | `support` | Поддержка |
+| 2320 | `faq` | FAQ |
+| 2369 | `write-support` | Сообщение в поддержку |
+| 2403 | `telegram-support` | Telegram-поддержка |
+| 2430 | `chats` | Список чатов |
+| 2530 | `chat-conv` | Переписка |
+| 2559 | `msng-settings` | Настройки мессенджеров |
+| 2609 | `new-task` | Новая задача |
+| 2643 | `task-confirm` | Подтверждение задачи |
+| 2673 | `task-move` | Перенос задачи |
+| 2690 | `task-done` | Завершение задачи |
+| 2704 | `voice` | Голосовой режим |
 
 ### JavaScript ranges
 
 | Диапазон | Назначение | Ключевые функции |
 | --- | --- | --- |
-| 2846-2926 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, `isVkMiniAppContext` |
-| 2927-3168 | App init and auth | `initApp`, `doRegister`, `doLogin`, `loginWithTelegram`, `doLogout` |
-| 3169-3299 | Payments and subscription | `selectPlan`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
-| 3300-3399 | Onboarding, system prompt, trial | `obInit`, `obRender`, `obDone`, `checkTrial` |
-| 3400-3666 | Tasks, home, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `markDoneKV` |
-| 3667-3929 | Navigation, notifications, lists, contact | `showScreen`, `setNavActive`, `openAsk`, `openNotifications`, `renderNotifs`, `openFilteredTaskList` |
-| 3930-4198 | Task detail and editing | `openTask`, `editDetailField`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
-| 4199-4274 | Message generation | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg` |
-| 4275-4507 | AI chat and task creation | `loadAskHistoryRemote`, `createTaskFromChat`, `sendAsk`, `showToast` |
-| 4508-4620 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `sendVoiceMessage` |
-| 4621-4798 | Subscreens and privacy API | `_showSubScreenBase`, `syncD1AuthSession`, `loadPrivacyCenter`, `recordPrivacyConsent` |
-| 4799-4996 | Settings | `saveNotifPref`, `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
-| 4997-5362 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
-| 5363-5766 | Chats and messages | `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
-| 5767-5810 | VK adapter inside TG app | VK safe area, haptics, swipe back, storage sync |
+| 2852-2933 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, `isVkMiniAppContext` |
+| 2934-3178 | App init and auth | `initApp`, `doRegister`, `doLogin`, `loginWithTelegram`, `doLogout` |
+| 3179-3309 | Payments and subscription | `selectPlan`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
+| 3310-3417 | Onboarding, system prompt, trial | `obInit`, `obRender`, `obDone`, `checkTrial` |
+| 3418-3681 | Tasks, home, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `markDoneKV` |
+| 3682-3964 | Navigation, notifications, lists, contact | `showScreen`, `setNavActive`, `openAsk`, `openNotifications`, `renderNotifs`, `openFilteredTaskList` |
+| 3965-4208 | Task detail and editing | `openTask`, `editDetailField`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
+| 4209-4284 | Message generation | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg` |
+| 4285-4517 | AI chat and task creation | `loadAskHistoryRemote`, `createTaskFromChat`, `sendAsk`, `showToast` |
+| 4518-4630 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `sendVoiceMessage` |
+| 4631-4808 | Subscreens and privacy API | `_showSubScreenBase`, `syncD1AuthSession`, `loadPrivacyCenter`, `recordPrivacyConsent` |
+| 4809-5006 | Settings | `saveNotifPref`, `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
+| 5007-5404 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
+| 5405-5806 | Chats and messages | `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
+| 5807-5845 | VK adapter inside TG app | VK safe area, haptics, swipe back, storage sync |
 
 ## `vk.html` — VK Mini App
 
