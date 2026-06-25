@@ -24,6 +24,16 @@
 
 ### 2026-06-25 — Codex
 
+**Задача:** Ввести понятные заголовки коммитов для всей команды
+**Результат:** Добавлен `shared/COMMIT_CONVENTION.md`, правило подключено в инструкции Codex/Claude/Cowork и README
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Использовать формат `type(scope): что изменилось` во всех следующих коммитах
+
+---
+
+### 2026-06-25 — Codex
+
 **Задача:** Убрать локальные абсолютные пути из документации и добавить защиту
 **Результат:** Локальные Mac/Windows user-пути заменены на переносимые `<repo-root>` / `<worker-repo-root>` / относительные пути; добавлены `scripts/check-portable-paths.sh`, `.githooks/pre-commit` и GitHub Actions path guard
 **Коммит:** `docs: remove local absolute paths from docs`

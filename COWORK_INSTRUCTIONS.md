@@ -65,6 +65,7 @@ git log --oneline -10
 - Добавь краткую запись в shared/WORK_LOG.md (формат: задача / результат / коммит / статус)
 - Если видишь паттерн ошибок — добавь в раздел "КРИТИЧЕСКИЕ ПРАВИЛА ДЛЯ АГЕНТОВ"
 - Пушить оба файла вместе с кодом (или отдельным коммитом)
+- Если готовится коммит — проверь заголовок по `shared/COMMIT_CONVENTION.md`
 
 ---
 
@@ -114,7 +115,7 @@ $bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()
 
 | Компонент | Команда | Время |
 |-----------|---------|-------|
-| Mini App | `git add -A; git commit -m "..."; git push` | 1-2 мин |
+| Mini App | `git add -A; git commit -m "type(scope): что изменилось"; git push` | 1-2 мин |
 | Worker | `cd 4e-worker; npx wrangler deploy` | сразу |
 | Bot | push в 4e-bot репо → Railway автодеплой | 1-2 мин |
 

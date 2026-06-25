@@ -36,6 +36,7 @@ Worker: https://restless-lab-d737.shelckograff.workers.dev
     ROADMAP.md        ← Стратегическая дорожная карта
     DEVELOPMENT_HISTORY.md ← Сводная история разработки
     WORK_LOG.md       ← Журнал задач команды (пишут все агенты)
+    COMMIT_CONVENTION.md ← Правила понятных заголовков коммитов
   pm/
     bugs.md           ← Баги, входящие, отчёт для разработки
     roadmap.md        ← PM-roadmap
@@ -73,6 +74,7 @@ Worker: https://restless-lab-d737.shelckograff.workers.dev
 - Перед пушем всегда `git pull --rebase` (Codex может пушить параллельно)
 - После `git reset --hard` нужен `git push --force`
 - Рабочий редактор: `git config --global core.editor notepad`
+- Заголовки коммитов писать по `shared/COMMIT_CONVENTION.md`: `type(scope): что изменилось`
 
 ### 5. Одна фаза за сессию
 Codex берёт одну задачу, делает, коммитит, стоп. Не начинает следующую без нового промпта.

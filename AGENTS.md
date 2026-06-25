@@ -90,6 +90,8 @@ Write-Host "После правки: $($after.Count) совпадений"
 - После `git reset --hard` нужен `git push --force`
 - Конфликты при `git revert` → `git revert --abort` + `git reset --hard <hash>`
 - Перед правкой — сделать резервную копию: `Copy-Item "4e-app\index.html" "4e-app\index.backup_$(Get-Date -f yyyyMMdd_HHmm).html"`
+- Заголовки коммитов писать по `shared/COMMIT_CONVENTION.md`: `type(scope): что изменилось`
+- Не использовать заголовки вроде `fix`, `update`, `правки`, `final`
 
 ### PowerShell
 - `;` вместо `&&`
