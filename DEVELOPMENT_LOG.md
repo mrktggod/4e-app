@@ -58,6 +58,17 @@
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
 
+## 2026-06-26 — BACK-001: Resend email secret для Worker (Codex)
+
+**Что сделано:** В отдельном worker-репозитории `4e-worker` создана ветка `fix/resend-email-secret` и коммит `086f19b`. Из `worker.js` удалён hardcoded `RESEND_KEY`; `sendEmail()` теперь читает runtime secret `RESEND_KEY`, не падает Worker 1101 при отсутствующем secret, логирует конфигурационную ошибку/ошибку Resend и возвращает `false`. `/auth/forgot-password` теперь не сообщает пользователю ложный успех для существующего аккаунта, если письмо не отправилось, а возвращает контролируемый `502`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `rg -n "re_[A-Za-z0-9_]+" worker.js` не нашёл hardcoded Resend key; `git diff --check` прошёл; `wrangler deploy --dry-run --config wrangler.toml` собрал Worker (`Total Upload: 55.77 KiB / gzip: 10.35 KiB`) и показал binding `env.KV`. Проверка `wrangler secret list` и production deploy заблокированы окружением: Wrangler требует `CLOUDFLARE_API_TOKEN` в non-interactive session.
+
+**Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`) в `4e-worker`.
+
+---
 ## 2026-06-25 — BACK-003: биометрическое согласие 152-ФЗ (Codex)
 
 **Что сделано:** В `index.html` установлен патч `09_biometric_consent.html` перед закрывающим `</body>`. `openVoice()` теперь сначала вызывает `window.biometricConsentRequired()`, поэтому при первом нажатии на микрофон открывается экран согласия на обработку голоса. В форме входа добавлена ссылка на `privacy.html`, а в разделе безопасности добавлена строка отзыва согласия. Обновлены `FILE_MAP.md`, `FILE_MAP_UI.md`, `pm/backlog.md` и `pm/roadmap.md`.

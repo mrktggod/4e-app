@@ -22,6 +22,15 @@
 
 ## Лог
 
+### 2026-06-26 — Codex
+
+**Задача:** BACK-001 — Email через Resend, пользователи не получают писем
+**Результат:** В `4e-worker/worker.js` удалён hardcoded Resend key, отправка теперь использует runtime secret `RESEND_KEY`, ошибки Resend/fetch обрабатываются контролируемо, `/auth/forgot-password` возвращает `502` если письмо существующему пользователю не отправилось
+**Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`)
+**Статус:** ⚠️ частично
+**Следующий шаг:** Настроить `CLOUDFLARE_API_TOKEN` для Wrangler, проверить наличие secret `RESEND_KEY`, задеплоить Worker и выполнить live smoke до получения письма/Resend Dashboard
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** BACK-003 — установить Фазу 9: биометрическое согласие 152-ФЗ для голосового ввода
