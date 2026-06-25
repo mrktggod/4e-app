@@ -965,6 +965,9 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
 @media(min-width:768px){.bottom-nav-v2,.global-nav,#global-nav{display:none!important}#app{flex-direction:row;height:100dvh;overflow:hidden}.tablet-sidebar{width:var(--sidebar-w);height:100%;display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid var(--border);background:var(--bg);padding:20px 0 24px;z-index:10}.sidebar-logo{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:36px;height:36px;margin:0 20px 28px}.sidebar-logo .lb{border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)}.sidebar-nav{flex:1;display:flex;flex-direction:column;gap:4px;padding:0 12px}.sidebar-nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;cursor:pointer;color:var(--text2);font-size:14px;font-weight:500;transition:all .15s}.sidebar-nav-item:hover{background:var(--card2);color:var(--text)}.sidebar-nav-item.active{background:var(--green3);color:var(--green)}.sidebar-nav-item svg{flex-shrink:0}.sidebar-voice-btn{margin:12px;padding:13px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;transition:opacity .15s}.sidebar-voice-btn:hover{opacity:.9}.sidebar-profile{padding:12px 16px 0;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer}.screen{flex:1;height:100%;overflow:hidden}.screen.active{display:flex;flex-direction:column}.back-btn{display:none}#home .back-btn{display:none}}
 @media(min-width:1024px){#app{display:grid;grid-template-columns:var(--sidebar-w) 1fr var(--detail-w)}.detail-panel{border-left:1px solid var(--border);height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}#task-detail{position:static;display:flex!important;flex-direction:column;height:100%}#task-detail .back-bar{display:none}#home{border-right:1px solid var(--border)}#chats{display:grid;grid-template-columns:320px 1fr}#chat-conv{position:static;display:flex!important;border-left:1px solid var(--border)}#chat-conv .back-bar{display:none}#voice.active{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.5);display:flex!important;align-items:center;justify-content:center}#voice.active>div:last-child{background:var(--bg);border-radius:24px;width:420px;max-height:80vh;border:1px solid var(--border);overflow:hidden}#voice.active .back-bar{border-radius:24px 24px 0 0}}
 @media(min-width:1440px){:root{--sidebar-w:260px;--detail-w:420px}}
+/* ===== ПАТЧ 10 — WEB DESKTOP: MOBILE FRAME ===== */
+@media(min-width:768px){html,body{display:flex;justify-content:center;background:#060b04}#app{max-width:430px;width:100%;flex-direction:column!important;height:100dvh;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,.7)}.tablet-sidebar{display:none!important}.bottom-nav-v2,.global-nav,#global-nav{display:flex!important}.screen{flex:none!important;display:none!important;height:100%!important}.screen.active{display:flex!important;flex-direction:column!important}.back-btn{display:flex!important}}
+@media(min-width:1024px){#app{display:flex!important;grid-template-columns:none!important}#task-detail{display:none!important}#task-detail.active{display:flex!important}#voice{display:none!important;position:fixed!important;inset:0;z-index:300}#voice.active{display:flex!important;align-items:center;justify-content:center}#voice>div:last-child{background:var(--bg);border-radius:24px;width:420px;max-height:80vh;border:1px solid var(--border);overflow:hidden;margin:auto}#chat-conv{display:none!important}#chat-conv.active{display:flex!important;position:static!important}#chats{display:none!important}#chats.active{display:flex!important;grid-template-columns:none!important}.detail-panel{display:none!important}#home{border-right:none!important}}
 @supports(padding:env(safe-area-inset-bottom)){.bottom-nav-v2{padding-bottom:calc(8px + env(safe-area-inset-bottom))}.screen{padding-top:env(safe-area-inset-top)}}
 
 </style>
@@ -2982,8 +2985,12 @@ async function initApp(){
 const ADMIN_EMAILS=['shelckograff@gmail.com'];
 const ADMIN_TG_IDS=['267468814'];
 function isAdmin(){
+  // Проверяем tgUser (доступен сразу из Telegram WebApp)
+  if(tgUser?.id&&ADMIN_TG_IDS.includes(String(tgUser.id))) return true;
   if(!currentUser) return false;
-  return ADMIN_EMAILS.includes(currentUser.email)||ADMIN_TG_IDS.includes(String(currentUser.telegramId||''));
+  return ADMIN_EMAILS.includes(currentUser.email)
+    ||ADMIN_TG_IDS.includes(String(currentUser.telegramId||''))
+    ||ADMIN_TG_IDS.includes(String(currentUser.id||''));
 }
 
 function applyUserInfo(){
@@ -3682,9 +3689,9 @@ function showScreen(id){
     const scroller=s.querySelector('[data-screen-scroll],.scroll-body');
     if(scroller)scroller.scrollTop=0;
   }
-  // Hide global-nav (old nav) — we use bottom-nav-v2 on home, global-nav on other screens
+  // Hide global-nav on screens that have their own nav or no nav needed
   const nav=document.getElementById('global-nav');
-  const noNav=['login','voice','home'];
+  const noNav=['login','voice','home','chats','msng-settings','chat-conv'];
   if(nav)nav.classList.toggle('hidden',noNav.includes(id));
   // bottom-nav-v2 is inside #home so it's only visible when home is active — no action needed
   const hs=document.querySelector('.scroll-body');
@@ -4084,7 +4091,7 @@ function completeTask(taskId){
   if(!taskId) return;
   const btn=document.getElementById('btn-task-complete');
   markDoneKV(btn, taskId);
-  setTimeout(()=>{showScreen('home');loadTasks();},500);
+  setTimeout(()=>{const cur=document.querySelector('.screen.active');if(!cur||cur.id==='task-detail'){showScreen('home');setNavActive('tasks');loadTasks();}},500);
 }
 
 function renderDetailTags(){
@@ -5361,6 +5368,7 @@ const chipTexts = {
 // ── Открытие экрана чатов ─────────────────────────────────────
 
 function openChats() {
+  console.log('[openChats] called');
   showScreen('chats');
   setNavActive('chats');
   const nav = document.getElementById('global-nav');
@@ -5732,7 +5740,7 @@ function filterChats(q) {
 
 function openTaskFromChat() {
   showToast('Задача зафиксирована ботом ✓');
-  setTimeout(goHome, 800);
+  setTimeout(()=>{const cur=document.querySelector('.screen.active');if(!cur||cur.id==='chat-conv')goHome();},800);
 }
 
 

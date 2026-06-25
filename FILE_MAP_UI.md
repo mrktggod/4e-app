@@ -9,7 +9,7 @@
 | 1-11 | Head scripts | Telegram SDK, VK bridge, marked |
 | 12-970 | CSS | Тема, layout, экраны, карточки задач, чаты, профиль, responsive |
 | 972-2844 | HTML screens | Все экраны приложения и overlays |
-| 2846-5802 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
+| 2846-5810 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
 
 ### HTML screens
 
@@ -69,8 +69,8 @@
 | 4621-4798 | Subscreens and privacy API | `_showSubScreenBase`, `syncD1AuthSession`, `loadPrivacyCenter`, `recordPrivacyConsent` |
 | 4799-4996 | Settings | `saveNotifPref`, `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
 | 4997-5362 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
-| 5363-5758 | Chats and messages | `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
-| 5759-5802 | VK adapter inside TG app | VK safe area, haptics, swipe back, storage sync |
+| 5363-5766 | Chats and messages | `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
+| 5767-5810 | VK adapter inside TG app | VK safe area, haptics, swipe back, storage sync |
 
 ## `vk.html` — VK Mini App
 

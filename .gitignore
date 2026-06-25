@@ -7,3 +7,4 @@ build/
 .env.*
 !.env.example
 index.backup_*.html
+index.merge_backup_*.html
