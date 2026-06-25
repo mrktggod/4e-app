@@ -1,4 +1,10 @@
-# Backlog — 4 AI-секретарь
+# PM Backlog — 4 AI-секретарь
+
+Оперативный backlog из реальной стратегии продукта.
+
+**Источник:** `shared/ROADMAP.md`, `DEVELOPMENT_LOG.md`, `shared/WORK_LOG.md`.
+
+**Правило:** не добавлять generic-задачи про “AI-ассистента для управления проектом”. Каждая задача должна вести к продукту 4 AI-секретарь: Telegram/VK Mini App, AI-секретарь, auth, tasks, privacy, payments, bot/worker.
 
 ## Правила приоритета
 
@@ -15,7 +21,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | BACK-001 | Email через Resend — пользователи не получают писем | Tech | P0 | Codex | Todo | Письмо доходит, видно в Resend Dashboard |
 | BACK-002 | Сброс пароля — бэкенд не реализован | Tech | P0 | Codex | Todo | /auth/reset-request и /auth/reset-confirm работают, письмо приходит |
-| BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done | Экран согласия появляется при первом нажатии на микрофон, privacy.html готова к деплою через commit/push |
+| BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done / QA | Экран согласия появляется при первом нажатии на микрофон, live-сценарий проверен в Telegram WebView |
 | BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Todo | Тестовый платёж проходит, webhook получен и обработан |
 
 ## Next
@@ -35,6 +41,13 @@
 | BACK-010 | Telegram Stars / ЮKassa | Monetization | P1 | Codex | Todo | Платёж проходит в TG |
 | BACK-011 | Командный Workspace | Product | P2 | Codex | Todo | Несколько пользователей в одном workspace |
 | BACK-012 | CSS-архитектура LESS + BEM + минификация | Tech | P2 | Codex | Todo | Стили компилируются из LESS, подключается styles.min.css |
+
+## Связь с Linear
+
+| Backlog | Linear | Комментарий |
+| --- | --- | --- |
+| Первичный баг-баш | ALE-5 | Сбор багов из ручного тестирования и оформление P0/P1 в отдельные issues |
+| P0/P1 из Now | Создавать по мере подтверждения | Каждая подтверждённая проблема получает отдельный Linear issue с labels `P0/P1` и `area:*` |
 
 ## Icebox
 
