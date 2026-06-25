@@ -84,12 +84,33 @@ Write-Host "После правки: $($after.Count) совпадений"
 
 **НИКОГДА не использовать:** `Set-Content`, `Out-File`, `-replace`, `>>` для файлов с кириллицей.
 
-### Git
-- Перед коммитом проверить актуальность GitHub: `git fetch origin` и `git status --short --branch`
+### Git — ОБЯЗАТЕЛЬНЫЙ СТАРТ КАЖДОЙ СЕССИИ
+
+**Первые две команды в каждой сессии — без исключений:**
+
+```bash
+git fetch origin
+git pull --rebase
+```
+
+Без этого не начинать работу. `main` связан с GitHub Pages — push сразу влияет на live.
+
+### Ветки — стратегия
+
+| Тип изменения | Ветка |
+|---|---|
+| Багфикс, кодовые правки | `fix/короткое-описание` |
+| Новая фича, экран | `feat/короткое-описание` |
+| Документация, процесс | `docs/короткое-описание` |
+| Hotfix P0, прямо в прод | `main` — только если быстро и понятно, с записью в лог |
+
+После работы: merge ветки в `main` через Pull Request или после проверки командой.
+
+### Остальные правила Git
 - Перед коммитом запустить `bash scripts/check-portable-paths.sh`; локально это также делает `.githooks/pre-commit`
 - После `git reset --hard` нужен `git push --force`
 - Конфликты при `git revert` → `git revert --abort` + `git reset --hard <hash>`
-- Перед правкой — сделать резервную копию: `Copy-Item "4e-app\index.html" "4e-app\index.backup_$(Get-Date -f yyyyMMdd_HHmm).html"`
+- Перед правкой `index.html` — резервная копия: `Copy-Item "index.html" "index.backup_$(Get-Date -f yyyyMMdd_HHmm).html"`
 - Заголовки коммитов писать по `shared/COMMIT_CONVENTION.md`: `type(scope): что изменилось`
 - Не использовать заголовки вроде `fix`, `update`, `правки`, `final`
 
