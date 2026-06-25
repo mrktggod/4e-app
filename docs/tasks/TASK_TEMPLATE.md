@@ -21,7 +21,7 @@
 
 ### Правка JS в vk.html
 ```
-ФАЙЛ: C:\Users\shelc\Desktop\4\Версия\4e-app\vk.html
+ФАЙЛ: <repo-root>/vk.html
 НАЙТИ: 'loadTasks();'
 ЗАМЕНИТЬ НА: 'loadTasks(); renderStats();'
 ПРОВЕРИТЬ: Select-String -Path vk.html -Pattern 'renderStats'
@@ -30,7 +30,7 @@
 
 ### Правка Worker
 ```
-ФАЙЛ: C:\Users\shelc\Desktop\4\Версия\4e-worker\worker.js
+ФАЙЛ: <worker-repo-root>/worker.js
 НАЙТИ: 'return handleProxy(request)'
 ЗАМЕНИТЬ НА: 'return handleProxy(request, session)'
 ПРОВЕРИТЬ: npx wrangler deploy --dry-run
@@ -39,7 +39,7 @@
 
 ### Только деплой без правок
 ```
-ПАПКА: C:\Users\shelc\Desktop\4\Версия\4e-app
+ПАПКА: <repo-root>
 КОМАНДА: git add -A; git commit -m "fix: <описание>"; git push
 ```
 

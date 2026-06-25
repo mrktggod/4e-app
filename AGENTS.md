@@ -2,7 +2,7 @@
 
 ## НАВИГАЦИЯ ПО ФАЙЛАМ — читай это ПЕРВЫМ
 
-Файлы проекта большие (index.html = 5778 строк). Никогда не читай файл целиком.
+Файлы проекта большие (index.html = 5812 строк). Никогда не читай файл целиком.
 
 **Алгоритм работы с кодом:**
 1. Прочитай `FILE_MAP.md` (главный индекс, ~3KB)
@@ -13,7 +13,7 @@
 | Файл карты | Для чего |
 |-----------|---------|
 | `FILE_MAP.md` | Быстрый поиск, список всех файлов, KV-схема |
-| `FILE_MAP_UI.md` | index.html (5778 строк) — CSS/HTML/JS по секциям |
+| `FILE_MAP_UI.md` | index.html (5812 строк) — CSS/HTML/JS по секциям |
 | `FILE_MAP_WORKER.md` | статус worker-репозитория, известные API эндпоинты |
 | `FILE_MAP_BOT.md` | статус bot-репозитория `mrktggod/4e-bot` |
 
@@ -85,6 +85,8 @@ Write-Host "После правки: $($after.Count) совпадений"
 **НИКОГДА не использовать:** `Set-Content`, `Out-File`, `-replace`, `>>` для файлов с кириллицей.
 
 ### Git
+- Перед коммитом проверить актуальность GitHub: `git fetch origin` и `git status --short --branch`
+- Перед коммитом запустить `bash scripts/check-portable-paths.sh`; локально это также делает `.githooks/pre-commit`
 - После `git reset --hard` нужен `git push --force`
 - Конфликты при `git revert` → `git revert --abort` + `git reset --hard <hash>`
 - Перед правкой — сделать резервную копию: `Copy-Item "4e-app\index.html" "4e-app\index.backup_$(Get-Date -f yyyyMMdd_HHmm).html"`
@@ -172,4 +174,4 @@ Write-Host "После правки: $($after.Count) совпадений"
 5. Миграция с KV на D1
 
 ### Редизайн — устанавливать по одной фазе за сессию:
-Фазы и патчи → `C:\Users\shelc\Desktop\4\Версия\CODEX_INSTRUCTIONS.md`
+Фазы и патчи → `redesign/CODEX_INSTRUCTIONS.md` или `redesign/patches/`, если эти файлы есть в текущем checkout. Если их нет — уточнить источник у команды.

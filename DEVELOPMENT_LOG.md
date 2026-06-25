@@ -58,6 +58,22 @@
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
 
+## 2026-06-25 — Убраны локальные пути и добавлен path guard (Codex)
+
+**Что сделано:**
+- В `COWORK_INSTRUCTIONS.md` абсолютный Mac-путь заменён на переносимый `<repo-root>` и универсальную команду перехода в локальную папку репозитория.
+- Старые Windows user-пути заменены на `<repo-root>`, `<worker-repo-root>` и относительные пути в `AGENTS.md`, `CLAUDE.md`, `docs/tasks/TASK_TEMPLATE.md`, `DEVELOPMENT_LOG.md`.
+- Добавлен `scripts/check-portable-paths.sh`, локальный `.githooks/pre-commit` и GitHub Actions workflow `.github/workflows/path-guard.yml`.
+- В локальном checkout включён `git config core.hooksPath .githooks`, чтобы проверка запускалась перед commit.
+
+**Проверка кодировки:** `index.html` не изменялся.
+
+**Тест:** `git fetch origin` перед правкой; локальная ветка не отставала от GitHub. `bash scripts/check-portable-paths.sh` проходит. Поиск по Mac/Windows user-путям не находит совпадений в репозитории.
+
+**Коммит:** `docs: remove local absolute paths from docs`
+
+---
+
 ## 2026-06-25 — Фикс пустого экрана, logout и active-состояния меню (Codex)
 
 **Что сделано:**
@@ -81,7 +97,7 @@
 **Что сделано:**
 - Созданы `FILE_MAP.md`, `FILE_MAP_UI.md`, `FILE_MAP_WORKER.md`, `FILE_MAP_BOT.md`
 - Добавлен `.gitignore` для системных и локальных файлов
-- Обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` под текущую папку `/Users/alexku/Documents/4 проект`
+- Обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` под текущий checkout репозитория
 - Обновлён `README.md` как быстрый старт для новых агентов
 - Уточнён PM/QA-контур через `pm/bugs.md` и `pm/roadmap.md`
 
@@ -179,7 +195,7 @@
 **Состояние:** index.html чистый, кириллица в порядке, бэкапы готовы
 
 **Следующий сеанс:** начать с Фазы 1 — `redesign/patches/01_light_theme.css`  
-Патчи лежат в: `C:\Users\shelc\Desktop\4\Версия\redesign\patches\`
+Патчи лежат в `redesign/patches/`, если эта папка есть в текущем checkout.
 
 ---
 

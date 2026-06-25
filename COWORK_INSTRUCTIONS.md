@@ -30,7 +30,7 @@
 ## Папки проекта
 
 ```
-/Users/alexku/Documents/4 проект/
+<repo-root>/
 ├── index.html           ← Telegram Mini App
 ├── vk.html              ← VK Mini App
 ├── privacy.html         ← Политика конфиденциальности
@@ -49,7 +49,7 @@
 
 1. **git log** — что задеплоили
 ```
-cd "/Users/alexku/Documents/4 проект"
+cd "<локальная папка репозитория 4e-app>"
 git log --oneline -10
 ```
 
