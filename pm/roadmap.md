@@ -48,6 +48,52 @@
 | Логи и мониторинг | События login/register/reset/logout, ошибки, подозрительные попытки, без записи паролей/секретов/полных токенов | P1 | Можно расследовать auth-инцидент без утечки чувствительных данных в логах |
 | QA | Smoke + regression для всех auth-сценариев на mobile, VK Mini App, Telegram Mini App и обычном браузере | P0 | Есть чеклист, прогоны отмечены, P0/P1 багов по auth не осталось |
 
+#### Порядок разработки
+
+| Шаг | Что делаем | Результат |
+| --- | --- | --- |
+| 1 | Auth audit: проверить текущие экраны, endpoint'ы, хранение токена, logout, reset-flow, VK/TG login и известные баги | Документ "Auth current state" со списком рисков и пробелов |
+| 2 | Описать единый auth-flow: first open, onboarding, register, login, forgot/reset password, logout, VK/TG linking | Карта переходов, ошибок, success-состояний и fallback-сценариев |
+| 3 | Закрыть P0/P1 проблемы reset password и пустых экранов | Пользователь не попадает в тупик после auth/reset-действий |
+| 4 | Привести frontend auth-state к единой логике | Все auth-кнопки, loading, disabled, inline-errors, timeout и retry работают предсказуемо |
+| 5 | Усилить backend security baseline | Rate limit, безопасные ошибки, одноразовые reset-token, хэши паролей, чистые логи |
+| 6 | Доработать сессии, logout и auth-guard | Старые/битые токены и прямые переходы на приватные экраны не открывают данные |
+| 7 | Связать VK/TG/Email в единую модель пользователя | Один человек не превращается в несколько независимых аккаунтов |
+| 8 | Пройти QA и security regression | Auth-flow подтверждён на mobile, VK Mini App, Telegram Mini App и обычном браузере |
+
+#### Implementation tickets
+
+| ID | Задача | Приоритет | Тип | Готово когда |
+| --- | --- | --- | --- | --- |
+| AUTH-001 | Провести audit текущей регистрации и авторизации | P0 | PM/Tech | Есть список готового, сломанного, рискованного и непокрытого тестами |
+| AUTH-002 | Описать auth-flow и edge cases | P0 | Product/UX | Есть карта сценариев и переходов для email, VK, TG, reset и logout |
+| AUTH-003 | Доработать UI входа/регистрации | P0 | Frontend | Есть loading, disabled, inline errors, success, retry, timeout fallback |
+| AUTH-004 | Закрыть пустые экраны после auth/reset-действий | P0 | Frontend | Любая ошибка или таймаут показывает понятное состояние и следующий шаг |
+| AUTH-005 | Реализовать безопасный forgot/reset password backend | P0 | Backend | Reset-token одноразовый, короткоживущий, не раскрывает существование email |
+| AUTH-006 | Добавить rate limit/throttling на auth endpoint'ы | P0 | Backend/Security | Ограничены login, register, forgot-password и reset-password |
+| AUTH-007 | Проверить хранение паролей и reset-token | P0 | Security | Нет plaintext, секреты не логируются, алгоритм хранения соответствует best practices |
+| AUTH-008 | Привести logout, session expiry и auth-guard к единой логике | P0 | Frontend/Backend | После logout/expiry приватные экраны недоступны, локальное состояние очищено |
+| AUTH-009 | Объединить VK/TG/Email в один профиль пользователя | P1 | Product/Backend | Повторный вход через другой канал связывает пользователя корректно |
+| AUTH-010 | Добавить безопасные auth-логи и мониторинг | P1 | Backend/Ops | Логи помогают расследовать инциденты и не содержат секретов |
+| AUTH-011 | Собрать auth smoke/regression checklist | P0 | QA | Есть повторяемый чеклист для browser, mobile, VK Mini App и Telegram Mini App |
+| AUTH-012 | Провести security review перед внешними пользователями | P0 | Security/QA | Критичных auth-рисков нет или они явно заблокировали релиз |
+
+#### Definition of Done
+
+- [ ] Новый пользователь может зарегистрироваться без тупиков и непонятных ошибок.
+- [ ] Существующий пользователь может войти через email/password.
+- [ ] Telegram/VK вход работает или показывает понятный fallback.
+- [ ] Пользователь может восстановить доступ через forgot/reset password.
+- [ ] Logout очищает локальное состояние и возвращает на login.
+- [ ] Приватные экраны без валидного токена не открываются.
+- [ ] Старые, битые и истёкшие токены не дают доступ к данным.
+- [ ] Нет пустых экранов после login, register, reset, logout, VK/TG auth и таймаутов.
+- [ ] Ошибки написаны понятно для пользователя и не раскрывают лишнюю security-информацию.
+- [ ] Rate limit/throttling включён на чувствительных auth-действиях.
+- [ ] Пароли, reset-token и session-token не логируются и не хранятся в открытом виде.
+- [ ] QA regression пройден на mobile, VK Mini App, Telegram Mini App и обычном браузере.
+- [ ] 152-ФЗ, privacy-ссылка и пользовательские согласия учтены в регистрационном flow.
+
 #### Security acceptance checklist
 
 - [ ] Пароли передаются только по HTTPS/TLS.
