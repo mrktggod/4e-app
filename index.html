@@ -89,6 +89,9 @@ html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(
 .login-btn{width:100%;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;padding:15px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif}
 .form-error{display:none;font-size:12px;color:#ff6060;line-height:1.4;margin-top:-4px}
 .form-error.show{display:block}
+.auth-result-overlay{position:fixed;inset:0;z-index:450;display:none;align-items:center;justify-content:center;background:var(--bg);padding:24px}
+.auth-result-overlay.active{display:flex}
+.auth-result-card{width:100%;max-width:360px;text-align:center}
 .login-divider{display:flex;align-items:center;gap:12px;width:100%;margin:4px 0}
 .login-divider span{font-size:12px;color:var(--muted)}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -1132,7 +1135,7 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
     </div>
     <div style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;text-align:center">Сброс пароля</div>
     <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:32px">Введи email и мы отправим<br>ссылку для сброса пароля</div>
-    <div class="login-form" style="width:100%">
+    <div class="login-form" id="forgot-form" style="width:100%">
       <input class="login-input" id="forgot-email" type="email" placeholder="Email" autocomplete="email" oninput="setForgotPasswordError('')"/>
       <div class="form-error" id="forgot-email-error"></div>
       <button class="login-btn" id="forgot-submit-btn" onclick="doForgotPassword()">Отправить ссылку</button>
@@ -1142,8 +1145,10 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
     </div>
     <div id="forgot-success" style="display:none;text-align:center;padding:20px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);border-radius:16px;margin-top:16px;width:100%">
       <div style="font-size:32px;margin-bottom:8px">📬</div>
-      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px">Письмо отправлено!</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.6">Проверь почту и перейди по ссылке в письме. Ссылка действительна 1 час.</div>
+      <div style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:4px">Проверь почту</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px">Если такой email есть в аккаунтах, мы отправили ссылку для сброса пароля. Она действительна 1 час.</div>
+      <button class="login-btn" onclick="finishForgotPasswordFlow()" style="padding:12px;margin-bottom:10px">Вернуться ко входу</button>
+      <button class="login-tg-btn" onclick="retryForgotPasswordFlow()" style="padding:12px">Отправить ещё раз</button>
     </div>
   </div>
 </div>
@@ -2781,6 +2786,18 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
 
 </div>
 
+<div class="auth-result-overlay" id="forgot-result-overlay" aria-live="polite">
+  <div class="auth-result-card">
+    <div style="width:56px;height:56px;border-radius:20px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
+    </div>
+    <div style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">Проверь почту</div>
+    <div id="forgot-result-text" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px">Если такой email есть в аккаунтах, мы отправили ссылку для сброса пароля. Она действительна 1 час.</div>
+    <button class="login-btn" onclick="finishForgotPasswordFlow()" style="margin-bottom:10px">Вернуться ко входу</button>
+    <button class="login-tg-btn" onclick="retryForgotPasswordFlow()">Отправить ещё раз</button>
+  </div>
+</div>
+
 <!-- ===== LOCK SCREEN ===== -->
 <div id="lock-screen">
   <div class="lock-logo"><div class="lb"></div><div class="lb"></div><div class="lb"></div><div class="lb"></div></div>
@@ -3684,6 +3701,7 @@ function setNavActive(id){
 }
 
 function showScreen(id){
+  if(id !== 'forgot-password' && typeof hideForgotPasswordResult === 'function') hideForgotPasswordResult();
   const publicScreens=['onboarding','login','forgot-password','reset-password'];
   if(!publicScreens.includes(id)&&!getToken()){
     id=localStorage.getItem(ONBOARD_K)?'login':'onboarding';
@@ -5245,13 +5263,47 @@ function updateLockStatusUI() {
 
 function showForgotPassword(){
   showScreen('forgot-password');
+  hideForgotPasswordResult();
   document.getElementById('forgot-success').style.display = 'none';
   document.getElementById('forgot-inner').style.display = 'flex';
+  document.getElementById('forgot-form').style.display = 'flex';
   const emailEl = document.getElementById('forgot-email');
   setForgotPasswordError('');
   // Pre-fill email if was entered
   const loginEmail = document.getElementById('login-email')?.value;
   if(loginEmail && emailEl) emailEl.value = loginEmail;
+}
+
+function hideForgotPasswordResult(){
+  const overlay = document.getElementById('forgot-result-overlay');
+  if(overlay) overlay.classList.remove('active');
+}
+
+function showForgotPasswordResult(){
+  showScreen('forgot-password');
+  setNavActive('');
+  const nav = document.getElementById('global-nav');
+  if(nav) nav.classList.add('hidden');
+  const overlay = document.getElementById('forgot-result-overlay');
+  if(overlay) overlay.classList.add('active');
+}
+
+function finishForgotPasswordFlow(){
+  hideForgotPasswordResult();
+  showScreen('login');
+  switchAuthTab('login');
+}
+
+function retryForgotPasswordFlow(){
+  hideForgotPasswordResult();
+  showForgotPassword();
+}
+
+function resetForgotPasswordForm(){
+  document.getElementById('forgot-success').style.display = 'none';
+  document.getElementById('forgot-form').style.display = 'flex';
+  const emailEl = document.getElementById('forgot-email');
+  if(emailEl) emailEl.focus();
 }
 
 function setForgotPasswordError(message){
@@ -5292,8 +5344,9 @@ async function doForgotPassword(){
     const d = await readJsonSafe(r);
     if(r.ok && d.ok !== false){
       // Не раскрываем существует ли email.
-      document.getElementById('forgot-inner').style.display = 'none';
+      document.getElementById('forgot-form').style.display = 'none';
       document.getElementById('forgot-success').style.display = 'block';
+      showForgotPasswordResult();
     } else {
       setForgotPasswordError(d.error || 'Не удалось отправить письмо. Попробуйте позже.');
       showToast(d.error || 'Не удалось отправить письмо');
