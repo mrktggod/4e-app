@@ -68,7 +68,7 @@
 
 **Коммит:** `a0965de` (`feat(auth): add password reset endpoints`) в `4e-worker`.
 
-**Статус:** частично — PR смёржен в `a173ebf`, production deploy выполнен (`729a046c-5849-4a26-9ced-8ee5bc4b1e44`), live API smoke прошёл: `/auth/reset-request` вернул `200 {"ok":true}`, `/auth/reset-confirm` с invalid token вернул контролируемый `400`. Нужен финальный ручной smoke реального сценария: письмо → ссылка → новый пароль → вход.
+**Статус:** выполнено — PR смёржен в `a173ebf`, production deploy выполнен (`729a046c-5849-4a26-9ced-8ee5bc4b1e44`), live API smoke прошёл: `/auth/reset-request` вернул `200 {"ok":true}`, `/auth/reset-confirm` с invalid token вернул контролируемый `400`. Финальный ручной smoke подтверждён 2026-06-27: письмо пришло, кнопка сброса открыла форму, пароль сохранён. Пользователь ввёл тот же пароль, но reset token и backend confirm-flow отработали.
 
 ---
 

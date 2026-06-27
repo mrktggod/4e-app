@@ -27,8 +27,8 @@
 **Задача:** BACK-002 — сброс пароля, backend reset endpoints
 **Результат:** В `4e-worker/worker.js` добавлены совместимые маршруты `/auth/reset-request` и `/auth/reset-confirm`; reset-confirm принимает `newPassword` и старое поле `password`; ссылка в письме ведёт на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
 **Коммит:** `a0965de` (`feat(auth): add password reset endpoints`)
-**Статус:** ⚠️ частично
-**Следующий шаг:** PR смёржен (`a173ebf`), Worker задеплоен (`729a046c`), live API smoke прошёл: `/auth/reset-request` → `200 {"ok":true}`, `/auth/reset-confirm` с invalid token → `400`. Остался финальный ручной smoke: письмо → ссылка → новый пароль → вход.
+**Статус:** ✅ выполнено
+**Следующий шаг:** BACK-002 закрыт: live smoke прошёл, письмо пришло, кнопка сброса открыла форму, пароль сохранён. Пользователь ввёл тот же пароль, но reset token и backend confirm-flow отработали.
 
 ---
 
