@@ -57,6 +57,23 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-27 — Единый roadmap-файл (Codex)
+
+**Что сделано:**
+- `pm/roadmap.md` объединён с `shared/ROADMAP.md` и удалён, чтобы в проекте остался один источник дорожной карты.
+- В `shared/ROADMAP.md` перенесены рабочие PM-секции Now / Next / Later, стратегические горизонты 2/3, принципы развития, ценовые ориентиры и правило не создавать второй roadmap.
+- Обновлены ссылки и навигация в `pm/backlog.md`, `FILE_MAP.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `AGENTS.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `rg -n "shared/ROADMAP|pm/roadmap|ROADMAP.md|roadmap.md|дорожн|roadmap"` для поиска ссылок; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A — коммит/пуш не выполнялся.
+
+**Статус:** выполнено — единственный актуальный roadmap теперь `shared/ROADMAP.md`.
+
+---
+
 ## 2026-06-27 — BACK-006: D1 storage for sessions and tasks (Codex)
 
 **Что сделано:** В `4e-worker/worker.js` добавлен D1 storage-layer для `session:*` и `tasks:*`: новые sessions сохраняются в `app_sessions`, task lists — в `app_task_lists`. Старые KV-значения для `session:*` и `tasks:*` остаются read fallback-ом и при первом чтении переносятся в D1. Worker переведён с legacy `addEventListener("fetch")` на ES module `export default { fetch(request, env) }`, потому что Cloudflare D1 binding требует module Worker. В `wrangler.toml` добавлен binding `DB` на `4e-production` (`6107948c-6c67-4c37-baa1-efea6c5c2860`). Добавлены D1 migrations: `0001_sessions_tasks.sql` как no-op note для уже занятой production schema `sessions/tasks`, и `0002_app_kv_state.sql` для `app_sessions`/`app_task_lists`.

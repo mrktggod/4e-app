@@ -36,7 +36,7 @@
 ├── privacy.html         ← Политика конфиденциальности
 ├── FILE_MAP*.md         ← Карты файлов для агентов
 ├── DEVELOPMENT_LOG.md   ← Канонический технический лог
-├── shared/              ← Общие логи, история, roadmap команды
+├── shared/              ← Общие логи, история и roadmap команды
 ├── pm/                  ← Баги, backlog, QA, release checklist
 └── docs/tasks/          ← задачи для Мимо (атомарные)
 ```

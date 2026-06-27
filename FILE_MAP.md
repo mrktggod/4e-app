@@ -18,11 +18,12 @@
 | `index.html` | 6169 | Telegram Mini App: CSS, HTML-экраны, JS-логика | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 1578 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `privacy.html` | 230 | Политика конфиденциальности | Можно читать целиком при правовых правках |
-| `AGENTS.md` | 181 | Правила для Codex и агентов | Читать перед задачей |
-| `CLAUDE.md` | 117 | Контекст проекта для Claude/Cowork | Читать при координации |
+| `AGENTS.md` | 200 | Правила для Codex и агентов | Читать перед задачей |
+| `CLAUDE.md` | 116 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 133 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 518 | Канонический технический лог | Обновлять после значимых правок |
-| `shared/WORK_LOG.md` | 144 | Общий журнал задач команды | Обновлять после выполненной задачи |
+| `DEVELOPMENT_LOG.md` | 603 | Канонический технический лог | Обновлять после значимых правок |
+| `shared/ROADMAP.md` | 113 | Единственный roadmap продукта: стратегия, горизонты, решения, Now / Next / Later | Читать при планировании |
+| `shared/WORK_LOG.md` | 204 | Общий журнал задач команды | Обновлять после выполненной задачи |
 | `shared/COMMIT_CONVENTION.md` | 64 | Правила понятных заголовков коммитов | Читать перед коммитом |
 | `scripts/check-portable-paths.sh` | 21 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
 | `.githooks/pre-commit` | 4 | Локальный hook для запуска path guard перед commit | Активировать через `git config core.hooksPath .githooks` |
@@ -34,7 +35,6 @@
 | --- | --- |
 | `pm/bugs.md` | Сбор багов, входящие, активные, отчёт для разработки |
 | `pm/backlog.md` | Фичи, улучшения, техзадачи |
-| `pm/roadmap.md` | PM-roadmap: Now / Next / Later |
 | `pm/qa-checklist.md` | Smoke, regression areas, acceptance criteria |
 | `pm/release-checklist.md` | Проверки до/после релиза |
 | `pm/assistant-evaluation.md` | Рубрика оценки качества AI-ассистента |

@@ -33,13 +33,12 @@ Worker: https://restless-lab-d737.shelckograff.workers.dev
   FILE_MAP.md         ← Главная карта файлов для агентов
   FILE_MAP_UI.md      ← Карта index.html / vk.html / privacy.html
   shared/
-    ROADMAP.md        ← Стратегическая дорожная карта
+    ROADMAP.md        ← Единственная дорожная карта продукта
     DEVELOPMENT_HISTORY.md ← Сводная история разработки
     WORK_LOG.md       ← Журнал задач команды (пишут все агенты)
     COMMIT_CONVENTION.md ← Правила понятных заголовков коммитов
   pm/
     bugs.md           ← Баги, входящие, отчёт для разработки
-    roadmap.md        ← PM-roadmap
     qa-checklist.md   ← Smoke/regression checklist
 ```
 

@@ -23,6 +23,16 @@
 ## Лог
 ### 2026-06-27 — Codex
 
+**Задача:** Объединить roadmap-документы в один источник
+**Результат:** `pm/roadmap.md` объединён с `shared/ROADMAP.md` и удалён; инструкции и ссылки обновлены, единственный актуальный roadmap теперь `shared/ROADMAP.md`
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Проверить, удобно ли команде вести стратегию и PM-план в одном `shared/ROADMAP.md`; затем закоммитить docs-изменения
+
+---
+
+### 2026-06-27 — Codex
+
 **Задача:** BACK-006 — миграция KV → D1 для sessions/tasks
 **Результат:** В `4e-worker` добавлен D1 binding `DB`, миграции `0001_sessions_tasks.sql`/`0002_app_kv_state.sql`, Worker переведён на ES module entrypoint для D1. Новые sessions пишутся в `app_sessions`, task lists — в `app_task_lists`; старые KV `session:*`/`tasks:*` читаются fallback-ом и автопереносятся при доступе. Production Worker задеплоен как version `0b66977a-0b23-4cdf-bd92-c5ec38e2ee1c`; live smoke подтвердил D1 rows для session/task и 404 в KV по новым `session:*`/`tasks:*`.
 **Коммит:** `0a035c9` (`feat(worker): store sessions and tasks in D1`)
