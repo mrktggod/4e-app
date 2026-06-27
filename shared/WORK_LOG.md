@@ -21,6 +21,17 @@
 ---
 
 ## Лог
+
+### 2026-06-27 — Codex
+
+**Задача:** BACK-008 — перенос ПД в Yandex Cloud PostgreSQL
+**Результат:** Задача не стартовала по коду: Yandex Cloud PostgreSQL cluster ещё не создан, credentials/connection settings отсутствуют. BACK-006 KV→D1 уже закрыт и смержен; следующий технический шаг заблокирован ручной подготовкой инфраструктуры.
+**Коммит:** `docs(process): close BACK-006, mark BACK-008 blocked`
+**Статус:** ⚠️ заблокировано
+**Следующий шаг:** Юрий создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings; после этого Codex продолжает BACK-008.
+
+---
+
 ### 2026-06-27 — Codex
 
 **Задача:** Объединить roadmap-документы в один источник
@@ -55,7 +66,7 @@
 
 **Задача:** BACK-004 — тестовый платёж, прогнать webhook до конца
 **Результат:** Production `/payment/webhook` проверен на временном тестовом пользователе: webhook вернул `code:0`, пользователь перешёл `trial` → `paid`, срок Premium увеличился с 30 до 60 дней. Тестовые KV-ключи `user:*`, `user_id:*`, `tx:*`, `notifs:*` удалены после smoke.
-**Коммит:** N/A (код не менялся)
+**Коммит:** `docs(process): close BACK-006, mark BACK-008 blocked`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Следующий backlog item — BACK-005: единая модель пользователя VK + TG + Email.
 
