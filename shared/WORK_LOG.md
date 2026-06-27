@@ -24,6 +24,16 @@
 
 ### 2026-06-27 — Codex
 
+**Задача:** BACK-013 — Семантический HTML + aria-label
+**Результат:** В `index.html` добавлены `<main>`, `<header>`, `<nav>` для app/root, главного экрана, voice header и нижней навигации; иконочные nav/action элементы получили `aria-label`, `role="button"` и `tabindex="0"`. Визуальные классы и JS id/onclick сохранены.
+**Коммит:** `refactor(ui): add semantic HTML landmarks`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Следующая Codex-задача без внешних credentials — BACK-014: подготовка кода под PostgreSQL заранее.
+
+---
+
+### 2026-06-27 — Codex
+
 **Задача:** Синхронизировать roadmap/backlog со статусом от Юры
 **Результат:** В `shared/ROADMAP.md` и `pm/backlog.md` зафиксированы закрытые BACK-001/002/003/004/005/006/012 и Resend-домен; РКН и Yandex Cloud PostgreSQL отмечены как ручные действия Алексея; Codex-задачи сейчас — семантический HTML и подготовка PostgreSQL-кода
 **Коммит:** N/A
@@ -41,6 +51,7 @@
 **Следующий шаг:** После merge можно продолжать следующую задачу из roadmap/backlog; BACK-008 остаётся заблокированным до Yandex Cloud credentials.
 
 ---
+
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-008 — перенос ПД в Yandex Cloud PostgreSQL
