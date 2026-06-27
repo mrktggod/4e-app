@@ -68,7 +68,7 @@
 
 **Коммит:** `a0965de` (`feat(auth): add password reset endpoints`) в `4e-worker`.
 
-**Статус:** частично — нужен PR/merge worker branch, production deploy и live smoke реального сценария.
+**Статус:** частично — PR смёржен в `a173ebf`, production deploy выполнен (`729a046c-5849-4a26-9ced-8ee5bc4b1e44`), live API smoke прошёл: `/auth/reset-request` вернул `200 {"ok":true}`, `/auth/reset-confirm` с invalid token вернул контролируемый `400`. Нужен финальный ручной smoke реального сценария: письмо → ссылка → новый пароль → вход.
 
 ---
 

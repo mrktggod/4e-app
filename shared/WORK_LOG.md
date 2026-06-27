@@ -28,7 +28,7 @@
 **Результат:** В `4e-worker/worker.js` добавлены совместимые маршруты `/auth/reset-request` и `/auth/reset-confirm`; reset-confirm принимает `newPassword` и старое поле `password`; ссылка в письме ведёт на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
 **Коммит:** `a0965de` (`feat(auth): add password reset endpoints`)
 **Статус:** ⚠️ частично
-**Следующий шаг:** Создать/смёржить PR `fix/password-reset-endpoints`, задеплоить Worker и пройти live smoke: письмо → ссылка → новый пароль → вход.
+**Следующий шаг:** PR смёржен (`a173ebf`), Worker задеплоен (`729a046c`), live API smoke прошёл: `/auth/reset-request` → `200 {"ok":true}`, `/auth/reset-confirm` с invalid token → `400`. Остался финальный ручной smoke: письмо → ссылка → новый пароль → вход.
 
 ---
 

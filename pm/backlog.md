@@ -14,7 +14,7 @@
 | ID | Задача | Тип | Приоритет | Ответственный | Статус | Критерий готовности |
 | --- | --- | --- | --- | --- | --- | --- |
 | BACK-001 | Email через Resend — пользователи не получают писем | Tech | P0 | Codex | Done | Worker commit `086f19b` merged in `a436a10`, deployed as version `abe182e4`; live email smoke passed, Resend delivered the reset email |
-| BACK-002 | Сброс пароля — бэкенд не реализован | Tech | P0 | Codex | In Progress | Worker commit `a0965de` добавляет `/auth/reset-request` и `/auth/reset-confirm`; нужен PR/merge, deploy и live smoke смены пароля |
+| BACK-002 | Сброс пароля — бэкенд не реализован | Tech | P0 | Codex | In Progress | Worker commit `a0965de` merged in `a173ebf`, deployed as version `729a046c`; нужен финальный smoke: письмо → ссылка → новый пароль → вход |
 | BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done | Экран согласия появляется при первом нажатии на микрофон, privacy.html готова к деплою через commit/push |
 | BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Todo | Тестовый платёж проходит, webhook получен и обработан |
 
