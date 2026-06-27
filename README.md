@@ -29,14 +29,14 @@ python3 -m http.server 8000
 1. Обновить входящие баги и правки в `pm/bugs.md` и `pm/backlog.md`.
 2. Разобрать приоритеты: P0/P1/P2/P3.
 3. Проверить тестовый статус в `pm/qa-checklist.md`.
-4. Обновить `pm/roadmap.md`: что уходит в Now, Next, Later.
+4. Обновить `shared/ROADMAP.md`: что уходит в Now, Next, Later.
 5. Перед релизом пройти `pm/release-checklist.md`.
 
 ## Основные документы
 
 - `pm/backlog.md` - список фич, улучшений и технических задач.
 - `pm/bugs.md` - баг-репорты и статус исправлений.
-- `pm/roadmap.md` - дорожная карта проекта.
+- `shared/ROADMAP.md` - дорожная карта проекта.
 - `pm/qa-checklist.md` - smoke, regression и acceptance-проверки.
 - `pm/release-checklist.md` - подготовка релиза.
 - `pm/assistant-evaluation.md` - оценка качества AI-ассистента.

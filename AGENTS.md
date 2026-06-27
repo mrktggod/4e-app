@@ -27,7 +27,7 @@
 1. `DEVELOPMENT_LOG.md` — детальная история, критические правила, известные проблемы
 2. `shared/DEVELOPMENT_HISTORY.md` — архитектурные решения и ключевые компоненты
 3. `shared/WORK_LOG.md` — что делает команда прямо сейчас (все агенты)
-4. `pm/bugs.md` и `pm/roadmap.md` — текущий PM/QA-контур
+4. `pm/bugs.md`, `shared/ROADMAP.md` и `pm/backlog.md` — текущий PM/QA-контур
 5. `docs/tasks/` — атомарные задачи от команды
 6. `docs/tasks/done/` — что уже сделано, если папка существует
 
