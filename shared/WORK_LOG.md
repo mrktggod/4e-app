@@ -21,6 +21,26 @@
 ---
 
 ## Лог
+
+### 2026-06-27 — Codex
+
+**Задача:** BACK-012 — CSS-архитектура LESS + BEM + минификация
+**Результат:** Inline CSS из `index.html` вынесен в LESS-модули `styles/variables.less`, `styles/layout.less`, `styles/screens/home.less`, `profile.less`, `tasks.less`, `voice.less`; добавлен `styles/main.less`. В `package.json` добавлены `build:css` и `watch:css`, сборка создаёт `styles.css` и `styles.min.css`, а `index.html` подключает минифицированный файл.
+**Коммит:** `refactor(css): migrate to LESS + BEM architecture`
+**Статус:** ✅ выполнено
+**Следующий шаг:** После merge можно продолжать следующую задачу из roadmap/backlog; BACK-008 остаётся заблокированным до Yandex Cloud credentials.
+
+---
+### 2026-06-27 — Codex
+
+**Задача:** BACK-008 — перенос ПД в Yandex Cloud PostgreSQL
+**Результат:** Задача не стартовала по коду: Yandex Cloud PostgreSQL cluster ещё не создан, credentials/connection settings отсутствуют. BACK-006 KV→D1 уже закрыт и смержен; следующий технический шаг заблокирован ручной подготовкой инфраструктуры.
+**Коммит:** `docs(process): close BACK-006, mark BACK-008 blocked`
+**Статус:** ⚠️ заблокировано
+**Следующий шаг:** Юрий создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings; после этого Codex продолжает BACK-008.
+
+---
+
 ### 2026-06-27 — Codex
 
 **Задача:** Объединить roadmap-документы в один источник
@@ -55,7 +75,7 @@
 
 **Задача:** BACK-004 — тестовый платёж, прогнать webhook до конца
 **Результат:** Production `/payment/webhook` проверен на временном тестовом пользователе: webhook вернул `code:0`, пользователь перешёл `trial` → `paid`, срок Premium увеличился с 30 до 60 дней. Тестовые KV-ключи `user:*`, `user_id:*`, `tx:*`, `notifs:*` удалены после smoke.
-**Коммит:** N/A (код не менялся)
+**Коммит:** `docs(process): close BACK-006, mark BACK-008 blocked`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Следующий backlog item — BACK-005: единая модель пользователя VK + TG + Email.
 

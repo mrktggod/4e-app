@@ -74,6 +74,33 @@
 
 ---
 
+## 2026-06-27 — BACK-012: CSS architecture LESS + BEM + minification (Codex)
+
+**Что сделано:** Inline CSS из `index.html` вынесен в LESS-структуру: `styles/main.less`, `styles/variables.less`, `styles/layout.less`, `styles/screens/home.less`, `styles/screens/profile.less`, `styles/screens/tasks.less`, `styles/screens/voice.less`. В `package.json` добавлены скрипты `build:css` и `watch:css`, dev-зависимости `less` и `clean-css-cli`. `index.html` теперь подключает `styles.min.css` вместо inline `<style>`.
+
+**Проверка кодировки:** `index.html` изменён через `[System.IO.File]::ReadAllText/WriteAllText` с UTF-8 без BOM; кириллица не редактировалась вручную через `Set-Content`/`Out-File`.
+
+**Тест:** `npm install --save-dev less clean-css-cli`; `npm run build:css`; `rg -n "<style|</style>|styles\.min\.css|styles\.css" index.html` подтвердил отсутствие inline CSS и подключение `styles.min.css`. CSS до/после сравнен через сборку и минификацию: отличия только форматные для custom properties (`rgba(...)` с пробелами), визуальные значения сохранены.
+
+**Коммит:** `refactor(css): migrate to LESS + BEM architecture`
+
+**Статус:** выполнено.
+
+---
+## 2026-06-27 — BACK-008: Yandex Cloud PostgreSQL migration blocked (Codex)
+
+**Что сделано:** Сессия остановлена до кодовых изменений. BACK-006 KV→D1 подтверждён как Done; BACK-008 не может быть начат, потому что Yandex Cloud PostgreSQL cluster ещё не создан, credentials и connection settings отсутствуют.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Код не менялся. Проверены `pm/backlog.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md`, `DEVELOPMENT_LOG.md`; статус BACK-008 переведён в Blocked.
+
+**Коммит:** `docs(process): close BACK-006, mark BACK-008 blocked`
+
+**Статус:** заблокировано — ждёт ручной шаг Юрия: создать Yandex Cloud PostgreSQL cluster и передать credentials/connection settings.
+
+---
+
 ## 2026-06-27 — BACK-006: D1 storage for sessions and tasks (Codex)
 
 **Что сделано:** В `4e-worker/worker.js` добавлен D1 storage-layer для `session:*` и `tasks:*`: новые sessions сохраняются в `app_sessions`, task lists — в `app_task_lists`. Старые KV-значения для `session:*` и `tasks:*` остаются read fallback-ом и при первом чтении переносятся в D1. Worker переведён с legacy `addEventListener("fetch")` на ES module `export default { fetch(request, env) }`, потому что Cloudflare D1 binding требует module Worker. В `wrangler.toml` добавлен binding `DB` на `4e-production` (`6107948c-6c67-4c37-baa1-efea6c5c2860`). Добавлены D1 migrations: `0001_sessions_tasks.sql` как no-op note для уже занятой production schema `sessions/tasks`, и `0002_app_kv_state.sql` для `app_sessions`/`app_task_lists`.
