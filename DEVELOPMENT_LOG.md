@@ -64,11 +64,11 @@
 
 **Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
 
-**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; smoke создал email-аккаунт, привязал Telegram через `initData`, привязал VK через `launchParams`, затем `/auth/vk` вернул тот же `user.id` и email; `/auth/me` по VK token также вернул тот же `user.id`. На shutdown `wrangler dev` показал временную bundle cleanup/build ошибку, но HTTP-smoke до shutdown прошёл успешно.
+**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` → production version `ff365be0-59d3-4307-9c15-54ab037e2917`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; smoke создал email-аккаунт, привязал Telegram через `initData`, привязал VK через `launchParams`, затем `/auth/vk` вернул тот же `user.id` и email; `/auth/me` по VK token также вернул тот же `user.id`. На shutdown `wrangler dev` показал временную bundle cleanup/build ошибку, но HTTP-smoke до shutdown прошёл успешно. После merge в `main` production live smoke подтвердил, что email-регистрация, Telegram link, VK link, `/auth/vk` и `/auth/me` возвращают один canonical `user.id`; временные KV-ключи `user:*`, `user_id:*`, `session:*`, `tg:*`, `tg_rev:*`, `vk:*`, `vk_rev:*`, `notifs:*` удалены.
 
 **Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`) в `4e-worker`.
 
-**Статус:** частично — нужен PR/merge, production deploy и live smoke после deploy.
+**Статус:** выполнено — BACK-005 закрыт.
 
 ---
 

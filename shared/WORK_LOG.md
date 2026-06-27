@@ -25,10 +25,10 @@
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-005 — единая модель пользователя VK + TG + Email
-**Результат:** В `4e-worker/worker.js` добавлены canonical identity mappings: Telegram ID парсится из `initData`, VK ID парсится из `launchParams`, `/auth/link-vk` привязывает VK к текущей email-сессии, `/auth/vk` теперь возвращает общий user через `saveUser/getUser`, а `publicUser()` отдаёт `telegramId` и `vkId`.
+**Результат:** PR `fix/unified-user-identities` смёржен в `main` worker (`d5af7aa`), production Worker задеплоен как version `ff365be0-59d3-4307-9c15-54ab037e2917`. Live smoke прошёл: временный email-аккаунт привязан к Telegram через `initData` и VK через `launchParams`, затем `/auth/vk` и `/auth/me` вернули тот же canonical `user.id`; тестовые KV-ключи удалены.
 **Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`)
-**Статус:** ⚠️ частично
-**Следующий шаг:** Создать/смёржить PR `fix/unified-user-identities`, задеплоить Worker и пройти live smoke Email → link TG → link VK → VK login возвращает тот же user id.
+**Статус:** ✅ выполнено
+**Следующий шаг:** Следующий backlog item — BACK-006: миграция KV → D1.
 
 ---
 
