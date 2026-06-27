@@ -58,6 +58,20 @@
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
 
+## 2026-06-27 — BACK-002: password reset backend endpoints (Codex)
+
+**Что сделано:** В `4e-worker/worker.js` на ветке `fix/password-reset-endpoints` добавлены новые совместимые endpoint aliases `/auth/reset-request` и `/auth/reset-confirm` поверх существующих `/auth/forgot-password` и `/auth/reset-password`. `handleResetPassword()` теперь принимает `newPassword` из контракта Фазы 12 и старое поле `password` для обратной совместимости. Ссылка в письме исправлена на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; `POST /auth/reset-request` с несуществующим email вернул `200 {"ok":true}`; `POST /auth/reset-confirm` с невалидным token и `newPassword` вернул контролируемый `400 Bad Request`.
+
+**Коммит:** `a0965de` (`feat(auth): add password reset endpoints`) в `4e-worker`.
+
+**Статус:** частично — нужен PR/merge worker branch, production deploy и live smoke реального сценария.
+
+---
+
 ## 2026-06-26 — BACK-001: Resend email secret для Worker (Codex)
 
 **Что сделано:** В отдельном worker-репозитории `4e-worker` создана ветка `fix/resend-email-secret` и коммит `086f19b`. Из `worker.js` удалён hardcoded `RESEND_KEY`; `sendEmail()` теперь читает runtime secret `RESEND_KEY`, не падает Worker 1101 при отсутствующем secret, логирует конфигурационную ошибку/ошибку Resend и возвращает `false`. `/auth/forgot-password` теперь не сообщает пользователю ложный успех для существующего аккаунта, если письмо не отправилось, а возвращает контролируемый `502`.

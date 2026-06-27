@@ -22,6 +22,16 @@
 
 ## Лог
 
+### 2026-06-27 — Codex
+
+**Задача:** BACK-002 — сброс пароля, backend reset endpoints
+**Результат:** В `4e-worker/worker.js` добавлены совместимые маршруты `/auth/reset-request` и `/auth/reset-confirm`; reset-confirm принимает `newPassword` и старое поле `password`; ссылка в письме ведёт на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
+**Коммит:** `a0965de` (`feat(auth): add password reset endpoints`)
+**Статус:** ⚠️ частично
+**Следующий шаг:** Создать/смёржить PR `fix/password-reset-endpoints`, задеплоить Worker и пройти live smoke: письмо → ссылка → новый пароль → вход.
+
+---
+
 ### 2026-06-26 — Codex
 
 **Задача:** BACK-001 — Email через Resend, пользователи не получают писем
