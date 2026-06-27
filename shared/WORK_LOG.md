@@ -28,7 +28,7 @@
 **Результат:** В `4e-worker/worker.js` удалён hardcoded Resend key, отправка теперь использует runtime secret `RESEND_KEY`, ошибки Resend/fetch обрабатываются контролируемо, `/auth/forgot-password` возвращает `502` если письмо существующему пользователю не отправилось
 **Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`), branch `origin/fix/resend-email-secret`
 **Статус:** ⚠️ частично
-**Следующий шаг:** PR для `origin/fix/resend-email-secret` нужно создать вручную или после `gh auth login` (connector вернул GitHub API 404); затем настроить `CLOUDFLARE_API_TOKEN` для Wrangler, проверить secret `RESEND_KEY`, задеплоить Worker и выполнить live smoke до получения письма/Resend Dashboard
+**Следующий шаг:** Worker deployed after manual PR merge (`a436a10`, version `abe182e4`), `RESEND_KEY` secret exists, safe `/auth/forgot-password` smoke returned `200 {"ok":true}` for a non-existing email. Final step: run live Resend smoke on an existing test account and confirm email/Resend Dashboard.
 
 ---
 ### 2026-06-25 — Codex
