@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="styles.min.css">
 </head>
 <body>
-<div id="app">
+<main id="app">
 
 <!-- ONBOARDING -->
 <div class="screen" id="onboarding">
@@ -268,10 +268,10 @@
   <div class="home-glow"></div>
 
   <!-- ШАПКА -->
-  <div style="flex-shrink:0;position:relative;z-index:2;padding:16px 20px 0">
+  <header style="flex-shrink:0;position:relative;z-index:2;padding:16px 20px 0" aria-label="Главный экран">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <!-- Аватар / профиль -->
-      <div onclick="openProfile()" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
+      <div onclick="openProfile()" role="button" tabindex="0" aria-label="Открыть профиль" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
       <!-- Лого по центру -->
       <div class="header-logo-center" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:34px;height:34px">
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
@@ -280,7 +280,7 @@
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
       </div>
       <!-- Колокол -->
-      <div class="h-btn" onclick="openNotifications()" style="position:relative;cursor:pointer">
+      <div class="h-btn" onclick="openNotifications()" role="button" tabindex="0" aria-label="Открыть уведомления" style="position:relative;cursor:pointer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="h-btn-dot" id="bell-dot" style="display:none"></div>
       </div>
@@ -304,7 +304,7 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Месяц
       </button>
     </div>
-  </div>
+  </header>
 
   <!-- СКРОЛЛ -->
   <div data-screen-scroll style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 100px">
@@ -401,32 +401,32 @@
   </div>
 
   <!-- НИЖНИЙ НАВ -->
-  <div class="bottom-nav-v2 glass-nav" style="position:absolute;bottom:0;left:0;right:0">
+  <nav class="bottom-nav-v2 glass-nav" aria-label="Основная навигация" style="position:absolute;bottom:0;left:0;right:0">
     <div class="nav-inner glass">
-      <div class="nav-item" id="home-nav-chats" data-nav="chats" onclick="openChats()">
+      <div class="nav-item" id="home-nav-chats" data-nav="chats" onclick="openChats()" role="button" tabindex="0" aria-label="Чаты">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <div class="nav-item" id="home-nav-tasks" data-nav="tasks" onclick="goHome()">
+      <div class="nav-item" id="home-nav-tasks" data-nav="tasks" onclick="goHome()" role="button" tabindex="0" aria-label="Задачи">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><polyline points="9 11 11 13 15 9"/></svg>
       </div>
-      <div class="nav-item" id="home-nav-cal" data-nav="cal" onclick="openCalendar()">
+      <div class="nav-item" id="home-nav-cal" data-nav="cal" onclick="openCalendar()" role="button" tabindex="0" aria-label="Календарь">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
-      <div class="nav-mic-v2" id="home-nav-voice" data-nav="voice" onclick="openVoice()">
+      <div class="nav-mic-v2" id="home-nav-voice" data-nav="voice" onclick="openVoice()" role="button" tabindex="0" aria-label="Голосовой ввод">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
       </div>
-      <div class="nav-item" id="home-nav-brain" data-nav="brain" onclick="openAsk()">
+      <div class="nav-item" id="home-nav-brain" data-nav="brain" onclick="openAsk()" role="button" tabindex="0" aria-label="AI-чат">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.66Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.66Z"/></svg>
       </div>
     </div>
-  </div>
+  </nav>
 
 </div>
 
 <!-- WRITE -->
 <div class="screen" id="write">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title" id="wt-title">Написать</div><div class="back-sub">4 составит сообщение</div></div>
     <div class="w-avatar" id="wt-avatar">К</div>
   </div>
@@ -461,7 +461,7 @@
 <!-- ASK -->
 <div class="screen" id="ask">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">4</div><div class="back-sub">спроси что угодно</div></div>
   </div>
   <div class="ask-inner">
@@ -498,7 +498,7 @@
 
   <!-- Шапка -->
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()">
+    <button class="back-btn" onclick="goHome()" aria-label="Назад">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <div style="flex:1"><div class="back-title">Задача</div></div>
@@ -629,7 +629,7 @@
 <!-- CALENDAR -->
 <div class="screen" id="calendar">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Календарь</div></div>
   </div>
   <div class="cal-scroll">
@@ -666,7 +666,7 @@
 <!-- STATISTICS -->
 <div class="screen" id="statistics">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Статистика</div></div>
     <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:5px 12px;font-size:11px;color:var(--muted);cursor:pointer">Месяц задач ▾</div>
   </div>
@@ -718,7 +718,7 @@
 <!-- NOTIFICATIONS v2 -->
 <div class="screen" id="notifications">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Уведомления</div></div>
     <div id="notif-unread-count" style="background:var(--green);color:var(--bg);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;display:none"></div>
   </div>
@@ -738,7 +738,7 @@
 <!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Профиль</div></div>
   </div>
   <div class="profile-scroll">
@@ -768,7 +768,7 @@
 <!-- ========== SUBSCRIPTION ========== -->
 <div class="screen" id="subscription">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Подписка</div></div>
   </div>
   <div class="sub-scroll">
@@ -848,7 +848,7 @@
 <!-- ========== PAYMENT SCREEN ========== -->
 <div class="screen" id="payment">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('subscription')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('subscription')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Оплата</div></div>
   </div>
   <div class="sub-scroll">
@@ -901,7 +901,7 @@
 <!-- ========== PAYMENT SUCCESS ========== -->
 <div class="screen" id="payment-success">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('subscription')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('subscription')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Оплата успешна</div></div>
   </div>
   <div class="sub-scroll" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px">
@@ -925,7 +925,7 @@
 <!-- ========== NOTIFICATIONS SETTINGS ========== -->
 <div class="screen" id="notif-settings">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Уведомления</div></div>
   </div>
   <div class="sub-scroll">
@@ -973,7 +973,7 @@
 <!-- ========== SECURITY ========== -->
 <div class="screen" id="security">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Безопасность</div></div>
   </div>
   <div class="sub-scroll">
@@ -1022,7 +1022,7 @@
 <!-- ========== PRIVACY CENTER ========== -->
 <div class="screen" id="privacy-center">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Данные и память</div><div class="back-sub">Что 4 хранит, анализирует и может забыть</div></div>
   </div>
   <div class="sub-scroll">
@@ -1102,7 +1102,7 @@
 <!-- ========== CHANGE PASSWORD ========== -->
 <div class="screen" id="change-password">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('security')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('security')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Изменить пароль</div></div>
   </div>
   <div class="sub-scroll">
@@ -1135,7 +1135,7 @@
 <!-- ========== SESSIONS ========== -->
 <div class="screen" id="sessions">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('security')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('security')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Активные сессии</div></div>
   </div>
   <div class="sub-scroll">
@@ -1170,7 +1170,7 @@
 <!-- ========== DEVICES ========== -->
 <div class="screen" id="devices">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('security')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('security')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Устройства</div></div>
   </div>
   <div class="sub-scroll">
@@ -1197,7 +1197,7 @@
 <!-- ========== LOGIN HISTORY ========== -->
 <div class="screen" id="login-history">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('security')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('security')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">История входов</div></div>
   </div>
   <div class="sub-scroll">
@@ -1230,7 +1230,7 @@
 <!-- ========== THEME SETTINGS ========== -->
 <div class="screen" id="theme-settings">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Тема оформления</div></div>
   </div>
   <div class="sub-scroll">
@@ -1265,7 +1265,7 @@
 <!-- ========== LANGUAGE ========== -->
 <div class="screen" id="language-settings">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Язык</div></div>
   </div>
   <div class="sub-scroll">
@@ -1314,7 +1314,7 @@
 <!-- ========== SUPPORT ========== -->
 <div class="screen" id="support">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Поддержка</div></div>
   </div>
   <div class="sub-scroll">
@@ -1360,7 +1360,7 @@
 <!-- ========== FAQ ========== -->
 <div class="screen" id="faq">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('support')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('support')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Частые вопросы</div></div>
   </div>
   <div class="sub-scroll">
@@ -1409,7 +1409,7 @@
 <!-- ========== WRITE SUPPORT ========== -->
 <div class="screen" id="write-support">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('support')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('support')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Написать в поддержку</div></div>
   </div>
   <div class="sub-scroll">
@@ -1443,7 +1443,7 @@
 <!-- ========== TELEGRAM SUPPORT ========== -->
 <div class="screen" id="telegram-support">
   <div class="back-bar">
-    <button class="back-btn" onclick="showSubScreen('support')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showSubScreen('support')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Написать в Telegram</div></div>
   </div>
   <div class="sub-scroll" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:40px">
@@ -1472,12 +1472,12 @@
 
   <!-- Header with back + title + gear -->
   <div class="back-bar" style="padding:12px 16px 8px">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1">
       <div class="back-title">Чаты</div>
       <div class="back-sub" id="chats-subtitle">Telegram · подключён</div>
     </div>
-    <div class="chats-gear" onclick="openMessengerSettings()" title="Настройки мессенджеров">
+    <div class="chats-gear" onclick="openMessengerSettings()" title="Настройки мессенджеров" role="button" tabindex="0" aria-label="Настройки мессенджеров">
       <i class="ti ti-settings" aria-hidden="true"></i>
     </div>
   </div>
@@ -1599,7 +1599,7 @@
 <!-- MESSENGER SETTINGS -->
 <div class="screen" id="msng-settings">
   <div class="back-bar">
-    <button class="back-btn" onclick="showScreen('chats')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showScreen('chats')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Мессенджеры</div><div class="back-sub">Управляй подключёнными каналами</div></div>
   </div>
   <div class="sub-scroll">
@@ -1649,7 +1649,7 @@
 <!-- ─── НОВАЯ ЗАДАЧА (Patch 03) ─── -->
 <div class="screen" id="new-task">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Новая задача</div></div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:20px 16px 100px">
@@ -1683,7 +1683,7 @@
 <!-- ─── 4 ПОНЯЛ ЗАДАЧУ (Patch 03) ─── -->
 <div class="screen" id="task-confirm">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">4 понял задачу</div></div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:24px 16px 100px;display:flex;flex-direction:column;align-items:center">
@@ -1713,7 +1713,7 @@
 <!-- ─── ПЕРЕНОС ЗАДАЧИ (Patch 03) ─── -->
 <div class="screen" id="task-move">
   <div class="back-bar">
-    <button class="back-btn" onclick="showScreen('task-detail')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" onclick="showScreen('task-detail')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">Перенос задачи</div></div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:16px 16px 100px">
@@ -1745,15 +1745,15 @@
 <div class="screen" id="voice">
 
   <!-- Шапка -->
-  <div class="back-bar" style="justify-content:space-between">
-    <button class="back-btn" onclick="closeVoice()">
+  <header class="back-bar" style="justify-content:space-between" aria-label="Голосовой режим">
+    <button class="back-btn" onclick="closeVoice()" aria-label="Назад">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <div style="font-size:15px;font-weight:600;color:var(--text)">Голосовой режим</div>
-    <button style="background:transparent;border:none;cursor:pointer;color:var(--text2);padding:4px 8px" onclick="showVoiceInfo()">
+    <button style="background:transparent;border:none;cursor:pointer;color:var(--text2);padding:4px 8px" onclick="showVoiceInfo()" aria-label="Информация о голосовом режиме">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     </button>
-  </div>
+  </header>
 
   <!-- Контент -->
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 24px 32px">
@@ -1767,7 +1767,7 @@
       <div style="position:relative" id="voice-mic-wrap">
         <div class="voice-pulse-ring" id="voice-pulse-1"></div>
         <div class="voice-pulse-ring" id="voice-pulse-2" style="animation-delay:.3s"></div>
-        <div style="width:96px;height:96px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;cursor:pointer;box-shadow:0 0 32px rgba(154,194,60,0.35)" onclick="toggleVoice()" id="voice-btn">
+        <div style="width:96px;height:96px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;cursor:pointer;box-shadow:0 0 32px rgba(154,194,60,0.35)" onclick="toggleVoice()" id="voice-btn" role="button" tabindex="0" aria-label="Включить или остановить запись голоса">
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
         </div>
       </div>
@@ -1808,15 +1808,15 @@
 </div>
 
 <!-- GLOBAL NAV -->
-<div class="bottom-nav hidden" id="global-nav">
-  <div class="nav-item" id="global-nav-chats" data-nav="chats" onclick="openChats()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-  <div class="nav-item" id="global-nav-tasks" data-nav="tasks" onclick="goHome()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><polyline points="9 11 11 13 15 9"/></svg></div>
-  <div class="nav-item" id="global-nav-cal" data-nav="cal" onclick="openCalendar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-  <div class="nav-mic" id="global-nav-voice" data-nav="voice" onclick="openVoice()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
-  <div class="nav-item" id="global-nav-brain" data-nav="brain" onclick="openAsk()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.66Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.66Z"/></svg></div>
-</div>
+<nav class="bottom-nav hidden" id="global-nav" aria-label="Глобальная навигация">
+  <div class="nav-item" id="global-nav-chats" data-nav="chats" onclick="openChats()" role="button" tabindex="0" aria-label="Чаты"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+  <div class="nav-item" id="global-nav-tasks" data-nav="tasks" onclick="goHome()" role="button" tabindex="0" aria-label="Задачи"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><polyline points="9 11 11 13 15 9"/></svg></div>
+  <div class="nav-item" id="global-nav-cal" data-nav="cal" onclick="openCalendar()" role="button" tabindex="0" aria-label="Календарь"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+  <div class="nav-mic" id="global-nav-voice" data-nav="voice" onclick="openVoice()" role="button" tabindex="0" aria-label="Голосовой ввод"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+  <div class="nav-item" id="global-nav-brain" data-nav="brain" onclick="openAsk()" role="button" tabindex="0" aria-label="AI-чат"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.66Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.66Z"/></svg></div>
+</nav>
 
-</div>
+</main>
 
 <!-- ===== LOCK SCREEN ===== -->
 <div id="lock-screen">

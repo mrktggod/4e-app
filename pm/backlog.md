@@ -32,7 +32,7 @@
 | BACK-006 | Миграция KV → D1 | Tech | P2 | Codex | Done | Worker commit `0a035c9` stores sessions and task lists in D1 (`app_sessions`, `app_task_lists`), deployed as version `0b66977a`; live smoke passed: D1 rows created, KV `session:*`/`tasks:*` returned 404 |
 | BACK-007 | Уведомление РКН | Legal | P1 | Алексей | Manual | Уведомление подано, номер внесён в privacy.html |
 | BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Алексей + Codex | Manual blocker | Алексей создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings; после этого Codex продолжает перенос |
-| BACK-013 | Семантический HTML | Tech/UI | P3 | Codex | Todo | В `index.html` вместо технических `div` использованы уместные `<header>`, `<nav>`, `<main>`, `<section>` и добавлены aria-label для иконочных кнопок |
+| BACK-013 | Семантический HTML | Tech/UI | P3 | Codex | Done | В `index.html` добавлены `<main>`, `<header>`, `<nav>`, aria-label и роли для иконочной навигации без изменения визуала |
 | BACK-014 | Подготовка кода под PostgreSQL заранее | Tech | P2 | Codex | Todo | Код подготовлен к PostgreSQL-коннектору без production credentials; фактический перенос остаётся в BACK-008 |
 
 ## Later

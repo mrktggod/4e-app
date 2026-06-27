@@ -56,7 +56,7 @@
 | Данные в России | Перенос ПД в Yandex Cloud PostgreSQL | P1 | Manual blocker — ждёт Yandex Cloud PostgreSQL от Алексея |
 | Premium trust positioning | Обсудить с Claude Юры, как безопасность, приватность и контроль данных становятся частью дорогого позиционирования 4 | P1 | Ready for discussion |
 | CSS-архитектура | LESS + BEM + минификация | P2 | Done — `styles.min.css` собирается из `styles/main.less` |
-| Семантический HTML | `<header>`, `<nav>`, aria-label | P3 | Ready for Codex |
+| Семантический HTML | `<main>`, `<header>`, `<nav>`, aria-label | P3 | Done |
 | PostgreSQL prep | Подготовить код к будущему PostgreSQL без live credentials | P2 | Ready for Codex |
 
 ---
