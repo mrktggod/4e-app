@@ -58,6 +58,20 @@
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
 
+## 2026-06-27 — BACK-004: payment webhook live smoke (Codex)
+
+**Что сделано:** Код не менялся. Production Worker `/payment/webhook` проверен end-to-end на временном тестовом пользователе `codex-payment-smoke-1782568866@example.com` и invoice `codex-smoke-1782568866`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Через production Worker создан временный аккаунт, до webhook `plan=trial`; отправлен form-urlencoded webhook `Status=Completed`, `AccountId=<test-user-id>`, `Amount=990`, `InvoiceId=codex-smoke-1782568866`, `Description=Smoke 1 month`; webhook вернул `code:0`; после `/auth/me` показал `plan=paid`, `trialEndsAt` увеличился примерно на 30 дней (`trialLeft=60`). После проверки удалены точные KV-ключи `user:codex-payment-smoke-1782568866@example.com`, `user_id:d1ce9837-42b0-4460-a17e-ef16856234b4`, `tx:codex-smoke-1782568866`, `notifs:d1ce9837-42b0-4460-a17e-ef16856234b4`.
+
+**Коммит:** N/A — код не менялся.
+
+**Статус:** выполнено — BACK-004 закрыт.
+
+---
+
 ## 2026-06-27 — BACK-002: password reset backend endpoints (Codex)
 
 **Что сделано:** В `4e-worker/worker.js` на ветке `fix/password-reset-endpoints` добавлены новые совместимые endpoint aliases `/auth/reset-request` и `/auth/reset-confirm` поверх существующих `/auth/forgot-password` и `/auth/reset-password`. `handleResetPassword()` теперь принимает `newPassword` из контракта Фазы 12 и старое поле `password` для обратной совместимости. Ссылка в письме исправлена на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.

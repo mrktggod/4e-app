@@ -24,6 +24,16 @@
 
 ### 2026-06-27 — Codex
 
+**Задача:** BACK-004 — тестовый платёж, прогнать webhook до конца
+**Результат:** Production `/payment/webhook` проверен на временном тестовом пользователе: webhook вернул `code:0`, пользователь перешёл `trial` → `paid`, срок Premium увеличился с 30 до 60 дней. Тестовые KV-ключи `user:*`, `user_id:*`, `tx:*`, `notifs:*` удалены после smoke.
+**Коммит:** N/A (код не менялся)
+**Статус:** ✅ выполнено
+**Следующий шаг:** Следующий backlog item — BACK-005: единая модель пользователя VK + TG + Email.
+
+---
+
+### 2026-06-27 — Codex
+
 **Задача:** BACK-002 — сброс пароля, backend reset endpoints
 **Результат:** В `4e-worker/worker.js` добавлены совместимые маршруты `/auth/reset-request` и `/auth/reset-confirm`; reset-confirm принимает `newPassword` и старое поле `password`; ссылка в письме ведёт на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
 **Коммит:** `a0965de` (`feat(auth): add password reset endpoints`)
