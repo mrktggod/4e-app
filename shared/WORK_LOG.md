@@ -24,6 +24,16 @@
 
 ### 2026-06-27 — Codex
 
+**Задача:** BACK-006 — миграция KV → D1 для sessions/tasks
+**Результат:** В `4e-worker` добавлен D1 binding `DB`, миграции `0001_sessions_tasks.sql`/`0002_app_kv_state.sql`, Worker переведён на ES module entrypoint для D1. Новые sessions пишутся в `app_sessions`, task lists — в `app_task_lists`; старые KV `session:*`/`tasks:*` читаются fallback-ом и автопереносятся при доступе. Production Worker задеплоен как version `0b66977a-0b23-4cdf-bd92-c5ec38e2ee1c`; live smoke подтвердил D1 rows для session/task и 404 в KV по новым `session:*`/`tasks:*`.
+**Коммит:** `0a035c9` (`feat(worker): store sessions and tasks in D1`)
+**Статус:** ✅ выполнено
+**Следующий шаг:** Следующий backlog item — BACK-007: уведомление РКН; следующий Codex-технический item — BACK-008: перенос ПД в Yandex Cloud PostgreSQL.
+
+---
+
+### 2026-06-27 — Codex
+
 **Задача:** BACK-005 — единая модель пользователя VK + TG + Email
 **Результат:** PR `fix/unified-user-identities` смёржен в `main` worker (`d5af7aa`), production Worker задеплоен как version `ff365be0-59d3-4307-9c15-54ab037e2917`. Live smoke прошёл: временный email-аккаунт привязан к Telegram через `initData` и VK через `launchParams`, затем `/auth/vk` и `/auth/me` вернули тот же canonical `user.id`; тестовые KV-ключи удалены.
 **Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`)

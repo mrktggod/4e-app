@@ -58,6 +58,19 @@
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
 
+## 2026-06-27 — BACK-006: D1 storage for sessions and tasks (Codex)
+
+**Что сделано:** В `4e-worker/worker.js` добавлен D1 storage-layer для `session:*` и `tasks:*`: новые sessions сохраняются в `app_sessions`, task lists — в `app_task_lists`. Старые KV-значения для `session:*` и `tasks:*` остаются read fallback-ом и при первом чтении переносятся в D1. Worker переведён с legacy `addEventListener("fetch")` на ES module `export default { fetch(request, env) }`, потому что Cloudflare D1 binding требует module Worker. В `wrangler.toml` добавлен binding `DB` на `4e-production` (`6107948c-6c67-4c37-baa1-efea6c5c2860`). Добавлены D1 migrations: `0001_sessions_tasks.sql` как no-op note для уже занятой production schema `sessions/tasks`, и `0002_app_kv_state.sql` для `app_sessions`/`app_task_lists`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `git diff --check`; `wrangler d1 migrations apply 4e-production --local --config wrangler.toml`; `wrangler d1 migrations apply 4e-production --remote --config wrangler.toml`; `PRAGMA table_info(app_sessions)` и `PRAGMA table_info(app_task_lists)` подтвердили remote schema; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` → production version `0b66977a-0b23-4cdf-bd92-c5ec38e2ee1c`. Live smoke: временный email-аккаунт зарегистрирован, `/auth/me` по token прошёл, `x-action: save-task` сохранил задачу, `/tasks` вернул её; D1 показал `session_rows=1` и `task_rows=1`; KV get для новых `session:<token>` и `tasks:<chatId>` вернул 404; временные D1/KV записи удалены, cleanup count вернул `session_rows=0`, `task_rows=0`.
+
+**Коммит:** `0a035c9` (`feat(worker): store sessions and tasks in D1`) в `4e-worker`.
+
+**Статус:** выполнено — BACK-006 закрыт.
+
+---
 ## 2026-06-27 — BACK-005: unified user identities (Codex)
 
 **Что сделано:** В `4e-worker/worker.js` создана единая server-side модель идентичностей для Email + Telegram + VK. `link-telegram` теперь умеет брать Telegram ID из `initData` и сохраняет `telegramId` в canonical user. Добавлен `/auth/link-vk`, который привязывает VK ID к текущей email-сессии через `vk:<id>` и `vk_rev:<userId>`. `/auth/vk` теперь парсит `vk_user_id` из `launchParams`, использует общий `saveUser/getUser`, создаёт canonical `vk_<id>@vk.local` user только если VK ещё не привязан, и возвращает session с `email`. `publicUser()` возвращает `telegramId`, `telegramUsername`, `vkId`.
