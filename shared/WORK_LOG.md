@@ -24,6 +24,16 @@
 
 ### 2026-06-27 — Codex
 
+**Задача:** Синхронизировать roadmap/backlog со статусом от Юры
+**Результат:** В `shared/ROADMAP.md` и `pm/backlog.md` зафиксированы закрытые BACK-001/002/003/004/005/006/012 и Resend-домен; РКН и Yandex Cloud PostgreSQL отмечены как ручные действия Алексея; Codex-задачи сейчас — семантический HTML и подготовка PostgreSQL-кода
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Выбрать следующую Codex-задачу: семантический HTML или подготовка PostgreSQL-кода
+
+---
+
+### 2026-06-27 — Codex
+
 **Задача:** BACK-012 — CSS-архитектура LESS + BEM + минификация
 **Результат:** Inline CSS из `index.html` вынесен в LESS-модули `styles/variables.less`, `styles/layout.less`, `styles/screens/home.less`, `profile.less`, `tasks.less`, `voice.less`; добавлен `styles/main.less`. В `package.json` добавлены `build:css` и `watch:css`, сборка создаёт `styles.css` и `styles.min.css`, а `index.html` подключает минифицированный файл.
 **Коммит:** `refactor(css): migrate to LESS + BEM architecture`

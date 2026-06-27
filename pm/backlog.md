@@ -30,8 +30,10 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | BACK-005 | Единая модель пользователя VK + TG + Email | Tech | P1 | Codex | Done | Worker commit `1a593fb` merged in `d5af7aa`, deployed as version `ff365be0`; live smoke passed: Email account, Telegram link and VK login returned the same canonical user id |
 | BACK-006 | Миграция KV → D1 | Tech | P2 | Codex | Done | Worker commit `0a035c9` stores sessions and task lists in D1 (`app_sessions`, `app_task_lists`), deployed as version `0b66977a`; live smoke passed: D1 rows created, KV `session:*`/`tasks:*` returned 404 |
-| BACK-007 | Уведомление РКН | Legal | P1 | Юрий | Todo | Уведомление подано, номер внесён в privacy.html |
-| BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Codex | Blocked | Ждёт ручной шаг Юрия: создать Yandex Cloud PostgreSQL cluster и передать credentials/connection settings |
+| BACK-007 | Уведомление РКН | Legal | P1 | Алексей | Manual | Уведомление подано, номер внесён в privacy.html |
+| BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Алексей + Codex | Manual blocker | Алексей создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings; после этого Codex продолжает перенос |
+| BACK-013 | Семантический HTML | Tech/UI | P3 | Codex | Todo | В `index.html` вместо технических `div` использованы уместные `<header>`, `<nav>`, `<main>`, `<section>` и добавлены aria-label для иконочных кнопок |
+| BACK-014 | Подготовка кода под PostgreSQL заранее | Tech | P2 | Codex | Todo | Код подготовлен к PostgreSQL-коннектору без production credentials; фактический перенос остаётся в BACK-008 |
 
 ## Later
 
@@ -41,6 +43,7 @@
 | BACK-010 | Telegram Stars / ЮKassa | Monetization | P1 | Codex | Todo | Платёж проходит в TG |
 | BACK-011 | Командный Workspace | Product | P2 | Codex | Todo | Несколько пользователей в одном workspace |
 | BACK-012 | CSS-архитектура LESS + BEM + минификация | Tech | P2 | Codex | Done | Стили вынесены в LESS-модули, `styles.min.css` собирается и подключён в `index.html` |
+| BACK-015 | Ценовая модель | Strategy/Monetization | P2 | Алексей + Юрий | Later | Тарифы согласованы отдельным решением и только после этого внесены в roadmap |
 
 ## Связь с Linear
 
