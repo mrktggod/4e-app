@@ -22,7 +22,7 @@
 
 | ID | Задача | Тип | Приоритет | Ответственный | Статус | Критерий готовности |
 | --- | --- | --- | --- | --- | --- | --- |
-| BACK-005 | Единая модель пользователя VK + TG + Email | Tech | P1 | Codex | Todo | Один аккаунт, все три способа входа привязаны |
+| BACK-005 | Единая модель пользователя VK + TG + Email | Tech | P1 | Codex | In Progress | Worker commit `1a593fb` unifies canonical user mappings for Email + TG + VK; нужен PR/merge, deploy и live smoke |
 | BACK-006 | Миграция KV → D1 | Tech | P2 | Codex | Todo | Задачи и сессии хранятся в D1, KV не используется |
 | BACK-007 | Уведомление РКН | Legal | P1 | Юрий | Todo | Уведомление подано, номер внесён в privacy.html |
 | BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Codex | Todo | Данные пользователей хранятся в России |

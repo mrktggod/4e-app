@@ -24,6 +24,16 @@
 
 ### 2026-06-27 — Codex
 
+**Задача:** BACK-005 — единая модель пользователя VK + TG + Email
+**Результат:** В `4e-worker/worker.js` добавлены canonical identity mappings: Telegram ID парсится из `initData`, VK ID парсится из `launchParams`, `/auth/link-vk` привязывает VK к текущей email-сессии, `/auth/vk` теперь возвращает общий user через `saveUser/getUser`, а `publicUser()` отдаёт `telegramId` и `vkId`.
+**Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`)
+**Статус:** ⚠️ частично
+**Следующий шаг:** Создать/смёржить PR `fix/unified-user-identities`, задеплоить Worker и пройти live smoke Email → link TG → link VK → VK login возвращает тот же user id.
+
+---
+
+### 2026-06-27 — Codex
+
 **Задача:** BACK-004 — тестовый платёж, прогнать webhook до конца
 **Результат:** Production `/payment/webhook` проверен на временном тестовом пользователе: webhook вернул `code:0`, пользователь перешёл `trial` → `paid`, срок Premium увеличился с 30 до 60 дней. Тестовые KV-ключи `user:*`, `user_id:*`, `tx:*`, `notifs:*` удалены после smoke.
 **Коммит:** N/A (код не менялся)

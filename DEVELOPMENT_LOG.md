@@ -58,6 +58,20 @@
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
 
+## 2026-06-27 — BACK-005: unified user identities (Codex)
+
+**Что сделано:** В `4e-worker/worker.js` создана единая server-side модель идентичностей для Email + Telegram + VK. `link-telegram` теперь умеет брать Telegram ID из `initData` и сохраняет `telegramId` в canonical user. Добавлен `/auth/link-vk`, который привязывает VK ID к текущей email-сессии через `vk:<id>` и `vk_rev:<userId>`. `/auth/vk` теперь парсит `vk_user_id` из `launchParams`, использует общий `saveUser/getUser`, создаёт canonical `vk_<id>@vk.local` user только если VK ещё не привязан, и возвращает session с `email`. `publicUser()` возвращает `telegramId`, `telegramUsername`, `vkId`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; smoke создал email-аккаунт, привязал Telegram через `initData`, привязал VK через `launchParams`, затем `/auth/vk` вернул тот же `user.id` и email; `/auth/me` по VK token также вернул тот же `user.id`. На shutdown `wrangler dev` показал временную bundle cleanup/build ошибку, но HTTP-smoke до shutdown прошёл успешно.
+
+**Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`) в `4e-worker`.
+
+**Статус:** частично — нужен PR/merge, production deploy и live smoke после deploy.
+
+---
+
 ## 2026-06-27 — BACK-004: payment webhook live smoke (Codex)
 
 **Что сделано:** Код не менялся. Production Worker `/payment/webhook` проверен end-to-end на временном тестовом пользователе `codex-payment-smoke-1782568866@example.com` и invoice `codex-smoke-1782568866`.
