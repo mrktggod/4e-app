@@ -40,7 +40,7 @@
 | BACK-009 | VK Pay — оплата подписки | Monetization | P1 | Codex | Todo | Платёж проходит внутри VK Mini App |
 | BACK-010 | Telegram Stars / ЮKassa | Monetization | P1 | Codex | Todo | Платёж проходит в TG |
 | BACK-011 | Командный Workspace | Product | P2 | Codex | Todo | Несколько пользователей в одном workspace |
-| BACK-012 | CSS-архитектура LESS + BEM + минификация | Tech | P2 | Codex | Todo | Стили компилируются из LESS, подключается styles.min.css |
+| BACK-012 | CSS-архитектура LESS + BEM + минификация | Tech | P2 | Codex | Done | Стили вынесены в LESS-модули, `styles.min.css` собирается и подключён в `index.html` |
 
 ## Связь с Linear
 

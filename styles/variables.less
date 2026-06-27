@@ -1,0 +1,57 @@
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0E140B;
+  --bg2:#1a2214;
+  --bg3:#232e1a;
+  --green:#9AC23C;
+  --green2:#7A9A2E;
+  --green3:rgba(154,194,60,0.12);
+  --green-dark:#556B1F;
+  --text:#F2F5E9;
+  --text2:rgba(242,245,233,0.6);
+  --muted:rgba(242,245,233,0.35);
+  --border:rgba(242,245,233,0.08);
+  --card:#151c10;
+  --card2:#1e2918;
+  --shadow:0 2px 16px rgba(0,0,0,0.4);
+}
+
+[data-theme="light"] {
+  --bg:    #FFFFFF;
+  --bg2:   #FBFCF7;
+  --bg3:   #EEF4E3;
+  --green: #6A9E1F;
+  --green2:#527A17;
+  --green3:rgba(106,158,31,0.12);
+  --green-dark:#3B5A0E;
+  --text:  #1A2210;
+  --text2: rgba(26,34,16,0.6);
+  --muted: rgba(26,34,16,0.35);
+  --border:rgba(26,34,16,0.1);
+  --card:  #FFFFFF;
+  --card2: #F7FAF0;
+  --shadow:0 8px 28px rgba(26,34,16,0.08);
+}
+[data-theme="light"] .glass{background:rgba(255,255,255,0.7);border-color:rgba(26,34,16,0.08)}
+[data-theme="light"] .glass-green{background:rgba(106,158,31,0.08);border-color:rgba(106,158,31,0.2)}
+[data-theme="light"] .glass-nav{background:rgba(255,255,255,0.88);border-color:rgba(26,34,16,0.08)}
+[data-theme="light"] .home-glow{background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(106,158,31,0.15),transparent 70%)}
+[data-theme="light"] .logo-ball,[data-theme="light"] .lb,[data-theme="light"] .header-logo .lb{background:radial-gradient(circle at 35% 35%,#8abf2a,#527A17 50%,#2d4a09 100%)}
+[data-theme="light"] .nav-item.active{color:var(--green)}
+[data-theme="light"] .nav-mic-v2{background:var(--green);box-shadow:0 4px 20px rgba(106,158,31,0.35)}
+[data-theme="light"] .task-row{background:var(--card);border-color:rgba(26,34,16,0.09)}
+[data-theme="light"] .task-num-badge{background:var(--card2);border-color:rgba(26,34,16,0.12)}
+[data-theme="light"] .stat-mini{background:var(--card);border-color:rgba(26,34,16,0.09)}
+[data-theme="light"] .focus-day-card{background:var(--card);border-color:rgba(26,34,16,0.1)}
+[data-theme="light"] .cat-badge-work{background:rgba(106,158,31,0.12);color:#3B5A0E}
+[data-theme="light"] .cat-badge-personal{background:rgba(106,158,31,0.08);color:#527A17}
+[data-theme="light"] input,[data-theme="light"] textarea,[data-theme="light"] select{color-scheme:light}
+[data-theme="light"] .back-bar{background:var(--bg);border-bottom-color:var(--border)}
+[data-theme="light"] .chat-row-item:hover{background:rgba(26,34,16,0.03)}
+[data-theme="light"] .voice-overlay{background:var(--bg)}
+[data-theme="light"] .globe-dot{fill:rgba(106,158,31,0.7)}
+[data-theme="light"] .globe-orbit{stroke:rgba(106,158,31,0.25)}
+html[data-theme="light"],
+html[data-theme="light"] body{background:#FFFFFF;color:var(--text)}
+html[data-theme="light"] #app,
+html[data-theme="light"] .screen{background:var(--bg)}

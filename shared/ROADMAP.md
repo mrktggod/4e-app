@@ -52,9 +52,9 @@
 | Направление | Задачи | Приоритет | Статус |
 | --- | --- | --- | --- |
 | 152-ФЗ | Уведомление РКН, ссылка на privacy в регистрации | P1 | Todo |
-| Данные в России | Перенос ПД в Yandex Cloud PostgreSQL | P1 | Todo (перед монетизацией) |
+| Данные в России | Перенос ПД в Yandex Cloud PostgreSQL | P1 | Blocked — ждёт Yandex Cloud credentials |
 | Premium trust positioning | Обсудить с Claude Юры, как безопасность, приватность и контроль данных становятся частью дорогого позиционирования 4 | P1 | Ready for discussion |
-| CSS-архитектура | LESS + BEM + минификация | P2 | Todo (после редизайна) |
+| CSS-архитектура | LESS + BEM + минификация | P2 | Done — `styles.min.css` собирается из `styles/main.less` |
 | Семантический HTML | `<header>`, `<nav>`, aria-label | P3 | Todo |
 
 ---
