@@ -27,8 +27,8 @@
 **Задача:** BACK-001 — Email через Resend, пользователи не получают писем
 **Результат:** В `4e-worker/worker.js` удалён hardcoded Resend key, отправка теперь использует runtime secret `RESEND_KEY`, ошибки Resend/fetch обрабатываются контролируемо, `/auth/forgot-password` возвращает `502` если письмо существующему пользователю не отправилось
 **Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`), branch `origin/fix/resend-email-secret`
-**Статус:** ⚠️ частично
-**Следующий шаг:** Worker deployed after manual PR merge (`a436a10`, version `abe182e4`), `RESEND_KEY` secret exists, safe `/auth/forgot-password` smoke returned `200 {"ok":true}` for a non-existing email. Final step: run live Resend smoke on an existing test account and confirm email/Resend Dashboard.
+**Статус:** ✅ выполнено
+**Следующий шаг:** BACK-001 закрыт: письмо сброса дошло, Resend доставил. Клик по ссылке и смена пароля относятся к BACK-002.
 
 ---
 ### 2026-06-25 — Codex
