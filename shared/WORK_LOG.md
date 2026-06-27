@@ -21,6 +21,55 @@
 ---
 
 ## Лог
+### 2026-06-27 — Codex
+
+**Задача:** BACK-006 — миграция KV → D1 для sessions/tasks
+**Результат:** В `4e-worker` добавлен D1 binding `DB`, миграции `0001_sessions_tasks.sql`/`0002_app_kv_state.sql`, Worker переведён на ES module entrypoint для D1. Новые sessions пишутся в `app_sessions`, task lists — в `app_task_lists`; старые KV `session:*`/`tasks:*` читаются fallback-ом и автопереносятся при доступе. Production Worker задеплоен как version `0b66977a-0b23-4cdf-bd92-c5ec38e2ee1c`; live smoke подтвердил D1 rows для session/task и 404 в KV по новым `session:*`/`tasks:*`.
+**Коммит:** `0a035c9` (`feat(worker): store sessions and tasks in D1`)
+**Статус:** ✅ выполнено
+**Следующий шаг:** Следующий backlog item — BACK-007: уведомление РКН; следующий Codex-технический item — BACK-008: перенос ПД в Yandex Cloud PostgreSQL.
+
+---
+
+### 2026-06-27 — Codex
+
+**Задача:** BACK-005 — единая модель пользователя VK + TG + Email
+**Результат:** PR `fix/unified-user-identities` смёржен в `main` worker (`d5af7aa`), production Worker задеплоен как version `ff365be0-59d3-4307-9c15-54ab037e2917`. Live smoke прошёл: временный email-аккаунт привязан к Telegram через `initData` и VK через `launchParams`, затем `/auth/vk` и `/auth/me` вернули тот же canonical `user.id`; тестовые KV-ключи удалены.
+**Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`)
+**Статус:** ✅ выполнено
+**Следующий шаг:** Следующий backlog item — BACK-006: миграция KV → D1.
+
+---
+
+### 2026-06-27 — Codex
+
+**Задача:** BACK-004 — тестовый платёж, прогнать webhook до конца
+**Результат:** Production `/payment/webhook` проверен на временном тестовом пользователе: webhook вернул `code:0`, пользователь перешёл `trial` → `paid`, срок Premium увеличился с 30 до 60 дней. Тестовые KV-ключи `user:*`, `user_id:*`, `tx:*`, `notifs:*` удалены после smoke.
+**Коммит:** N/A (код не менялся)
+**Статус:** ✅ выполнено
+**Следующий шаг:** Следующий backlog item — BACK-005: единая модель пользователя VK + TG + Email.
+
+---
+
+### 2026-06-27 — Codex
+
+**Задача:** BACK-002 — сброс пароля, backend reset endpoints
+**Результат:** В `4e-worker/worker.js` добавлены совместимые маршруты `/auth/reset-request` и `/auth/reset-confirm`; reset-confirm принимает `newPassword` и старое поле `password`; ссылка в письме ведёт на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
+**Коммит:** `a0965de` (`feat(auth): add password reset endpoints`)
+**Статус:** ✅ выполнено
+**Следующий шаг:** BACK-002 закрыт: live smoke прошёл, письмо пришло, кнопка сброса открыла форму, пароль сохранён. Пользователь ввёл тот же пароль, но reset token и backend confirm-flow отработали.
+
+---
+
+### 2026-06-26 — Codex
+
+**Задача:** BACK-001 — Email через Resend, пользователи не получают писем
+**Результат:** В `4e-worker/worker.js` удалён hardcoded Resend key, отправка теперь использует runtime secret `RESEND_KEY`, ошибки Resend/fetch обрабатываются контролируемо, `/auth/forgot-password` возвращает `502` если письмо существующему пользователю не отправилось
+**Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`), branch `origin/fix/resend-email-secret`
+**Статус:** ✅ выполнено
+**Следующий шаг:** BACK-001 закрыт: письмо сброса дошло, Resend доставил. Клик по ссылке и смена пароля относятся к BACK-002.
+
+---
 
 ### 2026-06-26 — Codex
 
@@ -41,6 +90,7 @@
 **Следующий шаг:** После push проверить live `mrktggod.github.io/4e-app/privacy.html` и ручной сценарий микрофона в Telegram WebView
 
 ---
+
 ### 2026-06-25 — Codex
 
 **Задача:** Исправить `BUG-2026-06-25-002` — сброс пароля принимает некорректный email и может вести на пустой экран

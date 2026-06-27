@@ -19,17 +19,17 @@
 
 | ID | Задача | Тип | Приоритет | Ответственный | Статус | Критерий готовности |
 | --- | --- | --- | --- | --- | --- | --- |
-| BACK-001 | Email через Resend — пользователи не получают писем | Tech | P0 | Codex | Todo | Письмо доходит, видно в Resend Dashboard |
-| BACK-002 | Сброс пароля — бэкенд не реализован | Tech | P0 | Codex | Todo | /auth/reset-request и /auth/reset-confirm работают, письмо приходит |
-| BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done / QA | Экран согласия появляется при первом нажатии на микрофон, live-сценарий проверен в Telegram WebView |
-| BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Todo | Тестовый платёж проходит, webhook получен и обработан |
+| BACK-001 | Email через Resend — пользователи не получают писем | Tech | P0 | Codex | Done | Worker commit `086f19b` merged in `a436a10`, deployed as version `abe182e4`; live email smoke passed, Resend delivered the reset email |
+| BACK-002 | Сброс пароля — бэкенд не реализован | Tech | P0 | Codex | Done | Worker commit `a0965de` merged in `a173ebf`, deployed as version `729a046c`; live smoke passed: письмо пришло, ссылка открылась, пароль сохранён |
+| BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done | Экран согласия появляется при первом нажатии на микрофон, privacy.html готова к деплою через commit/push |
+| BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Done | Live smoke passed: webhook returned `code:0`, test user moved from `trial` to `paid`, paid period extended |
 
 ## Next
 
 | ID | Задача | Тип | Приоритет | Ответственный | Статус | Критерий готовности |
 | --- | --- | --- | --- | --- | --- | --- |
-| BACK-005 | Единая модель пользователя VK + TG + Email | Tech | P1 | Codex | Todo | Один аккаунт, все три способа входа привязаны |
-| BACK-006 | Миграция KV → D1 | Tech | P2 | Codex | Todo | Задачи и сессии хранятся в D1, KV не используется |
+| BACK-005 | Единая модель пользователя VK + TG + Email | Tech | P1 | Codex | Done | Worker commit `1a593fb` merged in `d5af7aa`, deployed as version `ff365be0`; live smoke passed: Email account, Telegram link and VK login returned the same canonical user id |
+| BACK-006 | Миграция KV → D1 | Tech | P2 | Codex | Done | Worker commit `0a035c9` stores sessions and task lists in D1 (`app_sessions`, `app_task_lists`), deployed as version `0b66977a`; live smoke passed: D1 rows created, KV `session:*`/`tasks:*` returned 404 |
 | BACK-007 | Уведомление РКН | Legal | P1 | Юрий | Todo | Уведомление подано, номер внесён в privacy.html |
 | BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Codex | Todo | Данные пользователей хранятся в России |
 

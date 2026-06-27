@@ -57,6 +57,73 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-27 — BACK-006: D1 storage for sessions and tasks (Codex)
+
+**Что сделано:** В `4e-worker/worker.js` добавлен D1 storage-layer для `session:*` и `tasks:*`: новые sessions сохраняются в `app_sessions`, task lists — в `app_task_lists`. Старые KV-значения для `session:*` и `tasks:*` остаются read fallback-ом и при первом чтении переносятся в D1. Worker переведён с legacy `addEventListener("fetch")` на ES module `export default { fetch(request, env) }`, потому что Cloudflare D1 binding требует module Worker. В `wrangler.toml` добавлен binding `DB` на `4e-production` (`6107948c-6c67-4c37-baa1-efea6c5c2860`). Добавлены D1 migrations: `0001_sessions_tasks.sql` как no-op note для уже занятой production schema `sessions/tasks`, и `0002_app_kv_state.sql` для `app_sessions`/`app_task_lists`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `git diff --check`; `wrangler d1 migrations apply 4e-production --local --config wrangler.toml`; `wrangler d1 migrations apply 4e-production --remote --config wrangler.toml`; `PRAGMA table_info(app_sessions)` и `PRAGMA table_info(app_task_lists)` подтвердили remote schema; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` → production version `0b66977a-0b23-4cdf-bd92-c5ec38e2ee1c`. Live smoke: временный email-аккаунт зарегистрирован, `/auth/me` по token прошёл, `x-action: save-task` сохранил задачу, `/tasks` вернул её; D1 показал `session_rows=1` и `task_rows=1`; KV get для новых `session:<token>` и `tasks:<chatId>` вернул 404; временные D1/KV записи удалены, cleanup count вернул `session_rows=0`, `task_rows=0`.
+
+**Коммит:** `0a035c9` (`feat(worker): store sessions and tasks in D1`) в `4e-worker`.
+
+**Статус:** выполнено — BACK-006 закрыт.
+
+---
+
+## 2026-06-27 — BACK-005: unified user identities (Codex)
+
+**Что сделано:** В `4e-worker/worker.js` создана единая server-side модель идентичностей для Email + Telegram + VK. `link-telegram` теперь умеет брать Telegram ID из `initData` и сохраняет `telegramId` в canonical user. Добавлен `/auth/link-vk`, который привязывает VK ID к текущей email-сессии через `vk:<id>` и `vk_rev:<userId>`. `/auth/vk` теперь парсит `vk_user_id` из `launchParams`, использует общий `saveUser/getUser`, создаёт canonical `vk_<id>@vk.local` user только если VK ещё не привязан, и возвращает session с `email`. `publicUser()` возвращает `telegramId`, `telegramUsername`, `vkId`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` → production version `ff365be0-59d3-4307-9c15-54ab037e2917`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; smoke создал email-аккаунт, привязал Telegram через `initData`, привязал VK через `launchParams`, затем `/auth/vk` вернул тот же `user.id` и email; `/auth/me` по VK token также вернул тот же `user.id`. На shutdown `wrangler dev` показал временную bundle cleanup/build ошибку, но HTTP-smoke до shutdown прошёл успешно. После merge в `main` production live smoke подтвердил, что email-регистрация, Telegram link, VK link, `/auth/vk` и `/auth/me` возвращают один canonical `user.id`; временные KV-ключи `user:*`, `user_id:*`, `session:*`, `tg:*`, `tg_rev:*`, `vk:*`, `vk_rev:*`, `notifs:*` удалены.
+
+**Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`) в `4e-worker`.
+
+**Статус:** выполнено — BACK-005 закрыт.
+
+---
+
+## 2026-06-27 — BACK-004: payment webhook live smoke (Codex)
+
+**Что сделано:** Код не менялся. Production Worker `/payment/webhook` проверен end-to-end на временном тестовом пользователе `codex-payment-smoke-1782568866@example.com` и invoice `codex-smoke-1782568866`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Через production Worker создан временный аккаунт, до webhook `plan=trial`; отправлен form-urlencoded webhook `Status=Completed`, `AccountId=<test-user-id>`, `Amount=990`, `InvoiceId=codex-smoke-1782568866`, `Description=Smoke 1 month`; webhook вернул `code:0`; после `/auth/me` показал `plan=paid`, `trialEndsAt` увеличился примерно на 30 дней (`trialLeft=60`). После проверки удалены точные KV-ключи `user:codex-payment-smoke-1782568866@example.com`, `user_id:d1ce9837-42b0-4460-a17e-ef16856234b4`, `tx:codex-smoke-1782568866`, `notifs:d1ce9837-42b0-4460-a17e-ef16856234b4`.
+
+**Коммит:** N/A — код не менялся.
+
+**Статус:** выполнено — BACK-004 закрыт.
+
+---
+
+## 2026-06-27 — BACK-002: password reset backend endpoints (Codex)
+
+**Что сделано:** В `4e-worker/worker.js` на ветке `fix/password-reset-endpoints` добавлены новые совместимые endpoint aliases `/auth/reset-request` и `/auth/reset-confirm` поверх существующих `/auth/forgot-password` и `/auth/reset-password`. `handleResetPassword()` теперь принимает `newPassword` из контракта Фазы 12 и старое поле `password` для обратной совместимости. Ссылка в письме исправлена на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; `POST /auth/reset-request` с несуществующим email вернул `200 {"ok":true}`; `POST /auth/reset-confirm` с невалидным token и `newPassword` вернул контролируемый `400 Bad Request`.
+
+**Коммит:** `a0965de` (`feat(auth): add password reset endpoints`) в `4e-worker`.
+
+**Статус:** выполнено — PR смёржен в `a173ebf`, production deploy выполнен (`729a046c-5849-4a26-9ced-8ee5bc4b1e44`), live API smoke прошёл: `/auth/reset-request` вернул `200 {"ok":true}`, `/auth/reset-confirm` с invalid token вернул контролируемый `400`. Финальный ручной smoke подтверждён 2026-06-27: письмо пришло, кнопка сброса открыла форму, пароль сохранён. Пользователь ввёл тот же пароль, но reset token и backend confirm-flow отработали.
+
+---
+
+## 2026-06-26 — BACK-001: Resend email secret для Worker (Codex)
+
+**Что сделано:** В отдельном worker-репозитории `4e-worker` создана ветка `fix/resend-email-secret` и коммит `086f19b`. Из `worker.js` удалён hardcoded `RESEND_KEY`; `sendEmail()` теперь читает runtime secret `RESEND_KEY`, не падает Worker 1101 при отсутствующем secret, логирует конфигурационную ошибку/ошибку Resend и возвращает `false`. `/auth/forgot-password` теперь не сообщает пользователю ложный успех для существующего аккаунта, если письмо не отправилось, а возвращает контролируемый `502`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `rg -n "re_[A-Za-z0-9_]+" worker.js` не нашёл hardcoded Resend key; `git diff --check` прошёл; `wrangler deploy --dry-run --config wrangler.toml` собрал Worker (`Total Upload: 55.77 KiB / gzip: 10.35 KiB`) и показал binding `env.KV`. Проверка `wrangler secret list` и production deploy заблокированы окружением: Wrangler требует `CLOUDFLARE_API_TOKEN` в non-interactive session. 2026-06-27: `git push -u origin fix/resend-email-secret` completed; PR creation is blocked because local `gh` is not logged in and GitHub connector returned API 404 for `mrktggod/4e-bot`; `wrangler whoami` later succeeded after OAuth login, `wrangler secret list --config wrangler.toml` confirmed `RESEND_KEY`, and production deploy succeeded: Worker `restless-lab-d737`, version `abe182e4-05b5-4c28-9934-9f972e662098`, URL `https://restless-lab-d737.shelckograff.workers.dev`. Safe smoke: `POST /auth/forgot-password` with a non-existing email returned `200 {"ok":true}`. 2026-06-27: live email smoke passed by user confirmation; reset email arrived and Resend marked it delivered. BACK-001 is Done; following the email link and changing the password are BACK-002 scope.
+
+**Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`) в `4e-worker`; branch `origin/fix/resend-email-secret` pushed.
+
+---
 
 ## 2026-06-26 — PM-roadmap приведён к реальной стратегии продукта (Codex)
 
@@ -85,6 +152,7 @@
 **Коммит:** `legal: biometric consent and privacy policy`
 
 ---
+
 ## 2026-06-25 — Исправление сброса пароля (Codex)
 
 **Что сделано:**
