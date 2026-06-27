@@ -33,7 +33,7 @@
 | BACK-007 | Уведомление РКН | Legal | P1 | Алексей | Manual | Уведомление подано, номер внесён в privacy.html |
 | BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Алексей + Codex | Manual blocker | Алексей создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings; после этого Codex продолжает перенос |
 | BACK-013 | Семантический HTML | Tech/UI | P3 | Codex | Done | В `index.html` добавлены `<main>`, `<header>`, `<nav>`, aria-label и роли для иконочной навигации без изменения визуала |
-| BACK-014 | Подготовка кода под PostgreSQL заранее | Tech | P2 | Codex | Todo | Код подготовлен к PostgreSQL-коннектору без production credentials; фактический перенос остаётся в BACK-008 |
+| BACK-014 | Подготовка кода под PostgreSQL заранее | Tech | P2 | Codex | Done | Worker commit `37f9dda` добавил PostgreSQL storage adapter и `migrations/postgres_app_state.sql`; production путь остаётся D1/KV до появления credentials |
 
 ## Later
 

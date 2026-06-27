@@ -48,13 +48,25 @@
 |---|----------|-----------|
 | 1 | Уведомление РКН — ручной шаг Алексея | высокий |
 | 2 | Yandex Cloud PostgreSQL — ручной шаг Алексея перед BACK-008 | высокий |
-| 3 | Подготовка кода под PostgreSQL заранее — можно брать Codex без credentials | средний |
-| 4 | `bottom-nav-v2` (в #home) и `global-nav` — два отдельных компонента, нужно держать синхронизированными | средний |
-| 5 | ANTHROPIC_KEY в worker.js должен быть только PLACEHOLDER — не коммитить реальный ключ | высокий |
+| 3 | `bottom-nav-v2` (в #home) и `global-nav` — два отдельных компонента, нужно держать синхронизированными | средний |
+| 4 | ANTHROPIC_KEY в worker.js должен быть только PLACEHOLDER — не коммитить реальный ключ | высокий |
 
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-27 — BACK-014: PostgreSQL prep without production credentials (Codex)
+
+**Что сделано:** В `4e-worker/worker.js` добавлен подготовительный PostgreSQL storage adapter для `app_sessions` и `app_task_lists`. Adapter читает будущие env `POSTGRES_URL`/`POSTGRES_TOKEN`, но production-поведение не меняет: без `POSTGRES_URL` Worker продолжает использовать D1/KV. Добавлен будущий DDL `migrations/postgres_app_state.sql` для ручного применения в Yandex Cloud PostgreSQL во время BACK-008.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `node --check worker.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`; `git diff --check`; после merge локальный `4e-worker/main` fast-forward до `a97d768`, worker содержит `POSTGRES_URL` и `migrations/postgres_app_state.sql`.
+
+**Коммит:** `37f9dda` (`feat(worker): prepare PostgreSQL storage adapter`), merged as `a97d768`.
+
+**Статус:** выполнено. Фактический перенос ПД остаётся в BACK-008 и ждёт Yandex Cloud credentials от Алексея.
+
+---
 ## 2026-06-27 — BACK-013: semantic HTML landmarks and aria labels (Codex)
 
 **Что сделано:** В `index.html` добавлены семантические landmark-теги без изменения классов и id: корневой app-контейнер стал `<main id="app">`, нижние навигации `bottom-nav-v2` и `global-nav` стали `<nav>` с `aria-label`, верхняя область главного экрана и шапка voice-экрана стали `<header>`. Для иконочной навигации и кликабельных `div` добавлены `aria-label`, `role="button"` и `tabindex="0"`; для back-кнопок добавлен `aria-label="Назад"`.
@@ -593,7 +605,7 @@
 |--------|------|----------|
 | Чёрный экран в TG Mini App | `index.html` | `loginWithTelegram()` теперь возвращает `true/false`; при неудаче показывает `showScreen('login')` вместо пустоты; `initApp()` не делает безусловный `return` после TG-логина |
 | `telegramId required` на мобиле | `index.html` | Воркер ждал `body.user.id`, приложение слало только `{initData}`; добавлен `user: tgUser` в тело запроса |
-| 5 | ANTHROPIC_KEY в worker.js должен быть только PLACEHOLDER — не коммитить реальный ключ | высокий |
+| 4 | ANTHROPIC_KEY в worker.js должен быть только PLACEHOLDER — не коммитить реальный ключ | высокий |
 | AI-чат ошибка `invalid x-api-key` | — | Следствие предыдущего; после обновления секрета и ре-деплоя → работает |
 | Навигация: разные кнопки по экранам | `index.html` | `global-nav` (для всех экранов кроме home) имел 4 другие кнопки; унифицирован: те же 5 кнопок что в `bottom-nav-v2` (чаты, статистика, микрофон, задачи, AI) |
 | Клавиатура перекрывает поле ввода | `index.html` | При фокусе на `ask-field` → `global-nav` скрывается; при `blur` (с задержкой 150мс) → восстанавливается |

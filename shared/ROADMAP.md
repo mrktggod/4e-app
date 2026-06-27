@@ -57,7 +57,7 @@
 | Premium trust positioning | Обсудить с Claude Юры, как безопасность, приватность и контроль данных становятся частью дорогого позиционирования 4 | P1 | Ready for discussion |
 | CSS-архитектура | LESS + BEM + минификация | P2 | Done — `styles.min.css` собирается из `styles/main.less` |
 | Семантический HTML | `<main>`, `<header>`, `<nav>`, aria-label | P3 | Done |
-| PostgreSQL prep | Подготовить код к будущему PostgreSQL без live credentials | P2 | Ready for Codex |
+| PostgreSQL prep | Подготовить код к будущему PostgreSQL без live credentials | P2 | Done — adapter merged in worker commit `37f9dda` |
 
 ---
 

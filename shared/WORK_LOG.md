@@ -24,6 +24,15 @@
 
 ### 2026-06-27 — Codex
 
+**Задача:** BACK-014 — подготовка кода под PostgreSQL заранее
+**Результат:** В `4e-worker` смержен PostgreSQL storage adapter для `app_sessions`/`app_task_lists` и добавлен будущий DDL `migrations/postgres_app_state.sql`. Без `POSTGRES_URL` production продолжает работать через D1/KV; live credentials не требовались.
+**Коммит:** `37f9dda` (`feat(worker): prepare PostgreSQL storage adapter`), merge `a97d768`
+**Статус:** ✅ выполнено
+**Следующий шаг:** BACK-008 остаётся manual blocker: Алексей создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings.
+
+---
+### 2026-06-27 — Codex
+
 **Задача:** BACK-013 — Семантический HTML + aria-label
 **Результат:** В `index.html` добавлены `<main>`, `<header>`, `<nav>` для app/root, главного экрана, voice header и нижней навигации; иконочные nav/action элементы получили `aria-label`, `role="button"` и `tabindex="0"`. Визуальные классы и JS id/onclick сохранены.
 **Коммит:** `refactor(ui): add semantic HTML landmarks`
