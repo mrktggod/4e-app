@@ -13,7 +13,7 @@
 
 | ID | Задача | Тип | Приоритет | Ответственный | Статус | Критерий готовности |
 | --- | --- | --- | --- | --- | --- | --- |
-| BACK-001 | Email через Resend — пользователи не получают писем | Tech | P0 | Codex | In Progress | Кодовый фикс готов в worker commit `086f19b`; нужен Wrangler auth/deploy и live Resend smoke |
+| BACK-001 | Email через Resend — пользователи не получают писем | Tech | P0 | Codex | In Progress | Кодовый фикс готов в worker commit `086f19b`, branch `origin/fix/resend-email-secret`; нужен Wrangler auth/deploy и live Resend smoke |
 | BACK-002 | Сброс пароля — бэкенд не реализован | Tech | P0 | Codex | Todo | /auth/reset-request и /auth/reset-confirm работают, письмо приходит |
 | BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done | Экран согласия появляется при первом нажатии на микрофон, privacy.html готова к деплою через commit/push |
 | BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Todo | Тестовый платёж проходит, webhook получен и обработан |

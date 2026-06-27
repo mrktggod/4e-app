@@ -64,9 +64,9 @@
 
 **Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
 
-**Тест:** `node --check worker.js`; `rg -n "re_[A-Za-z0-9_]+" worker.js` не нашёл hardcoded Resend key; `git diff --check` прошёл; `wrangler deploy --dry-run --config wrangler.toml` собрал Worker (`Total Upload: 55.77 KiB / gzip: 10.35 KiB`) и показал binding `env.KV`. Проверка `wrangler secret list` и production deploy заблокированы окружением: Wrangler требует `CLOUDFLARE_API_TOKEN` в non-interactive session.
+**Тест:** `node --check worker.js`; `rg -n "re_[A-Za-z0-9_]+" worker.js` не нашёл hardcoded Resend key; `git diff --check` прошёл; `wrangler deploy --dry-run --config wrangler.toml` собрал Worker (`Total Upload: 55.77 KiB / gzip: 10.35 KiB`) и показал binding `env.KV`. Проверка `wrangler secret list` и production deploy заблокированы окружением: Wrangler требует `CLOUDFLARE_API_TOKEN` в non-interactive session. 2026-06-27: `git push -u origin fix/resend-email-secret` completed; PR creation is blocked because local `gh` is not logged in and GitHub connector returned API 404 for `mrktggod/4e-bot`; `wrangler whoami` says `You are not authenticated`, and `wrangler secret list --config wrangler.toml` still requires `CLOUDFLARE_API_TOKEN`.
 
-**Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`) в `4e-worker`.
+**Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`) в `4e-worker`; branch `origin/fix/resend-email-secret` pushed.
 
 ---
 ## 2026-06-25 — BACK-003: биометрическое согласие 152-ФЗ (Codex)
