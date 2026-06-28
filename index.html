@@ -3872,13 +3872,13 @@ function getSupportedVoiceMimeType(){
   const types=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/aac'];
   return types.find(type=>MediaRecorder.isTypeSupported(type))||'';
 }
+function isIOS(){return /iPhone|iPad|iPod/i.test(navigator.userAgent);}
 function openVoice(){
   if (!window.biometricConsentRequired()) return;
-  if(navigator.mediaDevices?.getUserMedia&&window.MediaRecorder){
-    openMediaRecorderVoice();
-    return;
-  }
-  openSpeechRecognitionVoice();
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SR&&!isIOS()){openSpeechRecognitionVoice();return;}
+  if(navigator.mediaDevices?.getUserMedia&&window.MediaRecorder){openMediaRecorderVoice();return;}
+  showToast('Голосовой ввод недоступен в этом браузере');setTimeout(openAsk,200);
 }
 async function openMediaRecorderVoice(){
   showScreen('voice');
