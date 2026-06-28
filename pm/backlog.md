@@ -47,6 +47,7 @@
 | BACK-016 | Расширенный профиль пользователя | Product/UI | P2 | Codex | Ready for QA | В `index.html` добавлены фото-плейсхолдер, имя, ID, телефон/email со статусами, Telegram, о себе и дата рождения |
 | BACK-017 | Оживить настройки уведомлений | Product/Tech | P2 | Codex | Ready for QA | App сохраняет настройки каналов/брифинга/просрочек; worker commit `b3aa1d6` добавил D1 storage и bot checks |
 | BACK-020 | Подтверждение email в профиле для связки аккаунтов | Product/Tech | P2 | Codex | Ready for QA | App обрабатывает `?verify_email=TOKEN`; worker commit `e815266` добавил Resend письмо, D1 token storage и конфликт `Этот email уже используется`; нужен deploy, D1 migration `0004_email_verifications.sql` и live smoke |
+| BACK-021 | Голосовой ввод через MediaRecorder + Whisper | Product/Tech | P1 | Codex | Ready for QA | `index.html` пишет аудио через MediaRecorder и отправляет multipart `/transcribe`; worker commit `339b301` добавил Whisper endpoint через `OPENAI_KEY`; нужен secret/deploy и live smoke на iPhone/Android |
 
 ## Связь с Linear
 

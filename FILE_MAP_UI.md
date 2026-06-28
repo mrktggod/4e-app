@@ -67,7 +67,7 @@
 | 3965-4208 | Task detail and editing | `openTask`, `editDetailField`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
 | 4209-4284 | Message generation | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg` |
 | 4285-4517 | AI chat and task creation | `loadAskHistoryRemote`, `createTaskFromChat`, `sendAsk`, `showToast` |
-| 4518-4630 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `sendVoiceMessage`; `openVoice` gated by `biometricConsentRequired` |
+| 4518-4630 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `openMediaRecorderVoice`, `transcribeVoiceBlob`, `sendVoiceMessage`; voice uses MediaRecorder + `/transcribe` with SpeechRecognition fallback and biometric consent gate |
 | 3888-4090 | Subscreens, privacy API, notifications prefs | `_showSubScreenBase`, `loadPrivacyCenter`, `loadNotificationSettings`, `saveNotifPref` |
 | 4809-5006 | Settings | `saveNotifPref`, `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
 | 5007-5404 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
