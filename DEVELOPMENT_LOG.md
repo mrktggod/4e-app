@@ -54,6 +54,17 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-010: Telegram Stars subscription flow (Codex)
+
+**Что сделано:** В `index.html` payment flow теперь выбирает Telegram Stars внутри Telegram Mini App: кнопка оплаты показывает сумму в Stars, запрашивает invoice у Worker и открывает `Telegram.WebApp.openInvoice`. В `4e-worker` commit `d57771c` добавил endpoint `/payments/telegram-stars/invoice`, создание `createInvoiceLink` с валютой `XTR`, обработчик `/payments/telegram-stars/complete` и bot-side обработку `pre_checkout_query` / `successful_payment`, чтобы Premium активировался по реальному событию Telegram.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19509`. После правки: `index.html CYRILLIC_AFTER=19707`; рост ожидаемый из-за новых русских сообщений Telegram Stars.
+
+**Тест:** `node --check worker.js`; `node --check src/bot/handler.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`; inline JS syntax check для `index.html`; `npm run build:css`; `git diff --check`. Live Telegram Stars smoke не выполнялся локально, потому что нужен запуск внутри Telegram Mini App с активным bot/Worker окружением.
+
+**Коммит:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c feat(payments): add Telegram Stars subscription flow`
+
+**Статус:** Ready for QA — нужен live smoke в Telegram после merge/deploy.
 ## 2026-06-28 — Фаза 11: относительные даты в карточках задач (Codex)
 
 **Что сделано:** В `index.html` добавлен общий formatter относительных дат для карточек задач. Дедлайны теперь показываются как `сегодня`, `завтра`, `через N дней` или `просрочено на N дней`; обычные даты задач показываются как `сегодня`, `вчера`, `N дней назад` или будущий относительный срок. Форматтер подключён к основному списку задач, месячному фильтру, раскрытию всех задач, home-фильтрам и спискам выполненных задач/обещаний.

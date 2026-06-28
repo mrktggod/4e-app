@@ -16,6 +16,8 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 - `/anthropic` — прокси к Claude, требует `x-token`.
 - `/tasks` — задачи по токену без `chatId`.
 - `/auth/vk` — VK авто-логин.
+- `/payments/telegram-stars/invoice` — создаёт Telegram Stars invoice link для Mini App.
+- `/payments/telegram-stars/complete` — подтверждает `successful_payment` от Telegram bot и активирует Premium.
 - D1/privacy endpoints используются из `index.html` и `vk.html`.
 - Реальные секреты не должны попадать в код; использовать placeholders и Secrets.
 

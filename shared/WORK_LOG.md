@@ -24,6 +24,13 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** BACK-010 — Telegram Stars / ЮKassa
+**Результат:** В `index.html` добавлен Telegram Stars payment flow через `Telegram.WebApp.openInvoice`; worker commit `d57771c` создаёт invoice link и bot подтверждает `successful_payment`, после чего Premium активируется в Worker.
+**Коммит:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Смержить/deploy app и worker, затем пройти live smoke внутри Telegram Mini App; YooKassa остаётся следующим card-provider решением.
+### 2026-06-28 — Codex
+
 **Задача:** Фаза 11 — относительные даты в карточках задач
 **Результат:** В `index.html` добавлен общий formatter дат: карточки задач показывают `сегодня`, `вчера`, `N дней назад`, `завтра`, `через N дней` и `просрочено на N дней` вместо абсолютных дат.
 **Коммит:** `feat(tasks): show relative dates in task cards`
