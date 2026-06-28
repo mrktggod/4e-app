@@ -24,6 +24,13 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** BACK-021 — голосовой ввод через MediaRecorder + Whisper
+**Результат:** В `index.html` добавлен MediaRecorder flow с отправкой audio blob на `/transcribe` и fallback на SpeechRecognition; worker commit `339b301` добавил Whisper endpoint через `OPENAI_KEY`.
+**Коммит:** app `feat(voice): add MediaRecorder voice input`; worker `339b301`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Добавить secret `OPENAI_KEY`, задеплоить worker/app и пройти live smoke на iPhone Telegram WKWebView и Android.
+### 2026-06-28 — Codex
+
 **Задача:** BACK-020 — подтверждение email в профиле для связки аккаунтов
 **Результат:** В `index.html` добавлена кнопка подтверждения email, обработка `?verify_email=TOKEN` и обновление статуса `Подтверждён ✅`; worker commit `e815266` добавил Resend-письмо, D1/KV хранение token и проверку конфликта занятого email.
 **Коммит:** app `feat(auth): add profile email verification`; worker `e815266`

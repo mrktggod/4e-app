@@ -54,6 +54,18 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-021: MediaRecorder voice input + Whisper (Codex)
+
+**Что сделано:** В `index.html` голосовой ввод переведён на `MediaRecorder`: приложение запрашивает микрофон через `getUserMedia`, записывает до 10 секунд, отправляет audio blob на Worker `/transcribe` как multipart `audio`, получает текст и передаёт его в `ask-field` / `sendAsk()`. `SpeechRecognition` оставлен fallback, если MediaRecorder недоступен. В `4e-worker` commit `339b301` добавил endpoint `POST /transcribe`: проверка `x-token`, чтение multipart, вызов OpenAI Whisper `whisper-1` через `OPENAI_KEY`, ответ `{ text }`.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=20210`. После правки: `index.html CYRILLIC_AFTER=20324`; рост ожидаемый из-за новых сообщений MediaRecorder/Whisper flow.
+
+**Тест:** inline JS syntax check для `index.html`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
+
+**Коммит:** app `feat(voice): add MediaRecorder voice input`; worker `339b301 feat(voice): add Whisper transcription endpoint`
+
+**Статус:** Ready for QA — перед live smoke нужно добавить Worker secret `OPENAI_KEY`, задеплоить Worker/app и проверить голосовой ввод на iPhone Telegram WKWebView и Android.
+
 ## 2026-06-28 — BACK-020: email verification in profile (Codex)
 
 **Что сделано:** В `index.html` email в расширенном профиле теперь подтверждается через кнопку `Подтвердить`: app запрашивает письмо у Worker, обрабатывает `?verify_email=TOKEN`, вызывает `/auth/verify-email`, обновляет `currentUser.emailVerified` и показывает статус `Подтверждён ✅`. В `4e-worker` commit `e815266` добавил endpoints `/auth/request-email-verification` и `/auth/verify-email`, отправку Resend от `noreply@4-ai.site`, D1 таблицу `app_email_verifications` с KV fallback и проверку конфликта `Этот email уже используется`.

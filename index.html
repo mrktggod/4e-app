@@ -3858,38 +3858,126 @@ function selectCalDay(d){
 }
 
 // VOICE
-let voiceTimer=null,recognition=null;
+let voiceTimer=null,recognition=null,voiceRecorder=null,voiceStream=null,voiceChunks=[],voiceCancelled=false;
 function showVoiceInfo(){showToast('Говорите — 4 распознает и выполнит задачу');}
-function toggleVoice(){if(recognition)closeVoice();else openVoice();}
+function resetVoiceSteps(){['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));}
+function setVoiceTitle(text){const el=document.getElementById('voice-title');if(el)el.textContent=text;}
+function toggleVoice(){
+  if(voiceRecorder&&voiceRecorder.state==='recording'){stopVoiceRecording(false);return;}
+  if(recognition){closeVoice();return;}
+  openVoice();
+}
+function getSupportedVoiceMimeType(){
+  if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return '';
+  const types=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/aac'];
+  return types.find(type=>MediaRecorder.isTypeSupported(type))||'';
+}
 function openVoice(){
   if (!window.biometricConsentRequired()) return;
+  if(navigator.mediaDevices?.getUserMedia&&window.MediaRecorder){
+    openMediaRecorderVoice();
+    return;
+  }
+  openSpeechRecognitionVoice();
+}
+async function openMediaRecorderVoice(){
+  showScreen('voice');
+  setNavActive('voice');
+  resetVoiceSteps();
+  setVoiceTitle('Говори...');
+  voiceCancelled=false;
+  voiceChunks=[];
+  try{
+    voiceStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mimeType=getSupportedVoiceMimeType();
+    voiceRecorder=new MediaRecorder(voiceStream,mimeType?{mimeType}:{});
+    voiceRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)voiceChunks.push(e.data);};
+    voiceRecorder.onerror=()=>{showToast('Нет доступа к микрофону');closeVoice();};
+    voiceRecorder.onstop=()=>handleVoiceRecordingStopped(mimeType||voiceRecorder?.mimeType||'audio/webm');
+    voiceRecorder.start();
+    setVoiceTitle('Слушаю...');
+    setVoiceStep(1,'spin');
+    voiceTimer=setTimeout(()=>stopVoiceRecording(false),10000);
+  }catch(e){
+    showToast('Нет доступа к микрофону');
+    closeVoice();
+  }
+}
+function stopVoiceRecording(cancelled){
+  voiceCancelled=!!cancelled;
+  clearTimeout(voiceTimer);
+  if(voiceRecorder&&voiceRecorder.state==='recording'){
+    try{voiceRecorder.stop();}catch(e){closeVoice();}
+  }else if(cancelled){
+    closeVoice();
+  }
+}
+async function handleVoiceRecordingStopped(mimeType){
+  const cancelled=voiceCancelled;
+  cleanupVoiceStream();
+  const chunks=voiceChunks.slice();
+  voiceRecorder=null;
+  voiceChunks=[];
+  if(cancelled)return;
+  if(!chunks.length){showToast('Не удалось распознать речь');closeVoice();return;}
+  try{
+    setVoiceStep(1,'done');
+    setVoiceStep(2,'spin');
+    setVoiceTitle('Понимаю запрос...');
+    const blob=new Blob(chunks,{type:mimeType});
+    const text=await transcribeVoiceBlob(blob,mimeType);
+    if(!text)throw new Error('empty_transcript');
+    setVoiceTitle('«'+text+'»');
+    setVoiceStep(2,'done');
+    setVoiceStep(3,'spin');
+    setTimeout(()=>{setVoiceStep(3,'done');setVoiceStep(4,'spin');setVoiceTitle('4 отвечает...');},500);
+    setTimeout(()=>{setVoiceStep(4,'done');setVoiceStep(5,'spin');},1100);
+    setTimeout(()=>{setVoiceStep(5,'done');setVoiceTitle('Готово');sendVoiceMessage(text);},1700);
+  }catch(e){
+    console.error('voice transcribe failed:',e);
+    showToast('Не удалось распознать речь');
+    closeVoice();
+  }
+}
+async function transcribeVoiceBlob(blob,mimeType){
+  const form=new FormData();
+  const ext=(mimeType||'').includes('mp4')?'mp4':((mimeType||'').includes('aac')?'aac':'webm');
+  form.append('audio',blob,'voice.'+ext);
+  const headers=authHeaders();
+  delete headers['Content-Type'];
+  const r=await fetch(WORKER+'/transcribe',{method:'POST',headers,body:form});
+  const d=await readJsonSafe(r);
+  if(!r.ok||d.ok===false)throw new Error(d.error||'transcribe failed');
+  return (d.text||'').trim();
+}
+function openSpeechRecognitionVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){showToast('Голосовой ввод недоступен в этом браузере');setTimeout(openAsk,200);return;}
   showScreen('voice');
   setNavActive('voice');
-  document.getElementById('voice-title').textContent='Говори...';
-  ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
+  setVoiceTitle('Говори...');
+  resetVoiceSteps();
   let resultReceived=false;
   recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=false;
-  recognition.onstart=()=>{document.getElementById('voice-title').textContent='Слушаю...';setVoiceStep(1,'spin');};
+  recognition.onstart=()=>{setVoiceTitle('Слушаю...');setVoiceStep(1,'spin');};
   recognition.onresult=(e)=>{
     resultReceived=true;
     const text=e.results[0][0].transcript;
-    document.getElementById('voice-title').textContent='«'+text+'»';
-    setVoiceStep(1,'done');setVoiceStep(2,'spin');
-    setTimeout(()=>{setVoiceStep(2,'done');setVoiceStep(3,'spin');document.getElementById('voice-title').textContent='4 анализирует...';},600);
-    setTimeout(()=>{setVoiceStep(3,'done');setVoiceStep(4,'spin');},1400);
-    setTimeout(()=>{setVoiceStep(4,'done');setVoiceStep(5,'spin');document.getElementById('voice-title').textContent='4 отвечает...';},2200);
-    setTimeout(()=>{setVoiceStep(5,'done');document.getElementById('voice-title').textContent='Готово';setTimeout(()=>{closeVoice();sendVoiceMessage(text);},600);},3000);
+    setVoiceTitle('«'+text+'»');
+    setVoiceStep(1,'done');setVoiceStep(2,'done');setVoiceStep(3,'spin');
+    setTimeout(()=>{setVoiceStep(3,'done');setVoiceStep(4,'spin');setVoiceTitle('4 отвечает...');},600);
+    setTimeout(()=>{setVoiceStep(4,'done');setVoiceStep(5,'spin');},1200);
+    setTimeout(()=>{setVoiceStep(5,'done');setVoiceTitle('Готово');sendVoiceMessage(text);},1800);
   };
   recognition.onerror=(e)=>{
     const messages={'not-allowed':'Нет доступа к микрофону','no-speech':'Ничего не услышал','network':'Ошибка сети','aborted':'Отменено'};
-    document.getElementById('voice-title').textContent=messages[e.error]||'Ошибка микрофона';
+    setVoiceTitle(messages[e.error]||'Ошибка микрофона');
     setTimeout(closeVoice,1800);
   };
-  recognition.onend=()=>{if(!resultReceived&&document.getElementById('voice-title').textContent==='Слушаю...'){document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);}};
+  recognition.onend=()=>{if(!resultReceived&&document.getElementById('voice-title')?.textContent==='Слушаю...'){setVoiceTitle('Не расслышал');setTimeout(closeVoice,1200);}};
   recognition.start();
 }
+function cleanupVoiceStream(){if(voiceStream){voiceStream.getTracks().forEach(track=>track.stop());voiceStream=null;}}
 function setVoiceStep(idx,state){
   const el=document.getElementById('vs-'+idx);if(!el)return;
   const icon=el.querySelector('.voice-step-icon');
@@ -3906,7 +3994,15 @@ async function sendVoiceMessage(text){
   if(field) field.value = text;
   sendAsk();
 }
-function closeVoice(){if(recognition){try{recognition.stop();}catch(e){}recognition=null;}clearTimeout(voiceTimer);const t=document.getElementById('voice-title');if(t)t.textContent='4 анализирует';goHome();}
+function closeVoice(){
+  voiceCancelled=true;
+  clearTimeout(voiceTimer);
+  if(voiceRecorder&&voiceRecorder.state==='recording'){try{voiceRecorder.stop();}catch(e){}}
+  voiceRecorder=null;voiceChunks=[];cleanupVoiceStream();
+  if(recognition){try{recognition.stop();}catch(e){}recognition=null;}
+  setVoiceTitle('4 анализирует');
+  goHome();
+}
 
 // ===== SUBSCREEN NAVIGATION =====
 function _showSubScreenBase(id){

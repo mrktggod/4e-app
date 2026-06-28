@@ -14,6 +14,7 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 ## Что известно из документации
 
 - `/anthropic` — прокси к Claude, требует `x-token`.
+- `/transcribe` — принимает multipart audio с `x-token`, отправляет в OpenAI Whisper через `OPENAI_KEY`, возвращает `{ text }`.
 - `/tasks` — задачи по токену без `chatId`.
 - `/auth/vk` — VK авто-логин.
 - `/auth/request-email-verification` — шлёт Resend-письмо для подтверждения email профиля и хранит token в D1/KV.
