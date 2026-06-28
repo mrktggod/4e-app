@@ -46,6 +46,7 @@
 | BACK-015 | Ценовая модель | Strategy/Monetization | P2 | Алексей + Юрий | Later | Тарифы согласованы отдельным решением и только после этого внесены в roadmap |
 | BACK-016 | Расширенный профиль пользователя | Product/UI | P2 | Codex | Ready for QA | В `index.html` добавлены фото-плейсхолдер, имя, ID, телефон/email со статусами, Telegram, о себе и дата рождения |
 | BACK-017 | Оживить настройки уведомлений | Product/Tech | P2 | Codex | Ready for QA | App сохраняет настройки каналов/брифинга/просрочек; worker commit `b3aa1d6` добавил D1 storage и bot checks |
+| BACK-020 | Подтверждение email в профиле для связки аккаунтов | Product/Tech | P2 | Codex | Ready for QA | App обрабатывает `?verify_email=TOKEN`; worker commit `e815266` добавил Resend письмо, D1 token storage и конфликт `Этот email уже используется`; нужен deploy, D1 migration `0004_email_verifications.sql` и live smoke |
 
 ## Связь с Linear
 

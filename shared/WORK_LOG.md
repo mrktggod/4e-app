@@ -24,6 +24,13 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** BACK-020 — подтверждение email в профиле для связки аккаунтов
+**Результат:** В `index.html` добавлена кнопка подтверждения email, обработка `?verify_email=TOKEN` и обновление статуса `Подтверждён ✅`; worker commit `e815266` добавил Resend-письмо, D1/KV хранение token и проверку конфликта занятого email.
+**Коммит:** app `feat(auth): add profile email verification`; worker `e815266`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Смержить/deploy app и worker, применить D1 migration `0004_email_verifications.sql`, пройти live smoke: запрос письма, переход по ссылке и конфликт уже существующего email.
+### 2026-06-28 — Codex
+
 **Задача:** BACK-017 — оживить настройки уведомлений
 **Результат:** В `index.html` удалены лишние toggles уведомлений, добавлены рабочие настройки каналов, утренний брифинг с time picker и просроченные задачи; worker commit `b3aa1d6` сохраняет настройки в D1/KV и отдаёт bot scheduler брифинги/просрочки.
 **Коммит:** app `feat(notifications): add live notification settings`; worker `b3aa1d6`
