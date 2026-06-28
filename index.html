@@ -3970,7 +3970,13 @@ function openSpeechRecognitionVoice(){
     setTimeout(()=>{setVoiceStep(5,'done');setVoiceTitle('Готово');sendVoiceMessage(text);},1800);
   };
   recognition.onerror=(e)=>{
-    const messages={'not-allowed':'Нет доступа к микрофону','no-speech':'Ничего не услышал','network':'Ошибка сети','aborted':'Отменено'};
+    if(e.error==='network'&&navigator.mediaDevices?.getUserMedia&&window.MediaRecorder){
+      try{recognition.stop();}catch(_){}recognition=null;
+      closeVoice();
+      setTimeout(openMediaRecorderVoice,300);
+      return;
+    }
+    const messages={'not-allowed':'Нет доступа к микрофону','no-speech':'Ничего не услышал','aborted':'Отменено'};
     setVoiceTitle(messages[e.error]||'Ошибка микрофона');
     setTimeout(closeVoice,1800);
   };
