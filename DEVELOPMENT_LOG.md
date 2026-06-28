@@ -54,6 +54,17 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-017: live notification settings (Codex)
+
+**Что сделано:** В `index.html` экран `notif-settings` очищен от лишних типов (`Файлы и документы`, `Система и безопасность`, `Маркетинг и новости`) и оставляет рабочие каналы Push, Email, Telegram, задачи/напоминания. Добавлены `Утренний брифинг` с time picker default `09:00` и `Просроченные задачи`. Настройки сохраняются в localStorage и синхронизируются через `/notifications/settings`. В `4e-worker` commit `b3aa1d6` добавил D1 таблицу `app_notification_settings`, API GET/PUT, `/briefings/check`, фильтрацию просроченных задач по настройкам и bot scheduler `checkBriefings`.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19953`. После правки: `index.html CYRILLIC_AFTER=19940`; снижение ожидаемое, потому что удалены три старых русских пункта уведомлений.
+
+**Тест:** app inline JS syntax check; `npm run build:css`; `git diff --check`; `Portable path check passed`; worker `node --check worker.js`; `node --check src/bot/reminders.js`; `node --check src/bot/index.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
+
+**Коммит:** app `feat(notifications): add live notification settings`; worker `b3aa1d6 feat(notifications): add live notification settings`
+
+**Статус:** Ready for QA — перед live smoke нужно применить D1 migration `0003_notification_settings.sql` и задеплоить worker/bot.
 ## 2026-06-28 — BACK-016: extended user profile (Codex)
 
 **Что сделано:** В `index.html` экран профиля расширен карточкой `sub-card`: фото профиля с кнопкой `Изменить фото` и локальным preview/R2 placeholder, редактируемое имя, readonly ID, телефон и email с UI-статусом подтверждения, привязка Telegram, textarea `О себе` до 200 символов со счётчиком и date picker даты рождения. Стили добавлены в `styles/screens/profile.less`; данные формы сохраняются локально до появления backend/R2 profile API.

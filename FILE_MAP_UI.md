@@ -31,7 +31,7 @@
 | 1731 | `subscription` | Подписка |
 | 1811 | `payment` | Оплата |
 | 1864 | `payment-success` | Успешная оплата |
-| 1888 | `notif-settings` | Настройки уведомлений |
+| 947 | `notif-settings` | Живые настройки уведомлений: каналы, брифинг, просрочки |
 | 1936 | `security` | Безопасность |
 | 1982 | `privacy-center` | Центр приватности |
 | 2062 | `change-password` | Смена пароля |
@@ -59,7 +59,7 @@
 | Диапазон | Назначение | Ключевые функции |
 | --- | --- | --- |
 | 2852-2933 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, `isVkMiniAppContext` |
-| 1896-2218 | App init, auth, profile | `initApp`, `doRegister`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
+| 1896-2258 | App init, auth, profile | `initApp`, `doRegister`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
 | 3179-3309 | Payments and subscription | `selectPlan`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
 | 3310-3417 | Onboarding, system prompt, trial | `obInit`, `obRender`, `obDone`, `checkTrial` |
 | 3418-3681 | Tasks, home, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `markDoneKV` |
@@ -68,7 +68,7 @@
 | 4209-4284 | Message generation | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg` |
 | 4285-4517 | AI chat and task creation | `loadAskHistoryRemote`, `createTaskFromChat`, `sendAsk`, `showToast` |
 | 4518-4630 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `sendVoiceMessage`; `openVoice` gated by `biometricConsentRequired` |
-| 4631-4808 | Subscreens and privacy API | `_showSubScreenBase`, `syncD1AuthSession`, `loadPrivacyCenter`, `recordPrivacyConsent` |
+| 3888-4090 | Subscreens, privacy API, notifications prefs | `_showSubScreenBase`, `loadPrivacyCenter`, `loadNotificationSettings`, `saveNotifPref` |
 | 4809-5006 | Settings | `saveNotifPref`, `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
 | 5007-5404 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
 | 5405-5806 | Chats and messages | `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
