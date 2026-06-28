@@ -3860,24 +3860,15 @@ function selectCalDay(d){
 // VOICE
 let voiceTimer=null,recognition=null;
 function showVoiceInfo(){showToast('Говорите — 4 распознает и выполнит задачу');}
-function isIOSTelegram(){return /iPhone|iPad|iPod/i.test(navigator.userAgent)&&!!window.Telegram?.WebApp;}
 function toggleVoice(){if(recognition)closeVoice();else openVoice();}
-async function openVoice(){
+function openVoice(){
   if (!window.biometricConsentRequired()) return;
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR||isIOSTelegram()){showToast('На iPhone используйте текстовый ввод');setTimeout(openAsk,200);return;}
+  if(!SR){showToast('Голосовой ввод недоступен в этом браузере');setTimeout(openAsk,200);return;}
   showScreen('voice');
   setNavActive('voice');
   document.getElementById('voice-title').textContent='Говори...';
   ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    stream.getTracks().forEach(t=>t.stop());
-  }catch(e){
-    document.getElementById('voice-title').textContent='Нет доступа к микрофону';
-    setTimeout(closeVoice,1800);
-    return;
-  }
   let resultReceived=false;
   recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=false;
   recognition.onstart=()=>{document.getElementById('voice-title').textContent='Слушаю...';setVoiceStep(1,'spin');};
