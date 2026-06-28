@@ -2212,8 +2212,8 @@ function togglePass(id){
 // ⚠️ Замени на свой Public ID из личного кабинета CloudPayments
 const CP_PUBLIC_ID = 'pk_79ce41d62fd193a9962d0ee8090a3';
 const PLANS = {
-  month: { title: 'Premium · 1 месяц', price: 990,  months: 1  },
-  year:  { title: 'Premium · 12 месяцев', price: 9504, months: 12 },
+  month: { title: 'Premium · 1 месяц', price: 990,  months: 1,  stars: 990  },
+  year:  { title: 'Premium · 12 месяцев', price: 9504, months: 12, stars: 9504 },
 };
 let selectedPlan = 'month';
 
@@ -2231,6 +2231,17 @@ function isVKPaymentContext() {
   return typeof window.vkBridge !== 'undefined' && isVkMiniAppContext();
 }
 
+function isTelegramPaymentContext() {
+  const tgApp = window.Telegram?.WebApp;
+  return !!(tgApp?.openInvoice && tgInitData) && !isVKPaymentContext();
+}
+
+function getPaymentProvider() {
+  if (isVKPaymentContext()) return 'vk';
+  if (isTelegramPaymentContext()) return 'telegram-stars';
+  return 'card';
+}
+
 function setPaymentButtonState(label, disabled = false) {
   const btn = document.getElementById('pay-btn');
   const labelEl = document.getElementById('pay-btn-label');
@@ -2242,22 +2253,33 @@ function setPaymentButtonState(label, disabled = false) {
 
 function openPayment() {
   const plan = PLANS[selectedPlan];
+  const provider = getPaymentProvider();
   document.getElementById('order-title').textContent  = plan.title;
-  document.getElementById('order-price').textContent  = plan.price.toLocaleString('ru') + ' ₽';
-  const isVK = isVKPaymentContext();
+  document.getElementById('order-price').textContent  = provider === 'telegram-stars' ? plan.stars.toLocaleString('ru') + ' ⭐' : plan.price.toLocaleString('ru') + ' ₽';
   const note = document.getElementById('subscription-payment-note');
   const badges = document.getElementById('payment-badges');
-  if (note) note.innerHTML = isVK ? 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент' : 'Безопасная оплата через CloudPayments<br>Отмена в любой момент';
-  if (badges) badges.style.display = isVK ? 'none' : 'flex';
-  setPaymentButtonState(isVK ? 'Оплатить через VK Pay' : 'Оплатить картой');
+  if (note) {
+    note.innerHTML = provider === 'vk'
+      ? 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент'
+      : provider === 'telegram-stars'
+        ? 'Оплата внутри Telegram через Stars<br>Premium включится после подтверждения ботом'
+        : 'Безопасная оплата банковской картой<br>Отмена в любой момент';
+  }
+  if (badges) badges.style.display = provider === 'card' ? 'flex' : 'none';
+  setPaymentButtonState(provider === 'vk' ? 'Оплатить через VK Pay' : provider === 'telegram-stars' ? 'Оплатить через Telegram Stars' : 'Оплатить картой');
   showSubScreen('payment');
 }
 
 function startPayment() {
   if (!currentUser) { showToast('Войди в аккаунт'); return; }
   const plan = PLANS[selectedPlan];
-  if (isVKPaymentContext()) {
+  const provider = getPaymentProvider();
+  if (provider === 'vk') {
     startVKPayment(plan);
+    return;
+  }
+  if (provider === 'telegram-stars') {
+    startTelegramStarsPayment(plan);
     return;
   }
   const btn  = document.getElementById('pay-btn');
@@ -2294,6 +2316,60 @@ async function startVKPayment(plan) {
     showToast('VK Pay недоступен. Попробуй позже');
   } finally {
     setPaymentButtonState('Оплатить через VK Pay');
+  }
+}
+function openTelegramInvoice(invoiceUrl) {
+  return new Promise((resolve, reject) => {
+    const tgApp = window.Telegram?.WebApp;
+    if (!tgApp?.openInvoice) { reject(new Error('telegram_invoice_unavailable')); return; }
+    tgApp.openInvoice(invoiceUrl, status => resolve(status));
+  });
+}
+
+async function refreshUserAfterTelegramPayment(plan) {
+  for (let i = 0; i < 5; i++) {
+    await new Promise(resolve => setTimeout(resolve, 900));
+    try {
+      const r = await fetch(WORKER + '/auth/me', { headers: authHeaders() });
+      const d = await r.json();
+      if (d.ok && d.user) {
+        currentUser = d.user;
+        renderTrialBanner();
+        updateSubscriptionScreen();
+        if (d.user.plan === 'paid' || d.user.trialActive) return true;
+      }
+    } catch (e) {}
+  }
+  onPaymentSuccess(plan);
+  return false;
+}
+
+async function startTelegramStarsPayment(plan) {
+  setPaymentButtonState('Создаю счёт в Telegram...', true);
+  try {
+    const r = await fetch(WORKER + '/payments/telegram-stars/invoice', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ plan: selectedPlan, initData: tgInitData })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.ok || !d.invoiceUrl) throw new Error(d.error || 'invoice_failed');
+    setPaymentButtonState('Открываю Telegram Stars...', true);
+    const status = await openTelegramInvoice(d.invoiceUrl);
+    if (status === 'paid') {
+      showToast('Оплата Telegram Stars прошла');
+      const synced = await refreshUserAfterTelegramPayment(plan);
+      if (!synced) showToast('Premium обновится после подтверждения ботом');
+    } else if (status === 'cancelled') {
+      showToast('Оплата отменена');
+    } else {
+      showToast('Telegram вернул статус: ' + status);
+    }
+  } catch (e) {
+    console.warn('[Telegram Stars]', e);
+    showToast('Telegram Stars недоступны. Попробуй позже');
+  } finally {
+    setPaymentButtonState('Оплатить через Telegram Stars');
   }
 }
 function launchWidget(plan, btn) {
