@@ -3894,7 +3894,7 @@ async function openMediaRecorderVoice(){
     voiceRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)voiceChunks.push(e.data);};
     voiceRecorder.onerror=()=>{showToast('Нет доступа к микрофону');closeVoice();};
     voiceRecorder.onstop=()=>handleVoiceRecordingStopped(mimeType||voiceRecorder?.mimeType||'audio/webm');
-    voiceRecorder.start(250);
+    voiceRecorder.start(isIOS()?undefined:250);
     setVoiceTitle('Слушаю...');
     setVoiceStep(1,'spin');
     voiceTimer=setTimeout(()=>stopVoiceRecording(false),10000);
@@ -3972,8 +3972,7 @@ function openSpeechRecognitionVoice(){
   recognition.onerror=(e)=>{
     if(e.error==='network'&&navigator.mediaDevices?.getUserMedia&&window.MediaRecorder){
       try{recognition.stop();}catch(_){}recognition=null;
-      closeVoice();
-      setTimeout(openMediaRecorderVoice,300);
+      setTimeout(openMediaRecorderVoice,100);
       return;
     }
     const messages={'not-allowed':'Нет доступа к микрофону','no-speech':'Ничего не услышал','aborted':'Отменено'};
