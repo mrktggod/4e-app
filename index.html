@@ -748,6 +748,27 @@
     </div>
     <!-- trial banner injected here by JS -->
     <div id="trial-banner-wrap"></div>
+
+    <div class="sub-card profile-details-card">
+      <div class="profile-photo-row">
+        <div class="profile-photo-preview" id="profile-photo-preview">?</div>
+        <div class="profile-photo-actions">
+          <button class="profile-photo-btn" type="button" onclick="document.getElementById('profile-photo-input').click()">Изменить фото</button>
+          <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
+        </div>
+      </div>
+      <div class="profile-field-grid">
+        <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
+        <label class="profile-field"><span>ID</span><input id="profile-field-id" type="text" readonly></label>
+        <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="toggleProfileVerified('phone')">Не подтверждён</button></div></label>
+        <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="toggleProfileVerified('email')">Не подтверждён</button></div></label>
+        <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
+        <label class="profile-field"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
+        <label class="profile-field profile-field-full"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small id="profile-about-counter">0 / 200</small></label>
+      </div>
+      <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
+    </div>
+
     <div class="profile-menu">
             <div class="profile-item" onclick="openChats()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="profile-item-text">Чаты</span></div><span class="profile-item-arrow">&#8250;</span></div>
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div><span class="profile-item-text">Подписка</span></div><span class="profile-item-arrow">›</span></div>
@@ -2039,9 +2060,9 @@ function isAdmin(){
 
 function applyUserInfo(){
   if(!currentUser) return;
-  const name=currentUser.name||currentUser.email||'Пользователь';
+  const name=getExtendedProfileDisplayName();
   const initials=(name[0]||'?').toUpperCase();
-  ['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=initials;});
+  ['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)setProfileAvatarElement(el,initials);});
   ['user-chip-name','profile-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});
   // Мессенджер — только для admin
   const show=isAdmin();
@@ -2050,6 +2071,52 @@ function applyUserInfo(){
   const profileChats=document.querySelector('.profile-item[onclick="openChats()"]');
   if(profileChats)profileChats.style.display=show?'':'none';
   renderTrialBanner();
+  renderExtendedProfile();
+}
+
+const EXT_PROFILE_K='extendedProfileDraft';
+function getExtendedProfileDraft(){try{return JSON.parse(localStorage.getItem(EXT_PROFILE_K)||'{}')||{};}catch(e){return{};}}
+function saveExtendedProfileDraft(draft){localStorage.setItem(EXT_PROFILE_K,JSON.stringify(draft));}
+function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'Пользователь').trim();}
+function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();if(draft.photoDataUrl){el.textContent='';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';el.textContent=initials;}}
+function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
+function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
+function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
+function renderExtendedProfile(){
+  if(!currentUser)return;
+  const draft=getExtendedProfileDraft();
+  const name=getExtendedProfileDisplayName();
+  const initials=(name[0]||'?').toUpperCase();
+  const photo=document.getElementById('profile-photo-preview');
+  if(photo)setProfileAvatarElement(photo,initials);
+  setProfileFieldValue('profile-field-name',name);
+  setProfileFieldValue('profile-field-id',currentUser.id||'');
+  setProfileFieldValue('profile-field-phone',draft.phone||currentUser.phone||'');
+  setProfileFieldValue('profile-field-email',draft.email||currentUser.email||'');
+  setProfileFieldValue('profile-field-birthdate',draft.birthdate||currentUser.birthdate||'');
+  setProfileFieldValue('profile-field-about',draft.about||currentUser.about||'');
+  updateProfileAboutCounter();
+  const tgName=currentUser.telegramUsername?('@'+currentUser.telegramUsername):(currentUser.telegramId?('ID '+currentUser.telegramId):'Не привязан');
+  setProfileText('profile-telegram-value',tgName);
+  setProfileVerifiedBadge('profile-telegram-status',!!currentUser.telegramId,currentUser.telegramId?'Привязан':'Не привязан');
+  setProfileVerifiedBadge('profile-phone-status',draft.phoneVerified??!!currentUser.phoneVerified);
+  setProfileVerifiedBadge('profile-email-status',draft.emailVerified??!!currentUser.emailVerified);
+}
+function updateProfileAboutCounter(){const el=document.getElementById('profile-field-about');const counter=document.getElementById('profile-about-counter');if(counter)counter.textContent=((el?.value||'').length)+' / 200';}
+function toggleProfileVerified(field){const draft=getExtendedProfileDraft();const key=field+'Verified';draft[key]=!draft[key];saveExtendedProfileDraft(draft);renderExtendedProfile();}
+function handleProfilePhotoChange(event){const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('Выбери изображение');return;}const previewUrl=URL.createObjectURL(file);const preview=document.getElementById('profile-photo-preview');if(preview){preview.textContent='';preview.style.backgroundImage='url("'+previewUrl+'")';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';}if(file.size>1500000){showToast('Фото выбрано. Загрузка в R2 будет подключена позже');return;}const reader=new FileReader();reader.onload=function(){const draft=getExtendedProfileDraft();draft.photoDataUrl=reader.result;saveExtendedProfileDraft(draft);applyUserInfo();showToast('Фото сохранено локально');};reader.readAsDataURL(file);}
+function saveExtendedProfile(){
+  if(!currentUser)return;
+  const draft=getExtendedProfileDraft();
+  draft.name=(document.getElementById('profile-field-name')?.value||'').trim();
+  draft.phone=(document.getElementById('profile-field-phone')?.value||'').trim();
+  draft.email=(document.getElementById('profile-field-email')?.value||'').trim();
+  draft.birthdate=document.getElementById('profile-field-birthdate')?.value||'';
+  draft.about=(document.getElementById('profile-field-about')?.value||'').slice(0,200);
+  saveExtendedProfileDraft(draft);
+  if(draft.name)currentUser.name=draft.name;
+  applyUserInfo();
+  showToast('Профиль сохранён');
 }
 
 function renderTrialBanner(){
@@ -2902,7 +2969,7 @@ async function openAsk(){
   setTimeout(()=>{const f=document.getElementById('ask-field');if(f)f.focus();},300);
 }
 function openCalendar(){showScreen('calendar');setNavActive('cal');renderCalendar();}
-function openProfile(){showScreen('profile');setNavActive('profile');}
+function openProfile(){showScreen('profile');setNavActive('profile');renderExtendedProfile();}
 // ── NOTIFICATIONS (реальные из KV) ───────────────────────────
 let notifFilter = 'all';
 let notifCache = []; // кэш загруженных уведомлений
