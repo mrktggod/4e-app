@@ -54,6 +54,19 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-019 web swipe actions hidden (Codex)
+
+**Что сделано:** Исправлен web Telegram/browser regression: кнопки `Отменить`, `Перенести`, `Завершить` теперь скрыты по умолчанию через `opacity:0`, `visibility:hidden` и `translateX(...)`. На non-touch устройствах (`@media (pointer:fine)`) swipe-actions полностью отключены через `display:none!important`, чтобы в браузере они не висели статично над карточками.
+
+**Проверка кодировки:** Файлы с кириллицей читались/писались через `[System.IO.File]::ReadAllText/WriteAllText` с UTF-8 без BOM.
+
+**Тест:** `npm run build:css`, `git diff --check`, синтаксическая проверка JS из `index.html` через Node.
+
+**Коммит:** этот коммит.
+
+**Статус:** Ready for QA — проверить web Telegram/browser и touch-свайпы на телефоне.
+
+---
 ## 2026-06-28 — BACK-019 fix swipe actions visibility (Codex)
 
 **Что сделано:** Исправлен баг, из-за которого кнопки `Завершить`, `Отменить`, `Перенести` отображались статично над каждой карточкой задач. Причина: swipe CSS был завязан на родительский `.tasks-wrap`, которого нет у реального `#home-task-list`; селекторы перенесены на `.task-card-shell`, поэтому action-кнопки снова скрыты под карточкой по умолчанию и видны только при свайпе.

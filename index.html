@@ -3008,6 +3008,8 @@ function taskSwipeMove(event,card){
   if(Math.abs(dx)>8){taskSwipeState.locked=true;event.preventDefault();}
   const limited=Math.max(-132,Math.min(96,dx));
   taskSwipeState.dx=limited;
+  taskSwipeState.shell.classList.toggle('swiping-left',limited<-12);
+  taskSwipeState.shell.classList.toggle('swiping-right',limited>12);
   card.style.transform='translateX('+limited+'px)';
 }
 function taskSwipeEnd(event,card){
@@ -3015,6 +3017,7 @@ function taskSwipeEnd(event,card){
   const shell=taskSwipeState.shell;
   const dx=taskSwipeState.dx;
   card.style.transition='';
+  shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
   if(dx<-56)setTaskSwipe(shell,'left');
   else if(dx>56)setTaskSwipe(shell,'right');
@@ -3024,6 +3027,7 @@ function taskSwipeEnd(event,card){
 function setTaskSwipe(shell,state){
   const card=shell?.querySelector('.task-card');
   if(!card)return;
+  shell.classList.remove('swiping-left','swiping-right');
   shell.classList.toggle('swipe-left',state==='left');
   shell.classList.toggle('swipe-right',state==='right');
   card.style.transform=state==='left'?'translateX(-132px)':(state==='right'?'translateX(96px)':'');
@@ -3032,7 +3036,7 @@ function resetTaskSwipe(el){
   const shell=el?.closest?el.closest('.task-card-shell'):el;
   if(!shell)return;
   const card=shell.querySelector('.task-card');
-  shell.classList.remove('swipe-left','swipe-right');
+  shell.classList.remove('swipe-left','swipe-right','swiping-left','swiping-right');
   if(card)card.style.transform='';
 }
 function resetAllTaskSwipes(except){document.querySelectorAll('.task-card-shell.swipe-left,.task-card-shell.swipe-right').forEach(shell=>{if(shell!==except)resetTaskSwipe(shell);});}

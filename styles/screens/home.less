@@ -57,9 +57,10 @@
 /* BACK-019 task card interactions */
 .task-card-shell{position:relative;overflow:hidden;border-bottom:1px solid rgba(242,245,233,0.05);background:rgba(8,12,6,0.28);touch-action:pan-y}
 .task-card-shell:last-child{border-bottom:none}
-.task-card-shell .task-swipe-actions{position:absolute;inset:0;z-index:1;display:flex;align-items:stretch;pointer-events:none}
-.task-card-shell .task-swipe-actions-left{justify-content:flex-end}
-.task-card-shell .task-swipe-actions-right{justify-content:flex-start}
+.task-card-shell .task-swipe-actions{position:absolute;inset:0;z-index:1;display:flex;align-items:stretch;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .14s ease,transform .18s ease}
+.task-card-shell .task-swipe-actions-left{justify-content:flex-end;transform:translateX(100%)}
+.task-card-shell .task-swipe-actions-right{justify-content:flex-start;transform:translateX(-100%)}
+.task-card-shell.swipe-left .task-swipe-actions-left,.task-card-shell.swiping-left .task-swipe-actions-left,.task-card-shell.swipe-right .task-swipe-actions-right,.task-card-shell.swiping-right .task-swipe-actions-right{opacity:1;visibility:visible;transform:translateX(0)}
 .task-card-shell .task-swipe-btn{min-width:72px;border:0;padding:0 12px;color:#fff;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;pointer-events:auto;cursor:pointer}
 .task-card-shell .task-swipe-cancel{background:rgba(122,130,112,0.72)}
 .task-card-shell .task-swipe-move{background:#2F80ED}
@@ -81,3 +82,4 @@
 .task-card-shell .task-card-deadline.deadline-soon{color:#BFD86A}
 .task-card-shell .task-card-deadline.deadline-overdue{color:#ff7f7f}
 .task-card-shell .task-row-title.task-card-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;margin:0;color:var(--text);font-size:14px;font-weight:650;line-height:1.35;letter-spacing:0}
+@media (pointer:fine){.task-card-shell{touch-action:auto}.task-card-shell .task-swipe-actions{display:none!important}.task-card-shell .task-row.task-card{transform:none!important}}
