@@ -761,7 +761,7 @@
         <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
         <label class="profile-field"><span>ID</span><input id="profile-field-id" type="text" readonly></label>
         <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="toggleProfileVerified('phone')">Не подтверждён</button></div></label>
-        <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="toggleProfileVerified('email')">Не подтверждён</button></div></label>
+        <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="requestEmailVerification()">Подтвердить</button></div></label>
         <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
         <label class="profile-field"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
         <label class="profile-field profile-field-full"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small id="profile-about-counter">0 / 200</small></label>
@@ -2073,6 +2073,8 @@ function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraf
 function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
 function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
 function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
+function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerified&&String(email||'').trim().toLowerCase()===String(currentUser.email||'').trim().toLowerCase();}
+function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Подтвердить');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
 function renderExtendedProfile(){
   if(!currentUser)return;
   const draft=getExtendedProfileDraft();
@@ -2083,7 +2085,8 @@ function renderExtendedProfile(){
   setProfileFieldValue('profile-field-name',name);
   setProfileFieldValue('profile-field-id',currentUser.id||'');
   setProfileFieldValue('profile-field-phone',draft.phone||currentUser.phone||'');
-  setProfileFieldValue('profile-field-email',draft.email||currentUser.email||'');
+  const profileEmail=draft.email||currentUser.email||'';
+  setProfileFieldValue('profile-field-email',profileEmail);
   setProfileFieldValue('profile-field-birthdate',draft.birthdate||currentUser.birthdate||'');
   setProfileFieldValue('profile-field-about',draft.about||currentUser.about||'');
   updateProfileAboutCounter();
@@ -2091,10 +2094,39 @@ function renderExtendedProfile(){
   setProfileText('profile-telegram-value',tgName);
   setProfileVerifiedBadge('profile-telegram-status',!!currentUser.telegramId,currentUser.telegramId?'Привязан':'Не привязан');
   setProfileVerifiedBadge('profile-phone-status',draft.phoneVerified??!!currentUser.phoneVerified);
-  setProfileVerifiedBadge('profile-email-status',draft.emailVerified??!!currentUser.emailVerified);
+  setProfileEmailBadge(isCurrentProfileEmailVerified(profileEmail));
 }
 function updateProfileAboutCounter(){const el=document.getElementById('profile-field-about');const counter=document.getElementById('profile-about-counter');if(counter)counter.textContent=((el?.value||'').length)+' / 200';}
 function toggleProfileVerified(field){const draft=getExtendedProfileDraft();const key=field+'Verified';draft[key]=!draft[key];saveExtendedProfileDraft(draft);renderExtendedProfile();}
+async function requestEmailVerification(){
+  if(!currentUser||!getToken()){showToast('Сначала войдите в аккаунт');return;}
+  const email=(document.getElementById('profile-field-email')?.value||'').trim();
+  if(!email){showToast('Введите email');return;}
+  if(!isValidEmail(email)){showToast('Введите корректный email');return;}
+  if(isCurrentProfileEmailVerified(email)){showToast('Email уже подтверждён');return;}
+  const btn=document.getElementById('profile-email-status');
+  if(btn){btn.disabled=true;btn.textContent='Отправляем...';}
+  try{
+    const r=await fetch(WORKER+'/auth/request-email-verification',{method:'POST',headers:authHeaders(),body:JSON.stringify({email})});
+    const d=await readJsonSafe(r);
+    if(r.ok&&d.ok!==false){
+      if(d.user){currentUser=d.user;applyUserInfo();}
+      const draft=getExtendedProfileDraft();
+      draft.email=email;
+      draft.emailVerified=!!d.verified;
+      saveExtendedProfileDraft(draft);
+      renderExtendedProfile();
+      showToast(d.verified?'Email уже подтверждён':'Письмо отправлено');
+    }else{
+      setProfileEmailBadge(false);
+      showToast(d.error||'Не удалось отправить письмо');
+    }
+  }catch(e){
+    showToast('Нет соединения');
+  }
+  renderExtendedProfile();
+}
+
 function handleProfilePhotoChange(event){const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('Выбери изображение');return;}const previewUrl=URL.createObjectURL(file);const preview=document.getElementById('profile-photo-preview');if(preview){preview.textContent='';preview.style.backgroundImage='url("'+previewUrl+'")';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';}if(file.size>1500000){showToast('Фото выбрано. Загрузка в R2 будет подключена позже');return;}const reader=new FileReader();reader.onload=function(){const draft=getExtendedProfileDraft();draft.photoDataUrl=reader.result;saveExtendedProfileDraft(draft);applyUserInfo();showToast('Фото сохранено локально');};reader.readAsDataURL(file);}
 function saveExtendedProfile(){
   if(!currentUser)return;
@@ -2102,6 +2134,7 @@ function saveExtendedProfile(){
   draft.name=(document.getElementById('profile-field-name')?.value||'').trim();
   draft.phone=(document.getElementById('profile-field-phone')?.value||'').trim();
   draft.email=(document.getElementById('profile-field-email')?.value||'').trim();
+  if(String(draft.email).toLowerCase()!==String(currentUser.email||'').toLowerCase())draft.emailVerified=false;
   draft.birthdate=document.getElementById('profile-field-birthdate')?.value||'';
   draft.about=(document.getElementById('profile-field-about')?.value||'').slice(0,200);
   saveExtendedProfileDraft(draft);
@@ -4574,6 +4607,44 @@ async function doForgotPassword(){
     showToast('Нет соединения');
   }
   btn.disabled = false; btn.textContent = 'Отправить ссылку';
+}
+
+// При открытии приложения — проверяем ?verify_email=TOKEN в URL
+(function checkVerifyEmailToken(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('verify_email');
+  if(!token)return;
+  window.history.replaceState({},'',window.location.pathname);
+  window._verifyEmailToken=token;
+  setTimeout(()=>processVerifyEmailLink(),200);
+})();
+
+async function processVerifyEmailLink(){
+  const token=window._verifyEmailToken;
+  if(!token||window._verifyEmailProcessing)return;
+  if(!getToken()){showToast('Сначала войдите в аккаунт');return;}
+  window._verifyEmailProcessing=true;
+  try{
+    const r=await fetch(WORKER+'/auth/verify-email',{method:'POST',headers:authHeaders(),body:JSON.stringify({token})});
+    const d=await readJsonSafe(r);
+    if(r.ok&&d.ok&&d.user){
+      currentUser=d.user;
+      const draft=getExtendedProfileDraft();
+      draft.email=d.user.email;
+      draft.emailVerified=true;
+      saveExtendedProfileDraft(draft);
+      applyUserInfo();
+      showScreen('profile');
+      setNavActive('profile');
+      showToast('Email подтверждён ✅');
+      window._verifyEmailToken=null;
+    }else{
+      showToast(d.error||'Не удалось подтвердить email');
+    }
+  }catch(e){
+    showToast('Нет соединения');
+  }
+  window._verifyEmailProcessing=false;
 }
 
 // При открытии приложения — проверяем ?reset=TOKEN в URL

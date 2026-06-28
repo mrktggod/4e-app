@@ -54,6 +54,18 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-020: email verification in profile (Codex)
+
+**Что сделано:** В `index.html` email в расширенном профиле теперь подтверждается через кнопку `Подтвердить`: app запрашивает письмо у Worker, обрабатывает `?verify_email=TOKEN`, вызывает `/auth/verify-email`, обновляет `currentUser.emailVerified` и показывает статус `Подтверждён ✅`. В `4e-worker` commit `e815266` добавил endpoints `/auth/request-email-verification` и `/auth/verify-email`, отправку Resend от `noreply@4-ai.site`, D1 таблицу `app_email_verifications` с KV fallback и проверку конфликта `Этот email уже используется`.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19940`. После правки: `index.html CYRILLIC_AFTER=20194`; рост ожидаемый из-за новых русских сообщений email verification flow.
+
+**Тест:** inline JS syntax check для `index.html`; `npm run build:css`; `Portable path check passed`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml` собрал Worker и attached module `migrations/0004_email_verifications.sql`. Live smoke не выполнялся: нужен merge/deploy worker и применение D1 migration.
+
+**Коммит:** app `feat(auth): add profile email verification`; worker `e815266 feat(auth): add email verification flow`
+
+**Статус:** Ready for QA — после merge/deploy применить D1 migration `0004_email_verifications.sql`, запросить письмо из профиля, открыть ссылку `?verify_email=TOKEN` в залогиненном Telegram-аккаунте и проверить конфликт уже занятого email.
+
 ## 2026-06-28 — BACK-017: live notification settings (Codex)
 
 **Что сделано:** В `index.html` экран `notif-settings` очищен от лишних типов (`Файлы и документы`, `Система и безопасность`, `Маркетинг и новости`) и оставляет рабочие каналы Push, Email, Telegram, задачи/напоминания. Добавлены `Утренний брифинг` с time picker default `09:00` и `Просроченные задачи`. Настройки сохраняются в localStorage и синхронизируются через `/notifications/settings`. В `4e-worker` commit `b3aa1d6` добавил D1 таблицу `app_notification_settings`, API GET/PUT, `/briefings/check`, фильтрацию просроченных задач по настройкам и bot scheduler `checkBriefings`.
