@@ -45,6 +45,7 @@
 | BACK-012 | CSS-архитектура LESS + BEM + минификация | Tech | P2 | Codex | Done | Стили вынесены в LESS-модули, `styles.min.css` собирается и подключён в `index.html` |
 | BACK-015 | Ценовая модель | Strategy/Monetization | P2 | Алексей + Юрий | Later | Тарифы согласованы отдельным решением и только после этого внесены в roadmap |
 | BACK-016 | Расширенный профиль пользователя | Product/UI | P2 | Codex | Ready for QA | В `index.html` добавлены фото-плейсхолдер, имя, ID, телефон/email со статусами, Telegram, о себе и дата рождения |
+| BACK-017 | Оживить настройки уведомлений | Product/Tech | P2 | Codex | Ready for QA | App сохраняет настройки каналов/брифинга/просрочек; worker commit `b3aa1d6` добавил D1 storage и bot checks |
 
 ## Связь с Linear
 

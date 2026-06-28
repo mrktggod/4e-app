@@ -18,6 +18,8 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 - `/auth/vk` — VK авто-логин.
 - `/payments/telegram-stars/invoice` — создаёт Telegram Stars invoice link для Mini App.
 - `/payments/telegram-stars/complete` — подтверждает `successful_payment` от Telegram bot и активирует Premium.
+- `/notifications/settings` — читает/сохраняет настройки уведомлений пользователя в D1 с KV fallback.
+- `/briefings/check` — выдаёт bot scheduler список утренних брифингов по времени пользователя.
 - D1/privacy endpoints используются из `index.html` и `vk.html`.
 - Реальные секреты не должны попадать в код; использовать placeholders и Secrets.
 

@@ -24,6 +24,13 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** BACK-017 — оживить настройки уведомлений
+**Результат:** В `index.html` удалены лишние toggles уведомлений, добавлены рабочие настройки каналов, утренний брифинг с time picker и просроченные задачи; worker commit `b3aa1d6` сохраняет настройки в D1/KV и отдаёт bot scheduler брифинги/просрочки.
+**Коммит:** app `feat(notifications): add live notification settings`; worker `b3aa1d6`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Смержить/deploy, применить D1 migration `0003_notification_settings.sql`, проверить сохранение настроек и сообщения бота.
+### 2026-06-28 — Codex
+
 **Задача:** BACK-016 — расширенный профиль пользователя
 **Результат:** В `index.html` добавлена расширенная карточка профиля: фото с placeholder под R2, имя, системный ID, телефон/email со статусами, Telegram-привязка, `О себе` со счётчиком и дата рождения; стили вынесены в `styles/screens/profile.less`.
 **Коммит:** `feat(profile): add extended user profile fields`
