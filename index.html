@@ -744,7 +744,7 @@
   <div class="profile-scroll">
     <div class="profile-user">
       <div class="profile-avatar" id="profile-avatar">?</div>
-      <div><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div></div>
+      <div class="profile-user-copy"><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div><div class="profile-user-id" id="profile-user-id">ID —</div></div>
     </div>
     <!-- trial banner injected here by JS -->
     <div id="trial-banner-wrap"></div>
@@ -753,21 +753,27 @@
       <div class="profile-photo-row">
         <div class="profile-photo-preview" id="profile-photo-preview">?</div>
         <div class="profile-photo-actions">
-          <button class="profile-photo-btn" type="button" onclick="document.getElementById('profile-photo-input').click()">Изменить фото</button>
+          <button class="profile-photo-btn" type="button" onclick="document.getElementById('profile-photo-input').click()"><span class="profile-photo-btn-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span><span>Изменить фото</span></button>
           <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
         </div>
       </div>
       <div class="profile-field-grid">
         <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
-        <label class="profile-field"><span>ID</span><input id="profile-field-id" type="text" readonly></label>
         <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="toggleProfileVerified('phone')">Не подтверждён</button></div></label>
-        <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="requestEmailVerification()">Подтвердить</button></div></label>
+        <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
         <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
-        <label class="profile-field"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
-        <label class="profile-field profile-field-full"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small id="profile-about-counter">0 / 200</small></label>
       </div>
-      <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
     </div>
+
+    <div class="sub-card profile-form-card">
+      <label class="profile-field"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
+    </div>
+
+    <div class="sub-card profile-form-card">
+      <label class="profile-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small id="profile-about-counter">0 / 200</small></label>
+    </div>
+
+    <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
 
     <div class="profile-menu">
             <div class="profile-item" onclick="openChats()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="profile-item-text">Чаты</span></div><span class="profile-item-arrow">&#8250;</span></div>
@@ -2074,7 +2080,7 @@ function setProfileFieldValue(id,value){const el=document.getElementById(id);if(
 function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
 function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
 function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerified&&String(email||'').trim().toLowerCase()===String(currentUser.email||'').trim().toLowerCase();}
-function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Подтвердить');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
+function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Не подтверждён');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
 function renderExtendedProfile(){
   if(!currentUser)return;
   const draft=getExtendedProfileDraft();
@@ -2083,7 +2089,7 @@ function renderExtendedProfile(){
   const photo=document.getElementById('profile-photo-preview');
   if(photo)setProfileAvatarElement(photo,initials);
   setProfileFieldValue('profile-field-name',name);
-  setProfileFieldValue('profile-field-id',currentUser.id||'');
+  setProfileText('profile-user-id',currentUser.id?('ID '+currentUser.id):'ID —');
   setProfileFieldValue('profile-field-phone',draft.phone||currentUser.phone||'');
   const profileEmail=draft.email||currentUser.email||'';
   setProfileFieldValue('profile-field-email',profileEmail);
@@ -3857,12 +3863,12 @@ function showVoiceInfo(){showToast('Говорите — 4 распознает 
 function toggleVoice(){if(recognition)closeVoice();else openVoice();}
 async function openVoice(){
   if (!window.biometricConsentRequired()) return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){showToast('Голосовой ввод недоступен в этом браузере');setTimeout(openAsk,200);return;}
   showScreen('voice');
   setNavActive('voice');
   document.getElementById('voice-title').textContent='Говори...';
   ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){document.getElementById('voice-title').textContent='Голос недоступен';setTimeout(()=>{closeVoice();openAsk();},1200);return;}
   try{
     await navigator.mediaDevices.getUserMedia({audio:true});
   }catch(e){
