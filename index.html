@@ -3894,7 +3894,7 @@ async function openMediaRecorderVoice(){
     voiceRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)voiceChunks.push(e.data);};
     voiceRecorder.onerror=()=>{showToast('Нет доступа к микрофону');closeVoice();};
     voiceRecorder.onstop=()=>handleVoiceRecordingStopped(mimeType||voiceRecorder?.mimeType||'audio/webm');
-    voiceRecorder.start();
+    voiceRecorder.start(250);
     setVoiceTitle('Слушаю...');
     setVoiceStep(1,'spin');
     voiceTimer=setTimeout(()=>stopVoiceRecording(false),10000);
