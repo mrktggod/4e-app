@@ -2991,7 +2991,8 @@ function openTaskCard(taskId,index,card){
     return;
   }
   openTaskById(taskId,index);
-}function taskSwipeStart(event,card){
+}
+function taskSwipeStart(event,card){
   if(event.pointerType==='mouse'&&event.button!==0)return;
   const shell=card.closest('.task-card-shell');
   if(!shell)return;
