@@ -24,6 +24,14 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** BACK-020 — QA подтверждения email в профиле
+**Результат:** Production D1 migration `0004_email_verifications.sql` проверена (`No migrations to apply`), таблица `app_email_verifications` есть. Live smoke прошёл на временных аккаунтах: запрос письма верификации вернул 200, ссылка `https://mrktggod.github.io/4e-app/?verify_email=TOKEN` открылась с 200, `/auth/verify-email` привязал новый email к пользователю и выставил `emailVerified=true`, `used_at` записался в D1, повторное использование токена вернуло 400, попытка второго аккаунта подтвердить занятый email вернула 409.
+**Коммит:** N/A (QA/docs)
+**Статус:** ✅ выполнено
+**Следующий шаг:** BACK-020 закрыт; временные QA-пользователи и D1/KV следы удалены.
+
+### 2026-06-28 — Codex
+
 **Задача:** BACK-017 — QA уведомлений
 **Результат:** Production D1 migrations проверены (`No migrations to apply`). Live API smoke прошёл: временный пользователь прочитал дефолтные настройки, `PUT /notifications/settings` сохранил `morningBriefing=true`, `briefingTime=08:30`, `overdueTasks=false` со `storage: d1`, повторный `GET` вернул те же значения. `/briefings/check` отвечает корректно. `/deadlines/check` проверен без отправки ботом; созданный QA-маркер `overdue_sent:*` удалён.
 **Коммит:** N/A (QA/docs)

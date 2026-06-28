@@ -54,6 +54,18 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-020: email verification live QA (Codex)
+
+**Что проверено:** Production D1 и Worker для подтверждения email в профиле. `wrangler d1 migrations apply DB --remote --config wrangler.toml` вернул `No migrations to apply`; `app_email_verifications` существует с колонками `token`, `user_id`, `email`, `expires_at`, `used_at`, `created_at`. Live smoke создан на временных адресах `codex-back020-*@4-ai.site`, чтобы не затронуть реальные пользовательские email.
+
+**Результат smoke:** `POST /auth/request-email-verification` вернул 200 и создал D1 token; ссылка приложения `https://mrktggod.github.io/4e-app/?verify_email=TOKEN` открылась с HTTP 200; `POST /auth/verify-email` с тем же token и `x-token` пользователя вернул 200, сменил email пользователя на подтверждаемый адрес и вернул `emailVerified=true`; D1 `used_at` для token заполнен; повторный `POST /auth/verify-email` тем же token вернул 400; второй временный аккаунт при попытке запросить подтверждение уже занятого email получил 409.
+
+**Cleanup:** Временные пользователи `582db019-ba0b-40bc-80b1-31251871cea9` и `b5f7c7f5-eca8-4fea-bc29-64179e178bb2` удалены из D1 `app_email_verifications`/`app_sessions`; KV-ключи `user:codex-back020-*`, `user_id:*`, `notifs:*`, `notif_settings:*`, `email_verify:*` удалены. D1 readback после cleanup вернул `0` строк, KV prefix checks вернули `[]`.
+
+**Тест:** app inline JS syntax check; worker `node --check worker.js`; D1 migration/schema check; live `POST /auth/register`; live `POST /auth/request-email-verification`; D1 token readback; live app verify-link HTTP 200; live `POST /auth/verify-email`; token reuse check; occupied email conflict check; D1/KV cleanup verification.
+
+**Статус:** выполнено — BACK-020 закрыт production smoke-тестом.
+
 ## 2026-06-28 — BACK-017: notification settings QA (Codex)
 
 **Что проверено:** Production Worker и D1 для настроек уведомлений. `wrangler d1 migrations apply DB --remote --config wrangler.toml` вернул `No migrations to apply`. Через live Worker создан временный QA-пользователь, прочитаны дефолтные настройки уведомлений, затем `PUT /notifications/settings` сохранил `push=true`, `email=false`, `telegram=true`, `tasks=true`, `morningBriefing=true`, `briefingTime=08:30`, `overdueTasks=false`; ответ вернул `storage: d1`, повторный `GET` подтвердил сохранение. `/briefings/check` вернул корректный JSON с пустым списком. `/deadlines/check` вернул payload просрочки для существующего Telegram-пользователя; отправка ботом не выполнялась, созданный QA-маркер `overdue_sent:84fef140-567e-4ab9-9039-b860fe94a77e:1782651526175:2026-06-28` удалён из KV.

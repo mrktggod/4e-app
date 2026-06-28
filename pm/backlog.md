@@ -46,7 +46,7 @@
 | BACK-015 | Ценовая модель | Strategy/Monetization | P2 | Алексей + Юрий | Later | Тарифы согласованы отдельным решением и только после этого внесены в roadmap |
 | BACK-016 | Расширенный профиль пользователя | Product/UI | P2 | Codex | Ready for QA | В `index.html` добавлены фото-плейсхолдер, имя, ID, телефон/email со статусами, Telegram, о себе и дата рождения |
 | BACK-017 | Оживить настройки уведомлений | Product/Tech | P2 | Codex | QA partial | Live API smoke passed: `/notifications/settings` GET/PUT сохраняет настройки в D1; D1 migrations актуальны; `/briefings/check` живой; реальная доставка Telegram-ботом ждёт ручного smoke на привязанном аккаунте |
-| BACK-020 | Подтверждение email в профиле для связки аккаунтов | Product/Tech | P2 | Codex | Ready for QA | App обрабатывает `?verify_email=TOKEN`; worker commit `e815266` добавил Resend письмо, D1 token storage и конфликт `Этот email уже используется`; нужен deploy, D1 migration `0004_email_verifications.sql` и live smoke |
+| BACK-020 | Подтверждение email в профиле для связки аккаунтов | Product/Tech | P2 | Codex | Done | Production smoke passed: migration `0004_email_verifications.sql` applied, verification email request returned 200, app link returned 200, `/auth/verify-email` linked email to user, `used_at` burned token, repeat verify returned 400, occupied email conflict returned 409 |
 | BACK-021 | Голосовой ввод через MediaRecorder + Whisper | Product/Tech | P1 | Codex | Ready for QA | `index.html` пишет аудио через MediaRecorder и отправляет multipart `/transcribe`; worker commit `339b301` добавил Whisper endpoint через `OPENAI_KEY`; нужен secret/deploy и live smoke на iPhone/Android |
 
 ## Связь с Linear
