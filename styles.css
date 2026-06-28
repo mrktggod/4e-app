@@ -831,12 +831,25 @@ body {
   display: flex;
   align-items: stretch;
   pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.14s ease, transform 0.18s ease;
 }
 .task-card-shell .task-swipe-actions-left {
   justify-content: flex-end;
+  transform: translateX(100%);
 }
 .task-card-shell .task-swipe-actions-right {
   justify-content: flex-start;
+  transform: translateX(-100%);
+}
+.task-card-shell.swipe-left .task-swipe-actions-left,
+.task-card-shell.swiping-left .task-swipe-actions-left,
+.task-card-shell.swipe-right .task-swipe-actions-right,
+.task-card-shell.swiping-right .task-swipe-actions-right {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
 }
 .task-card-shell .task-swipe-btn {
   min-width: 72px;
@@ -977,6 +990,17 @@ body {
   font-weight: 650;
   line-height: 1.35;
   letter-spacing: 0;
+}
+@media (pointer: fine) {
+  .task-card-shell {
+    touch-action: auto;
+  }
+  .task-card-shell .task-swipe-actions {
+    display: none !important;
+  }
+  .task-card-shell .task-row.task-card {
+    transform: none !important;
+  }
 }
 /* ===== BACK BAR ===== */
 .back-bar {
