@@ -838,7 +838,7 @@
     <button class="ob-btn" style="margin-top:16px" onclick="openPayment()">
       Оформить подписку
     </button>
-    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6">
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6" id="subscription-payment-note">
       Безопасная оплата через CloudPayments<br>Отмена в любой момент
     </div>
 
@@ -881,10 +881,10 @@
     <!-- CP Widget trigger -->
     <button class="ob-btn" id="pay-btn" onclick="startPayment()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-      Оплатить картой
+      <span id="pay-btn-label">Оплатить картой</span>
     </button>
 
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap">
+    <div id="payment-badges" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap">
       <div class="pay-badge">Visa</div>
       <div class="pay-badge">Mastercard</div>
       <div class="pay-badge">МИР</div>
@@ -2227,32 +2227,75 @@ function selectPlan(plan) {
   });
 }
 
+function isVKPaymentContext() {
+  return typeof window.vkBridge !== 'undefined' && isVkMiniAppContext();
+}
+
+function setPaymentButtonState(label, disabled = false) {
+  const btn = document.getElementById('pay-btn');
+  const labelEl = document.getElementById('pay-btn-label');
+  if (!btn) return;
+  btn.disabled = disabled;
+  if (labelEl) labelEl.textContent = label;
+  else btn.textContent = label;
+}
+
 function openPayment() {
   const plan = PLANS[selectedPlan];
   document.getElementById('order-title').textContent  = plan.title;
   document.getElementById('order-price').textContent  = plan.price.toLocaleString('ru') + ' ₽';
+  const isVK = isVKPaymentContext();
+  const note = document.getElementById('subscription-payment-note');
+  const badges = document.getElementById('payment-badges');
+  if (note) note.innerHTML = isVK ? 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент' : 'Безопасная оплата через CloudPayments<br>Отмена в любой момент';
+  if (badges) badges.style.display = isVK ? 'none' : 'flex';
+  setPaymentButtonState(isVK ? 'Оплатить через VK Pay' : 'Оплатить картой');
   showSubScreen('payment');
 }
 
 function startPayment() {
   if (!currentUser) { showToast('Войди в аккаунт'); return; }
   const plan = PLANS[selectedPlan];
+  if (isVKPaymentContext()) {
+    startVKPayment(plan);
+    return;
+  }
   const btn  = document.getElementById('pay-btn');
-  btn.disabled = true;
-  btn.textContent = 'Открываю форму оплаты...';
+  setPaymentButtonState('Открываю форму оплаты...', true);
 
   // Загружаем скрипт CP если ещё не загружен
   if (!window.cp) {
     const s = document.createElement('script');
     s.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js';
     s.onload = () => launchWidget(plan, btn);
-    s.onerror = () => { showToast('Ошибка загрузки виджета'); btn.disabled = false; btn.textContent = 'Оплатить картой'; };
+    s.onerror = () => { showToast('Ошибка загрузки виджета'); setPaymentButtonState('Оплатить картой'); };
     document.head.appendChild(s);
   } else {
     launchWidget(plan, btn);
   }
 }
 
+async function startVKPayment(plan) {
+  setPaymentButtonState('Открываю VK Pay...', true);
+  try {
+    const order = await vkBridge.send('VKWebAppShowOrderBox', {
+      type: 'item',
+      item: JSON.stringify({ id: selectedPlan, title: plan.title }),
+      amount: plan.price
+    });
+    if (order && (order.success || order.status === 'success')) {
+      onPaymentSuccess(plan);
+      showToast('Оплата VK Pay прошла');
+    } else {
+      showToast('Оплата VK Pay отменена');
+    }
+  } catch (e) {
+    console.warn('[VK Pay]', e);
+    showToast('VK Pay недоступен. Попробуй позже');
+  } finally {
+    setPaymentButtonState('Оплатить через VK Pay');
+  }
+}
 function launchWidget(plan, btn) {
   const widget = new cp.CloudPayments();
   widget.pay('charge', {
@@ -2269,18 +2312,15 @@ function launchWidget(plan, btn) {
     },
   }, {
     onSuccess: () => {
-      btn.disabled = false;
-      btn.textContent = 'Оплатить картой';
+      setPaymentButtonState('Оплатить картой');
       onPaymentSuccess(plan);
     },
     onFail: (reason) => {
-      btn.disabled = false;
-      btn.textContent = 'Оплатить картой';
+      setPaymentButtonState('Оплатить картой');
       showToast('Оплата не прошла: ' + (reason || 'попробуй ещё раз'));
     },
     onComplete: () => {
-      btn.disabled = false;
-      btn.textContent = 'Оплатить картой';
+      setPaymentButtonState('Оплатить картой');
     },
   });
 }
@@ -4875,7 +4915,7 @@ document.addEventListener('focusout',function(e){if(e.target.closest('#task-deta
   localStorage.setItem=function(key,value){_si(key,value);if(VK_KEYS.includes(key))window.vkStorageSet(key,value);};
   localStorage.getItem=function(key){if(VK_KEYS.includes(key)&&_vkCache[key]!==undefined)return _vkCache[key];return _gi(key);};
   Promise.all(VK_KEYS.map(k=>vkBridge.send('VKWebAppStorageGet',{keys:[k]}).then(res=>{const item=res.keys.find(r=>r.key===k);if(item&&item.value){_vkCache[k]=item.value;_si(k,item.value);}}).catch(()=>{}))).then(()=>{const t=_vkCache['theme'];if(t)applyTheme(t);console.log('[VK Adapter] Storage preloaded',_vkCache);});
-  window.openVKPayment=function(planId,amount){return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:'4 Premium',photo_url:''}),amount}).then(res=>{if(res.success&&typeof activatePremium==='function')activatePremium();}).catch(e=>console.warn('[VK Pay]',e));};
+  window.openVKPayment=function(planId,amount){const plan=PLANS[planId]||{title:'Premium',price:amount,months:1};return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:plan.title}),amount:amount||plan.price}).then(res=>{if(res&&res.success)onPaymentSuccess(plan);return res;}).catch(e=>{console.warn('[VK Pay]',e);throw e;});};
   vkBridge.send('VKWebAppGetClientVersion').then(res=>{if(res.platform==='web'||window.innerWidth>=680){document.body.classList.add('vk-desktop');document.body.setAttribute('data-vk-platform','desktop');}}).catch(()=>{if(window.innerWidth>=680)document.body.classList.add('vk-desktop');});
   console.log('[VK Adapter] Initialized');
 })();
