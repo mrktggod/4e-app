@@ -22,6 +22,15 @@
 
 ## Лог
 
+### 2026-06-28 — Codex
+
+**Задача:** BACK-009 — VK Pay для подписки
+**Результат:** В `index.html` VK-контекст переводит payment screen на `VKWebAppShowOrderBox`, а обычный web/TG flow остаётся на CloudPayments. В `vk.html` кнопка `Купить план` теперь открывает VK Pay вместо заглушки и обновляет Premium UI после успешного bridge-ответа.
+**Коммит:** `feat(payments): add VK Pay subscription flow`
+**Статус:** ⚠️ готово к live QA
+**Следующий шаг:** Проверить оплату внутри VK Mini App; после успешного smoke перевести BACK-009 в Done.
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-014 — подготовка кода под PostgreSQL заранее

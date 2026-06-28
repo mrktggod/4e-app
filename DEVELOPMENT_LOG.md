@@ -54,6 +54,19 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-009: VK Pay subscription flow (Codex)
+
+**Что сделано:** В `index.html` payment flow теперь выбирает VK Pay внутри VK Mini App: кнопка оплаты меняет подпись на `Оплатить через VK Pay`, скрывает card badges и вызывает `VKWebAppShowOrderBox`; вне VK сохраняется CloudPayments. В `vk.html` заглушка `Оплата скоро будет доступна` заменена на кнопку `Купить план`, которая открывает `VKWebAppShowOrderBox` и обновляет Premium UI после успешного bridge-ответа.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19182`, `vk.html CYRILLIC_BEFORE=3273`. После правки: `index.html CYRILLIC_AFTER=19355`, `vk.html CYRILLIC_AFTER=3364`; рост ожидаемый из-за новых русских сообщений VK Pay.
+
+**Тест:** inline JS syntax check для `index.html`/`vk.html`; `npm run build:css`; `git diff --check`. Live VK Pay smoke не выполнялся локально, потому что нужен запуск внутри VK Mini App/payment окружения.
+
+**Коммит:** `feat(payments): add VK Pay subscription flow`
+
+**Статус:** готово к live QA в VK Mini App.
+
+---
 ## 2026-06-27 — BACK-014: PostgreSQL prep without production credentials (Codex)
 
 **Что сделано:** В `4e-worker/worker.js` добавлен подготовительный PostgreSQL storage adapter для `app_sessions` и `app_task_lists`. Adapter читает будущие env `POSTGRES_URL`/`POSTGRES_TOKEN`, но production-поведение не меняет: без `POSTGRES_URL` Worker продолжает использовать D1/KV. Добавлен будущий DDL `migrations/postgres_app_state.sql` для ручного применения в Yandex Cloud PostgreSQL во время BACK-008.
