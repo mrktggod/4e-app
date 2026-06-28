@@ -47,6 +47,7 @@
 | BACK-016 | Расширенный профиль пользователя | Product/UI | P2 | Codex | Ready for QA | В `index.html` добавлены фото-плейсхолдер, имя, ID, телефон/email со статусами, Telegram, о себе и дата рождения |
 | BACK-017 | Оживить настройки уведомлений | Product/Tech | P2 | Codex | QA partial | Live API smoke passed: `/notifications/settings` GET/PUT сохраняет настройки в D1; D1 migrations актуальны; `/briefings/check` живой; реальная доставка Telegram-ботом ждёт ручного smoke на привязанном аккаунте |
 | BACK-020 | Подтверждение email в профиле для связки аккаунтов | Product/Tech | P2 | Codex | Done | Production smoke passed: migration `0004_email_verifications.sql` applied, verification email request returned 200, app link returned 200, `/auth/verify-email` linked email to user, `used_at` burned token, repeat verify returned 400, occupied email conflict returned 409 |
+| BACK-019 | Улучшенные карточки задач | Product/UI | P2 | Codex | Todo | Новая компоновка: номер+приоритет (цвет точки), тег, дедлайн (относительный), 2 строки названия; просроченные — красный фон; свайп влево — кнопки Отменить/Перенести; свайп вправо — Завершить |
 | BACK-021 | Голосовой ввод через MediaRecorder + Whisper | Product/Tech | P1 | Codex | Ready for QA | `index.html` пишет аудио через MediaRecorder и отправляет multipart `/transcribe`; worker commit `339b301` добавил Whisper endpoint через `OPENAI_KEY`; нужен secret/deploy и live smoke на iPhone/Android |
 
 ## Связь с Linear
