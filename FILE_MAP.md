@@ -18,14 +18,14 @@
 | `index.html` | 6169 | Telegram Mini App: CSS, HTML-экраны, JS-логика | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 1578 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `privacy.html` | 230 | Политика конфиденциальности | Можно читать целиком при правовых правках |
-| `AGENTS.md` | 230 | Правила для Codex и агентов | Читать перед задачей |
-| `CLAUDE.md` | 121 | Контекст проекта для Claude/Cowork | Читать при координации |
+| `AGENTS.md` | 224 | Правила для Codex и агентов | Читать перед задачей |
+| `CLAUDE.md` | 120 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 141 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 713 | Канонический технический лог | Обновлять после значимых правок |
+| `DEVELOPMENT_LOG.md` | 727 | Канонический технический лог | Обновлять после значимых правок |
 | `shared/ROADMAP.md` | 126 | Единственный roadmap продукта: стратегия, горизонты, решения, Now / Next / Later | Читать при планировании |
-| `shared/WORK_LOG.md` | 284 | Общий журнал задач команды | Обновлять после выполненной задачи |
+| `shared/WORK_LOG.md` | 294 | Общий журнал задач команды | Обновлять после выполненной задачи |
 | `shared/COMMIT_CONVENTION.md` | 64 | Правила понятных заголовков коммитов | Читать перед коммитом |
-| `docs/github-desktop-team-rules.md` | 101 | Ручной Git-процесс команды через GitHub Desktop | Читать при push/merge/ветках |
+| `docs/git-team-rules.md` | 104 | Git-процесс команды: ветки, commit, push/merge, согласование рисков | Читать при push/merge/ветках |
 | `scripts/check-portable-paths.sh` | 21 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
 | `.githooks/pre-commit` | 4 | Локальный hook для запуска path guard перед commit | Активировать через `git config core.hooksPath .githooks` |
 | `.github/workflows/path-guard.yml` | 13 | GitHub Actions guard для переносимых путей | Срабатывает на push и PR |
@@ -54,7 +54,7 @@
 
 | Проверка | Команда |
 | --- | --- |
-| Старт работы | Проверить ветку и синхронизацию в GitHub Desktop; Codex не делает `pull --rebase` автоматически |
+| Старт работы | Проверить ветку и статус; рискованные `pull --rebase`, push/merge согласовывать отдельно |
 | Git-статус | `git status --short` |
 | Текущая ветка | `git branch --show-current` |
 | Remote | `git remote -v` |

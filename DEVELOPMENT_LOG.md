@@ -54,6 +54,20 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — Смягчение Git-процесса: GitHub Desktop не обязателен для Юры (Codex)
+
+**Что сделано:** По решению Алексея отменена жёсткая формулировка "работать только через GitHub Desktop". `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `shared/ROADMAP.md`, `pm/next-actions.md` и бриф в `pm/agent-inbox/` обновлены: GitHub Desktop оставлен как удобный вариант для Алексея, но не обязательное правило для Юры или опытных участников. `docs/github-desktop-team-rules.md` переименован в `docs/git-team-rules.md`; обязательным остаётся не конкретный инструмент, а согласование рискованных Git-действий: push, merge в `main`, force push, destructive reset/revert и `pull --rebase` при грязном дереве или непонятной ветке.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная правка; проверка — `git diff --check` и `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A.
+
+**Статус:** локально выполнено, без push/merge.
+
+---
+
 ## 2026-06-28 — Командный Git-процесс и план следующих действий (Codex)
 
 **Что сделано:** Обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `FILE_MAP.md`: старое правило автоматического `pull --rebase` заменено на ручной процесс через GitHub Desktop. Добавлено правило, что исключения из Git-процесса возможны только после явного согласования с Алексеем: какое правило нарушаем, зачем, какой риск и кто подтвердил. Создан `docs/github-desktop-team-rules.md` с понятными правилами для команды и `pm/next-actions.md` с ближайшим PM-планом: Git-процесс, QA, legal/infra blockers, premium positioning, закрытый тест и монетизация.
