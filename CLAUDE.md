@@ -70,8 +70,10 @@ Worker: https://restless-lab-d737.shelckograff.workers.dev
 - При изменении меню — обновлять **оба**!
 
 ### 4. Git
-- Перед пушем всегда `git pull --rebase` (Codex может пушить параллельно)
-- После `git reset --hard` нужен `git push --force`
+- GitHub Desktop — удобный вариант для Алексея, но не обязательное правило для Юрия или опытных участников.
+- Локальный commit можно делать по явной просьбе.
+- `pull --rebase`, push, merge в `main`, force push и destructive reset/revert требуют отдельного согласования, если есть риск затронуть чужие изменения или live.
+- Перед опасным Git-действием указать ветку, действие, риск и кто подтвердил.
 - Рабочий редактор: `git config --global core.editor notepad`
 - Заголовки коммитов писать по `shared/COMMIT_CONVENTION.md`: `type(scope): что изменилось`
 
@@ -86,17 +88,21 @@ Codex берёт одну задачу, делает, коммитит, стоп
 
 ## Текущие приоритеты (июнь 2026)
 
-Горизонт 0 — критические баги и правовое соответствие:
-- [ ] **Фаза 9** — экран согласия на биометрию (152-ФЗ) — `09_biometric_consent.html`
+Актуальный источник приоритетов — `shared/ROADMAP.md` и `pm/backlog.md`.
+
+Ближайший фокус:
 - [ ] **Фаза 11** — относительные даты в карточках задач
-- [ ] **Фаза 12** — починить email через Resend + сброс пароля
+- [ ] **152-ФЗ / РКН** — ручное действие Алексея до публичного промо
+- [ ] **Yandex Cloud PostgreSQL** — ручной blocker до переноса ПД
+- [ ] **Premium trust positioning** — обсудить с Юрием / Claude до закрепления в roadmap
+- [ ] **QA перед внешними пользователями** — smoke/regression по `pm/qa-checklist.md`
 
 Патчи лежат в `redesign/patches/`, если эта папка есть в текущем checkout.
 Если локальных патчей нет в checkout, сначала уточнить источник патча и не искать `CODEX_INSTRUCTIONS.md` как обязательный файл репозитория.
 
 ## Перед началом работы
 
-0. Напомни пользователю и выполни: `git fetch origin` и `git pull --rebase`
+0. Проверить текущую ветку и статус. Если нужен `pull --rebase`, push или merge — сначала явно согласовать действие и риск.
 1. Прочитай `DEVELOPMENT_LOG.md` — последние изменения
 2. Прочитай `shared/ROADMAP.md` — текущие приоритеты
 3. Прочитай `shared/WORK_LOG.md` — что делает команда прямо сейчас
@@ -105,11 +111,9 @@ Codex берёт одну задачу, делает, коммитит, стоп
 ## Деплой
 
 ```powershell
-# App (из папки с .git репо 4e-app):
-git add -A
-git commit -m "feat: описание"
-git push
-# → GitHub Pages обновится через ~30 сек
+# App:
+# main связан с GitHub Pages, поэтому push/merge в main влияет на live.
+# Локальный commit можно делать по явной просьбе; push/merge согласовывать отдельно.
 
 # Worker (из 4e-worker/):
 npx wrangler deploy

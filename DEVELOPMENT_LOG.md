@@ -46,7 +46,7 @@
 
 | # | Проблема | Приоритет |
 |---|----------|-----------|
-| 1 | Уведомление РКН — ручной шаг Алексея | высокий |
+| 1 | Уведомление РКН — ручной шаг Юрия | высокий |
 | 2 | Yandex Cloud PostgreSQL — ручной шаг Алексея перед BACK-008 | высокий |
 | 3 | `bottom-nav-v2` (в #home) и `global-nav` — два отдельных компонента, нужно держать синхронизированными | средний |
 | 4 | ANTHROPIC_KEY в worker.js должен быть только PLACEHOLDER — не коммитить реальный ключ | высокий |
@@ -54,27 +54,76 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
-## 2026-06-28 — BACK-020: email verification live QA (Codex)
+## 2026-06-28 — Ответственный за РКН: Юрий (Codex)
 
-**Что проверено:** Production D1 и Worker для подтверждения email в профиле. `wrangler d1 migrations apply DB --remote --config wrangler.toml` вернул `No migrations to apply`; `app_email_verifications` существует с колонками `token`, `user_id`, `email`, `expires_at`, `used_at`, `created_at`. Live smoke создан на временных адресах `codex-back020-*@4-ai.site`, чтобы не затронуть реальные пользовательские email.
+**Что сделано:** По решению Алексея BACK-007 "Уведомление РКН" передан Юрию. Обновлены `shared/ROADMAP.md`, `pm/backlog.md`, `pm/next-actions.md` и список открытых проблем в этом логе: РКН теперь manual task Юрия, а не Алексея.
 
-**Результат smoke:** `POST /auth/request-email-verification` вернул 200 и создал D1 token; ссылка приложения `https://mrktggod.github.io/4e-app/?verify_email=TOKEN` открылась с HTTP 200; `POST /auth/verify-email` с тем же token и `x-token` пользователя вернул 200, сменил email пользователя на подтверждаемый адрес и вернул `emailVerified=true`; D1 `used_at` для token заполнен; повторный `POST /auth/verify-email` тем же token вернул 400; второй временный аккаунт при попытке запросить подтверждение уже занятого email получил 409.
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
 
-**Cleanup:** Временные пользователи `582db019-ba0b-40bc-80b1-31251871cea9` и `b5f7c7f5-eca8-4fea-bc29-64179e178bb2` удалены из D1 `app_email_verifications`/`app_sessions`; KV-ключи `user:codex-back020-*`, `user_id:*`, `notifs:*`, `notif_settings:*`, `email_verify:*` удалены. D1 readback после cleanup вернул `0` строк, KV prefix checks вернули `[]`.
+**Тест:** Документальная правка; проверка — `git diff --check` и `bash scripts/check-portable-paths.sh`.
 
-**Тест:** app inline JS syntax check; worker `node --check worker.js`; D1 migration/schema check; live `POST /auth/register`; live `POST /auth/request-email-verification`; D1 token readback; live app verify-link HTTP 200; live `POST /auth/verify-email`; token reuse check; occupied email conflict check; D1/KV cleanup verification.
+**Коммит:** N/A.
 
-**Статус:** выполнено — BACK-020 закрыт production smoke-тестом.
+**Статус:** локально выполнено, без push/merge.
 
-## 2026-06-28 — BACK-017: notification settings QA (Codex)
+---
 
-**Что проверено:** Production Worker и D1 для настроек уведомлений. `wrangler d1 migrations apply DB --remote --config wrangler.toml` вернул `No migrations to apply`. Через live Worker создан временный QA-пользователь, прочитаны дефолтные настройки уведомлений, затем `PUT /notifications/settings` сохранил `push=true`, `email=false`, `telegram=true`, `tasks=true`, `morningBriefing=true`, `briefingTime=08:30`, `overdueTasks=false`; ответ вернул `storage: d1`, повторный `GET` подтвердил сохранение. `/briefings/check` вернул корректный JSON с пустым списком. `/deadlines/check` вернул payload просрочки для существующего Telegram-пользователя; отправка ботом не выполнялась, созданный QA-маркер `overdue_sent:84fef140-567e-4ab9-9039-b860fe94a77e:1782651526175:2026-06-28` удалён из KV.
+## 2026-06-28 — Смягчение Git-процесса: GitHub Desktop не обязателен для Юры (Codex)
 
-**Cleanup:** Временный пользователь `codex-back017-1782669169@example.com` (`f28b9e80-1a4b-4709-9dd5-d058efa3cea8`) удалён из D1 `app_notification_settings`/`app_sessions`; KV-ключи `user:*`, `user_id:*`, `notif_settings:*`, `notifs:*` удалены. D1 readback после cleanup вернул `0` строк.
+**Что сделано:** По решению Алексея отменена жёсткая формулировка "работать только через GitHub Desktop". `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `shared/ROADMAP.md`, `pm/next-actions.md` и бриф в `pm/agent-inbox/` обновлены: GitHub Desktop оставлен как удобный вариант для Алексея, но не обязательное правило для Юры или опытных участников. `docs/github-desktop-team-rules.md` переименован в `docs/git-team-rules.md`; обязательным остаётся не конкретный инструмент, а согласование рискованных Git-действий: push, merge в `main`, force push, destructive reset/revert и `pull --rebase` при грязном дереве или непонятной ветке.
 
-**Тест:** app inline JS syntax check; `npm run build:css`; worker `node --check worker.js`; `node --check src/bot/reminders.js`; `node --check src/bot/index.js`; live `GET/PUT /notifications/settings`; live `POST /briefings/check`; controlled `POST /deadlines/check` с последующим cleanup KV marker.
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
 
-**Статус:** QA partial — API/D1 часть BACK-017 подтверждена на production, реальная доставка Telegram-ботом остаётся ручным smoke на привязанном Telegram-аккаунте.
+**Тест:** Документальная правка; проверка — `git diff --check` и `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A.
+
+**Статус:** локально выполнено, без push/merge.
+
+---
+
+## 2026-06-28 — Командный Git-процесс и план следующих действий (Codex)
+
+**Что сделано:** Обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `FILE_MAP.md`: старое правило автоматического `pull --rebase` заменено на ручной процесс через GitHub Desktop. Добавлено правило, что исключения из Git-процесса возможны только после явного согласования с Алексеем: какое правило нарушаем, зачем, какой риск и кто подтвердил. Создан `docs/github-desktop-team-rules.md` с понятными правилами для команды и `pm/next-actions.md` с ближайшим PM-планом: Git-процесс, QA, legal/infra blockers, premium positioning, закрытый тест и монетизация.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная правка; проверка — `git diff --check` и `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A.
+
+**Статус:** локально выполнено, без push/merge. Следующий шаг — Алексей проверяет изменения в GitHub Desktop на ветке `docs/git-branch-protocol` и решает, коммитить ли их.
+
+---
+
+## 2026-06-28 — Пожелание Алексея по Git-процессу в roadmap (Codex)
+
+**Что сделано:** В `shared/ROADMAP.md` добавлен блок "Пожелания / ожидают решения" и пункт по Git-процессу. Зафиксировано, что Алексей поддерживает вариант B: разбирать готовые ветки 1 раз в неделю + срочно для P0/P1. `push`, `merge` и `pull --rebase` не автоматизировать; работа должна идти через GitHub Desktop с явным подтверждением человека.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная правка; проверка — `git diff --check`.
+
+**Коммит:** N/A.
+
+**Статус:** выполнено как пожелание, а не финальное правило. Следующий шаг — получить мнение Юры / Claude и после решения Алексея оформить правило в командных инструкциях.
+
+---
+
+## 2026-06-28 — Запрос к Claude Юры по правилу merge в main (Codex)
+
+**Что сделано:** Создан координационный бриф `pm/agent-inbox/codex-to-claude-2026-06-28-branch-main-rule.md` с вопросом о правильном ритме разбора веток и merge в `main`. Бриф фиксирует, что речь не об автоматическом merge по расписанию, а о ручном разборе готовых веток через GitHub Desktop.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Проверен текущий checkout: рабочее дерево было чистым перед правкой, текущая ветка `docs/git-branch-protocol`. Правило не внесено в roadmap / AGENTS.md до ответа Claude Юры и решения Алексея.
+
+**Коммит:** N/A.
+
+**Статус:** выполнено как подготовка к обсуждению. Следующий шаг — Алексей передаёт бриф Юре/Claude и после ответа утверждает финальный вариант правила.
+
+---
+
 ## 2026-06-28 — BACK-021: MediaRecorder voice input + Whisper (Codex)
 
 **Что сделано:** В `index.html` голосовой ввод переведён на `MediaRecorder`: приложение запрашивает микрофон через `getUserMedia`, записывает до 10 секунд, отправляет audio blob на Worker `/transcribe` как multipart `audio`, получает текст и передаёт его в `ask-field` / `sendAsk()`. `SpeechRecognition` оставлен fallback, если MediaRecorder недоступен. В `4e-worker` commit `339b301` добавил endpoint `POST /transcribe`: проверка `x-token`, чтение multipart, вызов OpenAI Whisper `whisper-1` через `OPENAI_KEY`, ответ `{ text }`.
@@ -86,6 +135,8 @@
 **Коммит:** app `feat(voice): add MediaRecorder voice input`; worker `339b301 feat(voice): add Whisper transcription endpoint`
 
 **Статус:** Ready for QA — перед live smoke нужно добавить Worker secret `OPENAI_KEY`, задеплоить Worker/app и проверить голосовой ввод на iPhone Telegram WKWebView и Android.
+
+---
 
 ## 2026-06-28 — BACK-020: email verification in profile (Codex)
 
@@ -110,6 +161,9 @@
 **Коммит:** app `feat(notifications): add live notification settings`; worker `b3aa1d6 feat(notifications): add live notification settings`
 
 **Статус:** Ready for QA — перед live smoke нужно применить D1 migration `0003_notification_settings.sql` и задеплоить worker/bot.
+
+---
+
 ## 2026-06-28 — BACK-016: extended user profile (Codex)
 
 **Что сделано:** В `index.html` экран профиля расширен карточкой `sub-card`: фото профиля с кнопкой `Изменить фото` и локальным preview/R2 placeholder, редактируемое имя, readonly ID, телефон и email с UI-статусом подтверждения, привязка Telegram, textarea `О себе` до 200 символов со счётчиком и date picker даты рождения. Стили добавлены в `styles/screens/profile.less`; данные формы сохраняются локально до появления backend/R2 profile API.
@@ -121,6 +175,9 @@
 **Коммит:** `feat(profile): add extended user profile fields`
 
 **Статус:** Ready for QA — нужен визуальный smoke профиля и последующая backend-задача для R2/profile API.
+
+---
+
 ## 2026-06-28 — BACK-010: Telegram Stars subscription flow (Codex)
 
 **Что сделано:** В `index.html` payment flow теперь выбирает Telegram Stars внутри Telegram Mini App: кнопка оплаты показывает сумму в Stars, запрашивает invoice у Worker и открывает `Telegram.WebApp.openInvoice`. В `4e-worker` commit `d57771c` добавил endpoint `/payments/telegram-stars/invoice`, создание `createInvoiceLink` с валютой `XTR`, обработчик `/payments/telegram-stars/complete` и bot-side обработку `pre_checkout_query` / `successful_payment`, чтобы Premium активировался по реальному событию Telegram.
@@ -132,6 +189,9 @@
 **Коммит:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c feat(payments): add Telegram Stars subscription flow`
 
 **Статус:** Ready for QA — нужен live smoke в Telegram после merge/deploy.
+
+---
+
 ## 2026-06-28 — Фаза 11: относительные даты в карточках задач (Codex)
 
 **Что сделано:** В `index.html` добавлен общий formatter относительных дат для карточек задач. Дедлайны теперь показываются как `сегодня`, `завтра`, `через N дней` или `просрочено на N дней`; обычные даты задач показываются как `сегодня`, `вчера`, `N дней назад` или будущий относительный срок. Форматтер подключён к основному списку задач, месячному фильтру, раскрытию всех задач, home-фильтрам и спискам выполненных задач/обещаний.
@@ -143,6 +203,9 @@
 **Коммит:** `feat(tasks): show relative dates in task cards`
 
 **Статус:** выполнено — Фаза 11 закрыта.
+
+---
+
 ## 2026-06-28 — BACK-009: VK Pay subscription flow (Codex)
 
 **Что сделано:** В `index.html` payment flow теперь выбирает VK Pay внутри VK Mini App: кнопка оплаты меняет подпись на `Оплатить через VK Pay`, скрывает card badges и вызывает `VKWebAppShowOrderBox`; вне VK сохраняется CloudPayments. В `vk.html` заглушка `Оплата скоро будет доступна` заменена на кнопку `Купить план`, которая открывает `VKWebAppShowOrderBox` и обновляет Premium UI после успешного bridge-ответа.
