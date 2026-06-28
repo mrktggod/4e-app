@@ -72,6 +72,75 @@
 
 ---
 
+### 2026-06-28 — Codex
+
+**Задача:** BACK-021 — голосовой ввод через MediaRecorder + Whisper
+**Результат:** В `index.html` добавлен MediaRecorder flow с отправкой audio blob на `/transcribe` и fallback на SpeechRecognition; worker commit `339b301` добавил Whisper endpoint через `OPENAI_KEY`.
+**Коммит:** app `feat(voice): add MediaRecorder voice input`; worker `339b301`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Добавить secret `OPENAI_KEY`, задеплоить worker/app и пройти live smoke на iPhone Telegram WKWebView и Android.
+
+---
+
+### 2026-06-28 — Codex
+
+**Задача:** BACK-020 — подтверждение email в профиле для связки аккаунтов
+**Результат:** В `index.html` добавлена кнопка подтверждения email, обработка `?verify_email=TOKEN` и обновление статуса `Подтверждён ✅`; worker commit `e815266` добавил Resend-письмо, D1/KV хранение token и проверку конфликта занятого email.
+**Коммит:** app `feat(auth): add profile email verification`; worker `e815266`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Смержить/deploy app и worker, применить D1 migration `0004_email_verifications.sql`, пройти live smoke: запрос письма, переход по ссылке и конфликт уже существующего email.
+
+---
+
+### 2026-06-28 — Codex
+
+**Задача:** BACK-017 — оживить настройки уведомлений
+**Результат:** В `index.html` удалены лишние toggles уведомлений, добавлены рабочие настройки каналов, утренний брифинг с time picker и просроченные задачи; worker commit `b3aa1d6` сохраняет настройки в D1/KV и отдаёт bot scheduler брифинги/просрочки.
+**Коммит:** app `feat(notifications): add live notification settings`; worker `b3aa1d6`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Смержить/deploy, применить D1 migration `0003_notification_settings.sql`, проверить сохранение настроек и сообщения бота.
+
+---
+
+### 2026-06-28 — Codex
+
+**Задача:** BACK-016 — расширенный профиль пользователя
+**Результат:** В `index.html` добавлена расширенная карточка профиля: фото с placeholder под R2, имя, системный ID, телефон/email со статусами, Telegram-привязка, `О себе` со счётчиком и дата рождения; стили вынесены в `styles/screens/profile.less`.
+**Коммит:** `feat(profile): add extended user profile fields`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Проверить профиль визуально; отдельной задачей подключить backend/R2 сохранение профиля.
+
+---
+
+### 2026-06-28 — Codex
+
+**Задача:** BACK-010 — Telegram Stars / ЮKassa
+**Результат:** В `index.html` добавлен Telegram Stars payment flow через `Telegram.WebApp.openInvoice`; worker commit `d57771c` создаёт invoice link и bot подтверждает `successful_payment`, после чего Premium активируется в Worker.
+**Коммит:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Смержить/deploy app и worker, затем пройти live smoke внутри Telegram Mini App; YooKassa остаётся следующим card-provider решением.
+
+---
+
+### 2026-06-28 — Codex
+
+**Задача:** Фаза 11 — относительные даты в карточках задач
+**Результат:** В `index.html` добавлен общий formatter дат: карточки задач показывают `сегодня`, `вчера`, `N дней назад`, `завтра`, `через N дней` и `просрочено на N дней` вместо абсолютных дат.
+**Коммит:** `feat(tasks): show relative dates in task cards`
+**Статус:** ✅ выполнено
+**Следующий шаг:** После merge можно продолжать следующую задачу из roadmap/backlog; BACK-008 остаётся заблокированным до credentials, BACK-009 ждёт merchant approval VK.
+
+---
+
+### 2026-06-28 — Codex
+
+**Задача:** BACK-009 — VK Pay для подписки
+**Результат:** В `index.html` VK-контекст переводит payment screen на `VKWebAppShowOrderBox`, а обычный web/TG flow остаётся на CloudPayments. В `vk.html` кнопка `Купить план` теперь открывает VK Pay вместо заглушки и обновляет Premium UI после успешного bridge-ответа.
+**Коммит:** `feat(payments): add VK Pay subscription flow`
+**Статус:** ⚠️ готово к live QA
+**Следующий шаг:** Проверить оплату внутри VK Mini App; после успешного smoke перевести BACK-009 в Done.
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-014 — подготовка кода под PostgreSQL заранее

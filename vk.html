@@ -415,7 +415,7 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
       <div style="font-size:13px;font-weight:600;margin-top:2px">дней триала</div>
       <div style="font-size:12px;color:var(--muted)">Полный доступ</div>
     </div>
-    <button class="trial-btn" onclick="showToast('Оплата скоро будет доступна')">Купить план</button>
+    <button class="trial-btn" id="vkPayBtn" onclick="startVKPayment()">Купить план</button>
   </div>
   <div class="section-label">Подключённые аккаунты</div>
   <div class="card">
@@ -1147,6 +1147,39 @@ async function refreshVKIdentity() {
   showToast('Связи обновлены');
 }
 
+function getVKPremiumPlan() {
+  return { id: 'vk-premium-month', title: '4 Premium · 1 месяц', price: 990, days: 30 };
+}
+
+async function startVKPayment() {
+  if (!state.user || !state.token) { showToast('Войдите в аккаунт'); return; }
+  if (!window.vkBridge?.send) { showToast('VK Pay доступен только внутри VK'); return; }
+  const plan = getVKPremiumPlan();
+  const button = document.getElementById('vkPayBtn');
+  const oldText = button ? button.textContent : '';
+  if (button) { button.disabled = true; button.textContent = 'Открываю VK Pay...'; }
+  try {
+    const order = await withTimeout(vkBridge.send('VKWebAppShowOrderBox', {
+      type: 'item',
+      item: JSON.stringify({ id: plan.id, title: plan.title }),
+      amount: plan.price
+    }), 15000);
+    if (order && (order.success || order.status === 'success')) {
+      const base = state.user.trialEndsAt && Date.now() < state.user.trialEndsAt ? state.user.trialEndsAt : Date.now();
+      state.user.plan = 'paid';
+      state.user.trialEndsAt = base + plan.days * 86400000;
+      applyUser();
+      showToast('Premium активирован');
+    } else {
+      showToast('Оплата отменена');
+    }
+  } catch(e) {
+    console.warn('vk_pay_error', e);
+    showToast(e?.message === 'timeout' ? 'VK Pay отвечает дольше обычного' : 'VK Pay недоступен');
+  } finally {
+    if (button) { button.disabled = false; button.textContent = oldText || 'Купить план'; }
+  }
+}
 // ── AUTH ──
 function switchTab(tab) {
   document.getElementById('tabLogin').classList.toggle('active', tab === 'login');

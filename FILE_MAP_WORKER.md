@@ -14,8 +14,15 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 ## Что известно из документации
 
 - `/anthropic` — прокси к Claude, требует `x-token`.
+- `/transcribe` — принимает multipart audio с `x-token`, отправляет в OpenAI Whisper через `OPENAI_KEY`, возвращает `{ text }`.
 - `/tasks` — задачи по токену без `chatId`.
 - `/auth/vk` — VK авто-логин.
+- `/auth/request-email-verification` — шлёт Resend-письмо для подтверждения email профиля и хранит token в D1/KV.
+- `/auth/verify-email` — проверяет token, привязывает email к текущему `user.id` и возвращает `Этот email уже используется` при конфликте.
+- `/payments/telegram-stars/invoice` — создаёт Telegram Stars invoice link для Mini App.
+- `/payments/telegram-stars/complete` — подтверждает `successful_payment` от Telegram bot и активирует Premium.
+- `/notifications/settings` — читает/сохраняет настройки уведомлений пользователя в D1 с KV fallback.
+- `/briefings/check` — выдаёт bot scheduler список утренних брифингов по времени пользователя.
 - D1/privacy endpoints используются из `index.html` и `vk.html`.
 - Реальные секреты не должны попадать в код; использовать placeholders и Secrets.
 

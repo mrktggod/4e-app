@@ -124,6 +124,101 @@
 
 ---
 
+## 2026-06-28 — BACK-021: MediaRecorder voice input + Whisper (Codex)
+
+**Что сделано:** В `index.html` голосовой ввод переведён на `MediaRecorder`: приложение запрашивает микрофон через `getUserMedia`, записывает до 10 секунд, отправляет audio blob на Worker `/transcribe` как multipart `audio`, получает текст и передаёт его в `ask-field` / `sendAsk()`. `SpeechRecognition` оставлен fallback, если MediaRecorder недоступен. В `4e-worker` commit `339b301` добавил endpoint `POST /transcribe`: проверка `x-token`, чтение multipart, вызов OpenAI Whisper `whisper-1` через `OPENAI_KEY`, ответ `{ text }`.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=20210`. После правки: `index.html CYRILLIC_AFTER=20324`; рост ожидаемый из-за новых сообщений MediaRecorder/Whisper flow.
+
+**Тест:** inline JS syntax check для `index.html`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
+
+**Коммит:** app `feat(voice): add MediaRecorder voice input`; worker `339b301 feat(voice): add Whisper transcription endpoint`
+
+**Статус:** Ready for QA — перед live smoke нужно добавить Worker secret `OPENAI_KEY`, задеплоить Worker/app и проверить голосовой ввод на iPhone Telegram WKWebView и Android.
+
+---
+
+## 2026-06-28 — BACK-020: email verification in profile (Codex)
+
+**Что сделано:** В `index.html` email в расширенном профиле теперь подтверждается через кнопку `Подтвердить`: app запрашивает письмо у Worker, обрабатывает `?verify_email=TOKEN`, вызывает `/auth/verify-email`, обновляет `currentUser.emailVerified` и показывает статус `Подтверждён ✅`. В `4e-worker` commit `e815266` добавил endpoints `/auth/request-email-verification` и `/auth/verify-email`, отправку Resend от `noreply@4-ai.site`, D1 таблицу `app_email_verifications` с KV fallback и проверку конфликта `Этот email уже используется`.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19940`. После правки: `index.html CYRILLIC_AFTER=20194`; рост ожидаемый из-за новых русских сообщений email verification flow.
+
+**Тест:** inline JS syntax check для `index.html`; `npm run build:css`; `Portable path check passed`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml` собрал Worker и attached module `migrations/0004_email_verifications.sql`. Live smoke не выполнялся: нужен merge/deploy worker и применение D1 migration.
+
+**Коммит:** app `feat(auth): add profile email verification`; worker `e815266 feat(auth): add email verification flow`
+
+**Статус:** Ready for QA — после merge/deploy применить D1 migration `0004_email_verifications.sql`, запросить письмо из профиля, открыть ссылку `?verify_email=TOKEN` в залогиненном Telegram-аккаунте и проверить конфликт уже занятого email.
+
+## 2026-06-28 — BACK-017: live notification settings (Codex)
+
+**Что сделано:** В `index.html` экран `notif-settings` очищен от лишних типов (`Файлы и документы`, `Система и безопасность`, `Маркетинг и новости`) и оставляет рабочие каналы Push, Email, Telegram, задачи/напоминания. Добавлены `Утренний брифинг` с time picker default `09:00` и `Просроченные задачи`. Настройки сохраняются в localStorage и синхронизируются через `/notifications/settings`. В `4e-worker` commit `b3aa1d6` добавил D1 таблицу `app_notification_settings`, API GET/PUT, `/briefings/check`, фильтрацию просроченных задач по настройкам и bot scheduler `checkBriefings`.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19953`. После правки: `index.html CYRILLIC_AFTER=19940`; снижение ожидаемое, потому что удалены три старых русских пункта уведомлений.
+
+**Тест:** app inline JS syntax check; `npm run build:css`; `git diff --check`; `Portable path check passed`; worker `node --check worker.js`; `node --check src/bot/reminders.js`; `node --check src/bot/index.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
+
+**Коммит:** app `feat(notifications): add live notification settings`; worker `b3aa1d6 feat(notifications): add live notification settings`
+
+**Статус:** Ready for QA — перед live smoke нужно применить D1 migration `0003_notification_settings.sql` и задеплоить worker/bot.
+
+---
+
+## 2026-06-28 — BACK-016: extended user profile (Codex)
+
+**Что сделано:** В `index.html` экран профиля расширен карточкой `sub-card`: фото профиля с кнопкой `Изменить фото` и локальным preview/R2 placeholder, редактируемое имя, readonly ID, телефон и email с UI-статусом подтверждения, привязка Telegram, textarea `О себе` до 200 символов со счётчиком и date picker даты рождения. Стили добавлены в `styles/screens/profile.less`; данные формы сохраняются локально до появления backend/R2 profile API.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19707`. После правки: `index.html CYRILLIC_AFTER=19953`; рост ожидаемый из-за новых русских подписей профиля.
+
+**Тест:** inline JS syntax check для `index.html`; `npm run build:css`; `git diff --check`; `Portable path check passed`.
+
+**Коммит:** `feat(profile): add extended user profile fields`
+
+**Статус:** Ready for QA — нужен визуальный smoke профиля и последующая backend-задача для R2/profile API.
+
+---
+
+## 2026-06-28 — BACK-010: Telegram Stars subscription flow (Codex)
+
+**Что сделано:** В `index.html` payment flow теперь выбирает Telegram Stars внутри Telegram Mini App: кнопка оплаты показывает сумму в Stars, запрашивает invoice у Worker и открывает `Telegram.WebApp.openInvoice`. В `4e-worker` commit `d57771c` добавил endpoint `/payments/telegram-stars/invoice`, создание `createInvoiceLink` с валютой `XTR`, обработчик `/payments/telegram-stars/complete` и bot-side обработку `pre_checkout_query` / `successful_payment`, чтобы Premium активировался по реальному событию Telegram.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19509`. После правки: `index.html CYRILLIC_AFTER=19707`; рост ожидаемый из-за новых русских сообщений Telegram Stars.
+
+**Тест:** `node --check worker.js`; `node --check src/bot/handler.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`; inline JS syntax check для `index.html`; `npm run build:css`; `git diff --check`. Live Telegram Stars smoke не выполнялся локально, потому что нужен запуск внутри Telegram Mini App с активным bot/Worker окружением.
+
+**Коммит:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c feat(payments): add Telegram Stars subscription flow`
+
+**Статус:** Ready for QA — нужен live smoke в Telegram после merge/deploy.
+
+---
+
+## 2026-06-28 — Фаза 11: относительные даты в карточках задач (Codex)
+
+**Что сделано:** В `index.html` добавлен общий formatter относительных дат для карточек задач. Дедлайны теперь показываются как `сегодня`, `завтра`, `через N дней` или `просрочено на N дней`; обычные даты задач показываются как `сегодня`, `вчера`, `N дней назад` или будущий относительный срок. Форматтер подключён к основному списку задач, месячному фильтру, раскрытию всех задач, home-фильтрам и спискам выполненных задач/обещаний.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19355`. После правки: `index.html CYRILLIC_AFTER=19509`; рост ожидаемый из-за новых русских подписей относительных дат.
+
+**Тест:** inline JS syntax check, unit smoke formatter cases через Node, `npm run build:css`, `git diff --check`.
+
+**Коммит:** `feat(tasks): show relative dates in task cards`
+
+**Статус:** выполнено — Фаза 11 закрыта.
+
+---
+
+## 2026-06-28 — BACK-009: VK Pay subscription flow (Codex)
+
+**Что сделано:** В `index.html` payment flow теперь выбирает VK Pay внутри VK Mini App: кнопка оплаты меняет подпись на `Оплатить через VK Pay`, скрывает card badges и вызывает `VKWebAppShowOrderBox`; вне VK сохраняется CloudPayments. В `vk.html` заглушка `Оплата скоро будет доступна` заменена на кнопку `Купить план`, которая открывает `VKWebAppShowOrderBox` и обновляет Premium UI после успешного bridge-ответа.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19182`, `vk.html CYRILLIC_BEFORE=3273`. После правки: `index.html CYRILLIC_AFTER=19355`, `vk.html CYRILLIC_AFTER=3364`; рост ожидаемый из-за новых русских сообщений VK Pay.
+
+**Тест:** inline JS syntax check для `index.html`/`vk.html`; `npm run build:css`; `git diff --check`. Live VK Pay smoke не выполнялся локально, потому что нужен запуск внутри VK Mini App/payment окружения.
+
+**Коммит:** `feat(payments): add VK Pay subscription flow`
+
+**Статус:** готово к live QA в VK Mini App.
+
+---
 ## 2026-06-27 — BACK-014: PostgreSQL prep without production credentials (Codex)
 
 **Что сделано:** В `4e-worker/worker.js` добавлен подготовительный PostgreSQL storage adapter для `app_sessions` и `app_task_lists`. Adapter читает будущие env `POSTGRES_URL`/`POSTGRES_TOKEN`, но production-поведение не меняет: без `POSTGRES_URL` Worker продолжает использовать D1/KV. Добавлен будущий DDL `migrations/postgres_app_state.sql` для ручного применения в Yandex Cloud PostgreSQL во время BACK-008.
@@ -637,7 +732,7 @@
 - ✅ Reminders/Deadlines — реализована логика проверки через воркер
 - ⚠️ **Отклонение от плана:** Codex работал над фазой 13 (D1 миграция) вместо фаз 9/11/12 которые были в очереди
 - ✅ Фаза 9 (biometric consent) — закрыта 2026-06-25, см. BACK-003 выше
-- ❌ Фаза 11 (relative dates) — не сделана  
+- ✅ Фаза 11 (relative dates) — закрыта 2026-06-28, см. запись выше
 - ❌ Фаза 12 (email + сброс пароля) — не сделана
 
 **Вывод:** работа ценная, но не по приоритету. Фаза 9 закрыта 2026-06-25; фазы 11 и 12 остаются в очереди.

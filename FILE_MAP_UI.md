@@ -9,7 +9,8 @@
 | 1-11 | Head scripts | Telegram SDK, VK bridge, marked |
 | 12-973 | CSS | Тема, layout, экраны, карточки задач, чаты, профиль, responsive |
 | 975-2850 | HTML screens | Все экраны приложения и overlays |
-| 2852-5848 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |`r`n| 5849-6167 | Biometric consent patch | Screen `biometric-consent`, CSS, localStorage consent gate for voice input |
+| 2852-5848 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
+| 5849-6167 | Biometric consent patch | Screen `biometric-consent`, CSS, localStorage consent gate for voice input |
 
 ### HTML screens
 
@@ -26,11 +27,11 @@
 | 1592 | `calendar` | Календарь |
 | 1629 | `statistics` | Статистика |
 | 1681 | `notifications` | Уведомления |
-| 1701 | `profile` | Профиль |
+| 739 | `profile` | Профиль, расширенные поля пользователя |
 | 1731 | `subscription` | Подписка |
 | 1811 | `payment` | Оплата |
 | 1864 | `payment-success` | Успешная оплата |
-| 1888 | `notif-settings` | Настройки уведомлений |
+| 947 | `notif-settings` | Живые настройки уведомлений: каналы, брифинг, просрочки |
 | 1936 | `security` | Безопасность |
 | 1982 | `privacy-center` | Центр приватности |
 | 2062 | `change-password` | Смена пароля |
@@ -50,14 +51,15 @@
 | 2643 | `task-confirm` | Подтверждение задачи |
 | 2673 | `task-move` | Перенос задачи |
 | 2690 | `task-done` | Завершение задачи |
-| 2704 | `voice` | Голосовой режим |`r`n| 5861 | `biometric-consent` | Согласие на обработку голоса по 152-ФЗ |
+| 2704 | `voice` | Голосовой режим |
+| 5861 | `biometric-consent` | Согласие на обработку голоса по 152-ФЗ |
 
 ### JavaScript ranges
 
 | Диапазон | Назначение | Ключевые функции |
 | --- | --- | --- |
 | 2852-2933 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, `isVkMiniAppContext` |
-| 2934-3178 | App init and auth | `initApp`, `doRegister`, `doLogin`, `loginWithTelegram`, `doLogout` |
+| 1896-2258 | App init, auth, profile | `initApp`, `doRegister`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
 | 3179-3309 | Payments and subscription | `selectPlan`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
 | 3310-3417 | Onboarding, system prompt, trial | `obInit`, `obRender`, `obDone`, `checkTrial` |
 | 3418-3681 | Tasks, home, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `markDoneKV` |
@@ -65,12 +67,13 @@
 | 3965-4208 | Task detail and editing | `openTask`, `editDetailField`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
 | 4209-4284 | Message generation | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg` |
 | 4285-4517 | AI chat and task creation | `loadAskHistoryRemote`, `createTaskFromChat`, `sendAsk`, `showToast` |
-| 4518-4630 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `sendVoiceMessage`; `openVoice` gated by `biometricConsentRequired` |
-| 4631-4808 | Subscreens and privacy API | `_showSubScreenBase`, `syncD1AuthSession`, `loadPrivacyCenter`, `recordPrivacyConsent` |
+| 4518-4630 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `openMediaRecorderVoice`, `transcribeVoiceBlob`, `sendVoiceMessage`; voice uses MediaRecorder + `/transcribe` with SpeechRecognition fallback and biometric consent gate |
+| 3888-4090 | Subscreens, privacy API, notifications prefs | `_showSubScreenBase`, `loadPrivacyCenter`, `loadNotificationSettings`, `saveNotifPref` |
 | 4809-5006 | Settings | `saveNotifPref`, `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
 | 5007-5404 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
 | 5405-5806 | Chats and messages | `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
-| 5807-5848 | VK adapter inside TG app | VK safe area, haptics, swipe back, storage sync |`r`n| 6084-6145 | Biometric consent JS | `biometricConsentRequired`, `revokeBiometricConsent`, checkbox enablement |
+| 5807-5848 | VK adapter inside TG app | VK safe area, haptics, swipe back, storage sync |
+| 6084-6145 | Biometric consent JS | `biometricConsentRequired`, `revokeBiometricConsent`, checkbox enablement |
 
 ## `vk.html` — VK Mini App
 

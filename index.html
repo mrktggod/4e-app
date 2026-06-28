@@ -744,10 +744,37 @@
   <div class="profile-scroll">
     <div class="profile-user">
       <div class="profile-avatar" id="profile-avatar">?</div>
-      <div><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div></div>
+      <div class="profile-user-copy"><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div><div class="profile-user-id" id="profile-user-id">ID —</div></div>
     </div>
     <!-- trial banner injected here by JS -->
     <div id="trial-banner-wrap"></div>
+
+    <div class="sub-card profile-details-card">
+      <div class="profile-photo-row">
+        <div class="profile-photo-preview" id="profile-photo-preview">?</div>
+        <div class="profile-photo-actions">
+          <button class="profile-photo-btn" type="button" onclick="document.getElementById('profile-photo-input').click()"><span class="profile-photo-btn-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span><span>Изменить фото</span></button>
+          <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
+        </div>
+      </div>
+      <div class="profile-field-grid">
+        <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
+        <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="toggleProfileVerified('phone')">Не подтверждён</button></div></label>
+        <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
+        <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
+      </div>
+    </div>
+
+    <div class="sub-card profile-form-card">
+      <label class="profile-field"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
+    </div>
+
+    <div class="sub-card profile-form-card">
+      <label class="profile-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small id="profile-about-counter">0 / 200</small></label>
+    </div>
+
+    <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
+
     <div class="profile-menu">
             <div class="profile-item" onclick="openChats()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="profile-item-text">Чаты</span></div><span class="profile-item-arrow">&#8250;</span></div>
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div><span class="profile-item-text">Подписка</span></div><span class="profile-item-arrow">›</span></div>
@@ -838,7 +865,7 @@
     <button class="ob-btn" style="margin-top:16px" onclick="openPayment()">
       Оформить подписку
     </button>
-    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6">
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6" id="subscription-payment-note">
       Безопасная оплата через CloudPayments<br>Отмена в любой момент
     </div>
 
@@ -881,10 +908,10 @@
     <!-- CP Widget trigger -->
     <button class="ob-btn" id="pay-btn" onclick="startPayment()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-      Оплатить картой
+      <span id="pay-btn-label">Оплатить картой</span>
     </button>
 
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap">
+    <div id="payment-badges" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap">
       <div class="pay-badge">Visa</div>
       <div class="pay-badge">Mastercard</div>
       <div class="pay-badge">МИР</div>
@@ -932,44 +959,35 @@
     <div class="sub-section-title" style="margin-top:4px">Каналы уведомлений</div>
     <div class="sub-card">
       <div class="sub-row">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="sub-row-text">Push-уведомления</span></div>
-        <label class="toggle-wrap"><input type="checkbox" checked onchange="saveNotifPref('push',this.checked)"><div class="toggle-slider"></div></label>
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div><div class="sub-row-text">Push-уведомления</div><div class="sub-row-sub">Mini App push, fallback через Telegram-бота</div></div></div>
+        <label class="toggle-wrap"><input id="notif-pref-push" type="checkbox" onchange="saveNotifPref('push',this.checked)"><div class="toggle-slider"></div></label>
       </div>
       <div class="sub-row">
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><span class="sub-row-text">Email-уведомления</span></div>
-        <label class="toggle-wrap"><input type="checkbox" checked onchange="saveNotifPref('email',this.checked)"><div class="toggle-slider"></div></label>
+        <label class="toggle-wrap"><input id="notif-pref-email" type="checkbox" onchange="saveNotifPref('email',this.checked)"><div class="toggle-slider"></div></label>
       </div>
       <div class="sub-row">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div><span class="sub-row-text">Telegram</span></div>
-        <label class="toggle-wrap"><input type="checkbox" checked onchange="saveNotifPref('telegram',this.checked)"><div class="toggle-slider"></div></label>
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg></div><div><div class="sub-row-text">Telegram</div><div class="sub-row-sub">Бот присылает брифинги и дедлайны</div></div></div>
+        <label class="toggle-wrap"><input id="notif-pref-telegram" type="checkbox" onchange="saveNotifPref('telegram',this.checked)"><div class="toggle-slider"></div></label>
       </div>
     </div>
     <div class="sub-section-title">Типы уведомлений</div>
     <div class="sub-card">
       <div class="sub-row">
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="sub-row-text">Задачи и напоминания</div><div class="sub-row-sub">Новые задачи, дедлайны и напоминания</div></div></div>
-        <label class="toggle-wrap"><input type="checkbox" checked onchange="saveNotifPref('tasks',this.checked)"><div class="toggle-slider"></div></label>
+        <label class="toggle-wrap"><input id="notif-pref-tasks" type="checkbox" onchange="saveNotifPref('tasks',this.checked)"><div class="toggle-slider"></div></label>
       </div>
       <div class="sub-row">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="sub-row-text">Комментарии</div><div class="sub-row-sub">Ответы на ваши комментарии</div></div></div>
-        <label class="toggle-wrap"><input type="checkbox" checked onchange="saveNotifPref('comments',this.checked)"><div class="toggle-slider"></div></label>
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 3v9l4 2"/><circle cx="12" cy="12" r="9"/></svg></div><div><div class="sub-row-text">Утренний брифинг</div><div class="sub-row-sub">Сводка активных и горящих задач</div></div></div>
+        <div class="notif-time-control"><input id="notif-briefing-time" type="time" value="09:00" onchange="saveNotifPref('briefingTime',this.value)"><label class="toggle-wrap"><input id="notif-pref-morningBriefing" type="checkbox" onchange="saveNotifPref('morningBriefing',this.checked)"><div class="toggle-slider"></div></label></div>
       </div>
       <div class="sub-row">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div><div><div class="sub-row-text">Файлы и документы</div><div class="sub-row-sub">Изменения и новые файлы</div></div></div>
-        <label class="toggle-wrap"><input type="checkbox" checked onchange="saveNotifPref('files',this.checked)"><div class="toggle-slider"></div></label>
-      </div>
-      <div class="sub-row">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="sub-row-text">Система и безопасность</div><div class="sub-row-sub">Важные системные уведомления</div></div></div>
-        <label class="toggle-wrap"><input type="checkbox" checked onchange="saveNotifPref('security',this.checked)"><div class="toggle-slider"></div></label>
-      </div>
-      <div class="sub-row">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div><div><div class="sub-row-text">Маркетинг и новости</div><div class="sub-row-sub">Обновления продуктов и акции</div></div></div>
-        <label class="toggle-wrap"><input type="checkbox" onchange="saveNotifPref('marketing',this.checked)"><div class="toggle-slider"></div></label>
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="sub-row-text">Просроченные задачи</div><div class="sub-row-sub">Бот напомнит, когда дедлайн уже прошёл</div></div></div>
+        <label class="toggle-wrap"><input id="notif-pref-overdueTasks" type="checkbox" onchange="saveNotifPref('overdueTasks',this.checked)"><div class="toggle-slider"></div></label>
       </div>
     </div>
   </div>
 </div>
-
 <!-- ========== SECURITY ========== -->
 <div class="screen" id="security">
   <div class="back-bar">
@@ -2039,9 +2057,9 @@ function isAdmin(){
 
 function applyUserInfo(){
   if(!currentUser) return;
-  const name=currentUser.name||currentUser.email||'Пользователь';
+  const name=getExtendedProfileDisplayName();
   const initials=(name[0]||'?').toUpperCase();
-  ['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=initials;});
+  ['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(el)setProfileAvatarElement(el,initials);});
   ['user-chip-name','profile-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});
   // Мессенджер — только для admin
   const show=isAdmin();
@@ -2050,6 +2068,85 @@ function applyUserInfo(){
   const profileChats=document.querySelector('.profile-item[onclick="openChats()"]');
   if(profileChats)profileChats.style.display=show?'':'none';
   renderTrialBanner();
+  renderExtendedProfile();
+}
+
+const EXT_PROFILE_K='extendedProfileDraft';
+function getExtendedProfileDraft(){try{return JSON.parse(localStorage.getItem(EXT_PROFILE_K)||'{}')||{};}catch(e){return{};}}
+function saveExtendedProfileDraft(draft){localStorage.setItem(EXT_PROFILE_K,JSON.stringify(draft));}
+function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'Пользователь').trim();}
+function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();if(draft.photoDataUrl){el.textContent='';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';el.textContent=initials;}}
+function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
+function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
+function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
+function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerified&&String(email||'').trim().toLowerCase()===String(currentUser.email||'').trim().toLowerCase();}
+function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Не подтверждён');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
+function renderExtendedProfile(){
+  if(!currentUser)return;
+  const draft=getExtendedProfileDraft();
+  const name=getExtendedProfileDisplayName();
+  const initials=(name[0]||'?').toUpperCase();
+  const photo=document.getElementById('profile-photo-preview');
+  if(photo)setProfileAvatarElement(photo,initials);
+  setProfileFieldValue('profile-field-name',name);
+  setProfileText('profile-user-id',currentUser.id?('ID '+currentUser.id):'ID —');
+  setProfileFieldValue('profile-field-phone',draft.phone||currentUser.phone||'');
+  const profileEmail=draft.email||currentUser.email||'';
+  setProfileFieldValue('profile-field-email',profileEmail);
+  setProfileFieldValue('profile-field-birthdate',draft.birthdate||currentUser.birthdate||'');
+  setProfileFieldValue('profile-field-about',draft.about||currentUser.about||'');
+  updateProfileAboutCounter();
+  const tgName=currentUser.telegramUsername?('@'+currentUser.telegramUsername):(currentUser.telegramId?('ID '+currentUser.telegramId):'Не привязан');
+  setProfileText('profile-telegram-value',tgName);
+  setProfileVerifiedBadge('profile-telegram-status',!!currentUser.telegramId,currentUser.telegramId?'Привязан':'Не привязан');
+  setProfileVerifiedBadge('profile-phone-status',draft.phoneVerified??!!currentUser.phoneVerified);
+  setProfileEmailBadge(isCurrentProfileEmailVerified(profileEmail));
+}
+function updateProfileAboutCounter(){const el=document.getElementById('profile-field-about');const counter=document.getElementById('profile-about-counter');if(counter)counter.textContent=((el?.value||'').length)+' / 200';}
+function toggleProfileVerified(field){const draft=getExtendedProfileDraft();const key=field+'Verified';draft[key]=!draft[key];saveExtendedProfileDraft(draft);renderExtendedProfile();}
+async function requestEmailVerification(){
+  if(!currentUser||!getToken()){showToast('Сначала войдите в аккаунт');return;}
+  const email=(document.getElementById('profile-field-email')?.value||'').trim();
+  if(!email){showToast('Введите email');return;}
+  if(!isValidEmail(email)){showToast('Введите корректный email');return;}
+  if(isCurrentProfileEmailVerified(email)){showToast('Email уже подтверждён');return;}
+  const btn=document.getElementById('profile-email-status');
+  if(btn){btn.disabled=true;btn.textContent='Отправляем...';}
+  try{
+    const r=await fetch(WORKER+'/auth/request-email-verification',{method:'POST',headers:authHeaders(),body:JSON.stringify({email})});
+    const d=await readJsonSafe(r);
+    if(r.ok&&d.ok!==false){
+      if(d.user){currentUser=d.user;applyUserInfo();}
+      const draft=getExtendedProfileDraft();
+      draft.email=email;
+      draft.emailVerified=!!d.verified;
+      saveExtendedProfileDraft(draft);
+      renderExtendedProfile();
+      showToast(d.verified?'Email уже подтверждён':'Письмо отправлено');
+    }else{
+      setProfileEmailBadge(false);
+      showToast(d.error||'Не удалось отправить письмо');
+    }
+  }catch(e){
+    showToast('Нет соединения');
+  }
+  renderExtendedProfile();
+}
+
+function handleProfilePhotoChange(event){const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('Выбери изображение');return;}const previewUrl=URL.createObjectURL(file);const preview=document.getElementById('profile-photo-preview');if(preview){preview.textContent='';preview.style.backgroundImage='url("'+previewUrl+'")';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';}if(file.size>1500000){showToast('Фото выбрано. Загрузка в R2 будет подключена позже');return;}const reader=new FileReader();reader.onload=function(){const draft=getExtendedProfileDraft();draft.photoDataUrl=reader.result;saveExtendedProfileDraft(draft);applyUserInfo();showToast('Фото сохранено локально');};reader.readAsDataURL(file);}
+function saveExtendedProfile(){
+  if(!currentUser)return;
+  const draft=getExtendedProfileDraft();
+  draft.name=(document.getElementById('profile-field-name')?.value||'').trim();
+  draft.phone=(document.getElementById('profile-field-phone')?.value||'').trim();
+  draft.email=(document.getElementById('profile-field-email')?.value||'').trim();
+  if(String(draft.email).toLowerCase()!==String(currentUser.email||'').toLowerCase())draft.emailVerified=false;
+  draft.birthdate=document.getElementById('profile-field-birthdate')?.value||'';
+  draft.about=(document.getElementById('profile-field-about')?.value||'').slice(0,200);
+  saveExtendedProfileDraft(draft);
+  if(draft.name)currentUser.name=draft.name;
+  applyUserInfo();
+  showToast('Профиль сохранён');
 }
 
 function renderTrialBanner(){
@@ -2212,8 +2309,8 @@ function togglePass(id){
 // ⚠️ Замени на свой Public ID из личного кабинета CloudPayments
 const CP_PUBLIC_ID = 'pk_79ce41d62fd193a9962d0ee8090a3';
 const PLANS = {
-  month: { title: 'Premium · 1 месяц', price: 990,  months: 1  },
-  year:  { title: 'Premium · 12 месяцев', price: 9504, months: 12 },
+  month: { title: 'Premium · 1 месяц', price: 990,  months: 1,  stars: 990  },
+  year:  { title: 'Premium · 12 месяцев', price: 9504, months: 12, stars: 9504 },
 };
 let selectedPlan = 'month';
 
@@ -2227,32 +2324,151 @@ function selectPlan(plan) {
   });
 }
 
+function isVKPaymentContext() {
+  return typeof window.vkBridge !== 'undefined' && isVkMiniAppContext();
+}
+
+function isTelegramPaymentContext() {
+  const tgApp = window.Telegram?.WebApp;
+  return !!(tgApp?.openInvoice && tgInitData) && !isVKPaymentContext();
+}
+
+function getPaymentProvider() {
+  if (isVKPaymentContext()) return 'vk';
+  if (isTelegramPaymentContext()) return 'telegram-stars';
+  return 'card';
+}
+
+function setPaymentButtonState(label, disabled = false) {
+  const btn = document.getElementById('pay-btn');
+  const labelEl = document.getElementById('pay-btn-label');
+  if (!btn) return;
+  btn.disabled = disabled;
+  if (labelEl) labelEl.textContent = label;
+  else btn.textContent = label;
+}
+
 function openPayment() {
   const plan = PLANS[selectedPlan];
+  const provider = getPaymentProvider();
   document.getElementById('order-title').textContent  = plan.title;
-  document.getElementById('order-price').textContent  = plan.price.toLocaleString('ru') + ' ₽';
+  document.getElementById('order-price').textContent  = provider === 'telegram-stars' ? plan.stars.toLocaleString('ru') + ' ⭐' : plan.price.toLocaleString('ru') + ' ₽';
+  const note = document.getElementById('subscription-payment-note');
+  const badges = document.getElementById('payment-badges');
+  if (note) {
+    note.innerHTML = provider === 'vk'
+      ? 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент'
+      : provider === 'telegram-stars'
+        ? 'Оплата внутри Telegram через Stars<br>Premium включится после подтверждения ботом'
+        : 'Безопасная оплата банковской картой<br>Отмена в любой момент';
+  }
+  if (badges) badges.style.display = provider === 'card' ? 'flex' : 'none';
+  setPaymentButtonState(provider === 'vk' ? 'Оплатить через VK Pay' : provider === 'telegram-stars' ? 'Оплатить через Telegram Stars' : 'Оплатить картой');
   showSubScreen('payment');
 }
 
 function startPayment() {
   if (!currentUser) { showToast('Войди в аккаунт'); return; }
   const plan = PLANS[selectedPlan];
+  const provider = getPaymentProvider();
+  if (provider === 'vk') {
+    startVKPayment(plan);
+    return;
+  }
+  if (provider === 'telegram-stars') {
+    startTelegramStarsPayment(plan);
+    return;
+  }
   const btn  = document.getElementById('pay-btn');
-  btn.disabled = true;
-  btn.textContent = 'Открываю форму оплаты...';
+  setPaymentButtonState('Открываю форму оплаты...', true);
 
   // Загружаем скрипт CP если ещё не загружен
   if (!window.cp) {
     const s = document.createElement('script');
     s.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js';
     s.onload = () => launchWidget(plan, btn);
-    s.onerror = () => { showToast('Ошибка загрузки виджета'); btn.disabled = false; btn.textContent = 'Оплатить картой'; };
+    s.onerror = () => { showToast('Ошибка загрузки виджета'); setPaymentButtonState('Оплатить картой'); };
     document.head.appendChild(s);
   } else {
     launchWidget(plan, btn);
   }
 }
 
+async function startVKPayment(plan) {
+  setPaymentButtonState('Открываю VK Pay...', true);
+  try {
+    const order = await vkBridge.send('VKWebAppShowOrderBox', {
+      type: 'item',
+      item: JSON.stringify({ id: selectedPlan, title: plan.title }),
+      amount: plan.price
+    });
+    if (order && (order.success || order.status === 'success')) {
+      onPaymentSuccess(plan);
+      showToast('Оплата VK Pay прошла');
+    } else {
+      showToast('Оплата VK Pay отменена');
+    }
+  } catch (e) {
+    console.warn('[VK Pay]', e);
+    showToast('VK Pay недоступен. Попробуй позже');
+  } finally {
+    setPaymentButtonState('Оплатить через VK Pay');
+  }
+}
+function openTelegramInvoice(invoiceUrl) {
+  return new Promise((resolve, reject) => {
+    const tgApp = window.Telegram?.WebApp;
+    if (!tgApp?.openInvoice) { reject(new Error('telegram_invoice_unavailable')); return; }
+    tgApp.openInvoice(invoiceUrl, status => resolve(status));
+  });
+}
+
+async function refreshUserAfterTelegramPayment(plan) {
+  for (let i = 0; i < 5; i++) {
+    await new Promise(resolve => setTimeout(resolve, 900));
+    try {
+      const r = await fetch(WORKER + '/auth/me', { headers: authHeaders() });
+      const d = await r.json();
+      if (d.ok && d.user) {
+        currentUser = d.user;
+        renderTrialBanner();
+        updateSubscriptionScreen();
+        if (d.user.plan === 'paid' || d.user.trialActive) return true;
+      }
+    } catch (e) {}
+  }
+  onPaymentSuccess(plan);
+  return false;
+}
+
+async function startTelegramStarsPayment(plan) {
+  setPaymentButtonState('Создаю счёт в Telegram...', true);
+  try {
+    const r = await fetch(WORKER + '/payments/telegram-stars/invoice', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ plan: selectedPlan, initData: tgInitData })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.ok || !d.invoiceUrl) throw new Error(d.error || 'invoice_failed');
+    setPaymentButtonState('Открываю Telegram Stars...', true);
+    const status = await openTelegramInvoice(d.invoiceUrl);
+    if (status === 'paid') {
+      showToast('Оплата Telegram Stars прошла');
+      const synced = await refreshUserAfterTelegramPayment(plan);
+      if (!synced) showToast('Premium обновится после подтверждения ботом');
+    } else if (status === 'cancelled') {
+      showToast('Оплата отменена');
+    } else {
+      showToast('Telegram вернул статус: ' + status);
+    }
+  } catch (e) {
+    console.warn('[Telegram Stars]', e);
+    showToast('Telegram Stars недоступны. Попробуй позже');
+  } finally {
+    setPaymentButtonState('Оплатить через Telegram Stars');
+  }
+}
 function launchWidget(plan, btn) {
   const widget = new cp.CloudPayments();
   widget.pay('charge', {
@@ -2269,18 +2485,15 @@ function launchWidget(plan, btn) {
     },
   }, {
     onSuccess: () => {
-      btn.disabled = false;
-      btn.textContent = 'Оплатить картой';
+      setPaymentButtonState('Оплатить картой');
       onPaymentSuccess(plan);
     },
     onFail: (reason) => {
-      btn.disabled = false;
-      btn.textContent = 'Оплатить картой';
+      setPaymentButtonState('Оплатить картой');
       showToast('Оплата не прошла: ' + (reason || 'попробуй ещё раз'));
     },
     onComplete: () => {
-      btn.disabled = false;
-      btn.textContent = 'Оплатить картой';
+      setPaymentButtonState('Оплатить картой');
     },
   });
 }
@@ -2342,6 +2555,7 @@ function showSubScreen(id) {
   // base impl will be overridden after DOMContentLoaded
   _showSubScreenBase(id);
   if (id === 'subscription') updateSubscriptionScreen();
+  if (id === 'notif-settings') setTimeout(loadNotificationSettings,0);
   if (id === 'privacy-center') setTimeout(loadPrivacyCenter,0);
 }
 let obCurrent = 0;
@@ -2554,7 +2768,7 @@ async function loadTasks(){
             '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
             '<div class="task-row-body">' +
               '<div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
-              '<div class="task-row-meta">' + (t.deadline ? '📅 ' + e2(t.deadline) : (t.date ? e2(t.date) : '')) + '</div>' +
+              '<div class="task-row-meta">' + e2(formatTaskDateMeta(t)) + '</div>' +
             '</div>' +
             '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
           '</div>';
@@ -2656,7 +2870,7 @@ function renderTasksForMonth(){
         '<div class="task-num-badge">' + (i+1) + '</div>' +
         '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
         '<div class="task-row-body"><div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
-        '<div class="task-row-meta">' + (t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):'')) + '</div></div>' +
+        '<div class="task-row-meta">' + e2(formatTaskDateMeta(t)) + '</div></div>' +
         '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
       '</div>';
     }).join('');
@@ -2711,7 +2925,39 @@ function loadStats(outgoing, done){
   document.getElementById('bar-chart').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${days[i]}</span></div>`).join('');
 }
 
-function getAge(s){if(!s)return{text:'недавно',cls:'age-green'};const m={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};const p=s.split(' ');const d=p.length>=2?new Date(new Date().getFullYear(),m[p[1]]||0,parseInt(p[0])||1):new Date();const diff=Math.floor((Date.now()-d)/86400000);if(diff<=0)return{text:'сегодня',cls:'age-green'};if(diff===1)return{text:'вчера',cls:'age-yellow'};return{text:diff+' дн. назад',cls:'age-red'};}
+function startOfLocalDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate());}
+function pluralTaskDays(n){n=Math.abs(n);if(n%10===1&&n%100!==11)return'день';if(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))return'дня';return'дней';}
+function parseTaskDate(value){
+  if(!value)return null;
+  if(value instanceof Date&&!Number.isNaN(value.getTime()))return startOfLocalDay(value);
+  const raw=String(value).trim();
+  if(!raw)return null;
+  const low=raw.toLowerCase();
+  const today=startOfLocalDay(new Date());
+  const rel={'сегодня':0,'завтра':1,'послезавтра':2,'вчера':-1};
+  if(Object.prototype.hasOwnProperty.call(rel,low)){const d=new Date(today);d.setDate(d.getDate()+rel[low]);return d;}
+  const dot=low.match(/^(\d{1,2})[.\-/](\d{1,2})(?:[.\-/](\d{2,4}))?/);
+  if(dot){let y=dot[3]?parseInt(dot[3],10):today.getFullYear();if(y<100)y+=2000;const d=new Date(y,parseInt(dot[2],10)-1,parseInt(dot[1],10));return Number.isNaN(d.getTime())?null:startOfLocalDay(d);}
+  const months={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
+  const word=low.match(/^(\d{1,2})\s+(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)(?:\s+(\d{4}))?/);
+  if(word){const d=new Date(word[3]?parseInt(word[3],10):today.getFullYear(),months[word[2]],parseInt(word[1],10));return Number.isNaN(d.getTime())?null:startOfLocalDay(d);}
+  const iso=new Date(raw);
+  return Number.isNaN(iso.getTime())?null:startOfLocalDay(iso);
+}
+function formatRelativeTaskDate(value,opts={}){
+  const date=parseTaskDate(value);
+  if(!date)return String(value||'');
+  const today=startOfLocalDay(new Date());
+  const diff=Math.round((date-today)/86400000);
+  const isDeadline=opts.deadline===true;
+  if(diff===0)return'сегодня';
+  if(diff<0){const days=Math.abs(diff);return isDeadline?'просрочено на '+days+' '+pluralTaskDays(days):(diff===-1?'вчера':days+' '+pluralTaskDays(days)+' назад');}
+  if(diff===1)return'завтра';
+  return'через '+diff+' '+pluralTaskDays(diff);
+}
+function formatTaskDateMeta(t){if(!t)return'';if(t.deadline)return'📅 '+formatRelativeTaskDate(t.deadline,{deadline:true});if(t.date)return formatRelativeTaskDate(t.date,{deadline:false});return'';}
+function formatTaskDateSummary(t){if(!t)return'';const parts=[];if(t.date)parts.push(formatRelativeTaskDate(t.date,{deadline:false}));if(t.deadline)parts.push('📅 '+formatRelativeTaskDate(t.deadline,{deadline:true}));return parts.join('  ');}
+function getAge(s){const text=formatRelativeTaskDate(s,{deadline:false});if(!text)return{text:'недавно',cls:'age-green'};if(text==='сегодня'||text==='завтра')return{text,cls:'age-green'};if(text==='вчера'||text.startsWith('через '))return{text,cls:'age-yellow'};return{text,cls:'age-red'};}
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
 
@@ -2754,7 +3000,7 @@ async function openAsk(){
   setTimeout(()=>{const f=document.getElementById('ask-field');if(f)f.focus();},300);
 }
 function openCalendar(){showScreen('calendar');setNavActive('cal');renderCalendar();}
-function openProfile(){showScreen('profile');setNavActive('profile');}
+function openProfile(){showScreen('profile');setNavActive('profile');renderExtendedProfile();}
 // ── NOTIFICATIONS (реальные из KV) ───────────────────────────
 let notifFilter = 'all';
 let notifCache = []; // кэш загруженных уведомлений
@@ -2953,7 +3199,7 @@ function openFilteredTaskList(title, tasks, isDone){
   }
   scroll.innerHTML = '<div style="margin-bottom:16px">' +
     tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
-      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(t.date) + (t.deadline?'  📅 '+e2(t.deadline):'') + '</div></div>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(formatTaskDateSummary(t)) + '</div></div>' +
       (isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="font-size:9px;color:var(--muted)">ждём</span>') +
     '</div>'
     ).join('') +
@@ -3623,13 +3869,6 @@ async function openVoice(){
   ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){document.getElementById('voice-title').textContent='Голос недоступен';setTimeout(()=>{closeVoice();openAsk();},1200);return;}
-  try{
-    await navigator.mediaDevices.getUserMedia({audio:true});
-  }catch(e){
-    document.getElementById('voice-title').textContent='Нет доступа к микрофону';
-    setTimeout(closeVoice,1800);
-    return;
-  }
   let resultReceived=false;
   recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=false;
   recognition.onstart=()=>{document.getElementById('voice-title').textContent='Слушаю...';setVoiceStep(1,'spin');};
@@ -3848,11 +4087,38 @@ async function createPrivacyDataRequest(requestType){
 }
 
 // ===== NOTIFICATIONS PREFS =====
+const DEFAULT_NOTIF_PREFS={push:true,email:true,telegram:true,tasks:true,morningBriefing:false,briefingTime:'09:00',overdueTasks:true};
+let notifSaveTimer=null;
+function getLocalNotifPrefs(){try{return{...DEFAULT_NOTIF_PREFS,...JSON.parse(localStorage.getItem('notif_prefs')||'{}')}}catch(e){return{...DEFAULT_NOTIF_PREFS};}}
+function setNotifControls(prefs){
+  const data={...DEFAULT_NOTIF_PREFS,...prefs};
+  ['push','email','telegram','tasks','morningBriefing','overdueTasks'].forEach(key=>{const el=document.getElementById('notif-pref-'+key);if(el)el.checked=!!data[key];});
+  const time=document.getElementById('notif-briefing-time');if(time)time.value=data.briefingTime||'09:00';
+}
+async function loadNotificationSettings(){
+  const local=getLocalNotifPrefs();
+  setNotifControls(local);
+  if(!getToken()) return;
+  try{
+    const r=await withTimeout(fetch(WORKER+'/notifications/settings',{headers:authHeaders()}),10000);
+    const d=await readJsonSafe(r);
+    if(d.ok&&d.settings){localStorage.setItem('notif_prefs',JSON.stringify({...DEFAULT_NOTIF_PREFS,...d.settings}));setNotifControls(d.settings);}
+  }catch(e){console.warn('notification settings load failed',e);}
+}
+function persistNotificationSettings(prefs){
+  localStorage.setItem('notif_prefs',JSON.stringify(prefs));
+  clearTimeout(notifSaveTimer);
+  notifSaveTimer=setTimeout(async()=>{
+    if(!getToken()) return;
+    try{await withTimeout(fetch(WORKER+'/notifications/settings',{method:'PUT',headers:authHeaders(),body:JSON.stringify(prefs)}),10000);}catch(e){console.warn('notification settings save failed',e);}
+  },250);
+}
 function saveNotifPref(key, val){
-  const prefs = JSON.parse(localStorage.getItem('notif_prefs')||'{}');
-  prefs[key] = val;
-  localStorage.setItem('notif_prefs', JSON.stringify(prefs));
-  showToast(val ? 'Включено' : 'Отключено');
+  const prefs=getLocalNotifPrefs();
+  prefs[key]=key==='briefingTime'?(val||'09:00'):!!val;
+  persistNotificationSettings(prefs);
+  setNotifControls(prefs);
+  showToast(key==='briefingTime'?'Время сохранено':(prefs[key]?'Включено':'Отключено'));
 }
 
 // ===== PASSWORD =====
@@ -3948,7 +4214,7 @@ function toggleAllTasks(){
       '<div class="task-num-badge">'+(i+1)+'</div>'+
       '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
-      '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
+      '<div class="task-row-meta">'+e2(formatTaskDateMeta(t))+'</div></div>'+
       '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
     '</div>';
   }).join('');
@@ -3982,7 +4248,7 @@ function setHomeFilter(filter, el){
       '<div class="task-num-badge">'+(i+1)+'</div>'+
       '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
-      '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
+      '<div class="task-row-meta">'+e2(formatTaskDateMeta(t))+'</div></div>'+
       '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
     '</div>';
   }).join('');
@@ -4340,6 +4606,44 @@ async function doForgotPassword(){
     showToast('Нет соединения');
   }
   btn.disabled = false; btn.textContent = 'Отправить ссылку';
+}
+
+// При открытии приложения — проверяем ?verify_email=TOKEN в URL
+(function checkVerifyEmailToken(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('verify_email');
+  if(!token)return;
+  window.history.replaceState({},'',window.location.pathname);
+  window._verifyEmailToken=token;
+  setTimeout(()=>processVerifyEmailLink(),200);
+})();
+
+async function processVerifyEmailLink(){
+  const token=window._verifyEmailToken;
+  if(!token||window._verifyEmailProcessing)return;
+  if(!getToken()){showToast('Сначала войдите в аккаунт');return;}
+  window._verifyEmailProcessing=true;
+  try{
+    const r=await fetch(WORKER+'/auth/verify-email',{method:'POST',headers:authHeaders(),body:JSON.stringify({token})});
+    const d=await readJsonSafe(r);
+    if(r.ok&&d.ok&&d.user){
+      currentUser=d.user;
+      const draft=getExtendedProfileDraft();
+      draft.email=d.user.email;
+      draft.emailVerified=true;
+      saveExtendedProfileDraft(draft);
+      applyUserInfo();
+      showScreen('profile');
+      setNavActive('profile');
+      showToast('Email подтверждён ✅');
+      window._verifyEmailToken=null;
+    }else{
+      showToast(d.error||'Не удалось подтвердить email');
+    }
+  }catch(e){
+    showToast('Нет соединения');
+  }
+  window._verifyEmailProcessing=false;
 }
 
 // При открытии приложения — проверяем ?reset=TOKEN в URL
@@ -4875,7 +5179,7 @@ document.addEventListener('focusout',function(e){if(e.target.closest('#task-deta
   localStorage.setItem=function(key,value){_si(key,value);if(VK_KEYS.includes(key))window.vkStorageSet(key,value);};
   localStorage.getItem=function(key){if(VK_KEYS.includes(key)&&_vkCache[key]!==undefined)return _vkCache[key];return _gi(key);};
   Promise.all(VK_KEYS.map(k=>vkBridge.send('VKWebAppStorageGet',{keys:[k]}).then(res=>{const item=res.keys.find(r=>r.key===k);if(item&&item.value){_vkCache[k]=item.value;_si(k,item.value);}}).catch(()=>{}))).then(()=>{const t=_vkCache['theme'];if(t)applyTheme(t);console.log('[VK Adapter] Storage preloaded',_vkCache);});
-  window.openVKPayment=function(planId,amount){return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:'4 Premium',photo_url:''}),amount}).then(res=>{if(res.success&&typeof activatePremium==='function')activatePremium();}).catch(e=>console.warn('[VK Pay]',e));};
+  window.openVKPayment=function(planId,amount){const plan=PLANS[planId]||{title:'Premium',price:amount,months:1};return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:plan.title}),amount:amount||plan.price}).then(res=>{if(res&&res.success)onPaymentSuccess(plan);return res;}).catch(e=>{console.warn('[VK Pay]',e);throw e;});};
   vkBridge.send('VKWebAppGetClientVersion').then(res=>{if(res.platform==='web'||window.innerWidth>=680){document.body.classList.add('vk-desktop');document.body.setAttribute('data-vk-platform','desktop');}}).catch(()=>{if(window.innerWidth>=680)document.body.classList.add('vk-desktop');});
   console.log('[VK Adapter] Initialized');
 })();
