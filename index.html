@@ -3860,11 +3860,12 @@ function selectCalDay(d){
 // VOICE
 let voiceTimer=null,recognition=null;
 function showVoiceInfo(){showToast('Говорите — 4 распознает и выполнит задачу');}
+function isIOSTelegram(){return /iPhone|iPad|iPod/i.test(navigator.userAgent)&&!!window.Telegram?.WebApp;}
 function toggleVoice(){if(recognition)closeVoice();else openVoice();}
 async function openVoice(){
   if (!window.biometricConsentRequired()) return;
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){showToast('Голосовой ввод недоступен в этом браузере');setTimeout(openAsk,200);return;}
+  if(!SR||isIOSTelegram()){showToast('На iPhone используйте текстовый ввод');setTimeout(openAsk,200);return;}
   showScreen('voice');
   setNavActive('voice');
   document.getElementById('voice-title').textContent='Говори...';
