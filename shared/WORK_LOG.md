@@ -24,6 +24,13 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** BACK-016 — расширенный профиль пользователя
+**Результат:** В `index.html` добавлена расширенная карточка профиля: фото с placeholder под R2, имя, системный ID, телефон/email со статусами, Telegram-привязка, `О себе` со счётчиком и дата рождения; стили вынесены в `styles/screens/profile.less`.
+**Коммит:** `feat(profile): add extended user profile fields`
+**Статус:** ⚠️ Ready for QA
+**Следующий шаг:** Проверить профиль визуально; отдельной задачей подключить backend/R2 сохранение профиля.
+### 2026-06-28 — Codex
+
 **Задача:** BACK-010 — Telegram Stars / ЮKassa
 **Результат:** В `index.html` добавлен Telegram Stars payment flow через `Telegram.WebApp.openInvoice`; worker commit `d57771c` создаёт invoice link и bot подтверждает `successful_payment`, после чего Premium активируется в Worker.
 **Коммит:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c`

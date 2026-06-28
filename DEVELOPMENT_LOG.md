@@ -54,6 +54,17 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-016: extended user profile (Codex)
+
+**Что сделано:** В `index.html` экран профиля расширен карточкой `sub-card`: фото профиля с кнопкой `Изменить фото` и локальным preview/R2 placeholder, редактируемое имя, readonly ID, телефон и email с UI-статусом подтверждения, привязка Telegram, textarea `О себе` до 200 символов со счётчиком и date picker даты рождения. Стили добавлены в `styles/screens/profile.less`; данные формы сохраняются локально до появления backend/R2 profile API.
+
+**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19707`. После правки: `index.html CYRILLIC_AFTER=19953`; рост ожидаемый из-за новых русских подписей профиля.
+
+**Тест:** inline JS syntax check для `index.html`; `npm run build:css`; `git diff --check`; `Portable path check passed`.
+
+**Коммит:** `feat(profile): add extended user profile fields`
+
+**Статус:** Ready for QA — нужен визуальный smoke профиля и последующая backend-задача для R2/profile API.
 ## 2026-06-28 — BACK-010: Telegram Stars subscription flow (Codex)
 
 **Что сделано:** В `index.html` payment flow теперь выбирает Telegram Stars внутри Telegram Mini App: кнопка оплаты показывает сумму в Stars, запрашивает invoice у Worker и открывает `Telegram.WebApp.openInvoice`. В `4e-worker` commit `d57771c` добавил endpoint `/payments/telegram-stars/invoice`, создание `createInvoiceLink` с валютой `XTR`, обработчик `/payments/telegram-stars/complete` и bot-side обработку `pre_checkout_query` / `successful_payment`, чтобы Premium активировался по реальному событию Telegram.
