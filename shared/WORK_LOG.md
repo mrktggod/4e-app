@@ -24,6 +24,14 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** BACK-017 — QA уведомлений
+**Результат:** Production D1 migrations проверены (`No migrations to apply`). Live API smoke прошёл: временный пользователь прочитал дефолтные настройки, `PUT /notifications/settings` сохранил `morningBriefing=true`, `briefingTime=08:30`, `overdueTasks=false` со `storage: d1`, повторный `GET` вернул те же значения. `/briefings/check` отвечает корректно. `/deadlines/check` проверен без отправки ботом; созданный QA-маркер `overdue_sent:*` удалён.
+**Коммит:** N/A (QA/docs)
+**Статус:** ⚠️ частично — API/D1 smoke пройден, реальная доставка Telegram-ботом требует ручного smoke на привязанном аккаунте
+**Следующий шаг:** На реальном Telegram-аккаунте включить утренний брифинг/просрочки и подтвердить получение сообщения от бота.
+
+### 2026-06-28 — Codex
+
 **Задача:** BACK-021 — голосовой ввод через MediaRecorder + Whisper
 **Результат:** В `index.html` добавлен MediaRecorder flow с отправкой audio blob на `/transcribe` и fallback на SpeechRecognition; worker commit `339b301` добавил Whisper endpoint через `OPENAI_KEY`.
 **Коммит:** app `feat(voice): add MediaRecorder voice input`; worker `339b301`

@@ -54,6 +54,15 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-28 — BACK-017: notification settings QA (Codex)
+
+**Что проверено:** Production Worker и D1 для настроек уведомлений. `wrangler d1 migrations apply DB --remote --config wrangler.toml` вернул `No migrations to apply`. Через live Worker создан временный QA-пользователь, прочитаны дефолтные настройки уведомлений, затем `PUT /notifications/settings` сохранил `push=true`, `email=false`, `telegram=true`, `tasks=true`, `morningBriefing=true`, `briefingTime=08:30`, `overdueTasks=false`; ответ вернул `storage: d1`, повторный `GET` подтвердил сохранение. `/briefings/check` вернул корректный JSON с пустым списком. `/deadlines/check` вернул payload просрочки для существующего Telegram-пользователя; отправка ботом не выполнялась, созданный QA-маркер `overdue_sent:84fef140-567e-4ab9-9039-b860fe94a77e:1782651526175:2026-06-28` удалён из KV.
+
+**Cleanup:** Временный пользователь `codex-back017-1782669169@example.com` (`f28b9e80-1a4b-4709-9dd5-d058efa3cea8`) удалён из D1 `app_notification_settings`/`app_sessions`; KV-ключи `user:*`, `user_id:*`, `notif_settings:*`, `notifs:*` удалены. D1 readback после cleanup вернул `0` строк.
+
+**Тест:** app inline JS syntax check; `npm run build:css`; worker `node --check worker.js`; `node --check src/bot/reminders.js`; `node --check src/bot/index.js`; live `GET/PUT /notifications/settings`; live `POST /briefings/check`; controlled `POST /deadlines/check` с последующим cleanup KV marker.
+
+**Статус:** QA partial — API/D1 часть BACK-017 подтверждена на production, реальная доставка Telegram-ботом остаётся ручным smoke на привязанном Telegram-аккаунте.
 ## 2026-06-28 — BACK-021: MediaRecorder voice input + Whisper (Codex)
 
 **Что сделано:** В `index.html` голосовой ввод переведён на `MediaRecorder`: приложение запрашивает микрофон через `getUserMedia`, записывает до 10 секунд, отправляет audio blob на Worker `/transcribe` как multipart `audio`, получает текст и передаёт его в `ask-field` / `sendAsk()`. `SpeechRecognition` оставлен fallback, если MediaRecorder недоступен. В `4e-worker` commit `339b301` добавил endpoint `POST /transcribe`: проверка `x-token`, чтение multipart, вызов OpenAI Whisper `whisper-1` через `OPENAI_KEY`, ответ `{ text }`.
