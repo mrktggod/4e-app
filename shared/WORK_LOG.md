@@ -24,6 +24,13 @@
 
 ### 2026-06-28 — Codex
 
+**Задача:** Фаза 11 — относительные даты в карточках задач
+**Результат:** В `index.html` добавлен общий formatter дат: карточки задач показывают `сегодня`, `вчера`, `N дней назад`, `завтра`, `через N дней` и `просрочено на N дней` вместо абсолютных дат.
+**Коммит:** `feat(tasks): show relative dates in task cards`
+**Статус:** ✅ выполнено
+**Следующий шаг:** После merge можно продолжать следующую задачу из roadmap/backlog; BACK-008 остаётся заблокированным до credentials, BACK-009 ждёт merchant approval VK.
+### 2026-06-28 — Codex
+
 **Задача:** BACK-009 — VK Pay для подписки
 **Результат:** В `index.html` VK-контекст переводит payment screen на `VKWebAppShowOrderBox`, а обычный web/TG flow остаётся на CloudPayments. В `vk.html` кнопка `Купить план` теперь открывает VK Pay вместо заглушки и обновляет Premium UI после успешного bridge-ответа.
 **Коммит:** `feat(payments): add VK Pay subscription flow`
