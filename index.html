@@ -3906,15 +3906,7 @@ async function sendVoiceMessage(text){
   if(field) field.value = text;
   sendAsk();
 }
-function closeVoice(){
-  voiceCancelled=true;
-  clearTimeout(voiceTimer);
-  if(voiceRecorder&&voiceRecorder.state==='recording'){try{voiceRecorder.stop();}catch(e){}}
-  voiceRecorder=null;voiceChunks=[];cleanupVoiceStream();
-  if(recognition){try{recognition.stop();}catch(e){}recognition=null;}
-  setVoiceTitle('4 анализирует');
-  goHome();
-}
+function closeVoice(){if(recognition){try{recognition.stop();}catch(e){}recognition=null;}clearTimeout(voiceTimer);const t=document.getElementById('voice-title');if(t)t.textContent='4 анализирует';goHome();}
 
 // ===== SUBSCREEN NAVIGATION =====
 function _showSubScreenBase(id){
