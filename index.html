@@ -2594,7 +2594,7 @@ async function loadTasks(){
             '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
             '<div class="task-row-body">' +
               '<div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
-              '<div class="task-row-meta">' + (t.deadline ? '📅 ' + e2(t.deadline) : (t.date ? e2(t.date) : '')) + '</div>' +
+              '<div class="task-row-meta">' + e2(formatTaskDateMeta(t)) + '</div>' +
             '</div>' +
             '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
           '</div>';
@@ -2696,7 +2696,7 @@ function renderTasksForMonth(){
         '<div class="task-num-badge">' + (i+1) + '</div>' +
         '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
         '<div class="task-row-body"><div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
-        '<div class="task-row-meta">' + (t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):'')) + '</div></div>' +
+        '<div class="task-row-meta">' + e2(formatTaskDateMeta(t)) + '</div></div>' +
         '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
       '</div>';
     }).join('');
@@ -2751,7 +2751,39 @@ function loadStats(outgoing, done){
   document.getElementById('bar-chart').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${days[i]}</span></div>`).join('');
 }
 
-function getAge(s){if(!s)return{text:'недавно',cls:'age-green'};const m={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};const p=s.split(' ');const d=p.length>=2?new Date(new Date().getFullYear(),m[p[1]]||0,parseInt(p[0])||1):new Date();const diff=Math.floor((Date.now()-d)/86400000);if(diff<=0)return{text:'сегодня',cls:'age-green'};if(diff===1)return{text:'вчера',cls:'age-yellow'};return{text:diff+' дн. назад',cls:'age-red'};}
+function startOfLocalDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate());}
+function pluralTaskDays(n){n=Math.abs(n);if(n%10===1&&n%100!==11)return'день';if(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))return'дня';return'дней';}
+function parseTaskDate(value){
+  if(!value)return null;
+  if(value instanceof Date&&!Number.isNaN(value.getTime()))return startOfLocalDay(value);
+  const raw=String(value).trim();
+  if(!raw)return null;
+  const low=raw.toLowerCase();
+  const today=startOfLocalDay(new Date());
+  const rel={'сегодня':0,'завтра':1,'послезавтра':2,'вчера':-1};
+  if(Object.prototype.hasOwnProperty.call(rel,low)){const d=new Date(today);d.setDate(d.getDate()+rel[low]);return d;}
+  const dot=low.match(/^(\d{1,2})[.\-/](\d{1,2})(?:[.\-/](\d{2,4}))?/);
+  if(dot){let y=dot[3]?parseInt(dot[3],10):today.getFullYear();if(y<100)y+=2000;const d=new Date(y,parseInt(dot[2],10)-1,parseInt(dot[1],10));return Number.isNaN(d.getTime())?null:startOfLocalDay(d);}
+  const months={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
+  const word=low.match(/^(\d{1,2})\s+(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)(?:\s+(\d{4}))?/);
+  if(word){const d=new Date(word[3]?parseInt(word[3],10):today.getFullYear(),months[word[2]],parseInt(word[1],10));return Number.isNaN(d.getTime())?null:startOfLocalDay(d);}
+  const iso=new Date(raw);
+  return Number.isNaN(iso.getTime())?null:startOfLocalDay(iso);
+}
+function formatRelativeTaskDate(value,opts={}){
+  const date=parseTaskDate(value);
+  if(!date)return String(value||'');
+  const today=startOfLocalDay(new Date());
+  const diff=Math.round((date-today)/86400000);
+  const isDeadline=opts.deadline===true;
+  if(diff===0)return'сегодня';
+  if(diff<0){const days=Math.abs(diff);return isDeadline?'просрочено на '+days+' '+pluralTaskDays(days):(diff===-1?'вчера':days+' '+pluralTaskDays(days)+' назад');}
+  if(diff===1)return'завтра';
+  return'через '+diff+' '+pluralTaskDays(diff);
+}
+function formatTaskDateMeta(t){if(!t)return'';if(t.deadline)return'📅 '+formatRelativeTaskDate(t.deadline,{deadline:true});if(t.date)return formatRelativeTaskDate(t.date,{deadline:false});return'';}
+function formatTaskDateSummary(t){if(!t)return'';const parts=[];if(t.date)parts.push(formatRelativeTaskDate(t.date,{deadline:false}));if(t.deadline)parts.push('📅 '+formatRelativeTaskDate(t.deadline,{deadline:true}));return parts.join('  ');}
+function getAge(s){const text=formatRelativeTaskDate(s,{deadline:false});if(!text)return{text:'недавно',cls:'age-green'};if(text==='сегодня'||text==='завтра')return{text,cls:'age-green'};if(text==='вчера'||text.startsWith('через '))return{text,cls:'age-yellow'};return{text,cls:'age-red'};}
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
 
@@ -2993,7 +3025,7 @@ function openFilteredTaskList(title, tasks, isDone){
   }
   scroll.innerHTML = '<div style="margin-bottom:16px">' +
     tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
-      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(t.date) + (t.deadline?'  📅 '+e2(t.deadline):'') + '</div></div>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(formatTaskDateSummary(t)) + '</div></div>' +
       (isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="font-size:9px;color:var(--muted)">ждём</span>') +
     '</div>'
     ).join('') +
@@ -3988,7 +4020,7 @@ function toggleAllTasks(){
       '<div class="task-num-badge">'+(i+1)+'</div>'+
       '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
-      '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
+      '<div class="task-row-meta">'+e2(formatTaskDateMeta(t))+'</div></div>'+
       '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
     '</div>';
   }).join('');
@@ -4022,7 +4054,7 @@ function setHomeFilter(filter, el){
       '<div class="task-num-badge">'+(i+1)+'</div>'+
       '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
       '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
-      '<div class="task-row-meta">'+(t.deadline?'📅 '+e2(t.deadline):(t.date?e2(t.date):''))+'</div></div>'+
+      '<div class="task-row-meta">'+e2(formatTaskDateMeta(t))+'</div></div>'+
       '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
     '</div>';
   }).join('');
