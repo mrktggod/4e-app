@@ -3870,7 +3870,8 @@ async function openVoice(){
   document.getElementById('voice-title').textContent='Говори...';
   ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
   try{
-    await navigator.mediaDevices.getUserMedia({audio:true});
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    stream.getTracks().forEach(t=>t.stop());
   }catch(e){
     document.getElementById('voice-title').textContent='Нет доступа к микрофону';
     setTimeout(closeVoice,1800);
