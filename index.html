@@ -2759,20 +2759,7 @@ async function loadTasks(){
       } else {
         const showAll = homeList.dataset.showAll === '1';
         const slice = showAll ? allTasks : allTasks.slice(0,6);
-        homeList.innerHTML = slice.map((t,i) => {
-          const isPromise = t.direction === 'incoming';
-          const catClass = isPromise ? 'cat-badge-personal' : 'cat-badge-work';
-          const catLabel = isPromise ? 'Личное' : 'Работа';
-          return '<div class="task-row" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
-            '<div class="task-num-badge">' + (i+1) + '</div>' +
-            '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
-            '<div class="task-row-body">' +
-              '<div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
-              '<div class="task-row-meta">' + e2(formatTaskDateMeta(t)) + '</div>' +
-            '</div>' +
-            '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
-          '</div>';
-        }).join('');
+        homeList.innerHTML = slice.map((t,i)=>renderTaskCard(t,i)).join('');
       }
     }
 
@@ -2862,18 +2849,7 @@ function renderTasksForMonth(){
   if(allTasks.length === 0){
     homeList.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Нет задач за этот период</div>';
   } else {
-    homeList.innerHTML = allTasks.slice(0,6).map((t,i) => {
-      const isPromise = t.direction==='incoming';
-      const catClass = isPromise?'cat-badge-personal':(t.deadline?'cat-badge-work':'cat-badge-personal');
-      const catLabel = isPromise?'Личное':'Работа';
-      return '<div class="task-row" onclick="openTaskById(\'' + t.id + '\',' + i + ')">' +
-        '<div class="task-num-badge">' + (i+1) + '</div>' +
-        '<span class="task-cat-badge ' + catClass + '">' + catLabel + '</span>' +
-        '<div class="task-row-body"><div class="task-row-title">' + e2(t.person) + (t.person?' — ':'') + e2(t.text) + '</div>' +
-        '<div class="task-row-meta">' + e2(formatTaskDateMeta(t)) + '</div></div>' +
-        '<button onclick="event.stopPropagation();quickDoneTask(\'' + t.id + '\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>' +
-      '</div>';
-    }).join('');
+    homeList.innerHTML = allTasks.slice(0,6).map((t,i)=>renderTaskCard(t,i)).join('');
   }
 
   // Re-render promises (legacy container, now hidden but keep for compat)
@@ -2959,6 +2935,134 @@ function formatTaskDateMeta(t){if(!t)return'';if(t.deadline)return'📅 '+format
 function formatTaskDateSummary(t){if(!t)return'';const parts=[];if(t.date)parts.push(formatRelativeTaskDate(t.date,{deadline:false}));if(t.deadline)parts.push('📅 '+formatRelativeTaskDate(t.deadline,{deadline:true}));return parts.join('  ');}
 function getAge(s){const text=formatRelativeTaskDate(s,{deadline:false});if(!text)return{text:'недавно',cls:'age-green'};if(text==='сегодня'||text==='завтра')return{text,cls:'age-green'};if(text==='вчера'||text.startsWith('через '))return{text,cls:'age-yellow'};return{text,cls:'age-red'};}
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
+const TASK_CARD_MONTHS_SHORT=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+let taskSwipeState=null;
+function getTaskDeadlineValue(t){return(t&&(t.deadline||t.date))||'';}
+function formatTaskShortDate(date){return date.getDate()+' '+TASK_CARD_MONTHS_SHORT[date.getMonth()];}
+function isTaskOverdue(t){const d=parseTaskDate(getTaskDeadlineValue(t));if(!d)return false;return d<startOfLocalDay(new Date());}
+function formatTaskCardDeadline(t){
+  const value=getTaskDeadlineValue(t);
+  if(!value)return{text:'без срока',cls:'deadline-muted',overdue:false};
+  const date=parseTaskDate(value);
+  if(!date)return{text:String(value),cls:'deadline-muted',overdue:false};
+  const today=startOfLocalDay(new Date());
+  const diff=Math.round((date-today)/86400000);
+  if(diff===0)return{text:'сегодня',cls:'deadline-today',overdue:false};
+  if(diff===1)return{text:'завтра',cls:'deadline-soon',overdue:false};
+  if(diff===-1)return{text:'вчера',cls:'deadline-overdue',overdue:true};
+  if(diff<0){const days=Math.abs(diff);return{text:'просрочено на '+days+' '+pluralTaskDays(days),cls:'deadline-overdue',overdue:true};}
+  return{text:formatTaskShortDate(date),cls:'deadline-date',overdue:false};
+}
+function getTaskCardPriority(t){
+  const tags=Array.isArray(t?.tags)?t.tags.join(' '):(t?.tags||'');
+  const raw=((t?.priority||'')+' '+(t?.urgency||'')+' '+(t?.status||'')+' '+tags+' '+(t?.text||'')).toLowerCase();
+  if(/(^|\s|#)p0(\s|$|,|;|#)|срочно|горит|asap|важно/.test(raw))return'p0';
+  if(/(^|\s|#)p1(\s|$|,|;|#)/.test(raw))return'p1';
+  if(/(^|\s|#)p2(\s|$|,|;|#)/.test(raw))return'p2';
+  return'p3';
+}
+function getTaskCardCategory(t){
+  if(t?.direction==='incoming')return{label:'Личное',cls:'cat-badge-personal'};
+  const tags=Array.isArray(t?.tags)?t.tags:(typeof t?.tags==='string'?t.tags.split(',').map(s=>s.trim()).filter(Boolean):[]);
+  if(tags.length)return{label:tags[0].slice(0,18),cls:'cat-badge-work'};
+  return{label:'Работа',cls:t?.deadline?'cat-badge-work':'cat-badge-personal'};
+}
+function getTaskCardTitle(t){return(t?.person?(t.person+' — '):'')+(t?.text||'Задача');}
+function renderTaskCard(t,i){
+  const id=e2(String(t?.id||''));
+  const priority=getTaskCardPriority(t);
+  const cat=getTaskCardCategory(t);
+  const deadline=formatTaskCardDeadline(t);
+  const number=String(i+1).padStart(2,'0');
+  const overdueClass=deadline.overdue?' is-overdue':'';
+  return '<div class="task-card-shell priority-'+priority+overdueClass+'" data-task-id="'+id+'">'+
+    '<div class="task-swipe-actions task-swipe-actions-right"><button class="task-swipe-btn task-swipe-done" onclick="event.stopPropagation();quickDoneTask(\''+id+'\',this)">Завершить</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-left"><button class="task-swipe-btn task-swipe-cancel" onclick="event.stopPropagation();resetTaskSwipe(this)">Отменить</button><button class="task-swipe-btn task-swipe-move" onclick="event.stopPropagation();openTaskReschedule(\''+id+'\')">Перенести</button></div>'+
+    '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
+      '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
+      '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
+    '</div>'+
+  '</div>';
+}
+function openTaskCard(taskId,index,card){
+  const shell=card?.closest?card.closest('.task-card-shell'):null;
+  if(shell&&shell.dataset.swiped==='1'){
+    shell.dataset.swiped='0';
+    return;
+  }
+  openTaskById(taskId,index);
+}function taskSwipeStart(event,card){
+  if(event.pointerType==='mouse'&&event.button!==0)return;
+  const shell=card.closest('.task-card-shell');
+  if(!shell)return;
+  taskSwipeState={shell,card,startX:event.clientX,startY:event.clientY,dx:0,locked:false};
+  resetAllTaskSwipes(shell);
+  card.style.transition='none';
+}
+function taskSwipeMove(event,card){
+  if(!taskSwipeState||taskSwipeState.card!==card)return;
+  const dx=event.clientX-taskSwipeState.startX;
+  const dy=event.clientY-taskSwipeState.startY;
+  if(!taskSwipeState.locked&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>10)return;
+  if(Math.abs(dx)>8){taskSwipeState.locked=true;event.preventDefault();}
+  const limited=Math.max(-132,Math.min(96,dx));
+  taskSwipeState.dx=limited;
+  card.style.transform='translateX('+limited+'px)';
+}
+function taskSwipeEnd(event,card){
+  if(!taskSwipeState||taskSwipeState.card!==card)return;
+  const shell=taskSwipeState.shell;
+  const dx=taskSwipeState.dx;
+  card.style.transition='';
+  if(Math.abs(dx)>12)shell.dataset.swiped='1';
+  if(dx<-56)setTaskSwipe(shell,'left');
+  else if(dx>56)setTaskSwipe(shell,'right');
+  else resetTaskSwipe(shell);
+  taskSwipeState=null;
+}
+function setTaskSwipe(shell,state){
+  const card=shell?.querySelector('.task-card');
+  if(!card)return;
+  shell.classList.toggle('swipe-left',state==='left');
+  shell.classList.toggle('swipe-right',state==='right');
+  card.style.transform=state==='left'?'translateX(-132px)':(state==='right'?'translateX(96px)':'');
+}
+function resetTaskSwipe(el){
+  const shell=el?.closest?el.closest('.task-card-shell'):el;
+  if(!shell)return;
+  const card=shell.querySelector('.task-card');
+  shell.classList.remove('swipe-left','swipe-right');
+  if(card)card.style.transform='';
+}
+function resetAllTaskSwipes(except){document.querySelectorAll('.task-card-shell.swipe-left,.task-card-shell.swipe-right').forEach(shell=>{if(shell!==except)resetTaskSwipe(shell);});}
+function getTaskRescheduleInput(){
+  let input=document.getElementById('task-reschedule-picker');
+  if(!input){input=document.createElement('input');input.type='date';input.id='task-reschedule-picker';input.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';input.addEventListener('change',()=>handleTaskReschedule(input.dataset.taskId,input.value));document.body.appendChild(input);}
+  return input;
+}
+function openTaskReschedule(taskId){
+  const task=(allTasksCache||[]).find(t=>String(t.id)===String(taskId));
+  const input=getTaskRescheduleInput();
+  const d=parseTaskDate(task?.deadline||task?.date);
+  input.dataset.taskId=taskId;
+  input.value=d?d.toISOString().slice(0,10):'';
+  if(input.showPicker)input.showPicker();else input.click();
+}
+async function handleTaskReschedule(taskId,value){
+  if(!taskId||!value)return;
+  const date=parseTaskDate(value);
+  if(!date)return;
+  const deadline=date.getDate()+' '+['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][date.getMonth()]+' '+date.getFullYear();
+  const task=(allTasksCache||[]).find(t=>String(t.id)===String(taskId));
+  const shell=task?Array.from(document.querySelectorAll('.task-card-shell')).find(el=>el.dataset.taskId===String(taskId)):null;
+  if(shell)shell.style.opacity='0.7';
+  try{
+    await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'update-task'},body:JSON.stringify({chatId,taskId,updates:{deadline}})});
+    if(task)task.deadline=deadline;
+    showToast('Срок перенесён');
+    setTimeout(loadTasks,400);
+  }catch(e){console.log(e);showToast('Не удалось перенести срок');if(shell)shell.style.opacity='';}
+}
 async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
 
 function setNavActive(id){
@@ -4206,18 +4310,7 @@ function toggleAllTasks(){
   const incoming = tasks.filter(t=>!t.done && t.direction==='incoming');
   const allTasks = [...outgoing, ...incoming];
   const slice = homeList.dataset.showAll === '1' ? allTasks : allTasks.slice(0,6);
-  homeList.innerHTML = slice.map((t,i)=>{
-    const isPromise = t.direction==='incoming';
-    const catClass = isPromise?'cat-badge-personal':(t.deadline?'cat-badge-work':'cat-badge-personal');
-    const catLabel = isPromise?'Личное':'Работа';
-    return '<div class="task-row" onclick="openTaskById(\''+t.id+'\','+i+')">'+
-      '<div class="task-num-badge">'+(i+1)+'</div>'+
-      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
-      '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
-      '<div class="task-row-meta">'+e2(formatTaskDateMeta(t))+'</div></div>'+
-      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
-    '</div>';
-  }).join('');
+  homeList.innerHTML = slice.map((t,i)=>renderTaskCard(t,i)).join('');
 }
 
 function setHomeFilter(filter, el){
@@ -4240,18 +4333,7 @@ function setHomeFilter(filter, el){
     homeList.innerHTML='<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Нет задач по фильтру</div>';
     return;
   }
-  homeList.innerHTML = filtered.slice(0,10).map((t,i)=>{
-    const isPromise = t.direction==='incoming';
-    const catClass = isPromise?'cat-badge-personal':(t.deadline?'cat-badge-work':'cat-badge-personal');
-    const catLabel = isPromise?'Личное':'Работа';
-    return '<div class="task-row" onclick="openTaskById(\''+t.id+'\','+i+')">'+
-      '<div class="task-num-badge">'+(i+1)+'</div>'+
-      '<span class="task-cat-badge '+catClass+'">'+catLabel+'</span>'+
-      '<div class="task-row-body"><div class="task-row-title">'+e2(t.person)+(t.person?' — ':'')+e2(t.text)+'</div>'+
-      '<div class="task-row-meta">'+e2(formatTaskDateMeta(t))+'</div></div>'+
-      '<button onclick="event.stopPropagation();quickDoneTask(\''+t.id+'\',this)" style="width:28px;height:28px;border-radius:50%;background:transparent;border:1.5px solid rgba(154,194,60,0.35);color:rgba(154,194,60,0.6);font-size:13px;cursor:pointer;flex-shrink:0" title="Завершить">✓</button>'+
-    '</div>';
-  }).join('');
+  homeList.innerHTML = filtered.slice(0,10).map((t,i)=>renderTaskCard(t,i)).join('');
 }
 
 function setAccent(color, el){
@@ -5130,7 +5212,7 @@ async function quickDoneTask(taskId, btn){
   btn.style.color='#0E140B';
   btn.style.borderColor='var(--green)';
   btn.disabled=true;
-  const row=btn.closest('.task-row-v2');
+  const row=btn.closest('.task-card-shell')||btn.closest('.task-row')||btn.closest('.task-row-v2');
   if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}
   try{
     await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});
