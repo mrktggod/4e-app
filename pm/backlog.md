@@ -23,6 +23,7 @@
 | BACK-002 | Сброс пароля — бэкенд не реализован | Tech | P0 | Codex | Done | Г1 | Worker commit `a0965de` merged in `a173ebf`, deployed as version `729a046c`; live smoke passed: письмо пришло, ссылка открылась, пароль сохранён |
 | BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done | Г1 | Экран согласия появляется при первом нажатии на микрофон, privacy.html готова к деплою через commit/push |
 | BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Done | Г1 | Live smoke passed: webhook returned `code:0`, test user moved from `trial` to `paid`, paid period extended |
+| BACK-022 | Ручной MVP детальной карточки задачи | Product/UI | P1 | Алексей + Codex | Todo | Г1 | Пользователь может без голоса открыть `task-detail` и руками за 20-40 секунд настроить срок, время, напоминание, статус, приоритет, направление, чек-лист и описание; данные сохраняются после перезагрузки |
 
 ## Next
 
@@ -50,6 +51,7 @@
 | BACK-019 | Улучшенные карточки задач | Product/UI | P2 | Codex | Ready for QA | Г2 | `index.html` рендерит новую карточку с номером/приоритетом, тегом, дедлайном, 2 строками названия, подсветкой просрочки и swipe-действиями Завершить/Отменить/Перенести; требуется ручной smoke на телефоне |
 | BACK-020 | Подтверждение email в профиле для связки аккаунтов | Product/Tech | P2 | Codex | Done | Г2 | Production smoke passed: migration `0004_email_verifications.sql` applied, verification email request returned 200, app link returned 200, `/auth/verify-email` linked email to user, `used_at` burned token, repeat verify returned 400, occupied email conflict returned 409 |
 | BACK-021 | Голосовой ввод на старом iOS | Product/Tech | P2 | Codex | Known issue | Г2 | SpeechRecognition не работает в Telegram WKWebView на старом iOS (aborted). Откат на оригинальный SR. Worker `/transcribe` + `OPENAI_KEY` готов — нужна реализация через MediaRecorder отдельной сессией |
+| BACK-023 | Расширение детальной карточки задачи после MVP | Product/UI | P2 | Алексей + Юрий + Codex | Later | Г2 | После проверки BACK-022 выбрать 1-2 функции следующей волны: повторы, вложения/ссылки, умные списки, поиск и фильтры по тегам, календарная синхронизация, командные комментарии |
 
 ## Связь с Linear
 

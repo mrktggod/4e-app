@@ -54,6 +54,19 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-29 — PM-задачи по детальной карточке задачи (Codex)
+
+**Что сделано:** В `pm/backlog.md` добавлены `BACK-022` — ручной MVP детальной карточки задачи и `BACK-023` — расширение карточки после MVP. В `shared/ROADMAP.md` направление "Качество задач" обновлено: `BACK-019` остаётся задачей про карточки в списке, `BACK-022` добавлен как следующий P1-фокус по экрану `task-detail`. В `pm/next-actions.md` добавлен PM-шаг подготовки `BACK-022`. Созданы `docs/tasks/BACK-022_task_detail_manual_mvp.md` и `docs/tasks/BACK-023_task_detail_future_expansion.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `pm/backlog.md` → `shared/ROADMAP.md` → `pm/next-actions.md` → `docs/tasks/`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A — коммит/пуш выполняются отдельно человеком.
+
+**Статус:** локально выполнено.
+
+---
 ## 2026-06-28 — BACK-019 web swipe actions hidden (Codex)
 
 **Что сделано:** Исправлен web Telegram/browser regression: кнопки `Отменить`, `Перенести`, `Завершить` теперь скрыты по умолчанию через `opacity:0`, `visibility:hidden` и `translateX(...)`. На non-touch устройствах (`@media (pointer:fine)`) swipe-actions полностью отключены через `display:none!important`, чтобы в браузере они не висели статично над карточками.
