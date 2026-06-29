@@ -54,6 +54,19 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-29 — BUG-2026-06-29-002: voice microphone error triage (Codex)
+
+**Что сделано:** По скрину Алексея зафиксирован баг голосового режима: экран показывает "Ошибка микрофона" и не начинает запись. Точечная проверка `index.html` показала, что текущий `main` использует `SpeechRecognition` в `openVoice()`. В истории найден MediaRecorder-flow в `70a051f` / `origin/feat/voice-mediarecorder`, но он был откатан коммитом `e970d33` обратно к SpeechRecognition. Добавлены `BUG-2026-06-29-002` в `pm/bugs.md`, P1-строка `BACK-021` в Now `pm/backlog.md`, voice-проверки в `pm/qa-checklist.md` и уточнение в `docs/tasks/BACK-021-voice-mediarecorder.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `pm/bugs.md` → `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/BACK-021-voice-mediarecorder.md`; код не менялся.
+
+**Коммит:** N/A
+
+**Статус:** Triaged — перед кодовым фиксом нужно понять причину отката `e970d33`, проверить Worker `/transcribe` и `OPENAI_KEY`, затем делать отдельную ветку `fix/voice-mediarecorder`.
+
+---
 ## 2026-06-29 — BUG-2026-06-29-001: Telegram login dead end triage (Codex)
 
 **Что сделано:** По скрину Алексея и точечной проверке `index.html` зафиксирован баг входа через Telegram: при отсутствии `Telegram.WebApp.initData` функция `loginWithTelegram()` показывает toast "Открой бота и нажми Start — получишь ссылку для входа", но UI не открывает бота и не даёт явный следующий шаг. Добавлены `BUG-2026-06-29-001` в `pm/bugs.md`, `BACK-024` в `pm/backlog.md`, строка риска в `shared/ROADMAP.md`, проверки в `pm/qa-checklist.md` и task-файл `docs/tasks/BUG-2026-06-29-001_telegram_login_dead_end.md`.
