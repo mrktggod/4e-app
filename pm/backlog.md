@@ -24,6 +24,7 @@
 | BACK-003 | Фаза 9 — биометрическое согласие 152-ФЗ | Legal/UI | P1 | Codex | Done | Г1 | Экран согласия появляется при первом нажатии на микрофон, privacy.html готова к деплою через commit/push |
 | BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Done | Г1 | Live smoke passed: webhook returned `code:0`, test user moved from `trial` to `paid`, paid period extended |
 | BACK-022 | Ручной MVP детальной карточки задачи | Product/UI | P1 | Алексей + Codex | Todo | Г1 | Пользователь может без голоса открыть `task-detail` и руками за 20-40 секунд настроить срок, время, напоминание, статус, приоритет, направление, чек-лист и описание; данные сохраняются после перезагрузки |
+| BACK-024 | Telegram вход — убрать тупик между Mini App и ботом | Bug/Auth | P1 | Юрий / bot + Codex / app | Triaged | Г1 | Нажатие "Войти через Telegram" даёт явный следующий шаг, `@Denzel89bot` отвечает на `/start` рабочей ссылкой, вход по ссылке проходит до главного экрана |
 
 ## Next
 

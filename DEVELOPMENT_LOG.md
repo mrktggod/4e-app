@@ -54,6 +54,19 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-29 — BUG-2026-06-29-001: Telegram login dead end triage (Codex)
+
+**Что сделано:** По скрину Алексея и точечной проверке `index.html` зафиксирован баг входа через Telegram: при отсутствии `Telegram.WebApp.initData` функция `loginWithTelegram()` показывает toast "Открой бота и нажми Start — получишь ссылку для входа", но UI не открывает бота и не даёт явный следующий шаг. Добавлены `BUG-2026-06-29-001` в `pm/bugs.md`, `BACK-024` в `pm/backlog.md`, строка риска в `shared/ROADMAP.md`, проверки в `pm/qa-checklist.md` и task-файл `docs/tasks/BUG-2026-06-29-001_telegram_login_dead_end.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `pm/bugs.md` → `pm/backlog.md` → `shared/ROADMAP.md` → `pm/qa-checklist.md` → `docs/tasks/`. Код и bot-репозиторий не менялись.
+
+**Коммит:** этот коммит
+
+**Статус:** Triaged — нужен live smoke `@Denzel89bot` и исправление UX/app + bot handoff.
+
+---
 ## 2026-06-29 — PM-задачи по детальной карточке задачи (Codex)
 
 **Что сделано:** В `pm/backlog.md` добавлены `BACK-022` — ручной MVP детальной карточки задачи и `BACK-023` — расширение карточки после MVP. В `shared/ROADMAP.md` направление "Качество задач" обновлено: `BACK-019` остаётся задачей про карточки в списке, `BACK-022` добавлен как следующий P1-фокус по экрану `task-detail`. В `pm/next-actions.md` добавлен PM-шаг подготовки `BACK-022`. Созданы `docs/tasks/BACK-022_task_detail_manual_mvp.md` и `docs/tasks/BACK-023_task_detail_future_expansion.md`.
