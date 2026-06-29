@@ -24,6 +24,16 @@
 
 ### 2026-06-29 — Codex
 
+**Задача:** Завести PM-задачу BACK-025 по утреннему AI-дашборду
+**Результат:** В `shared/ROADMAP.md` и `pm/backlog.md` добавлен `BACK-025 — Настраиваемый утренний AI-дашборд` как P1. Обновлены `pm/next-actions.md` и `pm/qa-checklist.md`; создан task-файл `docs/tasks/BACK-025_ai_planner_glass_dashboard.md` с составом MVP и acceptance checklist.
+**Коммит:** этот коммит
+**Статус:** ✅ выполнено
+**Следующий шаг:** Реализовать интерфейс в ветке `feat/ai-planner-glass-dashboard`: новый `home`, glass UI, "План на сегодня", "Пульс дня" и смысловые секции задач.
+
+---
+
+### 2026-06-29 — Codex
+
 **Задача:** Триаж ошибки голосового режима
 **Результат:** Зафиксирован `BUG-2026-06-29-002`: голосовой режим показывает "Ошибка микрофона" и не начинает запись. Проверка показала, что текущий `main` использует `SpeechRecognition` после отката MediaRecorder-flow (`e970d33`), а значит баг связан с известной несовместимостью Telegram/iOS WebView. `BACK-021` поднят в Now как P1/Triaged; обновлены `pm/bugs.md`, `pm/backlog.md`, `pm/qa-checklist.md` и `docs/tasks/BACK-021-voice-mediarecorder.md`.
 **Коммит:** N/A

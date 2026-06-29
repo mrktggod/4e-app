@@ -54,6 +54,20 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-06-29 — BACK-025: AI planner glass dashboard PM setup (Codex)
+
+**Что сделано:** Создана PM-основа для переделки главного экрана в утренний AI-планер. В `shared/ROADMAP.md` добавлено направление "AI-планерный дашборд"; в `pm/backlog.md` добавлен `BACK-025 — Настраиваемый утренний AI-дашборд` как P1; `pm/next-actions.md` обновлён новым ближайшим фокусом; `pm/qa-checklist.md` получил smoke-проверки для "План на сегодня", "Пульс дня" и смысловых секций задач. Создан `docs/tasks/BACK-025_ai_planner_glass_dashboard.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `pm/next-actions.md` → `pm/qa-checklist.md` → `docs/tasks/BACK-025_ai_planner_glass_dashboard.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** этот коммит.
+
+**Статус:** PM setup выполнен. Следующий шаг — реализация UI в ветке `feat/ai-planner-glass-dashboard`.
+
+---
+
 ## 2026-06-29 — BUG-2026-06-29-002: voice microphone error triage (Codex)
 
 **Что сделано:** По скрину Алексея зафиксирован баг голосового режима: экран показывает "Ошибка микрофона" и не начинает запись. Точечная проверка `index.html` показала, что текущий `main` использует `SpeechRecognition` в `openVoice()`. В истории найден MediaRecorder-flow в `70a051f` / `origin/feat/voice-mediarecorder`, но он был откатан коммитом `e970d33` обратно к SpeechRecognition. Добавлены `BUG-2026-06-29-002` в `pm/bugs.md`, P1-строка `BACK-021` в Now `pm/backlog.md`, voice-проверки в `pm/qa-checklist.md` и уточнение в `docs/tasks/BACK-021-voice-mediarecorder.md`.
