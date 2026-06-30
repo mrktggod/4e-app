@@ -3004,7 +3004,11 @@ function handleTaskSwipeButton(btn, event){
   const taskId=shell.dataset.taskId;
   vibrateTaskCard(20,'light');
   if(btn.dataset.taskAction==='cancel'){resetTaskSwipe(shell);return;}
-  if(btn.dataset.taskAction==='move'){openTaskReschedule(taskId);return;}
+  if(btn.dataset.taskAction==='move'){
+    resetTaskSwipe(shell);
+    openTaskById(taskId);
+    return;
+  }
   if(btn.dataset.taskAction==='done'){quickDoneTask(taskId,btn);}
 }
 function openTaskCard(taskId,index,card){
