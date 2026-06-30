@@ -3075,6 +3075,7 @@ function resetTaskSwipe(el){
   if(rightActions)rightActions.style.pointerEvents='none';
   const card=shell.querySelector('.task-card');
   shell.classList.remove('swipe-left','swipe-right','swiping-left','swiping-right');
+  if(card)card.style.transition='transform .18s ease';
   if(card)card.style.transform='';
   if(card)card.style.pointerEvents='';
   shell.querySelectorAll('.task-swipe-btn').forEach(btn=>{btn.style.pointerEvents='';});
@@ -3082,7 +3083,14 @@ function resetTaskSwipe(el){
 function resetAllTaskSwipes(except){document.querySelectorAll('.task-card-shell.swipe-left,.task-card-shell.swipe-right').forEach(shell=>{if(shell!==except)resetTaskSwipe(shell);});}
 function getTaskRescheduleInput(){
   let input=document.getElementById('task-reschedule-picker');
-  if(!input){input=document.createElement('input');input.type='date';input.id='task-reschedule-picker';input.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';input.addEventListener('change',()=>handleTaskReschedule(input.dataset.taskId,input.value));document.body.appendChild(input);}
+  if(!input){
+    input=document.createElement('input');
+    input.type='date';
+    input.id='task-reschedule-picker';
+    input.style.cssText='position:fixed;left:50%;bottom:80px;transform:translateX(-50%);width:160px;height:44px;opacity:0.01;z-index:9999;font-size:16px;';
+    input.addEventListener('change',()=>handleTaskReschedule(input.dataset.taskId,input.value));
+    document.body.appendChild(input);
+  }
   return input;
 }
 function openTaskReschedule(taskId){
