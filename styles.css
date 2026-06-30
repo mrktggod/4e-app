@@ -829,7 +829,7 @@ body {
 .task-card-shell .task-swipe-actions {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 4;
   display: flex;
   align-items: stretch;
   width: 100%;
@@ -854,8 +854,12 @@ body {
   opacity: 1;
   visibility: visible;
   transform: translateX(0);
+  pointer-events: auto;
+  z-index: 5;
 }
 .task-card-shell .task-swipe-btn {
+  position: relative;
+  z-index: 6;
   flex: 0 0 72px;
   min-width: 72px;
   height: 100%;
@@ -883,7 +887,7 @@ body {
 }
 .task-card-shell .task-row.task-card {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: block;
   width: 100%;
   padding: 12px 14px 13px;
@@ -893,6 +897,12 @@ body {
   cursor: pointer;
   transition: transform 0.18s ease, background 0.16s ease;
   will-change: transform;
+}
+.task-card-shell.swipe-left .task-row.task-card,
+.task-card-shell.swiping-left .task-row.task-card,
+.task-card-shell.swipe-right .task-row.task-card,
+.task-card-shell.swiping-right .task-row.task-card {
+  pointer-events: none;
 }
 .task-card-shell.is-overdue .task-row.task-card {
   background: rgba(180, 44, 44, 0.16);

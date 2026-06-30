@@ -1912,6 +1912,7 @@
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
 const tg=window.Telegram?.WebApp;
+if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
 const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K='chetam_token';
@@ -2937,7 +2938,6 @@ function getAge(s){const text=formatRelativeTaskDate(s,{deadline:false});if(!tex
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 const TASK_CARD_MONTHS_SHORT=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
 let taskSwipeState=null;
-let taskSwipeActionTouchAt=0;
 function getTaskDeadlineValue(t){return(t&&(t.deadline||t.date))||'';}
 function formatTaskShortDate(date){return date.getDate()+' '+TASK_CARD_MONTHS_SHORT[date.getMonth()];}
 function isTaskOverdue(t){const d=parseTaskDate(getTaskDeadlineValue(t));if(!d)return false;return d<startOfLocalDay(new Date());}
@@ -2977,39 +2977,35 @@ function renderTaskCard(t,i){
   const number=String(i+1).padStart(2,'0');
   const overdueClass=deadline.overdue?' is-overdue':'';
   return '<div class="task-card-shell priority-'+priority+overdueClass+'" data-task-id="'+id+'">'+
-    '<div class="task-swipe-actions task-swipe-actions-right"><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done">Завершить</button></div>'+
-    '<div class="task-swipe-actions task-swipe-actions-left"><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move">Перенести</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-right" ><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-left" ><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
     '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
       '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
       '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
     '</div>'+
   '</div>';
 }
-function vibrateTaskCard(ms){if(navigator.vibrate)navigator.vibrate(ms);}
-function handleTaskSwipeActionEvent(event){
-  const btn=event.target?.closest?event.target.closest('.task-swipe-btn'):null;
-  if(!btn)return;
-  const shell=btn.closest('.task-card-shell');
-  if(!shell)return;
-  if(event.type==='click'&&Date.now()-taskSwipeActionTouchAt<650){event.preventDefault();event.stopPropagation();return;}
-  if(event.type==='touchend')taskSwipeActionTouchAt=Date.now();
-  event.preventDefault();
-  event.stopPropagation();
-  handleTaskSwipeButton(btn);
+function vibrateTaskCard(ms, style='light'){
+  const tgHaptic = window.Telegram?.WebApp?.HapticFeedback;
+  if(tgHaptic?.impactOccurred){
+    tgHaptic.impactOccurred(style);
+    return;
+  }
+  if(navigator.vibrate)navigator.vibrate(ms);
 }
-function handleTaskSwipeButton(btn){
-  const shell=btn.closest('.task-card-shell');
+function handleTaskSwipeButton(btn, event){
+  if(!btn||!btn.matches||!btn.matches('.task-swipe-btn'))return;
+  const shell = btn?.closest?.('.task-card-shell');
   if(!shell)return;
+  if(event){
+    event.preventDefault();
+    event.stopPropagation();
+  }
   const taskId=shell.dataset.taskId;
-  vibrateTaskCard(20);
+  vibrateTaskCard(20,'light');
   if(btn.dataset.taskAction==='cancel'){resetTaskSwipe(shell);return;}
   if(btn.dataset.taskAction==='move'){openTaskReschedule(taskId);return;}
   if(btn.dataset.taskAction==='done'){quickDoneTask(taskId,btn);}
-}
-if(!window.__taskSwipeActionsBound){
-  window.__taskSwipeActionsBound=true;
-  document.addEventListener('touchend',handleTaskSwipeActionEvent,{capture:true,passive:false});
-  document.addEventListener('click',handleTaskSwipeActionEvent,true);
 }
 function openTaskCard(taskId,index,card){
   const shell=card?.closest?card.closest('.task-card-shell'):null;
@@ -3035,7 +3031,7 @@ function taskSwipeMove(event,card){
   if(Math.abs(dx)>8){taskSwipeState.locked=true;event.preventDefault();}
   const limited=Math.max(-144,Math.min(96,dx));
   taskSwipeState.dx=limited;
-  if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10);}
+  if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10,'medium');}
   taskSwipeState.shell.classList.toggle('swiping-left',limited<-12);
   taskSwipeState.shell.classList.toggle('swiping-right',limited>12);
   card.style.transform='translateX('+limited+'px)';
@@ -3047,7 +3043,7 @@ function taskSwipeEnd(event,card){
   card.style.transition='';
   shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
-  if(Math.abs(dx)>=56&&!taskSwipeState.vibrated)vibrateTaskCard(10);
+  if(Math.abs(dx)>=56&&!taskSwipeState.vibrated)vibrateTaskCard(10,'medium');
   if(dx<-56)setTaskSwipe(shell,'left');
   else if(dx>56)setTaskSwipe(shell,'right');
   else resetTaskSwipe(shell);
@@ -3056,22 +3052,45 @@ function taskSwipeEnd(event,card){
 function setTaskSwipe(shell,state){
   const card=shell?.querySelector('.task-card');
   if(!card)return;
+  const leftActions=shell.querySelector('.task-swipe-actions-left');
+  const rightActions=shell.querySelector('.task-swipe-actions-right');
+  if(leftActions)leftActions.style.pointerEvents=state==='left'?'auto':'none';
+  if(rightActions)rightActions.style.pointerEvents=state==='right'?'auto':'none';
   shell.classList.remove('swiping-left','swiping-right');
   shell.classList.toggle('swipe-left',state==='left');
   shell.classList.toggle('swipe-right',state==='right');
   card.style.transform=state==='left'?'translateX(-144px)':(state==='right'?'translateX(96px)':'');
+  card.style.pointerEvents='none';
+  const activeActions = state==='left' ? leftActions : rightActions;
+  if(activeActions){
+    activeActions.querySelectorAll('.task-swipe-btn').forEach(btn=>{btn.style.pointerEvents='auto';});
+  }
 }
 function resetTaskSwipe(el){
   const shell=el?.closest?el.closest('.task-card-shell'):el;
   if(!shell)return;
+  const leftActions=shell.querySelector('.task-swipe-actions-left');
+  const rightActions=shell.querySelector('.task-swipe-actions-right');
+  if(leftActions)leftActions.style.pointerEvents='none';
+  if(rightActions)rightActions.style.pointerEvents='none';
   const card=shell.querySelector('.task-card');
   shell.classList.remove('swipe-left','swipe-right','swiping-left','swiping-right');
+  if(card)card.style.transition='transform .18s ease';
   if(card)card.style.transform='';
+  if(card)card.style.pointerEvents='';
+  shell.querySelectorAll('.task-swipe-btn').forEach(btn=>{btn.style.pointerEvents='';});
 }
 function resetAllTaskSwipes(except){document.querySelectorAll('.task-card-shell.swipe-left,.task-card-shell.swipe-right').forEach(shell=>{if(shell!==except)resetTaskSwipe(shell);});}
 function getTaskRescheduleInput(){
   let input=document.getElementById('task-reschedule-picker');
-  if(!input){input=document.createElement('input');input.type='date';input.id='task-reschedule-picker';input.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';input.addEventListener('change',()=>handleTaskReschedule(input.dataset.taskId,input.value));document.body.appendChild(input);}
+  if(!input){
+    input=document.createElement('input');
+    input.type='date';
+    input.id='task-reschedule-picker';
+    input.style.cssText='position:fixed;left:50%;bottom:80px;transform:translateX(-50%);width:160px;height:44px;opacity:0.01;z-index:9999;font-size:16px;';
+    input.addEventListener('change',()=>handleTaskReschedule(input.dataset.taskId,input.value));
+    document.body.appendChild(input);
+  }
   return input;
 }
 function openTaskReschedule(taskId){
