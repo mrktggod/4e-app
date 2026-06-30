@@ -2937,6 +2937,7 @@ function getAge(s){const text=formatRelativeTaskDate(s,{deadline:false});if(!tex
 function e2(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 const TASK_CARD_MONTHS_SHORT=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
 let taskSwipeState=null;
+let taskSwipeActionTouchAt=0;
 function getTaskDeadlineValue(t){return(t&&(t.deadline||t.date))||'';}
 function formatTaskShortDate(date){return date.getDate()+' '+TASK_CARD_MONTHS_SHORT[date.getMonth()];}
 function isTaskOverdue(t){const d=parseTaskDate(getTaskDeadlineValue(t));if(!d)return false;return d<startOfLocalDay(new Date());}
@@ -2976,13 +2977,39 @@ function renderTaskCard(t,i){
   const number=String(i+1).padStart(2,'0');
   const overdueClass=deadline.overdue?' is-overdue':'';
   return '<div class="task-card-shell priority-'+priority+overdueClass+'" data-task-id="'+id+'">'+
-    '<div class="task-swipe-actions task-swipe-actions-right"><button class="task-swipe-btn task-swipe-done" onclick="event.stopPropagation();quickDoneTask(\''+id+'\',this)">Завершить</button></div>'+
-    '<div class="task-swipe-actions task-swipe-actions-left"><button class="task-swipe-btn task-swipe-cancel" onclick="event.stopPropagation();resetTaskSwipe(this)">Отменить</button><button class="task-swipe-btn task-swipe-move" onclick="event.stopPropagation();openTaskReschedule(\''+id+'\')">Перенести</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-right"><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done">Завершить</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-left"><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move">Перенести</button></div>'+
     '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
       '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
       '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
     '</div>'+
   '</div>';
+}
+function vibrateTaskCard(ms){if(navigator.vibrate)navigator.vibrate(ms);}
+function handleTaskSwipeActionEvent(event){
+  const btn=event.target?.closest?event.target.closest('.task-swipe-btn'):null;
+  if(!btn)return;
+  const shell=btn.closest('.task-card-shell');
+  if(!shell)return;
+  if(event.type==='click'&&Date.now()-taskSwipeActionTouchAt<650){event.preventDefault();event.stopPropagation();return;}
+  if(event.type==='touchend')taskSwipeActionTouchAt=Date.now();
+  event.preventDefault();
+  event.stopPropagation();
+  handleTaskSwipeButton(btn);
+}
+function handleTaskSwipeButton(btn){
+  const shell=btn.closest('.task-card-shell');
+  if(!shell)return;
+  const taskId=shell.dataset.taskId;
+  vibrateTaskCard(20);
+  if(btn.dataset.taskAction==='cancel'){resetTaskSwipe(shell);return;}
+  if(btn.dataset.taskAction==='move'){openTaskReschedule(taskId);return;}
+  if(btn.dataset.taskAction==='done'){quickDoneTask(taskId,btn);}
+}
+if(!window.__taskSwipeActionsBound){
+  window.__taskSwipeActionsBound=true;
+  document.addEventListener('touchend',handleTaskSwipeActionEvent,{capture:true,passive:false});
+  document.addEventListener('click',handleTaskSwipeActionEvent,true);
 }
 function openTaskCard(taskId,index,card){
   const shell=card?.closest?card.closest('.task-card-shell'):null;
@@ -2996,7 +3023,7 @@ function taskSwipeStart(event,card){
   if(event.pointerType==='mouse'&&event.button!==0)return;
   const shell=card.closest('.task-card-shell');
   if(!shell)return;
-  taskSwipeState={shell,card,startX:event.clientX,startY:event.clientY,dx:0,locked:false};
+  taskSwipeState={shell,card,startX:event.clientX,startY:event.clientY,dx:0,locked:false,vibrated:false};
   resetAllTaskSwipes(shell);
   card.style.transition='none';
 }
@@ -3006,8 +3033,9 @@ function taskSwipeMove(event,card){
   const dy=event.clientY-taskSwipeState.startY;
   if(!taskSwipeState.locked&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>10)return;
   if(Math.abs(dx)>8){taskSwipeState.locked=true;event.preventDefault();}
-  const limited=Math.max(-132,Math.min(96,dx));
+  const limited=Math.max(-144,Math.min(96,dx));
   taskSwipeState.dx=limited;
+  if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10);}
   taskSwipeState.shell.classList.toggle('swiping-left',limited<-12);
   taskSwipeState.shell.classList.toggle('swiping-right',limited>12);
   card.style.transform='translateX('+limited+'px)';
@@ -3019,6 +3047,7 @@ function taskSwipeEnd(event,card){
   card.style.transition='';
   shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
+  if(Math.abs(dx)>=56&&!taskSwipeState.vibrated)vibrateTaskCard(10);
   if(dx<-56)setTaskSwipe(shell,'left');
   else if(dx>56)setTaskSwipe(shell,'right');
   else resetTaskSwipe(shell);
@@ -3030,7 +3059,7 @@ function setTaskSwipe(shell,state){
   shell.classList.remove('swiping-left','swiping-right');
   shell.classList.toggle('swipe-left',state==='left');
   shell.classList.toggle('swipe-right',state==='right');
-  card.style.transform=state==='left'?'translateX(-132px)':(state==='right'?'translateX(96px)':'');
+  card.style.transform=state==='left'?'translateX(-144px)':(state==='right'?'translateX(96px)':'');
 }
 function resetTaskSwipe(el){
   const shell=el?.closest?el.closest('.task-card-shell'):el;
