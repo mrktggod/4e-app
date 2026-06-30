@@ -1912,6 +1912,7 @@
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
 const tg=window.Telegram?.WebApp;
+if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
 const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
 const TOKEN_K='chetam_token';
@@ -2976,8 +2977,8 @@ function renderTaskCard(t,i){
   const number=String(i+1).padStart(2,'0');
   const overdueClass=deadline.overdue?' is-overdue':'';
   return '<div class="task-card-shell priority-'+priority+overdueClass+'" data-task-id="'+id+'">'+
-    '<div class="task-swipe-actions task-swipe-actions-right" ><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" ontouchend="handleTaskSwipeButton(this,event)" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
-    '<div class="task-swipe-actions task-swipe-actions-left" ><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" ontouchend="handleTaskSwipeButton(this,event)" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" ontouchend="handleTaskSwipeButton(this,event)" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-right" ><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-left" ><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
     '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
       '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
       '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
@@ -2994,7 +2995,6 @@ function vibrateTaskCard(ms, style='light'){
 }
 function handleTaskSwipeButton(btn, event){
   if(!btn||!btn.matches||!btn.matches('.task-swipe-btn'))return;
-  if(event && event.type==='click' && ('ontouchstart' in window)) return;
   const shell = btn?.closest?.('.task-card-shell');
   if(!shell)return;
   if(event){
