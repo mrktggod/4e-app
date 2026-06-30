@@ -3060,6 +3060,11 @@ function setTaskSwipe(shell,state){
   shell.classList.toggle('swipe-left',state==='left');
   shell.classList.toggle('swipe-right',state==='right');
   card.style.transform=state==='left'?'translateX(-144px)':(state==='right'?'translateX(96px)':'');
+  card.style.pointerEvents='none';
+  const activeActions = state==='left' ? leftActions : rightActions;
+  if(activeActions){
+    activeActions.querySelectorAll('.task-swipe-btn').forEach(btn=>{btn.style.pointerEvents='auto';});
+  }
 }
 function resetTaskSwipe(el){
   const shell=el?.closest?el.closest('.task-card-shell'):el;
@@ -3071,6 +3076,8 @@ function resetTaskSwipe(el){
   const card=shell.querySelector('.task-card');
   shell.classList.remove('swipe-left','swipe-right','swiping-left','swiping-right');
   if(card)card.style.transform='';
+  if(card)card.style.pointerEvents='';
+  shell.querySelectorAll('.task-swipe-btn').forEach(btn=>{btn.style.pointerEvents='';});
 }
 function resetAllTaskSwipes(except){document.querySelectorAll('.task-card-shell.swipe-left,.task-card-shell.swipe-right').forEach(shell=>{if(shell!==except)resetTaskSwipe(shell);});}
 function getTaskRescheduleInput(){
