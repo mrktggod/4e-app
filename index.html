@@ -2976,24 +2976,33 @@ function renderTaskCard(t,i){
   const number=String(i+1).padStart(2,'0');
   const overdueClass=deadline.overdue?' is-overdue':'';
   return '<div class="task-card-shell priority-'+priority+overdueClass+'" data-task-id="'+id+'">'+
-    '<div class="task-swipe-actions task-swipe-actions-right" style="z-index:4;pointer-events:none"><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
-    '<div class="task-swipe-actions task-swipe-actions-left" style="z-index:4;pointer-events:none"><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-right" ><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" ontouchend="handleTaskSwipeButton(this,event)" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-left" ><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" ontouchend="handleTaskSwipeButton(this,event)" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" ontouchend="handleTaskSwipeButton(this,event)" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
     '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
       '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
       '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
     '</div>'+
   '</div>';
 }
-function vibrateTaskCard(ms){if(navigator.vibrate)navigator.vibrate(ms);}
+function vibrateTaskCard(ms, style='light'){
+  const tgHaptic = window.Telegram?.WebApp?.HapticFeedback;
+  if(tgHaptic?.impactOccurred){
+    tgHaptic.impactOccurred(style);
+    return;
+  }
+  if(navigator.vibrate)navigator.vibrate(ms);
+}
 function handleTaskSwipeButton(btn, event){
-  const shell=btn?.closest?.('.task-card-shell');
+  if(!btn||!btn.matches||!btn.matches('.task-swipe-btn'))return;
+  if(event && event.type==='click' && ('ontouchstart' in window)) return;
+  const shell = btn?.closest?.('.task-card-shell');
   if(!shell)return;
   if(event){
     event.preventDefault();
     event.stopPropagation();
   }
   const taskId=shell.dataset.taskId;
-  vibrateTaskCard(20);
+  vibrateTaskCard(20,'light');
   if(btn.dataset.taskAction==='cancel'){resetTaskSwipe(shell);return;}
   if(btn.dataset.taskAction==='move'){openTaskReschedule(taskId);return;}
   if(btn.dataset.taskAction==='done'){quickDoneTask(taskId,btn);}
@@ -3022,7 +3031,7 @@ function taskSwipeMove(event,card){
   if(Math.abs(dx)>8){taskSwipeState.locked=true;event.preventDefault();}
   const limited=Math.max(-144,Math.min(96,dx));
   taskSwipeState.dx=limited;
-  if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10);}
+  if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10,'medium');}
   taskSwipeState.shell.classList.toggle('swiping-left',limited<-12);
   taskSwipeState.shell.classList.toggle('swiping-right',limited>12);
   card.style.transform='translateX('+limited+'px)';
@@ -3034,7 +3043,7 @@ function taskSwipeEnd(event,card){
   card.style.transition='';
   shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
-  if(Math.abs(dx)>=56&&!taskSwipeState.vibrated)vibrateTaskCard(10);
+  if(Math.abs(dx)>=56&&!taskSwipeState.vibrated)vibrateTaskCard(10,'medium');
   if(dx<-56)setTaskSwipe(shell,'left');
   else if(dx>56)setTaskSwipe(shell,'right');
   else resetTaskSwipe(shell);

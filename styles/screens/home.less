@@ -68,12 +68,17 @@
     visibility:visible;
     transform:translateX(0);
     pointer-events:auto;
+    z-index:5;
   }
-.task-card-shell .task-swipe-btn{flex:0 0 72px;min-width:72px;height:100%;border:0;padding:0 12px;color:#fff;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.task-card-shell .task-swipe-btn{position:relative;z-index:6;flex:0 0 72px;min-width:72px;height:100%;border:0;padding:0 12px;color:#fff;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .task-card-shell .task-swipe-cancel{background:rgba(122,130,112,0.72)}
 .task-card-shell .task-swipe-move{background:#2F80ED}
 .task-card-shell .task-swipe-done{background:#4DAF5A;color:#071107}
   .task-card-shell .task-row.task-card{position:relative;z-index:3;display:block;width:100%;padding:12px 14px 13px;border:0;border-radius:0;background:var(--card);cursor:pointer;transition:transform .18s ease,background .16s ease;will-change:transform}
+.task-card-shell.swipe-left .task-row.task-card,
+.task-card-shell.swiping-left .task-row.task-card,
+.task-card-shell.swipe-right .task-row.task-card,
+.task-card-shell.swiping-right .task-row.task-card{pointer-events:none}
 .task-card-shell.is-overdue .task-row.task-card{background:rgba(180,44,44,0.16)}
 .task-card-shell .task-card-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;margin-bottom:7px;min-height:24px}
 .task-card-shell .task-num-badge{display:inline-flex;align-items:center;gap:6px;min-width:44px;height:24px;padding:0 8px;border-radius:999px;background:rgba(242,245,233,0.06);border:1px solid rgba(242,245,233,0.1);color:var(--text);font-size:11px;font-weight:800;letter-spacing:0;font-variant-numeric:tabular-nums}
