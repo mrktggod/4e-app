@@ -527,23 +527,54 @@
     <!-- Поля-строки -->
     <div class="glass" style="border-radius:16px;overflow:hidden;margin-bottom:20px">
 
-      <div class="detail-field-row" onclick="editDetailField('deadline')">
+      <div class="detail-field-row">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+          <span style="font-size:14px;color:var(--text2)">Статус</span>
+        </div>
+        <select id="detail-status-select" class="detail-control" onchange="setDetailStatus(this.value)">
+          <option value="active">Активная</option>
+          <option value="burning">Горит</option>
+          <option value="paused">Пауза</option>
+          <option value="done">Готово</option>
+        </select>
+      </div>
+
+      <div class="detail-field-row">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="m12 2 2.6 6.8 7.2.4-5.6 4.6 1.8 7-6-3.9-6 3.9 1.8-7-5.6-4.6 7.2-.4L12 2z"/></svg>
+          <span style="font-size:14px;color:var(--text2)">Приоритет</span>
+        </div>
+        <select id="detail-priority-select" class="detail-control" onchange="setDetailPriority(this.value)">
+          <option value="normal">Обычный</option>
+          <option value="high">Высокий</option>
+          <option value="low">Низкий</option>
+        </select>
+      </div>
+
+      <div class="detail-field-row">
         <div style="display:flex;align-items:center;gap:10px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           <span style="font-size:14px;color:var(--text2)">Срок</span>
         </div>
-        <span id="detail-date" style="font-size:14px;color:var(--text);font-weight:500">—</span>
+        <input id="detail-time-input" class="detail-control" type="datetime-local" onchange="setDetailDeadline(this.value)">
+      </div>
+      <div class="detail-quick-row">
+        <button class="detail-quick-btn" onclick="setQuickDeadline('today')">Сегодня</button>
+        <button class="detail-quick-btn" onclick="setQuickDeadline('tomorrow')">Завтра</button>
+        <button class="detail-quick-btn" onclick="setQuickDeadline('week')">Неделя</button>
+        <span id="detail-date" style="font-size:13px;color:var(--muted);font-weight:500;align-self:center">—</span>
       </div>
 
-      <div class="detail-field-row" onclick="editDetailField('direction')">
+      <div class="detail-field-row">
         <div style="display:flex;align-items:center;gap:10px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
           <span style="font-size:14px;color:var(--text2)">Направление</span>
         </div>
-        <span id="detail-direction" style="font-size:14px;color:var(--text);font-weight:500">—</span>
+        <input id="detail-direction" class="detail-control" placeholder="Направление" oninput="setDetailDirectionLabel(this.value)">
       </div>
 
-      <div class="detail-field-row" onclick="editDetailField('person')">
+      <div class="detail-field-row">
         <div style="display:flex;align-items:center;gap:10px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           <span style="font-size:14px;color:var(--text2)">Человек</span>
@@ -551,14 +582,28 @@
         <span id="detail-person" style="font-size:14px;color:var(--text);font-weight:500">—</span>
       </div>
 
-      <div class="detail-field-row" style="border-bottom:none" onclick="editDetailField('reminder')">
+      <div class="detail-field-row" style="border-bottom:none">
         <div style="display:flex;align-items:center;gap:10px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span style="font-size:14px;color:var(--text2)">Напоминание</span>
         </div>
-        <span id="detail-reminder" style="font-size:14px;color:var(--muted);font-weight:500">Без</span>
+        <select id="detail-reminder" class="detail-control" onchange="setDetailReminder(this.value)">
+          <option value="none">Без</option>
+          <option value="15min">За 15 мин</option>
+          <option value="1hour">За час</option>
+          <option value="1day">За день</option>
+        </select>
       </div>
 
+    </div>
+
+    <div class="glass" style="border-radius:16px;padding:14px 16px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Чек-лист</div>
+      <div id="detail-checklist" class="detail-checklist"></div>
+      <div class="detail-check-add">
+        <input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт" onkeydown="if(event.key==='Enter')addDetailChecklistItem()">
+        <button class="detail-quick-btn" onclick="addDetailChecklistItem()">Добавить</button>
+      </div>
     </div>
 
     <!-- Табы -->
@@ -3428,30 +3473,142 @@ let currentDetailTask = null;
 let currentTaskId = null;
 let currentDetailTags = [];
 let currentDetailReminder = 'none';
+let currentDetailStatus = 'active';
+let currentDetailPriority = 'normal';
+let currentDetailTime = '';
+let currentDetailChecklist = [];
+let currentDetailDirectionLabel = '';
+
+const DETAIL_STATUS_LABELS = {active:'Активная',burning:'Горит',paused:'Пауза',done:'Готово'};
+
+function toDetailDateTimeLocal(value){
+  if(!value) return '';
+  if(typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) return value.slice(0,16);
+  const d = new Date(value);
+  if(Number.isNaN(d.getTime())) return '';
+  const pad = n => String(n).padStart(2,'0');
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function formatDetailDeadline(value){
+  if(!value) return '—';
+  const d = new Date(value);
+  if(Number.isNaN(d.getTime())) return value;
+  const months=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ', ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+
+function setDetailStatus(value){
+  currentDetailStatus = value || 'active';
+  const sel = document.getElementById('detail-status-select');
+  if(sel && sel.value !== currentDetailStatus) sel.value = currentDetailStatus;
+  const badge = document.getElementById('detail-status-badge');
+  if(badge) badge.lastChild.nodeValue = ' ' + (DETAIL_STATUS_LABELS[currentDetailStatus] || currentDetailStatus);
+}
+
+function setDetailPriority(value){
+  currentDetailPriority = value || 'normal';
+  const sel = document.getElementById('detail-priority-select');
+  if(sel && sel.value !== currentDetailPriority) sel.value = currentDetailPriority;
+}
+
+function setDetailDeadline(value){
+  currentDetailTime = value || '';
+  const inp = document.getElementById('detail-time-input');
+  if(inp && inp.value !== currentDetailTime) inp.value = currentDetailTime;
+  const dateEl = document.getElementById('detail-date');
+  if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime);
+}
+
+function setQuickDeadline(kind){
+  const d = new Date();
+  if(kind === 'tomorrow') d.setDate(d.getDate()+1);
+  if(kind === 'week') d.setDate(d.getDate()+7);
+  d.setHours(18,0,0,0);
+  setDetailDeadline(toDetailDateTimeLocal(d.toISOString()));
+}
+
+function setDetailDirectionLabel(value){
+  currentDetailDirectionLabel = (value || '').trim();
+}
+
+function setDetailReminder(value){
+  currentDetailReminder = value || 'none';
+  const sel = document.getElementById('detail-reminder');
+  if(sel && sel.value !== currentDetailReminder) sel.value = currentDetailReminder;
+}
+
+function renderDetailChecklist(){
+  const wrap = document.getElementById('detail-checklist');
+  if(!wrap) return;
+  if(!currentDetailChecklist.length){
+    wrap.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:4px 0">Пунктов пока нет</div>';
+    return;
+  }
+  wrap.innerHTML = currentDetailChecklist.map(function(item,i){
+    const checked = item.done ? ' checked' : '';
+    const doneClass = item.done ? ' done' : '';
+    return '<div class="detail-check-item' + doneClass + '"><input type="checkbox"' + checked + ' onchange="toggleDetailChecklistItem(' + i + ',this.checked)"><input class="detail-check-text" value="' + e2(item.text || '') + '" oninput="updateDetailChecklistText(' + i + ',this.value)"><button class="detail-check-remove" onclick="removeDetailChecklistItem(' + i + ')">×</button></div>';
+  }).join('');
+}
+
+function addDetailChecklistItem(){
+  const inp = document.getElementById('detail-checklist-input');
+  const text = (inp?.value || '').trim();
+  if(!text) return;
+  currentDetailChecklist.push({text, done:false});
+  if(inp) inp.value = '';
+  renderDetailChecklist();
+  saveTaskEdits();
+}
+
+function toggleDetailChecklistItem(idx, done){
+  if(!currentDetailChecklist[idx]) return;
+  currentDetailChecklist[idx].done = !!done;
+  renderDetailChecklist();
+  saveTaskEdits();
+}
+
+function updateDetailChecklistText(idx, text){
+  if(!currentDetailChecklist[idx]) return;
+  currentDetailChecklist[idx].text = text;
+}
+
+function removeDetailChecklistItem(idx){
+  currentDetailChecklist.splice(idx, 1);
+  renderDetailChecklist();
+  saveTaskEdits();
+}
 
 function openTask(t,idx){
   currentDetailTask = t;
   currentTaskId = t.id;
   currentDetailTags = t.tags ? [...t.tags] : [];
   currentDetailReminder = t.reminder || 'none';
+  currentDetailStatus = t.status || (t.done ? 'done' : 'active');
+  currentDetailPriority = t.priority || 'normal';
+  currentDetailTime = toDetailDateTimeLocal(t.time || t.deadline || t.date || '');
+  currentDetailChecklist = Array.isArray(t.checklist) ? t.checklist.map(function(item){
+    return typeof item === 'string' ? {text:item, done:false} : {text:item.text || '', done:!!item.done};
+  }) : [];
+  currentDetailDirectionLabel = t.directionLabel || t.direction || '';
 
   // Заголовок
   const titleEl = document.getElementById('detail-title');
   if(titleEl){ titleEl.textContent = t.text || '—'; titleEl.contentEditable='false'; }
 
   // Поля-строки
-  const deadline = t.date || t.deadline || '—';
   const personEl = document.getElementById('detail-person');
   const dateEl = document.getElementById('detail-date');
   const dirEl = document.getElementById('detail-direction');
-  const remEl = document.getElementById('detail-reminder');
   if(personEl) personEl.textContent = t.person || '—';
-  if(dateEl) dateEl.textContent = deadline;
-  if(dirEl) dirEl.textContent = t.direction || '—';
-  if(remEl){
-    const labels={'15min':'За 15 мин','1hour':'За час','1day':'За день'};
-    remEl.textContent = t.reminder && t.reminder!=='none' ? labels[t.reminder]||t.reminder : 'Без';
-  }
+  if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime || t.date || t.deadline || '');
+  if(dirEl) dirEl.value = currentDetailDirectionLabel;
+  setDetailStatus(currentDetailStatus);
+  setDetailPriority(currentDetailPriority);
+  setDetailDeadline(currentDetailTime);
+  setDetailReminder(currentDetailReminder);
+  renderDetailChecklist();
 
   // Описание
   const descEl = document.getElementById('detail-description');
@@ -3483,26 +3640,6 @@ function makeDetailEditable(el){
   const sel = window.getSelection();
   sel.removeAllRanges();
   sel.addRange(range);
-}
-
-function editDetailField(field){
-  if(!currentDetailTask) return;
-  const labels = {deadline:'Срок (напр. 25 июня):',direction:'Направление:',person:'Человек:',reminder:'Напоминание (none/15min/1hour/1day):'};
-  const cur = field==='deadline'?(currentDetailTask.date||currentDetailTask.deadline||''):
-              field==='person'?currentDetailTask.person||'':
-              field==='direction'?currentDetailTask.direction||'':
-              currentDetailTask.reminder||'none';
-  const val = prompt(labels[field]||field+':', cur);
-  if(val===null) return;
-  if(field==='deadline'){currentDetailTask.date=val;const el=document.getElementById('detail-date');if(el)el.textContent=val||'—';}
-  else if(field==='direction'){currentDetailTask.direction=val;const el=document.getElementById('detail-direction');if(el)el.textContent=val||'—';}
-  else if(field==='person'){currentDetailTask.person=val;const el=document.getElementById('detail-person');if(el)el.textContent=val||'—';}
-  else if(field==='reminder'){
-    currentDetailTask.reminder=val;
-    const labels2={'15min':'За 15 мин','1hour':'За час','1day':'За день'};
-    const el=document.getElementById('detail-reminder');
-    if(el)el.textContent=val&&val!=='none'?(labels2[val]||val):'Без';
-  }
 }
 
 function switchDetailTab(tab, el){
@@ -3589,20 +3726,28 @@ function snoozeCurrentTask(){
 async function saveTaskEdits(){
   if(!currentDetailTask) return;
   const newText = (document.getElementById('detail-title')?.textContent||'').trim();
-  const newDeadline = currentDetailTask.date || '';
+  const newDeadline = currentDetailTime || '';
   const newOrigMsg = document.getElementById('detail-description')?.value?.trim();
+  const updates = {
+    text: newText || currentDetailTask.text,
+    deadline: newDeadline || null,
+    time: newDeadline || null,
+    status: currentDetailStatus,
+    priority: currentDetailPriority,
+    checklist: currentDetailChecklist.map(function(item){
+      return {text:(item.text || '').trim(), done:!!item.done};
+    }).filter(function(item){ return item.text; }),
+    directionLabel: currentDetailDirectionLabel || null,
+    direction: currentDetailDirectionLabel || currentDetailTask.direction || null,
+    tags: [...currentDetailTags],
+    reminder: currentDetailReminder,
+    originalMsg: newOrigMsg || currentDetailTask.originalMsg,
+  };
 
   // Update local cache
   const t = allTasksCache.find(x => x.id === currentDetailTask.id);
   if(t){
-    t.text = newText || t.text;
-    if(newDeadline){
-      const d=new Date(newDeadline);
-      const MONTHS_RU=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-      t.deadline=d.getDate()+' '+MONTHS_RU[d.getMonth()]+' '+d.getFullYear();
-    } else { t.deadline=null; }
-    t.tags = [...currentDetailTags];
-    t.reminder = currentDetailReminder;
+    Object.assign(t, updates);
   }
 
   // Save to KV via Worker
@@ -3614,13 +3759,7 @@ async function saveTaskEdits(){
       body: JSON.stringify({
         chatId,
         taskId: currentDetailTask.id,
-        updates: {
-          text: newText || currentDetailTask.text,
-          deadline: newDeadline || null,
-          tags: [...currentDetailTags],
-          reminder: currentDetailReminder,
-          originalMsg: newOrigMsg || currentDetailTask.originalMsg,
-        }
+        updates
       })
     });
 
@@ -3630,7 +3769,7 @@ async function saveTaskEdits(){
     }
 
     showToast('Сохранено ✓');
-    currentDetailTask = {...currentDetailTask, text: newText, deadline: newDeadline, tags: [...currentDetailTags], reminder: currentDetailReminder};
+    currentDetailTask = {...currentDetailTask, ...updates};
     loadTasks();
   } catch(e){
     showToast('Ошибка сохранения');
