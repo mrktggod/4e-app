@@ -1960,6 +1960,7 @@ const tg=window.Telegram?.WebApp;
 if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
 const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
+const TELEGRAM_BOT_USERNAME='Denzel89bot';
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
 const D1_TOKEN_K='chetam_d1_token';
@@ -2015,6 +2016,30 @@ function isVkMiniAppContext(){
   return /(?:^|[?#&])vk_/.test(raw)||/(?:^|[?#&])sign=/.test(raw);
 }
 
+function getTelegramStartTokenFromLaunch() {
+  const initStart = window.Telegram?.WebApp?.initDataUnsafe?.start_param;
+  if (initStart)
+    return String(initStart).trim();
+
+  const fromSearch = new URLSearchParams(window.location.search || '');
+  const fromHash = new URLSearchParams((window.location.hash || '').replace(/^#/, '?'));
+
+  return (fromSearch.get('startapp') || fromSearch.get('tgWebAppStartParam') || fromHash.get('startapp') || fromHash.get('tgWebAppStartParam') || '').trim();
+}
+
+function buildTelegramBotLoginUrl(startToken) {
+  return 'tg://resolve?domain=' + TELEGRAM_BOT_USERNAME + '&start=' + encodeURIComponent(startToken);
+}
+
+function openTelegramLoginUrl(url){
+  const tgApp = window.Telegram?.WebApp;
+  if (tgApp?.openTelegramLink) {
+    tgApp.openTelegramLink(url);
+    return;
+  }
+  window.location.href = url;
+}
+
 async function getVkLaunchParams(){
   const candidates=[];
   if(window.location.search) candidates.push(window.location.search);
@@ -2056,6 +2081,12 @@ async function initApp(){
     }catch(e){}
     // token invalid — clear and fall through
     localStorage.removeItem(TOKEN_K);
+  }
+
+  const telegramStartToken = getTelegramStartTokenFromLaunch();
+  if (telegramStartToken) {
+    const ok = await loginWithTelegram(telegramStartToken);
+    if (ok) return;
   }
 
   if(tgUser?.id && !localStorage.getItem(LOGOUT_K)){
@@ -2284,7 +2315,7 @@ async function doLogin(){
   btn.disabled=false; btn.textContent='Войти';
 }
 
-async function loginWithTelegram(){
+async function loginWithTelegramLegacy(){
   if(!tgUser||!tgInitData){
     showToast('Открой бота и нажми Start — получишь ссылку для входа');
     showScreen('login');
@@ -2321,6 +2352,65 @@ async function loginWithTelegram(){
 
 
 // Привязываем Telegram ID к аккаунту после логина
+async function loginWithTelegram(startToken=''){
+  if(startToken){
+    const body = { startToken };
+    if (tgInitData) {
+      body.initData = tgInitData;
+      if (tgUser) body.user = tgUser;
+    }
+    try {
+      const r = await fetch(WORKER + '/auth/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const d = await readJsonSafe(r);
+      if (d.ok && d.token) {
+        setLegacyToken(d.token);
+        currentUser = d.user;
+        chatId = 'user_' + currentUser.id;
+        applyUserInfo();
+        localStorage.setItem(ONBOARD_K, '1');
+        showScreen('home');
+        loadTasks();
+        return true;
+      }
+      showToast(d.error || 'РћС€РёР±РєР° Telegram Р°РІС‚РѕСЂРёР·Р°С†РёРё');
+      showScreen('login');
+      return false;
+    } catch (e) {
+      showToast('РќРµС‚ СЃРѕРµРґРёРЅРµРЅРёСЏ');
+      showScreen('login');
+      return false;
+    }
+  }
+
+  if (tgUser && tgInitData) {
+    return loginWithTelegramLegacy();
+  }
+
+  const tokenR = await fetch(WORKER + '/auth/telegram', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      generateStartToken: true,
+      ...(tgInitData ? { initData: tgInitData } : {}),
+      ...(tgUser ? { user: tgUser } : {})
+    })
+  });
+  const tokenData = await readJsonSafe(tokenR);
+  if (tokenData.ok && tokenData.startToken) {
+    openTelegramLoginUrl(buildTelegramBotLoginUrl(tokenData.startToken));
+    return true;
+  }
+
+  showToast(tokenData.error || 'Failed to prepare Telegram login link.');
+  showScreen('login');
+  return false;
+}
+
+
 async function linkTelegram() {
   if (!tgInitData || !getToken()) return;
   try {
