@@ -3548,7 +3548,7 @@ function renderDetailChecklist(){
   wrap.innerHTML = currentDetailChecklist.map(function(item,i){
     const checked = item.done ? ' checked' : '';
     const doneClass = item.done ? ' done' : '';
-    return '<div class="detail-check-item' + doneClass + '"><input type="checkbox"' + checked + ' onchange="toggleDetailChecklistItem(' + i + ',this.checked)"><input class="detail-check-text" value="' + e2(item.text || '') + '" oninput="updateDetailChecklistText(' + i + ',this.value)"><button class="detail-check-remove" onclick="removeDetailChecklistItem(' + i + ')">×</button></div>';
+    return '<div class="detail-check-item' + doneClass + '"><input type="checkbox"' + checked + ' onchange="toggleDetailChecklistItem(' + i + ',this.checked)"><input class="detail-check-text" value="' + e2(item.text || '') + '" oninput="updateDetailChecklistText(' + i + ',this.value)" onblur="commitDetailChecklistText(' + i + ',this.value)"><button class="detail-check-remove" onclick="removeDetailChecklistItem(' + i + ')">×</button></div>';
   }).join('');
 }
 
@@ -3572,6 +3572,18 @@ function toggleDetailChecklistItem(idx, done){
 function updateDetailChecklistText(idx, text){
   if(!currentDetailChecklist[idx]) return;
   currentDetailChecklist[idx].text = text;
+}
+
+function commitDetailChecklistText(idx, text){
+  if(!currentDetailChecklist[idx]) return;
+  const trimmed = (text || '').trim();
+  if(!trimmed){
+    currentDetailChecklist.splice(idx, 1);
+  } else {
+    currentDetailChecklist[idx].text = trimmed;
+  }
+  renderDetailChecklist();
+  saveTaskEdits();
 }
 
 function removeDetailChecklistItem(idx){
