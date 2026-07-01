@@ -933,6 +933,18 @@
 
 ---
 
+## 2026-07-01 — BACK-022 Task detail manual MVP (Codex)
+
+**Проблема:** экран `task-detail` оставался на старом prompt-редактировании и не сохранял ручные поля статуса, приоритета, времени, чек-листа и направления.
+
+**Решение:** в `index.html` добавлены ручные controls для статуса, приоритета, времени, быстрых дедлайнов, направления, напоминания и чек-листа; `saveTaskEdits()` отправляет `status`, `priority`, `time`, `checklist`, `directionLabel` и совместимый `deadline`; `styles/screens/tasks.less` и CSS-сборка обновлены.
+
+**Проверка:** `npm.cmd run build:css`, inline JS `node --check`, `git diff --check`, контроль кириллицы `Войти|Задачи`, raw GitHub содержит новый `index.html`; Pages на момент проверки ещё отдавал старый cache/build (`Last-Modified: Tue, 30 Jun 2026 22:10:38 GMT`).
+
+**Production:** frontend commit `b4fa48f`; Worker production deploy `0deb8806-0de6-4471-9350-af38a75595ef`; live Worker `GET /` вернул `200 OK`, CORS preflight для `https://mrktggod.github.io` вернул `204`.
+
+---
+
 ## ПАТТЕРНЫ ОШИБОК (для обучения)
 
 1. **Кодировка** — самая частая. Любой PowerShell-агент без явного UTF-8 ломает кириллицу.
