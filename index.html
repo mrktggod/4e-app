@@ -358,6 +358,66 @@
     </div>
 
     <!-- СТАТИСТИКА -->
+    <!-- AI Planner dashboard (glass) -->
+    <section class="home-ai-planner glass" id="home-ai-planner">
+      <div class="home-ai-planner__head">
+        <div>
+          <div class="home-ai-planner__title">План на сегодня</div>
+          <div class="home-ai-planner__sub">AI-сводка и пульс дня</div>
+        </div>
+        <div class="home-ai-planner__pulse" id="home-ai-pulse">Загрузка...</div>
+      </div>
+
+      <div class="home-ai-planner__summary">
+        <div class="home-ai-summary-line" id="home-ai-summary-line">Формирую фокус и приоритеты на день.</div>
+        <div class="home-ai-summary-meta">
+          <span id="home-ai-mood">Состояние: спокойный</span>
+          <span id="home-ai-trend">Тенденция: стабильно</span>
+        </div>
+      </div>
+
+      <div class="home-ai-planner__next">
+        <div class="home-ai-next-label">Сейчас на фокусе</div>
+        <div class="home-ai-next-text" id="home-ai-next-task">—</div>
+      </div>
+
+      <div class="home-ai-planner__actions">
+        <button class="home-ai-action" onclick="plannerStartWithFirstTask()">Начать с</button>
+        <button class="home-ai-action home-ai-action--ghost" id="home-ai-collapse-btn" onclick="togglePlannerCompact()">Свернуть 4</button>
+      </div>
+
+      <div class="home-ai-sections">
+        <div class="home-ai-section" id="planner-section-first">
+          <div class="home-ai-section__head">
+            <span class="home-ai-section__title">Сделать первым</span>
+            <button class="home-ai-section__action" onclick="openHomePlannerSection('first')">Открыть</button>
+          </div>
+          <div class="home-ai-section__rows" id="home-ai-section-first"></div>
+        </div>
+        <div class="home-ai-section" id="planner-section-hot">
+          <div class="home-ai-section__head">
+            <span class="home-ai-section__title">Горит</span>
+            <button class="home-ai-section__action" onclick="openHomePlannerSection('hot')">Открыть</button>
+          </div>
+          <div class="home-ai-section__rows" id="home-ai-section-hot"></div>
+        </div>
+        <div class="home-ai-section" id="planner-section-people">
+          <div class="home-ai-section__head">
+            <span class="home-ai-section__title">Жду от людей</span>
+            <button class="home-ai-section__action" onclick="openHomePlannerSection('people')">Открыть</button>
+          </div>
+          <div class="home-ai-section__rows" id="home-ai-section-people"></div>
+        </div>
+        <div class="home-ai-section" id="planner-section-defer">
+          <div class="home-ai-section__head">
+            <span class="home-ai-section__title">Можно перенести</span>
+            <button class="home-ai-section__action" onclick="openHomePlannerSection('defer')">Открыть</button>
+          </div>
+          <div class="home-ai-section__rows" id="home-ai-section-defer"></div>
+        </div>
+      </div>
+    </section>
+
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
       <div class="stat-mini glass" onclick="openDoneList()" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
         <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Выполнено</div>
@@ -2750,6 +2810,14 @@ async function loadTasks(){
     const bellDot = document.getElementById('bell-dot');
     if(bellDot) bellDot.style.display = hotCount > 0 ? 'block' : 'none';
 
+    updateHomeAiPlanner({
+      outgoing,
+      incoming,
+      done,
+      all: [...outgoing, ...incoming],
+      raw: tasks || []
+    });
+
     // Tasks list (new home-task-list)
     const homeList = document.getElementById('home-task-list');
     if(homeList){
@@ -2841,6 +2909,13 @@ function renderTasksForMonth(){
   setEl('stat-promises', incoming.length);
   setEl('dash-tasks-today', outgoing.length);
   setEl('dash-prom-today', incoming.length);
+  updateHomeAiPlanner({
+    outgoing,
+    incoming,
+    done: allTasksCache.filter(t=>t.done),
+    all: [...outgoing, ...incoming],
+    raw: monthTasks || []
+  });
 
   // Re-render task list
   const homeList = document.getElementById('home-task-list');
@@ -2899,6 +2974,197 @@ function loadStats(outgoing, done){
   const vals=[40,65,30,80,55,70,45];
   const max=Math.max(...vals);
   document.getElementById('bar-chart').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${days[i]}</span></div>`).join('');
+}
+
+let plannerCompactMode = false;
+let plannerSectionsCache = {first:[], hot:[], people:[], defer:[]};
+
+function updateHomeAiPlanner({outgoing=[], incoming=[], done=[], all=[], raw=[]}){
+  const outgoingTasks = (outgoing || []).filter(t => !t.done);
+  const incomingTasks = (incoming || []).filter(t => !t.done);
+  const totalDone = (done || []).length;
+  const totalPending = outgoingTasks.length + incomingTasks.length;
+  const totalTasks = (all || []).length || 1;
+  const doneRate = Math.round((totalDone / totalTasks) * 100);
+  const nowDay = startOfLocalDay(new Date());
+  const priorityRank = {p0: 0, p1: 1, p2: 2, p3: 3};
+
+  const sortedByPriority = outgoingTasks
+    .map(task => ({task, p: getTaskCardPriority(task), deadlineDate: parseTaskDate(task.deadline)}))
+    .sort((a, b) => {
+      const rankDiff = (priorityRank[a.p] ?? 3) - (priorityRank[b.p] ?? 3);
+      if(rankDiff !== 0) return rankDiff;
+      const dA = a.deadlineDate ? a.deadlineDate.getTime() : Number.MAX_SAFE_INTEGER;
+      const dB = b.deadlineDate ? b.deadlineDate.getTime() : Number.MAX_SAFE_INTEGER;
+      return dA - dB;
+    });
+
+  const toOffset = (taskDate) => {
+    if(!taskDate) return null;
+    const d = startOfLocalDay(taskDate);
+    return Math.round((d.getTime() - nowDay.getTime()) / 86400000);
+  };
+
+  const hot = outgoingTasks.filter(t => {
+    const diff = toOffset(parseTaskDate(t.deadline));
+    return diff !== null && diff <= 1 && diff >= -1;
+  });
+
+  const hotIdSet = new Set(hot.map(t => String(t.id)));
+  const first = sortedByPriority.filter(item => !hotIdSet.has(String(item.task.id))).slice(0,4).map(item => item.task);
+  const defer = outgoingTasks
+    .filter(task => {
+      const diff = toOffset(parseTaskDate(task.deadline));
+      return !hotIdSet.has(String(task.id)) && (diff === null || diff >= 2);
+    })
+    .slice(0,4);
+  const people = incomingTasks.slice(0,4);
+
+  plannerSectionsCache = {
+    first: first,
+    hot: hot,
+    people: people,
+    defer: defer
+  };
+
+  if(plannerSectionsCache.first.length === 0 && plannerSectionsCache.hot.length > 0){
+    plannerSectionsCache.first = plannerSectionsCache.hot.slice(0,4);
+  }
+
+  const risks = outgoingTasks.filter(task => {
+    const diff = toOffset(parseTaskDate(task.deadline));
+    return diff !== null && diff < 0;
+  }).length;
+
+  const summaryEl = document.getElementById('home-ai-summary-line');
+  const pulseEl = document.getElementById('home-ai-pulse');
+  const moodEl = document.getElementById('home-ai-mood');
+  const trendEl = document.getElementById('home-ai-trend');
+  const nextEl = document.getElementById('home-ai-next-task');
+
+  if(totalPending === 0){
+    if(summaryEl) summaryEl.textContent = 'Сейчас дел на сегодня нет — можно добавить новый фокус в список.';
+    if(pulseEl) pulseEl.textContent = 'Пульс дня: 0%';
+    if(moodEl) moodEl.textContent = 'Состояние: пауза';
+    if(trendEl) trendEl.textContent = 'Тенденция: стабильная';
+    if(nextEl) nextEl.textContent = 'Ни одной задачи в фокусе';
+  } else {
+    if(summaryEl) summaryEl.textContent = `${outgoingTasks.length} задач в работе и ${incomingTasks.length} обещаний. ${hot.length} горящие.`;
+    if(pulseEl) pulseEl.textContent = `Пульс дня: ${doneRate}%`;
+    if(moodEl) moodEl.textContent = `Состояние: ${risks > 2 ? 'осторожно' : (hot.length > 2 ? 'в фокусе' : 'спокойный')}`;
+    if(trendEl) trendEl.textContent = `Тенденция: ${doneRate >= 70 ? 'в росте' : (doneRate >= 40 ? 'ровно' : 'переориентация')}`;
+    const nextTask = plannerSectionsCache.first[0] || plannerSectionsCache.hot[0] || plannerSectionsCache.people[0] || null;
+    if(nextEl) nextEl.textContent = nextTask ? `«${e2(nextTask.text || 'Без текста')}»` : 'Открой список дел';
+  }
+
+  renderHomeAiSection('home-ai-section-first', plannerSectionsCache.first || []);
+  renderHomeAiSection('home-ai-section-hot', plannerSectionsCache.hot || []);
+  renderHomeAiSection('home-ai-section-people', plannerSectionsCache.people || []);
+  renderHomeAiSection('home-ai-section-defer', plannerSectionsCache.defer || []);
+
+  const planner = document.getElementById('home-ai-planner');
+  const btn = document.getElementById('home-ai-collapse-btn');
+  if(planner) planner.classList.toggle('home-ai-planner--compact', plannerCompactMode);
+  if(btn) btn.textContent = plannerCompactMode ? 'Развернуть 4' : 'Свернуть 4';
+}
+
+function renderHomeAiSection(containerId, tasks){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  if(!tasks || !tasks.length){
+    container.innerHTML = '<div class="home-ai-empty">Пока пусто</div>';
+    return;
+  }
+
+  container.innerHTML = tasks.map(task => {
+    const id = e2(String(task.id || ''));
+    const title = e2((task.person ? task.person + ' — ' : '') + (task.text || 'Задача'));
+    const meta = task.deadline ? formatTaskDateMeta(task) : (task.direction === 'incoming' ? 'Из переписки' : 'Без дедлайна');
+    const avatar = e2((task.person || '?')[0]?.toUpperCase() || '?');
+    return `<div class="home-ai-row" data-task-id="${id}" role="button" tabindex="0">
+      <div class="home-ai-row-main" onclick="openTaskFromPlannerRow(this)">
+        <span class="home-ai-row-avatar">${avatar}</span>
+        <div class="home-ai-row-main-text">
+          <div class="home-ai-row-title">${title}</div>
+          <div class="home-ai-row-meta">${meta}</div>
+        </div>
+      </div>
+      <div class="home-ai-row-actions">
+        <button onclick="plannerCompleteTask(this)">Выполнить сейчас</button>
+        <button onclick="plannerSnoozeTask(this)">Отложить</button>
+        <button onclick="plannerDiscussTask(this)">Обсудить задачу</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openTaskFromPlannerRow(el){
+  const row = el?.closest('.home-ai-row');
+  const taskId = row?.dataset.taskId;
+  if(!taskId) return;
+  const idx = allTasksCache.findIndex(t => String(t.id) === String(taskId));
+  openTaskById(taskId, idx);
+}
+
+function getPlannerTaskFromButton(el){
+  const row = el?.closest('.home-ai-row');
+  const taskId = row?.dataset?.taskId;
+  if(!taskId) return null;
+  return allTasksCache.find(t => String(t.id) === String(taskId));
+}
+
+function plannerStartWithFirstTask(){
+  const startTask = plannerSectionsCache.first[0] || plannerSectionsCache.hot[0] || plannerSectionsCache.people[0] || null;
+  if(!startTask) return;
+  const idx = allTasksCache.findIndex(t => String(t.id) === String(startTask.id));
+  openTaskById(startTask.id, idx);
+}
+
+function togglePlannerCompact(){
+  plannerCompactMode = !plannerCompactMode;
+  updateHomeAiPlanner({
+    outgoing: allTasksCache.filter(t => !t.done && t.direction !== 'incoming'),
+    incoming: allTasksCache.filter(t => !t.done && t.direction === 'incoming'),
+    done: allTasksCache.filter(t => t.done),
+    all: allTasksCache,
+    raw: allTasksCache
+  });
+}
+
+function openHomePlannerSection(sectionKey){
+  const sectionTasks = plannerSectionsCache[sectionKey] || [];
+  const homeList = document.getElementById('home-task-list');
+  if(!homeList) return;
+  homeList.dataset.showAll = '1';
+  homeList.innerHTML = sectionTasks.length
+    ? sectionTasks.map((t, i) => renderTaskCard(t, i)).join('')
+    : '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Задач в этой секции нет</div>';
+
+  const homeShowAllBtn = document.getElementById('home-show-all-btn');
+  const arrow = document.getElementById('home-show-all-arrow');
+  const label = document.getElementById('home-show-all-label');
+  if(homeShowAllBtn){ homeShowAllBtn.style.display = 'none'; }
+  if(arrow) arrow.style.transform = '';
+  if(label) label.textContent = 'Смотреть все дела';
+}
+
+function plannerCompleteTask(buttonEl){
+  const task = getPlannerTaskFromButton(buttonEl);
+  if(!task) return;
+  quickDoneTask(String(task.id), buttonEl);
+}
+
+function plannerSnoozeTask(buttonEl){
+  const task = getPlannerTaskFromButton(buttonEl);
+  if(!task) return;
+  openTaskReschedule(task.id);
+}
+
+function plannerDiscussTask(buttonEl){
+  const task = getPlannerTaskFromButton(buttonEl);
+  if(!task) return;
+  const person = task.person || 'Человек';
+  openWrite(person, (person || '?')[0], 'Обсудить задачу', `${person} — задача: ${task.text || 'без текста'}`);
 }
 
 function startOfLocalDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate());}
