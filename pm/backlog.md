@@ -25,7 +25,7 @@
 | BACK-004 | Тестовый платёж — прогнать webhook до конца | Tech | P1 | Codex | Done | Г1 | Live smoke passed: webhook returned `code:0`, test user moved from `trial` to `paid`, paid period extended |
 | BACK-021 | Голосовой ввод показывает ошибку микрофона в Telegram WebView | Product/Tech | P1 | Codex + Юрий / worker | Done | Г1 | Smoke passed на iPhone iOS в Telegram app 2026-07-01 — голос работает |
 | BACK-022 | Ручной MVP детальной карточки задачи | Product/UI | P1 | Алексей + Codex | Done | Г1 | Поля статус/приоритет/дедлайн/время/направление/напоминание/чек-лист добавлены в task-detail; saveTaskEdits сохраняет все поля; worker обновлён; smoke passed на iOS 2026-07-01 |
-| BACK-024 | Telegram вход — убрать тупик между Mini App и ботом | Bug/Auth | P1 | Юрий / bot + Codex / app | Triaged | Г1 | Нажатие "Войти через Telegram" даёт явный следующий шаг, `@Denzel89bot` отвечает на `/start` рабочей ссылкой, вход по ссылке проходит до главного экрана |
+| BACK-024 | Telegram вход — убрать тупик между Mini App и ботом | Bug/Auth | P1 | Юрий / bot + Codex / app | Done | Г1 | Вход через Telegram проходит в правильный аккаунт, smoke passed 2026-07-01 |
 | BACK-025 | Настраиваемый утренний AI-дашборд | Product/UI | P1 | Алексей + Codex | Todo | Г1 | Первый экран в стиле AI-планера: "План на сегодня", короткая AI-сводка, "Начать с", пульс дня, риски и секции "Сделать первым / Горит / Жду от людей / Можно перенести"; пользователь за 30 секунд понимает главное и может открыть нужное действие |
 
 ## Next
