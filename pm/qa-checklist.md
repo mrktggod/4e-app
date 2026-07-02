@@ -32,7 +32,7 @@
 | --- | --- | --- | --- |
 | Auth / Access | Вход, Telegram-login, logout, восстановление пароля, пустые экраны после auth-действий | Ready for QA | `BUG-2026-06-25-002` исправлен локально; `BUG-2026-06-29-001` требует проверки связки Mini App + `@Denzel89bot` |
 | Voice | Микрофон, запись, распознавание, fallback в Telegram WebView | Triaged | `BUG-2026-06-29-002` подтверждён скрином; `main` сейчас использует SpeechRecognition после отката MediaRecorder |
-| Home / AI-планер | Утренний дашборд, AI-сводка, пульс дня, смысловые секции задач, glass UI | Todo | `BACK-025` добавлен как P1 перед реализацией интерфейса |
+| Home / AI-планер | Утренний дашборд, AI-сводка, пульс дня, смысловые секции задач, glass UI | In Progress | `BACK-025` добавлен как P1 перед реализацией интерфейса |
 | Баг-триаж | Severity, priority, шаги воспроизведения | Todo | |
 | Roadmap | Now/Next/Later, зависимости, риски | Todo | |
 | QA | Чеклисты, acceptance criteria, тестовые данные | Todo | |
