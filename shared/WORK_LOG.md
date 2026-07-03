@@ -32,6 +32,14 @@
 
 ## Лог
 
+### 2026-07-05 — Codex
+
+**Задача:** Закрыть BACK-007 по privacy/RKN: уточнить номер в `privacy.html`, добавить ссылки на privacy в регистрацию и онбординг
+**Результат:** Ветка `fix/privacy-rkn-links`; в `privacy.html` формулировка приведена к тексту с рег. № `102299/77`, в `index.html` добавлены явные privacy-ссылки для onboarding и регистрации, `pm/backlog.md` обновлён до `Ready for QA`; live GitHub Pages `privacy.html` отдаёт `200` и содержит номер РКН.
+**Коммит:** `этот коммит`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Проверить ветку и решить merge после ревью, затем продолжить staging-контур BACK-034
+
 ### 2026-07-04 — Codex
 
 **Задача:** Синхронизировать `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md` и docs-материалы из Desktop-источника в реальный publish-репозиторий по inbox `cowork-to-codex-2026-07-04-roadmap-sync.md` v2.1

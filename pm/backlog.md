@@ -37,7 +37,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | BACK-005 | Единая модель пользователя VK + TG + Email | Tech | P1 | Codex | Done | Г1 | Worker commit `1a593fb` merged in `d5af7aa`, deployed as version `ff365be0`; live smoke passed: Email account, Telegram link and VK login returned the same canonical user id |
 | BACK-006 | Миграция KV → D1 | Tech | P2 | Codex | Done | Г1 | Worker commit `0a035c9` stores sessions and task lists in D1 (`app_sessions`, `app_task_lists`), deployed as version `0b66977a`; live smoke passed: D1 rows created, KV `session:*`/`tasks:*` returned 404 |
-| BACK-007 | Уведомление РКН | Legal | P1 | Юрий | Manual | Г1 | Юрий подал уведомление, номер внесён в privacy.html |
+| BACK-007 | Уведомление РКН | Legal | P1 | Юрий + Codex | Ready for QA | Г1 | Номер РКН внесён в `privacy.html`, ссылка на `privacy.html` видна на login/register и onboarding, GitHub Pages `privacy.html` открывается и содержит `102299/77` |
 | BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Алексей + Codex | Manual blocker | Г2 | Алексей создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings; после этого Codex продолжает перенос |
 | BACK-013 | Семантический HTML | Tech/UI | P3 | Codex | Done | Г1 | В `index.html` добавлены `<main>`, `<header>`, `<nav>`, aria-label и роли для иконочной навигации без изменения визуала |
 | BACK-014 | Подготовка кода под PostgreSQL заранее | Tech | P2 | Codex | Done | Г2 | Worker commit `37f9dda` добавил PostgreSQL storage adapter и `migrations/postgres_app_state.sql`; production путь остаётся D1/KV до появления credentials |
