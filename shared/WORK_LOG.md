@@ -34,6 +34,14 @@
 
 ### 2026-07-05 — Codex
 
+**Задача:** Встроить SMART-006 — профиль пользователя в контекст AI-чата
+**Результат:** Ветка `feat/smart-006-profile-context`; в `index.html` AI system prompt теперь получает блок профиля пользователя: имя, локальное время/таймзону, тариф, количество активных/горящих/просроченных задач, завершённые за 7 дней и топ людей из активных задач. Новых API не понадобилось — всё собрано из `currentUser` и `allTasksCache`.
+**Коммит:** `этот коммит`
+**Статус:** ⚠️ частично
+**Следующий шаг:** После добавления `ANTHROPIC_KEY` в staging прогнать smoke на вопросах «что у меня горит?» и «кому я больше всего должен?», затем перейти к SMART-004
+
+### 2026-07-05 — Codex
+
 **Задача:** Поднять staging-контур BACK-034: staging worker, staging Pages и dev-ветку Mini App
 **Результат:** В `4e-worker` добавлен рабочий `env.staging`, staging D1 мигрирован (`postgres_app_state.sql`), worker задеплоен на `https://restless-lab-d737-staging.shelckograff.workers.dev` (version `a5ff6e7d-b0b2-4e4c-b777-edcc19387029`). В app-репо создана ветка `dev`, `index.html` смотрит на staging worker, bot username можно передать через `?bot=...`, Pages-проект `4-ai-staging` создан и dev-версия доступна на `https://4-ai-staging.pages.dev/`. Добавлена памятка `docs/staging-contour.md`.
 **Коммит:** `этот коммит`

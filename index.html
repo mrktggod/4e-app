@@ -2828,6 +2828,7 @@ const SYS_BASE=`Ты — 4, персональный AI-секретарь. От
 - Составлять сообщения и ответы в Telegram.
 - Советовать, как лучше подойти к задаче или обещанию.
 - Учитывать контекст активных задач и историю текущего AI-чата.
+- Учитывать профиль пользователя: имя, локальное время, тариф, статистику задач и людей из контекста.
 КАК СОЗДАВАТЬ ЗАДАЧИ:
 Если пользователь говорит "поставь задачу", "добавь задачу", "создай задачу", "запомни", "напомни", "надо", "нужно", "сделать" или просто описывает дело — создай задачу.
 Если не хватает деталей:
@@ -4269,6 +4270,94 @@ function renderAskHistory(){
   if(welcome) welcome.style.display = askHistory.length ? 'none' : 'flex';
 }
 
+function parseAskTaskTimestamp(value){
+  if(value===null||typeof value==='undefined') return null;
+  if(typeof value==='number' && Number.isFinite(value)) return value;
+  if(typeof value==='string'){
+    const trimmed=value.trim();
+    if(!trimmed) return null;
+    if(/^\d+$/.test(trimmed)){
+      const asNumber=Number(trimmed);
+      return Number.isFinite(asNumber) ? asNumber : null;
+    }
+    const parsed=Date.parse(trimmed);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+  return null;
+}
+
+function getAskTaskDoneTimestamp(task){
+  if(!task||typeof task!=='object') return null;
+  const keys=['completedAt','doneAt','finishedAt','updatedAt','ts'];
+  for(const key of keys){
+    const parsed=parseAskTaskTimestamp(task[key]);
+    if(parsed) return parsed;
+  }
+  return null;
+}
+
+function buildAskUserProfileSummary(){
+  const tasks = Array.isArray(allTasksCache) ? allTasksCache : [];
+  const activeTasks = tasks.filter(t => !t.done);
+  const now = Date.now();
+  const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+  let burningCount = 0;
+  let overdueCount = 0;
+  for(const task of activeTasks){
+    if(!task?.deadline) continue;
+    const deadlineTs = Date.parse(task.deadline);
+    if(Number.isNaN(deadlineTs)) continue;
+    if(deadlineTs < now) {
+      overdueCount += 1;
+      continue;
+    }
+    const hoursLeft = Math.round((deadlineTs - now) / 36e5);
+    if(hoursLeft <= 24) burningCount += 1;
+  }
+  const doneWeekCount = tasks.filter(task => {
+    if(!task?.done) return false;
+    const doneTs = getAskTaskDoneTimestamp(task);
+    return doneTs !== null && doneTs >= weekAgo;
+  }).length;
+  const currentName = (getExtendedProfileDisplayName?.() || currentUser?.name || currentUser?.email || 'Пользователь').trim();
+  const currentNameLower = currentName.toLowerCase();
+  const topPeopleMap = new Map();
+  for(const task of activeTasks){
+    const rawPerson = String(task?.person || '').trim();
+    if(!rawPerson) continue;
+    const normalized = rawPerson.toLowerCase();
+    if(normalized === 'я' || normalized === 'мне' || normalized === 'мой' || normalized === currentNameLower) continue;
+    topPeopleMap.set(rawPerson, (topPeopleMap.get(rawPerson) || 0) + 1);
+  }
+  const topPeople = Array.from(topPeopleMap.entries())
+    .sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ru'))
+    .slice(0,3)
+    .map(([name,count]) => `${name} (${count})`)
+    .join(', ') || 'нет данных';
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown';
+  const localTime = new Date().toLocaleString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+    day: 'numeric',
+    month: 'long'
+  });
+  let planLabel = 'не указан';
+  if(currentUser?.plan) planLabel = String(currentUser.plan);
+  else if(currentUser?.trialActive === true) planLabel = 'trial';
+  else if(currentUser?.trialActive === false) planLabel = 'paid';
+  return [
+    'Профиль пользователя:',
+    '- Имя: ' + currentName,
+    '- Локальное время: ' + localTime + ' (' + tz + ')',
+    '- Тариф: ' + planLabel,
+    '- Активных задач: ' + activeTasks.length,
+    '- Горит: ' + burningCount,
+    '- Просрочено: ' + overdueCount,
+    '- Завершено за 7 дней: ' + doneWeekCount,
+    '- Топ людей в задачах: ' + topPeople
+  ].join('\n');
+}
+
 function looksLikeTaskRequest(text){
   const v = (text || '').toLowerCase().trim();
   if(v.length < 4) return false;
@@ -4357,6 +4446,7 @@ async function sendAsk(){
       }).join('; ')
     : 'Активных задач нет.';
   const today = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const profileSummary = buildAskUserProfileSummary();
 
   try{
     const messagesForClaude = askHistory.slice(-ASK_HISTORY_MAX);
@@ -4366,7 +4456,7 @@ async function sendAsk(){
       body:JSON.stringify({
         model:'claude-sonnet-4-6',
         max_tokens:1000,
-        system: SYS_BASE + '\n\nСегодня: ' + today + '\n' + taskSummary,
+        system: SYS_BASE + '\n\nСегодня: ' + today + '\n' + profileSummary + '\n' + taskSummary,
         messages: messagesForClaude
       })
     });

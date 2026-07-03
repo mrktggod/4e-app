@@ -54,6 +54,16 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-07-05 — SMART-006: user profile in AI chat context (Codex)
+
+**Что сделано:** В `index.html` расширен system prompt AI-чата: добавлено явное указание учитывать профиль пользователя. Рядом с `sendAsk()` добавлены helper-функции, которые собирают из `currentUser` и `allTasksCache` профильный блок для Claude: имя, локальное время и timezone, тариф, количество активных/горящих/просроченных задач, завершённые за 7 дней (по доступным timestamp-полям), топ-3 людей из активных задач. Этот блок теперь инжектится в `system` вместе с датой и summary активных задач.
+
+**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
+
+**Тест:** локальный grep подтвердил, что `index.html` на ветке содержит профильный блок и инжектит его в `system`. Полный staging smoke пока заблокирован: `npx wrangler secret list --env staging` не показывает `ANTHROPIC_KEY`, поэтому `/anthropic` на staging нельзя проверить честно.
+
+**Коммит:** `этот коммит`
+
 ## 2026-07-05 — BACK-034: staging contour bootstrap (Codex)
 
 **Что сделано:** Для `<worker-repo-root>` staging-конфиг приведён к штатному виду: в `wrangler.toml` добавлен `[env.staging]` с отдельными D1/KV bindings и `routes = []`, чтобы staging не наследовал prod-домен `edge.4-ai.site`; `wrangler.staging.toml` синхронизирован. Применена миграция `postgres_app_state.sql` к D1 `4e-staging`, staging worker задеплоен на `https://restless-lab-d737-staging.shelckograff.workers.dev`. В app-репо создана ветка `dev`: `index.html` по умолчанию ходит в staging worker, username бота можно прокинуть через `?bot=<staging_bot_username>`, а при недоступности `startToken` dev-ветка делает fallback-открытие Telegram-бота без тупика. Создан Pages-проект `4-ai-staging`, загружена dev-версия приложения, добавлена инструкция `docs/staging-contour.md`.
