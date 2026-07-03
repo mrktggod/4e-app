@@ -32,6 +32,14 @@
 
 ## Лог
 
+### 2026-07-05 — Codex
+
+**Задача:** Поднять staging-контур BACK-034: staging worker, staging Pages и dev-ветку Mini App
+**Результат:** В `4e-worker` добавлен рабочий `env.staging`, staging D1 мигрирован (`postgres_app_state.sql`), worker задеплоен на `https://restless-lab-d737-staging.shelckograff.workers.dev` (version `a5ff6e7d-b0b2-4e4c-b777-edcc19387029`). В app-репо создана ветка `dev`, `index.html` смотрит на staging worker, bot username можно передать через `?bot=...`, Pages-проект `4-ai-staging` создан и dev-версия доступна на `https://4-ai-staging.pages.dev/`. Добавлена памятка `docs/staging-contour.md`.
+**Коммит:** `этот коммит`
+**Статус:** ⚠️ частично
+**Следующий шаг:** Юрий добавляет недостающие staging secrets (`ANTHROPIC_KEY`, при необходимости `OPENAI_KEY`, `RESEND_KEY`, `VK_SECRET_KEY`) и сообщает username тестового бота; после этого можно закрыть AI smoke и перейти к SMART-006 на staging
+
 ### 2026-07-04 — Codex
 
 **Задача:** Синхронизировать `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md` и docs-материалы из Desktop-источника в реальный publish-репозиторий по inbox `cowork-to-codex-2026-07-04-roadmap-sync.md` v2.1

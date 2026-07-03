@@ -28,7 +28,7 @@
 | BACK-024 | Telegram вход — убрать тупик между Mini App и ботом | Bug/Auth | P1 | Юрий / bot + Codex / app | Done | Г1 | Вход через Telegram проходит в правильный аккаунт, smoke passed 2026-07-01 |
 | BACK-025 | Настраиваемый утренний AI-дашборд | Product/UI | P1 | Алексей + Codex | Done | Г1 | Первый экран в стиле AI-планера: "План на сегодня", короткая AI-сводка, "Начать с", пульс дня, риски и секции "Сделать первым / Горит / Жду от людей / Можно перенести"; пользователь за 30 секунд понимает главное и может открыть нужное действие |
 | BACK-027 | Баги AI-дашборда после smoke | Bug/UI | P2 | Codex | Done | Г1 | (1) Пульс дня показывает >100% — сломан расчёт; (2) кнопка «Свернуть 4» содержит имя приложения вместо просто «Свернуть»; (3) секция «Горит» показывает «Пока пусто» при наличии просроченных задач — фильтр не захватывает overdue. Закрыт: см. bugs.md BUG-2026-07-04-001, headless smoke 2026-07-04 |
-| BACK-034 | Staging-контур: D1/KV staging, `wrangler --env staging`, тестовый бот, dev-Pages | Tech/Process | P1 | Codex | Todo | Г1 | «Чистая» версия = main для пользователей, «грязная» = dev/staging для агентов; ни один деплой агентов не попадает в prod без QA (решение 2026-07-04) |
+| BACK-034 | Staging-контур: D1/KV staging, `wrangler --env staging`, тестовый бот, dev-Pages | Tech/Process | P1 | Codex | In Progress | Г1 | staging D1/KV и worker уже подняты, `dev`-ветка Mini App задеплоена на `4-ai-staging.pages.dev`; осталось добить AI smoke после добавления staging secrets и подтвердить username тестового бота |
 | BACK-035 | QA smoke по qa-checklist перед закрытым тестом | QA | P1 | Алексей | Todo | Г1 | Все сценарии qa-checklist пройдены на iOS и Android после фиксов BACK-021/024/027 |
 
 ## Next

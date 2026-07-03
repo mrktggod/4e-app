@@ -2019,8 +2019,8 @@ function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||
 const tg=window.Telegram?.WebApp;
 if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}
 if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
-const WORKER='https://restless-lab-d737.shelckograff.workers.dev';
-const TELEGRAM_BOT_USERNAME='Denzel89bot';
+const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev';
+const TELEGRAM_BOT_USERNAME=new URLSearchParams(location.search).get('bot')||'Denzel89bot';
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
 const D1_TOKEN_K='chetam_d1_token';
@@ -2088,7 +2088,8 @@ function getTelegramStartTokenFromLaunch() {
 }
 
 function buildTelegramBotLoginUrl(startToken) {
-  return 'tg://resolve?domain=' + TELEGRAM_BOT_USERNAME + '&start=' + encodeURIComponent(startToken);
+  const base = 'tg://resolve?domain=' + TELEGRAM_BOT_USERNAME;
+  return startToken ? base + '&start=' + encodeURIComponent(startToken) : base;
 }
 
 function openTelegramLoginUrl(url){
@@ -2465,7 +2466,8 @@ async function loginWithTelegram(startToken=''){
     return true;
   }
 
-  showToast(tokenData.error || 'Failed to prepare Telegram login link.');
+  openTelegramLoginUrl(buildTelegramBotLoginUrl(''));
+  showToast(tokenData.error || 'Открываем Telegram-бота для входа');
   showScreen('login');
   return false;
 }
