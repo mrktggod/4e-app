@@ -24,6 +24,8 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 - `/notifications/settings` — читает/сохраняет настройки уведомлений пользователя в D1 с KV fallback.
 - `/briefings/check` — выдаёт bot scheduler список утренних брифингов по времени пользователя.
 - `x-action: delete-task` — удаляет задачу по `taskId` из user/group KV-ключей; используется inline-кнопкой `✕` и перед пересохранением при `✏️`.
+- `x-action: upsert-chat-members` / `get-chat-members` / `mark-chat-members-left` — D1-ростер участников чата для `SMART-001`; таблица `chat_members`, источник для резолва `assigneeTgId`.
+- `migrations/0007_chat_members.sql` — создаёт D1-таблицу `chat_members` и индексы по `chat_id/last_seen` и `username`.
 - D1/privacy endpoints используются из `index.html` и `vk.html`.
 - Реальные секреты не должны попадать в код; использовать placeholders и Secrets.
 

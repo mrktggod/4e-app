@@ -17,6 +17,7 @@ Telegram bot не находится в текущем checkout `4e-app`.
 - Это отдельный Telegram-бот проекта.
 - Исторически bot.js был разбит на модули `src/bot/`.
 - Текущая npm entrypoint в локальном checkout: `src/bot/index.js`; подтверждения задач и callback-кнопки живут в `src/bot/handler.js`, сохранение задач — в `src/bot/tasks.js`.
+- `src/bot/handler.js` теперь также обновляет roster участников (`msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`), передаёт участников в Haiku и сохраняет `assigneeTgId` / `assigneeUsername` в задачу.
 - Бот связан с Worker через задачи, напоминания и Telegram-сценарии.
 
 ## Перед задачей по bot

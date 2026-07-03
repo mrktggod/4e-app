@@ -8,6 +8,16 @@
 
 ### 2026-07-04 — Codex
 
+**Задача:** Продвинуть SMART-001 и SMART-002 — roster участников и assignee с TG ID
+**Результат:** В локальном `<worker-repo-root>` добавлен D1-ростер `chat_members` с endpoint'ами `upsert/get/mark-chat-members-left`; bot `handler.js` теперь копит участников из `msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`, передаёт список участников в Haiku и сохраняет в задачу `assigneeTgId` / `assigneeUsername` по `text_mention`, `@mention`, reply и fuzzy-матчу имени. Staging worker обновлён: миграция `0007_chat_members.sql` применена, версия `231a8070-f7ab-46d2-8983-f3939063afad` отвечает `200 OK`.
+**Коммит:** `этот коммит`
+**Статус:** ⚠️ частично
+**Следующий шаг:** Обновить реальный bot runtime из `<worker-repo-root>/src/bot/`, прогнать smoke в тестовой группе для `@mention`, reply и join/leave событий, затем перевести SMART-001/002 в Ready for QA
+
+---
+
+### 2026-07-04 — Codex
+
 **Задача:** Продвинуть SMART-004 — лаконичная фиксация задач в группах
 **Результат:** В локальном `<worker-repo-root>` бот подтверждает задачу одной строкой `✓ Имя: задача — срок`, сохраняет её сразу, использует inline-кнопки `✏️/✕` и удаляет задачу через новый `x-action: delete-task`; дополнительно исправлен payload удаления и убран ложный ответ «Отменено», если бот потерял контекст кнопки.
 **Коммит:** `этот коммит`

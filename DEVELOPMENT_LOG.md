@@ -54,6 +54,18 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-07-04 — SMART-001/002: chat roster + assignee tg id (Codex)
+
+**Что сделано:** В локальном worker checkout добавлена миграция `4e-worker/migrations/0007_chat_members.sql` и три новых bot-only action'а в `worker.js`: `upsert-chat-members`, `get-chat-members`, `mark-chat-members-left`. Они ведут D1-таблицу `chat_members` по ключу `chat_id + tg_id` и позволяют боту копить roster группы. В `4e-worker/src/bot/handler.js` добавлены сбор roster-кандидатов из `msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`, загрузка roster перед анализом, эвристики резолва исполнителя по `text_mention`, `@mention`, reply и fuzzy-матчу имени, а также сохранение `assigneeTgId` / `assigneeUsername` в объект задачи. В `4e-worker/src/bot/analyzer.js` system prompt теперь получает список реальных участников чата и автора reply, чтобы Haiku чаще возвращал живое имя из roster вместо абстрактного «он/она».
+
+**Проверка кодировки:** `pm/backlog.md` — контрольный поиск до правки `29`; `shared/WORK_LOG.md` — `171`; `DEVELOPMENT_LOG.md` — `177`; `FILE_MAP_WORKER.md` — `11`; `FILE_MAP_BOT.md` — `5`. Итоговая сверка после правок не должна давать уменьшения.
+
+**Тест:** `node --check <worker-repo-root>/src/bot/analyzer.js`; `node --check <worker-repo-root>/src/bot/handler.js`; `node --check <worker-repo-root>/worker.js`; `npx wrangler d1 migrations apply DB --env staging --remote` → `0007_chat_members.sql ✅`; `npx wrangler deploy --env staging` → version `231a8070-f7ab-46d2-8983-f3939063afad`; `GET https://restless-lab-d737-staging.shelckograff.workers.dev/` → `200`.
+
+**Коммит:** `этот коммит`
+
+**Блокеры:** Сам bot runtime по-прежнему живёт вне git-репозитория `4e-app`; staging worker уже умеет roster API, но без обновления процесса `node src/bot/index.js` нельзя честно проверить group smoke для `@mention`, reply и join/leave.
+
 ## 2026-07-04 — SMART-004: concise group task confirmations (Codex)
 
 **Что сделано:** В локальном worker checkout обновлены bot-обработчики для `SMART-004`. `4e-worker/src/bot/handler.js` теперь формирует однострочное подтверждение `✓ Имя: задача — срок`, сохраняет задачу сразу после разбора сообщения, показывает только кнопки `✏️` и `✕`, а редактирование/отмена удаляют старую запись через `x-action: delete-task` и не рисуют ложное «Отменено», если бот уже потерял контекст callback. В `4e-worker/worker.js` подтверждён новый action `delete-task` с удалением по `taskId` из user/group KV-ключей; `saveTaskByName` в текущем checkout не реализован, поэтому дополнительных скрытых копий задачи этот сценарий сейчас не создаёт.
