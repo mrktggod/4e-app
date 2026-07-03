@@ -54,6 +54,18 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-07-04 — SMART-004: concise group task confirmations (Codex)
+
+**Что сделано:** В локальном worker checkout обновлены bot-обработчики для `SMART-004`. `4e-worker/src/bot/handler.js` теперь формирует однострочное подтверждение `✓ Имя: задача — срок`, сохраняет задачу сразу после разбора сообщения, показывает только кнопки `✏️` и `✕`, а редактирование/отмена удаляют старую запись через `x-action: delete-task` и не рисуют ложное «Отменено», если бот уже потерял контекст callback. В `4e-worker/worker.js` подтверждён новый action `delete-task` с удалением по `taskId` из user/group KV-ключей; `saveTaskByName` в текущем checkout не реализован, поэтому дополнительных скрытых копий задачи этот сценарий сейчас не создаёт.
+
+**Проверка кодировки:** `pm/backlog.md` — контрольный поиск до правки `29`; `shared/WORK_LOG.md` — `167`; `DEVELOPMENT_LOG.md` — `173`; `FILE_MAP_WORKER.md` — `10`; `FILE_MAP_BOT.md` — `3`. Итоговая сверка после правок не должна давать уменьшения.
+
+**Тест:** `node --check <worker-repo-root>/worker.js`; `node --check <worker-repo-root>/src/bot/handler.js`; точечная проверка `handler.js`/`worker.js` на `formatTaskConfirmationLine`, `delete-task`, `handleDeleteTask`.
+
+**Коммит:** `этот коммит`
+
+**Блокеры:** Текущий `<worker-repo-root>` не является отдельным git-репозиторием, поэтому код bot/worker пока зафиксирован только локально. Для закрытия SMART-004 нужен runtime deploy процесса `node src/bot/index.js` и ручной smoke в тестовой группе.
+
 ## 2026-07-05 — SMART-006: user profile in AI chat context (Codex)
 
 **Что сделано:** В `index.html` расширен system prompt AI-чата: добавлено явное указание учитывать профиль пользователя. Рядом с `sendAsk()` добавлены helper-функции, которые собирают из `currentUser` и `allTasksCache` профильный блок для Claude: имя, локальное время и timezone, тариф, количество активных/горящих/просроченных задач, завершённые за 7 дней (по доступным timestamp-полям), топ-3 людей из активных задач. Этот блок теперь инжектится в `system` вместе с датой и summary активных задач.
