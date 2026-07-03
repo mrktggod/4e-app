@@ -1,6 +1,6 @@
 # ИНСТРУКЦИИ ДЛЯ CODEX — Установка редизайна «4»
 > Рабочий файл: `4e-app/index.html`  
-> Патчи лежат в: `C:\Users\shelc\Desktop\4\Версия\redesign\patches\`  
+> Патчи лежат в: `redesign/patches/`
 > Общий план: `ПЛАН_РАЗРАБОТКИ.md`
 
 ## НАВИГАЦИЯ — читай до начала работы с index.html
@@ -399,7 +399,7 @@ git push
 
 ### Шаг 0 — Проверка кодировки (обязательно)
 ```powershell
-cd C:\Users\shelc\Documents\4
+cd <repo-root>
 $before = (Select-String -Path "4e-app\index.html" -Pattern 'Войти|Задачи|Сегодня').Count
 Write-Host "BEFORE: $before совпадений"
 # Ожидаем 26-27
@@ -496,7 +496,7 @@ cd ..
 
 ### Готовый промпт Codex
 ```
-Установи Фазу 11 из CODEX_INSTRUCTIONS.md (файл: C:\Users\shelc\Desktop\4\Версия\CODEX_INSTRUCTIONS.md).
+Установи Фазу 11 из `CODEX_INSTRUCTIONS.md` из текущего репозитория.
 Фаза 11 = добавить функции relativeDate() и deadlineBadge() после e2(), заменить e2(t.deadline) → relativeDate()+deadlineBadge() в 4 местах рендера карточек.
 Шаг 0 до/после. Тест Фазы 11. Коммит "feat: relative dates phase 11". Стоп.
 ```
@@ -606,13 +606,13 @@ function openForgotPassword(){
 
 ### Шаг 4 — Деплой Worker
 ```powershell
-cd C:\Users\shelc\Desktop\4\Версия\4e-worker
+cd <worker-repo-root>
 npx wrangler deploy
 ```
 
 ### Шаг 5 — Деплой index.html
 ```powershell
-cd C:\Users\shelc\Documents\4
+cd <repo-root>
 $content = [System.IO.File]::ReadAllText("4e-app\index.html", [System.Text.Encoding]::UTF8)
 # (после правок)
 [System.IO.File]::WriteAllText("4e-app\index.html", $content, (New-Object System.Text.UTF8Encoding $false))
@@ -632,7 +632,7 @@ git add index.html; git commit -m "feat: forgot password button phase 12"; git p
 
 ### Готовый промпт Codex
 ```
-Установи Фазу 12 из CODEX_INSTRUCTIONS.md (файл: C:\Users\shelc\Desktop\4\Версия\CODEX_INSTRUCTIONS.md).
+Установи Фазу 12 из `CODEX_INSTRUCTIONS.md` из текущего репозитория.
 Фаза 12 = починить sendEmail() в Worker, добавить /auth/reset-request и /auth/reset-confirm, добавить кнопку «Забыл пароль» в login-форму.
 Шаг 0 до/после (кириллица). Тест Фазы 12. Коммит worker "feat: password reset phase 12", коммит app "feat: forgot password button phase 12". Стоп.
 ```

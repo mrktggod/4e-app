@@ -1,4 +1,4 @@
-# BACK-022 — Выполненные задачи за неделю в списке дашборда
+# BACK-039 — Выполненные задачи за неделю в списке дашборда
 
 **Приоритет:** P2  
 **Ответственный:** Codex  
@@ -53,4 +53,4 @@ git switch -c feat/completed-tasks-week
 
 ## После выполнения
 
-Обновить `pm/backlog.md` (BACK-022 → Ready for QA) и добавить запись в `shared/WORK_LOG.md`.
+Обновить `pm/backlog.md` (BACK-039 → Ready for QA) и добавить запись в `shared/WORK_LOG.md`.

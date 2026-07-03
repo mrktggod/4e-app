@@ -54,6 +54,16 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-07-04 — PM docs sync v2.1 (Codex)
+
+**Что сделано:** Найден реальный target-репозиторий `<repo-root>` вместо `Documents\4\4e-app`. Из Desktop-источника байтовым `Copy-Item` синхронизированы `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` и `docs/ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ.md`. По дополнению inbox v2.1 переименованы task-файлы `BACK-025-completed-tasks-week.md` → `BACK-039-completed-tasks-week.md` и `BACK-027-admin-tariff-map.md` → `BACK-040-admin-tariff-map.md`, обновлены их внутренние идентификаторы и backlog-заметка про коллизию ID. Дополнительно приведены к portable-виду абсолютные пути в `CODEX_INSTRUCTIONS.md`, чтобы прошла repo-проверка путей.
+
+**Проверка кодировки:** кириллица source/target совпала для всех 5 копируемых файлов — `ROADMAP 6055/6055`, `backlog 6680/6680`, `bugs 5994/5994`, `ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ 4791/4791`, `ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ 5264/5264`.
+
+**Тест:** `git diff --check`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; grep по репо на старые ссылки `BACK-025-completed-tasks-week` / `BACK-027-admin-tariff-map` и Later-дубликаты — лишних упоминаний не осталось.
+
+**Коммит:** `docs(pm): sync roadmap+backlog+bugs — SMART/VIRAL/PLAT задачи, аудит багов, решения 2026-07-04`
+
 ## 2026-06-29 — BACK-025: AI planner glass dashboard PM setup (Codex)
 
 **Что сделано:** Создана PM-основа для переделки главного экрана в утренний AI-планер. В `shared/ROADMAP.md` добавлено направление "AI-планерный дашборд"; в `pm/backlog.md` добавлен `BACK-025 — Настраиваемый утренний AI-дашборд` как P1; `pm/next-actions.md` обновлён новым ближайшим фокусом; `pm/qa-checklist.md` получил smoke-проверки для "План на сегодня", "Пульс дня" и смысловых секций задач. Создан `docs/tasks/BACK-025_ai_planner_glass_dashboard.md`.

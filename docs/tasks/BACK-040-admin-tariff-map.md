@@ -1,4 +1,4 @@
-# BACK-024 — Карта управления тарифами (основа админ-кабинета)
+# BACK-040 — Карта управления тарифами (основа админ-кабинета)
 
 **Приоритет:** P2  
 **Ответственный:** Codex  
@@ -83,4 +83,4 @@ Authorization: Bearer <ADMIN_SECRET>
 
 ## После выполнения
 
-Обновить `pm/backlog.md` (BACK-024 → Ready for QA) и добавить запись в `shared/WORK_LOG.md`.
+Обновить `pm/backlog.md` (BACK-040 → Ready for QA) и добавить запись в `shared/WORK_LOG.md`.

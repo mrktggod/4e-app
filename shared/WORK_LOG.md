@@ -22,6 +22,14 @@
 
 ## Лог
 
+### 2026-07-04 — Codex
+
+**Задача:** Синхронизировать `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md` и docs-материалы из Desktop-источника в реальный publish-репозиторий по inbox `cowork-to-codex-2026-07-04-roadmap-sync.md` v2.1
+**Результат:** Ветка `docs/roadmap-backlog-sync-2026-07-04` создана в `<repo-root>`; байтовым копированием обновлены roadmap/backlog/bugs и два docs-файла, проверена кириллица, переименованы `docs/tasks/BACK-039-completed-tasks-week.md` и `docs/tasks/BACK-040-admin-tariff-map.md`, очищены старые ссылки и portable-path замечания в `CODEX_INSTRUCTIONS.md`.
+**Коммит:** `docs(pm): sync roadmap+backlog+bugs — SMART/VIRAL/PLAT задачи, аудит багов, решения 2026-07-04`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Разобрать diff и при необходимости отдельно синхронизировать эту же PM-линию в другие рабочие копии через git
+
 ### 2026-06-29 — Codex
 
 **Задача:** Завести PM-задачу BACK-025 по утреннему AI-дашборду
