@@ -3,6 +3,7 @@ main = "worker-static.js"
 compatibility_date = "2026-07-04"
 workers_dev = true
 routes = [
+  { pattern = "app.4-ai.site", zone_name = "4-ai.site" },
   { pattern = "app.4-ai.site/*", zone_name = "4-ai.site" }
 ]
 
