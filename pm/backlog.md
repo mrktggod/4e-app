@@ -32,6 +32,8 @@
 | BACK-035 | QA smoke по qa-checklist перед закрытым тестом | QA | P1 | Алексей | Todo | Г1 | Все сценарии qa-checklist пройдены на iOS и Android после фиксов BACK-021/024/027 |
 | BACK-036 | Web fallback Telegram-входа не открывает Telegram | Bug/Auth | P1 | Codex + Юрий / bot | Ready for QA | Г1 | В `index.html` заменён `tg://resolve` на `https://t.me/Denzel89bot?start=...`; фронт сохраняет pending token, отправляет `returnUrl` и принимает `?telegram_start=<token>`; bot должен после START дать ссылку назад на сайт |
 | BACK-041 | Bot-side web fallback Telegram-входа: возврат на сайт из `/start auth_*` | Bug/Auth | P1 | Codex + Юрий / bot | Ready for QA | Г1 | В обработчике `/start` payload `auth_*` извлекает `startToken` и шлёт inline-кнопку «Вернуться в 4» → `${APP_BASE_URL}/?telegram_start=<token>`; TTL 10 минут и одноразовость уже обеспечены worker-ом; прод worker задеплоен (`88b3ab16-fc44-4567-b98c-a8ca4125a5f4`), polling bot code запушен в `4e-worker/main`; Алексей проходит сквозной live smoke веб-входа |
+| BACK-042 | Ограничить нижнюю панель шириной экрана приложения | Bug/UI | P2 | Юрий | Triaged | Г1 | `bottom-nav-v2` и `global-nav` на desktop/web должны быть по ширине app-контейнера, а не viewport; mobile safe-area и скрытие nav при клавиатуре не должны сломаться |
+| BACK-043 | Выровнять мобильную верстку экрана профиля | Bug/UI | P2 | Юрий | Triaged | Г1 | На mobile web привести профиль к аккуратной форме: ровные отступы, статусные бейджи phone/email/telegram не конфликтуют с input, секции "Дата рождения" и "О себе" не прилипают, счётчик textarea расположен гармонично |
 
 ## Next
 
