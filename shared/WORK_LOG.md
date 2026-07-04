@@ -19,10 +19,10 @@
 ### 2026-07-05 — Codex
 
 **Задача:** INFRA-004 + merge-пакет long-session-3 — довести VK-хостинг, синхронизировать PM/CI и закрыть инфраструктурные хвосты
-**Результат:** `feat/infra-001-workers-static-assets` смёржен в `main` и запушен (`7931e8b`). В app-репо подготовлен контур VK-хостинга: добавлены `@vkontakte/vk-miniapps-deploy`, `scripts/build-vk-hosting.mjs`, `vk-hosting-config.json`, сборка `.vk-hosting-dist` с `index.html` из `vk.html` и локальными vendor-ассетами, чтобы VK-поверхность не зависела от GitHub Pages и внешних CDN. Синхронизированы `pm/backlog.md`, `shared/ROADMAP.md`, `pm/release-checklist.md`, `pm/qa-checklist.md`, добавлена отдельная QA-инструкция `pm/qa-smart-001-002-004-group-bot.md`; в GitHub Actions для `Deploy GitHub Pages` добавлены проверки production `WORKER` URL, запрет staging/`workers.dev` origin и post-deploy smoke. Для `4e-worker` подтверждено: remote `mrktggod/4e-worker` уже существует, репозиторий приватный, `main` синхронен с `origin/main`.
+**Результат:** `feat/infra-001-workers-static-assets` смёржен в `main` и запушен (`7931e8b`). В app-репо подготовлен контур VK-хостинга: добавлены `@vkontakte/vk-miniapps-deploy`, `scripts/build-vk-hosting.mjs`, `vk-hosting-config.json`, сборка `.vk-hosting-dist` с `index.html` из `vk.html` и локальными vendor-ассетами, чтобы VK-поверхность не зависела от GitHub Pages и внешних CDN. Синхронизированы `pm/backlog.md`, `shared/ROADMAP.md`, `pm/release-checklist.md`, `pm/qa-checklist.md`, добавлена отдельная QA-инструкция `pm/qa-smart-001-002-004-group-bot.md`; в GitHub Actions для `Deploy GitHub Pages` добавлены проверки production `WORKER` URL, запрет staging/`workers.dev` origin и post-deploy smoke. Для `4e-worker` подтверждено: remote `mrktggod/4e-worker` уже существует, репозиторий приватный, `main` синхронен с `origin/main`. Затем `vk-miniapps-deploy` успешно задеплоил и подтвердил production URL `https://prod-app54636698-c3cd4413b138.pages-ac.vk-apps.com/index.html`; Юрий подтвердил, что VK Mini App открывается с телефона без VPN.
 **Коммит:** N/A
-**Статус:** ⚠️ частично
-**Следующий шаг:** Юрий открывает VK OAuth-ссылку из `vk-miniapps-deploy`, после чего можно завершить deploy VK-hosting, выдать новые поля для VK DevPage и пройти телефонный smoke без VPN. Staging-бот всё ещё ловит `409`; `getWebhookInfo` пустой, значит где-то жив второй polling consumer
+**Статус:** ✅ выполнено
+**Следующий шаг:** Обновить статусы в PM после staging-хвостов и отдельно добить расследование `409` для polling-бота
 
 ---
 
@@ -89,6 +89,14 @@
 ---
 
 ## Лог
+
+### 2026-07-05 — Codex
+
+**Задача:** Закрыть BACK-007 по privacy/RKN: уточнить номер в `privacy.html`, добавить ссылки на privacy в регистрацию и онбординг
+**Результат:** Ветка `fix/privacy-rkn-links`; в `privacy.html` формулировка приведена к тексту с рег. № `102299/77`, в `index.html` добавлены явные privacy-ссылки для onboarding и регистрации, `pm/backlog.md` обновлён до `Ready for QA`; live GitHub Pages `privacy.html` отдаёт `200` и содержит номер РКН.
+**Коммит:** `этот коммит`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Проверить ветку и решить merge после ревью, затем продолжить staging-контур BACK-034
 
 ### 2026-07-04 — Codex
 

@@ -70,7 +70,7 @@
 
 ## 2026-07-04 — BUG-2026-07-04-002: web Telegram login fallback fix (Codex)
 
-**Что сделано:** Исправлена причина ошибки `WebAppTgUrlInvalid` при входе через Telegram в веб-версии. `buildTelegramBotLoginUrl()` больше не строит `tg://resolve?...`; теперь используется `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` вызывает `Telegram.WebApp.openTelegramLink()` только в реальном Mini App-контексте с `initData`, а обычная веб-версия уходит по HTTPS-ссылке. Фронт сохраняет pending `startToken`, отправляет `returnUrl` в Worker, принимает возвратные параметры `telegram_start`/`telegramStartToken`/`startToken`/`tgAuth` и пробует завершить вход при `pageshow/focus`. В Telegram auth-ветке исправлены битые русские строки ошибок. Добавлены `BUG-2026-07-04-002`, `BACK-036`, task-файл и QA-запись.
+**Что сделано:** Исправлена причина ошибки `WebAppTgUrlInvalid` при входе через Telegram в веб-версии. `buildTelegramBotLoginUrl()` больше не строит `tg://resolve?...`; теперь используется `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` вызывает `Telegram.WebApp.openTelegramLink()` только в реальном Mini App-контексте с `initData`, а обычная веб-версия уходит по HTTPS-ссылке. Фронт сохраняет pending `startToken`, отправляет `returnUrl` в Worker, принимает возвратные параметры `telegram_start`/`telegramStartToken`/`startToken`/`tgAuth` и пробует завершить вход при `pageshow/focus`. В Telegram auth-ветке исправлены битые русские строки ошибок. Добавлены `BUG-2026-07-04-002`, `BACK-036`, task-файл и QA-запись. Продолжение 2026-07-05: bot-side часть тоже закрыта — в `4e-worker/src/bot/commands.js` `/start auth_*` теперь шлёт кнопку «Вернуться в 4» на `${APP_BASE_URL}/?telegram_start=<token>`, а в `4e-worker/worker.js` такой же сценарий реализован для `/bot`/`/webhook`; одноразовость и TTL 10 минут уже жили в `consumeTelegramLoginToken()` / `TELEGRAM_LOGIN_TOKEN_TTL_SECONDS = 600`. Production worker задеплоен как version `88b3ab16-fc44-4567-b98c-a8ca4125a5f4`.
 
 **Проверка кодировки:** `index.html` до правки: 26 совпадений по `Войти|Задачи|Сегодня`; после правки: 26 совпадений.
 
@@ -87,7 +87,7 @@
 
 **Проверка кодировки:** правки в кириллических файлах сделаны через `apply_patch` после чтения в UTF-8; контрольные тексты `Чек`, `Хостинг`, `Задача` в `pm/backlog.md`, `shared/ROADMAP.md`, `pm/qa-checklist.md`, `pm/release-checklist.md`, `shared/WORK_LOG.md` остались читаемыми.
 
-**Тест:** `npm run build:vk-hosting` → `.vk-hosting-dist/index.html`, `privacy.html`, `styles.css`, `styles.min.css`, `assets/vendor/*`; grep по `vk.html` и `.vk-hosting-dist/index.html` подтверждает `const WORKER = 'https://edge.4-ai.site'`; `git diff --check`; `wrangler --version` → `4.100.0`; `wrangler secret list --env staging` подтверждает `ANTHROPIC_KEY` и `BOT_API_TOKEN`; локальный smoke `node src/bot/index.js` на staging-переменных поднимается, но всё ещё ловит `409 Conflict`; `getWebhookInfo` возвращает пустой `url`, значит конфликт даёт другой polling consumer, а не webhook.
+**Тест:** `npm run build:vk-hosting` → `.vk-hosting-dist/index.html`, `privacy.html`, `styles.css`, `styles.min.css`, `assets/vendor/*`; grep по `vk.html` и `.vk-hosting-dist/index.html` подтверждает `const WORKER = 'https://edge.4-ai.site'`; `git diff --check`; `wrangler --version` → `4.100.0`; `wrangler secret list --env staging` подтверждает `ANTHROPIC_KEY` и `BOT_API_TOKEN`; локальный smoke `node src/bot/index.js` на staging-переменных поднимается, но всё ещё ловит `409 Conflict`; `getWebhookInfo` возвращает пустой `url`, значит конфликт даёт другой polling consumer, а не webhook. Production deploy VK Mini Apps завершён через `vk-miniapps-deploy`: загружена version `1783191347`, подтверждён код из админки VK, production URL `https://prod-app54636698-c3cd4413b138.pages-ac.vk-apps.com/index.html`; пользователь подтвердил phone-smoke без VPN.
 
 **Коммит:** N/A
 
@@ -146,6 +146,16 @@
 **Коммит:** `этот коммит`
 
 **Блокеры:** `npx wrangler secret list --env staging` показывает только `BOT_API_TOKEN`; для AI smoke нужны как минимум `ANTHROPIC_KEY` и, вероятно, `OPENAI_KEY`/`RESEND_KEY`/`VK_SECRET_KEY`. Также нужен username тестового бота для полного ручного Telegram smoke, пока он не зафиксирован в репозитории и передаётся через `?bot=...`.
+
+## 2026-07-05 — BACK-007: privacy/RKN links and wording (Codex)
+
+**Что сделано:** В `privacy.html` строка про реестр РКН приведена к формулировке задачи: «Уведомление об обработке персональных данных зарегистрировано Роскомнадзором, рег. № 102299/77 от 01.07.2026». В `index.html` добавлена явная privacy-ссылка в onboarding и расширен legal-note на экране auth: теперь он покрывает и `Войти`, и `Создать аккаунт`.
+
+**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
+
+**Тест:** `Invoke-WebRequest https://mrktggod.github.io/4e-app/privacy.html` вернул `200`; live-страница содержит `102299/77`. Локальный grep подтвердил privacy-ссылки в onboarding, auth и biometric consent.
+
+**Коммит:** `этот коммит`
 
 ## 2026-07-04 — PM docs sync v2.1 (Codex)
 
