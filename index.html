@@ -898,6 +898,7 @@
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="profile-item-text">Уведомления</span></div><span class="profile-item-arrow">›</span></div>
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div><span class="profile-item-text">Язык</span></div><span class="profile-item-arrow">›</span></div>
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="profile-item-text">Безопасность</span></div><span class="profile-item-arrow">›</span></div>
+      <div class="profile-item" onclick="showSubScreen('ai-memory');loadAiMemoryScreen()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M9 12h6"/><path d="M12 9v6"/><path d="M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7l-4-4H6a2 2 0 0 0-2 2z"/><path d="M14 3v4h4"/></svg></div><span class="profile-item-text">Что 4 знает обо мне</span></div><span class="profile-item-arrow">›</span></div>
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div><span class="profile-item-text">Данные и память</span></div><span class="profile-item-arrow">›</span></div>
       <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="profile-item-text">Поддержка</span></div><span class="profile-item-arrow">›</span></div>
     </div>
@@ -1359,6 +1360,22 @@
       </div>
     </div>
     <div class="notif-all-btn" onclick="showToast('Загружаю историю...')">Показать больше <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+  </div>
+</div>
+
+<!-- ========== AI MEMORY ========== -->
+<div class="screen" id="ai-memory">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div style="flex:1"><div class="back-title">Что 4 знает обо мне</div><div class="back-sub">Устойчивые факты, которые помогают будущим ответам</div></div>
+  </div>
+  <div class="sub-scroll">
+    <div class="sub-card" style="padding:16px 18px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">AI-память</div>
+      <div id="ai-memory-status" style="font-size:14px;color:var(--text);line-height:1.5">Загружаем факты…</div>
+    </div>
+    <div class="sub-card" id="ai-memory-list" style="padding:8px 16px"></div>
+    <button class="notif-all-btn" id="ai-memory-forget-btn" style="justify-content:center;margin-top:14px" onclick="handleForgetAllAiFacts()">Забыть всё</button>
   </div>
 </div>
 
@@ -2358,6 +2375,177 @@ function saveExtendedProfile(){
   showToast('Профиль сохранён');
 }
 
+const ASK_FACTS_MAX = 15;
+let askFactsCache = [];
+let askFactsEnabled = false;
+let askFactsLoadedForUser = '';
+let aiMemoryFactsCache = [];
+let aiMemoryFactsEnabled = false;
+let aiMemoryForgetArmed = false;
+let aiMemoryForgetTimer = null;
+
+function currentAiFactsUserId(){
+  return String(currentUser?.id || '').trim();
+}
+
+async function fetchAiFacts(limit){
+  if(!getToken() || !currentAiFactsUserId()) return {enabled:false,facts:[]};
+  const safeLimit = Math.max(1, Math.min(Number(limit || ASK_FACTS_MAX) || ASK_FACTS_MAX, 50));
+  const r = await fetch(WORKER + '/ai/facts?limit=' + safeLimit, {headers:authHeaders()});
+  const d = await readJsonSafe(r);
+  if(!r.ok || !d.ok) throw new Error(d.error || 'ai facts unavailable');
+  return {
+    enabled: !!d.enabled,
+    facts: Array.isArray(d.facts) ? d.facts : []
+  };
+}
+
+async function ensureAskFactsLoaded(force){
+  const userId = currentAiFactsUserId();
+  if(!userId || !getToken()){
+    askFactsLoadedForUser = '';
+    askFactsCache = [];
+    askFactsEnabled = false;
+    return [];
+  }
+  if(!force && askFactsLoadedForUser === userId) return askFactsCache;
+  const data = await fetchAiFacts(ASK_FACTS_MAX);
+  askFactsCache = data.facts;
+  askFactsEnabled = data.enabled;
+  askFactsLoadedForUser = userId;
+  return askFactsCache;
+}
+
+async function loadAskFactsSummary(){
+  try{
+    await ensureAskFactsLoaded(false);
+  }catch(e){
+    console.warn('loadAskFactsSummary:', e);
+  }
+  if(!askFactsEnabled || !askFactsCache.length) return '';
+  return 'Что 4 уже знает о пользователе:\n' + askFactsCache.map(function(item){
+    return '- ' + String(item.fact || '').trim();
+  }).filter(Boolean).join('\n');
+}
+
+function resetAiMemoryForgetState(){
+  aiMemoryForgetArmed = false;
+  clearTimeout(aiMemoryForgetTimer);
+  aiMemoryForgetTimer = null;
+  const btn = document.getElementById('ai-memory-forget-btn');
+  if(btn) btn.textContent = 'Забыть всё';
+}
+
+function formatAiMemoryTimestamp(value){
+  const date = new Date(Number(value || 0));
+  if(Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('ru-RU', {day:'numeric', month:'long'});
+}
+
+function renderAiMemoryScreen(){
+  const statusEl = document.getElementById('ai-memory-status');
+  const listEl = document.getElementById('ai-memory-list');
+  const forgetBtn = document.getElementById('ai-memory-forget-btn');
+  if(!statusEl || !listEl || !forgetBtn) return;
+  if(!getToken() || !currentAiFactsUserId()){
+    statusEl.textContent = 'Войдите в аккаунт, чтобы увидеть и очистить сохранённые факты.';
+    listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Память доступна только для авторизованного профиля.</div>';
+    forgetBtn.disabled = true;
+    return;
+  }
+  const intro = aiMemoryFactsEnabled
+    ? '4 может использовать эти факты в новых AI-ответах. Любой факт можно удалить отдельно.'
+    : 'AI-память сейчас выключена. Ниже показано, что уже было сохранено ранее — это можно удалить в любой момент.';
+  statusEl.textContent = intro;
+  if(!aiMemoryFactsCache.length){
+    listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Пока пусто. Когда в диалоге появятся устойчивые факты о вас, они появятся здесь.</div>';
+    forgetBtn.disabled = true;
+    resetAiMemoryForgetState();
+    return;
+  }
+  forgetBtn.disabled = false;
+  listEl.innerHTML = aiMemoryFactsCache.map(function(item){
+    const factId = e2(String(item.id || ''));
+    const fact = e2(String(item.fact || '').trim());
+    const category = e2(String(item.category || 'other'));
+    const updatedAt = formatAiMemoryTimestamp(item.updatedAt);
+    const confidence = Math.round(Math.max(0, Math.min(Number(item.confidence || 0), 1)) * 100);
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">' +
+      '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--text);line-height:1.45">' + fact + '</div>' +
+      '<div style="font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap"><span>' + category + '</span><span>' + confidence + '%</span>' + (updatedAt ? '<span>обновлено ' + e2(updatedAt) + '</span>' : '') + '</div></div>' +
+      '<button data-fact-id="' + factId + '" onclick="deleteAiMemoryFact(this.dataset.factId)" style="flex-shrink:0;background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--muted);cursor:pointer;font-family:Inter,sans-serif">Удалить</button></div>';
+  }).join('');
+}
+
+async function loadAiMemoryScreen(force){
+  const listEl = document.getElementById('ai-memory-list');
+  const statusEl = document.getElementById('ai-memory-status');
+  if(listEl) listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Загружаем…</div>';
+  if(statusEl) statusEl.textContent = 'Подключаем сохранённые факты…';
+  resetAiMemoryForgetState();
+  try{
+    const data = await fetchAiFacts(force ? 50 : 50);
+    aiMemoryFactsCache = data.facts;
+    aiMemoryFactsEnabled = data.enabled;
+    if(force){
+      askFactsLoadedForUser = '';
+      await ensureAskFactsLoaded(true).catch(()=>{});
+    }
+  }catch(e){
+    aiMemoryFactsCache = [];
+    aiMemoryFactsEnabled = false;
+    if(statusEl) statusEl.textContent = 'Не удалось загрузить AI-память. Попробуйте ещё раз.';
+    if(listEl) listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Сервер временно недоступен.</div>';
+    const forgetBtn = document.getElementById('ai-memory-forget-btn');
+    if(forgetBtn) forgetBtn.disabled = true;
+    return;
+  }
+  renderAiMemoryScreen();
+}
+
+async function deleteAiMemoryFact(factId){
+  if(!factId || !getToken()) return;
+  try{
+    const r = await fetch(WORKER + '/ai/facts/' + encodeURIComponent(factId), {method:'DELETE', headers:authHeaders()});
+    const d = await readJsonSafe(r);
+    if(!r.ok || !d.ok) throw new Error(d.error || 'delete failed');
+    showToast('Факт удалён');
+    await loadAiMemoryScreen(true);
+  }catch(e){
+    showToast('Не удалось удалить факт');
+  }
+}
+
+async function clearAllAiMemoryFacts(){
+  if(!getToken()) return;
+  try{
+    const r = await fetch(WORKER + '/ai/facts', {method:'DELETE', headers:authHeaders()});
+    const d = await readJsonSafe(r);
+    if(!r.ok || !d.ok) throw new Error(d.error || 'clear failed');
+    aiMemoryFactsCache = [];
+    askFactsCache = [];
+    askFactsLoadedForUser = currentAiFactsUserId();
+    showToast('AI-память очищена');
+    resetAiMemoryForgetState();
+    renderAiMemoryScreen();
+  }catch(e){
+    showToast('Не удалось очистить AI-память');
+  }
+}
+
+function handleForgetAllAiFacts(){
+  const btn = document.getElementById('ai-memory-forget-btn');
+  if(!btn || btn.disabled) return;
+  if(!aiMemoryForgetArmed){
+    aiMemoryForgetArmed = true;
+    btn.textContent = 'Подтвердить удаление';
+    clearTimeout(aiMemoryForgetTimer);
+    aiMemoryForgetTimer = setTimeout(resetAiMemoryForgetState, 4000);
+    return;
+  }
+  clearAllAiMemoryFacts();
+}
+
 function renderTrialBanner(){
   const wrap=document.getElementById('trial-banner-wrap');
   if(!wrap||!currentUser) return;
@@ -3024,6 +3212,7 @@ function showSubScreen(id) {
   if (id === 'subscription') updateSubscriptionScreen();
   if (id === 'notif-settings') setTimeout(loadNotificationSettings,0);
   if (id === 'privacy-center') setTimeout(loadPrivacyCenter,0);
+  if (id === 'ai-memory') setTimeout(()=>loadAiMemoryScreen(),0);
 }
 let obCurrent = 0;
 const OB_TOTAL = 4;
@@ -4810,16 +4999,20 @@ async function sendAsk(){
     : 'Активных задач нет.';
   const today = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
   const profileSummary = buildAskUserProfileSummary();
+  const factsSummary = await loadAskFactsSummary();
 
   try{
     const messagesForClaude = askHistory.slice(-ASK_HISTORY_MAX);
+    const systemParts = [SYS_BASE, '', 'Сегодня: ' + today, profileSummary];
+    if(factsSummary) systemParts.push(factsSummary);
+    systemParts.push(taskSummary);
     const r=await fetch(WORKER + '/anthropic',{
       method:'POST',
       headers:authHeaders(),
       body:JSON.stringify({
         model:'claude-sonnet-4-6',
         max_tokens:1000,
-        system: SYS_BASE + '\n\nСегодня: ' + today + '\n' + profileSummary + '\n' + taskSummary,
+        system: systemParts.join('\n'),
         messages: messagesForClaude
       })
     });
@@ -4851,11 +5044,11 @@ async function sendAsk(){
     }
     if(!text) text = createdTaskText ? '✅ Задача «' + createdTaskText + '» добавлена.' : 'Готово.';
 
+    lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';
     askHistory.push({role:'assistant', content:text});
     saveAskHistoryLocal();
-    saveAskMessageRemote('assistant', text);
-
-    lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';
+    await saveAskMessageRemote('assistant', text);
+    ensureAskFactsLoaded(true).catch(e=>console.warn('refresh ask facts:', e));
   }catch(e){
     lb.textContent='Нет соединения. Проверь интернет и попробуй снова.';
     askHistory.pop();
