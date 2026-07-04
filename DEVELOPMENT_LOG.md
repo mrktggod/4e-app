@@ -56,11 +56,11 @@
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
 ## 2026-07-04 — BUG-2026-07-04-002: web Telegram login fallback fix (Codex)
 
-**Что сделано:** Исправлена причина ошибки `WebAppTgUrlInvalid` при входе через Telegram в веб-версии. `buildTelegramBotLoginUrl()` больше не строит `tg://resolve?...`; теперь используется `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` вызывает `Telegram.WebApp.openTelegramLink()` только в реальном Mini App-контексте с `initData`, а обычная веб-версия уходит по HTTPS-ссылке. В Telegram auth-ветке исправлены битые русские строки ошибок. Добавлены `BUG-2026-07-04-002`, `BACK-036`, task-файл и QA-запись.
+**Что сделано:** Исправлена причина ошибки `WebAppTgUrlInvalid` при входе через Telegram в веб-версии. `buildTelegramBotLoginUrl()` больше не строит `tg://resolve?...`; теперь используется `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` вызывает `Telegram.WebApp.openTelegramLink()` только в реальном Mini App-контексте с `initData`, а обычная веб-версия уходит по HTTPS-ссылке. Фронт сохраняет pending `startToken`, отправляет `returnUrl` в Worker, принимает возвратные параметры `telegram_start`/`telegramStartToken`/`startToken`/`tgAuth` и пробует завершить вход при `pageshow/focus`. В Telegram auth-ветке исправлены битые русские строки ошибок. Добавлены `BUG-2026-07-04-002`, `BACK-036`, task-файл и QA-запись.
 
 **Проверка кодировки:** `index.html` до правки: 26 совпадений по `Войти|Задачи|Сегодня`; после правки: 26 совпадений.
 
-**Тест:** inline JS syntax check через Node 24; JS-smoke для `buildTelegramBotLoginUrl()` и `openTelegramLoginUrl()` подтвердил, что веб-версия не вызывает `openTelegramLink()` и переходит на `https://t.me/Denzel89bot?start=auth_test`, а Mini App-контекст передаёт в SDK HTTPS-ссылку. Полный Playwright-smoke не выполнен: в окружении нет установленного browser executable.
+**Тест:** inline JS syntax check через Node 24; JS-smoke для `buildTelegramBotLoginUrl()` и `openTelegramLoginUrl()` подтвердил, что веб-версия не вызывает `openTelegramLink()` и переходит на `https://t.me/Denzel89bot?start=auth_test`, а Mini App-контекст передаёт в SDK HTTPS-ссылку. Нужно дополнительно проверить возвратную bot-side кнопку после публикации. Полный Playwright-smoke не выполнен: в окружении нет установленного browser executable.
 
 **Коммит:** N/A
 

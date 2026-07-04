@@ -83,10 +83,10 @@
 ### 2026-07-04 — Codex
 
 **Задача:** Исправить отсутствие реакции кнопки "Войти через Telegram" в веб-версии
-**Результат:** В `index.html` Telegram-login fallback переведён с `tg://resolve?...` на `https://t.me/Denzel89bot?start=...`. `openTelegramLink()` теперь вызывается только при наличии Telegram `initData`; обычная веб-версия делает HTTPS-переход и не должна ловить `WebAppTgUrlInvalid`. Добавлены `BUG-2026-07-04-002` и `BACK-036`.
+**Результат:** В `index.html` Telegram-login fallback переведён с `tg://resolve?...` на `https://t.me/Denzel89bot?start=...`. `openTelegramLink()` теперь вызывается только при наличии Telegram `initData`; обычная веб-версия делает HTTPS-переход и не должна ловить `WebAppTgUrlInvalid`. Фронт сохраняет pending token, отправляет `returnUrl` и умеет завершить вход после возврата с `?telegram_start=<token>`. Добавлены `BUG-2026-07-04-002` и `BACK-036`.
 **Коммит:** N/A
 **Статус:** ✅ локально исправлено, нужен live smoke после публикации
-**Следующий шаг:** Проверить в веб-версии клик по кнопке и ответ `@Denzel89bot` на `/start`.
+**Следующий шаг:** Проверить в веб-версии клик по кнопке; на стороне `@Denzel89bot` после START нужна ссылка/кнопка назад на сайт.
 
 ---
 

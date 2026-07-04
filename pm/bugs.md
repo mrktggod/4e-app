@@ -88,17 +88,19 @@ Priority: P0 / P1 / P2 / P3
 
 **Фактический результат:** видимой реакции нет. В консоли ошибка Telegram WebApp SDK: `Url protocol is not supported tg://resolve?...` и `WebAppTgUrlInvalid`.
 
-**Ожидаемый результат:** в обычной веб-версии кнопка должна открыть HTTPS-ссылку `https://t.me/Denzel89bot?start=...` или хотя бы показать понятное действие. Telegram SDK `openTelegramLink()` не должен вызываться вне реального Mini App-контекста с `initData`.
+**Ожидаемый результат:** в обычной веб-версии кнопка должна открыть HTTPS-ссылку `https://t.me/Denzel89bot?start=...` или хотя бы показать понятное действие. Telegram SDK `openTelegramLink()` не должен вызываться вне реального Mini App-контекста с `initData`. После START в боте пользователь должен получить ссылку назад на сайт, например `https://app.4-ai.site/?telegram_start=<startToken>`.
 
 **Вложения/логи:** скрин консоли от Алексея 2026-07-04.
 
-**Решение:** в `index.html` web fallback переведён с `tg://resolve?...` на `https://t.me/Denzel89bot?start=...`. `Telegram.WebApp.openTelegramLink()` теперь вызывается только при наличии Telegram `initData`; обычная веб-версия делает HTTPS-переход. Битые русские сообщения в Telegram auth-ветке исправлены.
+**Решение:** в `index.html` web fallback переведён с `tg://resolve?...` на `https://t.me/Denzel89bot?start=...`. `Telegram.WebApp.openTelegramLink()` теперь вызывается только при наличии Telegram `initData`; обычная веб-версия делает HTTPS-переход. Фронт сохраняет pending `startToken`, отправляет `returnUrl` в Worker и умеет завершить вход после возврата на сайт с `telegram_start`/`startToken`. Битые русские сообщения в Telegram auth-ветке исправлены. Осталась обязательная bot-side часть: бот должен прислать ссылку/кнопку назад на сайт.
 
 **Проверка после фикса:**
 1. В веб-версии нажать "Войти через Telegram" — открывается `https://t.me/Denzel89bot?...`, ошибки `WebAppTgUrlInvalid` нет.
-2. В Telegram Mini App вход через Telegram не регрессирует.
-3. Если Worker не выдаёт `startToken`, кнопка открывает базовую ссылку `https://t.me/Denzel89bot`.
-4. Email-вход остаётся доступен.
+2. После START в боте появляется ссылка/кнопка назад на сайт.
+3. Возврат на сайт с `?telegram_start=<startToken>` завершает авторизацию.
+4. В Telegram Mini App вход через Telegram не регрессирует.
+5. Если Worker не выдаёт `startToken`, кнопка открывает базовую ссылку `https://t.me/Denzel89bot`.
+6. Email-вход остаётся доступен.
 
 ### BUG-2026-06-29-002 — Голосовой режим открывается с ошибкой микрофона и не начинает запись
 

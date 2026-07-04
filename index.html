@@ -227,9 +227,9 @@
 
     <!-- LOGIN form -->
     <div id="form-login" class="login-form">
-      <input class="login-input" id="login-email" type="email" placeholder="Email" autocomplete="off"/>
+      <input class="login-input" id="login-email" type="email" placeholder="Email" autocomplete="off" onkeydown="submitLoginOnEnter(event)"/>
       <div style="position:relative">
-        <input class="login-input" id="login-pass" type="password" placeholder="Пароль" autocomplete="off"/>
+        <input class="login-input" id="login-pass" type="password" placeholder="Пароль" autocomplete="off" onkeydown="submitLoginOnEnter(event)"/>
         <div onclick="togglePass('login-pass')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--muted)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
@@ -2023,6 +2023,7 @@ const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
 const D1_TOKEN_K='chetam_d1_token';
 const LOGOUT_K='chetam_logged_out';
+const TG_PENDING_START_K='chetam_tg_pending_start';
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
 const notifReadSet = new Set();
@@ -2088,7 +2089,49 @@ function getTelegramStartTokenFromLaunch() {
   const fromSearch = new URLSearchParams(window.location.search || '');
   const fromHash = new URLSearchParams((window.location.hash || '').replace(/^#/, '?'));
 
-  return (fromSearch.get('startapp') || fromSearch.get('tgWebAppStartParam') || fromHash.get('startapp') || fromHash.get('tgWebAppStartParam') || '').trim();
+  const keys=['startapp','tgWebAppStartParam','telegram_start','telegramStartToken','startToken','tgAuth'];
+  for(const key of keys){
+    const value=fromSearch.get(key)||fromHash.get(key);
+    if(value)return String(value).trim();
+  }
+  return '';
+}
+
+function getTelegramReturnUrl(){
+  try{
+    const url=new URL(window.location.href);
+    ['startapp','tgWebAppStartParam','telegram_start','telegramStartToken','startToken','tgAuth'].forEach(key=>{
+      url.searchParams.delete(key);
+      url.hash=url.hash.replace(new RegExp('([#&?])'+key+'=[^&]*&?','g'),'$1').replace(/[?&]$/,'');
+    });
+    return url.toString();
+  }catch(e){
+    return window.location.origin+window.location.pathname;
+  }
+}
+
+function saveTelegramPendingStart(startToken){
+  if(!startToken)return;
+  try{localStorage.setItem(TG_PENDING_START_K,startToken);}catch(e){}
+}
+
+function clearTelegramPendingStart(){
+  try{localStorage.removeItem(TG_PENDING_START_K);}catch(e){}
+}
+
+function getTelegramPendingStart(){
+  try{return (localStorage.getItem(TG_PENDING_START_K)||'').trim();}catch(e){return'';}
+}
+
+function cleanTelegramAuthUrl(){
+  try{
+    const url=new URL(window.location.href);
+    let changed=false;
+    ['startapp','tgWebAppStartParam','telegram_start','telegramStartToken','startToken','tgAuth'].forEach(key=>{
+      if(url.searchParams.has(key)){url.searchParams.delete(key);changed=true;}
+    });
+    if(changed)history.replaceState(null,'',url.pathname+(url.search||'')+(url.hash||''));
+  }catch(e){}
 }
 
 function buildTelegramBotLoginUrl(startToken) {
@@ -2158,7 +2201,7 @@ async function initApp(){
     }catch(e){}
   }
 
-  const telegramStartToken = getTelegramStartTokenFromLaunch();
+  const telegramStartToken = getTelegramStartTokenFromLaunch() || getTelegramPendingStart();
   if (telegramStartToken) {
     const ok = await withTimeout(loginWithTelegram(telegramStartToken), 8000).catch(() => false);
     if (ok) return;
@@ -2360,6 +2403,14 @@ async function doRegister(){
 }
 
 // ── login ─────────────────────────────────────────────────────
+function submitLoginOnEnter(event){
+  if(event.key!=='Enter')return;
+  event.preventDefault();
+  const btn=document.getElementById('login-submit-btn');
+  if(btn&&btn.disabled)return;
+  doLogin();
+}
+
 async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value.trim();
@@ -2442,6 +2493,8 @@ async function loginWithTelegram(startToken=''){
         chatId = 'user_' + currentUser.id;
         applyUserInfo();
         localStorage.setItem(ONBOARD_K, '1');
+        clearTelegramPendingStart();
+        cleanTelegramAuthUrl();
         showScreen('home');
         loadTasks();
         return true;
@@ -2468,6 +2521,7 @@ async function loginWithTelegram(startToken=''){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         generateStartToken: true,
+        returnUrl: getTelegramReturnUrl(),
         ...(tgInitData ? { initData: tgInitData } : {}),
         ...(tgUser ? { user: tgUser } : {})
       })
@@ -2475,6 +2529,7 @@ async function loginWithTelegram(startToken=''){
     tokenData = await readJsonSafe(tokenR);
   } catch (e) {}
   if (tokenData.ok && tokenData.startToken) {
+    saveTelegramPendingStart(tokenData.startToken);
     openTelegramLoginUrl(buildTelegramBotLoginUrl(tokenData.startToken));
     return true;
   }
@@ -2485,6 +2540,19 @@ async function loginWithTelegram(startToken=''){
   return false;
 }
 
+let telegramPendingLoginInFlight=false;
+async function resumePendingTelegramLogin(){
+  if(getToken()||telegramPendingLoginInFlight)return false;
+  const startToken=getTelegramStartTokenFromLaunch()||getTelegramPendingStart();
+  if(!startToken)return false;
+  telegramPendingLoginInFlight=true;
+  const ok=await withTimeout(loginWithTelegram(startToken),8000).catch(()=>false);
+  telegramPendingLoginInFlight=false;
+  return ok;
+}
+
+window.addEventListener('pageshow',()=>{resumePendingTelegramLogin();});
+window.addEventListener('focus',()=>{resumePendingTelegramLogin();});
 
 async function linkTelegram() {
   if (!tgInitData || !getToken()) return;
