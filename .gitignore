@@ -9,3 +9,5 @@ build/
 index.backup_*.html
 index.merge_backup_*.html
 .pages-dist/
+.vk-hosting-dist/
+bundle.zip

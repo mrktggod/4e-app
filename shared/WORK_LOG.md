@@ -8,6 +8,16 @@
 
 ### 2026-07-05 — Codex
 
+**Задача:** INFRA-004 + merge-пакет long-session-3 — довести VK-хостинг, синхронизировать PM/CI и закрыть инфраструктурные хвосты
+**Результат:** `feat/infra-001-workers-static-assets` смёржен в `main` и запушен (`7931e8b`). В app-репо подготовлен контур VK-хостинга: добавлены `@vkontakte/vk-miniapps-deploy`, `scripts/build-vk-hosting.mjs`, `vk-hosting-config.json`, сборка `.vk-hosting-dist` с `index.html` из `vk.html` и локальными vendor-ассетами, чтобы VK-поверхность не зависела от GitHub Pages и внешних CDN. Синхронизированы `pm/backlog.md`, `shared/ROADMAP.md`, `pm/release-checklist.md`, `pm/qa-checklist.md`, добавлена отдельная QA-инструкция `pm/qa-smart-001-002-004-group-bot.md`; в GitHub Actions для `Deploy GitHub Pages` добавлены проверки production `WORKER` URL, запрет staging/`workers.dev` origin и post-deploy smoke. Для `4e-worker` подтверждено: remote `mrktggod/4e-worker` уже существует, репозиторий приватный, `main` синхронен с `origin/main`.
+**Коммит:** N/A
+**Статус:** ⚠️ частично
+**Следующий шаг:** Юрий открывает VK OAuth-ссылку из `vk-miniapps-deploy`, после чего можно завершить deploy VK-hosting, выдать новые поля для VK DevPage и пройти телефонный smoke без VPN. Staging-бот всё ещё ловит `409`; `getWebhookInfo` пустой, значит где-то жив второй polling consumer
+
+---
+
+### 2026-07-05 — Codex
+
 **Задача:** INFRA-001 — перевести whitelist-фронт на Workers Static Assets и вернуть `app.4-ai.site` в доступный для РФ контур без VPN
 **Результат:** В app-репо добавлены `worker-static.js` и `wrangler.toml`; whitelist-сборка из `scripts/build-pages-whitelist.mjs` теперь разворачивается как Static Assets воркера `4-ai-app-worker` на маршруте `app.4-ai.site/*`. Проверено: `/`, `/vk`, `/privacy` отвечают `200`, `pm/` и `shared/ROADMAP.md` недоступны (`404`), CORS до `https://edge.4-ai.site` живой. Дополнительно Worker распознаёт VK launch params в корне и обслуживает `vk.html` без внешнего редиректа, чтобы VK Mini App не зависел от `vk.html -> /vk`.
 **Коммит:** N/A

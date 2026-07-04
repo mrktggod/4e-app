@@ -1,11 +1,16 @@
 {
+    "name": "4e-app",
+    "homepage": "./",
     "scripts": {
         "build:css": "lessc styles/main.less styles.css && cleancss styles.css -o styles.min.css",
         "build:worker-assets": "node scripts/build-pages-whitelist.mjs",
+        "build:vk-hosting": "npm run build:css && node scripts/build-vk-hosting.mjs",
         "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",
+        "deploy:vk-hosting": "npm run build:vk-hosting && vk-miniapps-deploy",
         "watch:css": "lessc --watch styles/main.less styles.css"
     },
     "devDependencies": {
+        "@vkontakte/vk-miniapps-deploy": "^1.0.2",
         "clean-css-cli": "^5.6.3",
         "less": "^4.6.7"
     }
