@@ -33,6 +33,7 @@
 | Зона | Что проверять | Статус | Комментарий |
 | --- | --- | --- | --- |
 | Auth / Access | Вход, Telegram-login, logout, восстановление пароля, пустые экраны после auth-действий | Ready for QA | `BUG-2026-06-25-002` исправлен локально; `BUG-2026-06-29-001` требует проверки связки Mini App + `@Denzel89bot` |
+| Auth / Email keyboard submit | Enter в полях email и пароля запускает тот же вход, что и кнопка "Войти"; пустые поля показывают прежний toast | Ready for QA | `BUG-2026-07-04-003` исправлен локально; проверить на ноутбуке |
 | Auth / Telegram Web fallback | Клик "Войти через Telegram" в обычной веб-версии, отсутствие `WebAppTgUrlInvalid`, переход на `https://t.me/Denzel89bot?...` | Ready for QA | `BUG-2026-07-04-002` исправлен локально; нужен live smoke после публикации |
 | Auth / Telegram Web return | После START в `@Denzel89bot` пользователь получает ссылку назад на сайт; возврат с `?telegram_start=<token>` завершает веб-вход | Ready for QA | App-side подготовлен; нужна проверка/правка bot-side возвратной кнопки |
 | Voice | Микрофон, запись, распознавание, fallback в Telegram WebView | Triaged | `BUG-2026-06-29-002` подтверждён скрином; `main` сейчас использует SpeechRecognition после отката MediaRecorder |

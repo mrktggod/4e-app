@@ -19,7 +19,7 @@
 | 981 | `onboarding` | Первый запуск |
 | 1128 | `forgot-password` | Запрос сброса пароля |
 | 1152 | `reset-password` | Новый пароль по токену |
-| 1178 | `login` | Вход и регистрация |
+| 213 | `login` | Вход и регистрация; Enter в `login-email`/`login-pass` вызывает `submitLoginOnEnter()` |
 | 1229 | `home` | Главный экран задач |
 | 1389 | `write` | Написать сообщение |
 | 1424 | `ask` | AI-чат |
@@ -59,7 +59,7 @@
 | Диапазон | Назначение | Ключевые функции |
 | --- | --- | --- |
 | 2852-2933 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, `isVkMiniAppContext` |
-| 1896-2258 | App init, auth, profile | `initApp`, `doRegister`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
+| 2182-2569 | App init, auth, profile | `initApp`, `doRegister`, `submitLoginOnEnter`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
 | 3179-3309 | Payments and subscription | `selectPlan`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
 | 3310-3417 | Onboarding, system prompt, trial | `obInit`, `obRender`, `obDone`, `checkTrial` |
 | 3418-3681 | Tasks, home, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `markDoneKV` |

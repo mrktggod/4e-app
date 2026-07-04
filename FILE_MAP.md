@@ -15,7 +15,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 5276 | Telegram Mini App: CSS, HTML-экраны, JS-логика | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 6165 | Telegram Mini App: CSS, HTML-экраны, JS-логика | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 1578 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `privacy.html` | 230 | Политика конфиденциальности | Можно читать целиком при правовых правках |
 | `worker-static.js` | 31 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets и маршрутизирует VK launch на `vk.html` без внешнего редиректа | Можно читать целиком; точка входа инфраструктуры INFRA-001 |

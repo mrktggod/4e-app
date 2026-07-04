@@ -54,6 +54,20 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-07-04 — BUG-2026-07-04-003: Enter на email-входе (Codex)
+
+**Что сделано:** В `index.html` добавлен `submitLoginOnEnter(event)`. Поля `login-email` и `login-pass` теперь перехватывают Enter и запускают `doLogin()`, если кнопка входа не заблокирована. Поведение кнопки "Войти" не менялось. В `pm/bugs.md` добавлен `BUG-2026-07-04-003`, в `pm/qa-checklist.md` добавлена регрессия Auth / Email keyboard submit.
+
+**Проверка кодировки:** `index.html` до правки: 26 совпадений по `Войти|Задачи|Сегодня`; после правки: 26 совпадений.
+
+**Тест:** inline JS syntax check через Node; локальная проверка фрагмента подтвердила наличие `onkeydown="submitLoginOnEnter(event)"` на `login-email` и `login-pass`. Нужен ручной smoke на ноутбуке: email + пароль → Enter.
+
+**Коммит:** N/A
+
+**Статус:** Ready for QA — проверить Enter в полях email и пароля.
+
+---
+
 ## 2026-07-04 — BUG-2026-07-04-002: web Telegram login fallback fix (Codex)
 
 **Что сделано:** Исправлена причина ошибки `WebAppTgUrlInvalid` при входе через Telegram в веб-версии. `buildTelegramBotLoginUrl()` больше не строит `tg://resolve?...`; теперь используется `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` вызывает `Telegram.WebApp.openTelegramLink()` только в реальном Mini App-контексте с `initData`, а обычная веб-версия уходит по HTTPS-ссылке. Фронт сохраняет pending `startToken`, отправляет `returnUrl` в Worker, принимает возвратные параметры `telegram_start`/`telegramStartToken`/`startToken`/`tgAuth` и пробует завершить вход при `pageshow/focus`. В Telegram auth-ветке исправлены битые русские строки ошибок. Добавлены `BUG-2026-07-04-002`, `BACK-036`, task-файл и QA-запись.
