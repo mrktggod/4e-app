@@ -1,4 +1,4 @@
-const WORKER_VERSION = "2026-07-04-rootfix-3";
+const WORKER_VERSION = "rootfix-4";
 const NOT_FOUND_STAMP = `404-stamp:${WORKER_VERSION}`;
 const SERVED_BY = `4-ai-app-worker ${NOT_FOUND_STAMP}`;
 
@@ -177,6 +177,7 @@ export default {
     headers.set('Content-Type', 'text/html; charset=UTF-8');
     headers.set('Cache-Control', 'no-store');
     headers.set('X-Served-By', SERVED_BY);
+    headers.set('X-Worker-Version', WORKER_VERSION);
     return new Response(body, {
       status: 404,
       statusText: 'Not Found',
