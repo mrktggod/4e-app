@@ -640,7 +640,10 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           <span style="font-size:14px;color:var(--text2)">Человек</span>
         </div>
-        <span id="detail-person" style="font-size:14px;color:var(--text);font-weight:500">—</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span id="detail-person" style="font-size:14px;color:var(--text);font-weight:500">—</span>
+          <button id="detail-contact-btn" class="detail-quick-btn" style="display:none" onclick="openDetailContactPanel()">Написать</button>
+        </div>
       </div>
 
       <div class="detail-field-row" style="border-bottom:none">
@@ -1993,6 +1996,7 @@
   <div style="width:100%;max-width:480px;background:#0E140B;border-radius:24px 24px 0 0;padding:24px 20px 40px;border-top:1px solid rgba(242,245,233,0.08)">
     <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px" id="contact-panel-name">Контакт</div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:20px" id="contact-panel-task"></div>
+    <div id="contact-panel-note" style="display:none;font-size:12px;color:var(--muted);margin:-8px 0 16px"></div>
     <div style="display:flex;flex-direction:column;gap:8px">
       <button onclick="contactViaTelegram()" style="padding:13px;border-radius:14px;background:rgba(42,171,238,0.12);border:1px solid rgba(42,171,238,0.2);color:#2AABEE;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:10px;text-align:left">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
@@ -4045,13 +4049,88 @@ function openFilteredTaskList(title, tasks, isDone){
 }
 
 // ── Contact panel (напомнить / написать) ─────────────────────
-function openContactPanel(person, taskText, taskId){
+function normalizeTelegramUsername(value){
+  return String(value || '').trim().replace(/^@+/, '');
+}
+
+function getTaskContactMeta(task){
+  if(!task || typeof task !== 'object') return null;
+  const person = String(task.person || '').trim() || 'Контакт';
+  const username = normalizeTelegramUsername(task.assigneeUsername || task.telegramUsername || task.username || '');
+  const tgId = String(task.assigneeTgId || task.telegramId || '').trim();
+  const url = username ? ('https://t.me/' + encodeURIComponent(username)) : (tgId ? ('tg://user?id=' + encodeURIComponent(tgId)) : '');
+  return {person, username, tgId, url};
+}
+
+function openTelegramContactLink(url){
+  if(!url) return false;
+  const tgApp = window.Telegram?.WebApp;
+  if(/^https:\/\/t\.me\//i.test(url) && tgApp?.openTelegramLink){
+    try{
+      const result = tgApp.openTelegramLink(url);
+      if(result && typeof result.catch === 'function'){
+        result.catch(()=>{ window.location.href = url; });
+      }
+      return true;
+    }catch(e){
+      console.warn('openTelegramContactLink failed, falling back to window open', e);
+    }
+  }
+  if(/^tg:\/\//i.test(url)){
+    try{
+      window.location.href = url;
+      return true;
+    }catch(e){
+      console.warn('tg deep link failed, falling back to window open', e);
+    }
+  }
+  window.open(url, '_blank', 'noopener');
+  return true;
+}
+
+function getTaskContactFallback(person){
+  return (person || 'Контакт') + ': если диалог не откроется, пока можно попросить 4 напомнить.';
+}
+
+function syncContactPanelNote(meta){
+  const noteEl = document.getElementById('contact-panel-note');
+  if(!noteEl) return;
+  if(!meta?.url){
+    noteEl.style.display = 'block';
+    noteEl.textContent = getTaskContactFallback(meta?.person || 'Контакт');
+    return;
+  }
+  if(meta.username){
+    noteEl.style.display = 'none';
+    noteEl.textContent = '';
+    return;
+  }
+  noteEl.style.display = 'block';
+  noteEl.textContent = 'Если профиль закрыт, Telegram может не открыть диалог. Тогда можно попросить 4 напомнить.';
+}
+
+function syncDetailContactButton(task){
+  const btn = document.getElementById('detail-contact-btn');
+  if(!btn) return;
+  const person = String(task?.person || '').trim();
+  if(!person || /^я$/i.test(person)){
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
+}
+
+function openContactPanel(person, taskText, taskMeta){
   const overlay = document.getElementById('contact-panel-overlay');
   if(!overlay) return;
   document.getElementById('contact-panel-name').textContent = person || 'Контакт';
   document.getElementById('contact-panel-task').textContent = taskText || '';
   overlay.dataset.person = person || '';
   overlay.dataset.task = taskText || '';
+  const meta = getTaskContactMeta(taskMeta || currentDetailTask);
+  overlay.dataset.username = meta?.username || '';
+  overlay.dataset.tgId = meta?.tgId || '';
+  syncContactPanelNote(meta || {person});
   overlay.style.display = 'flex';
 }
 
@@ -4061,12 +4140,17 @@ function closeContactPanel(){
 }
 
 function contactViaTelegram(){
-  const person = document.getElementById('contact-panel-overlay').dataset.person || '';
-  const task = document.getElementById('contact-panel-overlay').dataset.task || '';
+  const overlay = document.getElementById('contact-panel-overlay');
+  const person = overlay?.dataset.person || '';
+  const username = normalizeTelegramUsername(overlay?.dataset.username || '');
+  const tgId = String(overlay?.dataset.tgId || '').trim();
+  const url = username ? ('https://t.me/' + encodeURIComponent(username)) : (tgId ? ('tg://user?id=' + encodeURIComponent(tgId)) : '');
+  if(!url){
+    showToast(getTaskContactFallback(person));
+    return;
+  }
   closeContactPanel();
-  // Try to open Telegram with pre-filled message
-  const msg = encodeURIComponent('Привет! Напоминаю про: ' + task);
-  window.open('https://t.me/share/url?url=&text=' + msg, '_blank');
+  openTelegramContactLink(url);
 }
 
 function contactViaWrite(){
@@ -4074,6 +4158,11 @@ function contactViaWrite(){
   const task = document.getElementById('contact-panel-overlay').dataset.task || '';
   closeContactPanel();
   openWrite(person, (person||'?')[0], task, person + ' обещал: ' + task);
+}
+
+function openDetailContactPanel(){
+  if(!currentDetailTask) return;
+  openContactPanel(currentDetailTask.person || 'Контакт', currentDetailTask.text || '', currentDetailTask);
 }
 
 // ── AI advice in task detail ──────────────────────────────────
@@ -4248,6 +4337,7 @@ function openTask(t,idx){
   if(personEl) personEl.textContent = t.person || '—';
   if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime || t.date || t.deadline || '');
   if(dirEl) dirEl.value = getDirectionLabel(currentDetailDirectionLabel);
+  syncDetailContactButton(t);
   setDetailStatus(currentDetailStatus);
   setDetailPriority(currentDetailPriority);
   setDetailDeadline(currentDetailTime);
