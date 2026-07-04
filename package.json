@@ -1,6 +1,8 @@
 {
     "scripts": {
         "build:css": "lessc styles/main.less styles.css && cleancss styles.css -o styles.min.css",
+        "build:worker-assets": "node scripts/build-pages-whitelist.mjs",
+        "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",
         "watch:css": "lessc --watch styles/main.less styles.css"
     },
     "devDependencies": {

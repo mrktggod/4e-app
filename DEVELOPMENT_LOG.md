@@ -78,6 +78,16 @@
 
 **Блокеры:** Текущий `<worker-repo-root>` не является отдельным git-репозиторием, поэтому код bot/worker пока зафиксирован только локально. Для закрытия SMART-004 нужен runtime deploy процесса `node src/bot/index.js` и ручной smoke в тестовой группе.
 
+## 2026-07-05 — INFRA-001: whitelist-фронт на Workers Static Assets (Codex)
+
+**Что сделано:** В app-репо поднят отдельный фронтовый Worker `4-ai-app-worker`: `scripts/build-pages-whitelist.mjs` собирает `.pages-dist`, `wrangler.toml` публикует её через Static Assets на маршруте `app.4-ai.site/*`, а `worker-static.js` обслуживает assets и страхует VK-вход. Для VK добавлен внутренний rewrite: запросы на `vk.html` больше не требуют внешнего `307`, а если VK контейнер приходит в корень `/` с launch params (`vk_*`, `sign`), Worker сразу отдаёт VK-поверхность. Это сохраняет whitelist-модель, убирает зависимость от Cloudflare Pages в РФ и не затрагивает API worker на `edge.4-ai.site`.
+
+**Проверка кодировки:** Не требовалась — `index.html` и `vk.html` в этой задаче не редактировались.
+
+**Тест:** `npm run build:worker-assets`; `npx wrangler deploy`; HTTP-проверки `https://app.4-ai.site/`, `/vk`, `/privacy` -> `200`; `https://app.4-ai.site/pm/backlog.md` и `/shared/ROADMAP.md` -> `404`; preflight `OPTIONS` с origin `https://app.4-ai.site` до `https://edge.4-ai.site/auth/login` -> `204`; live HTML на домене содержит `https://edge.4-ai.site` и не содержит `workers.dev`, staging URL или `mrktggod.github.io`.
+
+**Коммит:** N/A
+
 ## 2026-07-05 — SMART-006: user profile in AI chat context (Codex)
 
 **Что сделано:** В `index.html` расширен system prompt AI-чата: добавлено явное указание учитывать профиль пользователя. Рядом с `sendAsk()` добавлены helper-функции, которые собирают из `currentUser` и `allTasksCache` профильный блок для Claude: имя, локальное время и timezone, тариф, количество активных/горящих/просроченных задач, завершённые за 7 дней (по доступным timestamp-полям), топ-3 людей из активных задач. Этот блок теперь инжектится в `system` вместе с датой и summary активных задач.
