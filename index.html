@@ -13,7 +13,7 @@
 <main id="app">
 
 <!-- ONBOARDING -->
-<div class="screen" id="onboarding">
+<div class="screen active" id="onboarding">
   <div class="ob-wrap">
     <!-- slides -->
     <div class="ob-slides" id="ob-slides">
@@ -2055,6 +2055,12 @@ function withTimeout(promise, ms){
   ]);
 }
 
+function showStartupFallback(){
+  const screen=localStorage.getItem(ONBOARD_K)?'login':'onboarding';
+  showScreen(screen);
+  if(screen==='onboarding') obInit();
+}
+
 async function readJsonSafe(response){
   try{
     return await response.json();
@@ -2123,12 +2129,13 @@ async function getVkLaunchParams(){
 async function initApp(){
   const tg=window.Telegram?.WebApp;
   if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
+  showStartupFallback();
 
   const token=getToken();
   if(token){
     try{
-      const r=await fetch(WORKER+'/auth/me',{headers:authHeaders()});
-      const d=await r.json();
+      const r=await withTimeout(fetch(WORKER+'/auth/me',{headers:authHeaders()}),4500);
+      const d=await readJsonSafe(r);
       if(d.ok){
         currentUser=d.user;
         chatId='user_'+currentUser.id;
@@ -2137,19 +2144,18 @@ async function initApp(){
         loadTasks();
         return;
       }
+      if(r.status===401||r.status===403) localStorage.removeItem(TOKEN_K);
     }catch(e){}
-    // token invalid — clear and fall through
-    localStorage.removeItem(TOKEN_K);
   }
 
   const telegramStartToken = getTelegramStartTokenFromLaunch();
   if (telegramStartToken) {
-    const ok = await loginWithTelegram(telegramStartToken);
+    const ok = await withTimeout(loginWithTelegram(telegramStartToken), 8000).catch(() => false);
     if (ok) return;
   }
 
   if(tgUser?.id && !localStorage.getItem(LOGOUT_K)){
-    const ok=await loginWithTelegram();
+    const ok=await withTimeout(loginWithTelegram(), 8000).catch(() => false);
     if(ok) return;
     // если TG-логин не удался — падаем вниз на login/onboarding
   }
@@ -2172,12 +2178,7 @@ async function initApp(){
       }
     }
   }catch(e){}
-  if(!localStorage.getItem(ONBOARD_K)){
-    showScreen('onboarding');
-    obInit();
-  } else {
-    showScreen('login');
-  }
+  showStartupFallback();
 }
 
 const ADMIN_EMAILS=['shelckograff@gmail.com'];
@@ -2381,12 +2382,12 @@ async function loginWithTelegramLegacy(){
     return false;
   }
   try{
-    const r=await fetch(WORKER+'/auth/telegram',{
+    const r=await withTimeout(fetch(WORKER+'/auth/telegram',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({initData:tgInitData, user:tgUser})
-    });
-    const d=await r.json();
+    }),8000);
+    const d=await readJsonSafe(r);
     if(d.ok&&d.token){
       setLegacyToken(d.token);
       currentUser=d.user;
@@ -2419,11 +2420,11 @@ async function loginWithTelegram(startToken=''){
       if (tgUser) body.user = tgUser;
     }
     try {
-      const r = await fetch(WORKER + '/auth/telegram', {
+      const r = await withTimeout(fetch(WORKER + '/auth/telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
-      });
+      }),8000);
       const d = await readJsonSafe(r);
       if (d.ok && d.token) {
         setLegacyToken(d.token);
@@ -2449,16 +2450,19 @@ async function loginWithTelegram(startToken=''){
     return loginWithTelegramLegacy();
   }
 
-  const tokenR = await fetch(WORKER + '/auth/telegram', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      generateStartToken: true,
-      ...(tgInitData ? { initData: tgInitData } : {}),
-      ...(tgUser ? { user: tgUser } : {})
-    })
-  });
-  const tokenData = await readJsonSafe(tokenR);
+  let tokenData = { ok: false };
+  try {
+    const tokenR = await withTimeout(fetch(WORKER + '/auth/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        generateStartToken: true,
+        ...(tgInitData ? { initData: tgInitData } : {}),
+        ...(tgUser ? { user: tgUser } : {})
+      })
+    }),8000);
+    tokenData = await readJsonSafe(tokenR);
+  } catch (e) {}
   if (tokenData.ok && tokenData.startToken) {
     openTelegramLoginUrl(buildTelegramBotLoginUrl(tokenData.startToken));
     return true;
