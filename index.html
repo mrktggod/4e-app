@@ -2092,17 +2092,27 @@ function getTelegramStartTokenFromLaunch() {
 }
 
 function buildTelegramBotLoginUrl(startToken) {
-  const base = 'tg://resolve?domain=' + TELEGRAM_BOT_USERNAME;
-  return startToken ? base + '&start=' + encodeURIComponent(startToken) : base;
+  const bot = String(TELEGRAM_BOT_USERNAME || 'Denzel89bot').replace(/^@/, '').trim() || 'Denzel89bot';
+  const base = 'https://t.me/' + encodeURIComponent(bot);
+  return startToken ? base + '?start=' + encodeURIComponent(startToken) : base;
 }
 
 function openTelegramLoginUrl(url){
   const tgApp = window.Telegram?.WebApp;
-  if (tgApp?.openTelegramLink) {
-    tgApp.openTelegramLink(url);
-    return;
+  const inTelegramMiniApp = !!tgInitData;
+  if (inTelegramMiniApp && tgApp?.openTelegramLink && /^https:\/\/t\.me\//i.test(url)) {
+    try {
+      const result = tgApp.openTelegramLink(url);
+      if (result && typeof result.catch === 'function') {
+        result.catch(() => { window.location.href = url; });
+      }
+      return true;
+    } catch (e) {
+      console.warn('openTelegramLink failed, falling back to web link', e);
+    }
   }
   window.location.href = url;
+  return true;
 }
 
 async function getVkLaunchParams(){
@@ -2436,11 +2446,11 @@ async function loginWithTelegram(startToken=''){
         loadTasks();
         return true;
       }
-      showToast(d.error || 'РћС€РёР±РєР° Telegram Р°РІС‚РѕСЂРёР·Р°С†РёРё');
+      showToast(d.error || 'Ошибка Telegram авторизации');
       showScreen('login');
       return false;
     } catch (e) {
-      showToast('РќРµС‚ СЃРѕРµРґРёРЅРµРЅРёСЏ');
+      showToast('Нет соединения');
       showScreen('login');
       return false;
     }
@@ -2450,6 +2460,7 @@ async function loginWithTelegram(startToken=''){
     return loginWithTelegramLegacy();
   }
 
+  showToast('Открываем Telegram-бота для входа');
   let tokenData = { ok: false };
   try {
     const tokenR = await withTimeout(fetch(WORKER + '/auth/telegram', {

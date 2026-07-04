@@ -54,6 +54,19 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-07-04 — BUG-2026-07-04-002: web Telegram login fallback fix (Codex)
+
+**Что сделано:** Исправлена причина ошибки `WebAppTgUrlInvalid` при входе через Telegram в веб-версии. `buildTelegramBotLoginUrl()` больше не строит `tg://resolve?...`; теперь используется `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` вызывает `Telegram.WebApp.openTelegramLink()` только в реальном Mini App-контексте с `initData`, а обычная веб-версия уходит по HTTPS-ссылке. В Telegram auth-ветке исправлены битые русские строки ошибок. Добавлены `BUG-2026-07-04-002`, `BACK-036`, task-файл и QA-запись.
+
+**Проверка кодировки:** `index.html` до правки: 26 совпадений по `Войти|Задачи|Сегодня`; после правки: 26 совпадений.
+
+**Тест:** inline JS syntax check через Node 24; JS-smoke для `buildTelegramBotLoginUrl()` и `openTelegramLoginUrl()` подтвердил, что веб-версия не вызывает `openTelegramLink()` и переходит на `https://t.me/Denzel89bot?start=auth_test`, а Mini App-контекст передаёт в SDK HTTPS-ссылку. Полный Playwright-smoke не выполнен: в окружении нет установленного browser executable.
+
+**Коммит:** N/A
+
+**Статус:** Ready for QA — нужен live smoke в веб-версии и проверка ответа `@Denzel89bot` на `/start`.
+
+---
 ## 2026-07-05 — INFRA-004 + CI/PM follow-up (Codex)
 
 **Что сделано:** После серии rootfix-деплоев и диагностики РФ-сетей принят финальный расклад: Workers Static Assets остаются глобальным фронтовым контуром (`app.4-ai.site`), но жёсткие белые списки в отдельных РФ-сетях не считаются багом приложения; Telegram Mini App остаётся на GitHub Pages, а VK-поверхность уходит на собственный хостинг VK Mini Apps. В app-репо подготовлен deploy-пакет `INFRA-004`: добавлены `@vkontakte/vk-miniapps-deploy`, `scripts/build-vk-hosting.mjs`, `vk-hosting-config.json`, `homepage: "./"` и отдельная сборка `.vk-hosting-dist`, которая публикует `vk.html` как `index.html`, копирует локальные vendor-ассеты и не зависит от `jsdelivr`. Это продолжает урок `INFRA-001`: `run_worker_first` нужен для управляемых 404 и диагностики, а блокировка `jsdelivr` в РФ требовала self-hosted vendor-файлов (`vk-bridge`, `telegram-web-app`, `marked`) внутри репозитория. Параллельно синхронизированы PM-артефакты: в `pm/backlog.md` добавлен `INFRA-004`, у `INFRA-002` зафиксировано правило проверки минимум с двух независимых РФ-точек/операторов; в `shared/ROADMAP.md` записана итоговая схема хостинга 2026-07-05; в `pm/release-checklist.md` и `pm/qa-checklist.md` добавлены проверки внешних origin и post-deploy smoke; создана инструкция `pm/qa-smart-001-002-004-group-bot.md` для ручного QA Лёхи по групповому боту и отдельной проверке `app.4-ai.site` без VPN. В `.github/workflows/deploy-pages.yml` добавлены CI-защиты из постмортема: assert на production `WORKER` URL в артефакте, запрет staging/`workers.dev` origin, smoke по live Pages URL после деплоя и автосоздание incident issue при падении workflow.

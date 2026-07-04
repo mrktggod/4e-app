@@ -44,7 +44,7 @@
 | Продакшн email | Домен 4-ai.site верифицирован в Resend, FROM: noreply@4-ai.site | P1 | Done |
 | AI-планерный дашборд | BACK-025 — настраиваемый утренний AI-дашборд в стиле "План на сегодня": AI-сводка, пульс дня, следующая задача, риски и смысловые секции задач | P1 | In Progress |
 | Качество задач | Фаза 11 — относительные даты в карточках задач (Done); BACK-019 — улучшенные карточки в списке (Ready for QA); BACK-022 — ручной MVP детальной карточки задачи | P1 | Todo |
-| Доступ и авторизация | BACK-024 — Telegram вход не должен упираться в тупиковую подсказку между Mini App и ботом | P1 | Triaged |
+| Доступ и авторизация | BACK-024 — Telegram вход не должен упираться в тупиковую подсказку между Mini App и ботом; BACK-036 — web fallback Telegram-входа без `tg://resolve` | P1 | BACK-024 Done; BACK-036 Ready for QA |
 | Голосовой ввод | BACK-021 — MediaRecorder + Whisper вместо SpeechRecognition (фикс BUG-2026-06-29-002, iOS) | P1 | Triaged |
 | 152-ФЗ | Вшить номер уведомления РКН (получен 2026-07) в privacy.html и онбординг | P1 | Todo |
 | Staging-контур | Staging D1/KV + `wrangler --env staging`, тестовый бот, dev-версия Pages. «Чистая» версия = main, «грязная» = dev/staging — без второй копии кода | P1 | Todo |
