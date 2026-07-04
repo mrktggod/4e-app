@@ -6,6 +6,16 @@
 
 ---
 
+### 2026-07-05 — Codex
+
+**Задача:** INFRA-001 — перевести whitelist-фронт на Workers Static Assets и вернуть `app.4-ai.site` в доступный для РФ контур без VPN
+**Результат:** В app-репо добавлены `worker-static.js` и `wrangler.toml`; whitelist-сборка из `scripts/build-pages-whitelist.mjs` теперь разворачивается как Static Assets воркера `4-ai-app-worker` на маршруте `app.4-ai.site/*`. Проверено: `/`, `/vk`, `/privacy` отвечают `200`, `pm/` и `shared/ROADMAP.md` недоступны (`404`), CORS до `https://edge.4-ai.site` живой. Дополнительно Worker распознаёт VK launch params в корне и обслуживает `vk.html` без внешнего редиректа, чтобы VK Mini App не зависел от `vk.html -> /vk`.
+**Коммит:** N/A
+**Статус:** ⚠️ частично
+**Следующий шаг:** Юрий проверяет `https://app.4-ai.site/` и `https://app.4-ai.site/vk` с телефона из РФ-сети без VPN; после зелёной проверки можно окончательно вернуть VK DevPage/BotFather на домен `app.4-ai.site`
+
+---
+
 ### 2026-07-04 — Codex
 
 **Задача:** Delta-sync стратегии и бэклога после сессии SMART-001/002/004

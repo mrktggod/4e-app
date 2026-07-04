@@ -1,0 +1,15 @@
+name = "4-ai-app-worker"
+main = "worker-static.js"
+compatibility_date = "2026-07-04"
+workers_dev = true
+routes = [
+  { pattern = "app.4-ai.site", zone_name = "4-ai.site" },
+  { pattern = "app.4-ai.site/*", zone_name = "4-ai.site" }
+]
+
+[assets]
+directory = ".pages-dist"
+binding = "ASSETS"
+run_worker_first = true
+html_handling = "none"
+not_found_handling = "404-page"

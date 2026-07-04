@@ -18,6 +18,8 @@
 | `index.html` | 5276 | Telegram Mini App: CSS, HTML-экраны, JS-логика | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 1578 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `privacy.html` | 230 | Политика конфиденциальности | Можно читать целиком при правовых правках |
+| `worker-static.js` | 31 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets и маршрутизирует VK launch на `vk.html` без внешнего редиректа | Можно читать целиком; точка входа инфраструктуры INFRA-001 |
+| `wrangler.toml` | 12 | Конфиг фронтового Worker и Static Assets для `app.4-ai.site/*` | Можно читать целиком при infra/deploy правках |
 | `AGENTS.md` | 224 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 120 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 141 | Инструкции наблюдателя/координатора | Читать при планировании |
