@@ -6,7 +6,7 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 
 | Пункт | Значение |
 | --- | --- |
-| Локальная папка | Не подключена |
+| Локальная папка | Есть отдельный checkout вне `4e-app`: `<worker-repo-root>` |
 | Ожидаемая зона | `4e-worker/worker.js`, `4e-worker/src/bot/`, migrations |
 | Live Worker | `https://restless-lab-d737.shelckograff.workers.dev` |
 | Деплой | `npx wrangler deploy` из отдельного worker-репозитория |
@@ -23,6 +23,9 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 - `/payments/telegram-stars/complete` — подтверждает `successful_payment` от Telegram bot и активирует Premium.
 - `/notifications/settings` — читает/сохраняет настройки уведомлений пользователя в D1 с KV fallback.
 - `/briefings/check` — выдаёт bot scheduler список утренних брифингов по времени пользователя.
+- `x-action: delete-task` — удаляет задачу по `taskId` из user/group KV-ключей; используется inline-кнопкой `✕` и перед пересохранением при `✏️`.
+- `x-action: upsert-chat-members` / `get-chat-members` / `mark-chat-members-left` — D1-ростер участников чата для `SMART-001`; таблица `chat_members`, источник для резолва `assigneeTgId`.
+- `migrations/0007_chat_members.sql` — создаёт D1-таблицу `chat_members` и индексы по `chat_id/last_seen` и `username`.
 - D1/privacy endpoints используются из `index.html` и `vk.html`.
 - Реальные секреты не должны попадать в код; использовать placeholders и Secrets.
 

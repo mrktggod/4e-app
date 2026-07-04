@@ -28,7 +28,7 @@
 | BACK-024 | Telegram вход — убрать тупик между Mini App и ботом | Bug/Auth | P1 | Юрий / bot + Codex / app | Done | Г1 | Вход через Telegram проходит в правильный аккаунт, smoke passed 2026-07-01 |
 | BACK-025 | Настраиваемый утренний AI-дашборд | Product/UI | P1 | Алексей + Codex | Done | Г1 | Первый экран в стиле AI-планера: "План на сегодня", короткая AI-сводка, "Начать с", пульс дня, риски и секции "Сделать первым / Горит / Жду от людей / Можно перенести"; пользователь за 30 секунд понимает главное и может открыть нужное действие |
 | BACK-027 | Баги AI-дашборда после smoke | Bug/UI | P2 | Codex | Done | Г1 | (1) Пульс дня показывает >100% — сломан расчёт; (2) кнопка «Свернуть 4» содержит имя приложения вместо просто «Свернуть»; (3) секция «Горит» показывает «Пока пусто» при наличии просроченных задач — фильтр не захватывает overdue. Закрыт: см. bugs.md BUG-2026-07-04-001, headless smoke 2026-07-04 |
-| BACK-034 | Staging-контур: D1/KV staging, `wrangler --env staging`, тестовый бот, dev-Pages | Tech/Process | P1 | Codex | Todo | Г1 | «Чистая» версия = main для пользователей, «грязная» = dev/staging для агентов; ни один деплой агентов не попадает в prod без QA (решение 2026-07-04) |
+| BACK-034 | Staging-контур: D1/KV staging, `wrangler --env staging`, тестовый бот, dev-Pages | Tech/Process | P1 | Codex | In Progress | Г1 | staging D1/KV и worker уже подняты, `dev`-ветка Mini App задеплоена на `4-ai-staging.pages.dev`; осталось добить AI smoke после добавления staging secrets и подтвердить username тестового бота |
 | BACK-035 | QA smoke по qa-checklist перед закрытым тестом | QA | P1 | Алексей | Todo | Г1 | Все сценарии qa-checklist пройдены на iOS и Android после фиксов BACK-021/024/027 |
 
 ## Next
@@ -41,10 +41,10 @@
 | BACK-008 | Перенос ПД в Yandex Cloud PostgreSQL | Tech/Legal | P1 | Алексей + Codex | Manual blocker | Г2 | Алексей создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings; после этого Codex продолжает перенос |
 | BACK-013 | Семантический HTML | Tech/UI | P3 | Codex | Done | Г1 | В `index.html` добавлены `<main>`, `<header>`, `<nav>`, aria-label и роли для иконочной навигации без изменения визуала |
 | BACK-014 | Подготовка кода под PostgreSQL заранее | Tech | P2 | Codex | Done | Г2 | Worker commit `37f9dda` добавил PostgreSQL storage adapter и `migrations/postgres_app_state.sql`; production путь остаётся D1/KV до появления credentials |
-| SMART-006 | Профиль пользователя в контексте AI-чата | Product/AI | P1 | Codex | Todo | Г1 | System prompt получает имя, статистику задач, топ людей; ответ AI обращается к пользователю по имени и опирается на его реальные данные. Детали: `ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` |
-| SMART-004 | Лаконичная фиксация задач в группах | Product/Bot | P1 | Codex | Todo | Г1 | Подтверждение — одна строка `✓ Имя: задача — срок` + кнопки ✏️/✕; сохранение сразу, без 2-минутного setTimeout |
-| SMART-001 | Ростер участников группового чата | Tech/Bot | P1 | Codex | Todo | Г1 | Бот копит участников (tg_id, имя, username) из сообщений и new_chat_members в D1; per chat_id |
-| SMART-002 | Исполнитель с TG ID в задаче | Product/Bot | P1 | Codex | Todo | Г1 | Задача получает assigneeTgId/assigneeUsername из entities (mention/text_mention), reply или fuzzy-матча имени против ростера; связан с BACK-030 |
+| SMART-006 | Профиль пользователя в контексте AI-чата | Product/AI | P1 | Codex | In Progress | Г1 | System prompt получает имя, локальное время, тариф, статистику задач и топ людей; staging smoke ждёт `ANTHROPIC_KEY`, чтобы проверить ответы «что у меня горит?» и «кому я больше всего должен?» |
+| SMART-004 | Лаконичная фиксация задач в группах | Product/Bot | P1 | Codex | Ready for QA | Г1 | Локальный bot runtime стартует на staging-секретах; smoke против staging-worker пройден: однострочное подтверждение, мгновенное сохранение и `✏️/✕` через `delete-task` |
+| SMART-001 | Ростер участников группового чата | Tech/Bot | P1 | Codex | Ready for QA | Г1 | Smoke против staging-worker пройден: roster хранится в D1 `chat_members` через `upsert/get/mark-chat-members-left`; по итогам smoke исправлен сценарий `left_chat_member`, миграция `0007_chat_members.sql` уже на staging |
+| SMART-002 | Исполнитель с TG ID в задаче | Product/Bot | P1 | Codex | Ready for QA | Г1 | Smoke против staging-worker пройден: bot source пишет `assigneeTgId`/`assigneeUsername` из entities, reply и roster-fuzzy; проверены `@username` и reply-задача |
 | SMART-003 | Кнопка «Написать» исполнителю | Product/UI | P1 | Codex | Todo | Г1 | В карточке задачи и сообщении бота кнопка открывает чат: t.me/username или tg://user?id; фолбэк при закрытом профиле |
 | SMART-007 | Память фактов между сессиями (AI-память v1) | Product/AI | P1 | Codex | Todo | Г1 | Фоновое извлечение фактов (Haiku) → D1 `user_facts`, топ-15 в system prompt; экран «Что 4 знает обо мне» с удалением (152-ФЗ) |
 | SMART-005 | Утренняя сводка по чату | Product/Bot | P2 | Codex | Todo | Г1 | Подключить готовый `checkBriefings()` + per-group сводка; расписание через Cloudflare Cron Triggers; связан с BACK-017 |
@@ -81,6 +81,7 @@
 | SMART-011 | Умный пинг «Жду от людей» | Product/Bot | P2 | Codex | Todo | Г2 | Кнопка «Напомнить N» шлёт исполнителю вежливое напоминание; требует SMART-002; шаг к ICE-003 Proactive mode |
 | SMART-010 | Дедупликация задач | Product/AI | P3 | Codex | Todo | Г2 | При создании — чек похожести с активными, предложение объединить |
 | SMART-012 | Адаптивное время напоминаний | Product/AI | P3 | Codex | Todo | Г2 | Время брифинга/напоминаний подстраивается под активность пользователя (AI-память v2) |
+| SMART-013 | «Задача — это промпт»: AI-декомпозиция на этапы | Product/AI | P2 | Codex | Todo | Г2 | Кнопка «Разбить на этапы» в карточке задачи: AI разворачивает задачу в чек-лист шагов; в чате задачи (BACK-032) можно углубиться в любой шаг; стартовый набор шаблонов декомпозиции (запуск, отчёт, событие, переезд и т.п.). Идея Юрия 2026-07-04; основа сценария ролика 2Б |
 | VIRAL-001 | Шеринг-карточка «План дня / Итоги дня» | Growth | P2 | Мимо → Codex | Todo | Г2 | Красивое изображение (glass, водяной знак) шерится в VK Stories и TG |
 | VIRAL-002 | Реферальная ссылка +30 дней обоим | Growth | P2 | Codex | Todo | Г2 | Требует BACK-026 и BACK-038; инвайт-ссылка, начисление дней, счётчик |
 | VIRAL-003 | AI-персонаж в приложении | Growth/Brand | P2 | Юрий (bible) → Мимо | Todo | Г2 | Сдержанная версия персонажа AI-блогера: аватар, тон сводок; связка с VK Клипами |
@@ -90,6 +91,12 @@
 | PLAT-001 | Мини-апп + бот в MAX | Platform | P2 | Юрий (профиль ИП) + Codex | Todo | Г2 | Четвёртый адаптер на MAX Bridge (dev.max.ru); требует BACK-036 и верифицированный профиль на платформе MAX |
 | PLAT-002 | RuStore: PWA-обёртка | Platform | P2 | Codex | Todo | Г2 | Standalone-режим без TG/VK SDK на домене 4-ai.site, публикация в RuStore |
 | PLAT-003 | Google Play (TWA) → App Store (Capacitor) | Platform | P3 | Codex | Todo | Г3 | После PLAT-002; Apple потребует нативных элементов и учёта правил платежей; заменяет ICE-002 |
+| NATIVE-001 | Системный календарь: двусторонняя синхронизация | Platform/Product | P2 | Codex | Todo | Г3 (после PLAT-003) | Задачи с датой видны в календаре телефона, события календаря — в «Плане на сегодня»; AI учитывает занятость при планировании («в 15:00 не успеешь — у тебя встреча»). Идея Юрия 2026-07-04 |
+| NATIVE-002 | Нативные push с действиями | Platform/Product | P1 | Codex | Todo | Г3 (после PLAT-003) | Напоминание приходит как системный push с кнопками «Готово / +1 час / Открыть» — реакция без открытия приложения. Заменяет зависимость от Telegram-уведомлений |
+| NATIVE-003 | Голос без открытия приложения: Siri Shortcuts / App Intents + Google Assistant | Platform/Product | P2 | Codex | Todo | Г3 | «Привет Siri, скажи 4: перезвонить Ане завтра» → задача создана в фоне. Легальный путь к эффекту «Алисы» на чужих платформах |
+| NATIVE-004 | Виджеты и share sheet | Platform/Product | P2 | Codex | Todo | Г3 | Виджет «План на сегодня» на домашнем экране; «Поделиться» из любого приложения (текст, скрин переписки) в 4 → AI извлекает задачу |
+| NATIVE-005 | Гео-напоминания (geofencing) | Platform/Product | P3 | Codex | Todo | Г3 | «Напомни про посылку, когда буду рядом с пунктом выдачи» — фоновое срабатывание по месту; связка с гео-этапом продуктового видения. Требует явного согласия (152-ФЗ: геоданные = ПД) |
+| NATIVE-006 | Фоновый сбор контекста с телефона (аккуратно) | Platform/AI | P3 | Юрий (политика) + Codex | Icebox | Г3+ | Только opt-in и по одному источнику: календарь, гео. НЕ делать: чтение уведомлений/прослушивание — риск бана в сторах и токсично для доверия. Каждый источник — отдельное согласие, отражается в «Что 4 знает обо мне» (SMART-007) |
 
 ## Соответствие багов задачам (аудит 2026-07-04)
 

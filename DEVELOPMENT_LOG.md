@@ -54,6 +54,52 @@
 ---
 
 ## ИСТОРИЯ ИЗМЕНЕНИЙ
+## 2026-07-04 — SMART-001/002: chat roster + assignee tg id (Codex)
+
+**Что сделано:** В локальном worker checkout добавлена миграция `4e-worker/migrations/0007_chat_members.sql` и три новых bot-only action'а в `worker.js`: `upsert-chat-members`, `get-chat-members`, `mark-chat-members-left`. Они ведут D1-таблицу `chat_members` по ключу `chat_id + tg_id` и позволяют боту копить roster группы. В `4e-worker/src/bot/handler.js` добавлены сбор roster-кандидатов из `msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`, загрузка roster перед анализом, эвристики резолва исполнителя по `text_mention`, `@mention`, reply и fuzzy-матчу имени, а также сохранение `assigneeTgId` / `assigneeUsername` в объект задачи. В `4e-worker/src/bot/analyzer.js` system prompt теперь получает список реальных участников чата и автора reply, чтобы Haiku чаще возвращал живое имя из roster вместо абстрактного «он/она».
+
+**Проверка кодировки:** `pm/backlog.md` — контрольный поиск до правки `29`; `shared/WORK_LOG.md` — `171`; `DEVELOPMENT_LOG.md` — `177`; `FILE_MAP_WORKER.md` — `11`; `FILE_MAP_BOT.md` — `5`. Итоговая сверка после правок не должна давать уменьшения.
+
+**Тест:** `node --check <worker-repo-root>/src/bot/analyzer.js`; `node --check <worker-repo-root>/src/bot/handler.js`; `node --check <worker-repo-root>/worker.js`; `npx wrangler d1 migrations apply DB --env staging --remote` → `0007_chat_members.sql ✅`; `npx wrangler deploy --env staging` → version `231a8070-f7ab-46d2-8983-f3939063afad`; `GET https://restless-lab-d737-staging.shelckograff.workers.dev/` → `200`.
+
+**Коммит:** `этот коммит`
+
+**Блокеры:** Сам bot runtime по-прежнему живёт вне git-репозитория `4e-app`; staging worker уже умеет roster API, но без обновления процесса `node src/bot/index.js` нельзя честно проверить group smoke для `@mention`, reply и join/leave.
+
+## 2026-07-04 — SMART-004: concise group task confirmations (Codex)
+
+**Что сделано:** В локальном worker checkout обновлены bot-обработчики для `SMART-004`. `4e-worker/src/bot/handler.js` теперь формирует однострочное подтверждение `✓ Имя: задача — срок`, сохраняет задачу сразу после разбора сообщения, показывает только кнопки `✏️` и `✕`, а редактирование/отмена удаляют старую запись через `x-action: delete-task` и не рисуют ложное «Отменено», если бот уже потерял контекст callback. В `4e-worker/worker.js` подтверждён новый action `delete-task` с удалением по `taskId` из user/group KV-ключей; `saveTaskByName` в текущем checkout не реализован, поэтому дополнительных скрытых копий задачи этот сценарий сейчас не создаёт.
+
+**Проверка кодировки:** `pm/backlog.md` — контрольный поиск до правки `29`; `shared/WORK_LOG.md` — `167`; `DEVELOPMENT_LOG.md` — `173`; `FILE_MAP_WORKER.md` — `10`; `FILE_MAP_BOT.md` — `3`. Итоговая сверка после правок не должна давать уменьшения.
+
+**Тест:** `node --check <worker-repo-root>/worker.js`; `node --check <worker-repo-root>/src/bot/handler.js`; точечная проверка `handler.js`/`worker.js` на `formatTaskConfirmationLine`, `delete-task`, `handleDeleteTask`.
+
+**Коммит:** `этот коммит`
+
+**Блокеры:** Текущий `<worker-repo-root>` не является отдельным git-репозиторием, поэтому код bot/worker пока зафиксирован только локально. Для закрытия SMART-004 нужен runtime deploy процесса `node src/bot/index.js` и ручной smoke в тестовой группе.
+
+## 2026-07-05 — SMART-006: user profile in AI chat context (Codex)
+
+**Что сделано:** В `index.html` расширен system prompt AI-чата: добавлено явное указание учитывать профиль пользователя. Рядом с `sendAsk()` добавлены helper-функции, которые собирают из `currentUser` и `allTasksCache` профильный блок для Claude: имя, локальное время и timezone, тариф, количество активных/горящих/просроченных задач, завершённые за 7 дней (по доступным timestamp-полям), топ-3 людей из активных задач. Этот блок теперь инжектится в `system` вместе с датой и summary активных задач.
+
+**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
+
+**Тест:** локальный grep подтвердил, что `index.html` на ветке содержит профильный блок и инжектит его в `system`. Полный staging smoke пока заблокирован: `npx wrangler secret list --env staging` не показывает `ANTHROPIC_KEY`, поэтому `/anthropic` на staging нельзя проверить честно.
+
+**Коммит:** `этот коммит`
+
+## 2026-07-05 — BACK-034: staging contour bootstrap (Codex)
+
+**Что сделано:** Для `<worker-repo-root>` staging-конфиг приведён к штатному виду: в `wrangler.toml` добавлен `[env.staging]` с отдельными D1/KV bindings и `routes = []`, чтобы staging не наследовал prod-домен `edge.4-ai.site`; `wrangler.staging.toml` синхронизирован. Применена миграция `postgres_app_state.sql` к D1 `4e-staging`, staging worker задеплоен на `https://restless-lab-d737-staging.shelckograff.workers.dev`. В app-репо создана ветка `dev`: `index.html` по умолчанию ходит в staging worker, username бота можно прокинуть через `?bot=<staging_bot_username>`, а при недоступности `startToken` dev-ветка делает fallback-открытие Telegram-бота без тупика. Создан Pages-проект `4-ai-staging`, загружена dev-версия приложения, добавлена инструкция `docs/staging-contour.md`.
+
+**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
+
+**Тест:** `node --check worker.js`; `npx wrangler d1 migrations apply DB --env staging --remote`; `npx wrangler deploy --env staging`; `curl https://restless-lab-d737-staging.shelckograff.workers.dev/` → `OK`; `curl -X OPTIONS ...` → `204`; `wrangler pages project create 4-ai-staging --production-branch dev`; `wrangler pages deploy . --project-name 4-ai-staging --branch dev`; `curl https://4-ai-staging.pages.dev/` содержит `const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev';`.
+
+**Коммит:** `этот коммит`
+
+**Блокеры:** `npx wrangler secret list --env staging` показывает только `BOT_API_TOKEN`; для AI smoke нужны как минимум `ANTHROPIC_KEY` и, вероятно, `OPENAI_KEY`/`RESEND_KEY`/`VK_SECRET_KEY`. Также нужен username тестового бота для полного ручного Telegram smoke, пока он не зафиксирован в репозитории и передаётся через `?bot=...`.
+
 ## 2026-07-04 — PM docs sync v2.1 (Codex)
 
 **Что сделано:** Найден реальный target-репозиторий `<repo-root>` вместо `Documents\4\4e-app`. Из Desktop-источника байтовым `Copy-Item` синхронизированы `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` и `docs/ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ.md`. По дополнению inbox v2.1 переименованы task-файлы `BACK-025-completed-tasks-week.md` → `BACK-039-completed-tasks-week.md` и `BACK-027-admin-tariff-map.md` → `BACK-040-admin-tariff-map.md`, обновлены их внутренние идентификаторы и backlog-заметка про коллизию ID. Дополнительно приведены к portable-виду абсолютные пути в `CODEX_INSTRUCTIONS.md`, чтобы прошла repo-проверка путей.
