@@ -133,6 +133,16 @@
 
 **Блокеры:** `npx wrangler secret list --env staging` показывает только `BOT_API_TOKEN`; для AI smoke нужны как минимум `ANTHROPIC_KEY` и, вероятно, `OPENAI_KEY`/`RESEND_KEY`/`VK_SECRET_KEY`. Также нужен username тестового бота для полного ручного Telegram smoke, пока он не зафиксирован в репозитории и передаётся через `?bot=...`.
 
+## 2026-07-05 — BACK-007: privacy/RKN links and wording (Codex)
+
+**Что сделано:** В `privacy.html` строка про реестр РКН приведена к формулировке задачи: «Уведомление об обработке персональных данных зарегистрировано Роскомнадзором, рег. № 102299/77 от 01.07.2026». В `index.html` добавлена явная privacy-ссылка в onboarding и расширен legal-note на экране auth: теперь он покрывает и `Войти`, и `Создать аккаунт`.
+
+**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
+
+**Тест:** `Invoke-WebRequest https://mrktggod.github.io/4e-app/privacy.html` вернул `200`; live-страница содержит `102299/77`. Локальный grep подтвердил privacy-ссылки в onboarding, auth и biometric consent.
+
+**Коммит:** `этот коммит`
+
 ## 2026-07-04 — PM docs sync v2.1 (Codex)
 
 **Что сделано:** Найден реальный target-репозиторий `<repo-root>` вместо `Documents\4\4e-app`. Из Desktop-источника байтовым `Copy-Item` синхронизированы `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` и `docs/ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ.md`. По дополнению inbox v2.1 переименованы task-файлы `BACK-025-completed-tasks-week.md` → `BACK-039-completed-tasks-week.md` и `BACK-027-admin-tariff-map.md` → `BACK-040-admin-tariff-map.md`, обновлены их внутренние идентификаторы и backlog-заметка про коллизию ID. Дополнительно приведены к portable-виду абсолютные пути в `CODEX_INSTRUCTIONS.md`, чтобы прошла repo-проверка путей.
