@@ -31,6 +31,7 @@
 | BACK-034 | Staging-контур: D1/KV staging, `wrangler --env staging`, тестовый бот, dev-Pages | Tech/Process | P1 | Codex | In Progress | Г1 | staging D1/KV и worker уже подняты, `dev`-ветка Mini App задеплоена на `4-ai-staging.pages.dev`; осталось добить AI smoke после добавления staging secrets и подтвердить username тестового бота |
 | BACK-035 | QA smoke по qa-checklist перед закрытым тестом | QA | P1 | Алексей | Todo | Г1 | Все сценарии qa-checklist пройдены на iOS и Android после фиксов BACK-021/024/027 |
 | BACK-036 | Web fallback Telegram-входа не открывает Telegram | Bug/Auth | P1 | Codex + Юрий / bot | Ready for QA | Г1 | В `index.html` заменён `tg://resolve` на `https://t.me/Denzel89bot?start=...`; фронт сохраняет pending token, отправляет `returnUrl` и принимает `?telegram_start=<token>`; bot должен после START дать ссылку назад на сайт |
+| BACK-041 | Bot-side web fallback Telegram-входа: возврат на сайт из `/start auth_*` | Bug/Auth | P1 | Codex + Юрий / bot | Todo | Г1 | В обработчике `/start` payload `auth_*` извлекает `startToken` и шлёт inline-кнопку «Вернуться в 4» → `${APP_BASE_URL}/?telegram_start=<token>`; worker гарантирует одноразовость и TTL токена; bot-side задеплоен; Алексей проходит сквозной live smoke веб-входа |
 
 ## Next
 
