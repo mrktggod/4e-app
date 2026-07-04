@@ -8,3 +8,4 @@ build/
 !.env.example
 index.backup_*.html
 index.merge_backup_*.html
+.pages-dist/
