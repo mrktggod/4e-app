@@ -73,7 +73,7 @@
 
 **Проверка кодировки:** правки в кириллических файлах сделаны через `apply_patch` после чтения в UTF-8; контрольные тексты `Чек`, `Хостинг`, `Задача` в `pm/backlog.md`, `shared/ROADMAP.md`, `pm/qa-checklist.md`, `pm/release-checklist.md`, `shared/WORK_LOG.md` остались читаемыми.
 
-**Тест:** `npm run build:vk-hosting` → `.vk-hosting-dist/index.html`, `privacy.html`, `styles.css`, `styles.min.css`, `assets/vendor/*`; grep по `vk.html` и `.vk-hosting-dist/index.html` подтверждает `const WORKER = 'https://edge.4-ai.site'`; `git diff --check`; `wrangler --version` → `4.100.0`; `wrangler secret list --env staging` подтверждает `ANTHROPIC_KEY` и `BOT_API_TOKEN`; локальный smoke `node src/bot/index.js` на staging-переменных поднимается, но всё ещё ловит `409 Conflict`; `getWebhookInfo` возвращает пустой `url`, значит конфликт даёт другой polling consumer, а не webhook.
+**Тест:** `npm run build:vk-hosting` → `.vk-hosting-dist/index.html`, `privacy.html`, `styles.css`, `styles.min.css`, `assets/vendor/*`; grep по `vk.html` и `.vk-hosting-dist/index.html` подтверждает `const WORKER = 'https://edge.4-ai.site'`; `git diff --check`; `wrangler --version` → `4.100.0`; `wrangler secret list --env staging` подтверждает `ANTHROPIC_KEY` и `BOT_API_TOKEN`; локальный smoke `node src/bot/index.js` на staging-переменных поднимается, но всё ещё ловит `409 Conflict`; `getWebhookInfo` возвращает пустой `url`, значит конфликт даёт другой polling consumer, а не webhook. Production deploy VK Mini Apps завершён через `vk-miniapps-deploy`: загружена version `1783191347`, подтверждён код из админки VK, production URL `https://prod-app54636698-c3cd4413b138.pages-ac.vk-apps.com/index.html`; пользователь подтвердил phone-smoke без VPN.
 
 **Коммит:** N/A
 
