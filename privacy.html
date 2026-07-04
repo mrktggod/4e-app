@@ -211,7 +211,7 @@
 <p>Сервис предназначен для лиц старше 18 лет. Мы не собираем намеренно данные несовершеннолетних. Если вам стало известно о предоставлении ребёнком данных без согласия родителей — свяжитесь с нами для удаления.</p>
 
 <h2>10. Изменения политики</h2>
-<p>При существенных изменениях в политике конфиденциальности мы уведомим пользователей через приложение не менее чем за 7 дней до вступления изменений в силу. Актуальная версия всегда доступна по адресу <a href="https://mrktggod.github.io/4e-app/privacy.html">mrktggod.github.io/4e-app/privacy.html</a>.</p>
+<p>При существенных изменениях в политике конфиденциальности мы уведомим пользователей через приложение не менее чем за 7 дней до вступления изменений в силу. Актуальная версия всегда доступна по адресу <a href="privacy.html" id="privacy-current-link">privacy.html</a>.</p>
 
 <h2>11. Контакты</h2>
 <div class="card">
@@ -227,5 +227,14 @@
 </div>
 
 </main>
+<script>
+  (function () {
+    var link = document.getElementById('privacy-current-link');
+    if (!link || !window.location) return;
+    var url = new URL('privacy.html', window.location.href);
+    link.href = url.href;
+    link.textContent = url.host + url.pathname;
+  })();
+</script>
 </body>
 </html>

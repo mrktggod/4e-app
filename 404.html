@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 4</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0e140b;
+      --panel: #151d12;
+      --text: #f2f5e9;
+      --muted: rgba(242, 245, 233, 0.64);
+      --accent: #9ac23c;
+      --border: rgba(154, 194, 60, 0.22);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, rgba(154, 194, 60, 0.12), transparent 34%), var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+    }
+    main {
+      width: min(100%, 420px);
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--panel);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+    p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #0e140b;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Страница не найдена</h1>
+    <p>Этот адрес не публикуется в открытом контуре приложения.</p>
+    <a href="/">Открыть 4</a>
+  </main>
+</body>
+</html>

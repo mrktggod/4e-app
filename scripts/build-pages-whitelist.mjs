@@ -5,6 +5,7 @@ const repoRoot = process.cwd();
 const outDir = resolve(repoRoot, ".pages-dist");
 
 const requiredFiles = [
+  "404.html",
   "index.html",
   "vk.html",
   "privacy.html",
