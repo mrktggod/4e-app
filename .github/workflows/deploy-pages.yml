@@ -13,6 +13,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  issues: write
 
 concurrency:
   group: github-pages
@@ -36,6 +37,64 @@ jobs:
       - name: Build whitelist artifact
         run: node scripts/build-pages-whitelist.mjs
 
+      - name: Assert production worker URL in artifact
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = '.pages-dist/index.html';
+          const html = fs.readFileSync(path, 'utf8');
+          if (!html.includes("https://edge.4-ai.site")) {
+            throw new Error(`Artifact ${path} does not point to https://edge.4-ai.site`);
+          }
+          const forbidden = [
+            'workers.dev',
+            'restless-lab-d737-staging',
+            '4-ai-staging.pages.dev',
+            'mrktggod.github.io/4e-app'
+          ];
+          for (const marker of forbidden) {
+            if (html.includes(marker)) {
+              throw new Error(`Artifact ${path} still contains forbidden marker: ${marker}`);
+            }
+          }
+          NODE
+
+      - name: Forbid unexpected external origins in artifact
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const allowed = new Set([
+            'https://edge.4-ai.site',
+            'https://telegram.org',
+            'https://t.me',
+            'https://widget.cloudpayments.ru',
+            'https://rkn.gov.ru',
+          ]);
+          const forbiddenHosts = [
+            'workers.dev',
+            'pages.dev',
+            'mrktggod.github.io',
+          ];
+          const files = ['.pages-dist/index.html', '.pages-dist/privacy.html'].filter((file) => fs.existsSync(file));
+          for (const file of files) {
+            const text = fs.readFileSync(file, 'utf8');
+            const matches = text.match(/https:\/\/[^"'`\s)]+/g) || [];
+            for (const match of matches) {
+              const url = new URL(match);
+              const origin = url.origin;
+              if (forbiddenHosts.some((host) => url.hostname.includes(host))) {
+                throw new Error(`${file} contains forbidden host ${origin}`);
+              }
+              if (!allowed.has(origin)) {
+                throw new Error(`${file} contains unexpected external origin ${origin}`);
+              }
+            }
+          }
+          NODE
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -52,3 +111,47 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Smoke deployed artifact
+        shell: bash
+        run: |
+          curl -fsSL "${{ steps.deployment.outputs.page_url }}" -o live-index.html
+          grep -F "https://edge.4-ai.site" live-index.html
+          ! grep -E "workers\.dev|restless-lab-d737-staging|4-ai-staging\.pages\.dev|mrktggod\.github\.io/4e-app" live-index.html
+
+      - name: Open incident issue on deploy failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'CI incident: Deploy GitHub Pages failed';
+            const body = [
+              'Автоматически создано после падения workflow `Deploy GitHub Pages`.',
+              '',
+              `Run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Ref: ${context.ref}`,
+              `SHA: ${context.sha}`,
+            ].join('\n');
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              creator: 'github-actions[bot]',
+              per_page: 100,
+            });
+            const existing = issues.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }

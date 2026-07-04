@@ -1,0 +1,10 @@
+{
+  "static_path": ".vk-hosting-dist",
+  "app_id": "54636698",
+  "endpoints": {
+    "mobile": "index.html",
+    "mvk": "index.html",
+    "web": "index.html"
+  },
+  "debug": false
+}
