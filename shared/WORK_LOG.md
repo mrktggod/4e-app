@@ -8,6 +8,14 @@
 
 ### 2026-07-04 — Codex
 
+**Задача:** Delta-sync стратегии и бэклога после сессии SMART-001/002/004
+**Результат:** Синхронизированы `shared/ROADMAP.md`, `pm/backlog.md`, `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` и `docs/marketing/СЦЕНАРИИ_РОЛИКОВ.md` из Desktop-источников; в репозиторий добавлены SMART-013, серия NATIVE-001..006 и пакет вирусных сценариев роликов, чтобы `main` отражал актуальную стратегию 2026-07-04.
+**Коммит:** `этот коммит`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Смёржить docs-ветку в `main`, затем дать Лёхе смотреть уже целостный план вместе с Ready for QA по SMART-001/002/004
+
+---
+
 **Задача:** Продвинуть SMART-001 и SMART-002 — roster участников и assignee с TG ID
 **Результат:** В локальном `<worker-repo-root>` добавлен D1-ростер `chat_members` с endpoint'ами `upsert/get/mark-chat-members-left`; bot `handler.js` теперь копит участников из `msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`, передаёт список участников в Haiku и сохраняет в задачу `assigneeTgId` / `assigneeUsername` по `text_mention`, `@mention`, reply и fuzzy-матчу имени. Staging worker обновлён: миграция `0007_chat_members.sql` применена, версия `231a8070-f7ab-46d2-8983-f3939063afad` отвечает `200 OK`.
 **Коммит:** `этот коммит`
