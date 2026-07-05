@@ -8,6 +8,16 @@
 
 ### 2026-07-06 — Codex
 
+**Задача:** BACK-043 — выровнять мобильную верстку экрана профиля
+**Результат:** В ветке `fix/profile-responsive-ui` обновлена мобильная раскладка профиля: телефон/email теперь переносят статусный бейдж под поле на узких экранах, Telegram стал полноширинной строкой без съезда, карточки `Дата рождения` и `О себе` получили ровный внутренний ритм, счётчик `0 / 200` привязан к textarea, а нижняя кнопка сохранения не спорит с нижней навигацией. Заодно в этой же ветке подтянут актуальный статус-синк: `BACK-046` зарегистрирован под новым ID, `BACK-047` закрыт как `Done`.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Снять clean screenshots desktop/mobile для Алексея и перейти к `BACK-044` на базе этой же UI-линейки
+
+---
+
+### 2026-07-06 — Codex
+
 **Задача:** BACK-047 — вшить v2 auth/privacy routes в worker и снять ночные фронтовые fallback
 **Результат:** В `4e-worker` ветка `feat/back-047-v2-auth-privacy` подвесила live routes `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/*` поверх текущего worker-router. Staging smoke и prod smoke прошли через полный flow: legacy `auth/register` → `x-token` → D1 session → identities → privacy settings. После этого в app-репо ветка `fix/back-047-remove-auth-fallbacks` убрала временное игнорирование `404/501/503` и вернула `vk.html` к прямому чтению `/v2/auth/identities`.
 **Коммит:** worker `21ddb48`, app `e85cd50`

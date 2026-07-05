@@ -867,16 +867,16 @@
         <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
         <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="toggleProfileVerified('phone')">Не подтверждён</button></div></label>
         <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
-        <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
+        <div class="profile-field profile-field-full profile-telegram-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value" class="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
       </div>
     </div>
 
     <div class="sub-card profile-form-card">
-      <label class="profile-field"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
+      <label class="profile-field profile-field-full"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
     </div>
 
     <div class="sub-card profile-form-card">
-      <label class="profile-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small id="profile-about-counter">0 / 200</small></label>
+      <label class="profile-field profile-field-full profile-about-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small class="profile-field-counter" id="profile-about-counter">0 / 200</small></label>
     </div>
 
     <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
