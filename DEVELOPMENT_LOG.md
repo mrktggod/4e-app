@@ -7,6 +7,12 @@
 
 ## 2026-07-06
 
+### Sprint sync — task 0/1/4 закрыты
+
+**Что сделано:** После проверки текущих `main` в app и worker подтверждено, что ночной mini-package уже закрыт целиком: worker-ветка `feat/back-047-v2-auth-privacy` смержена и запушена в `4e-worker/main`, app-ветка `fix/back-047-remove-auth-fallbacks` смержена и запушена в `.tmp-4e-app-publish/main`, GitHub Pages workflow для live app прошёл зелёным, `app.4-ai.site` перевыпущен через Workers Static Assets, а VK hosting повторно задеплоен на production URL после подтверждения кода. В `pm/backlog.md` BACK-047 переведён в `Done`, а UI-баг нижней панели синхронизирован с новым номером `BACK-046`.
+
+**Тест:** `git status --short --branch` в app/worker; сверка sprint-inbox `cowork-to-codex-2026-07-06-sprint1-session.md`; сверка `pm/backlog.md`, `shared/WORK_LOG.md`, live deploy notes по GitHub Pages / Workers Static Assets / VK hosting.
+
 ### BACK-047 — v2 auth/privacy routes wired into live worker
 
 **Что сделано:** В `4e-worker/worker.js` добавлены прямые импорты `handleV2AuthRequest` и `handleV2PrivacyRequest` из `src/worker/*`, прокинут `VK_SECRET_KEY` в runtime env и встроен routing для всего префикса `/v2/auth/*` и `/v2/privacy/*`. Для совместимости со старым `vk.html` добавлен алиас `GET /auth/identities`: по legacy `x-token` он поднимает D1 session через `/v2/auth/legacy-session` и возвращает identities из `/v2/auth/identities`. Staging deploy: version `c618e29f-e96e-4849-acc6-175311115dd6`; production deploy: version `02f8b9a9-2f13-41b2-9e2b-9c343736e473`. Positive smoke на staging и на prod прошёл через полный сценарий `auth/register` → legacy token → `/v2/auth/legacy-session` → `/auth/identities` → `/v2/privacy/settings`; во всех шагах ответы были `200`, а `legacy_user_id === d1_user_id`. Negative smoke подтвердил, что без токенов `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/settings` теперь отдают `401`, а не `404`.

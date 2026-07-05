@@ -8,6 +8,16 @@
 
 ### 2026-07-06 — Codex
 
+**Задача:** Sprint sync — закрыть deploy-хвосты и обновить статусы по task 0/1/4
+**Результат:** Подтверждено, что worker-ветка `feat/back-047-v2-auth-privacy` и app-ветка `fix/back-047-remove-auth-fallbacks` уже смержены в `main`, запушены и повторно выпущены на три live-поверхности: GitHub Pages, `app.4-ai.site` и VK hosting. В `pm/backlog.md` BACK-047 переведён в `Done`; UI-баг нижней панели синхронизирован с актуальным ID `BACK-046`.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** По очереди пройти UI-пакет Алексея: `BACK-046` → `BACK-043` → `BACK-044`, после его QA перейти к `INFRA-005`
+
+---
+
+### 2026-07-06 — Codex
+
 **Задача:** BACK-047 — вшить v2 auth/privacy routes в worker и снять ночные фронтовые fallback
 **Результат:** В `4e-worker` ветка `feat/back-047-v2-auth-privacy` подвесила live routes `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/*` поверх текущего worker-router. Staging smoke и prod smoke прошли через полный flow: legacy `auth/register` → `x-token` → D1 session → identities → privacy settings. После этого в app-репо ветка `fix/back-047-remove-auth-fallbacks` убрала временное игнорирование `404/501/503` и вернула `vk.html` к прямому чтению `/v2/auth/identities`.
 **Коммит:** worker `21ddb48`, app `e85cd50`

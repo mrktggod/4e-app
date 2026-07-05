@@ -4817,6 +4817,8 @@ html[data-theme="light"] .promise-row-v2 {
 .bottom-nav-v2 {
   flex-shrink: 0;
   padding: 8px 14px 14px;
+  box-sizing: border-box;
+  width: 100%;
 }
 .bottom-nav-v2 .nav-inner {
   border-radius: 32px;
@@ -4824,6 +4826,8 @@ html[data-theme="light"] .promise-row-v2 {
   align-items: center;
   justify-content: space-around;
   padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .nav-mic-v2 {
   width: 50px;
@@ -5850,6 +5854,18 @@ html[data-theme="light"] .promise-row-v2 {
   .global-nav,
   #global-nav {
     display: flex !important;
+  }
+  .bottom-nav-v2 {
+    left: 50%!important;
+    right: auto!important;
+    transform: translateX(-50%);
+    width: min(100%, 430px);
+  }
+  #global-nav {
+    left: 50%;
+    right: auto;
+    width: min(calc(100vw - 28px), 402px);
+    transform: translateX(-50%);
   }
   .screen {
     flex: none!important;
