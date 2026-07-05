@@ -7,6 +7,14 @@
 
 ## 2026-07-06
 
+### BACK-044 — task detail card cleanup
+
+**Что сделано:** Экран `task-detail` перестроен без изменения модели сохранения. `detail-description` перенесён под заголовок задачи и оформлен как inline-блок `detail-inline-desc`, а вкладка `Описание` и блок `detail-tab-desc` удалены как дублирование. Строки в glass-карточке переставлены в новый порядок: `Срок`, быстрые кнопки, `Статус`, `Приоритет`, `Напоминание`. UI-строки `Направление` и `Человек` скрыты через `detail-field-row-hidden`, но их DOM-id сохранены (`detail-direction`, `detail-person`), поэтому `openTask()` и `saveTaskEdits()` продолжают читать/писать те же данные. Для мобильной ширины detail rows и checklist-add переведены в вертикальный режим через media-rule `max-width:560px`, чтобы контролы не обрезались справа.
+
+**Проверка кодировки:** `index.html` markers до правки: 65; после правки: 65.
+
+**Тест:** `Select-String` до/после по маркерам `Войти|Задачи|Сегодня`; `npm run build:css`; `git diff --check`; headless Chrome preview для task detail desktop/mobile на локальном `file:///.../__codex_task_detail_preview.html`.
+
 ### BACK-043 — profile responsive UI pass
 
 **Что сделано:** В `index.html` и `styles/screens/profile.less` приведена мобильная форма профиля к более ровной структуре. Telegram-строка теперь растягивается на полную ширину сетки и получила отдельный класс для обрезки длинного username без расползания badge. Для phone/email на узких экранах статусный badge переносится под input вместо тесной правой колонки. Карточки `Дата рождения` и `О себе` получили явный `profile-form-card` layout с предсказуемыми отступами, textarea закреплена через `profile-about-field`, а счётчик `profile-field-counter` визуально привязан к полю. Параллельно ветка синхронизирована с UI-оболочкой: перенесён фикс `BACK-046` на ширину `bottom-nav-v2`/`global-nav`, а backlog обновлён до актуальных ID/статусов (`BACK-046`, `BACK-047 Done`, `BACK-043 In Progress` -> реализация).
