@@ -15,7 +15,7 @@
 - Severity: Medium
 - Priority: P2
 - Area: UI / Navigation / Responsive shell
-- Backlog: BACK-042
+- Backlog: BACK-046
 - Владелец: Юрий
 
 ## Где смотреть

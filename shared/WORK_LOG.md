@@ -8,6 +8,16 @@
 
 ### 2026-07-06 — Codex
 
+**Задача:** Синхронизировать статусы спринта 1 после ночных merge/hotfix и UI-пакета
+**Результат:** В app-документации обновлены статусы уже закрытых пунктов очереди: `BACK-047` отмечен как Done по факту live worker+app smoke, `BACK-046` / `BACK-043` / `BACK-044` переведены в `Ready for QA` с привязкой к веткам `fix/bottom-nav-app-width`, `fix/profile-responsive-ui`, `fix/task-detail-card-cleanup` и их коммитам. В `pm/qa-checklist.md` и `pm/bugs.md` синхронизированы ревью-статусы и исправлена коллизия старого ID `BACK-042 -> BACK-046`.
+**Коммит:** N/A
+**Статус:** ✅ статусы синхронизированы
+**Следующий шаг:** Отдать Алексею UI-скрины, пройти ручной smoke на ветках и только потом мержить пакет UI-фиксов в `main`
+
+---
+
+### 2026-07-06 — Codex
+
 **Задача:** INFRA-005 шаг 1 — подготовить RU API proxy для VK Mini App
 **Результат:** В app-репо добавлен готовый spec для Yandex API Gateway `infra/yandex-api-gateway/ru-proxy-openapi.yaml`, который проксирует `/` и `/{path+}` на `https://edge.4-ai.site`, пробрасывает исходные headers/query и фиксирует upstream `Host`. Для VK hosting build введён конфиг через `VK_API_BASE_URL`: `scripts/build-vk-hosting.mjs` теперь подменяет API base в `.vk-hosting-dist/index.html` во время сборки/деплоя. Добавлены runbook `docs/infra-005-yandex-ru-proxy.md`, task-файл `docs/tasks/INFRA-005-yandex-ru-proxy-step1.md` и backlog item `INFRA-005`. До полного выполнения остаётся только ручной слой Алексея: `folder-id`/доступы Yandex Cloud и технический домен gateway для VK smoke без VPN.
 **Коммит:** N/A

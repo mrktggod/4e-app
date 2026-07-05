@@ -7,6 +7,12 @@
 
 ## 2026-07-06
 
+### Sprint 1 status sync after hotfixes and UI package
+
+**Что сделано:** После сверки с фактическими ветками и коммитами синхронизированы статусы в app-документации. `BACK-047` переведён в `Done`: live worker уже обслуживает `/v2/auth/legacy-session`, `/auth/identities`, `/v2/privacy/settings`, а фронтовые fallback сняты отдельным app-коммитом после `200` на prod. UI-пакет Алексея отражён как `Ready for QA`: `BACK-046` (нижняя панель, commit `748dcfd`), `BACK-043` (мобильный профиль, commit `33903b4`) и `BACK-044` (карточка задачи, commit `250f35b`). В `pm/bugs.md` и `pm/qa-checklist.md` заодно исправлена ссылка на переименованный ID `BACK-046` вместо старого `BACK-042`.
+
+**Тест:** ручная сверка `git log` по веткам `fix/bottom-nav-app-width`, `fix/profile-responsive-ui`, `fix/task-detail-card-cleanup`, `feat/infra-005-yandex-ru-proxy-step1`; сверка `pm/backlog.md`, `pm/bugs.md`, `pm/qa-checklist.md` на соответствие sprint-очереди.
+
 ### INFRA-005 — RU proxy step 1 prepared
 
 **Что сделано:** Подготовлен кодовой пакет для промежуточного российского API-адреса под VK Mini App, без переноса основного backend из Cloudflare. В `scripts/build-vk-hosting.mjs` добавлена build-time подмена `WORKER` через переменную окружения `VK_API_BASE_URL`, поэтому один и тот же `vk.html` можно публиковать либо на `edge.4-ai.site`, либо на будущий Yandex proxy-домен без ручной правки исходника. Добавлен `infra/yandex-api-gateway/ru-proxy-openapi.yaml`: OpenAPI spec для Yandex API Gateway с `x-yc-apigateway-integration:http`, путями `/` и `/{path+}`, пробросом исходных headers/query, явным `Host: edge.4-ai.site` и отключённым gateway-side CORS intercept (`origin: false`), чтобы preflight `OPTIONS` уходил в текущий backend. Добавлены runbook `docs/infra-005-yandex-ru-proxy.md` и task-файл `docs/tasks/INFRA-005-yandex-ru-proxy-step1.md`; backlog и roadmap синхронизированы новым item `INFRA-005`.
