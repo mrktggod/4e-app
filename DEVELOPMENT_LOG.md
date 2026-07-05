@@ -7,6 +7,14 @@
 
 ## 2026-07-06
 
+### BACK-043 — profile responsive UI pass
+
+**Что сделано:** В `index.html` и `styles/screens/profile.less` приведена мобильная форма профиля к более ровной структуре. Telegram-строка теперь растягивается на полную ширину сетки и получила отдельный класс для обрезки длинного username без расползания badge. Для phone/email на узких экранах статусный badge переносится под input вместо тесной правой колонки. Карточки `Дата рождения` и `О себе` получили явный `profile-form-card` layout с предсказуемыми отступами, textarea закреплена через `profile-about-field`, а счётчик `profile-field-counter` визуально привязан к полю. Параллельно ветка синхронизирована с UI-оболочкой: перенесён фикс `BACK-046` на ширину `bottom-nav-v2`/`global-nav`, а backlog обновлён до актуальных ID/статусов (`BACK-046`, `BACK-047 Done`, `BACK-043 In Progress` -> реализация).
+
+**Проверка кодировки:** `index.html` markers до правки: 65; после правки: 65.
+
+**Тест:** `Select-String` до/после по маркерам `Войти|Задачи|Сегодня`; `npm run build:css`; `git diff --check`; headless Chrome preview для profile desktop/mobile на локальном `file:///.../__codex_profile_preview.html`.
+
 ### BACK-047 — v2 auth/privacy routes wired into live worker
 
 **Что сделано:** В `4e-worker/worker.js` добавлены прямые импорты `handleV2AuthRequest` и `handleV2PrivacyRequest` из `src/worker/*`, прокинут `VK_SECRET_KEY` в runtime env и встроен routing для всего префикса `/v2/auth/*` и `/v2/privacy/*`. Для совместимости со старым `vk.html` добавлен алиас `GET /auth/identities`: по legacy `x-token` он поднимает D1 session через `/v2/auth/legacy-session` и возвращает identities из `/v2/auth/identities`. Staging deploy: version `c618e29f-e96e-4849-acc6-175311115dd6`; production deploy: version `02f8b9a9-2f13-41b2-9e2b-9c343736e473`. Positive smoke на staging и на prod прошёл через полный сценарий `auth/register` → legacy token → `/v2/auth/legacy-session` → `/auth/identities` → `/v2/privacy/settings`; во всех шагах ответы были `200`, а `legacy_user_id === d1_user_id`. Negative smoke подтвердил, что без токенов `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/settings` теперь отдают `401`, а не `404`.
