@@ -638,7 +638,17 @@
 **Задача:** Патч 10 — починить веб-версию на десктопе (множественные экраны одновременно)  
 **Результат:** Добавлен CSS override после `@media(min-width:1440px)` — приложение показывается как mobile-frame 430px по центру браузера; override сбрасывает принудительный `display:flex!important` на `#task-detail`, `#voice`, `#chat-conv` из патча 07  
 **Коммит:** `b936f64`  
-**Статус:** ✅ выполнено  
+**Статус:** ✅ выполнено
+
+---
+
+### 2026-07-05 — Codex
+
+**Задача:** BACK-040 — вынести тарифы в worker `tariff-config` и подключить paywall к конфигу
+**Результат:** В `4e-worker/worker.js` добавлены публичный `/tariff-config` и admin API `/admin/users`, `/admin/users/:id`, `/admin/users/:id/plan`, `/admin/tariff-config` с защитой по `ADMIN_SECRET`; Telegram Stars и card webhook читают длительность плана из конфига. В `index.html` paywall и экран подписки больше не используют хардкоженный `PLANS`: цены, тексты, benefits, feature-list и trial-progress загружаются из worker-конфига.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** залить `ADMIN_SECRET` в staging/prod secrets, проверить `/admin/tariff-config` curl-ом и отдать BACK-040 в QA
 **Следующий шаг:** Проверить https://mrktggod.github.io/4e-app в десктопном браузере
 
 ---

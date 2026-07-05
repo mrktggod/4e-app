@@ -934,7 +934,7 @@
 
     <!-- Features list -->
     <div class="sub-section-title">Что входит в Premium</div>
-    <div class="sub-card" style="padding:4px 0">
+    <div class="sub-card" style="padding:4px 0" id="subscription-features">
       <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Неограниченные задачи</div><div class="plan-feat-sub">Добавляй сколько угодно задач и обещаний</div></div></div>
       <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">AI-чат без ограничений</div><div class="plan-feat-sub">Спрашивай, советуйся, составляй сообщения</div></div></div>
       <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Голосовой ввод</div><div class="plan-feat-sub">Диктуй задачи голосом</div></div></div>
@@ -943,27 +943,27 @@
     </div>
 
     <!-- Pricing block -->
-    <div class="sub-section-title">Продлить подписку</div>
+    <div class="sub-section-title" id="subscription-renew-title">Продлить подписку</div>
     <div class="pricing-card" id="pricing-month" onclick="selectPlan('month')">
       <div style="flex:1">
-        <div class="pricing-name">1 месяц</div>
-        <div class="pricing-desc">Автопродление каждый месяц</div>
+        <div class="pricing-name" id="pricing-month-name">1 месяц</div>
+        <div class="pricing-desc" id="pricing-month-desc">Автопродление каждый месяц</div>
       </div>
       <div style="text-align:right">
-        <div class="pricing-price">990 ₽</div>
-        <div class="pricing-per">/ мес</div>
+        <div class="pricing-price" id="pricing-month-price">990 ₽</div>
+        <div class="pricing-per" id="pricing-month-period">/ мес</div>
       </div>
       <div class="pricing-radio selected" id="radio-month"></div>
     </div>
     <div class="pricing-card" id="pricing-year" onclick="selectPlan('year')" style="margin-top:8px">
-      <div class="pricing-badge-save">Выгода 20%</div>
+      <div class="pricing-badge-save" id="pricing-year-badge">Выгода 20%</div>
       <div style="flex:1">
-        <div class="pricing-name">12 месяцев</div>
-        <div class="pricing-desc">Экономия 2 376 ₽ в год</div>
+        <div class="pricing-name" id="pricing-year-name">12 месяцев</div>
+        <div class="pricing-desc" id="pricing-year-desc">Экономия 2 376 ₽ в год</div>
       </div>
       <div style="text-align:right">
-        <div class="pricing-price">792 ₽</div>
-        <div class="pricing-per">/ мес · 9 504 ₽/год</div>
+        <div class="pricing-price" id="pricing-year-price">792 ₽</div>
+        <div class="pricing-per" id="pricing-year-period">/ мес · 9 504 ₽/год</div>
       </div>
       <div class="pricing-radio" id="radio-year"></div>
     </div>
@@ -993,13 +993,13 @@
       </div>
       <div style="flex:1">
         <div style="font-size:14px;font-weight:700;color:var(--text)" id="order-title">Premium · 1 месяц</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:2px">Подписка на 4</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="order-subtitle">Подписка на 4</div>
       </div>
       <div style="font-size:20px;font-weight:800;color:var(--green)" id="order-price">990 ₽</div>
     </div>
 
     <!-- what you get -->
-    <div class="sub-card" style="margin-bottom:16px">
+    <div class="sub-card" style="margin-bottom:16px" id="payment-benefits">
       <div class="sub-row" style="padding:10px 16px">
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Мгновенная активация</span></div>
       </div>
@@ -2185,6 +2185,7 @@ async function getVkLaunchParams(){
 async function initApp(){
   const tg=window.Telegram?.WebApp;
   if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
+  loadTariffConfig().catch(()=>{});
   showStartupFallback();
 
   const token=getToken();
@@ -2590,11 +2591,179 @@ function togglePass(id){
 // ── CloudPayments config ──────────────────────────────────────
 // ⚠️ Замени на свой Public ID из личного кабинета CloudPayments
 const CP_PUBLIC_ID = 'pk_79ce41d62fd193a9962d0ee8090a3';
-const PLANS = {
-  month: { title: 'Premium · 1 месяц', price: 990,  months: 1,  stars: 990  },
-  year:  { title: 'Premium · 12 месяцев', price: 9504, months: 12, stars: 9504 },
+const DEFAULT_TARIFF_CONFIG = {
+  trialDays: 30,
+  paywall: {
+    title: 'Продлить подписку',
+    orderSubtitle: 'Подписка на 4',
+    benefits: ['Мгновенная активация', 'Все функции Premium', 'Отмена в любой момент'],
+    paymentNotes: {
+      card: 'Безопасная оплата банковской картой<br>Отмена в любой момент',
+      vk: 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент',
+      telegramStars: 'Оплата внутри Telegram через Stars<br>Premium включится после подтверждения ботом'
+    }
+  },
+  features: [
+    { title: 'Неограниченные задачи', description: 'Добавляй сколько угодно задач и обещаний' },
+    { title: 'AI-чат без ограничений', description: 'Спрашивай, советуйся, составляй сообщения' },
+    { title: 'Голосовой ввод', description: 'Диктуй задачи голосом' },
+    { title: 'Telegram-бот', description: 'Задачи приходят прямо из переписки' },
+    { title: 'Аналитика и статистика', description: 'Прогресс, динамика, отчёты' }
+  ],
+  plans: {
+    month: {
+      id: 'month',
+      title: 'Premium · 1 месяц',
+      durationDays: 30,
+      durationMonths: 1,
+      priceRub: 990,
+      stars: 990,
+      cardLabel: '1 месяц',
+      cardDescription: 'Автопродление каждый месяц',
+      periodLabel: '/ мес',
+      saveBadge: ''
+    },
+    year: {
+      id: 'year',
+      title: 'Premium · 12 месяцев',
+      durationDays: 365,
+      durationMonths: 12,
+      priceRub: 9504,
+      stars: 9504,
+      cardLabel: '12 месяцев',
+      cardDescription: 'Экономия 2 376 ₽ в год',
+      periodLabel: '/ мес · 9 504 ₽/год',
+      saveBadge: 'Выгода 20%'
+    }
+  }
 };
+let tariffConfig = JSON.parse(JSON.stringify(DEFAULT_TARIFF_CONFIG));
 let selectedPlan = 'month';
+
+function cloneTariffConfig(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function toPositiveInt(value, fallback) {
+  const num = Number(value);
+  return Number.isFinite(num) && num > 0 ? Math.round(num) : fallback;
+}
+
+function formatRub(value) {
+  return toPositiveInt(value, 0).toLocaleString('ru-RU') + ' ₽';
+}
+
+function normalizeTariffConfig(raw) {
+  const source = raw && typeof raw === 'object' ? raw : {};
+  const defaults = DEFAULT_TARIFF_CONFIG;
+  return {
+    trialDays: toPositiveInt(source.trialDays, defaults.trialDays),
+    paywall: {
+      title: String(source.paywall?.title || defaults.paywall.title),
+      orderSubtitle: String(source.paywall?.orderSubtitle || defaults.paywall.orderSubtitle),
+      benefits: Array.isArray(source.paywall?.benefits) && source.paywall.benefits.length ? source.paywall.benefits.map(v => String(v || '').trim()).filter(Boolean) : cloneTariffConfig(defaults.paywall.benefits),
+      paymentNotes: {
+        card: String(source.paywall?.paymentNotes?.card || defaults.paywall.paymentNotes.card),
+        vk: String(source.paywall?.paymentNotes?.vk || defaults.paywall.paymentNotes.vk),
+        telegramStars: String(source.paywall?.paymentNotes?.telegramStars || defaults.paywall.paymentNotes.telegramStars)
+      }
+    },
+    features: Array.isArray(source.features) && source.features.length ? source.features.map(item => ({
+      title: String(item?.title || '').trim(),
+      description: String(item?.description || '').trim()
+    })).filter(item => item.title && item.description) : cloneTariffConfig(defaults.features),
+    plans: {
+      month: {
+        ...defaults.plans.month,
+        ...(source.plans?.month || {}),
+        id: 'month',
+        durationDays: toPositiveInt(source.plans?.month?.durationDays, defaults.plans.month.durationDays),
+        durationMonths: toPositiveInt(source.plans?.month?.durationMonths, defaults.plans.month.durationMonths),
+        priceRub: toPositiveInt(source.plans?.month?.priceRub, defaults.plans.month.priceRub),
+        stars: toPositiveInt(source.plans?.month?.stars, defaults.plans.month.stars)
+      },
+      year: {
+        ...defaults.plans.year,
+        ...(source.plans?.year || {}),
+        id: 'year',
+        durationDays: toPositiveInt(source.plans?.year?.durationDays, defaults.plans.year.durationDays),
+        durationMonths: toPositiveInt(source.plans?.year?.durationMonths, defaults.plans.year.durationMonths),
+        priceRub: toPositiveInt(source.plans?.year?.priceRub, defaults.plans.year.priceRub),
+        stars: toPositiveInt(source.plans?.year?.stars, defaults.plans.year.stars)
+      }
+    }
+  };
+}
+
+function getPlanConfig(planId = selectedPlan) {
+  return tariffConfig?.plans?.[planId] || tariffConfig?.plans?.month || DEFAULT_TARIFF_CONFIG.plans.month;
+}
+
+function renderSubscriptionFeatures() {
+  const wrap = document.getElementById('subscription-features');
+  if (!wrap) return;
+  wrap.innerHTML = (tariffConfig.features || []).map((feature, index, list) => `
+      <div class="plan-feature-row"${index === list.length - 1 ? ' style="border:none"' : ''}>
+        <div class="plan-feat-icon">✓</div>
+        <div><div class="plan-feat-title">${feature.title}</div><div class="plan-feat-sub">${feature.description}</div></div>
+      </div>
+    `).join('');
+}
+
+function renderPricingCards() {
+  const month = getPlanConfig('month');
+  const year = getPlanConfig('year');
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value || '';
+  };
+  setText('subscription-renew-title', tariffConfig.paywall.title);
+  setText('pricing-month-name', month.cardLabel);
+  setText('pricing-month-desc', month.cardDescription);
+  setText('pricing-month-price', formatRub(month.priceRub));
+  setText('pricing-month-period', month.periodLabel || '/ мес');
+  setText('pricing-year-name', year.cardLabel);
+  setText('pricing-year-desc', year.cardDescription);
+  setText('pricing-year-price', formatRub(Math.round(year.priceRub / Math.max(1, year.durationMonths || 1))));
+  setText('pricing-year-period', year.periodLabel || ('/ мес · ' + formatRub(year.priceRub) + '/год'));
+  const badge = document.getElementById('pricing-year-badge');
+  if (badge) {
+    badge.textContent = year.saveBadge || '';
+    badge.style.display = year.saveBadge ? '' : 'none';
+  }
+  setText('order-subtitle', tariffConfig.paywall.orderSubtitle);
+  const benefits = document.getElementById('payment-benefits');
+  if (benefits) {
+    benefits.innerHTML = (tariffConfig.paywall.benefits || []).map((benefit, index, list) => `
+      <div class="sub-row" style="padding:10px 16px${index === list.length - 1 ? ';border:none' : ''}">
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">${benefit}</span></div>
+      </div>
+    `).join('');
+  }
+}
+
+function applyTariffConfig(nextConfig) {
+  tariffConfig = normalizeTariffConfig(nextConfig);
+  renderSubscriptionFeatures();
+  renderPricingCards();
+  if (document.getElementById('subscription')?.classList.contains('active')) updateSubscriptionScreen();
+  if (document.getElementById('payment')?.classList.contains('active')) openPayment();
+}
+
+async function loadTariffConfig() {
+  try {
+    const r = await withTimeout(fetch(WORKER + '/tariff-config'), 8000);
+    const d = await readJsonSafe(r);
+    if (r.ok && d.ok && d.config) {
+      applyTariffConfig(d.config);
+      return d.config;
+    }
+  } catch (e) {}
+  applyTariffConfig(DEFAULT_TARIFF_CONFIG);
+  return tariffConfig;
+}
+
+applyTariffConfig(DEFAULT_TARIFF_CONFIG);
 
 function selectPlan(plan) {
   selectedPlan = plan;
@@ -2631,18 +2800,18 @@ function setPaymentButtonState(label, disabled = false) {
 }
 
 function openPayment() {
-  const plan = PLANS[selectedPlan];
+  const plan = getPlanConfig(selectedPlan);
   const provider = getPaymentProvider();
   document.getElementById('order-title').textContent  = plan.title;
-  document.getElementById('order-price').textContent  = provider === 'telegram-stars' ? plan.stars.toLocaleString('ru') + ' ⭐' : plan.price.toLocaleString('ru') + ' ₽';
+  document.getElementById('order-price').textContent  = provider === 'telegram-stars' ? plan.stars.toLocaleString('ru-RU') + ' ⭐' : formatRub(plan.priceRub);
   const note = document.getElementById('subscription-payment-note');
   const badges = document.getElementById('payment-badges');
   if (note) {
     note.innerHTML = provider === 'vk'
-      ? 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент'
+      ? tariffConfig.paywall.paymentNotes.vk
       : provider === 'telegram-stars'
-        ? 'Оплата внутри Telegram через Stars<br>Premium включится после подтверждения ботом'
-        : 'Безопасная оплата банковской картой<br>Отмена в любой момент';
+        ? tariffConfig.paywall.paymentNotes.telegramStars
+        : tariffConfig.paywall.paymentNotes.card;
   }
   if (badges) badges.style.display = provider === 'card' ? 'flex' : 'none';
   setPaymentButtonState(provider === 'vk' ? 'Оплатить через VK Pay' : provider === 'telegram-stars' ? 'Оплатить через Telegram Stars' : 'Оплатить картой');
@@ -2651,7 +2820,7 @@ function openPayment() {
 
 function startPayment() {
   if (!currentUser) { showToast('Войди в аккаунт'); return; }
-  const plan = PLANS[selectedPlan];
+  const plan = getPlanConfig(selectedPlan);
   const provider = getPaymentProvider();
   if (provider === 'vk') {
     startVKPayment(plan);
@@ -2682,7 +2851,7 @@ async function startVKPayment(plan) {
     const order = await vkBridge.send('VKWebAppShowOrderBox', {
       type: 'item',
       item: JSON.stringify({ id: selectedPlan, title: plan.title }),
-      amount: plan.price
+      amount: plan.priceRub
     });
     if (order && (order.success || order.status === 'success')) {
       onPaymentSuccess(plan);
@@ -2756,7 +2925,7 @@ function launchWidget(plan, btn) {
   widget.pay('charge', {
     publicId:    CP_PUBLIC_ID,
     description: plan.title,
-    amount:      plan.price,
+    amount:      plan.priceRub,
     currency:    'RUB',
     email:       currentUser.email || '',
     accountId:   currentUser.id,
@@ -2783,10 +2952,11 @@ function launchWidget(plan, btn) {
 function onPaymentSuccess(plan) {
   // Обновляем юзера локально (Worker обновит через webhook)
   if (currentUser) {
-    const months = plan?.months || 1;
+    const trialDays = toPositiveInt(plan?.durationDays, tariffConfig.trialDays || 30);
     currentUser.trialActive  = true;
-    currentUser.trialLeft    = months * 30;
-    currentUser.trialEndsAt  = Date.now() + months * 30 * 24 * 60 * 60 * 1000;
+    currentUser.plan = 'paid';
+    currentUser.trialLeft    = trialDays;
+    currentUser.trialEndsAt  = Date.now() + trialDays * 24 * 60 * 60 * 1000;
     renderTrialBanner();
     updateSubscriptionScreen();
   }
@@ -2799,7 +2969,7 @@ function onPaymentSuccess(plan) {
 }
 
 function simulatePaymentSuccess() {
-  onPaymentSuccess(PLANS[selectedPlan]);
+  onPaymentSuccess(getPlanConfig(selectedPlan));
 }
 
 // Обновляем экран подписки данными из currentUser
@@ -2817,8 +2987,8 @@ function updateSubscriptionScreen() {
     if (nameEl)  nameEl.textContent  = 'Premium';
     if (subEl)   subEl.textContent   = 'Осталось ' + days + ' ' + pluralDays(days);
     if (badgeEl) { badgeEl.textContent = 'Активен'; badgeEl.className = 'plan-badge-active'; }
-    // progress bar (30 дней = 100%)
-    const pct = Math.min(100, Math.round((days / 30) * 100));
+    const totalTrialDays = Math.max(1, toPositiveInt(tariffConfig?.trialDays, 30));
+    const pct = Math.min(100, Math.round((days / totalTrialDays) * 100));
     if (barEl)  barEl.style.width  = pct + '%';
     if (daysEl) daysEl.textContent = days + ' ' + pluralDays(days);
     // bar color — red if < 5 days
@@ -6001,7 +6171,7 @@ document.addEventListener('focusout',function(e){if(e.target.closest('#task-deta
   localStorage.setItem=function(key,value){_si(key,value);if(VK_KEYS.includes(key))window.vkStorageSet(key,value);};
   localStorage.getItem=function(key){if(VK_KEYS.includes(key)&&_vkCache[key]!==undefined)return _vkCache[key];return _gi(key);};
   Promise.all(VK_KEYS.map(k=>vkBridge.send('VKWebAppStorageGet',{keys:[k]}).then(res=>{const item=res.keys.find(r=>r.key===k);if(item&&item.value){_vkCache[k]=item.value;_si(k,item.value);}}).catch(()=>{}))).then(()=>{const t=_vkCache['theme'];if(t)applyTheme(t);console.log('[VK Adapter] Storage preloaded',_vkCache);});
-  window.openVKPayment=function(planId,amount){const plan=PLANS[planId]||{title:'Premium',price:amount,months:1};return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:plan.title}),amount:amount||plan.price}).then(res=>{if(res&&res.success)onPaymentSuccess(plan);return res;}).catch(e=>{console.warn('[VK Pay]',e);throw e;});};
+  window.openVKPayment=function(planId,amount){const plan=getPlanConfig(planId)||{title:'Premium',priceRub:amount,durationDays:30};return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:plan.title}),amount:amount||plan.priceRub}).then(res=>{if(res&&res.success)onPaymentSuccess(plan);return res;}).catch(e=>{console.warn('[VK Pay]',e);throw e;});};
   vkBridge.send('VKWebAppGetClientVersion').then(res=>{if(res.platform==='web'||window.innerWidth>=680){document.body.classList.add('vk-desktop');document.body.setAttribute('data-vk-platform','desktop');}}).catch(()=>{if(window.innerWidth>=680)document.body.classList.add('vk-desktop');});
   console.log('[VK Adapter] Initialized');
 })();

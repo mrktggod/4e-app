@@ -28,9 +28,9 @@
 | 1629 | `statistics` | Статистика |
 | 1681 | `notifications` | Уведомления |
 | 739 | `profile` | Профиль, расширенные поля пользователя |
-| 1731 | `subscription` | Подписка |
-| 1811 | `payment` | Оплата |
-| 1864 | `payment-success` | Успешная оплата |
+| 902 | `subscription` | Подписка; feature-list и pricing cards наполняются из `/tariff-config` |
+| 982 | `payment` | Оплата; order summary, benefits и payment note зависят от provider + tariff config |
+| 1035 | `payment-success` | Успешная оплата |
 | 947 | `notif-settings` | Живые настройки уведомлений: каналы, брифинг, просрочки |
 | 1936 | `security` | Безопасность |
 | 1982 | `privacy-center` | Центр приватности |
@@ -60,7 +60,7 @@
 | --- | --- | --- |
 | 2852-2933 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, `isVkMiniAppContext` |
 | 2182-2569 | App init, auth, profile | `initApp`, `doRegister`, `submitLoginOnEnter`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
-| 3179-3309 | Payments and subscription | `selectPlan`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
+| 2593-2979 | Payments and subscription | `DEFAULT_TARIFF_CONFIG`, `loadTariffConfig`, `getPlanConfig`, `renderSubscriptionFeatures`, `renderPricingCards`, `openPayment`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
 | 3310-3417 | Onboarding, system prompt, trial | `obInit`, `obRender`, `obDone`, `checkTrial` |
 | 3418-3681 | Tasks, home, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `markDoneKV` |
 | 3682-3964 | Navigation, notifications, lists, contact | `showScreen`, `setNavActive`, `openAsk`, `openNotifications`, `renderNotifs`, `openFilteredTaskList` |

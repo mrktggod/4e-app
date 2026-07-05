@@ -1150,3 +1150,17 @@
 2. **KV + chatId** — путаница между `telegramId` и `chatId` при ключах в KV. Правило: передавать chatId явно.
 3. **Revert циклы** — 2 раза за один день делали fix → revert → fix. Причина: не тестировали перед коммитом.
 4. **VK iframe ограничения** — Google Fonts, внешние ресурсы, Telegram SDK недоступны в VK.
+
+---
+
+## 2026-07-05
+
+### BACK-040 — tariff-config и Admin API тарифов
+
+**Что сделано:** В `4e-worker/worker.js` добавлен единый `DEFAULT_TARIFF_CONFIG` с KV-ключом `tariff_config:current`, публичный `GET /tariff-config`, admin-роуты `GET /admin/users`, `GET /admin/users/:id`, `PUT /admin/users/:id/plan`, `GET/PUT /admin/tariff-config` и защита по `env.ADMIN_SECRET`. Telegram Stars invoice и card webhook теперь берут длительность плана из тарифа, а новые email/TG/VK trial-аккаунты читают `trialDays` из конфига. В `index.html` хардкод `PLANS` заменён на загрузку `/tariff-config`: paywall, карточки подписки, benefit-list, feature-list, `order-summary` и progress bar заполняются из worker-конфига.
+
+**Проверка кодировки:** совпадений до / после — `61 / 64` (`Войти|Задачи|Сегодня`)
+
+**Тест:** `node --check worker.js`; inline JS parse check для `index.html` вернул `inline-js-ok`; модульный smoke воркера через `node --input-type=module` с мок-KV подтвердил `GET /tariff-config`, `GET /admin/users`, `PUT /admin/tariff-config`, `PUT /admin/users/:id/plan`.
+
+**Коммит:** pending
