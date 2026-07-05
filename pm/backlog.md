@@ -47,6 +47,9 @@
 | BACK-013 | Семантический HTML | Tech/UI | P3 | Codex | Done | Г1 | В `index.html` добавлены `<main>`, `<header>`, `<nav>`, aria-label и роли для иконочной навигации без изменения визуала |
 | BACK-014 | Подготовка кода под PostgreSQL заранее | Tech | P2 | Codex | Done | Г2 | Worker commit `37f9dda` добавил PostgreSQL storage adapter и `migrations/postgres_app_state.sql`; production путь остаётся D1/KV до появления credentials |
 | BACK-047 | Вшить v2 auth/privacy routes в worker и убрать фронтовые fallback | Tech/Auth | P1 | Codex | Done | Г1 | Worker commit `21ddb48` + app commit `e85cd50`: live routes `/v2/auth/legacy-session`, `/auth/identities`, `/v2/privacy/settings` отвечают `200/401` как ожидается; staging и prod smoke зелёные, фронтовые fallback сняты после live `200` |
+| BACK-048 | Профиль: личные данные под раздел «Личные данные аккаунта» | Product/UI | P2 | Codex | Todo | Г1 | Email/телефон/telegram/дата рождения и пр. ПД скрыть из основного экрана профиля под отдельную кнопку/раздел «Личные данные аккаунта». Пожелание Юрия по итогам QA BACK-043 (06.07) |
+| BACK-049 | Профиль: настройки фото по клику на аватар, убрать дублирование | Product/UI | P2 | Codex | Todo | Г1 | Фото профиля дублируется; настройки фото должны открываться по клику на иконку/аватар (стандартный паттерн приложений). Пожелание Юрия по итогам QA BACK-043 (06.07) |
+| BACK-050 | Человекочитаемые значения «Направления» в карточке | Bug/UI | P3 | Codex | Todo | Г1 | В поле «Направление» отображается сырое значение (outgoing и пр.); требуется маппинг в русские лейблы на всех экранах карточки |
 | BACK-045 | Авторизация через сервисы РФ: VK ID + Яндекс ID | Product/Auth | P1 | Алексей + Юрий + Codex | Todo | Г1–Г2 | На экранах входа и регистрации есть понятные варианты входа через VK ID и Яндекс ID; вход не создаёт дубль, если пользователь уже есть по email/telegram/vk/yandex; пользователь понимает, какой аккаунт привязан; сценарий покрыт smoke для web, VK Mini App и Telegram Mini App |
 | SMART-006 | Профиль пользователя в контексте AI-чата | Product/AI | P1 | Codex | In Progress | Г1 | System prompt получает имя, локальное время, тариф, статистику задач и топ людей; staging smoke ждёт `ANTHROPIC_KEY`, чтобы проверить ответы «что у меня горит?» и «кому я больше всего должен?» |
 | SMART-004 | Лаконичная фиксация задач в группах | Product/Bot | P1 | Codex | Ready for QA | Г1 | Локальный bot runtime стартует на staging-секретах; smoke против staging-worker пройден: однострочное подтверждение, мгновенное сохранение и `✏️/✕` через `delete-task` |
@@ -136,3 +139,4 @@
 | ICE-001 | WhatsApp Business API | Сложная интеграция, нет спроса пока | Горизонт 3 |
 | ICE-002 | Нативные iOS/Android приложения | Mini App достаточно на старте | После 10k пользователей |
 | ICE-003 | Proactive mode — 4 сам инициирует общение | Требует зрелой AI-логики | Горизонт 2 |
+
