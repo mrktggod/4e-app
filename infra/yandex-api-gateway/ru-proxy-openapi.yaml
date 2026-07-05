@@ -1,0 +1,62 @@
+﻿openapi: "3.0.0"
+info:
+  title: 4 AI RU proxy
+  version: 1.0.0
+
+x-yc-apigateway:
+  variables:
+    backend_origin:
+      default: "https://edge.4-ai.site"
+      description: "Upstream API origin for 4 AI worker"
+    backend_host:
+      default: "edge.4-ai.site"
+      description: "Host header for the upstream API route"
+
+paths:
+  /:
+    x-yc-apigateway-cors:
+      origin: false
+    x-yc-apigateway-any-method:
+      x-yc-apigateway-integration:
+        type: http
+        url: ${var.backend_origin}
+        headers:
+          Host: ${var.backend_host}
+          "*": "*"
+        query:
+          "*": "*"
+        omitEmptyHeaders: true
+        omitEmptyQueryParameters: true
+        timeouts:
+          connect: 1
+          read: 120
+      responses:
+        default:
+          description: Proxied response
+
+  /{path+}:
+    x-yc-apigateway-cors:
+      origin: false
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: path
+          in: path
+          required: false
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: http
+        url: ${var.backend_origin}/{path}
+        headers:
+          Host: ${var.backend_host}
+          "*": "*"
+        query:
+          "*": "*"
+        omitEmptyHeaders: true
+        omitEmptyQueryParameters: true
+        timeouts:
+          connect: 1
+          read: 120
+      responses:
+        default:
+          description: Proxied response
