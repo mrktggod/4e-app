@@ -503,6 +503,16 @@
 
 ---
 
+### 2026-07-05 — Codex
+
+**Задача:** BACK-038 smoke + фундамент монетизации на `tariff-config`
+**Результат:** В worker staging добавлены события аналитики и проверка через `/analytics/summary`; staging deploy `49939d43-808a-4b86-b756-3834dafc396e` прошёл полный smoke: `login`, `task_create`, `task_complete`, `dashboard_open`, `task_share`, CORS preflight для `PUT` + `Authorization`, `transcribe`, `anthropic`. Поверх этого добавлен KV-backed `tariff-config`: публичный `GET /tariff-config`, admin `PUT /admin/tariff-config` по `ADMIN_SECRET`, утилита `scripts/set-tariff-config.mjs` и sample-файл `scripts/tariff-config.sample.json`. В `index.html` и `vk.html` цены и trial подтягиваются из worker-config; paywall-каркас встроен в существующий экран подписки. По beta freeze лимиты собраны, но по умолчанию выключены через `enforceLimits=false`.
+**Коммит:** N/A
+**Статус:** 🚧 в работе
+**Следующий шаг:** Довести user-facing часть монетизации: добрать QA для `enforceLimits=true`, решить объём `BACK-040` (user admin vs tariff admin), затем собрать merge-day пакет и UI-очередь `BACK-046/043/044`
+
+---
+
 ### 2026-06-25 — Codex
 
 **Задача:** Убрать локальные абсолютные пути из документации и добавить защиту

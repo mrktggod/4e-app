@@ -491,8 +491,15 @@ const AUTH_LOGIN_RECOVERY_DELAY_MS = 900;
 const AUTH_WARMUP_TIMEOUT_MS = 3500;
 const AUTH_WARMUP_RETRY_DELAY_MS = 700;
 const AUTH_DIAG_TIMEOUT_MS = 15000;
+const DEFAULT_TARIFF_CONFIG = {
+  trialDays: 30,
+  plans: {
+    month: { id: 'month', title: '4 Premium · 1 месяц', priceRub: 990, stars: 990, days: 30 }
+  }
+};
 
 let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [], currentTask: null, authWarmupOk: false, authWarmupPromise: null };
+let tariffConfig = JSON.parse(JSON.stringify(DEFAULT_TARIFF_CONFIG));
 
 function applyTheme(theme) {
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -854,6 +861,7 @@ function warmupConnection() {
 
 // ── INIT ──
 applyTheme(getStoredThemeChoice() || 'dark');
+loadTariffConfig().catch(() => {});
 
 if (document.readyState === 'loading') {
   window.addEventListener('DOMContentLoaded', () => {
@@ -988,6 +996,28 @@ function applyUser() {
   document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
   const trial = state.user.trialEndsAt ? Math.max(0, Math.ceil((state.user.trialEndsAt - Date.now()) / 86400000)) : 30;
   document.getElementById('trialDays').textContent = trial;
+  renderVkPayButton();
+}
+
+function getVKPremiumPlan() {
+  const plan = tariffConfig?.plans?.month || DEFAULT_TARIFF_CONFIG.plans.month;
+  return { id: 'vk-premium-' + (plan.id || 'month'), title: plan.title || '4 Premium · 1 месяц', price: Number(plan.priceRub || 990), days: Number(plan.days || 30) };
+}
+
+function renderVkPayButton() {
+  const button = document.getElementById('vkPayBtn');
+  if (!button) return;
+  const plan = getVKPremiumPlan();
+  button.textContent = 'Купить план · ' + plan.price.toLocaleString('ru') + ' ₽';
+}
+
+async function loadTariffConfig() {
+  try {
+    const response = await fetch(WORKER + '/tariff-config');
+    const data = await response.json();
+    if (response.ok && data?.ok && data?.config) tariffConfig = data.config;
+  } catch (e) {}
+  renderVkPayButton();
 }
 
 function identityByProvider(provider) {
@@ -1145,10 +1175,6 @@ async function refreshVKIdentity() {
   }
   await loadIdentities().catch(() => renderIdentityRows('error'));
   showToast('Связи обновлены');
-}
-
-function getVKPremiumPlan() {
-  return { id: 'vk-premium-month', title: '4 Premium · 1 месяц', price: 990, days: 30 };
 }
 
 async function startVKPayment() {

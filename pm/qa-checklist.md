@@ -23,6 +23,11 @@
 - [ ] Все прод-URL (`https://app.4-ai.site/`, `https://app.4-ai.site/vk`, `https://app.4-ai.site/privacy`, API worker) открываются из РФ-сети без VPN минимум с двух независимых точек/операторов.
 - [ ] В прод-сборке нет внешних origin, кроме обязательных: `https://edge.4-ai.site`, Telegram-owned (`https://telegram.org`, `https://t.me`), `https://widget.cloudpayments.ru` и `https://rkn.gov.ru`.
 - [ ] Главный экран показывает "План на сегодня" и короткую AI-сводку без пустого состояния.
+- [ ] `GET /tariff-config` возвращает `trialDays`, планы `month/year`, лимиты и paywall-copy без авторизации.
+- [ ] `node scripts/set-tariff-config.mjs <base-url> scripts/tariff-config.sample.json` меняет тарифы без правки кода и без нового deploy.
+- [ ] Экран подписки в TG Mini App и VK Mini App подхватывает цены из `tariff-config`, а не из хардкода.
+- [ ] При `enforceLimits=false` beta-флоу не блокируется: создание задач, AI-чат и голос продолжают работать как раньше.
+- [ ] При `enforceLimits=true` и free-tier лимитах paywall открывается из трёх точек входа: задача, AI-чат, голос.
 - [ ] Блок "Начать с" выбирает одну понятную первую задачу.
 - [ ] "Пульс дня" показывает важные, просроченные и ожидающие людей задачи.
 - [ ] Секции "Сделать первым", "Горит", "Жду от людей", "Можно перенести" не дублируют одну и ту же задачу без причины.

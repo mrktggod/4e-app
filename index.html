@@ -903,6 +903,12 @@
     <div style="flex:1"><div class="back-title">Подписка</div></div>
   </div>
   <div class="sub-scroll">
+    <div class="sub-card" id="paywall-context-card" style="display:none;margin-bottom:12px">
+      <div style="padding:16px 18px">
+        <div id="paywall-context-title" style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px">Premium без пауз</div>
+        <div id="paywall-context-sub" style="font-size:12px;color:var(--text2);line-height:1.55">Продли доступ, чтобы продолжать без ограничений.</div>
+      </div>
+    </div>
 
     <!-- Current plan status -->
     <div class="plan-status-card" id="plan-status-card">
@@ -932,7 +938,7 @@
 
     <!-- Features list -->
     <div class="sub-section-title">Что входит в Premium</div>
-    <div class="sub-card" style="padding:4px 0">
+    <div class="sub-card" id="premium-features-list" style="padding:4px 0">
       <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Неограниченные задачи</div><div class="plan-feat-sub">Добавляй сколько угодно задач и обещаний</div></div></div>
       <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">AI-чат без ограничений</div><div class="plan-feat-sub">Спрашивай, советуйся, составляй сообщения</div></div></div>
       <div class="plan-feature-row"><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">Голосовой ввод</div><div class="plan-feat-sub">Диктуй задачи голосом</div></div></div>
@@ -2031,6 +2037,41 @@ const notifReadSet = new Set();
 let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
 let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
+const DEFAULT_TARIFF_CONFIG = {
+  enforceLimits: false,
+  trialDays: 30,
+  plans: {
+    month: { id:'month', title:'Premium · 1 месяц', description:'Автопродление каждый месяц', badge:'', priceRub:990, priceMonthlyRub:990, priceYearRub:990, stars:990, months:1, days:30 },
+    year: { id:'year', title:'Premium · 12 месяцев', description:'Экономия 2 376 ₽ в год', badge:'Выгода 20%', priceRub:9504, priceMonthlyRub:792, priceYearRub:9504, stars:9504, months:12, days:365 }
+  },
+  limits: {
+    free: { tasksActive: 3, aiDaily: 5, voiceDaily: 2 },
+    trial: { tasksActive: null, aiDaily: null, voiceDaily: null },
+    paid: { tasksActive: null, aiDaily: null, voiceDaily: null }
+  },
+  features: [
+    { title:'Неограниченные задачи', subtitle:'Добавляй сколько угодно задач и обещаний' },
+    { title:'AI-чат без ограничений', subtitle:'Спрашивай, советуйся, составляй сообщения' },
+    { title:'Голосовой ввод', subtitle:'Диктуй задачи и быстро фиксируй обещания' },
+    { title:'Telegram-бот', subtitle:'Задачи приходят прямо из переписки' },
+    { title:'Аналитика и статистика', subtitle:'Прогресс, динамика и утренний дашборд' }
+  ],
+  paywall: {
+    title:'Premium без пауз',
+    subtitle:'Продли доступ, чтобы задачи, AI и голос снова работали без ограничений.',
+    reasons: {
+      trial:'Пробный период закончился.',
+      tasks:'Достигнут лимит активных задач.',
+      ai:'Достигнут дневной лимит AI-диалогов.',
+      voice:'Достигнут дневной лимит голосового ввода.'
+    },
+    cta:'Продлить подписку',
+    note:'Цены и лимиты управляются через tariff-config без правки кода.'
+  }
+};
+let tariffConfig = JSON.parse(JSON.stringify(DEFAULT_TARIFF_CONFIG));
+let currentPaywallReason = '';
+let currentPaywallPayload = null;
 
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
 const tgInitData=window.Telegram?.WebApp?.initData||'';
@@ -2039,11 +2080,135 @@ const tgInitData=window.Telegram?.WebApp?.initData||'';
 function getToken(){ return localStorage.getItem(TOKEN_K); }
 function clearD1Token(){ d1Token=''; localStorage.removeItem(D1_TOKEN_K); }
 function setLegacyToken(token){ localStorage.setItem(TOKEN_K,token); clearD1Token(); }
+function cloneTariffConfig(config){ return JSON.parse(JSON.stringify(config || DEFAULT_TARIFF_CONFIG)); }
+function getTariffPlan(planId){ return tariffConfig?.plans?.[planId] || DEFAULT_TARIFF_CONFIG.plans[planId] || DEFAULT_TARIFF_CONFIG.plans.month; }
+function getSelectedPlanConfig(){ return getTariffPlan(selectedPlan || 'month'); }
+function getTariffTrialDays(){ return Number(tariffConfig?.trialDays || DEFAULT_TARIFF_CONFIG.trialDays) || 30; }
+function getCurrentTariffTier(){
+  if(!currentUser) return 'free';
+  if(currentUser.trialActive) return currentUser.plan === 'paid' ? 'paid' : 'trial';
+  return 'free';
+}
+function getPaywallReasonText(reason){
+  return tariffConfig?.paywall?.reasons?.[reason] || tariffConfig?.paywall?.reasons?.trial || DEFAULT_TARIFF_CONFIG.paywall.reasons.trial;
+}
+function renderPremiumFeatures(){
+  const box = document.getElementById('premium-features-list');
+  const features = Array.isArray(tariffConfig?.features) && tariffConfig.features.length ? tariffConfig.features : DEFAULT_TARIFF_CONFIG.features;
+  if(!box) return;
+  box.innerHTML = features.map((item, idx) => {
+    const border = idx === features.length - 1 ? ' style="border:none"' : '';
+    return '<div class="plan-feature-row"' + border + '><div class="plan-feat-icon">✓</div><div><div class="plan-feat-title">' + item.title + '</div><div class="plan-feat-sub">' + item.subtitle + '</div></div></div>';
+  }).join('');
+}
+function updatePaywallContext(){
+  const card = document.getElementById('paywall-context-card');
+  const titleEl = document.getElementById('paywall-context-title');
+  const subEl = document.getElementById('paywall-context-sub');
+  if(!card || !titleEl || !subEl) return;
+  if(!currentPaywallReason){
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+  titleEl.textContent = tariffConfig?.paywall?.title || DEFAULT_TARIFF_CONFIG.paywall.title;
+  subEl.textContent = getPaywallReasonText(currentPaywallReason) + ' ' + (tariffConfig?.paywall?.subtitle || DEFAULT_TARIFF_CONFIG.paywall.subtitle);
+}
+function renderTariffPricing(){
+  const monthPlan = getTariffPlan('month');
+  const yearPlan = getTariffPlan('year');
+  const paymentNote = document.getElementById('subscription-payment-note');
+  const monthCard = document.getElementById('pricing-month');
+  const yearCard = document.getElementById('pricing-year');
+  if(monthCard){
+    const name = monthCard.querySelector('.pricing-name');
+    const desc = monthCard.querySelector('.pricing-desc');
+    const price = monthCard.querySelector('.pricing-price');
+    const per = monthCard.querySelector('.pricing-per');
+    if(name) name.textContent = monthPlan.months + ' месяц';
+    if(desc) desc.textContent = monthPlan.description;
+    if(price) price.textContent = monthPlan.priceRub.toLocaleString('ru') + ' ₽';
+    if(per) per.textContent = '/ мес';
+  }
+  if(yearCard){
+    const badge = yearCard.querySelector('.pricing-badge-save');
+    const name = yearCard.querySelector('.pricing-name');
+    const desc = yearCard.querySelector('.pricing-desc');
+    const price = yearCard.querySelector('.pricing-price');
+    const per = yearCard.querySelector('.pricing-per');
+    if(badge) badge.textContent = yearPlan.badge || 'Выгода';
+    if(name) name.textContent = yearPlan.months + ' месяцев';
+    if(desc) desc.textContent = yearPlan.description;
+    if(price) price.textContent = yearPlan.priceMonthlyRub.toLocaleString('ru') + ' ₽';
+    if(per) per.textContent = '/ мес · ' + yearPlan.priceYearRub.toLocaleString('ru') + ' ₽/год';
+  }
+  if(paymentNote) paymentNote.innerHTML = 'Безопасная оплата через CloudPayments<br>' + (tariffConfig?.paywall?.note || DEFAULT_TARIFF_CONFIG.paywall.note);
+  renderPremiumFeatures();
+  updatePaywallContext();
+}
+async function loadTariffConfig(){
+  try{
+    const r = await fetch(WORKER + '/tariff-config');
+    const d = await readJsonSafe(r);
+    if(r.ok && d?.ok && d?.config){
+      tariffConfig = Object.assign(cloneTariffConfig(), d.config);
+    }
+  }catch(e){}
+  renderTariffPricing();
+}
+function openPaywall(reason, payload){
+  currentPaywallReason = reason || 'trial';
+  currentPaywallPayload = payload || null;
+  renderTariffPricing();
+  showSubScreen('subscription');
+}
+function resetPaywallContext(){
+  currentPaywallReason = '';
+  currentPaywallPayload = null;
+  updatePaywallContext();
+}
+function handleLimitResponse(data, fallbackReason){
+  if(!data || data.code !== 'limit_exceeded') return false;
+  openPaywall(fallbackReason || data.limitType || 'trial', data);
+  return true;
+}
 
 function authHeaders(){
   const h={'Content-Type':'application/json','anthropic-version':'2023-06-01'};
   const t=getToken(); if(t) h['x-token']=t;
   return h;
+}
+
+let analyticsLastDashboardAt = 0;
+let analyticsLastDashboardUserId = '';
+
+function currentAnalyticsUserId(){
+  return String(currentUser?.id || '').trim();
+}
+
+async function trackAnalyticsEvent(event, meta){
+  const userId = currentAnalyticsUserId();
+  if(!event || !getToken() || !userId) return false;
+  try{
+    const r = await fetch(WORKER + '/analytics/event', {
+      method:'POST',
+      headers:authHeaders(),
+      body:JSON.stringify({event, meta:meta || {}})
+    });
+    return !!r.ok;
+  }catch(e){
+    return false;
+  }
+}
+
+function trackDashboardOpen(){
+  const userId = currentAnalyticsUserId();
+  if(!userId || !getToken()) return;
+  const now = Date.now();
+  if(analyticsLastDashboardUserId === userId && now - analyticsLastDashboardAt < 10 * 60 * 1000) return;
+  analyticsLastDashboardUserId = userId;
+  analyticsLastDashboardAt = now;
+  trackAnalyticsEvent('dashboard_open', {surface:'home'}).catch(()=>{});
 }
 
 function privacyAuthHeaders(){
@@ -2184,6 +2349,7 @@ async function initApp(){
   const tg=window.Telegram?.WebApp;
   if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
   showStartupFallback();
+  await loadTariffConfig();
 
   const token=getToken();
   if(token){
@@ -2356,7 +2522,7 @@ function renderTrialBanner(){
     wrap.innerHTML=`<div class="trial-expired-banner">
       <div class="trial-expired-title">⏰ Пробный период истёк</div>
       <div class="trial-expired-sub">Добавление новых задач недоступно. Оформи подписку, чтобы продолжить.</div>
-      <button class="login-btn" style="padding:10px;font-size:13px" onclick="showToast('Подписка скоро!')">Оформить подписку</button>
+      <button class="login-btn" style="padding:10px;font-size:13px" onclick="openPaywall('trial')">Оформить подписку</button>
     </div>`;
   }
 }
@@ -2588,10 +2754,6 @@ function togglePass(id){
 // ── CloudPayments config ──────────────────────────────────────
 // ⚠️ Замени на свой Public ID из личного кабинета CloudPayments
 const CP_PUBLIC_ID = 'pk_79ce41d62fd193a9962d0ee8090a3';
-const PLANS = {
-  month: { title: 'Premium · 1 месяц', price: 990,  months: 1,  stars: 990  },
-  year:  { title: 'Premium · 12 месяцев', price: 9504, months: 12, stars: 9504 },
-};
 let selectedPlan = 'month';
 
 function selectPlan(plan) {
@@ -2629,10 +2791,10 @@ function setPaymentButtonState(label, disabled = false) {
 }
 
 function openPayment() {
-  const plan = PLANS[selectedPlan];
+  const plan = getSelectedPlanConfig();
   const provider = getPaymentProvider();
   document.getElementById('order-title').textContent  = plan.title;
-  document.getElementById('order-price').textContent  = provider === 'telegram-stars' ? plan.stars.toLocaleString('ru') + ' ⭐' : plan.price.toLocaleString('ru') + ' ₽';
+  document.getElementById('order-price').textContent  = provider === 'telegram-stars' ? plan.stars.toLocaleString('ru') + ' ⭐' : plan.priceRub.toLocaleString('ru') + ' ₽';
   const note = document.getElementById('subscription-payment-note');
   const badges = document.getElementById('payment-badges');
   if (note) {
@@ -2649,7 +2811,7 @@ function openPayment() {
 
 function startPayment() {
   if (!currentUser) { showToast('Войди в аккаунт'); return; }
-  const plan = PLANS[selectedPlan];
+  const plan = getSelectedPlanConfig();
   const provider = getPaymentProvider();
   if (provider === 'vk') {
     startVKPayment(plan);
@@ -2680,7 +2842,7 @@ async function startVKPayment(plan) {
     const order = await vkBridge.send('VKWebAppShowOrderBox', {
       type: 'item',
       item: JSON.stringify({ id: selectedPlan, title: plan.title }),
-      amount: plan.price
+      amount: plan.priceRub
     });
     if (order && (order.success || order.status === 'success')) {
       onPaymentSuccess(plan);
@@ -2797,29 +2959,33 @@ function onPaymentSuccess(plan) {
 }
 
 function simulatePaymentSuccess() {
-  onPaymentSuccess(PLANS[selectedPlan]);
+  onPaymentSuccess(getSelectedPlanConfig());
 }
 
 // Обновляем экран подписки данными из currentUser
 function updateSubscriptionScreen() {
   if (!currentUser) return;
+  renderTariffPricing();
   const nameEl   = document.getElementById('plan-status-name');
   const subEl    = document.getElementById('plan-status-sub');
   const badgeEl  = document.getElementById('plan-status-badge');
   const barEl    = document.getElementById('trial-progress-bar');
   const daysEl   = document.getElementById('trial-days-label');
   const wrapEl   = document.getElementById('trial-progress-wrap');
+  const ctaBtn   = document.querySelector('#subscription .ob-btn');
+  const totalTrialDays = Math.max(1, getTariffTrialDays());
+  const tier = getCurrentTariffTier();
+
+  if (ctaBtn) ctaBtn.textContent = tariffConfig?.paywall?.cta || DEFAULT_TARIFF_CONFIG.paywall.cta;
 
   if (currentUser.trialActive) {
     const days = currentUser.trialLeft || 0;
-    if (nameEl)  nameEl.textContent  = 'Premium';
+    if (nameEl)  nameEl.textContent  = tier === 'paid' ? 'Premium' : 'Пробный Premium';
     if (subEl)   subEl.textContent   = 'Осталось ' + days + ' ' + pluralDays(days);
     if (badgeEl) { badgeEl.textContent = 'Активен'; badgeEl.className = 'plan-badge-active'; }
-    // progress bar (30 дней = 100%)
-    const pct = Math.min(100, Math.round((days / 30) * 100));
+    const pct = Math.min(100, Math.round((days / totalTrialDays) * 100));
     if (barEl)  barEl.style.width  = pct + '%';
     if (daysEl) daysEl.textContent = days + ' ' + pluralDays(days);
-    // bar color — red if < 5 days
     if (barEl)  barEl.style.background = days < 5 ? '#ff6060' : 'var(--green)';
     if (wrapEl) wrapEl.style.display = 'block';
   } else {
@@ -2945,7 +3111,7 @@ initApp();
 function checkTrial(){
   if(currentUser && currentUser.trialActive===false){
     showToast('Пробный период истёк. Оформи подписку.');
-    openProfile();
+    openPaywall('trial');
     return false;
   }
   return true;
@@ -3633,6 +3799,7 @@ function showScreen(id){
   // bottom-nav-v2 is inside #home so it's only visible when home is active — no action needed
   const hs=document.querySelector('.scroll-body');
   if(hs)hs.style.paddingBottom=id==='home'?'96px':'16px';
+  if(id==='home') trackDashboardOpen();
 }
 function goHome(){showScreen('home');setNavActive('tasks');loadTasks();}
 async function openAsk(){
@@ -3872,6 +4039,7 @@ function closeContactPanel(){
 function contactViaTelegram(){
   const person = document.getElementById('contact-panel-overlay').dataset.person || '';
   const task = document.getElementById('contact-panel-overlay').dataset.task || '';
+  trackAnalyticsEvent('task_share', {channel:'telegram_share',hasPerson:!!person,hasTask:!!task}).catch(()=>{});
   closeContactPanel();
   // Try to open Telegram with pre-filled message
   const msg = encodeURIComponent('Привет! Напоминаю про: ' + task);
@@ -4481,6 +4649,7 @@ async function createTaskFromChat(taskData) {
       body: JSON.stringify({chatId, task})
     });
     const data = await res.json().catch(()=>({}));
+    if(handleLimitResponse(data, 'tasks')) return false;
     if(!res.ok || data.ok === false) throw new Error(data.error || 'save-task failed');
     if(typeof loadTasks === 'function') await loadTasks();
     return true;
@@ -4543,6 +4712,13 @@ async function sendAsk(){
       })
     });
     const d=await r.json();
+    if(handleLimitResponse(d, 'ai')){
+      if(lb && lb.parentNode) lb.parentNode.removeChild(lb);
+      askHistory.pop();
+      saveAskHistoryLocal();
+      isGenerating=false;
+      return;
+    }
     let text='';
     if(d.content&&d.content[0]?.text) text=d.content[0].text;
     else if(d.error) text='Ошибка: '+(d.error.message||JSON.stringify(d.error));
@@ -4705,6 +4881,10 @@ function showVoiceInfo(){showToast('Говорите — 4 распознает 
 function toggleVoice(){if(recognition)closeVoice();else openVoice();}
 async function openVoice(){
   if (!window.biometricConsentRequired()) return;
+  if(tariffConfig?.enforceLimits && getCurrentTariffTier() === 'free'){
+    openPaywall('voice');
+    return;
+  }
   showScreen('voice');
   setNavActive('voice');
   document.getElementById('voice-title').textContent='Говори...';
@@ -5999,7 +6179,7 @@ document.addEventListener('focusout',function(e){if(e.target.closest('#task-deta
   localStorage.setItem=function(key,value){_si(key,value);if(VK_KEYS.includes(key))window.vkStorageSet(key,value);};
   localStorage.getItem=function(key){if(VK_KEYS.includes(key)&&_vkCache[key]!==undefined)return _vkCache[key];return _gi(key);};
   Promise.all(VK_KEYS.map(k=>vkBridge.send('VKWebAppStorageGet',{keys:[k]}).then(res=>{const item=res.keys.find(r=>r.key===k);if(item&&item.value){_vkCache[k]=item.value;_si(k,item.value);}}).catch(()=>{}))).then(()=>{const t=_vkCache['theme'];if(t)applyTheme(t);console.log('[VK Adapter] Storage preloaded',_vkCache);});
-  window.openVKPayment=function(planId,amount){const plan=PLANS[planId]||{title:'Premium',price:amount,months:1};return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:plan.title}),amount:amount||plan.price}).then(res=>{if(res&&res.success)onPaymentSuccess(plan);return res;}).catch(e=>{console.warn('[VK Pay]',e);throw e;});};
+  window.openVKPayment=function(planId,amount){const plan=getTariffPlan(planId)||{title:'Premium',priceRub:amount,months:1};return vkBridge.send('VKWebAppShowOrderBox',{type:'item',item:JSON.stringify({id:planId,title:plan.title}),amount:amount||plan.priceRub}).then(res=>{if(res&&res.success)onPaymentSuccess(plan);return res;}).catch(e=>{console.warn('[VK Pay]',e);throw e;});};
   vkBridge.send('VKWebAppGetClientVersion').then(res=>{if(res.platform==='web'||window.innerWidth>=680){document.body.classList.add('vk-desktop');document.body.setAttribute('data-vk-platform','desktop');}}).catch(()=>{if(window.innerWidth>=680)document.body.classList.add('vk-desktop');});
   console.log('[VK Adapter] Initialized');
 })();
