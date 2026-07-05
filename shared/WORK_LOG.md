@@ -6,6 +6,16 @@
 
 ---
 
+### 2026-07-06 — Codex
+
+**Задача:** BACK-047 — вшить v2 auth/privacy routes в worker и снять ночные фронтовые fallback
+**Результат:** В `4e-worker` ветка `feat/back-047-v2-auth-privacy` подвесила live routes `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/*` поверх текущего worker-router. Staging smoke и prod smoke прошли через полный flow: legacy `auth/register` → `x-token` → D1 session → identities → privacy settings. После этого в app-репо ветка `fix/back-047-remove-auth-fallbacks` убрала временное игнорирование `404/501/503` и вернула `vk.html` к прямому чтению `/v2/auth/identities`.
+**Коммит:** worker `21ddb48`, app `e85cd50`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Утром решить merge веток в main и прогнать QA web/VK после live worker-фикса; отдельно закрыть staging secret `VK_SECRET_KEY` для smoke `v2/auth/link-vk`
+
+---
+
 ### 2026-07-05 — Codex
 
 **Задача:** Добавить в roadmap авторизацию через сервисы РФ — VK ID и Яндекс ID
