@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>4 · AI-секретарь</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="favicon.ico" sizes="any">
 <script async src="assets/vendor/vk-bridge.min.js"></script>
 <style>
 :root {
@@ -696,6 +698,10 @@ function linkChallengeHeaders() {
   return headers;
 }
 
+function isOptionalD1ApiStatus(status) {
+  return [404, 501, 503].includes(Number(status));
+}
+
 function linkChallengeUrl(challenge, action) {
   if (!challenge?.id) return '';
   if (action === 'complete' && challenge.completeUrl) return challenge.completeUrl;
@@ -741,6 +747,7 @@ async function syncD1AuthSession(silent = true) {
     const data = await readJsonSafe(res);
     if (!data.ok || !data.token) {
       if (res.status === 401) state.d1Token = null;
+      if (isOptionalD1ApiStatus(res.status)) return null;
       return null;
     }
     state.d1Token = data.token;
@@ -1159,10 +1166,31 @@ async function loadIdentities() {
     renderIdentityRows();
     return;
   }
-  const res = await fetch(WORKER + '/auth/identities', { headers: { 'x-token': state.token } });
-  const data = await readJsonSafe(res);
-  if (!data.ok) throw new Error(data.error || 'identity_load_failed');
-  state.identities = Array.isArray(data.identities) ? data.identities : [];
+  const d1Token = state.d1Token || await syncD1AuthSession(true);
+  const attempts = [];
+  if (d1Token) {
+    attempts.push({
+      url: WORKER + '/v2/auth/identities',
+      headers: { Authorization: 'Bearer ' + d1Token }
+    });
+  }
+  attempts.push({
+    url: WORKER + '/auth/identities',
+    headers: { 'x-token': state.token }
+  });
+  for (const attempt of attempts) {
+    const res = await fetch(attempt.url, { headers: attempt.headers });
+    const data = await readJsonSafe(res);
+    if (data.ok) {
+      state.identities = Array.isArray(data.identities) ? data.identities : [];
+      renderIdentityRows();
+      return;
+    }
+    if (res.status === 401 && attempt.url.includes('/v2/')) state.d1Token = null;
+    if (isOptionalD1ApiStatus(res.status)) continue;
+    throw new Error(data.error || 'identity_load_failed');
+  }
+  state.identities = [];
   renderIdentityRows();
 }
 
