@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
@@ -2359,7 +2359,7 @@ function renderTrialBanner(){
     wrap.innerHTML=`<div class="trial-expired-banner">
       <div class="trial-expired-title">⏰ Пробный период истёк</div>
       <div class="trial-expired-sub">Добавление новых задач недоступно. Оформи подписку, чтобы продолжить.</div>
-      <button class="login-btn" style="padding:10px;font-size:13px" onclick="showToast('Подписка скоро!')">Оформить подписку</button>
+      <button class="login-btn" style="padding:10px;font-size:13px" onclick="showSubScreen('subscription')">Оформить подписку</button>
     </div>`;
   }
 }
@@ -3117,7 +3117,7 @@ initApp();
 function checkTrial(){
   if(currentUser && currentUser.trialActive===false){
     showToast('Пробный период истёк. Оформи подписку.');
-    openProfile();
+    showSubScreen('subscription');
     return false;
   }
   return true;
@@ -3808,6 +3808,7 @@ function showScreen(id){
 }
 function goHome(){showScreen('home');setNavActive('tasks');loadTasks();}
 async function openAsk(){
+  if(!checkTrial()) return;
   showScreen('ask');
   setNavActive('brain');
   if(!askHistoryLoaded){
@@ -4598,8 +4599,7 @@ function buildAskUserProfileSummary(){
   let planLabel = 'не указан';
   if(currentUser?.plan) planLabel = String(currentUser.plan);
   else if(currentUser?.trialActive === true) planLabel = 'trial';
-  else if(currentUser?.trialActive === false) planLabel = 'paid';
-  return [
+  else if(currentUser?.trialActive === false) planLabel = 'trial_expired';
     'Профиль пользователя:',
     '- Имя: ' + currentName,
     '- Локальное время: ' + localTime + ' (' + tz + ')',
@@ -4669,6 +4669,7 @@ function askQuick(text){
   sendAsk();
 }
 async function sendAsk(){
+  if(!checkTrial()) return;
   const f=document.getElementById('ask-field');
   const v=f.value.trim();
   if(!v||isGenerating)return;
