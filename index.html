@@ -4797,7 +4797,6 @@ async function syncD1AuthSession(force=false){
       localStorage.setItem(D1_TOKEN_K,d1Token);
       return d1Token;
     }
-    if([404,501,503].includes(Number(r.status))) return null;
   }catch(e){}
   clearD1Token();
   return null;
