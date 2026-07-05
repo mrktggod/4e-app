@@ -4,6 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <title>4</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="favicon.ico" sizes="any">
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
 <script src="assets/vendor/marked.min.js"></script>
@@ -4795,6 +4797,7 @@ async function syncD1AuthSession(force=false){
       localStorage.setItem(D1_TOKEN_K,d1Token);
       return d1Token;
     }
+    if([404,501,503].includes(Number(r.status))) return null;
   }catch(e){}
   clearD1Token();
   return null;
