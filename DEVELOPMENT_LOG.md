@@ -5,6 +5,28 @@
 
 ---
 
+## 2026-07-06
+
+### BACK-047 — v2 auth/privacy routes wired into live worker
+
+**Что сделано:** В `4e-worker/worker.js` добавлены прямые импорты `handleV2AuthRequest` и `handleV2PrivacyRequest` из `src/worker/*`, прокинут `VK_SECRET_KEY` в runtime env и встроен routing для всего префикса `/v2/auth/*` и `/v2/privacy/*`. Для совместимости со старым `vk.html` добавлен алиас `GET /auth/identities`: по legacy `x-token` он поднимает D1 session через `/v2/auth/legacy-session` и возвращает identities из `/v2/auth/identities`. Staging deploy: version `c618e29f-e96e-4849-acc6-175311115dd6`; production deploy: version `02f8b9a9-2f13-41b2-9e2b-9c343736e473`. Positive smoke на staging и на prod прошёл через полный сценарий `auth/register` → legacy token → `/v2/auth/legacy-session` → `/auth/identities` → `/v2/privacy/settings`; во всех шагах ответы были `200`, а `legacy_user_id === d1_user_id`. Negative smoke подтвердил, что без токенов `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/settings` теперь отдают `401`, а не `404`.
+
+**Проверка кодировки:** `index.html` markers до правки: 61; после правки: 61.
+
+**Тест:** `node --check worker.js`; `npx wrangler secret list --env staging` (обнаружено, что на staging нет `VK_SECRET_KEY` и `RESEND_KEY`, но это не блокирует `legacy-session`/`identities`/`privacy`); `npx wrangler deploy --env staging`; positive smoke staging через временный email `codex-back047-20260705141833@example.com`; `npx wrangler deploy`; positive smoke prod через временный email `codex-back047-prod-20260705142059@example.com`; отдельный negative smoke на `/`, `/v2/auth/legacy-session`, `/auth/identities`, `/v2/privacy/settings`.
+
+**Коммит:** worker `21ddb48` (`feat(worker): expose v2 auth and privacy routes`)
+
+### BACK-047 — frontend cleanup after live 200
+
+**Что сделано:** После live smoke worker создана отдельная app-ветка `fix/back-047-remove-auth-fallbacks`. В `index.html` удалено временное игнорирование `404/501/503` в `syncD1AuthSession()`. В `vk.html` удалён helper `isOptionalD1ApiStatus()`, убрана мягкая деградация при `legacy-session` и снят двойной fallback `v2/auth/identities -> /auth/identities`: экран снова читает identities напрямую из `/v2/auth/identities`, если D1 session уже поднята. Обновлены `FILE_MAP_WORKER.md` и `pm/backlog.md` с регистрацией состояния BACK-047.
+
+**Проверка кодировки:** `index.html` markers до правки: 61; после правки: 61.
+
+**Тест:** `Select-String` до/после по маркерам `Войти|Задачи|Сегодня`; резервная копия `index.backup_20260705_1422.html`; `C:\Program Files\Git\bin\bash.exe ./scripts/check-portable-paths.sh`; `git diff` по `index.html`/`vk.html`.
+
+**Коммит:** app `e85cd50` (`fix(auth): remove v2 bootstrap fallbacks`)
+
 ## КРИТИЧЕСКИЕ ПРАВИЛА ДЛЯ АГЕНТОВ
 
 ### Кодировка (нарушалось 3+ раз — это самая частая ошибка)

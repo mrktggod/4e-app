@@ -691,10 +691,6 @@ function linkChallengeHeaders() {
   return headers;
 }
 
-function isOptionalD1ApiStatus(status) {
-  return [404, 501, 503].includes(Number(status));
-}
-
 function linkChallengeUrl(challenge, action) {
   if (!challenge?.id) return '';
   if (action === 'complete' && challenge.completeUrl) return challenge.completeUrl;
@@ -740,7 +736,6 @@ async function syncD1AuthSession(silent = true) {
     const data = await readJsonSafe(res);
     if (!data.ok || !data.token) {
       if (res.status === 401) state.d1Token = null;
-      if (isOptionalD1ApiStatus(res.status)) return null;
       return null;
     }
     state.d1Token = data.token;
@@ -1137,30 +1132,18 @@ async function loadIdentities() {
     return;
   }
   const d1Token = state.d1Token || await syncD1AuthSession(true);
-  const attempts = [];
-  if (d1Token) {
-    attempts.push({
-      url: WORKER + '/v2/auth/identities',
-      headers: { Authorization: 'Bearer ' + d1Token }
-    });
+  if (!d1Token) {
+    state.identities = [];
+    renderIdentityRows();
+    return;
   }
-  attempts.push({
-    url: WORKER + '/auth/identities',
-    headers: { 'x-token': state.token }
+  const res = await fetch(WORKER + '/v2/auth/identities', {
+    headers: { Authorization: 'Bearer ' + d1Token }
   });
-  for (const attempt of attempts) {
-    const res = await fetch(attempt.url, { headers: attempt.headers });
-    const data = await readJsonSafe(res);
-    if (data.ok) {
-      state.identities = Array.isArray(data.identities) ? data.identities : [];
-      renderIdentityRows();
-      return;
-    }
-    if (res.status === 401 && attempt.url.includes('/v2/')) state.d1Token = null;
-    if (isOptionalD1ApiStatus(res.status)) continue;
-    throw new Error(data.error || 'identity_load_failed');
-  }
-  state.identities = [];
+  const data = await readJsonSafe(res);
+  if (res.status === 401) state.d1Token = null;
+  if (!data.ok) throw new Error(data.error || 'identity_load_failed');
+  state.identities = Array.isArray(data.identities) ? data.identities : [];
   renderIdentityRows();
 }
 

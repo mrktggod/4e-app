@@ -19,6 +19,10 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 - `/auth/vk` — VK авто-логин.
 - `/auth/request-email-verification` — шлёт Resend-письмо для подтверждения email профиля и хранит token в D1/KV.
 - `/auth/verify-email` — проверяет token, привязывает email к текущему `user.id` и возвращает `Этот email уже используется` при конфликте.
+- `/v2/auth/legacy-session` — обменивает legacy `x-token` на D1-сессию; используется Telegram/VK/web фронтом перед privacy/identities.
+- `/v2/auth/identities` — читает D1 identity graph по Bearer session.
+- `/auth/identities` — временный legacy-алиас: по `x-token` поднимает D1-сессию и возвращает те же identities; нужен для совместимости старого `vk.html`.
+- `/v2/privacy/settings` / `/v2/privacy/consents` / `/v2/privacy/data-requests` — privacy API поверх D1 Bearer session.
 - `/payments/telegram-stars/invoice` — создаёт Telegram Stars invoice link для Mini App.
 - `/payments/telegram-stars/complete` — подтверждает `successful_payment` от Telegram bot и активирует Premium.
 - `/notifications/settings` — читает/сохраняет настройки уведомлений пользователя в D1 с KV fallback.
