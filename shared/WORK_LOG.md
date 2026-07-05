@@ -8,6 +8,16 @@
 
 ### 2026-07-06 — Codex
 
+**Задача:** INFRA-005 шаг 1 — подготовить RU API proxy для VK Mini App
+**Результат:** В app-репо добавлен готовый spec для Yandex API Gateway `infra/yandex-api-gateway/ru-proxy-openapi.yaml`, который проксирует `/` и `/{path+}` на `https://edge.4-ai.site`, пробрасывает исходные headers/query и фиксирует upstream `Host`. Для VK hosting build введён конфиг через `VK_API_BASE_URL`: `scripts/build-vk-hosting.mjs` теперь подменяет API base в `.vk-hosting-dist/index.html` во время сборки/деплоя. Добавлены runbook `docs/infra-005-yandex-ru-proxy.md`, task-файл `docs/tasks/INFRA-005-yandex-ru-proxy-step1.md` и backlog item `INFRA-005`. До полного выполнения остаётся только ручной слой Алексея: `folder-id`/доступы Yandex Cloud и технический домен gateway для VK smoke без VPN.
+**Коммит:** N/A
+**Статус:** ✅ подготовка завершена, ждёт ручной облачный шаг
+**Следующий шаг:** Алексей создаёт API Gateway по spec, Юрий передаёт технический домен, после чего VK hosting пересобирается с `VK_API_BASE_URL` и идёт phone-smoke без VPN
+
+---
+
+### 2026-07-06 — Codex
+
 **Задача:** BACK-047 — вшить v2 auth/privacy routes в worker и снять ночные фронтовые fallback
 **Результат:** В `4e-worker` ветка `feat/back-047-v2-auth-privacy` подвесила live routes `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/*` поверх текущего worker-router. Staging smoke и prod smoke прошли через полный flow: legacy `auth/register` → `x-token` → D1 session → identities → privacy settings. После этого в app-репо ветка `fix/back-047-remove-auth-fallbacks` убрала временное игнорирование `404/501/503` и вернула `vk.html` к прямому чтению `/v2/auth/identities`.
 **Коммит:** worker `21ddb48`, app `e85cd50`

@@ -7,6 +7,12 @@
 
 ## 2026-07-06
 
+### INFRA-005 — RU proxy step 1 prepared
+
+**Что сделано:** Подготовлен кодовой пакет для промежуточного российского API-адреса под VK Mini App, без переноса основного backend из Cloudflare. В `scripts/build-vk-hosting.mjs` добавлена build-time подмена `WORKER` через переменную окружения `VK_API_BASE_URL`, поэтому один и тот же `vk.html` можно публиковать либо на `edge.4-ai.site`, либо на будущий Yandex proxy-домен без ручной правки исходника. Добавлен `infra/yandex-api-gateway/ru-proxy-openapi.yaml`: OpenAPI spec для Yandex API Gateway с `x-yc-apigateway-integration:http`, путями `/` и `/{path+}`, пробросом исходных headers/query, явным `Host: edge.4-ai.site` и отключённым gateway-side CORS intercept (`origin: false`), чтобы preflight `OPTIONS` уходил в текущий backend. Добавлены runbook `docs/infra-005-yandex-ru-proxy.md` и task-файл `docs/tasks/INFRA-005-yandex-ru-proxy-step1.md`; backlog и roadmap синхронизированы новым item `INFRA-005`.
+
+**Тест:** `git diff --check`; ручная сверка spec с официальной документацией Yandex Cloud по `x-yc-apigateway-integration:http`, CORS (`origin: false`) и spec variables (`${var.*}`); локальный code review `scripts/build-vk-hosting.mjs` на подмену `const WORKER = '...'` в `.vk-hosting-dist/index.html`.
+
 ### BACK-047 — v2 auth/privacy routes wired into live worker
 
 **Что сделано:** В `4e-worker/worker.js` добавлены прямые импорты `handleV2AuthRequest` и `handleV2PrivacyRequest` из `src/worker/*`, прокинут `VK_SECRET_KEY` в runtime env и встроен routing для всего префикса `/v2/auth/*` и `/v2/privacy/*`. Для совместимости со старым `vk.html` добавлен алиас `GET /auth/identities`: по legacy `x-token` он поднимает D1 session через `/v2/auth/legacy-session` и возвращает identities из `/v2/auth/identities`. Staging deploy: version `c618e29f-e96e-4849-acc6-175311115dd6`; production deploy: version `02f8b9a9-2f13-41b2-9e2b-9c343736e473`. Positive smoke на staging и на prod прошёл через полный сценарий `auth/register` → legacy token → `/v2/auth/legacy-session` → `/auth/identities` → `/v2/privacy/settings`; во всех шагах ответы были `200`, а `legacy_user_id === d1_user_id`. Negative smoke подтвердил, что без токенов `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/settings` теперь отдают `401`, а не `404`.

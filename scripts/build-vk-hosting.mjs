@@ -1,8 +1,10 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
 const repoRoot = process.cwd();
 const outDir = resolve(repoRoot, ".vk-hosting-dist");
+const defaultVkApiBaseUrl = "https://edge.4-ai.site";
+const vkApiBaseUrl = (process.env.VK_API_BASE_URL || defaultVkApiBaseUrl).trim();
 
 const requiredFiles = [
   "vk.html",
@@ -38,6 +40,17 @@ const vkEntry = resolve(outDir, "vk.html");
 const indexEntry = resolve(outDir, "index.html");
 renameSync(vkEntry, indexEntry);
 
+const vkIndexSource = readFileSync(indexEntry, "utf8");
+const workerConstPattern = /const WORKER = '([^']+)';/;
+if (!workerConstPattern.test(vkIndexSource)) {
+  throw new Error("VK hosting artifact does not contain the WORKER constant marker");
+}
+const vkIndexPatched = vkIndexSource.replace(
+  workerConstPattern,
+  `const WORKER = '${vkApiBaseUrl.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}';`,
+);
+writeFileSync(indexEntry, vkIndexPatched, "utf8");
+
 for (const relPath of optionalPaths) {
   const srcPath = resolve(repoRoot, relPath);
   if (!existsSync(srcPath)) continue;
@@ -60,3 +73,4 @@ console.log("VK hosting artifact ready:");
 for (const entry of publishedEntries) {
   console.log(`- ${entry}`);
 }
+console.log(`VK API base: ${vkApiBaseUrl}`);

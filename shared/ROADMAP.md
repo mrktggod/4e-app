@@ -50,6 +50,7 @@
 | Staging-контур | Staging D1/KV + `wrangler --env staging`, тестовый бот, dev-версия Pages. «Чистая» версия = main, «грязная» = dev/staging — без второй копии кода | P1 | Todo |
 | Хостинг фронта | INFRA-001 — whitelist-фронт на Workers Static Assets + маршрут `app.4-ai.site/*` через Worker; контрольная точка: проверка из РФ-сети без VPN | P0 | In Progress |
 | VK-хостинг | INFRA-004 — VK-поверхность переехала на хостинг VK Mini Apps; API остаётся на `edge.4-ai.site`, потому что Workers доступны из РФ | P1 | Done |
+| VK на мобильном интернете РФ | INFRA-005 — промежуточный RU API proxy в Yandex Cloud для VK Mini App; шаг 1 = gateway-прокси на `edge.4-ai.site` + VK-сборка с новым API base, без полного переноса backend | P0 | In Progress |
 | Единая рабочая копия | Одна рабочая папка, обмен только через git (убрать расхождение Documents/Desktop) | P1 | Todo |
 
 ---
