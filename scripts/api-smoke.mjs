@@ -1,4 +1,4 @@
-Ôªøconst BASE_URL = process.env.WORKER_BASE_URL || process.env.API_BASE_URL || 'https://edge.4-ai.site';
+const BASE_URL = process.env.WORKER_BASE_URL || process.env.API_BASE_URL || 'https://edge.4-ai.site';
 const TASK_CHAT = `smoke-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
 
 function log(message) {
@@ -14,7 +14,7 @@ async function request(path, options = {}) {
   let body = null;
   try {
     body = text ? JSON.parse(text) : null;
-  } catch (e) {
+  } catch {
     body = text;
   }
   return { ok: res.ok, status: res.status, body, elapsed, url, text };
@@ -35,14 +35,6 @@ function asTasksArray(response) {
 
 function sanitizeTask(taskText) {
   return String(taskText || '').replace(/\s+/g, ' ').trim();
-}
-
-function toStepList(raw) {
-  if (typeof raw !== 'string') return [];
-  return raw
-    .split(/\r?\n+/)
-    .map((line) => line.replace(/^\s*[-*‚Ä¢]\s*/, '').replace(/^\s*\d+[\.)]\s*/, '').trim())
-    .filter((line) => line.length > 0);
 }
 
 (async () => {
@@ -97,7 +89,7 @@ function toStepList(raw) {
         text: taskText,
         person: 'Smoke Person',
         direction: 'outgoing',
-        directionLabel: '–†–∞–±–æ—Ç–∞',
+        directionLabel: '–‡·ÓÚ‡',
         deadline: null,
       },
     }),
