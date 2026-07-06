@@ -5,11 +5,77 @@
 
 ---
 
+## 2026-07-06 — merge `origin/main` into `feat/admin-tariff-api`
+
+### Разрешение конфликтов перед PR
+
+**Что сделано:** Локально выполнен merge `origin/main` в `feat/admin-tariff-api` и вручную разобраны конфликты. В `index.html` сохранён новый inline-описательный блок task detail из `main`, убраны дубли `detail-time-input` / `detail-direction` / `detail-person`, оставлена контактная кнопка исполнителя из feature-ветки и раскрываемый блок «Личные данные аккаунта» в профиле. В PM-документах сохранён `BACK-048` для dev/test accounts, а профильные задачи feature-ветки перенумерованы в `BACK-052`, `BACK-053`, `BACK-054`. `styles.css` и `styles.min.css` пересобраны из `styles/main.less`; `FILE_MAP.md` и `FILE_MAP_UI.md` обновлены под фактические строки.
+
+**Проверка кодировки:** `index.html` markers до merge: 32; после разрешения конфликтов: 32.
+
+**Тест:** `rg -n "^(<<<<<<<|=======|>>>>>>>)" ...`; `git diff --check`; `bash scripts/check-portable-paths.sh`; LESS/minified CSS build через bundled Node 24 (`node .../lessc`, `node .../cleancss`), потому что системный `node v12/npm 6` не поддержал текущий `package-lock.json` v3.
+
+**Коммит:** `этот merge-коммит`
+
+---
+
+## 2026-07-06 — Linear bug triage policy
+
+### Правило, когда баг заводим в Linear
+
+**Что сделано:** Код приложения не менялся. На свежей ветке от `origin/main` в `pm/bugs.md` добавлено правило Linear-триажа: в Linear идут P0/P1, подтверждённые, повторяющиеся и требующие разработки/релиза баги; входящие заметки, непроверенные наблюдения, косметика без влияния на ключевой сценарий, дубли и вопросы на уточнение остаются в `pm/bugs.md` до подтверждения.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(process): add linear bug triage policy`
+
+## 2026-07-05 — BACK-048: dev/test accounts task
+
+### Постановка задачи на тестовые аккаунты разработчиков
+
+**Что сделано:** Код приложения не менялся. В `pm/backlog.md` добавлена задача `BACK-048` на dev/test аккаунты с Premium/full-access для Алексея, Юрия и QA/dev. Создан task-файл `docs/tasks/BACK-048-dev-test-accounts.md` с требованиями к worker/admin-механизму, staging-first подходом, seed-данными и запретом хранить реальные пароли, токены и `ADMIN_SECRET` в git. В `pm/qa-checklist.md` добавлена проверка dev/test аккаунтов.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `pm/backlog.md` → `docs/tasks/BACK-048-dev-test-accounts.md` → `pm/qa-checklist.md`; код не менялся.
+
+**Коммит:** N/A
+
+## 2026-07-05 — Mobile QA all screens
+
+### Первичный mobile smoke на 360/375/390px
+
+**Что сделано:** После `git fetch origin` подтверждено, что локальный `main` синхронен с `origin/main` (`0 0` ahead/behind), новых изменений от Юры в `origin/main` нет. Поднят локальный сервер `http://127.0.0.1:8000/index.html`. В браузере Codex проверены 114 состояний экранов `index.html` на viewport `375x667`, `390x844`, `360x800`: login/register, reset/forgot password, Home, AI chat, task detail, calendar, statistics, notifications, profile/settings, subscription/payment, support/FAQ, chats/conversation, new task/confirm/move/done, voice, biometric consent, quick-add и contact bottom sheet. Auth/tasks проверялись в локальном mock-состоянии без отправки реальных внешних запросов.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Browser QA sweep: глобального горизонтального скролла не найдено. CTA sanity: пустой login остаётся на `login` и показывает `Введи email и пароль`; пустой/невалидный forgot password остаётся на `forgot-password` и показывает полевые ошибки `Введите email` / `Введите корректный email`; payment screen показывает CTA `Оплатить картой`. Найден новый баг `BUG-2026-07-05-003`: Home после 22:00 показывает отрицательное время `2 задач горят · -1 ч до конца дня`. Внешние live flows Telegram-login и CloudPayments/Telegram Stars/VK Pay не отправлялись.
+
+**Коммит:** N/A
+
 ## 2026-07-06
 
-### feat/admin-tariff-api — контроль перед следующим шагом BACK-049
+### BACK-044 — task detail card cleanup
 
-**Что сделано:** Переключена локальная рабочая ветка на `feat/admin-tariff-api` от `origin/feat/admin-tariff-api`. Подтверждено, что `pm/backlog.md` на этой ветке содержит `BACK-048`, `BACK-049`, `BACK-050` со статусом `Done`. По `BACK-049` проверена реализация в `index.html`: основной аватар `profile-avatar` и превью `profile-photo-preview` открывают единый скрытый `profile-photo-input`, отдельная дублирующая кнопка настройки фото из HTML-разметки убрана. Дополнительно сняты блокеры перед PR: абсолютные Windows-ссылки в `docs/infra-005-yandex-ru-proxy.md` заменены на относительные, конфликтные маркеры убраны из `pm/bugs.md`, `pm/qa-checklist.md`, `DEVELOPMENT_LOG.md`.
+**Что сделано:** Экран `task-detail` перестроен без изменения модели сохранения. `detail-description` перенесён под заголовок задачи и оформлен как inline-блок `detail-inline-desc`, а вкладка `Описание` и блок `detail-tab-desc` удалены как дублирование. Строки в glass-карточке переставлены в новый порядок: `Срок`, быстрые кнопки, `Статус`, `Приоритет`, `Напоминание`. UI-строки `Направление` и `Человек` скрыты через `detail-field-row-hidden`, но их DOM-id сохранены (`detail-direction`, `detail-person`), поэтому `openTask()` и `saveTaskEdits()` продолжают читать/писать те же данные. Для мобильной ширины detail rows и checklist-add переведены в вертикальный режим через media-rule `max-width:560px`, чтобы контролы не обрезались справа.
+
+**Проверка кодировки:** `index.html` markers до правки: 65; после правки: 65.
+
+**Тест:** `Select-String` до/после по маркерам `Войти|Задачи|Сегодня`; `npm run build:css`; `git diff --check`; headless Chrome preview для task detail desktop/mobile на локальном `file:///.../__codex_task_detail_preview.html`.
+
+### BACK-043 — profile responsive UI pass
+
+**Что сделано:** В `index.html` и `styles/screens/profile.less` приведена мобильная форма профиля к более ровной структуре. Telegram-строка теперь растягивается на полную ширину сетки и получила отдельный класс для обрезки длинного username без расползания badge. Для phone/email на узких экранах статусный badge переносится под input вместо тесной правой колонки. Карточки `Дата рождения` и `О себе` получили явный `profile-form-card` layout с предсказуемыми отступами, textarea закреплена через `profile-about-field`, а счётчик `profile-field-counter` визуально привязан к полю. Параллельно ветка синхронизирована с UI-оболочкой: перенесён фикс `BACK-046` на ширину `bottom-nav-v2`/`global-nav`, а backlog обновлён до актуальных ID/статусов (`BACK-046`, `BACK-047 Done`, `BACK-043 In Progress` -> реализация).
+
+**Проверка кодировки:** `index.html` markers до правки: 65; после правки: 65.
+
+**Тест:** `Select-String` до/после по маркерам `Войти|Задачи|Сегодня`; `npm run build:css`; `git diff --check`; headless Chrome preview для profile desktop/mobile на локальном `file:///.../__codex_profile_preview.html`.
+
+### feat/admin-tariff-api — контроль перед следующим шагом BACK-053
+
+**Что сделано:** Переключена локальная рабочая ветка на `feat/admin-tariff-api` от `origin/feat/admin-tariff-api`. Подтверждено, что профильные задачи этой ветки закрыты и при merge с `main` перенумерованы: `BACK-052` — личные данные в раскрываемом блоке, `BACK-053` — настройка фото по клику на аватар, `BACK-054` — человекочитаемые направления. По `BACK-053` проверена реализация в `index.html`: основной аватар `profile-avatar` и превью `profile-photo-preview` открывают единый скрытый `profile-photo-input`, отдельная дублирующая кнопка настройки фото из HTML-разметки убрана. Дополнительно сняты блокеры перед PR: абсолютные Windows-ссылки в `docs/infra-005-yandex-ru-proxy.md` заменены на относительные, конфликтные маркеры убраны из `pm/bugs.md`, `pm/qa-checklist.md`, `DEVELOPMENT_LOG.md`.
 
 **Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
 

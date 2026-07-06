@@ -579,14 +579,33 @@
         </span>
       </div>
       <div id="detail-title" contenteditable="false"
-        style="font-size:20px;font-weight:700;color:var(--text);line-height:1.3;padding:4px 0"
+        style="font-size:20px;font-weight:700;color:var(--text);line-height:1.3;padding:4px 0;word-break:break-word"
         onclick="makeDetailEditable(this)">
         Задача
+      </div>
+      <div class="detail-inline-desc">
+        <div class="detail-inline-label">Описание</div>
+        <textarea id="detail-description" class="detail-description-inline"
+          placeholder="Добавить описание..."></textarea>
       </div>
     </div>
 
     <!-- Поля-строки -->
     <div class="glass" style="border-radius:16px;overflow:hidden;margin-bottom:20px">
+
+      <div class="detail-field-row">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span style="font-size:14px;color:var(--text2)">Срок</span>
+        </div>
+        <input id="detail-time-input" class="detail-control" type="datetime-local" onchange="setDetailDeadline(this.value)">
+      </div>
+      <div class="detail-quick-row">
+        <button class="detail-quick-btn" onclick="setQuickDeadline('today')">Сегодня</button>
+        <button class="detail-quick-btn" onclick="setQuickDeadline('tomorrow')">Завтра</button>
+        <button class="detail-quick-btn" onclick="setQuickDeadline('week')">Неделя</button>
+        <span id="detail-date" style="font-size:13px;color:var(--muted);font-weight:500;align-self:center">—</span>
+      </div>
 
       <div class="detail-field-row">
         <div style="display:flex;align-items:center;gap:10px">
@@ -613,18 +632,17 @@
         </select>
       </div>
 
-      <div class="detail-field-row">
+      <div class="detail-field-row" style="border-bottom:none">
         <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Срок</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span style="font-size:14px;color:var(--text2)">Напоминание</span>
         </div>
-        <input id="detail-time-input" class="detail-control" type="datetime-local" onchange="setDetailDeadline(this.value)">
-      </div>
-      <div class="detail-quick-row">
-        <button class="detail-quick-btn" onclick="setQuickDeadline('today')">Сегодня</button>
-        <button class="detail-quick-btn" onclick="setQuickDeadline('tomorrow')">Завтра</button>
-        <button class="detail-quick-btn" onclick="setQuickDeadline('week')">Неделя</button>
-        <span id="detail-date" style="font-size:13px;color:var(--muted);font-weight:500;align-self:center">—</span>
+        <select id="detail-reminder" class="detail-control" onchange="setDetailReminder(this.value)">
+          <option value="none">Без</option>
+          <option value="15min">За 15 мин</option>
+          <option value="1hour">За час</option>
+          <option value="1day">За день</option>
+        </select>
       </div>
 
       <div class="detail-field-row">
@@ -646,19 +664,6 @@
         </div>
       </div>
 
-      <div class="detail-field-row" style="border-bottom:none">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Напоминание</span>
-        </div>
-        <select id="detail-reminder" class="detail-control" onchange="setDetailReminder(this.value)">
-          <option value="none">Без</option>
-          <option value="15min">За 15 мин</option>
-          <option value="1hour">За час</option>
-          <option value="1day">За день</option>
-        </select>
-      </div>
-
     </div>
 
     <div class="glass" style="border-radius:16px;padding:14px 16px;margin-bottom:20px">
@@ -672,20 +677,12 @@
 
     <!-- Табы -->
     <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
-      <button class="detail-tab active" id="tab-desc" onclick="switchDetailTab('desc',this)">Описание</button>
-      <button class="detail-tab" id="tab-comments" onclick="switchDetailTab('comments',this)">Обсудить задачу</button>
+      <button class="detail-tab active" id="tab-comments" onclick="switchDetailTab('comments',this)">Обсудить задачу</button>
       <button class="detail-tab" id="tab-history" onclick="switchDetailTab('history',this)">История</button>
     </div>
 
-    <!-- Описание -->
-    <div id="detail-tab-desc">
-      <textarea id="detail-description"
-        style="width:100%;background:transparent;border:none;color:var(--text2);font-size:14px;line-height:1.7;resize:none;outline:none;font-family:'Inter',sans-serif;min-height:80px"
-        placeholder="Добавить описание..."></textarea>
-    </div>
-
     <!-- Комментарии -->
-    <div id="detail-tab-comments" style="display:none">
+    <div id="detail-tab-comments">
       <div id="detail-comments-list" style="font-size:13px;color:var(--muted);padding:8px 0">Обсуждения пока нет</div>
       <div style="display:flex;gap:8px;margin-top:12px">
         <input id="detail-comment-input" placeholder="Написать по задаче..."
@@ -887,7 +884,7 @@
     </div>
 
     <div class="sub-card profile-form-card">
-      <label class="profile-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small id="profile-about-counter">0 / 200</small></label>
+      <label class="profile-field profile-field-full profile-about-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small class="profile-field-counter" id="profile-about-counter">0 / 200</small></label>
     </div>
 
     <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
@@ -4741,7 +4738,7 @@ function openTask(t,idx){
   if(histEl) histEl.textContent = 'История изменений пуста';
 
   // Сброс табов
-  switchDetailTab('desc', document.getElementById('tab-desc'));
+  switchDetailTab('comments', document.getElementById('tab-comments'));
 
   showScreen('task-detail');
   setTimeout(loadTaskAdvice, 400);
@@ -4765,7 +4762,7 @@ function makeDetailEditable(el){
 function switchDetailTab(tab, el){
   document.querySelectorAll('.detail-tab').forEach(t=>t.classList.remove('active'));
   if(el) el.classList.add('active');
-  const tabs=['desc','comments','history'];
+  const tabs=['comments','history'];
   tabs.forEach(id=>{
     const div=document.getElementById('detail-tab-'+id);
     if(div) div.style.display=(id===tab)?'':'none';
@@ -6878,4 +6875,3 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
 
 </body>
 </html>
-
