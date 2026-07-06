@@ -849,7 +849,7 @@
   </div>
   <div class="profile-scroll">
     <div class="profile-user">
-      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div class="profile-avatar" id="profile-avatar" role="button" aria-label="Изменить фото" onclick="openProfilePhotoPicker()" style="cursor:pointer;">?</div>
       <div class="profile-user-copy"><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div><div class="profile-user-id" id="profile-user-id">ID —</div></div>
     </div>
     <!-- trial banner injected here by JS -->
@@ -857,11 +857,8 @@
 
     <div class="sub-card profile-details-card">
       <div class="profile-photo-row">
-        <div class="profile-photo-preview" id="profile-photo-preview">?</div>
-        <div class="profile-photo-actions">
-          <button class="profile-photo-btn" type="button" onclick="document.getElementById('profile-photo-input').click()"><span class="profile-photo-btn-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span><span>Изменить фото</span></button>
-          <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
-        </div>
+        <div class="profile-photo-preview" id="profile-photo-preview" role="button" aria-label="Изменить фото" onclick="openProfilePhotoPicker()" style="cursor:pointer;">?</div>
+        <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
       </div>
       <div class="profile-field-grid">
         <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
@@ -2288,6 +2285,7 @@ function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerifie
 function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Не подтверждён');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
 function closeProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(sec)sec.style.display='none';if(arrow)arrow.textContent='›';}
 function toggleProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(!sec)return;const hidden=sec.style.display==='none' || sec.style.display==='';sec.style.display=hidden?'block':'none';if(arrow)arrow.textContent=hidden?'⌄':'›';}
+function openProfilePhotoPicker(){const el=document.getElementById('profile-photo-input');if(el)el.click();}
 function renderExtendedProfile(){
   if(!currentUser)return;
   const draft=getExtendedProfileDraft();
