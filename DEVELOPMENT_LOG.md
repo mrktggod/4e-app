@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-06 — Accessibility as permanent UI rule
+
+### Доступность закреплена в Definition of Done UI-задач
+
+**Что сделано:** Код приложения не менялся. Accessibility baseline закреплён как постоянное правило для нового и изменяемого UI, а не только как разовая задача `BACK-050`. Обновлены `docs/ui-architecture-rules.md`, `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `shared/ROADMAP.md`. Добавлена итоговая инструкция для Юры: `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-permanent-rule.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка постоянного правила в агентских инструкциях и roadmap; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Коммит:** `docs(ui): make accessibility a permanent rule`
+
 ## 2026-07-06 — BACK-050: accessibility baseline
 
 ### Базовая доступность критических сценариев

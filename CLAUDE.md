@@ -84,10 +84,12 @@ Codex берёт одну задачу, делает, коммитит, стоп
 - Новый UI-код: HTML = структура, LESS = стили, JS = поведение.
 - Новые стили писать в `styles/**/*.less`, затем запускать `npm run build:css`.
 - Новые классы называть по BEM-подходу: `block`, `block__element`, `block--modifier`.
+- Базовая доступность входит в Definition of Done для нового и изменяемого UI: labels/accessible names, видимый focus, keyboard flow, доступные status/error сообщения, dialog-поведение и mobile touch targets.
 - Не добавлять новые `style=""`, `onclick=""`, `oninput=""`, `onchange=""` и похожие inline-обработчики в HTML.
 - Для поведения использовать `addEventListener()` или делегирование событий.
-- Старый inline-код считать legacy-долгом: не переписывать всё одним проходом, но не увеличивать и постепенно выносить при правке конкретных экранов.
+- Старый inline-код и accessibility-проблемы считать legacy-долгом: не переписывать всё одним проходом, но не увеличивать и постепенно исправлять при правке конкретных экранов.
 - Проверка: `bash scripts/check-ui-architecture.sh`.
+- Для UI-задач сверять результат с accessibility smoke в `pm/qa-checklist.md`.
 - Подробности: `docs/ui-architecture-rules.md`.
 
 ## Навигация по index.html (5000+ строк)

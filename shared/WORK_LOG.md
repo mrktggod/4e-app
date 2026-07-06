@@ -8,6 +8,14 @@
 
 ### 2026-07-06 — Codex
 
+**Задача:** закрепить accessibility как постоянное правило для будущей UI-разработки
+**Результат:** Accessibility baseline переведён из разовой задачи `BACK-050` в постоянную часть Definition of Done для нового и изменяемого UI. Обновлены `docs/ui-architecture-rules.md`, `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `shared/ROADMAP.md`. Для Юры добавлена итоговая инструкция `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-permanent-rule.md`.
+**Коммит:** `docs(ui): make accessibility a permanent rule`
+**Статус:** ✅ правило закреплено
+**Следующий шаг:** Юрий применяет правило во всех следующих UI-ветках; `BACK-050` остаётся отдельной задачей на практическое доведение критических сценариев до baseline.
+
+### 2026-07-06 — Codex
+
 **Задача:** оформить BACK-050 accessibility baseline и отправить Юре задачи по шагам
 **Результат:** В `shared/ROADMAP.md` и `pm/backlog.md` добавлен `BACK-050` на базовую доступность критических сценариев. В `pm/qa-checklist.md` добавлен ручной accessibility smoke: auth keyboard/focus, формы, status/toast, dialog bottom sheets и touch-targets. Создан task-файл `docs/tasks/BACK-050-accessibility-baseline.md` и инбокс-сообщение `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-baseline.md` с тремя последовательными задачами для Юры.
 **Коммит:** `docs(qa): add accessibility baseline tasks`
