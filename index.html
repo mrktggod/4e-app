@@ -644,14 +644,28 @@
           <option value="1day">За день</option>
         </select>
       </div>
+      <div id="detail-reminder-grid" class="reminder-grid" style="padding:0 16px 12px;border-bottom:1px solid var(--border)">
+        <button class="reminder-opt" data-reminder="15min" onclick="setReminder('15min', this)">Через 15 мин</button>
+        <button class="reminder-opt" data-reminder="1hour" onclick="setReminder('1hour', this)">Через 1 час</button>
+        <button class="reminder-opt" data-reminder="1day" onclick="setReminder('1day', this)">Через день</button>
+      </div>
 
       <div class="detail-field-row">
         <div style="display:flex;align-items:center;gap:10px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Направление</span>
+          <span style="font-size:14px;color:var(--text2)">Теги</span>
         </div>
-        <input id="detail-direction" class="detail-control" placeholder="Направление" oninput="setDetailDirectionLabel(this.value)">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;width:100%">
+          <div id="detail-tags-wrap" class="tags-wrap"></div>
+          <button id="detail-tag-toggle-btn" class="tag-add" onclick="toggleTagInput()">+ Тег</button>
+        </div>
       </div>
+      <div id="detail-tag-input-wrap" class="tag-input-wrap" style="display:none;padding:0 16px 12px;border-bottom:1px solid var(--border)">
+        <input id="detail-tag-input" class="tag-input" placeholder="Название тега" list="detail-tag-options" onkeydown="if(event.key==='Enter'){event.preventDefault();addTagFromInput();}">
+        <datalist id="detail-tag-options"></datalist>
+        <button id="detail-tag-add-btn" class="detail-quick-btn" onclick="addTagFromInput()">Добавить</button>
+      </div>
+      <input id="detail-direction" class="detail-control detail-field-row-hidden" placeholder="Направление" oninput="setDetailDirectionLabel(this.value)">
 
       <div class="detail-field-row detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="Изменить исполнителя задачи">
         <div class="detail-field-row-title">
@@ -1815,10 +1829,10 @@
         <div class="nt-field-value"><span id="nt-deadline-label">Сегодня</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       <input type="date" id="nt-deadline" class="nt-date-input" onchange="updateNtDeadline(this.value)">
       </div>
-      <div id="nt-direction-row" class="nt-field-row" role="button" tabindex="0" aria-label="Выбрать направление">
+      <div id="nt-direction-row" class="nt-field-row" role="button" tabindex="0" aria-label="Выбрать теги">
         <div class="nt-field-caption">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-          <span>Направление</span>
+          <span>Теги</span>
         </div>
         <div class="nt-field-value"><span id="nt-direction-label">Работа</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
@@ -1861,7 +1875,7 @@
     <div class="nt-confirm-title" id="confirm-task-title">Проверить кнопку после правок</div>
     <div class="glass nt-confirm-summary">
       <div class="nt-field-row nt-field-row--static"><div class="nt-field-caption"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Срок</span></div><span class="nt-field-value" id="confirm-task-date">Сегодня</span></div>
-      <div class="nt-field-row nt-field-row--static"><div class="nt-field-caption"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span>Направление</span></div><span class="nt-field-value" id="confirm-task-dir">Работа</span></div>
+      <div class="nt-field-row nt-field-row--static"><div class="nt-field-caption"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span>Теги</span></div><span class="nt-field-value" id="confirm-task-dir">Работа</span></div>
       <div class="nt-field-row nt-field-row--static nt-field-row--final"><div class="nt-field-caption"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Человек</span></div><span class="nt-field-value" id="confirm-task-person">Юрий</span></div>
     </div>
     <div class="nt-confirm-actions">
@@ -4672,6 +4686,9 @@ function setDetailReminder(value){
   currentDetailReminder = value || 'none';
   const sel = document.getElementById('detail-reminder');
   if(sel && sel.value !== currentDetailReminder) sel.value = currentDetailReminder;
+  document.querySelectorAll('.reminder-opt[data-reminder]').forEach(function(btn){
+    btn.classList.toggle('active', btn.dataset.reminder === currentDetailReminder);
+  });
 }
 
 function renderDetailChecklist(){
@@ -4812,6 +4829,8 @@ function openTask(t,idx){
   setDetailPriority(currentDetailPriority);
   setDetailDeadline(currentDetailTime);
   setDetailReminder(currentDetailReminder);
+  renderDetailTags();
+  renderDetailTagOptions();
   renderDetailChecklist();
 
   // Описание
@@ -4892,17 +4911,52 @@ function renderDetailTags(){
   wrap.innerHTML = currentDetailTags.map(function(tag,i){
     return '<div class="tag-chip" onclick="removeTag(' + i + ')">#' + e2(tag) + ' <span class="tag-x">×</span></div>';
   }).join('');
+  wrap.style.display = currentDetailTags.length ? 'flex' : 'none';
+}
+
+function getTaskTagSuggestions(){
+  const set = new Set();
+  if(Array.isArray(allTasksCache)){
+    allTasksCache.forEach(function(task){
+      const tags = Array.isArray(task.tags) ? task.tags : [];
+      tags.forEach(function(tag){
+        const norm = (tag || '').toString().trim();
+        if(norm) set.add(norm);
+      });
+    });
+  }
+  currentDetailTags.forEach(function(tag){
+    const norm = (tag || '').toString().trim();
+    set.delete(norm);
+  });
+  return [...set];
+}
+
+function renderDetailTagOptions(){
+  const list = document.getElementById('detail-tag-options');
+  if(!list) return;
+  const suggestions = getTaskTagSuggestions();
+  list.innerHTML = suggestions.map(function(tag){
+    return '<option value="' + e2(tag) + '"></option>';
+  }).join('');
 }
 
 function removeTag(idx){
   currentDetailTags.splice(idx, 1);
   renderDetailTags();
+  saveTaskEdits();
+  renderDetailTagOptions();
 }
 
 function toggleTagInput(){
   const wrap = document.getElementById('detail-tag-input-wrap');
+  if(!wrap) return;
   wrap.style.display = wrap.style.display === 'none' ? 'flex' : 'none';
-  if(wrap.style.display === 'flex') document.getElementById('detail-tag-input').focus();
+  if(wrap.style.display === 'flex'){
+    renderDetailTagOptions();
+    const input = document.getElementById('detail-tag-input');
+    if(input) input.focus();
+  }
 }
 
 function addTagFromInput(){
@@ -4913,11 +4967,13 @@ function addTagFromInput(){
   inp.value = '';
   renderDetailTags();
   document.getElementById('detail-tag-input-wrap').style.display = 'none';
+  saveTaskEdits();
+  renderDetailTagOptions();
 }
 
 function setReminder(type, el){
-  currentDetailReminder = type;
-  document.querySelectorAll('.reminder-opt').forEach(e => e.classList.remove('active'));
+  setDetailReminder(type);
+  if(!el) return;
   el.classList.add('active');
 }
 
