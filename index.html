@@ -681,7 +681,10 @@
     </div>
 
     <div class="glass" style="border-radius:16px;padding:14px 16px;margin-bottom:20px">
-      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Чек-лист</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Чек-лист</span>
+        <button id="detail-split-btn" class="detail-quick-btn" onclick="decomposeCurrentTask()">Разбить на этапы</button>
+      </div>
       <div id="detail-checklist" class="detail-checklist"></div>
       <div class="detail-check-add">
         <input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт" onkeydown="if(event.key==='Enter')addDetailChecklistItem()">
@@ -4611,6 +4614,153 @@ async function loadTaskAdvice(){
   } catch(e){ el.textContent = 'Ошибка загрузки совета'; }
 }
 
+function sanitizeTaskForPrompt(value){
+  return String(value || '').replace(/\n/g,' ').replace(/\s+/g,' ').trim();
+}
+
+function toStepList(text){
+  return (text || '')
+    .split(/\r?\n+/)
+    .map((line) => String(line || '')
+      .replace(/^\s*[-*•]\s*/, '')
+      .replace(/^\s*\d+[.)]\s*/, '')
+      .trim())
+    .filter((line) => line.length > 2);
+}
+
+function parseTaskStepsFromAiResponse(payload){
+  if (!payload) return [];
+  if (Array.isArray(payload)) return toStepList(payload.map((item) => String(item)));
+  if (typeof payload === 'object'){
+    const raw = payload.steps || payload.checklist || payload.items;
+    if (Array.isArray(raw)) return toStepList(raw.map((item) => String(item)));
+  }
+  const rawText = parseAIText(payload);
+  if (typeof rawText !== 'string') return [];
+  const jsonMatch = rawText.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+  if (jsonMatch) {
+    try {
+      const parsed = JSON.parse(jsonMatch[0]);
+      if (Array.isArray(parsed)) return toStepList(parsed);
+      if (parsed && (Array.isArray(parsed.steps) || Array.isArray(parsed.checklist) || Array.isArray(parsed.items))) {
+        const raw = parsed.steps || parsed.checklist || parsed.items;
+        if (Array.isArray(raw)) return toStepList(raw.map((item) => String(item)));
+      }
+    } catch (e) {
+      // ignore parse errors, fallback to line list
+    }
+  }
+  return toStepList(rawText);
+}
+
+function getSmart013FallbackSteps(taskText){
+  const norm = String(taskText || '').toLowerCase();
+  if (norm.includes('отчет') || norm.includes('отчёт') || norm.includes('отчит') || norm.includes('отчетность')) {
+    return [
+      'Собери все факты и данные',
+      'Сформулируй 3–5 ключевых пунктов',
+      'Подготовь вывод: что получилось и где риски',
+      'Выставь дедлайны по каждому блоку',
+      'Проверь, кто утверждает результат',
+      'Зафиксируй следующий шаг',
+    ];
+  }
+  if (norm.includes('встреч') || norm.includes('собесед') || norm.includes('интерв') || norm.includes('событие') || norm.includes('конференц') || norm.includes('ивент')) {
+    return [
+      'Сформулируй цель встречи и ожидаемый формат',
+      'Подготовь повестку и список участников',
+      'Разошли приглашения и уточни время',
+      'Собери материалы для обсуждения',
+      'Веди заметки по итогам',
+      'Зафиксируй договоренности и ответственных',
+      'Назначь follow-up по результатам',
+    ];
+  }
+  if (norm.includes('переезд') || norm.includes('переехать') || norm.includes('переез')) {
+    return [
+      'Собери список вещей, которые нужно взять',
+      'Забронируй транспорт и билеты',
+      'Проверь документы и даты',
+      'Собери адреса и контакты',
+      'Уведоми всех вовлечённых',
+      'Контролируй загрузку и пересадку',
+      'Подведи итог после прибытия',
+    ];
+  }
+  if (norm.includes('запуск') || norm.includes('запустить') || norm.includes('релиз') || norm.includes('релиза') || norm.includes('launch')) {
+    return [
+      'Уточни критерии успеха и KPI запуска',
+      'Разбей работу на подготовку, запуск и follow-up',
+      'Проверь готовность материалов и доступов',
+      'Настрой мониторинг, каналы и алерты',
+      'Запусти сценарий по плану',
+      'Собери обратную связь и зафиксируй блокеры',
+      'Подведи итог и обнови план следующего этапа',
+    ];
+  }
+  return [
+    'Разбей задачу на 4–7 конкретных этапов',
+    'Определи ответственного за каждый этап',
+    'Назначь дедлайны и критерий готовности',
+    'Выдели минимальный набор действий на сегодня',
+    'Отметь зависимости между этапами',
+    'Выполни первый этап и зафиксируй прогресс',
+    'Сверься с результатом и скорректируй план',
+  ];
+}
+
+function pickChecklistSteps(payload, taskText){
+  const parsed = parseTaskStepsFromAiResponse(payload);
+  const fallback = getSmart013FallbackSteps(taskText);
+  const result = parsed.length ? parsed : fallback;
+  return result
+    .slice(0, 8)
+    .map((text) => ({ text: String(text || '').trim(), done: false }))
+    .filter((item) => item.text.length > 2);
+}
+
+async function decomposeCurrentTask(){
+  if(!currentDetailTask){
+    return;
+  }
+  if(!getToken()){
+    showToast('Для декомпозиции задачи нужен вход');
+    return;
+  }
+  const btn = document.getElementById('detail-split-btn');
+  const original = btn ? btn.textContent : 'Разбить на этапы';
+  if (btn){
+    btn.disabled = true;
+    btn.textContent = 'Делаю...';
+  }
+  try {
+    const prompt = [
+      'Ты — эксперт по управлению задачами.',
+      'Нужно разложить задачу в 4–8 коротких конкретных шагов.',
+      'Верни строго JSON-формат без пояснений: {"steps":["...", "..."]}.',
+      'Текст задачи: ' + sanitizeTaskForPrompt(currentDetailTask.text || ''),
+    ].join('\n');
+    const aiResp = await aiCall({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:500,
+      messages:[{role:'user',content:prompt}]
+    });
+    currentDetailChecklist = pickChecklistSteps(aiResp, currentDetailTask.text || '');
+    renderDetailChecklist();
+    await saveTaskEdits();
+    showToast('Этапы обновлены');
+  } catch (e) {
+    currentDetailChecklist = pickChecklistSteps([], currentDetailTask.text || '').map((item) => ({text:item.text, done:false}));
+    renderDetailChecklist();
+    await saveTaskEdits();
+    showToast('Пока добавил шаблонные этапы');
+  } finally {
+    if (btn){
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  }
+}
 function openTaskByEl(el){
   const taskId = el.dataset.tid;
   const idx = parseInt(el.dataset.tidx)||0;
@@ -5063,7 +5213,7 @@ function openWrite(name,avatar,title,context){currentCtx={name,avatar,title,cont
 function setTone(tone,el){if(isGenerating)return;currentTone=tone;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');regenMsg();}
 function regenMsg(){document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';generateMessage();}
 async function aiCall(body){
-  const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify(body)});
+  const r=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify(body)});
   const text=await r.text();
   console.log('[4 Worker response]',r.status,text.slice(0,500));
   try{return JSON.parse(text);}catch(e){return {_raw:text};}
@@ -7018,3 +7168,4 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
 
 </body>
 </html>
+
