@@ -89,7 +89,7 @@ function sanitizeTask(taskText) {
         text: taskText,
         person: 'Smoke Person',
         direction: 'outgoing',
-        directionLabel: 'Работа',
+        directionLabel: 'Р Р°Р±РѕС‚Р°',
         deadline: null,
       },
     }),
