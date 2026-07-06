@@ -36,6 +36,7 @@
 | BACK-046 | Ограничить нижнюю панель шириной экрана приложения | Bug/UI | P2 | Codex | Done | Г1 | Ветка `fix/bottom-nav-app-width`: `bottom-nav-v2` и `global-nav` на desktop/web теперь ограничены шириной app-контейнера; проверка: desktop 1440/1024 и mobile 390, без регрессии safe-area и скрытия nav при клавиатуре |
 | BACK-043 | Выровнять мобильную верстку экрана профиля | Bug/UI | P2 | Codex | Done | Г1 | Ветка `fix/profile-responsive-ui`: mobile profile выровнен — phone/email/telegram не конфликтуют со статусными badge, карточки "Дата рождения" и "О себе" получили ровный ритм, счётчик textarea и кнопка сохранения не спорят с нижней навигацией |
 | BACK-044 | Упростить детальную карточку задачи | Product/UI | P2 | Codex | Done | Г1 | Ветка `fix/task-detail-card-cleanup`: описание поднято под заголовок, вкладка "Описание" убрана, порядок полей приведён к `Срок → быстрые кнопки → Статус → Приоритет → Напоминание`, строки "Направление" и "Человек" скрыты без удаления из data model, mobile rows складываются вертикально без регрессии `saveTaskEdits()` |
+| BACK-049 | UI-архитектурный guard: LESS + BEM без роста inline-долга | Tech/Process | P1 | Codex | Done | Г1 | Правило закреплено в AGENTS/CLAUDE/COWORK и `docs/ui-architecture-rules.md`; добавлен `scripts/check-ui-architecture.sh`, npm script, pre-commit и GitHub Actions guard; старый inline-долг не блокирует работу, но новые `style=""`, inline handlers и inline script/style blocks не должны увеличивать baseline |
 
 ## Next
 
@@ -67,7 +68,7 @@
 | BACK-009 | VK Pay — оплата подписки | Monetization | P1 | Codex | Ready for QA | Г2 | `index.html` и `vk.html` запускают `VKWebAppShowOrderBox` в VK Mini App; нужен live smoke внутри VK |
 | BACK-010 | Telegram Stars / ЮKassa | Monetization | P1 | Codex | Ready for QA | Г2 | App открывает Telegram Stars invoice через `Telegram.WebApp.openInvoice`; worker commit `d57771c` создаёт invoice и bot подтверждает `successful_payment`; нужен live smoke в TG |
 | BACK-011 | Командный Workspace | Product | P2 | Codex | Todo | Г3 | Несколько пользователей в одном workspace |
-| BACK-012 | CSS-архитектура LESS + BEM + минификация | Tech | P2 | Codex | Done | Г1 | Стили вынесены в LESS-модули, `styles.min.css` собирается и подключён в `index.html` |
+| BACK-012 | CSS-архитектура LESS + BEM + минификация | Tech | P2 | Codex | Partial Done | Г1 | LESS/minification работают: `styles.min.css` собирается и подключён в `index.html`; BEM и legacy inline cleanup не закрыты полностью и контролируются через BACK-049 + поэкранные правки |
 | BACK-015 | Ценовая модель | Strategy/Monetization | P2 | Алексей + Юрий | Later | Г2 | Тарифы согласованы отдельным решением и только после этого внесены в roadmap |
 | BACK-016 | Расширенный профиль пользователя | Product/UI | P2 | Codex | Ready for QA | Г2 | В `index.html` добавлены фото-плейсхолдер, имя, ID, телефон/email со статусами, Telegram, о себе и дата рождения |
 | BACK-017 | Оживить настройки уведомлений | Product/Tech | P2 | Codex | QA partial | Г2 | Live API smoke passed: `/notifications/settings` GET/PUT сохраняет настройки в D1; D1 migrations актуальны; `/briefings/check` живой; реальная доставка Telegram-ботом ждёт ручного smoke на привязанном аккаунте |

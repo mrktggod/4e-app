@@ -20,17 +20,19 @@
 | `privacy.html` | 240 | Политика конфиденциальности | Можно читать целиком при правовых правках |
 | `worker-static.js` | 187 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets и маршрутизирует VK launch на `vk.html` без внешнего редиректа | Можно читать целиком; точка входа инфраструктуры INFRA-001 |
 | `wrangler.toml` | 15 | Конфиг фронтового Worker и Static Assets для `app.4-ai.site/*` | Можно читать целиком при infra/deploy правках |
-| `AGENTS.md` | 224 | Правила для Codex и агентов | Читать перед задачей |
-| `CLAUDE.md` | 120 | Контекст проекта для Claude/Cowork | Читать при координации |
-| `COWORK_INSTRUCTIONS.md` | 141 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 1105 | Канонический технический лог | Обновлять после значимых правок |
-| `shared/ROADMAP.md` | 154 | Единственный roadmap продукта: стратегия, горизонты, решения, Now / Next / Later | Читать при планировании |
-| `shared/WORK_LOG.md` | 606 | Общий журнал задач команды | Обновлять после выполненной задачи |
+| `AGENTS.md` | 237 | Правила для Codex и агентов | Читать перед задачей |
+| `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
+| `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
+| `DEVELOPMENT_LOG.md` | 1192 | Канонический технический лог | Обновлять после значимых правок |
+| `shared/ROADMAP.md` | 159 | Единственный roadmap продукта: стратегия, горизонты, решения, Now / Next / Later | Читать при планировании |
+| `shared/WORK_LOG.md` | 670 | Общий журнал задач команды | Обновлять после выполненной задачи |
 | `shared/COMMIT_CONVENTION.md` | 64 | Правила понятных заголовков коммитов | Читать перед коммитом |
 | `docs/git-team-rules.md` | 104 | Git-процесс команды: ветки, commit, push/merge, согласование рисков | Читать при push/merge/ветках |
+| `docs/ui-architecture-rules.md` | 44 | UI-правило: HTML=структура, LESS=стили, JS=поведение, BEM и legacy policy | Читать перед UI-правками |
 | `scripts/check-portable-paths.sh` | 21 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
-| `.githooks/pre-commit` | 4 | Локальный hook для запуска path guard перед commit | Активировать через `git config core.hooksPath .githooks` |
-| `.github/workflows/path-guard.yml` | 13 | GitHub Actions guard для переносимых путей | Срабатывает на push и PR |
+| `scripts/check-ui-architecture.sh` | 78 | Guard против роста inline UI-долга в `index.html` | Запускать перед UI-коммитом |
+| `.githooks/pre-commit` | 5 | Локальный hook для запуска path guard и UI architecture guard перед commit | Активировать через `git config core.hooksPath .githooks` |
+| `.github/workflows/path-guard.yml` | 15 | GitHub Actions quality guard: переносимые пути + UI architecture debt | Срабатывает на push и PR |
 
 ## PM / QA
 
@@ -60,6 +62,7 @@
 | Git-статус | `git status --short` |
 | Текущая ветка | `git branch --show-current` |
 | Remote | `git remote -v` |
+| UI-архитектура | `bash scripts/check-ui-architecture.sh` |
 | Локальная раздача | `python3 -m http.server 8000` |
 | Smoke URL | `http://127.0.0.1:8000/index.html`, `/vk.html`, `/privacy.html` |
 

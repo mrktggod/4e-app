@@ -24,7 +24,7 @@ Worker: https://restless-lab-d737.shelckograff.workers.dev
 
 ```
 4e-app/
-  index.html          ← Telegram Mini App (5000+ строк, CSS+HTML+JS в одном файле)
+  index.html          ← Telegram Mini App (крупный legacy-монолит; новый UI-код не должен увеличивать inline-долг)
   vk.html             ← VK Mini App (отдельный, без Telegram SDK)
   privacy.html        ← Политика конфиденциальности (152-ФЗ)
   CLAUDE.md           ← Этот файл
@@ -80,11 +80,21 @@ Worker: https://restless-lab-d737.shelckograff.workers.dev
 ### 5. Одна фаза за сессию
 Codex берёт одну задачу, делает, коммитит, стоп. Не начинает следующую без нового промпта.
 
+### 6. UI-архитектура
+- Новый UI-код: HTML = структура, LESS = стили, JS = поведение.
+- Новые стили писать в `styles/**/*.less`, затем запускать `npm run build:css`.
+- Новые классы называть по BEM-подходу: `block`, `block__element`, `block--modifier`.
+- Не добавлять новые `style=""`, `onclick=""`, `oninput=""`, `onchange=""` и похожие inline-обработчики в HTML.
+- Для поведения использовать `addEventListener()` или делегирование событий.
+- Старый inline-код считать legacy-долгом: не переписывать всё одним проходом, но не увеличивать и постепенно выносить при правке конкретных экранов.
+- Проверка: `bash scripts/check-ui-architecture.sh`.
+- Подробности: `docs/ui-architecture-rules.md`.
+
 ## Навигация по index.html (5000+ строк)
 
 1. Сначала читай `FILE_MAP.md`, затем `FILE_MAP_UI.md` — там диапазоны строк по секциям.
 2. Читай только нужную секцию через диапазоны строк.
-3. Текущая структура `index.html`: CSS 12–969 | HTML 971–2844 | JS 2845–5776.
+3. Не ориентируйся на старую привычку писать CSS/JS прямо в `index.html`; новые стили идут в LESS, новые обработчики — в JS.
 
 ## Текущие приоритеты (июнь 2026)
 

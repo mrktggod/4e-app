@@ -142,6 +142,19 @@ GitHub Desktop — удобный вариант для Алексея и сла
 - `;` вместо `&&`
 - Скачивать файлы: `$bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()`
 
+### UI-архитектура — новое правило с 2026-07-06
+
+Для нового UI-кода действует правило: HTML = структура, LESS = стили, JS = поведение.
+
+- Новые визуальные стили писать в `styles/**/*.less`, затем запускать `npm run build:css`.
+- Новые CSS-классы называть в BEM-подходе: `block`, `block__element`, `block--modifier`.
+- Не добавлять новые `style=""` в `index.html`/`vk.html`, кроме явно обоснованных динамических CSS-переменных.
+- Не добавлять новые `onclick`/`oninput`/`onchange` и другие inline-обработчики; использовать `addEventListener()` или делегирование событий.
+- Не добавлять новые inline `<style>` и inline `<script>` блоки в `index.html`.
+- Старый inline-код не переписывать массово без отдельной задачи; при правке экрана переносить близкий старый долг по мере возможности.
+- Перед коммитом запускать `bash scripts/check-ui-architecture.sh`; pre-commit и GitHub Actions не должны пропускать рост inline-долга.
+- Подробности: `docs/ui-architecture-rules.md`.
+
 ---
 
 ## Архитектура

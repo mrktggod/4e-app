@@ -10,7 +10,7 @@
 
 **Задача:** поставить Юре задачу на dev/test аккаунты с полными правами
 **Результат:** Добавлена `BACK-048` в `pm/backlog.md`, создан task-файл `docs/tasks/BACK-048-dev-test-accounts.md`, в `pm/qa-checklist.md` добавлена проверка dev/test аккаунтов. Зафиксированы границы безопасности: сначала staging, production только после подтверждения Алексея; full-access через защищённый backend/admin-механизм; пароли, токены и `ADMIN_SECRET` не хранить в git.
-**Коммит:** N/A
+**Коммит:** `docs(ui): add architecture guard for inline debt`
 **Статус:** ✅ задача оформлена
 **Следующий шаг:** Юрий делает реализацию в worker-ветке `feat/dev-test-accounts` и передаёт Алексею логины/пароли вне репозитория.
 
@@ -658,5 +658,13 @@
 **Следующий шаг:** Проверить https://mrktggod.github.io/4e-app в десктопном браузере
 
 ---
+
+### 2026-07-06 — Codex
+
+**Задача:** BACK-049 — закрепить UI-архитектурное правило LESS + BEM и запретить рост inline-долга
+**Результат:** Добавлены `docs/ui-architecture-rules.md` и `scripts/check-ui-architecture.sh`; правило внесено в AGENTS/CLAUDE/COWORK, `pm/backlog.md` и `shared/ROADMAP.md`; pre-commit и GitHub Actions теперь проверяют, что `index.html` не наращивает inline `style`, inline handlers и inline script/style blocks.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** При следующих UI-задачах переносить затронутые стили в LESS и обработчики в JS, не делая массовый рефакторинг всего `index.html`.
 
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->

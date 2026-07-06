@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-06 — BACK-049: UI architecture guard
+
+### Правило LESS + BEM без роста inline-долга
+
+**Что сделано:** По решению Алексея закреплено правило для нового UI-кода: HTML = структура, LESS = стили, JS = поведение; новые классы — в BEM-подходе; новые inline `style=""`, `onclick`/`oninput`/`onchange`, inline `<style>` и inline `<script>` в `index.html` не добавлять. Добавлен `docs/ui-architecture-rules.md`, обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `shared/ROADMAP.md` и `pm/backlog.md`. Добавлен guard `scripts/check-ui-architecture.sh`, npm script `check:ui-architecture`, pre-commit и GitHub Actions проверка. `BACK-012` переведён в `Partial Done`: LESS/minification есть, BEM/legacy cleanup продолжаются через BACK-049 и поэкранные правки.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `bash scripts/check-ui-architecture.sh`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Коммит:** `docs(ui): add architecture guard for inline debt`
+
 ## 2026-07-05 — BACK-048: dev/test accounts task
 
 ### Постановка задачи на тестовые аккаунты разработчиков

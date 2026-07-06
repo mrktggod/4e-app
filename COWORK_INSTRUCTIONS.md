@@ -107,6 +107,14 @@ git log --oneline -10
 - Писать: `[System.IO.File]::WriteAllText($f, $content, (New-Object System.Text.UTF8Encoding $false))`
 - После правки проверять: `Select-String -Path $file -Pattern 'Войти|Задачи'`
 
+### UI-архитектура
+- Новый UI-код не должен увеличивать inline-долг в `index.html`/`vk.html`.
+- Новые стили писать в `styles/**/*.less`; новые классы — в BEM-подходе.
+- Не добавлять новые `style=""` и inline-обработчики `onclick`/`oninput`/`onchange`.
+- Если видишь новый inline UI-код в diff, фиксируй как процессную ошибку и проси переделать через LESS + JS.
+- Проверка для Codex/Юры: `bash scripts/check-ui-architecture.sh`.
+- Подробности: `docs/ui-architecture-rules.md`.
+
 ### Скачивание файлов с GitHub
 ```powershell
 $bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()

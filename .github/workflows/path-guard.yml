@@ -1,13 +1,15 @@
-name: Path guard
+name: Quality guard
 
 on:
   pull_request:
   push:
 
 jobs:
-  portable-paths:
+  guards:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Check portable paths
         run: bash scripts/check-portable-paths.sh
+      - name: Check UI architecture debt
+        run: bash scripts/check-ui-architecture.sh
