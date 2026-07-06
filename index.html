@@ -4971,6 +4971,7 @@ function openTaskById(taskId,idx){const t=allTasksCache.find(x=>x.id===taskId)||
 let currentDetailTask = null;
 let currentTaskId = null;
 let currentTaskMessages = [];
+const dismissedTaskActionMessageIds = new Set();
 let currentDetailTags = [];
 let currentDetailReminder = 'none';
 let currentDetailStatus = 'active';
@@ -5164,8 +5165,142 @@ function renderTaskChatMessages(){
     const body=role==='assistant'
       ? '<div class="md-body">'+parseMarkdown(String(message.content||''))+'</div>'
       : String(e2(message.content||'')).replace(/\n/g,'<br>');
-    return '<div class="'+bubbleClass+'">'+body+'</div><div class="task-history-row">'+e2(author)+' · '+e2(formatHistoryDate(message.ts)||'сейчас')+'</div>';
+    const actions=Array.isArray(message.actions)?message.actions:[];
+    const alreadyApplied=actions.length?taskChatActionsAlreadyApplied(actions):false;
+    const preview=role==='assistant'&&!dismissedTaskActionMessageIds.has(message.id)&&actions.length
+      ? '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Предлагаемые действия</div><div style="display:flex;flex-direction:column;gap:6px">'+actions.map(function(action){return '<div class="task-history-row">'+e2(describeTaskChatAction(action))+'</div>';}).join('')+'</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button onclick="confirmTaskChatActions(\''+esc(message.id)+'\')" style="background:var(--green);border:none;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--bg)">'+(alreadyApplied?'Уже выполнено':'Подтвердить')+'</button><button onclick="dismissTaskChatActions(\''+esc(message.id)+'\')" style="background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--text2)">Не сейчас</button></div></div>'
+      : '';
+    return '<div class="'+bubbleClass+'">'+body+preview+'</div><div class="task-history-row">'+e2(author)+' · '+e2(formatHistoryDate(message.ts)||'сейчас')+'</div>';
   }).join('');
+}
+
+function normalizeTaskChatActions(actions){
+  if(!Array.isArray(actions)) return [];
+  return actions.map(function(item){
+    if(!item||typeof item!=='object') return null;
+    const type=String(item.type||'').trim().toLowerCase();
+    if(type==='complete') return {type:'complete'};
+    if(type==='reschedule'){
+      const deadline=String(item.deadline||'').trim();
+      return deadline?{type:'reschedule',deadline}:null;
+    }
+    if(type==='edit'){
+      const field=String(item.field||'').trim().toLowerCase();
+      const value=String(item.value||'').trim();
+      return field&&value?{type:'edit',field,value}:null;
+    }
+    if(type==='remind'){
+      const reminderType=String(item.reminderType||item.reminder||'').trim();
+      return reminderType?{type:'remind',reminderType}:null;
+    }
+    if(type==='show'){
+      const target=String(item.target||'details').trim().toLowerCase();
+      return {type:'show',target};
+    }
+    return null;
+  }).filter(Boolean).slice(0,5);
+}
+
+function describeTaskChatAction(action){
+  if(!action||!action.type) return 'Действие';
+  if(action.type==='complete') return 'Закрыть задачу';
+  if(action.type==='reschedule') return 'Перенести срок на '+formatDetailDeadline(action.deadline||action.date||'');
+  if(action.type==='edit'){
+    const labels={text:'обновить название',person:'сменить исполнителя',priority:'сменить приоритет',originalMsg:'обновить описание',status:'сменить статус'};
+    return (labels[action.field]||('изменить '+action.field))+': '+String(action.value||'');
+  }
+  if(action.type==='remind') return 'Поставить напоминание: '+String(action.reminderType||'');
+  if(action.type==='show') return action.target==='history'?'Открыть историю задачи':'Показать детали задачи';
+  return action.type;
+}
+
+function taskChatActionsAlreadyApplied(actions){
+  return normalizeTaskChatActions(actions).every(function(action){
+    if(action.type==='complete') return !!currentDetailTask?.done||currentDetailTask?.status==='done';
+    if(action.type==='reschedule') return String(currentDetailTask?.deadline||currentDetailTask?.time||'')===String(action.deadline||'');
+    if(action.type==='edit'){
+      if(action.field==='text') return String(currentDetailTask?.text||'')===String(action.value||'');
+      if(action.field==='person') return String(currentDetailTask?.person||'')===String(action.value||'');
+      if(action.field==='priority') return String(currentDetailTask?.priority||'normal')===String(action.value||'');
+      if(action.field==='originalMsg') return String(currentDetailTask?.originalMsg||'')===String(action.value||'');
+      if(action.field==='status') return String(currentDetailTask?.status||'')===String(action.value||'');
+      return false;
+    }
+    if(action.type==='remind') return String(currentDetailTask?.reminder||'none')===String(action.reminderType||'');
+    if(action.type==='show') return false;
+    return false;
+  });
+}
+
+function findTaskChatMessage(messageId){
+  return currentTaskMessages.find(function(message){return String(message.id||'')===String(messageId||'');})||null;
+}
+
+function dismissTaskChatActions(messageId){
+  dismissedTaskActionMessageIds.add(String(messageId||''));
+  renderTaskChatMessages();
+}
+
+async function confirmTaskChatActions(messageId){
+  const message=findTaskChatMessage(messageId);
+  const actions=normalizeTaskChatActions(message?.actions);
+  if(!message||!actions.length) return;
+  if(taskChatActionsAlreadyApplied(actions)){
+    dismissedTaskActionMessageIds.add(String(messageId||''));
+    renderTaskChatMessages();
+    showToast('Действия уже применены');
+    return;
+  }
+  try{
+    for(const action of actions){
+      await applyTaskChatAction(action);
+    }
+    dismissedTaskActionMessageIds.add(String(messageId||''));
+    await loadTasks();
+    const updatedTask=allTasksCache.find(function(task){return String(task.id||'')===String(currentTaskId||'');});
+    if(updatedTask) openTask(updatedTask,allTasksCache.indexOf(updatedTask));
+    showToast('Действия выполнены');
+  }catch(e){
+    console.error(e);
+    showToast('Не удалось применить действия');
+  }
+}
+
+async function postTaskChatMutation(actionName, payload){
+  const r=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':actionName},body:JSON.stringify(payload)});
+  const d=await readJsonSafe(r);
+  if(!r.ok||d.ok===false) throw new Error(d.error||'Не удалось обновить задачу');
+  return d;
+}
+
+async function applyTaskChatAction(action){
+  if(!action||!currentTaskId||!getToken()) return;
+  if(action.type==='show'){
+    if(action.target==='history'){
+      switchDetailTab('history',document.getElementById('tab-history'));
+    }else{
+      switchDetailTab('comments',document.getElementById('tab-comments'));
+    }
+    return;
+  }
+  if(action.type==='complete'){
+    await postTaskChatMutation('done-task',{chatId,taskId:currentTaskId});
+    return;
+  }
+  if(action.type==='reschedule'){
+    await postTaskChatMutation('update-task',{chatId,taskId:currentTaskId,updates:{deadline:action.deadline,time:action.deadline}});
+    return;
+  }
+  if(action.type==='edit'){
+    const allowedFields=['text','person','priority','originalMsg','status'];
+    if(!allowedFields.includes(action.field)) return;
+    await postTaskChatMutation('update-task',{chatId,taskId:currentTaskId,updates:{[action.field]:action.value}});
+    return;
+  }
+  if(action.type==='remind'){
+    await postTaskChatMutation('update-task',{chatId,taskId:currentTaskId,updates:{reminder:action.reminderType}});
+    await setReminderOnWorker(currentTaskId,currentDetailTask?.text||'',currentDetailTask?.deadline||currentDetailTask?.time||'',action.reminderType);
+  }
 }
 
 async function loadTaskChat(){
@@ -5188,11 +5323,11 @@ async function loadTaskChat(){
   renderTaskChatMessages();
 }
 
-async function saveTaskChatMessage(role, content, from){
+async function saveTaskChatMessage(role, content, from, actions){
   const r=await fetch(WORKER+'/messages/task',{
     method:'POST',
     headers:authHeaders(),
-    body:JSON.stringify({taskId:currentTaskId,role,content,from})
+    body:JSON.stringify({taskId:currentTaskId,role,content,from,actions:Array.isArray(actions)?actions:[]})
   });
   const d=await readJsonSafe(r);
   if(!r.ok||d.ok===false) throw new Error(d.error||'Не удалось сохранить сообщение');
@@ -5212,8 +5347,23 @@ function buildTaskChatPrompt(userText){
     'Дедлайн: '+sanitizeTaskForPrompt(task.deadline||task.date||task.time||'—'),
     history ? 'История обсуждения:\n'+history : '',
     'Новое сообщение пользователя: '+sanitizeTaskForPrompt(userText),
-    'Ответь так, чтобы помочь сдвинуть задачу с места: 2-4 коротких абзаца или список.'
+    'Если уместно, предложи конкретные действия только из списка: complete, reschedule, edit, remind, show.',
+    'Верни JSON без markdown по схеме {"reply":"краткий ответ пользователю","actions":[{"type":"complete"},{"type":"reschedule","deadline":"2026-07-08T10:00"},{"type":"edit","field":"person","value":"Алексей"},{"type":"remind","reminderType":"1h"},{"type":"show","target":"history"}]}.',
+    'Если действий не нужно, верни пустой массив actions.'
   ].filter(Boolean).join('\n\n');
+}
+
+function parseTaskChatAiResponse(payload){
+  const raw=(parseAIText(payload)||'').trim();
+  const jsonMatch=raw.match(/\{[\s\S]*\}/);
+  if(jsonMatch){
+    try{
+      const parsed=JSON.parse(jsonMatch[0]);
+      const reply=String(parsed.reply||parsed.text||'').trim();
+      return {reply:reply||raw,actions:normalizeTaskChatActions(parsed.actions)};
+    }catch(e){}
+  }
+  return {reply:raw,actions:[]};
 }
 
 function openTask(t,idx){
@@ -5305,10 +5455,11 @@ async function addDetailComment(){
     inp.value='';
     const r=await fetch(WORKER+'/anthropic',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,system:'Ты — 4, краткий помощник по задачам. Отвечай по-русски, конкретно и без воды.',messages:[{role:'user',content:buildTaskChatPrompt(text)}]})});
     const d=await readJsonSafe(r);
-    const reply=(parseAIText(d)||'').trim();
+    const parsed=parseTaskChatAiResponse(d);
+    const reply=parsed.reply;
     if(reply){
-      await saveTaskChatMessage('assistant',reply,'4');
-      currentTaskMessages.push({role:'assistant',content:reply,from:'4',ts:Date.now()});
+      await saveTaskChatMessage('assistant',reply,'4',parsed.actions);
+      currentTaskMessages.push({role:'assistant',content:reply,from:'4',ts:Date.now(),actions:parsed.actions});
       renderTaskChatMessages();
     }
   }catch(e){
@@ -5531,6 +5682,7 @@ const ASK_HISTORY_MAX = 40;
 let askHistory = []; // { role: 'user'|'assistant', content: string }
 let askHistoryLoaded = false;
 let askHistoryLoading = false;
+const dismissedAskActionMessageIds = new Set();
 
 function askHistoryKey(){
   return 'askHistory:' + (currentUser?.id || chatId || 'guest');
@@ -5575,7 +5727,7 @@ async function loadAskHistoryRemote(){
       if(Array.isArray(d.messages)){
         askHistory = d.messages
           .filter(m => (m.role === 'user' || m.role === 'assistant') && m.content)
-          .map(m => ({ role:m.role, content:m.content }));
+          .map(m => ({ id:m.id||'', role:m.role, content:m.content, actions:Array.isArray(m.actions)?m.actions:[] }));
         trimAskHistory();
         saveAskHistoryLocal();
       }
@@ -5589,7 +5741,7 @@ function renderAskHistory(){
   const msgs = document.getElementById('ask-msgs');
   if(!msgs) return;
   msgs.querySelectorAll('.bubble-user,.bubble-ai').forEach(el => el.remove());
-  for(const m of askHistory){ appendMsg(m.content, m.role === 'assistant' ? 'ai' : 'user'); }
+  for(const m of askHistory){ appendMsg(m.content, m.role === 'assistant' ? 'ai' : 'user', {actions:m.actions||[], messageId:m.id||''}); }
   const welcome = document.getElementById('ask-welcome');
   if(welcome) welcome.style.display = askHistory.length ? 'none' : 'flex';
 }
@@ -5735,11 +5887,162 @@ async function createTaskFromChat(taskData) {
   }
 }
 
-function appendMsg(text,role){const msgs=document.getElementById('ask-msgs');const d=document.createElement('div');d.className=role==='user'?'bubble-user':'bubble-ai';if(role==='ai'&&text){d.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';}else{d.textContent=text;}msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
+function getTaskById(taskId){
+  return (allTasksCache||[]).find(function(task){return String(task.id||'')===String(taskId||'');})||null;
+}
+
+function normalizeAskActions(actions){
+  if(!Array.isArray(actions)) return [];
+  return actions.map(function(item){
+    if(!item||typeof item!=='object') return null;
+    const type=String(item.type||'').trim().toLowerCase();
+    const taskId=String(item.taskId||'').trim();
+    if(type==='show') return taskId?{type:'show',taskId}:null;
+    if(!taskId) return null;
+    if(type==='complete') return {type:'complete',taskId};
+    if(type==='reschedule'){
+      const deadline=String(item.deadline||'').trim();
+      return deadline?{type:'reschedule',taskId,deadline}:null;
+    }
+    if(type==='edit'){
+      const field=String(item.field||'').trim().toLowerCase();
+      const value=String(item.value||'').trim();
+      return field&&value?{type:'edit',taskId,field,value}:null;
+    }
+    if(type==='remind'){
+      const reminderType=String(item.reminderType||item.reminder||'').trim();
+      return reminderType?{type:'remind',taskId,reminderType}:null;
+    }
+    return null;
+  }).filter(Boolean).slice(0,5);
+}
+
+function describeAskAction(action){
+  const task=getTaskById(action?.taskId);
+  const title=task?.text||('задача '+String(action?.taskId||''));
+  if(action.type==='complete') return 'Закрыть: '+title;
+  if(action.type==='reschedule') return 'Перенести «'+title+'» на '+formatDetailDeadline(action.deadline||'');
+  if(action.type==='edit'){
+    const labels={text:'обновить название',person:'сменить исполнителя',priority:'сменить приоритет',originalMsg:'обновить описание',status:'сменить статус'};
+    return (labels[action.field]||('изменить '+action.field))+' для «'+title+'»: '+String(action.value||'');
+  }
+  if(action.type==='remind') return 'Поставить напоминание по «'+title+'»: '+String(action.reminderType||'');
+  if(action.type==='show') return 'Открыть задачу: '+title;
+  return 'Действие';
+}
+
+function askActionsAlreadyApplied(actions){
+  return normalizeAskActions(actions).every(function(action){
+    const task=getTaskById(action.taskId);
+    if(!task) return false;
+    if(action.type==='complete') return !!task.done||task.status==='done';
+    if(action.type==='reschedule') return String(task.deadline||task.time||'')===String(action.deadline||'');
+    if(action.type==='edit'){
+      return String(task[action.field]||'')===String(action.value||'');
+    }
+    if(action.type==='remind') return String(task.reminder||'none')===String(action.reminderType||'');
+    return false;
+  });
+}
+
+function renderAskActionPreview(messageId,actions){
+  const normalized=normalizeAskActions(actions);
+  if(!messageId||dismissedAskActionMessageIds.has(String(messageId))||!normalized.length) return '';
+  const alreadyApplied=askActionsAlreadyApplied(normalized);
+  return '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Предлагаемые действия</div><div style="display:flex;flex-direction:column;gap:6px">'+normalized.map(function(action){return '<div class="task-history-row">'+e2(describeAskAction(action))+'</div>';}).join('')+'</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button onclick="confirmAskActions(\''+esc(messageId)+'\')" style="background:var(--green);border:none;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--bg)">'+(alreadyApplied?'Уже выполнено':'Подтвердить')+'</button><button onclick="dismissAskActions(\''+esc(messageId)+'\')" style="background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--text2)">Не сейчас</button></div></div>';
+}
+
+function appendMsg(text,role,options){
+  const opts=options||{};
+  const msgs=document.getElementById('ask-msgs');
+  const d=document.createElement('div');
+  d.className=role==='user'?'bubble-user':'bubble-ai';
+  if(role==='ai'&&text){
+    d.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskActionPreview(opts.messageId||'',opts.actions||[]);
+  }else{
+    d.textContent=text;
+  }
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+  return d;
+}
 function askQuick(text){
   document.getElementById('ask-field').value=text;
   sendAsk();
 }
+
+function findAskMessage(messageId){
+  return askHistory.find(function(message){return String(message.id||'')===String(messageId||'');})||null;
+}
+
+function dismissAskActions(messageId){
+  dismissedAskActionMessageIds.add(String(messageId||''));
+  renderAskHistory();
+}
+
+async function applyAskAction(action){
+  const taskId=String(action?.taskId||'').trim();
+  if(action.type==='show'){
+    const task=getTaskById(taskId);
+    if(task) openTask(task,(allTasksCache||[]).indexOf(task));
+    return;
+  }
+  if(!taskId) return;
+  if(action.type==='complete'){
+    await postTaskChatMutation('done-task',{chatId,taskId});
+    return;
+  }
+  if(action.type==='reschedule'){
+    await postTaskChatMutation('update-task',{chatId,taskId,updates:{deadline:action.deadline,time:action.deadline}});
+    return;
+  }
+  if(action.type==='edit'){
+    const allowedFields=['text','person','priority','originalMsg','status'];
+    if(!allowedFields.includes(action.field)) return;
+    await postTaskChatMutation('update-task',{chatId,taskId,updates:{[action.field]:action.value}});
+    return;
+  }
+  if(action.type==='remind'){
+    const task=getTaskById(taskId);
+    await postTaskChatMutation('update-task',{chatId,taskId,updates:{reminder:action.reminderType}});
+    await setReminderOnWorker(taskId,task?.text||'',task?.deadline||task?.time||'',action.reminderType);
+  }
+}
+
+async function confirmAskActions(messageId){
+  const message=findAskMessage(messageId);
+  const actions=normalizeAskActions(message?.actions);
+  if(!message||!actions.length) return;
+  if(askActionsAlreadyApplied(actions)){
+    dismissedAskActionMessageIds.add(String(messageId||''));
+    renderAskHistory();
+    showToast('Действия уже применены');
+    return;
+  }
+  try{
+    for(const action of actions){
+      await applyAskAction(action);
+    }
+    dismissedAskActionMessageIds.add(String(messageId||''));
+    await loadTasks();
+    renderAskHistory();
+    showToast('Действия выполнены');
+  }catch(e){
+    console.error(e);
+    showToast('Не удалось применить действия');
+  }
+}
+
+function parseAskActionsFromText(text){
+  const match=String(text||'').match(/<task_actions>([\s\S]*?)<\/task_actions>/);
+  if(!match) return {cleanText:String(text||''),actions:[]};
+  let actions=[];
+  try{
+    actions=normalizeAskActions(JSON.parse(match[1]));
+  }catch(e){}
+  return {cleanText:String(text||'').replace(/<task_actions>[\s\S]*?<\/task_actions>/g,'').trim(),actions};
+}
+
 async function sendAsk(){
   if(!checkTrial()) return;
   const f=document.getElementById('ask-field');
@@ -5750,7 +6053,7 @@ async function sendAsk(){
   const welcome=document.getElementById('ask-welcome');
   if(welcome) welcome.style.display='none';
   appendMsg(v,'user');
-  askHistory.push({role:'user', content:v});
+  askHistory.push({id:crypto?.randomUUID?.()||('ask_'+Date.now()),role:'user', content:v});
   saveAskHistoryLocal();
   saveAskMessageRemote('user', v);
 
@@ -5765,7 +6068,7 @@ async function sendAsk(){
         const dl = t.deadline ? new Date(t.deadline).getTime() : null;
         const hoursLeft = dl ? Math.round((dl - now) / 36e5) : null;
         const status = dl && dl < now ? 'просрочено' : (hoursLeft !== null && hoursLeft <= 24 ? 'burning' : null);
-        let info = (t.person || 'Я') + ' — ' + t.text;
+        let info = '[' + String(t.id || '') + '] ' + (t.person || 'Я') + ' — ' + t.text;
         if(t.deadline) info += ' (дедлайн: ' + t.deadline + ')';
         else info += ' (без дедлайна)';
         if(status) info += ' [status: ' + status + ']';
@@ -5781,6 +6084,7 @@ async function sendAsk(){
     const systemParts = [SYS_BASE, '', 'Сегодня: ' + today, profileSummary];
     if(factsSummary) systemParts.push(factsSummary);
     systemParts.push(taskSummary);
+    systemParts.push('Если пользователь просит изменить или открыть существующие задачи, добавь в конец ответа тег <task_actions>[...]</task_actions> без markdown. Формат action: {"type":"complete|reschedule|edit|remind|show","taskId":"id задачи","deadline":"2026-07-08T10:00","field":"text|person|priority|originalMsg|status","value":"...","reminderType":"15m|1h|1d"}. Если действий нет, тег не добавляй.');
     const r=await fetch(WORKER + '/anthropic',{
       method:'POST',
       headers:authHeaders(),
@@ -5814,13 +6118,16 @@ async function sendAsk(){
       if(ok) createdTaskText = taskData.text;
     }
 
+    const parsedActions=parseAskActionsFromText(text);
+    text=parsedActions.cleanText;
     if(createdTaskText && !/задач[ауы]?\s+(создан|добавлен|поставлен|сохран)/i.test(text)) {
       text = ('✅ Задача «' + createdTaskText + '» добавлена.' + (text ? '\n\n' + text : '')).trim();
     }
     if(!text) text = createdTaskText ? '✅ Задача «' + createdTaskText + '» добавлена.' : 'Готово.';
 
-    lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>';
-    askHistory.push({role:'assistant', content:text});
+    const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_ai');
+    lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskActionPreview(assistantMessageId,parsedActions.actions);
+    askHistory.push({id:assistantMessageId,role:'assistant', content:text, actions:parsedActions.actions});
     saveAskHistoryLocal();
     await saveAskMessageRemote('assistant', text);
     ensureAskFactsLoaded(true).catch(e=>console.warn('refresh ask facts:', e));
