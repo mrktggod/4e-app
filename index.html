@@ -3734,10 +3734,10 @@ function renderTasksForMonth(){
         return '<div class="promise-row-v2">' +
           '<div class="promise-avatar">'+(t.person||'?')[0].toUpperCase()+'</div>' +
           '<div style="flex:1">' +
-            '<div class="promise-name-v2" style="cursor:pointer" data-tid="' + t.id + '" data-tidx="' + i + '" onclick="openTaskByEl(this)">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
+            '<div class="promise-name-v2" style="cursor:pointer" data-tid="' + e2(t.id) + '" data-tidx="' + i + '" onclick="openTaskByEl(this)">' + e2(t.person) + ' — ' + e2(t.text) + '</div>' +
             '<div class="'+(isLate?'promise-age-red':'task-date-v2')+'">'+age.text+'</div>' +
           '</div>' +
-          '<button class="promise-remind-btn glass" data-person="'+e2(t.person)+'" data-text="'+e2(t.text)+'" onclick="promiseRemindClick(this)">напомнить</button>' +
+          '<button class="promise-remind-btn glass" data-person="'+e2(t.person)+'" data-text="'+e2(t.text)+'" data-assignee-tgid="'+e2(t.assigneeTgId||'')+'" onclick="promiseRemindClick(this)">Напомнить N</button>' +
         '</div>';
       }).join('');
     }
@@ -3745,9 +3745,29 @@ function renderTasksForMonth(){
 }
 
 function promiseRemindClick(btn){
-  var person = btn.dataset.person;
-  var text = btn.dataset.text;
-  openWrite(person, (person||'?')[0], 'Напоминание', person + ' обещал: ' + text);
+  const person = btn.dataset.person || '';
+  const text = btn.dataset.text || '';
+  const tgId = String(btn.dataset.assigneeTgid || '').trim();
+  if(!tgId){
+    showToast('Не могу отправить: нет TG ID исполнителя');
+    return;
+  }
+  const reminderText = '🔔 Привет, ' + person + '! Напоминаю про обещание: «' + text + '». Будет очень здорово, если сможешь закрыть его в ближайшее время 🙏';
+  fetch(WORKER + '/messages/send', {
+    method:'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ chatId: tgId, text: reminderText })
+  }).then(r=>r.json()).then(d=>{
+  if(d && d.ok){
+      showToast('Напоминание отправлено');
+      btn.disabled = true;
+      btn.textContent = 'Отправлено';
+    } else {
+      showToast(d?.error || 'Ошибка отправки');
+    }
+  }).catch(() => {
+    showToast('Не удалось отправить напоминание');
+  });
 }
 
 function selectMonth(idx, el){
