@@ -5683,6 +5683,7 @@ let askHistory = []; // { role: 'user'|'assistant', content: string }
 let askHistoryLoaded = false;
 let askHistoryLoading = false;
 const dismissedAskActionMessageIds = new Set();
+let pendingAskClarification = null;
 
 function askHistoryKey(){
   return 'askHistory:' + (currentUser?.id || chatId || 'guest');
@@ -5741,7 +5742,11 @@ function renderAskHistory(){
   const msgs = document.getElementById('ask-msgs');
   if(!msgs) return;
   msgs.querySelectorAll('.bubble-user,.bubble-ai').forEach(el => el.remove());
-  for(const m of askHistory){ appendMsg(m.content, m.role === 'assistant' ? 'ai' : 'user', {actions:m.actions||[], messageId:m.id||''}); }
+  const lastClarify=[...askHistory].reverse().find(function(message){return message&&message.clarify;})||null;
+  if(!pendingAskClarification&&lastClarify){
+    pendingAskClarification={messageId:lastClarify.id,taskData:lastClarify.taskData||{},clarify:lastClarify.clarify};
+  }
+  for(const m of askHistory){ appendMsg(m.content, m.role === 'assistant' ? 'ai' : 'user', {actions:m.actions||[], messageId:m.id||'', clarify:m.clarify||null}); }
   const welcome = document.getElementById('ask-welcome');
   if(welcome) welcome.style.display = askHistory.length ? 'none' : 'flex';
 }
@@ -5848,18 +5853,19 @@ function fallbackTaskFromText(text){
   clean = clean.replace(/^нужно\s+/i,'');
   const deadlineMatch = clean.match(/\b(сегодня|завтра|послезавтра|в понедельник|во вторник|в среду|в четверг|в пятницу|в субботу|в воскресенье|вечером|утром|днем|днём)\b/i);
   const deadline = deadlineMatch ? deadlineMatch[0] : null;
-  return { text: clean || text, person: 'Я', deadline };
+  return { text: clean || text, person: '', deadline };
 }
 
 async function createTaskFromChat(taskData) {
   const safe = taskData || {};
   const text = (safe.text || '').trim();
   if(!text) return false;
-  const assignee = parseAssigneeFromPerson(safe.person || 'Я');
+  const person = (safe.person || currentUser?.name || 'Я').trim() || 'Я';
+  const assignee = parseAssigneeFromPerson(person);
   const task = {
     id: Date.now().toString(),
     text,
-    person: safe.person || 'Я',
+    person,
     deadline: safe.deadline || null,
     type: 'task',
     direction: 'outgoing',
@@ -5952,13 +5958,66 @@ function renderAskActionPreview(messageId,actions){
   return '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Предлагаемые действия</div><div style="display:flex;flex-direction:column;gap:6px">'+normalized.map(function(action){return '<div class="task-history-row">'+e2(describeAskAction(action))+'</div>';}).join('')+'</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button onclick="confirmAskActions(\''+esc(messageId)+'\')" style="background:var(--green);border:none;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--bg)">'+(alreadyApplied?'Уже выполнено':'Подтвердить')+'</button><button onclick="dismissAskActions(\''+esc(messageId)+'\')" style="background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--text2)">Не сейчас</button></div></div>';
 }
 
+function getAskClarificationPeopleOptions(){
+  const counts=new Map();
+  (allTasksCache||[]).forEach(function(task){
+    const person=String(task?.person||'').trim();
+    if(!person||person==='—') return;
+    counts.set(person,(counts.get(person)||0)+1);
+  });
+  const currentName=String(currentUser?.name||'Я').trim()||'Я';
+  const options=[{label:'Мне',value:currentName}];
+  [...counts.entries()]
+    .sort(function(a,b){return b[1]-a[1];})
+    .map(function(entry){return entry[0];})
+    .filter(function(name){return name&&name!==currentName;})
+    .slice(0,3)
+    .forEach(function(name){options.push({label:name,value:name});});
+  options.push({label:'Без исполнителя',value:''});
+  return options.slice(0,4);
+}
+
+function buildAskTaskClarification(taskData){
+  const safe=taskData||{};
+  const hasDeadline=!!String(safe.deadline||'').trim();
+  const hasPerson=!!String(safe.person||'').trim();
+  if(!hasDeadline){
+    return {
+      kind:'deadline',
+      question:'Когда поставить срок?',
+      options:[
+        {label:'Сегодня',value:'сегодня'},
+        {label:'Завтра',value:'завтра'},
+        {label:'Пятница',value:'в пятницу'},
+        {label:'Без срока',value:''}
+      ]
+    };
+  }
+  if(!hasPerson){
+    return {
+      kind:'person',
+      question:'Кому поставить задачу?',
+      options:getAskClarificationPeopleOptions()
+    };
+  }
+  return null;
+}
+
+function renderAskClarificationPreview(messageId, clarify){
+  if(!messageId||!clarify||pendingAskClarification?.messageId!==messageId) return '';
+  const buttons=(clarify.options||[]).map(function(option,idx){
+    return '<button onclick="answerAskClarification(\''+esc(messageId)+'\','+idx+')" style="background:transparent;border:1px solid var(--border);border-radius:999px;padding:8px 12px;cursor:pointer;color:var(--text)">'+e2(option.label||'Вариант')+'</button>';
+  }).join('');
+  return '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:8px">'+e2(clarify.question||'Уточним деталь')+'</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+buttons+'</div></div>';
+}
+
 function appendMsg(text,role,options){
   const opts=options||{};
   const msgs=document.getElementById('ask-msgs');
   const d=document.createElement('div');
   d.className=role==='user'?'bubble-user':'bubble-ai';
   if(role==='ai'&&text){
-    d.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskActionPreview(opts.messageId||'',opts.actions||[]);
+    d.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskClarificationPreview(opts.messageId||'',opts.clarify||null)+renderAskActionPreview(opts.messageId||'',opts.actions||[]);
   }else{
     d.textContent=text;
   }
@@ -5978,6 +6037,47 @@ function findAskMessage(messageId){
 function dismissAskActions(messageId){
   dismissedAskActionMessageIds.add(String(messageId||''));
   renderAskHistory();
+}
+
+function clearPendingAskClarification(removeFromHistory){
+  if(removeFromHistory&&pendingAskClarification?.messageId){
+    const message=findAskMessage(pendingAskClarification.messageId);
+    if(message){
+      message.clarify=null;
+      message.taskData=null;
+    }
+  }
+  pendingAskClarification=null;
+}
+
+async function finalizeAskClarifiedTask(messageId){
+  if(!pendingAskClarification||String(pendingAskClarification.messageId)!==String(messageId||'')) return;
+  const draft={...(pendingAskClarification.taskData||{})};
+  const ok=await createTaskFromChat(draft);
+  clearPendingAskClarification(true);
+  renderAskHistory();
+  if(ok){
+    await loadTasks();
+    const successText='✅ Задача «'+(draft.text||'без названия')+'» добавлена.';
+    appendMsg(successText,'ai');
+    askHistory.push({id:crypto?.randomUUID?.()||('ask_'+Date.now()+'_saved'),role:'assistant',content:successText});
+    saveAskHistoryLocal();
+    saveAskMessageRemote('assistant',successText);
+  }
+}
+
+async function answerAskClarification(messageId, optionIndex){
+  if(!pendingAskClarification||String(pendingAskClarification.messageId)!==String(messageId||'')) return;
+  const clarify=pendingAskClarification.clarify||{};
+  const option=(clarify.options||[])[Number(optionIndex)];
+  if(!option) return;
+  if(clarify.kind==='deadline'){
+    pendingAskClarification.taskData.deadline=option.value||null;
+    pendingAskClarification.taskData.time=option.value||null;
+  }else if(clarify.kind==='person'){
+    pendingAskClarification.taskData.person=option.value||'';
+  }
+  await finalizeAskClarifiedTask(messageId);
 }
 
 async function applyAskAction(action){
@@ -6048,6 +6148,7 @@ async function sendAsk(){
   const f=document.getElementById('ask-field');
   const v=f.value.trim();
   if(!v||isGenerating)return;
+  clearPendingAskClarification(true);
   if(!askHistoryLoaded){ await loadAskHistoryRemote(); renderAskHistory(); }
   f.value='';f.style.height='auto';
   const welcome=document.getElementById('ask-welcome');
@@ -6102,11 +6203,28 @@ async function sendAsk(){
     else text=JSON.stringify(d);
 
     let createdTaskText = '';
+    let askClarify = null;
     const taskMatch = text.match(/<create_task>([\s\S]*?)<\/create_task>/);
     if(taskMatch) {
       try {
         const taskData = JSON.parse(taskMatch[1]);
         taskData.originalMsg = v;
+        askClarify = buildAskTaskClarification(taskData);
+        if(askClarify){
+          const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_clarify');
+          pendingAskClarification={messageId:assistantMessageId,taskData,clarify:askClarify};
+          text = text.replace(/<create_task>[\s\S]*?<\/create_task>/g, '').trim();
+          if(!text) text=askClarify.question;
+          const parsedActions=parseAskActionsFromText(text);
+          text=parsedActions.cleanText||askClarify.question;
+          lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskClarificationPreview(assistantMessageId,askClarify)+renderAskActionPreview(assistantMessageId,parsedActions.actions);
+          askHistory.push({id:assistantMessageId,role:'assistant',content:text,actions:parsedActions.actions,clarify:askClarify,taskData});
+          saveAskHistoryLocal();
+          await saveAskMessageRemote('assistant', text);
+          isGenerating=false;
+          document.getElementById('ask-msgs').scrollTop=9999;
+          return;
+        }
         const ok = await createTaskFromChat(taskData);
         if(ok) createdTaskText = taskData.text;
         text = text.replace(/<create_task>[\s\S]*?<\/create_task>/g, '').trim();
@@ -6114,6 +6232,19 @@ async function sendAsk(){
     } else if(looksLikeTaskRequest(v) && !/^ошибка:/i.test(text)) {
       const taskData = fallbackTaskFromText(v);
       taskData.originalMsg = v;
+      askClarify = buildAskTaskClarification(taskData);
+      if(askClarify){
+        const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_clarify');
+        pendingAskClarification={messageId:assistantMessageId,taskData,clarify:askClarify};
+        const clarifyText=askClarify.question;
+        lb.innerHTML='<div class="md-body">'+parseMarkdown(clarifyText)+'</div>'+renderAskClarificationPreview(assistantMessageId,askClarify);
+        askHistory.push({id:assistantMessageId,role:'assistant',content:clarifyText,actions:[],clarify:askClarify,taskData});
+        saveAskHistoryLocal();
+        await saveAskMessageRemote('assistant', clarifyText);
+        isGenerating=false;
+        document.getElementById('ask-msgs').scrollTop=9999;
+        return;
+      }
       const ok = await createTaskFromChat(taskData);
       if(ok) createdTaskText = taskData.text;
     }
