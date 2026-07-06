@@ -6,6 +6,16 @@
 
 ---
 
+### 2026-07-07 — Codex
+
+**Задача:** BACK-048 — безопасный контур dev/test аккаунтов для staging
+**Результат:** В `4e-worker` добавлен закрытый admin seed для dev/test аккаунтов: `POST /admin/dev-accounts/seed` создаёт или обновляет пользователя по email, хеширует пароль, ставит `plan=paid`, отмечает `devTestAccount=true` и заливает стабильный набор seed-задач для smoke. Добавлен `DELETE /admin/dev-accounts/{email}` для cleanup только dev/test аккаунтов. В app-репо создан runbook `docs/back-048-dev-test-accounts-runbook.md` с curl-примерами и плейсхолдерами вместо секретов; `pm/backlog.md` переведён в `In Progress`, потому что staging deploy, реальный seed и live smoke ещё впереди.
+**Коммит:** `pending`
+**Статус:** ⚠️ код готов, нужен staging-шаг
+**Следующий шаг:** Задеплоить staging worker, вызвать `POST /admin/dev-accounts/seed` локальным JSON с тремя аккаунтами, передать пароли Алексею вне git и пройти smoke web/VK/TG.
+
+---
+
 ### 2026-07-06 — Codex
 
 **Задача:** Разрешить merge-конфликты `feat/admin-tariff-api` с `origin/main`
