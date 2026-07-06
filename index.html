@@ -1802,33 +1802,45 @@
 <div class="screen" id="new-task">
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">Новая задача</div></div>
+    <div class="nt-screen-title"><div class="back-title">Новая задача</div></div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:20px 16px 100px">
-    <div class="new-task-field-big glass" style="border-radius:16px;padding:16px;margin-bottom:16px">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">ЧТО НУЖНО СДЕЛАТЬ?</div>
-      <textarea id="nt-text" placeholder="Например: Подготовить отчёт по кампаниям для клиента" style="width:100%;background:transparent;border:none;color:var(--text);font-size:15px;font-weight:500;resize:none;outline:none;font-family:'Inter',sans-serif;line-height:1.5;min-height:60px" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+  <div class="nt-screen-content">
+    <div class="nt-field-card glass">
+      <div class="nt-subtitle">ЧТО НУЖНО СДЕЛАТЬ?</div>
+      <textarea id="nt-text" class="nt-textarea" placeholder="Например: Подготовить отчёт по кампаниям для клиента"></textarea>
     </div>
-    <div class="glass" style="border-radius:16px;overflow:hidden;margin-bottom:16px">
-      <div class="nt-field-row" onclick="openDatePicker('nt-deadline')">
-        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg><span style="font-size:14px;color:var(--text2)">Срок</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><span id="nt-deadline-label" style="font-size:14px;color:var(--green);font-weight:500">Сегодня</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-        <input type="date" id="nt-deadline" style="display:none" onchange="updateNtDeadline(this.value)">
+    <div class="glass nt-fields">
+      <div id="nt-date-row" class="nt-field-row" role="button" tabindex="0" aria-label="Выбрать срок">
+        <div class="nt-field-caption">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+          <span>Срок</span>
+        </div>
+        <div class="nt-field-value"><span id="nt-deadline-label">Сегодня</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <input type="date" id="nt-deadline" class="nt-date-input" onchange="updateNtDeadline(this.value)">
       </div>
-      <div class="nt-field-row" onclick="openDirectionPicker()">
-        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span style="font-size:14px;color:var(--text2)">Направление</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><span id="nt-direction-label" style="font-size:14px;color:var(--green);font-weight:500">Работа</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div id="nt-direction-row" class="nt-field-row" role="button" tabindex="0" aria-label="Выбрать направление">
+        <div class="nt-field-caption">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <span>Направление</span>
+        </div>
+        <div class="nt-field-value"><span id="nt-direction-label">Работа</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
-      <div class="nt-field-row" onclick="openPersonPicker()">
-        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:14px;color:var(--text2)">Человек / ответственный</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><span id="nt-person-label" style="font-size:14px;color:var(--green);font-weight:500">Юрий</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div id="nt-person-row" class="nt-field-row" role="button" tabindex="0" aria-label="Выбрать человека">
+        <div class="nt-field-caption">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span>Человек / ответственный</span>
+        </div>
+        <div class="nt-field-value"><span id="nt-person-label">Мой профиль</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
-      <div class="nt-field-row" style="cursor:default">
-        <div style="display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span style="font-size:14px;color:var(--text2)">Комментарий</span></div>
-        <input id="nt-comment" placeholder="Необязательно" style="background:transparent;border:none;color:var(--text2);font-size:14px;text-align:right;outline:none;font-family:'Inter',sans-serif;width:140px">
+      <div class="nt-field-row nt-field-row--compact">
+        <div class="nt-field-caption">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Комментарий</span>
+        </div>
+        <input id="nt-comment" class="nt-field-input" placeholder="Необязательно">
       </div>
     </div>
-    <button onclick="saveNewTask()" style="width:100%;background:var(--green);border:none;color:var(--bg);font-size:15px;font-weight:700;padding:16px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Сохранить задачу</button>
+    <button id="new-task-save-btn" class="nt-btn nt-btn-primary">Сохранить задачу</button>
   </div>
 </div>
 
@@ -1836,9 +1848,9 @@
 <div class="screen" id="task-confirm">
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">4 понял задачу</div></div>
+    <div class="nt-screen-title"><div class="back-title">4 понял задачу</div></div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:24px 16px 100px;display:flex;flex-direction:column;align-items:center">
+  <div class="nt-screen-content nt-screen-content--confirm">
     <div style="margin-bottom:24px">
       <svg width="160" height="160" viewBox="0 0 220 220">
         <defs><radialGradient id="confirmGlobe" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.9"/><stop offset="50%" stop-color="#3a6010" stop-opacity="0.5"/><stop offset="100%" stop-color="#0a1a00" stop-opacity="0.1"/></radialGradient></defs>
@@ -1849,15 +1861,15 @@
         <g stroke="rgba(154,194,60,0.45)" stroke-width="1" fill="none"><line x1="110" y1="110" x2="110" y2="82"/><line x1="110" y1="110" x2="138" y2="110"/><line x1="110" y1="110" x2="88" y2="88"/><line x1="110" y1="110" x2="132" y2="132"/></g>
       </svg>
     </div>
-    <div style="font-size:17px;font-weight:700;color:var(--text);text-align:center;margin-bottom:20px;line-height:1.4;padding:0 16px" id="confirm-task-title">Проверить кнопку после правок</div>
-    <div class="glass" style="border-radius:16px;overflow:hidden;width:100%;margin-bottom:28px">
-      <div class="nt-field-row" style="pointer-events:none"><div style="display:flex;align-items:center;gap:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font-size:14px;color:var(--text2)">Срок</span></div><span id="confirm-task-date" style="font-size:14px;color:var(--green);font-weight:500">Сегодня</span></div>
-      <div class="nt-field-row" style="pointer-events:none"><div style="display:flex;align-items:center;gap:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span style="font-size:14px;color:var(--text2)">Направление</span></div><span id="confirm-task-dir" style="font-size:14px;color:var(--green);font-weight:500">Работа</span></div>
-      <div class="nt-field-row" style="pointer-events:none;border-bottom:none"><div style="display:flex;align-items:center;gap:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:14px;color:var(--text2)">Человек</span></div><span id="confirm-task-person" style="font-size:14px;color:var(--green);font-weight:500">Юрий</span></div>
+    <div class="nt-confirm-title" id="confirm-task-title">Проверить кнопку после правок</div>
+    <div class="glass nt-confirm-summary">
+      <div class="nt-field-row nt-field-row--static"><div class="nt-field-caption"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Срок</span></div><span class="nt-field-value" id="confirm-task-date">Сегодня</span></div>
+      <div class="nt-field-row nt-field-row--static"><div class="nt-field-caption"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span>Направление</span></div><span class="nt-field-value" id="confirm-task-dir">Работа</span></div>
+      <div class="nt-field-row nt-field-row--static nt-field-row--final"><div class="nt-field-caption"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Человек</span></div><span class="nt-field-value" id="confirm-task-person">Юрий</span></div>
     </div>
-    <div style="display:flex;gap:12px;width:100%">
-      <button onclick="editTaskConfirm()" style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:600;padding:15px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Изменить</button>
-      <button onclick="confirmAndSaveTask()" style="flex:2;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;padding:15px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif">Сохранить</button>
+    <div class="nt-confirm-actions">
+      <button id="task-confirm-edit-btn" class="nt-btn nt-btn-secondary">Изменить</button>
+      <button id="task-confirm-save-btn" class="nt-btn nt-btn-primary nt-btn-primary--compact">Сохранить</button>
     </div>
   </div>
 </div>
@@ -2056,12 +2068,14 @@ const ONBOARD_K='chetam_onboarded';
 const D1_TOKEN_K='chetam_d1_token';
 const LOGOUT_K='chetam_logged_out';
 const TG_PENDING_START_K='chetam_tg_pending_start';
+const NEW_TASK_DIRECTIONS=['Работа','Личное'];
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
 const notifReadSet = new Set();
 let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
 let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
+let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
 
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
 const tgInitData=window.Telegram?.WebApp?.initData||'';
@@ -3444,6 +3458,178 @@ async function loadTasks(){
 function openQuickAdd(){
   const overlay = document.getElementById('quick-add-overlay');
   if(overlay){ overlay.style.display='flex'; setTimeout(()=>document.getElementById('quick-add-text')?.focus(),100); }
+}
+function getNewTaskDirectionValue(label){
+  const raw=(label||'').trim().toLowerCase();
+  if(raw.includes('лич') || raw.includes('incoming')) return 'incoming';
+  if(raw.includes('работ') || raw.includes('outgoing') || raw.includes('долж') || raw.includes('я должен')) return 'outgoing';
+  return 'outgoing';
+}
+function getNewTaskPersonDefault(){
+  return (currentUser?.name||'Я').trim() || 'Я';
+}
+function syncNewTaskDraftFromInputs(){
+  const text=(document.getElementById('nt-text')?.value||'').trim();
+  const deadline=(document.getElementById('nt-deadline')?.value||'').trim();
+  const directionLabel=(document.getElementById('nt-direction-label')?.textContent||'').trim();
+  const person=(document.getElementById('nt-person-label')?.textContent||'').trim();
+  const comment=(document.getElementById('nt-comment')?.value||'').trim();
+  const fallbackPerson=getNewTaskPersonDefault();
+  newTaskDraft.text=text;
+  newTaskDraft.deadline=deadline;
+  newTaskDraft.deadlineLabel=deadline ? formatRelativeTaskDate(deadline,{deadline:true}) : 'Сегодня';
+  newTaskDraft.directionLabel=directionLabel || 'Работа';
+  newTaskDraft.direction=getNewTaskDirectionValue(newTaskDraft.directionLabel);
+  newTaskDraft.person=person || fallbackPerson;
+  newTaskDraft.comment=comment;
+}
+function getPersonDefaults(){
+  newTaskDraft.person = getNewTaskPersonDefault();
+  const personLabel = document.getElementById('nt-person-label');
+  if(personLabel && !personLabel.textContent) personLabel.textContent=newTaskDraft.person;
+  if(!newTaskDraft.person && personLabel) newTaskDraft.person=personLabel.textContent;
+}
+function resetNewTaskDraft(){
+  const textEl=document.getElementById('nt-text');
+  const deadlineEl=document.getElementById('nt-deadline');
+  const deadlineLabel=document.getElementById('nt-deadline-label');
+  const dirLabel=document.getElementById('nt-direction-label');
+  const personLabel=document.getElementById('nt-person-label');
+  const commentEl=document.getElementById('nt-comment');
+  newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:getNewTaskPersonDefault(),comment:'',assigneeUsername:'',assigneeTgId:''};
+  if(textEl){ textEl.value=''; textEl.style.height=''; }
+  if(deadlineEl) deadlineEl.value='';
+  if(deadlineLabel) deadlineLabel.textContent='Сегодня';
+  if(dirLabel) dirLabel.textContent='Работа';
+  if(personLabel) personLabel.textContent=newTaskDraft.person;
+  if(commentEl) commentEl.value='';
+}
+function resizeNewTaskTextArea(){
+  const ta=document.getElementById('nt-text');
+  if(!ta) return;
+  ta.style.height='auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+function updateNtDeadline(v){
+  const raw=(v||'').trim();
+  newTaskDraft.deadline=raw;
+  newTaskDraft.deadlineLabel=raw ? formatRelativeTaskDate(raw,{deadline:true}) : 'Сегодня';
+  const deadlineLabel=document.getElementById('nt-deadline-label');
+  if(deadlineLabel) deadlineLabel.textContent=newTaskDraft.deadlineLabel;
+}
+function openDatePicker(inputId){
+  const input=document.getElementById(inputId);
+  if(!input) return;
+  if(typeof input.showPicker==='function') input.showPicker();
+  else input.click();
+}
+function openDirectionPicker(){
+  const choice = window.prompt('Укажи направление задачи (Работа / Личное):', newTaskDraft.directionLabel || 'Работа');
+  if(choice===null) return;
+  const canon = choice.toLowerCase().includes('лич') ? 'Личное' : 'Работа';
+  newTaskDraft.directionLabel=canon;
+  newTaskDraft.direction=getNewTaskDirectionValue(canon);
+  const directionLabel=document.getElementById('nt-direction-label');
+  if(directionLabel) directionLabel.textContent=canon;
+}
+function openPersonPicker(){
+  const current = newTaskDraft.person || getNewTaskPersonDefault();
+  const choice = window.prompt('Кто исполнитель / ответственный?', current);
+  if(choice===null) return;
+  const value = choice.trim();
+  if(!value) return;
+  newTaskDraft.person=value;
+  const personLabel=document.getElementById('nt-person-label');
+  if(personLabel) personLabel.textContent=value;
+}
+function parseAssigneeFromPerson(value){
+  const raw=String(value||'').trim();
+  const usernameMatch=raw.match(/(?:^|[^a-zA-Z0-9_])@([a-zA-Z0-9_]{3,})/i);
+  if(usernameMatch) return {assigneeUsername:normalizeTelegramUsername(usernameMatch[1])};
+  const tgIdMatch=raw.match(/(\\d{6,})/);
+  if(tgIdMatch && /id/i.test(raw)) return {assigneeTgId:tgIdMatch[1]};
+  return {};
+}
+function buildNewTaskPayload(){
+  syncNewTaskDraftFromInputs();
+  const assignee=parseAssigneeFromPerson(newTaskDraft.person);
+  return {
+    id: Date.now().toString(),
+    type: 'task',
+    text: newTaskDraft.text,
+    person: newTaskDraft.person || getNewTaskPersonDefault(),
+    directionLabel: newTaskDraft.directionLabel || 'Работа',
+    direction: newTaskDraft.direction || getNewTaskDirectionValue(newTaskDraft.directionLabel || 'Работа'),
+    deadline: newTaskDraft.deadline || '',
+    date: newTaskDraft.deadline ? newTaskDraft.deadlineLabel : 'сегодня',
+    time: newTaskDraft.deadline || '',
+    done: false,
+    comment: newTaskDraft.comment || '',
+    originalMsg: newTaskDraft.comment || '',
+    assigneeUsername: assignee.assigneeUsername || '',
+    assigneeTgId: assignee.assigneeTgId || ''
+  };
+}
+function prepareNewTaskConfirm(){
+  syncNewTaskDraftFromInputs();
+  if(!newTaskDraft.text){ showToast('Введи текст задачи'); return; }
+  const title=document.getElementById('confirm-task-title');
+  const date=document.getElementById('confirm-task-date');
+  const dir=document.getElementById('confirm-task-dir');
+  const person=document.getElementById('confirm-task-person');
+  if(title) title.textContent=newTaskDraft.text;
+  if(date) date.textContent=newTaskDraft.deadlineLabel || 'Сегодня';
+  if(dir) dir.textContent=newTaskDraft.directionLabel || 'Работа';
+  if(person) person.textContent=newTaskDraft.person || getNewTaskPersonDefault();
+  showScreen('task-confirm');
+}
+async function confirmAndSaveTask(){
+  syncNewTaskDraftFromInputs();
+  if(!newTaskDraft.text){ showToast('Введи текст задачи'); showScreen('new-task'); return; }
+  const task = buildNewTaskPayload();
+  try{
+    await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'save-task'},body:JSON.stringify({chatId,task})});
+    resetNewTaskDraft();
+    showToast('Задача добавлена ✓');
+    showScreen('home');
+    setNavActive('tasks');
+    loadTasks();
+  } catch(e){
+    showToast('Ошибка сохранения');
+    console.error(e);
+  }
+}
+function editTaskConfirm(){
+  showScreen('new-task');
+  const note=document.getElementById('nt-text');
+  if(note && newTaskDraft.text && note.value!==newTaskDraft.text){
+    note.value = newTaskDraft.text;
+    resizeNewTaskTextArea();
+  }
+}
+function initNewTaskHandlers(){
+  const saveBtn=document.getElementById('new-task-save-btn');
+  const editBtn=document.getElementById('task-confirm-edit-btn');
+  const confirmBtn=document.getElementById('task-confirm-save-btn');
+  const dateRow=document.getElementById('nt-date-row');
+  const dirRow=document.getElementById('nt-direction-row');
+  const personRow=document.getElementById('nt-person-row');
+  const textEl=document.getElementById('nt-text');
+  const dateInput=document.getElementById('nt-deadline');
+  const commentEl=document.getElementById('nt-comment');
+  if(saveBtn) saveBtn.addEventListener('click',prepareNewTaskConfirm);
+  if(editBtn) editBtn.addEventListener('click',editTaskConfirm);
+  if(confirmBtn) confirmBtn.addEventListener('click',confirmAndSaveTask);
+  if(dateRow) dateRow.addEventListener('click',()=>openDatePicker('nt-deadline'));
+  if(dirRow) dirRow.addEventListener('click',openDirectionPicker);
+  if(personRow) personRow.addEventListener('click',openPersonPicker);
+  if(textEl){
+    textEl.addEventListener('input',()=>{resizeNewTaskTextArea(); syncNewTaskDraftFromInputs();});
+  }
+  if(dateInput) dateInput.addEventListener('change',function(){updateNtDeadline(this.value);});
+  if(commentEl) commentEl.addEventListener('input',function(){newTaskDraft.comment=this.value;});
+  getPersonDefaults();
+  resetNewTaskDraft();
 }
 function closeQuickAdd(){
   const overlay = document.getElementById('quick-add-overlay');
@@ -5255,6 +5441,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Theme item
   const themeItem = document.querySelector('#profile .profile-menu:nth-child(2) .profile-item');
   if(themeItem) themeItem.onclick=()=>showSubScreen('theme-settings');
+  if(typeof initNewTaskHandlers==='function') initNewTaskHandlers();
 });
 
 // ===== PRIVACY CENTER =====
@@ -6638,3 +6825,4 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
 
 </body>
 </html>
+

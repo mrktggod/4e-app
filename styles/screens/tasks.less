@@ -4,6 +4,37 @@
 .back-title{font-size:14px;font-weight:600;color:var(--text)}
 .back-sub{font-size:10px;color:var(--muted);margin-top:1px}
 
+/* ===== NEW TASK / CONFIRM (Patch 03) ===== */
+.nt-screen-title{display:flex;align-items:center;flex:1}
+.nt-screen-content{padding:0 16px 24px;display:flex;flex-direction:column;gap:14px;flex:1;overflow-y:auto}
+.nt-screen-content--confirm{gap:16px}
+.nt-screen-content > .nt-field-card + .glass.nt-fields{margin-top:0}
+.nt-field-card{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px}
+.nt-subtitle{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.nt-textarea{width:100%;background:var(--bg);border:none;color:var(--text);font-size:14px;line-height:1.45;min-height:140px;resize:none;outline:none;font-family:'Inter',sans-serif}
+.nt-textarea::placeholder{color:var(--muted)}
+.nt-fields{display:flex;flex-direction:column;background:var(--card2);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.nt-field-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.nt-field-row:hover{background:rgba(154,194,60,0.03)}
+.nt-field-row:last-child{border-bottom:none}
+.nt-field-row--compact{cursor:default}
+.nt-field-row--static{cursor:default}
+.nt-field-row--final{border-bottom:none}
+.nt-field-caption{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);font-weight:500}
+.nt-field-value{display:flex;align-items:center;gap:7px;color:var(--text);font-size:13px;font-weight:500}
+.nt-field-input{width:100%;background:var(--bg);border:none;padding:12px 14px;color:var(--text);font-size:14px;outline:none;font-family:'Inter',sans-serif}
+.nt-field-input::placeholder{color:var(--muted)}
+.nt-date-input{display:none}
+.nt-btn{width:100%;border:none;padding:14px;border-radius:14px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.nt-btn-primary{background:var(--green);color:var(--bg)}
+.nt-btn-secondary{background:var(--card2);border:1px solid var(--border);color:var(--text)}
+.nt-btn-primary--compact{padding:12px}
+.nt-confirm-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px}
+.nt-confirm-summary{padding:8px 0}
+.nt-confirm-actions{display:flex;gap:8px;margin-top:6px}
+.move-option{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.move-option:hover{background:rgba(154,194,60,0.03)}
+
 /* ===== TASK DETAIL ===== */
 /* ===== TASK DETAIL v2 ===== */
 .detail-hero{padding:4px 0 16px}
