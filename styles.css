@@ -2095,6 +2095,72 @@ body {
   justify-content: center;
   flex-shrink: 0;
 }
+.contact-panel-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+  align-items: flex-end;
+  justify-content: center;
+}
+.contact-panel {
+  width: 100%;
+  max-width: 480px;
+  background: #0E140B;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 40px;
+  border-top: 1px solid rgba(242, 245, 233, 0.08);
+}
+.contact-panel-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.contact-panel-task {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.contact-panel-note {
+  display: none;
+  font-size: 12px;
+  color: var(--muted);
+  margin: -8px 0 16px;
+}
+.contact-panel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.contact-panel-btn {
+  padding: 13px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+.contact-panel-btn--telegram {
+  background: rgba(42, 171, 238, 0.12);
+  border: 1px solid rgba(42, 171, 238, 0.2);
+  color: #2AABEE;
+}
+.contact-panel-btn--write {
+  background: var(--green3);
+  border: 1px solid rgba(154, 194, 60, 0.2);
+  color: var(--green);
+}
+.contact-panel-btn--cancel {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
 /* ===== CALENDAR ===== */
 .cal-scroll {
   flex: 1;
@@ -2734,6 +2800,33 @@ body {
   .notif-time-control input[type="time"] {
     width: 92px;
   }
+}
+.screen-title-wrap {
+  flex: 1;
+}
+.ai-memory-summary-card {
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.ai-memory-summary-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.ai-memory-summary-status {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.ai-memory-list {
+  padding: 8px 16px;
+}
+.ai-memory-forget-btn {
+  justify-content: center;
+  margin-top: 14px;
 }
 /* ===== VOICE SCREEN ===== */
 .voice-pulse-ring {

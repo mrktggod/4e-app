@@ -1367,15 +1367,15 @@
 <div class="screen" id="ai-memory">
   <div class="back-bar">
     <button class="back-btn" onclick="showSubScreen('profile')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">Что 4 знает обо мне</div><div class="back-sub">Устойчивые факты, которые помогают будущим ответам</div></div>
+    <div class="screen-title-wrap"><div class="back-title">Что 4 знает обо мне</div><div class="back-sub">Устойчивые факты, которые помогают будущим ответам</div></div>
   </div>
   <div class="sub-scroll">
-    <div class="sub-card" style="padding:16px 18px;margin-bottom:14px">
-      <div style="font-size:12px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">AI-память</div>
-      <div id="ai-memory-status" style="font-size:14px;color:var(--text);line-height:1.5">Загружаем факты…</div>
+    <div class="sub-card ai-memory-summary-card">
+      <div class="ai-memory-summary-title">AI-память</div>
+      <div id="ai-memory-status" class="ai-memory-summary-status">Загружаем факты…</div>
     </div>
-    <div class="sub-card" id="ai-memory-list" style="padding:8px 16px"></div>
-    <button class="notif-all-btn" id="ai-memory-forget-btn" style="justify-content:center;margin-top:14px" onclick="handleForgetAllAiFacts()">Забыть всё</button>
+    <div class="sub-card ai-memory-list" id="ai-memory-list"></div>
+    <button class="notif-all-btn ai-memory-forget-btn" id="ai-memory-forget-btn" onclick="handleForgetAllAiFacts()">Забыть всё</button>
   </div>
 </div>
 
@@ -2009,21 +2009,21 @@
 <div class="toast" id="toast"></div>
 
 <!-- CONTACT PANEL -->
-<div id="contact-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;align-items:flex-end;justify-content:center">
-  <div style="width:100%;max-width:480px;background:#0E140B;border-radius:24px 24px 0 0;padding:24px 20px 40px;border-top:1px solid rgba(242,245,233,0.08)">
-    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px" id="contact-panel-name">Контакт</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:20px" id="contact-panel-task"></div>
-    <div id="contact-panel-note" style="display:none;font-size:12px;color:var(--muted);margin:-8px 0 16px"></div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <button onclick="contactViaTelegram()" style="padding:13px;border-radius:14px;background:rgba(42,171,238,0.12);border:1px solid rgba(42,171,238,0.2);color:#2AABEE;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:10px;text-align:left">
+<div id="contact-panel-overlay" class="contact-panel-overlay">
+  <div class="contact-panel">
+    <div class="contact-panel-name" id="contact-panel-name">Контакт</div>
+    <div class="contact-panel-task" id="contact-panel-task"></div>
+    <div id="contact-panel-note" class="contact-panel-note"></div>
+    <div class="contact-panel-actions">
+      <button onclick="contactViaTelegram()" class="contact-panel-btn contact-panel-btn--telegram">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
         Написать в Telegram
       </button>
-      <button onclick="contactViaWrite()" style="padding:13px;border-radius:14px;background:var(--green3);border:1px solid rgba(154,194,60,0.2);color:var(--green);font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:10px">
+      <button onclick="contactViaWrite()" class="contact-panel-btn contact-panel-btn--write">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         Составить сообщение с 4
       </button>
-      <button onclick="closeContactPanel()" style="padding:13px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:14px;cursor:pointer;font-family:Inter,sans-serif">Отмена</button>
+      <button onclick="closeContactPanel()" class="contact-panel-btn contact-panel-btn--cancel">Отмена</button>
     </div>
   </div>
 </div>
