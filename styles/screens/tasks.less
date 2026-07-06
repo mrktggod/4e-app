@@ -99,6 +99,7 @@
 .detail-done-btn{flex:1;padding:12px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif}
 .detail-snooze-btn{flex:1;padding:12px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif}
 .detail-field-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.detail-contact-btn--hidden{display:none}
 .detail-field-row:hover{background:rgba(154,194,60,0.03)}
 .detail-tab{flex:1;padding:10px 4px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
 .detail-tab.active{color:var(--text);border-bottom-color:var(--green)}
@@ -172,6 +173,16 @@
 .contact-panel-btn--telegram{background:rgba(42,171,238,.12);border:1px solid rgba(42,171,238,.2);color:#2AABEE}
 .contact-panel-btn--write{background:var(--green3);border:1px solid rgba(154,194,60,.2);color:var(--green)}
 .contact-panel-btn--cancel{background:var(--card2);border:1px solid var(--border);color:var(--muted)}
+
+.quick-add-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;align-items:flex-end;justify-content:center}
+.quick-add-sheet{width:100%;max-width:480px;background:#0E140B;border-radius:24px 24px 0 0;padding:20px 20px 40px;border-top:1px solid rgba(242,245,233,.08)}
+.quick-add-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px}
+.quick-add-text{width:100%;min-height:80px;margin-bottom:12px}
+.quick-add-row{display:flex;gap:8px}
+.quick-add-person{flex:1}
+.quick-add-actions{display:flex;gap:8px;margin-top:10px}
+.quick-add-submit{flex:1;padding:13px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif}
+.quick-add-cancel{padding:13px 16px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:14px;cursor:pointer;font-family:Inter,sans-serif}
 
 /* ===== CALENDAR ===== */
 .cal-scroll{flex:1;overflow-y:auto;padding:0 16px 100px}

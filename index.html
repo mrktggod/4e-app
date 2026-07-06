@@ -642,7 +642,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:10px">
           <span id="detail-person" style="font-size:14px;color:var(--text);font-weight:500">—</span>
-          <button id="detail-contact-btn" class="detail-quick-btn" style="display:none" onclick="openDetailContactPanel()">Написать</button>
+          <button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden">Написать</button>
         </div>
       </div>
 
@@ -1375,7 +1375,7 @@
       <div id="ai-memory-status" class="ai-memory-summary-status">Загружаем факты…</div>
     </div>
     <div class="sub-card ai-memory-list" id="ai-memory-list"></div>
-    <button class="notif-all-btn ai-memory-forget-btn" id="ai-memory-forget-btn" onclick="handleForgetAllAiFacts()">Забыть всё</button>
+    <button class="notif-all-btn ai-memory-forget-btn" id="ai-memory-forget-btn">Забыть всё</button>
   </div>
 </div>
 
@@ -2027,30 +2027,30 @@
     <div class="contact-panel-task" id="contact-panel-task"></div>
     <div id="contact-panel-note" class="contact-panel-note"></div>
     <div class="contact-panel-actions">
-      <button onclick="contactViaTelegram()" class="contact-panel-btn contact-panel-btn--telegram">
+      <button id="contact-panel-telegram-btn" class="contact-panel-btn contact-panel-btn--telegram">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
         Написать в Telegram
       </button>
-      <button onclick="contactViaWrite()" class="contact-panel-btn contact-panel-btn--write">
+      <button id="contact-panel-write-btn" class="contact-panel-btn contact-panel-btn--write">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         Составить сообщение с 4
       </button>
-      <button onclick="closeContactPanel()" class="contact-panel-btn contact-panel-btn--cancel">Отмена</button>
+      <button id="contact-panel-cancel-btn" class="contact-panel-btn contact-panel-btn--cancel">Отмена</button>
     </div>
   </div>
 </div>
 
 <!-- QUICK ADD OVERLAY -->
-<div id="quick-add-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;align-items:flex-end;justify-content:center">
-  <div style="width:100%;max-width:480px;background:#0E140B;border-radius:24px 24px 0 0;padding:20px 20px 40px;border-top:1px solid rgba(242,245,233,0.08)">
-    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px">Новая задача</div>
-    <textarea id="quick-add-text" class="detail-edit-field" placeholder="Например: позвонить Антону завтра в 15:00..." style="width:100%;min-height:80px;margin-bottom:12px" autofocus></textarea>
-    <div style="display:flex;gap:8px">
-      <input id="quick-add-person" class="detail-edit-field" placeholder="Исполнитель (необязательно)" style="flex:1"/>
+<div id="quick-add-overlay" class="quick-add-overlay">
+  <div class="quick-add-sheet">
+    <div class="quick-add-title">Новая задача</div>
+    <textarea id="quick-add-text" class="detail-edit-field quick-add-text" placeholder="Например: позвонить Антону завтра в 15:00..." autofocus></textarea>
+    <div class="quick-add-row">
+      <input id="quick-add-person" class="detail-edit-field quick-add-person" placeholder="Исполнитель (необязательно)" />
     </div>
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button onclick="submitQuickAdd()" style="flex:1;padding:13px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Добавить</button>
-      <button onclick="closeQuickAdd()" style="padding:13px 16px;border-radius:14px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:14px;cursor:pointer;font-family:Inter,sans-serif">Отмена</button>
+    <div class="quick-add-actions">
+      <button id="quick-add-submit" class="quick-add-submit">Добавить</button>
+      <button id="quick-add-cancel" class="quick-add-cancel">Отмена</button>
     </div>
   </div>
 </div>
@@ -2463,7 +2463,7 @@ function renderAiMemoryScreen(){
   if(!statusEl || !listEl || !forgetBtn) return;
   if(!getToken() || !currentAiFactsUserId()){
     statusEl.textContent = 'Войдите в аккаунт, чтобы увидеть и очистить сохранённые факты.';
-    listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Память доступна только для авторизованного профиля.</div>';
+    listEl.innerHTML = '<div class="ai-memory-empty">Память доступна только для авторизованного профиля.</div>';
     forgetBtn.disabled = true;
     return;
   }
@@ -2472,7 +2472,7 @@ function renderAiMemoryScreen(){
     : 'AI-память сейчас выключена. Ниже показано, что уже было сохранено ранее — это можно удалить в любой момент.';
   statusEl.textContent = intro;
   if(!aiMemoryFactsCache.length){
-    listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Пока пусто. Когда в диалоге появятся устойчивые факты о вас, они появятся здесь.</div>';
+    listEl.innerHTML = '<div class="ai-memory-empty">Пока пусто. Когда в диалоге появятся устойчивые факты о вас, они появятся здесь.</div>';
     forgetBtn.disabled = true;
     resetAiMemoryForgetState();
     return;
@@ -2484,17 +2484,17 @@ function renderAiMemoryScreen(){
     const category = e2(String(item.category || 'other'));
     const updatedAt = formatAiMemoryTimestamp(item.updatedAt);
     const confidence = Math.round(Math.max(0, Math.min(Number(item.confidence || 0), 1)) * 100);
-    return '<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">' +
-      '<div style="flex:1;min-width:0"><div style="font-size:14px;color:var(--text);line-height:1.45">' + fact + '</div>' +
-      '<div style="font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap"><span>' + category + '</span><span>' + confidence + '%</span>' + (updatedAt ? '<span>обновлено ' + e2(updatedAt) + '</span>' : '') + '</div></div>' +
-      '<button data-fact-id="' + factId + '" onclick="deleteAiMemoryFact(this.dataset.factId)" style="flex-shrink:0;background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--muted);cursor:pointer;font-family:Inter,sans-serif">Удалить</button></div>';
+    return '<div class="ai-memory-row">' +
+      '<div class="ai-memory-row-content"><div class="ai-memory-row-text">' + fact + '</div>' +
+      '<div class="ai-memory-row-meta"><span>' + category + '</span><span>' + confidence + '%</span>' + (updatedAt ? '<span>обновлено ' + e2(updatedAt) + '</span>' : '') + '</div></div>' +
+      '<button data-fact-id="' + factId + '" class="ai-memory-delete-btn">Удалить</button></div>';
   }).join('');
 }
 
 async function loadAiMemoryScreen(force){
   const listEl = document.getElementById('ai-memory-list');
   const statusEl = document.getElementById('ai-memory-status');
-  if(listEl) listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Загружаем…</div>';
+  if(listEl) listEl.innerHTML = '<div class="ai-memory-empty">Загружаем…</div>';
   if(statusEl) statusEl.textContent = 'Подключаем сохранённые факты…';
   resetAiMemoryForgetState();
   try{
@@ -2509,7 +2509,7 @@ async function loadAiMemoryScreen(force){
     aiMemoryFactsCache = [];
     aiMemoryFactsEnabled = false;
     if(statusEl) statusEl.textContent = 'Не удалось загрузить AI-память. Попробуйте ещё раз.';
-    if(listEl) listEl.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--muted)">Сервер временно недоступен.</div>';
+    if(listEl) listEl.innerHTML = '<div class="ai-memory-empty">Сервер временно недоступен.</div>';
     const forgetBtn = document.getElementById('ai-memory-forget-btn');
     if(forgetBtn) forgetBtn.disabled = true;
     return;
@@ -3641,12 +3641,15 @@ async function submitQuickAdd(){
   const text = (document.getElementById('quick-add-text')?.value||'').trim();
   const person = (document.getElementById('quick-add-person')?.value||'').trim() || (currentUser?.name||'Я');
   if(!text){ showToast('Введи текст задачи'); return; }
+  const assignee = parseAssigneeFromPerson(person);
   const task = {
     id: Date.now().toString(),
     text, person,
     type: 'task', direction: 'outgoing',
     date: new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'}),
     done: false,
+    assigneeUsername: assignee.assigneeUsername || '',
+    assigneeTgId: assignee.assigneeTgId || ''
   };
   try {
     await fetch(WORKER, {
@@ -4488,11 +4491,7 @@ function syncDetailContactButton(task){
   const btn = document.getElementById('detail-contact-btn');
   if(!btn) return;
   const person = String(task?.person || '').trim();
-  if(!person || /^я$/i.test(person)){
-    btn.style.display = 'none';
-    return;
-  }
-  btn.style.display = '';
+  btn.classList.toggle('detail-contact-btn--hidden', !person || /^я$/i.test(person));
 }
 
 function openContactPanel(person, taskText, taskMeta){
@@ -5117,6 +5116,7 @@ async function createTaskFromChat(taskData) {
   const safe = taskData || {};
   const text = (safe.text || '').trim();
   if(!text) return false;
+  const assignee = parseAssigneeFromPerson(safe.person || 'Я');
   const task = {
     id: Date.now().toString(),
     text,
@@ -5128,6 +5128,8 @@ async function createTaskFromChat(taskData) {
     done: false,
     source: 'ai_chat',
     originalMsg: safe.originalMsg || text,
+    assigneeUsername: safe.assigneeUsername || assignee.assigneeUsername || '',
+    assigneeTgId: safe.assigneeTgId || assignee.assigneeTgId || ''
   };
   try {
     const res = await fetch(WORKER, {
@@ -5442,6 +5444,26 @@ document.addEventListener('DOMContentLoaded',()=>{
   const themeItem = document.querySelector('#profile .profile-menu:nth-child(2) .profile-item');
   if(themeItem) themeItem.onclick=()=>showSubScreen('theme-settings');
   if(typeof initNewTaskHandlers==='function') initNewTaskHandlers();
+  const aiMemoryForgetBtn = document.getElementById('ai-memory-forget-btn');
+  if(aiMemoryForgetBtn) aiMemoryForgetBtn.addEventListener('click', handleForgetAllAiFacts);
+  const detailContactBtn = document.getElementById('detail-contact-btn');
+  if(detailContactBtn) detailContactBtn.addEventListener('click', openDetailContactPanel);
+  const contactTelegramBtn = document.getElementById('contact-panel-telegram-btn');
+  if(contactTelegramBtn) contactTelegramBtn.addEventListener('click', contactViaTelegram);
+  const contactWriteBtn = document.getElementById('contact-panel-write-btn');
+  if(contactWriteBtn) contactWriteBtn.addEventListener('click', contactViaWrite);
+  const contactCancelBtn = document.getElementById('contact-panel-cancel-btn');
+  if(contactCancelBtn) contactCancelBtn.addEventListener('click', closeContactPanel);
+  const quickAddSubmitBtn = document.getElementById('quick-add-submit');
+  if(quickAddSubmitBtn) quickAddSubmitBtn.addEventListener('click', submitQuickAdd);
+  const quickAddCancelBtn = document.getElementById('quick-add-cancel');
+  if(quickAddCancelBtn) quickAddCancelBtn.addEventListener('click', closeQuickAdd);
+  const aiMemoryRows = document.getElementById('ai-memory-list');
+  if(aiMemoryRows) aiMemoryRows.addEventListener('click', function(e){
+    const btn = e.target.closest('button.ai-memory-delete-btn');
+    if(!btn || !btn.dataset.factId) return;
+    deleteAiMemoryFact(btn.dataset.factId);
+  });
 });
 
 // ===== PRIVACY CENTER =====
