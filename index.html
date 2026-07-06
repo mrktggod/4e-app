@@ -635,13 +635,13 @@
         <input id="detail-direction" class="detail-control" placeholder="Направление" oninput="setDetailDirectionLabel(this.value)">
       </div>
 
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
+      <div class="detail-field-row detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="Изменить исполнителя задачи">
+        <div class="detail-field-row-title">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Человек</span>
+          <span class="detail-field-row-caption">Человек</span>
         </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <span id="detail-person" style="font-size:14px;color:var(--text);font-weight:500">—</span>
+        <div class="detail-person-actions">
+          <span id="detail-person" class="detail-person-name">—</span>
           <button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden">Написать</button>
         </div>
       </div>
@@ -4539,6 +4539,18 @@ function openDetailContactPanel(){
   openContactPanel(currentDetailTask.person || 'Контакт', currentDetailTask.text || '', currentDetailTask);
 }
 
+function openDetailPersonPicker(){
+  if(!currentDetailTask) return;
+  const current = (document.getElementById('detail-person')?.textContent || '').trim() || (currentDetailTask.person || 'Я');
+  const choice = window.prompt('Кто исполнитель / ответственный?', current);
+  if(choice === null) return;
+  const value = choice.trim();
+  if(!value) return;
+  const personEl = document.getElementById('detail-person');
+  if(personEl) personEl.textContent = value;
+  syncDetailContactButton({ person: value });
+}
+
 // ── AI advice in task detail ──────────────────────────────────
 async function loadTaskAdvice(){
   if(!currentDetailTask) return;
@@ -4836,6 +4848,9 @@ async function saveTaskEdits(){
   const newText = (document.getElementById('detail-title')?.textContent||'').trim();
   const newDeadline = currentDetailTime || '';
   const newOrigMsg = document.getElementById('detail-description')?.value?.trim();
+  const rawPerson = (document.getElementById('detail-person')?.textContent || '').trim();
+  const newPerson = rawPerson && rawPerson !== '—' ? rawPerson : (currentDetailTask.person || '—');
+  const assignee = parseAssigneeFromPerson(newPerson);
   const updates = {
     text: newText || currentDetailTask.text,
     deadline: newDeadline || null,
@@ -4850,6 +4865,9 @@ async function saveTaskEdits(){
     tags: [...currentDetailTags],
     reminder: currentDetailReminder,
     originalMsg: newOrigMsg || currentDetailTask.originalMsg,
+    person: newPerson,
+    assigneeUsername: assignee.assigneeUsername || '',
+    assigneeTgId: assignee.assigneeTgId || '',
   };
 
   // Update local cache
@@ -5448,6 +5466,19 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(aiMemoryForgetBtn) aiMemoryForgetBtn.addEventListener('click', handleForgetAllAiFacts);
   const detailContactBtn = document.getElementById('detail-contact-btn');
   if(detailContactBtn) detailContactBtn.addEventListener('click', openDetailContactPanel);
+  const detailPersonRow = document.getElementById('detail-person-row');
+  if(detailPersonRow){
+    detailPersonRow.addEventListener('click', (e)=>{
+      if(e.target && e.target.id === 'detail-contact-btn') return;
+      openDetailPersonPicker();
+    });
+    detailPersonRow.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        openDetailPersonPicker();
+      }
+    });
+  }
   const contactTelegramBtn = document.getElementById('contact-panel-telegram-btn');
   if(contactTelegramBtn) contactTelegramBtn.addEventListener('click', contactViaTelegram);
   const contactWriteBtn = document.getElementById('contact-panel-write-btn');
