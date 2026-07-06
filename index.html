@@ -4728,6 +4728,61 @@ function removeDetailChecklistItem(idx){
   saveTaskEdits();
 }
 
+function formatHistoryDate(value){
+  const d = new Date(Number(value) || value);
+  if(Number.isNaN(d.getTime())) return '';
+  return d.toLocaleString('ru-RU',{
+    day:'2-digit',
+    month:'2-digit',
+    year:'numeric',
+    hour:'2-digit',
+    minute:'2-digit'
+  });
+}
+
+function getTaskHistoryRows(task){
+  const rows = [];
+  const hasHistory = Array.isArray(task.history) && task.history.length > 0;
+  if(hasHistory){
+    task.history.forEach(function(item){
+      if(!item || !item.action) return;
+      const when = formatHistoryDate(item.at);
+      const label = item.action === 'create' ? 'Создана задача' :
+        item.action === 'done' ? 'Выполнена' :
+        item.action === 'update' ? 'Изменена' :
+        'Событие';
+      const details = item.message ? ' — ' + item.message : '';
+      const changes = Array.isArray(item.changes) && item.changes.length ? ' [' + item.changes.join('; ') + ']' : '';
+      rows.push(label + details + ' (' + (when || '—') + ')' + changes);
+    });
+    return rows;
+  }
+  const createdAt = Number(task.createdAt) || 0;
+  if(createdAt){
+    rows.push('Задача создана (' + formatHistoryDate(createdAt) + ')');
+  }
+  const updatedAt = Number(task.updatedAt) || 0;
+  if(updatedAt && (!createdAt || Math.abs(updatedAt - createdAt) > 1e3)){
+    rows.push('Обновлена (' + formatHistoryDate(updatedAt) + ')');
+  }
+  const doneAt = Number(task.doneAt) || 0;
+  if((task.done || task.status === 'done') && doneAt){
+    rows.push('Выполнена (' + formatHistoryDate(doneAt) + ')');
+  }
+  return rows;
+}
+
+function renderTaskHistory(task){
+  const historyEl = document.getElementById('detail-history-list');
+  if(!historyEl) return;
+  const rows = getTaskHistoryRows(task).filter(Boolean);
+  if(!rows.length){
+    historyEl.textContent = 'История изменений пуста';
+    return;
+  }
+  historyEl.innerHTML = rows.map(function(row){ return '<div class="task-history-row">'+row+'</div>'; }).join('\n');
+}
+
 function openTask(t,idx){
   currentDetailTask = t;
   currentTaskId = t.id;
@@ -4767,7 +4822,7 @@ function openTask(t,idx){
   const commEl = document.getElementById('detail-comments-list');
   if(commEl) commEl.textContent = 'Обсуждения пока нет';
   const histEl = document.getElementById('detail-history-list');
-  if(histEl) histEl.textContent = 'История изменений пуста';
+  if(histEl) renderTaskHistory(t);
 
   // Сброс табов
   switchDetailTab('comments', document.getElementById('tab-comments'));
