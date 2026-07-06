@@ -805,8 +805,8 @@
           <div class="mini-chart">
             <svg class="mini-chart-line" viewBox="0 0 300 60" preserveAspectRatio="none">
               <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.3"/><stop offset="100%" stop-color="#9AC23C" stop-opacity="0"/></linearGradient></defs>
-              <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3 L300,60 L0,60 Z" fill="url(#chartGrad)"/>
-              <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3" fill="none" stroke="#9AC23C" stroke-width="2"/>
+              <path id="stat-progress-area" d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3 L300,60 L0,60 Z" fill="url(#chartGrad)"/>
+              <path id="stat-progress-line" d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3" fill="none" stroke="#9AC23C" stroke-width="2"/>
             </svg>
           </div>
         </div>
@@ -831,7 +831,18 @@
       </div>
       <div class="section">
         <div class="progress-card">
-          <div class="progress-header"><span class="progress-title">Активные задачи</span><span style="font-size:12px;color:var(--green);cursor:pointer">Смотреть все</span></div>
+          <div class="progress-header"><span class="progress-title">Обещания</span><span class="progress-period" onclick="openPromiseList()">Смотреть все</span></div>
+          <div class="cat-list" id="stats-promises-list">
+            <div class="cat-item"><span class="cat-name">Активные обещания</span><span><strong id="stats-promises-total">—</strong></span></div>
+            <div class="cat-item"><span class="cat-name">Просрочено</span><span><strong id="stats-promises-overdue">—</strong></span></div>
+            <div class="cat-item"><span class="cat-name">Горят сегодня / завтра</span><span><strong id="stats-promises-hot">—</strong></span></div>
+            <div class="cat-item"><span class="cat-name">Чаще всего ждёт</span><span><strong id="stats-promises-top-person">—</strong></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="progress-card">
+          <div class="progress-header"><span class="progress-title">Активные задачи</span><span class="progress-period" onclick="openActiveTaskList()">Смотреть все</span></div>
           <div class="active-tasks-list" id="stat-tasks-list">
             <div class="active-task-row"><span class="active-task-name">Загружаю...</span></div>
           </div>
@@ -839,9 +850,17 @@
       </div>
       <div class="section">
         <div class="progress-card">
-          <div class="progress-header"><span class="progress-title">По дням</span></div>
+          <div class="progress-header"><span class="progress-title">Ритм недели</span><span class="progress-period">локально по задачам</span></div>
           <div class="bar-chart" id="bar-chart"></div>
           <div style="display:flex;justify-content:space-between" id="bar-labels"></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="progress-card">
+          <div class="progress-header"><span class="progress-title">Советы 4</span><span class="progress-period">по результативности</span></div>
+          <div class="active-tasks-list" id="stats-ai-tips">
+            <div class="active-task-row"><span class="active-task-name">Собираю советы...</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -3888,6 +3907,158 @@ function selectMonth(idx, el){
   el.classList.remove('inactive'); el.classList.add('active');
 }
 
+function getStatsTimestampMs(value){
+  if(value===null || value===undefined || value==='') return null;
+  if(typeof value === 'number' && Number.isFinite(value)){
+    return value < 1e11 ? value * 1000 : value;
+  }
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+function getTaskCreatedTimestamp(task){
+  if(!task || typeof task !== 'object') return null;
+  return getStatsTimestampMs(task.createdAt) || getStatsTimestampMs(task.ts) || getStatsTimestampMs(task.updatedAt);
+}
+
+function getStatsLast7DayBuckets(tasks){
+  const dayMs = 86400000;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const start = today.getTime() - 6 * dayMs;
+  const weekDays = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  const buckets = [];
+  const bucketMap = new Map();
+  for(let i=0;i<7;i++){
+    const ts = start + i * dayMs;
+    const bucket = {ts, label: weekDays[new Date(ts).getDay()], created:0, done:0};
+    buckets.push(bucket);
+    bucketMap.set(ts, bucket);
+  }
+  (Array.isArray(tasks) ? tasks : []).forEach(task => {
+    const createdTs = getTaskCreatedTimestamp(task);
+    if(createdTs !== null){
+      const createdDate = new Date(createdTs);
+      createdDate.setHours(0,0,0,0);
+      const createdBucket = bucketMap.get(createdDate.getTime());
+      if(createdBucket) createdBucket.created += 1;
+    }
+    const doneTs = task?.done ? getAskTaskDoneTimestamp(task) : null;
+    if(doneTs !== null){
+      const doneDate = new Date(doneTs);
+      doneDate.setHours(0,0,0,0);
+      const doneBucket = bucketMap.get(doneDate.getTime());
+      if(doneBucket) doneBucket.done += 1;
+    }
+  });
+  return buckets;
+}
+
+function buildStatsSparklinePaths(values){
+  const safe = Array.isArray(values) && values.length ? values.map(v => Number(v) || 0) : [0,0,0,0,0,0,0];
+  const width = 300;
+  const height = 60;
+  const padX = 6;
+  const padY = 4;
+  const max = Math.max(1, ...safe);
+  const step = safe.length > 1 ? (width - padX * 2) / (safe.length - 1) : 0;
+  const points = safe.map((value, index) => {
+    const x = Number((padX + index * step).toFixed(2));
+    const y = Number((height - padY - ((value / max) * (height - padY * 2))).toFixed(2));
+    return {x, y};
+  });
+  const line = points.map((point, index) => (index===0 ? 'M' : 'L') + point.x + ',' + point.y).join(' ');
+  const last = points[points.length - 1];
+  const first = points[0];
+  const area = line + ' L ' + last.x + ',' + (height - padY) + ' L ' + first.x + ',' + (height - padY) + ' Z';
+  return {line, area};
+}
+
+function getStatsHotTaskCount(tasks){
+  const today = startOfLocalDay(new Date());
+  return (Array.isArray(tasks) ? tasks : []).filter(task => {
+    const value = getTaskDeadlineValue(task);
+    const date = parseTaskDate(value);
+    if(!date) return false;
+    const diff = Math.round((date - today) / 86400000);
+    return diff <= 1;
+  }).length;
+}
+
+function getStatsTopPerson(tasks){
+  const counts = new Map();
+  (Array.isArray(tasks) ? tasks : []).forEach(task => {
+    const name = String(task?.person || '').trim();
+    if(!name) return;
+    counts.set(name, (counts.get(name) || 0) + 1);
+  });
+  let topName = '';
+  let topCount = 0;
+  counts.forEach((count, name) => {
+    if(count > topCount){
+      topName = name;
+      topCount = count;
+    }
+  });
+  return topName ? {name: topName, count: topCount} : null;
+}
+
+function getStatsTaskUrgency(task){
+  const value = getTaskDeadlineValue(task);
+  const date = parseTaskDate(value);
+  if(!date) return 28;
+  const today = startOfLocalDay(new Date());
+  const diff = Math.round((date - today) / 86400000);
+  if(diff < 0) return 100;
+  if(diff === 0) return 92;
+  if(diff === 1) return 78;
+  if(diff <= 3) return 60;
+  return 38;
+}
+
+function buildStatsAiTips(activeOutgoing, activeIncoming, completed){
+  const tips = [];
+  const overdueOutgoing = activeOutgoing.filter(task => isTaskOverdue(task));
+  const hotOutgoing = getStatsHotTaskCount(activeOutgoing);
+  const hotIncoming = getStatsHotTaskCount(activeIncoming);
+  const noDeadline = activeOutgoing.filter(task => !getTaskDeadlineValue(task)).length;
+  const weekAgo = Date.now() - 7 * 86400000;
+  const doneWeekCount = completed.filter(task => {
+    const doneTs = getAskTaskDoneTimestamp(task);
+    return doneTs !== null && doneTs >= weekAgo;
+  }).length;
+  const topPromisePerson = getStatsTopPerson(activeIncoming);
+
+  if(overdueOutgoing.length){
+    tips.push('Сначала разгрузите просрочку: ' + overdueOutgoing.length + ' задач уже просрочено.');
+  }
+  if(hotOutgoing >= 3){
+    tips.push('Сфокусируйтесь на ближайших дедлайнах: ' + hotOutgoing + ' задач горят сегодня или завтра.');
+  }
+  if(topPromisePerson){
+    tips.push('Больше всего обещаний сейчас перед ' + topPromisePerson.name + ': ' + topPromisePerson.count + '.');
+  }
+  if(noDeadline >= 3){
+    tips.push('Разметьте сроки хотя бы у ' + noDeadline + ' задач без дедлайна — фокус станет точнее.');
+  }
+  if(doneWeekCount >= 5){
+    tips.push('Темп хороший: за 7 дней закрыто ' + doneWeekCount + ' задач. Сохраните этот ритм.');
+  }
+  if(!tips.length){
+    tips.push('Ритм ровный: держите список коротким и закрывайте хотя бы 1 ключевую задачу в день.');
+  }
+  while(tips.length < 3){
+    if(hotIncoming){
+      tips.push('Не держите обещания в фоне: ' + hotIncoming + ' из них требуют внимания уже сейчас.');
+    }else if(activeIncoming.length){
+      tips.push('По обещаниям всё спокойно: можно заранее отправить 1 напоминание, пока сроки не начали гореть.');
+    }else{
+      tips.push('Свободный буфер есть: добавьте один заметный шаг к главной цели недели.');
+    }
+  }
+  return tips.slice(0,3);
+}
+
 async function loadStats(outgoing = [], done = [], tasks = []){
   const safeText=(id,val)=>{
     const el=document.getElementById(id);
@@ -3900,20 +4071,67 @@ async function loadStats(outgoing = [], done = [], tasks = []){
   const list=document.getElementById('stat-tasks-list');
   const bar=document.getElementById('bar-chart');
   const barLabels=document.getElementById('bar-labels');
+  const tipsEl=document.getElementById('stats-ai-tips');
+  const progressLine=document.getElementById('stat-progress-line');
+  const progressArea=document.getElementById('stat-progress-area');
   if(!list || !bar || !barLabels) return;
+  const localTasks = Array.isArray(tasks) ? tasks : [];
+  const activeOutgoing = localTasks.filter(t=>!t.done && t.direction!=='incoming');
+  const activeIncoming = localTasks.filter(t=>!t.done && t.direction==='incoming');
+  const completed = localTasks.filter(t=>!!t.done);
+  const totalLocal = localTasks.length || 1;
+  const donePct = Math.round((completed.length / totalLocal) * 100);
+  const dayBuckets = getStatsLast7DayBuckets(localTasks);
+  const doneWeekCount = dayBuckets.reduce((sum, bucket) => sum + bucket.done, 0);
+  let trendValues = dayBuckets.map(bucket => bucket.done);
+  let trendMode = 'done';
+  if(trendValues.every(value => value === 0)){
+    trendValues = dayBuckets.map(bucket => bucket.created);
+    trendMode = 'created';
+  }
+  const sparkline = buildStatsSparklinePaths(trendValues);
+  safeText('stat-percent', donePct + '%');
+  safeText('stat-delta', localTasks.length ? ('За 7 дней: ' + (trendMode === 'done' ? doneWeekCount + ' выполнено' : dayBuckets.reduce((sum, bucket) => sum + bucket.created, 0) + ' новых')) : 'Добавьте первые задачи');
+  if(progressLine) progressLine.setAttribute('d', sparkline.line);
+  if(progressArea) progressArea.setAttribute('d', sparkline.area);
+
+  const promiseTopPerson = getStatsTopPerson(activeIncoming);
+  safeText('stats-promises-total', String(activeIncoming.length));
+  safeText('stats-promises-overdue', String(activeIncoming.filter(task => isTaskOverdue(task)).length));
+  safeText('stats-promises-hot', String(getStatsHotTaskCount(activeIncoming)));
+  safeText('stats-promises-top-person', promiseTopPerson ? (promiseTopPerson.name + ' · ' + promiseTopPerson.count) : '—');
+
+  if(activeOutgoing.length===0){
+    list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';
+  }else{
+    list.innerHTML = activeOutgoing.slice(0,4).map(t=>{
+      const deadlineMeta = formatTaskCardDeadline(t);
+      const personLabel = t.person ? (e2(t.person) + ' — ') : '';
+      return '<div class="active-task-row"><span class="active-task-name">' + personLabel + e2(t.text) + '</span><div class="active-task-bar"><div class="active-task-fill" style="width:' + getStatsTaskUrgency(t) + '%"></div></div><span class="active-task-pct">' + e2(deadlineMeta.text) + '</span></div>';
+    }).join('');
+  }
+
+  const maxTrend = Math.max(1, ...trendValues);
+  bar.innerHTML = dayBuckets.map((bucket, index) => {
+    const value = trendValues[index];
+    const height = Math.round((value / maxTrend) * 70) + 4;
+    const countLabel = trendMode === 'done' ? bucket.done : bucket.created;
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar' + (index===dayBuckets.length-1 ? ' active' : '') + '" style="height:' + height + 'px"></div><span class="bar-label">' + countLabel + '</span></div>';
+  }).join('');
+  barLabels.innerHTML = dayBuckets.map(bucket => '<span style="font-size:10px;white-space:nowrap;color:var(--muted);">' + bucket.label + '</span>').join('');
+
+  if(tipsEl){
+    const tips = buildStatsAiTips(activeOutgoing, activeIncoming, completed);
+    tipsEl.innerHTML = tips.map(text => '<div class="active-task-row"><span class="active-task-name">' + e2(text) + '</span></div>').join('');
+  }
+
   const summary = await fetchAnalyticsSummary();
   if(!summary){
-    const active = Array.isArray(outgoing)?outgoing:[];
-    const completed = Array.isArray(done)?done:[];
-    const total = active.length + completed.length || 1;
-    const donePct = Math.round((completed.length/total)*100);
-    safeText('stat-percent', donePct + '%');
-    safeText('stat-delta', 'Локальные данные');
     safeText('analytics-generated-at','—');
     safeText('analytics-users-total','—');
     safeText('analytics-users-retention-d1','—');
     safeText('analytics-users-retention-d7','—');
-    safeText('analytics-tasks-total', String(active.length + completed.length));
+    safeText('analytics-tasks-total', String(activeOutgoing.length + activeIncoming.length + completed.length));
     safeText('analytics-tasks-done', `вып: ${completed.length}`);
     safeText('analytics-tasks-retention-d1','—');
     safeText('analytics-tasks-retention-d7','—');
@@ -3923,18 +4141,6 @@ async function loadStats(outgoing = [], done = [], tasks = []){
     safeText('analytics-audit-total','—');
     safeText('analytics-audit-retention-d1','—');
     safeText('analytics-audit-retention-d7','—');
-    if(active.length===0){
-      list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';
-    }else{
-      list.innerHTML = active.slice(0,4).map(t=>{
-        return `<div class="active-task-row"><span class="active-task-name">${e2(t.person)} — ${e2(t.text)}</span><div class="active-task-bar"><div class="active-task-fill" style="width:${donePct}%"></div></div><span class="active-task-pct">${donePct}%</span></div>`;
-      }).join('');
-    }
-    const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-    const fallback=[40,65,30,80,55,70,45];
-    const max=Math.max(...fallback);
-    bar.innerHTML=fallback.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${days[i]}</span></div>`).join('');
-    barLabels.innerHTML=days.map((label)=>`<span style="font-size:10px;white-space:nowrap;color:var(--muted);">${label}</span>`).join('');
     return;
   }
   const users=summary.users || {};
@@ -3945,17 +4151,11 @@ async function loadStats(outgoing = [], done = [], tasks = []){
   const tasksRetention = tasksSummary.retention || {};
   const messagesRetention = messages.retention || {};
   const auditRetention = audit.retention || {};
-  const localTasks = Array.isArray(tasks)?tasks:[];
-  const outgoingTasks = localTasks.filter(t=>!t.done);
-  const tasksTotal = safeNum(tasksSummary.total);
-  const donePct = tasksTotal > 0 ? Math.round((doneTotal / tasksTotal) * 100) : 0;
-  safeText('stat-percent', donePct + '%');
-  safeText('stat-delta', `Новые: D1 ${safeNum(tasksRetention.d1)} / D7 ${safeNum(tasksRetention.d7)}`);
   safeText('analytics-generated-at', summary.generatedAt ? new Date(summary.generatedAt).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '—');
   safeText('analytics-users-total', String(safeNum(users.total)));
   safeText('analytics-users-retention-d1', String(safeNum(usersRetention.d1)));
   safeText('analytics-users-retention-d7', String(safeNum(usersRetention.d7)));
-  safeText('analytics-tasks-total', String(tasksTotal));
+  safeText('analytics-tasks-total', String(safeNum(tasksSummary.total)));
   safeText('analytics-tasks-done', `вып: ${safeNum(tasksSummary.done)}`);
   safeText('analytics-tasks-retention-d1', String(safeNum(tasksRetention.d1)));
   safeText('analytics-tasks-retention-d7', String(safeNum(tasksRetention.d7)));
@@ -3965,18 +4165,6 @@ async function loadStats(outgoing = [], done = [], tasks = []){
   safeText('analytics-audit-total', String(safeNum(audit.total)));
   safeText('analytics-audit-retention-d1', String(safeNum(auditRetention.d1)));
   safeText('analytics-audit-retention-d7', String(safeNum(auditRetention.d7)));
-  if(outgoingTasks.length===0){
-    list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';
-  } else {
-    list.innerHTML = outgoingTasks.slice(0,4).map(t=>{
-      return `<div class="active-task-row"><span class="active-task-name">${e2(t.person)} — ${e2(t.text)}</span><div class="active-task-bar"><div class="active-task-fill" style="width:${donePct}%"></div></div><span class="active-task-pct">${donePct}%</span></div>`;
-    }).join('');
-  }
-  const bars=[safeNum(usersRetention.d1), safeNum(usersRetention.d7), safeNum(tasksRetention.d1), safeNum(tasksRetention.d7), safeNum(messagesRetention.d1), safeNum(messagesRetention.d7), safeNum(auditRetention.d1)];
-  const labels=['P.Д1','P.Д7','З.Д1','З.Д7','С.Д1','С.Д7','А.Д1'];
-  const max=Math.max(1,...bars);
-  bar.innerHTML=bars.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${labels[i]}</span></div>`).join('');
-  barLabels.innerHTML=labels.map((label)=>`<span style="font-size:10px;white-space:nowrap;color:var(--muted);">${label}</span>`).join('');
 }
 
 async function fetchAnalyticsSummary(){
@@ -4639,22 +4827,30 @@ function openStatistics(){
     custom.style.display = 'none';
     custom.innerHTML = '';
   }
-  loadStats(allTasksCache || [], [], allTasksCache || []);
+  const all = Array.isArray(allTasksCache) ? allTasksCache : [];
+  const outgoing = all.filter(t => !t.done && t.direction !== 'incoming');
+  const done = all.filter(t => !!t.done);
+  loadStats(outgoing, done, all);
 }
 
 
 // ── Done list screen (выполненные) ──────────────────────────
 function openDoneList(){
   const done = allTasksCache.filter(t=>t.done);
-  openFilteredTaskList('Выполнено', done, true);
+  openFilteredTaskList('Выполнено', done, true, 'Нет выполненных задач');
+}
+
+function openActiveTaskList(){
+  const activeTasks = allTasksCache.filter(t=>!t.done && t.direction!=='incoming');
+  openFilteredTaskList('Активные задачи', activeTasks, false, 'Нет активных задач');
 }
 
 function openPromiseList(){
   const promises = allTasksCache.filter(t=>!t.done && t.direction==='incoming');
-  openFilteredTaskList('Обещания', promises, false);
+  openFilteredTaskList('Обещания', promises, false, 'Нет обещаний');
 }
 
-function openFilteredTaskList(title, tasks, isDone){
+function openFilteredTaskList(title, tasks, isDone, emptyText){
   // Reuse statistics screen with custom content
   showScreen('statistics');
   setNavActive('stats');
@@ -4664,11 +4860,11 @@ function openFilteredTaskList(title, tasks, isDone){
   if(overview) overview.style.display = 'none';
   if(!tasks.length){
     scroll.style.display = 'block';
-    scroll.innerHTML = '<div style="text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)">' + (isDone ? 'Нет выполненных задач' : 'Нет обещаний') + '</div>';
+    scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div><div style="text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)">' + e2(emptyText || (isDone ? 'Нет выполненных задач' : 'Нет задач')) + '</div>';
     return;
   }
   scroll.style.display = 'block';
-  scroll.innerHTML = '<div style="margin-bottom:16px">' +
+  scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div><div style="margin-bottom:16px">' +
     tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
       '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(formatTaskDateSummary(t)) + '</div></div>' +
       (isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="font-size:9px;color:var(--muted)">ждём</span>') +
