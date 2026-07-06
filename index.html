@@ -3631,11 +3631,18 @@ function getTaskCardPriority(t){
   if(/(^|\s|#)p2(\s|$|,|;|#)/.test(raw))return'p2';
   return'p3';
 }
+function getDirectionLabel(direction){
+  const raw=(direction || '').trim().toLowerCase();
+  if(raw==='incoming') return 'Личное';
+  if(raw==='outgoing') return 'Исходящее / Я должен';
+  return raw ? direction : 'Работа';
+}
 function getTaskCardCategory(t){
   if(t?.direction==='incoming')return{label:'Личное',cls:'cat-badge-personal'};
   const tags=Array.isArray(t?.tags)?t.tags:(typeof t?.tags==='string'?t.tags.split(',').map(s=>s.trim()).filter(Boolean):[]);
   if(tags.length)return{label:tags[0].slice(0,18),cls:'cat-badge-work'};
-  return{label:'Работа',cls:t?.deadline?'cat-badge-work':'cat-badge-personal'};
+  const directionLabel=getDirectionLabel(t?.directionLabel || t?.direction || '');
+  return{label:directionLabel,cls:t?.deadline?'cat-badge-work':'cat-badge-personal'};
 }
 function getTaskCardTitle(t){return(t?.person?(t.person+' — '):'')+(t?.text||'Задача');}
 function renderTaskCard(t,i){
@@ -4240,7 +4247,7 @@ function openTask(t,idx){
   const dirEl = document.getElementById('detail-direction');
   if(personEl) personEl.textContent = t.person || '—';
   if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime || t.date || t.deadline || '');
-  if(dirEl) dirEl.value = currentDetailDirectionLabel;
+  if(dirEl) dirEl.value = getDirectionLabel(currentDetailDirectionLabel);
   setDetailStatus(currentDetailStatus);
   setDetailPriority(currentDetailPriority);
   setDetailDeadline(currentDetailTime);
