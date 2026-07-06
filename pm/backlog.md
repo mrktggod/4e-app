@@ -62,7 +62,7 @@
 | SMART-005 | Утренняя сводка по чату | Product/Bot | P2 | Codex | Done | Г1 | Подключить готовый `checkBriefings()` + per-group сводка; расписание через Cloudflare Cron Triggers; связан с BACK-017 |
 | BACK-036 | Распил index.html: общее ядро + адаптеры TG/VK | Tech | P1 | Codex, поэтапно | Todo | Г1–Г2 | CSS/JS вынесены в модули, vk.html использует общее ядро; готовит MAX и сторы; снимает проблему кириллицы при правках |
 | BACK-037 | CI + смоук-тесты API | Tech | P2 | Codex | In Progress | Г1–Г2 | GitHub Actions: проверка кодировки, линт, минификация; автотесты auth/tasks CRUD//transcribe |
-| BACK-038 | Аналитика событий + D1/D7 retention | Tech/Product | P2 | Codex | Todo | Г1–Г2 | События: вход, создание задачи, шеринг; дашборд retention для оценки беты и виральности |
+| BACK-038 | Аналитика событий + D1/D7 retention | Tech/Product | P2 | Codex | Ready for QA | Г1–Г2 | События: вход, создание задачи, шеринг; дашборд retention для оценки беты и виральности |
 
 ## Later
 

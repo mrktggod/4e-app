@@ -794,47 +794,58 @@
     <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:5px 12px;font-size:11px;color:var(--muted);cursor:pointer">Месяц задач ▾</div>
   </div>
   <div class="stats-scroll">
-    <div class="section">
-      <div class="progress-card">
-        <div class="progress-header">
-          <span class="progress-title">Общий прогресс</span>
-          <span class="progress-period">Эта неделя ▾</span>
+    <div id="stats-overview">
+      <div class="section">
+        <div class="progress-card">
+          <div class="progress-header">
+            <span class="progress-title">Общий прогресс</span>
+            <span class="progress-period">Эта неделя ▾</span>
+          </div>
+          <div class="big-percent" id="stat-percent">75%<span id="stat-delta">+12%</span></div>
+          <div class="mini-chart">
+            <svg class="mini-chart-line" viewBox="0 0 300 60" preserveAspectRatio="none">
+              <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.3"/><stop offset="100%" stop-color="#9AC23C" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3 L300,60 L0,60 Z" fill="url(#chartGrad)"/>
+              <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3" fill="none" stroke="#9AC23C" stroke-width="2"/>
+            </svg>
+          </div>
         </div>
-        <div class="big-percent" id="stat-percent">75%<span id="stat-delta">+12%</span></div>
-        <div class="mini-chart">
-          <svg class="mini-chart-line" viewBox="0 0 300 60" preserveAspectRatio="none">
-            <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.3"/><stop offset="100%" stop-color="#9AC23C" stop-opacity="0"/></linearGradient></defs>
-            <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3 L300,60 L0,60 Z" fill="url(#chartGrad)"/>
-            <path d="M0,50 C30,45 60,20 90,25 C120,30 150,10 180,15 C210,20 240,8 270,5 L300,3" fill="none" stroke="#9AC23C" stroke-width="2"/>
-          </svg>
+      </div>
+      <div class="section">
+        <div class="progress-card">
+          <div class="progress-header">
+            <span class="progress-title">Аналитика</span>
+            <span id="analytics-generated-at" style="font-size:11px;color:var(--muted)">—</span>
+          </div>
+          <div class="cat-list" id="analytics-metrics">
+            <div class="cat-item"><span class="cat-name">Пользователи</span><span><strong id="analytics-users-total">—</strong></span></div>
+            <div class="cat-item"><span class="cat-name">Задачи</span><span><strong id="analytics-tasks-total">—</strong><span style="font-size:10px;color:var(--muted)" id="analytics-tasks-done">—</span></span></div>
+            <div class="cat-item"><span class="cat-name">AI-сообщения</span><span><strong id="analytics-messages-total">—</strong></span></div>
+            <div class="cat-item"><span class="cat-name">Аудит-события</span><span><strong id="analytics-audit-total">—</strong></span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:12px;row-gap:6px;font-size:11px;color:var(--muted);margin-top:10px">
+            <div><span style="color:var(--text)">Retention D1:</span> <span id="analytics-users-retention-d1">—</span>, <span id="analytics-tasks-retention-d1">—</span>, <span id="analytics-messages-retention-d1">—</span>, <span id="analytics-audit-retention-d1">—</span></div>
+            <div><span style="color:var(--text)">Retention D7:</span> <span id="analytics-users-retention-d7">—</span>, <span id="analytics-tasks-retention-d7">—</span>, <span id="analytics-messages-retention-d7">—</span>, <span id="analytics-audit-retention-d7">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="progress-card">
+          <div class="progress-header"><span class="progress-title">Активные задачи</span><span style="font-size:12px;color:var(--green);cursor:pointer">Смотреть все</span></div>
+          <div class="active-tasks-list" id="stat-tasks-list">
+            <div class="active-task-row"><span class="active-task-name">Загружаю...</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="progress-card">
+          <div class="progress-header"><span class="progress-title">По дням</span></div>
+          <div class="bar-chart" id="bar-chart"></div>
+          <div style="display:flex;justify-content:space-between" id="bar-labels"></div>
         </div>
       </div>
     </div>
-    <div class="section">
-      <div class="progress-card">
-        <div class="progress-header"><span class="progress-title">Активные задачи</span><span style="font-size:12px;color:var(--green);cursor:pointer">Смотреть все</span></div>
-        <div class="active-tasks-list" id="stat-tasks-list">
-          <div class="active-task-row"><span class="active-task-name">Загружаю...</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="progress-card">
-        <div class="progress-header"><span class="progress-title">По категориям</span></div>
-        <div class="cat-list">
-          <div class="cat-item"><div class="cat-dot" style="background:#9AC23C"></div><span class="cat-name">Обещания</span><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:60%"></div></div><span class="cat-pct">60%</span></div>
-          <div class="cat-item"><div class="cat-dot" style="background:#7A9A2E"></div><span class="cat-name">Дедлайны</span><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:35%;background:#7A9A2E"></div></div><span class="cat-pct">35%</span></div>
-          <div class="cat-item"><div class="cat-dot" style="background:#556B1F"></div><span class="cat-name">Задачи</span><div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:5%;background:#556B1F"></div></div><span class="cat-pct">5%</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="progress-card">
-        <div class="progress-header"><span class="progress-title">По дням</span></div>
-        <div class="bar-chart" id="bar-chart"></div>
-        <div style="display:flex;justify-content:space-between" id="bar-labels"></div>
-      </div>
-    </div>
+    <div class="section" id="stats-custom-list" style="display:none"></div>
   </div>
 </div>
 
@@ -2090,6 +2101,7 @@ let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt 
 let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
+let analyticsSummaryCache={at:0, summary:null};
 
 const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
 const tgInitData=window.Telegram?.WebApp?.initData||'';
@@ -3473,8 +3485,8 @@ async function loadTasks(){
     const allHome = [...outgoing, ...incoming];
     if(showAllBtn) showAllBtn.style.display = allHome.length > 6 ? 'flex' : 'none';
 
-    selectedMonth = new Date().getMonth();
-  loadStats(outgoing, done);
+  selectedMonth = new Date().getMonth();
+  loadStats(outgoing, done, tasks);
     setTimeout(function(){if(typeof _addCheckboxesToTaskRows==='function')_addCheckboxesToTaskRows();},150);
   }catch(e){console.log('Ошибка loadTasks:',e.message);}
 }
@@ -3792,20 +3804,113 @@ function selectMonth(idx, el){
   el.classList.remove('inactive'); el.classList.add('active');
 }
 
-function loadStats(outgoing, done){
+async function loadStats(outgoing = [], done = [], tasks = []){
+  const safeText=(id,val)=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent = val;
+  };
+  const safeNum=(value,fallback=0)=>{
+    const n=Number(value);
+    return Number.isFinite(n)?n:fallback;
+  };
   const list=document.getElementById('stat-tasks-list');
-  if(!list)return;
-  if(outgoing.length===0){list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';return;}
-  const total=outgoing.length+done.length||1;
-  list.innerHTML=outgoing.slice(0,4).map(t=>{
-    const pct=Math.round((done.length/total)*100)||Math.floor(Math.random()*40+20);
-    return`<div class="active-task-row"><span class="active-task-name">${e2(t.person)} — ${e2(t.text)}</span><div class="active-task-bar"><div class="active-task-fill" style="width:${pct}%"></div></div><span class="active-task-pct">${pct}%</span></div>`;
-  }).join('');
-  // Bar chart
-  const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-  const vals=[40,65,30,80,55,70,45];
-  const max=Math.max(...vals);
-  document.getElementById('bar-chart').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${days[i]}</span></div>`).join('');
+  const bar=document.getElementById('bar-chart');
+  const barLabels=document.getElementById('bar-labels');
+  if(!list || !bar || !barLabels) return;
+  const summary = await fetchAnalyticsSummary();
+  if(!summary){
+    const active = Array.isArray(outgoing)?outgoing:[];
+    const completed = Array.isArray(done)?done:[];
+    const total = active.length + completed.length || 1;
+    const donePct = Math.round((completed.length/total)*100);
+    safeText('stat-percent', donePct + '%');
+    safeText('stat-delta', 'Локальные данные');
+    safeText('analytics-generated-at','—');
+    safeText('analytics-users-total','—');
+    safeText('analytics-users-retention-d1','—');
+    safeText('analytics-users-retention-d7','—');
+    safeText('analytics-tasks-total', String(active.length + completed.length));
+    safeText('analytics-tasks-done', `вып: ${completed.length}`);
+    safeText('analytics-tasks-retention-d1','—');
+    safeText('analytics-tasks-retention-d7','—');
+    safeText('analytics-messages-total','—');
+    safeText('analytics-messages-retention-d1','—');
+    safeText('analytics-messages-retention-d7','—');
+    safeText('analytics-audit-total','—');
+    safeText('analytics-audit-retention-d1','—');
+    safeText('analytics-audit-retention-d7','—');
+    if(active.length===0){
+      list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';
+    }else{
+      list.innerHTML = active.slice(0,4).map(t=>{
+        return `<div class="active-task-row"><span class="active-task-name">${e2(t.person)} — ${e2(t.text)}</span><div class="active-task-bar"><div class="active-task-fill" style="width:${donePct}%"></div></div><span class="active-task-pct">${donePct}%</span></div>`;
+      }).join('');
+    }
+    const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+    const fallback=[40,65,30,80,55,70,45];
+    const max=Math.max(...fallback);
+    bar.innerHTML=fallback.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${days[i]}</span></div>`).join('');
+    barLabels.innerHTML=days.map((label)=>`<span style="font-size:10px;white-space:nowrap;color:var(--muted);">${label}</span>`).join('');
+    return;
+  }
+  const users=summary.users || {};
+  const tasksSummary=summary.tasks || {};
+  const messages=summary.messages || {};
+  const audit=summary.auditEvents || {};
+  const usersRetention = users.retention || {};
+  const tasksRetention = tasksSummary.retention || {};
+  const messagesRetention = messages.retention || {};
+  const auditRetention = audit.retention || {};
+  const localTasks = Array.isArray(tasks)?tasks:[];
+  const outgoingTasks = localTasks.filter(t=>!t.done);
+  const tasksTotal = safeNum(tasksSummary.total);
+  const donePct = tasksTotal > 0 ? Math.round((doneTotal / tasksTotal) * 100) : 0;
+  safeText('stat-percent', donePct + '%');
+  safeText('stat-delta', `Новые: D1 ${safeNum(tasksRetention.d1)} / D7 ${safeNum(tasksRetention.d7)}`);
+  safeText('analytics-generated-at', summary.generatedAt ? new Date(summary.generatedAt).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '—');
+  safeText('analytics-users-total', String(safeNum(users.total)));
+  safeText('analytics-users-retention-d1', String(safeNum(usersRetention.d1)));
+  safeText('analytics-users-retention-d7', String(safeNum(usersRetention.d7)));
+  safeText('analytics-tasks-total', String(tasksTotal));
+  safeText('analytics-tasks-done', `вып: ${safeNum(tasksSummary.done)}`);
+  safeText('analytics-tasks-retention-d1', String(safeNum(tasksRetention.d1)));
+  safeText('analytics-tasks-retention-d7', String(safeNum(tasksRetention.d7)));
+  safeText('analytics-messages-total', String(safeNum(messages.total)));
+  safeText('analytics-messages-retention-d1', String(safeNum(messagesRetention.d1)));
+  safeText('analytics-messages-retention-d7', String(safeNum(messagesRetention.d7)));
+  safeText('analytics-audit-total', String(safeNum(audit.total)));
+  safeText('analytics-audit-retention-d1', String(safeNum(auditRetention.d1)));
+  safeText('analytics-audit-retention-d7', String(safeNum(auditRetention.d7)));
+  if(outgoingTasks.length===0){
+    list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';
+  } else {
+    list.innerHTML = outgoingTasks.slice(0,4).map(t=>{
+      return `<div class="active-task-row"><span class="active-task-name">${e2(t.person)} — ${e2(t.text)}</span><div class="active-task-bar"><div class="active-task-fill" style="width:${donePct}%"></div></div><span class="active-task-pct">${donePct}%</span></div>`;
+    }).join('');
+  }
+  const bars=[safeNum(usersRetention.d1), safeNum(usersRetention.d7), safeNum(tasksRetention.d1), safeNum(tasksRetention.d7), safeNum(messagesRetention.d1), safeNum(messagesRetention.d7), safeNum(auditRetention.d1)];
+  const labels=['P.Д1','P.Д7','З.Д1','З.Д7','С.Д1','С.Д7','А.Д1'];
+  const max=Math.max(1,...bars);
+  bar.innerHTML=bars.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div class="bar${i===3?' active':''}" style="height:${Math.round(v/max*70)+4}px"></div><span class="bar-label">${labels[i]}</span></div>`).join('');
+  barLabels.innerHTML=labels.map((label)=>`<span style="font-size:10px;white-space:nowrap;color:var(--muted);">${label}</span>`).join('');
+}
+
+async function fetchAnalyticsSummary(){
+  const now = Date.now();
+  if(analyticsSummaryCache.summary && now - analyticsSummaryCache.at < 30000){
+    return analyticsSummaryCache.summary;
+  }
+  try {
+    const response = await withTimeout(fetch(WORKER + '/analytics/summary'), 10000);
+    const data = await readJsonSafe(response);
+    if(response && response.ok && data?.ok && data.summary){
+      analyticsSummaryCache = {at: now, summary: data.summary};
+      return data.summary;
+    }
+  } catch (e){
+    console.log('analytics summary failed', e?.message || e);
+  }
+  return analyticsSummaryCache.summary;
 }
 
 let plannerCompactMode = false;
@@ -4439,7 +4544,18 @@ function notifGoToTask(el){ var id=(typeof el==='string')?el:el.dataset?.nid;
   showToast('Открываю задачу...');
   goHome();
 }
-function openStatistics(){showScreen('statistics');setNavActive('stats');}
+function openStatistics(){
+  showScreen('statistics');
+  setNavActive('stats');
+  const overview = document.getElementById('stats-overview');
+  const custom = document.getElementById('stats-custom-list');
+  if(overview) overview.style.display = 'block';
+  if(custom){
+    custom.style.display = 'none';
+    custom.innerHTML = '';
+  }
+  loadStats(allTasksCache || [], [], allTasksCache || []);
+}
 
 
 // ── Done list screen (выполненные) ──────────────────────────
@@ -4457,12 +4573,16 @@ function openFilteredTaskList(title, tasks, isDone){
   // Reuse statistics screen with custom content
   showScreen('statistics');
   setNavActive('stats');
-  const scroll = document.querySelector('#statistics .stats-scroll');
+  const scroll = document.getElementById('stats-custom-list');
+  const overview = document.getElementById('stats-overview');
   if(!scroll) return;
+  if(overview) overview.style.display = 'none';
   if(!tasks.length){
+    scroll.style.display = 'block';
     scroll.innerHTML = '<div style="text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)">' + (isDone ? 'Нет выполненных задач' : 'Нет обещаний') + '</div>';
     return;
   }
+  scroll.style.display = 'block';
   scroll.innerHTML = '<div style="margin-bottom:16px">' +
     tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
       '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(formatTaskDateSummary(t)) + '</div></div>' +
