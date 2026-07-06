@@ -865,14 +865,25 @@
       </div>
       <div class="profile-field-grid">
         <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
-        <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="toggleProfileVerified('phone')">Не подтверждён</button></div></label>
-        <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
-        <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
       </div>
     </div>
 
     <div class="sub-card profile-form-card">
-      <label class="profile-field"><span>Дата рождения</span><input id="profile-field-birthdate" type="date"></label>
+      <div class="profile-item" onclick="toggleProfilePersonalData()" style="padding:10px 14px; margin:0 -2px; border:0">
+        <div class="profile-item-left">
+          <div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+          <span class="profile-item-text">Личные данные аккаунта</span>
+        </div>
+        <span class="profile-item-arrow" id="profile-pii-arrow">›</span>
+      </div>
+      <div id="profile-pii-section" style="display:none;padding:4px 12px 0">
+        <div class="profile-field-grid">
+          <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.stopPropagation();toggleProfileVerified('phone')">Не подтверждён</button></div></label>
+          <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="event.stopPropagation();requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
+          <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
+          <label class="profile-field" style="padding-top:4px"><span>Дата рождения</span><input id="profile-field-birthdate" type="date" onclick="event.stopPropagation()"></label>
+        </div>
+      </div>
     </div>
 
     <div class="sub-card profile-form-card">
@@ -2275,6 +2286,8 @@ function setProfileText(id,value){const el=document.getElementById(id);if(el)el.
 function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
 function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerified&&String(email||'').trim().toLowerCase()===String(currentUser.email||'').trim().toLowerCase();}
 function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Не подтверждён');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
+function closeProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(sec)sec.style.display='none';if(arrow)arrow.textContent='›';}
+function toggleProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(!sec)return;const hidden=sec.style.display==='none' || sec.style.display==='';sec.style.display=hidden?'block':'none';if(arrow)arrow.textContent=hidden?'⌄':'›';}
 function renderExtendedProfile(){
   if(!currentUser)return;
   const draft=getExtendedProfileDraft();
@@ -3820,7 +3833,7 @@ async function openAsk(){
   setTimeout(()=>{const f=document.getElementById('ask-field');if(f)f.focus();},300);
 }
 function openCalendar(){showScreen('calendar');setNavActive('cal');renderCalendar();}
-function openProfile(){showScreen('profile');setNavActive('profile');renderExtendedProfile();}
+function openProfile(){showScreen('profile');setNavActive('profile');closeProfilePersonalData();renderExtendedProfile();}
 // ── NOTIFICATIONS (реальные из KV) ───────────────────────────
 let notifFilter = 'all';
 let notifCache = []; // кэш загруженных уведомлений
