@@ -11,3 +11,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check portable paths
         run: bash scripts/check-portable-paths.sh
+      - name: Check markdown encoding for pm/ and shared/
+        run: node scripts/check-doc-encoding.mjs
