@@ -915,6 +915,17 @@
       <label class="profile-field profile-field-full profile-about-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small class="profile-field-counter" id="profile-about-counter">0 / 200</small></label>
     </div>
 
+    <div class="sub-card profile-form-card">
+      <div class="profile-field-grid">
+        <label class="profile-field profile-field-full">
+          <span>Реферальная ссылка</span>
+          <input id="profile-ref-link" type="text" readonly>
+        </label>
+      </div>
+      <button class="profile-save-btn" type="button" onclick="copyReferralLink()">Скопировать ссылку</button>
+      <div class="profile-item-text" id="profile-ref-count">Приглашено: 0</div>
+    </div>
+
     <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
 
     <div class="profile-menu">
@@ -2098,6 +2109,7 @@ let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', i
 let convPollingTimer=null, currentConvPollingId=null;
 const notifReadSet = new Set();
 let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
+const REF_PENDING_K='pendingReferralCode';
 let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
@@ -2167,6 +2179,60 @@ function getTelegramStartTokenFromLaunch() {
     if(value)return String(value).trim();
   }
   return '';
+}
+
+function normalizeReferralCode(value){
+  return String(value||'').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'').slice(0,32);
+}
+
+function getReferralCodeFromLaunch(){
+  const fromSearch = new URLSearchParams(window.location.search || '');
+  const fromHash = new URLSearchParams((window.location.hash || '').replace(/^#/, '?'));
+  const keys=['ref','referral','invite'];
+  for(const key of keys){
+    const value=fromSearch.get(key)||fromHash.get(key);
+    const normalized=normalizeReferralCode(value);
+    if(normalized) return normalized;
+  }
+  return '';
+}
+
+function savePendingReferralCode(code){
+  const normalized=normalizeReferralCode(code);
+  if(!normalized) return;
+  try{localStorage.setItem(REF_PENDING_K,normalized);}catch(e){}
+}
+
+function getPendingReferralCode(){
+  try{return normalizeReferralCode(localStorage.getItem(REF_PENDING_K)||'');}catch(e){return'';}
+}
+
+function clearPendingReferralCode(){
+  try{localStorage.removeItem(REF_PENDING_K);}catch(e){}
+}
+
+function capturePendingReferralCode(){
+  const code=getReferralCodeFromLaunch();
+  if(code) savePendingReferralCode(code);
+}
+
+function buildReferralLink(){
+  const code=normalizeReferralCode(currentUser?.referralCode||'');
+  if(!code) return '';
+  const url=new URL(window.location.origin+window.location.pathname);
+  url.searchParams.set('ref',code);
+  return url.toString();
+}
+
+async function copyReferralLink(){
+  const link=buildReferralLink();
+  if(!link){showToast('Ссылка появится после входа');return;}
+  try{
+    await navigator.clipboard?.writeText(link);
+    showToast('Ссылка скопирована');
+  }catch(e){
+    showToast('Не удалось скопировать');
+  }
 }
 
 function getTelegramReturnUrl(){
@@ -2254,6 +2320,7 @@ async function getVkLaunchParams(){
 async function initApp(){
   const tg=window.Telegram?.WebApp;
   if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
+  capturePendingReferralCode();
   loadTariffConfig().catch(()=>{});
   showStartupFallback();
 
@@ -2291,12 +2358,14 @@ async function initApp(){
       await withTimeout(vkBridge.send("VKWebAppInit"),4000);
       const vkU=await withTimeout(vkBridge.send("VKWebAppGetUserInfo"),4000);
       const launchParams=await getVkLaunchParams();
-      const vkResp=await withTimeout(fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||""})}),10000);
+      const pendingRef=getPendingReferralCode();
+      const vkResp=await withTimeout(fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||"",...(pendingRef?{ref:pendingRef}:{})})}),10000);
       const vkR=await readJsonSafe(vkResp);
       if(vkR.token){
         setLegacyToken(vkR.token);
         currentUser=vkR.user||{name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};
         chatId="user_"+currentUser.id;
+        clearPendingReferralCode();
         applyUserInfo();
         showScreen("home");
         showAccountMergeToast(vkR);
@@ -2368,6 +2437,8 @@ function renderExtendedProfile(){
   setProfileVerifiedBadge('profile-telegram-status',!!currentUser.telegramId,currentUser.telegramId?'Привязан':'Не привязан');
   setProfileVerifiedBadge('profile-phone-status',draft.phoneVerified??!!currentUser.phoneVerified);
   setProfileEmailBadge(isCurrentProfileEmailVerified(profileEmail));
+  setProfileFieldValue('profile-ref-link',buildReferralLink());
+  setProfileText('profile-ref-count','Приглашено: '+Number(currentUser.referralCount||0));
 }
 function updateProfileAboutCounter(){const el=document.getElementById('profile-field-about');const counter=document.getElementById('profile-about-counter');if(counter)counter.textContent=((el?.value||'').length)+' / 200';}
 function toggleProfileVerified(field){const draft=getExtendedProfileDraft();const key=field+'Verified';draft[key]=!draft[key];saveExtendedProfileDraft(draft);renderExtendedProfile();}
@@ -2631,18 +2702,20 @@ async function doRegister(){
   const btn=document.getElementById('reg-submit-btn');
   btn.disabled=true; btn.textContent='Создаём аккаунт...';
   try{
-    const r=await fetch(WORKER+'/auth/register',{method:'POST',headers:authHeaders(),body:JSON.stringify({name,email,password:pass})});
+    const pendingRef=getPendingReferralCode();
+    const r=await fetch(WORKER+'/auth/register',{method:'POST',headers:authHeaders(),body:JSON.stringify({name,email,password:pass,...(pendingRef?{ref:pendingRef}:{})})});
     const d=await r.json();
     if(d.ok){
       setLegacyToken(d.token);
       currentUser=d.user;
       chatId='user_'+currentUser.id;
+      clearPendingReferralCode();
       applyUserInfo();
       localStorage.setItem(ONBOARD_K,'1');
       showScreen('home');
       loadTasks();
       linkTelegram();
-      showToast('Добро пожаловать! 30 дней Premium 🎁');
+      showToast(d.referralApplied?'Добро пожаловать! +30 дней вам обоим':'Добро пожаловать! 30 дней Premium 🎁');
     } else {
       showToast(d.error||'Ошибка регистрации');
     }
@@ -2679,6 +2752,7 @@ async function doLogin(){
       localStorage.removeItem(LOGOUT_K);
       currentUser=d.user;
       chatId='user_'+currentUser.id;
+      clearPendingReferralCode();
       applyUserInfo();
       showScreen('home');
       loadTasks();
@@ -2701,13 +2775,14 @@ async function loginWithTelegramLegacy(){
     const r=await withTimeout(fetch(WORKER+'/auth/telegram',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({initData:tgInitData, user:tgUser})
+      body:JSON.stringify({initData:tgInitData, user:tgUser, ...(getPendingReferralCode()?{ref:getPendingReferralCode()}: {})})
     }),8000);
     const d=await readJsonSafe(r);
     if(d.ok&&d.token){
       setLegacyToken(d.token);
       currentUser=d.user;
       chatId='user_'+currentUser.id;
+      clearPendingReferralCode();
       applyUserInfo();
       localStorage.setItem(ONBOARD_K,'1');
       showScreen('home');
@@ -2734,6 +2809,9 @@ async function loginWithTelegramLegacy(){
 async function loginWithTelegram(startToken=''){
   if(startToken){
     const body = { startToken };
+    const pendingRef = getPendingReferralCode();
+    if (pendingRef)
+      body.ref = pendingRef;
     if (tgInitData) {
       body.initData = tgInitData;
       if (tgUser) body.user = tgUser;
@@ -2751,6 +2829,7 @@ async function loginWithTelegram(startToken=''){
         chatId = 'user_' + currentUser.id;
         applyUserInfo();
         localStorage.setItem(ONBOARD_K, '1');
+        clearPendingReferralCode();
         clearTelegramPendingStart();
         cleanTelegramAuthUrl();
         showScreen('home');
@@ -4891,6 +4970,7 @@ function openTaskById(taskId,idx){const t=allTasksCache.find(x=>x.id===taskId)||
 // Текущая задача открытая на detail экране
 let currentDetailTask = null;
 let currentTaskId = null;
+let currentTaskMessages = [];
 let currentDetailTags = [];
 let currentDetailReminder = 'none';
 let currentDetailStatus = 'active';
@@ -5070,6 +5150,72 @@ function renderTaskHistory(task){
   historyEl.innerHTML = rows.map(function(row){ return '<div class="task-history-row">'+row+'</div>'; }).join('\n');
 }
 
+function renderTaskChatMessages(){
+  const list=document.getElementById('detail-comments-list');
+  if(!list) return;
+  if(!Array.isArray(currentTaskMessages)||!currentTaskMessages.length){
+    list.textContent='Обсуждения пока нет';
+    return;
+  }
+  list.innerHTML=currentTaskMessages.map(function(message){
+    const role=message.role==='assistant'?'assistant':'user';
+    const bubbleClass=role==='assistant'?'bubble-ai':'bubble-user';
+    const author=role==='assistant'?'4':(message.from||currentUser?.name||'Вы');
+    const body=role==='assistant'
+      ? '<div class="md-body">'+parseMarkdown(String(message.content||''))+'</div>'
+      : String(e2(message.content||'')).replace(/\n/g,'<br>');
+    return '<div class="'+bubbleClass+'">'+body+'</div><div class="task-history-row">'+e2(author)+' · '+e2(formatHistoryDate(message.ts)||'сейчас')+'</div>';
+  }).join('');
+}
+
+async function loadTaskChat(){
+  const list=document.getElementById('detail-comments-list');
+  if(!list||!currentTaskId||!getToken()){currentTaskMessages=[];renderTaskChatMessages();return;}
+  list.textContent='Загружаем обсуждение...';
+  try{
+    const r=await fetch(WORKER+'/messages/task?taskId='+encodeURIComponent(currentTaskId)+'&limit=40',{headers:authHeaders()});
+    const d=await readJsonSafe(r);
+    if(r.ok&&Array.isArray(d.messages)){
+      currentTaskMessages=d.messages.filter(function(message){
+        return message&&message.content&&(message.role==='assistant'||message.role==='user');
+      });
+    }else{
+      currentTaskMessages=[];
+    }
+  }catch(e){
+    currentTaskMessages=[];
+  }
+  renderTaskChatMessages();
+}
+
+async function saveTaskChatMessage(role, content, from){
+  const r=await fetch(WORKER+'/messages/task',{
+    method:'POST',
+    headers:authHeaders(),
+    body:JSON.stringify({taskId:currentTaskId,role,content,from})
+  });
+  const d=await readJsonSafe(r);
+  if(!r.ok||d.ok===false) throw new Error(d.error||'Не удалось сохранить сообщение');
+  return d;
+}
+
+function buildTaskChatPrompt(userText){
+  const task=currentDetailTask||{};
+  const history=currentTaskMessages.slice(-6).map(function(message){
+    const author=message.role==='assistant'?'4':(message.from||'Пользователь');
+    return author+': '+String(message.content||'').replace(/\s+/g,' ').trim();
+  }).join('\n');
+  return [
+    'Ты — 4, помощник по одной конкретной задаче. Отвечай по-русски, коротко и предметно.',
+    'Задача: '+sanitizeTaskForPrompt(task.text||''),
+    'Исполнитель: '+sanitizeTaskForPrompt(task.person||'—'),
+    'Дедлайн: '+sanitizeTaskForPrompt(task.deadline||task.date||task.time||'—'),
+    history ? 'История обсуждения:\n'+history : '',
+    'Новое сообщение пользователя: '+sanitizeTaskForPrompt(userText),
+    'Ответь так, чтобы помочь сдвинуть задачу с места: 2-4 коротких абзаца или список.'
+  ].filter(Boolean).join('\n\n');
+}
+
 function openTask(t,idx){
   currentDetailTask = t;
   currentTaskId = t.id;
@@ -5109,7 +5255,8 @@ function openTask(t,idx){
 
   // Комментарии и история — сброс
   const commEl = document.getElementById('detail-comments-list');
-  if(commEl) commEl.textContent = 'Обсуждения пока нет';
+  currentTaskMessages = [];
+  if(commEl) commEl.textContent = 'Загружаем обсуждение...';
   const histEl = document.getElementById('detail-history-list');
   if(histEl) renderTaskHistory(t);
 
@@ -5117,6 +5264,7 @@ function openTask(t,idx){
   switchDetailTab('comments', document.getElementById('tab-comments'));
 
   showScreen('task-detail');
+  loadTaskChat();
   setTimeout(loadTaskAdvice, 400);
 }
 
@@ -5145,17 +5293,28 @@ function switchDetailTab(tab, el){
   });
 }
 
-function addDetailComment(){
+async function addDetailComment(){
   const inp=document.getElementById('detail-comment-input');
   const text=(inp.value||'').trim();
-  if(!text) return;
-  const list=document.getElementById('detail-comments-list');
-  if(list.textContent==='Обсуждения пока нет') list.textContent='';
-  const div=document.createElement('div');
-  div.style.cssText='padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)';
-  div.textContent=text;
-  list.appendChild(div);
-  inp.value='';
+  if(!text||!currentTaskId||!getToken()) return;
+  inp.disabled=true;
+  try{
+    await saveTaskChatMessage('user',text,currentUser?.name||'Вы');
+    currentTaskMessages.push({role:'user',content:text,from:currentUser?.name||'Вы',ts:Date.now()});
+    renderTaskChatMessages();
+    inp.value='';
+    const r=await fetch(WORKER+'/anthropic',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,system:'Ты — 4, краткий помощник по задачам. Отвечай по-русски, конкретно и без воды.',messages:[{role:'user',content:buildTaskChatPrompt(text)}]})});
+    const d=await readJsonSafe(r);
+    const reply=(parseAIText(d)||'').trim();
+    if(reply){
+      await saveTaskChatMessage('assistant',reply,'4');
+      currentTaskMessages.push({role:'assistant',content:reply,from:'4',ts:Date.now()});
+      renderTaskChatMessages();
+    }
+  }catch(e){
+    showToast('Сообщение пока не отправилось');
+  }
+  inp.disabled=false;
 }
 
 function openTaskMove(taskId){
