@@ -2270,6 +2270,7 @@ async function initApp(){
         chatId="user_"+currentUser.id;
         applyUserInfo();
         showScreen("home");
+        showAccountMergeToast(vkR);
         loadTasks();
         return;
       }
@@ -2629,6 +2630,12 @@ function submitLoginOnEnter(event){
   doLogin();
 }
 
+function showAccountMergeToast(data) {
+  if (data && data.accountMerged) {
+    showToast('Аккаунты объединены');
+  }
+}
+
 async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value.trim();
@@ -2646,6 +2653,7 @@ async function doLogin(){
       applyUserInfo();
       showScreen('home');
       loadTasks();
+      showAccountMergeToast(d);
       linkTelegram();
     } else {
       showToast(d.error||'Ошибка входа');
@@ -2675,7 +2683,10 @@ async function loginWithTelegramLegacy(){
       localStorage.setItem(ONBOARD_K,'1');
       showScreen('home');
       loadTasks();
-      showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
+      showAccountMergeToast(d);
+      if(!d.accountMerged){
+        showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
+      }
       return true;
     } else {
       showToast(d.error||'Ошибка Telegram авторизации');
@@ -2715,6 +2726,7 @@ async function loginWithTelegram(startToken=''){
         cleanTelegramAuthUrl();
         showScreen('home');
         loadTasks();
+        showAccountMergeToast(d);
         return true;
       }
       showToast(d.error || 'Ошибка Telegram авторизации');
