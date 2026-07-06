@@ -6,6 +6,14 @@
 
 ---
 
+### 2026-07-06 — Codex
+
+**Задача:** оформить BACK-050 accessibility baseline и отправить Юре задачи по шагам
+**Результат:** В `shared/ROADMAP.md` и `pm/backlog.md` добавлен `BACK-050` на базовую доступность критических сценариев. В `pm/qa-checklist.md` добавлен ручной accessibility smoke: auth keyboard/focus, формы, status/toast, dialog bottom sheets и touch-targets. Создан task-файл `docs/tasks/BACK-050-accessibility-baseline.md` и инбокс-сообщение `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-baseline.md` с тремя последовательными задачами для Юры.
+**Коммит:** `docs(qa): add accessibility baseline tasks`
+**Статус:** ✅ задача оформлена
+**Следующий шаг:** Юрий берёт шаг 1 в ветке `fix/accessibility-auth-baseline`; после проверки auth/forms переходить к status/toast и dialog/focus/touch-targets.
+
 ### 2026-07-05 — Codex
 
 **Задача:** поставить Юре задачу на dev/test аккаунты с полными правами

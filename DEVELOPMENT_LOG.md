@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-06 — BACK-050: accessibility baseline
+
+### Базовая доступность критических сценариев
+
+**Что сделано:** Код приложения не менялся. После изучения материала HTML Academy по доступности веб-интерфейсов добавлен `BACK-050` в `shared/ROADMAP.md` и `pm/backlog.md`. В `pm/qa-checklist.md` добавлены проверки auth keyboard/focus, доступных labels/errors, status/toast, dialog bottom sheets и touch-targets. Создан `docs/tasks/BACK-050-accessibility-baseline.md` с порядком работ и `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-baseline.md` с тремя копируемыми задачами для Юры.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/BACK-050-accessibility-baseline.md` → `pm/agent-inbox/`.
+
+**Коммит:** `docs(qa): add accessibility baseline tasks`
+
 ## 2026-07-06 — BACK-049: UI architecture guard
 
 ### Правило LESS + BEM без роста inline-долга
