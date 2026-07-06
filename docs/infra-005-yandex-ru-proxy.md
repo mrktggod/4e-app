@@ -4,9 +4,9 @@
 
 ## Что уже готово
 
-- OpenAPI spec: [infra/yandex-api-gateway/ru-proxy-openapi.yaml](/C:/Users/shelc/Documents/4/.tmp-4e-app-publish/infra/yandex-api-gateway/ru-proxy-openapi.yaml)
-- VK build с параметром `VK_API_BASE_URL`: [scripts/build-vk-hosting.mjs](/C:/Users/shelc/Documents/4/.tmp-4e-app-publish/scripts/build-vk-hosting.mjs)
-- Операционная задача: [docs/tasks/INFRA-005-yandex-ru-proxy-step1.md](/C:/Users/shelc/Documents/4/.tmp-4e-app-publish/docs/tasks/INFRA-005-yandex-ru-proxy-step1.md)
+- OpenAPI spec: [infra/yandex-api-gateway/ru-proxy-openapi.yaml](../infra/yandex-api-gateway/ru-proxy-openapi.yaml)
+- VK build с параметром `VK_API_BASE_URL`: [scripts/build-vk-hosting.mjs](../scripts/build-vk-hosting.mjs)
+- Операционная задача: [docs/tasks/INFRA-005-yandex-ru-proxy-step1.md](tasks/INFRA-005-yandex-ru-proxy-step1.md)
 
 ## Команды
 

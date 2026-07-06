@@ -1,4 +1,4 @@
-﻿# DEVELOPMENT LOG вЂ” РїСЂРѕРµРєС‚ 4 AI-СЃРµРєСЂРµС‚Р°СЂСЊ
+# DEVELOPMENT LOG вЂ” РїСЂРѕРµРєС‚ 4 AI-СЃРµРєСЂРµС‚Р°СЂСЊ
 
 > Р’РµРґСѓ СЏ (Cowork-РЅР°Р±Р»СЋРґР°С‚РµР»СЊ). РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РїРѕСЃР»Рµ РєР°Р¶РґРѕРіРѕ Р·РЅР°С‡РёРјРѕРіРѕ РёР·РјРµРЅРµРЅРёСЏ.
 > РњРёРјРѕ Рё Codex РґРѕРїРёСЃС‹РІР°СЋС‚ СЂР°Р·РґРµР» РїРѕСЃР»Рµ РєР°Р¶РґРѕР№ РІС‹РїРѕР»РЅРµРЅРЅРѕР№ Р·Р°РґР°С‡Рё.
@@ -7,7 +7,16 @@
 
 ## 2026-07-06
 
-<<<<<<< Updated upstream
+### feat/admin-tariff-api — контроль перед следующим шагом BACK-049
+
+**Что сделано:** Переключена локальная рабочая ветка на `feat/admin-tariff-api` от `origin/feat/admin-tariff-api`. Подтверждено, что `pm/backlog.md` на этой ветке содержит `BACK-048`, `BACK-049`, `BACK-050` со статусом `Done`. По `BACK-049` проверена реализация в `index.html`: основной аватар `profile-avatar` и превью `profile-photo-preview` открывают единый скрытый `profile-photo-input`, отдельная дублирующая кнопка настройки фото из HTML-разметки убрана. Дополнительно сняты блокеры перед PR: абсолютные Windows-ссылки в `docs/infra-005-yandex-ru-proxy.md` заменены на относительные, конфликтные маркеры убраны из `pm/bugs.md`, `pm/qa-checklist.md`, `DEVELOPMENT_LOG.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `bash scripts/check-portable-paths.sh`; `git diff --check`; `rg -n "^<<<<<<<|^=======|^>>>>>>>" DEVELOPMENT_LOG.md pm/bugs.md pm/qa-checklist.md shared/WORK_LOG.md pm/backlog.md`; ручная code-review проверка profile photo flow по `index.html` и `styles/screens/profile.less`.
+
+**Коммит:** `docs(process): clean admin tariff branch blockers`
+
 ### Sprint 1 status sync after hotfixes and UI package
 
 **Что сделано:** После сверки с фактическими ветками и коммитами синхронизированы статусы в app-документации. `BACK-047` переведён в `Done`: live worker уже обслуживает `/v2/auth/legacy-session`, `/auth/identities`, `/v2/privacy/settings`, а фронтовые fallback сняты отдельным app-коммитом после `200` на prod. UI-пакет Алексея отражён как `Ready for QA`: `BACK-046` (нижняя панель, commit `748dcfd`), `BACK-043` (мобильный профиль, commit `33903b4`) и `BACK-044` (карточка задачи, commit `250f35b`). В `pm/bugs.md` и `pm/qa-checklist.md` заодно исправлена ссылка на переименованный ID `BACK-046` вместо старого `BACK-042`.
@@ -19,23 +28,6 @@
 **Что сделано:** Подготовлен кодовой пакет для промежуточного российского API-адреса под VK Mini App, без переноса основного backend из Cloudflare. В `scripts/build-vk-hosting.mjs` добавлена build-time подмена `WORKER` через переменную окружения `VK_API_BASE_URL`, поэтому один и тот же `vk.html` можно публиковать либо на `edge.4-ai.site`, либо на будущий Yandex proxy-домен без ручной правки исходника. Добавлен `infra/yandex-api-gateway/ru-proxy-openapi.yaml`: OpenAPI spec для Yandex API Gateway с `x-yc-apigateway-integration:http`, путями `/` и `/{path+}`, пробросом исходных headers/query, явным `Host: edge.4-ai.site` и отключённым gateway-side CORS intercept (`origin: false`), чтобы preflight `OPTIONS` уходил в текущий backend. Добавлены runbook `docs/infra-005-yandex-ru-proxy.md` и task-файл `docs/tasks/INFRA-005-yandex-ru-proxy-step1.md`; backlog и roadmap синхронизированы новым item `INFRA-005`.
 
 **Тест:** `git diff --check`; ручная сверка spec с официальной документацией Yandex Cloud по `x-yc-apigateway-integration:http`, CORS (`origin: false`) и spec variables (`${var.*}`); локальный code review `scripts/build-vk-hosting.mjs` на подмену `const WORKER = '...'` в `.vk-hosting-dist/index.html`.
-=======
-### BACK-044 вЂ” task detail card cleanup
-
-**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р­РєСЂР°РЅ `task-detail` РїРµСЂРµСЃС‚СЂРѕРµРЅ Р±РµР· РёР·РјРµРЅРµРЅРёСЏ РјРѕРґРµР»Рё СЃРѕС…СЂР°РЅРµРЅРёСЏ. `detail-description` РїРµСЂРµРЅРµСЃС‘РЅ РїРѕРґ Р·Р°РіРѕР»РѕРІРѕРє Р·Р°РґР°С‡Рё Рё РѕС„РѕСЂРјР»РµРЅ РєР°Рє inline-Р±Р»РѕРє `detail-inline-desc`, Р° РІРєР»Р°РґРєР° `РћРїРёСЃР°РЅРёРµ` Рё Р±Р»РѕРє `detail-tab-desc` СѓРґР°Р»РµРЅС‹ РєР°Рє РґСѓР±Р»РёСЂРѕРІР°РЅРёРµ. РЎС‚СЂРѕРєРё РІ glass-РєР°СЂС‚РѕС‡РєРµ РїРµСЂРµСЃС‚Р°РІР»РµРЅС‹ РІ РЅРѕРІС‹Р№ РїРѕСЂСЏРґРѕРє: `РЎСЂРѕРє`, Р±С‹СЃС‚СЂС‹Рµ РєРЅРѕРїРєРё, `РЎС‚Р°С‚СѓСЃ`, `РџСЂРёРѕСЂРёС‚РµС‚`, `РќР°РїРѕРјРёРЅР°РЅРёРµ`. UI-СЃС‚СЂРѕРєРё `РќР°РїСЂР°РІР»РµРЅРёРµ` Рё `Р§РµР»РѕРІРµРє` СЃРєСЂС‹С‚С‹ С‡РµСЂРµР· `detail-field-row-hidden`, РЅРѕ РёС… DOM-id СЃРѕС…СЂР°РЅРµРЅС‹ (`detail-direction`, `detail-person`), РїРѕСЌС‚РѕРјСѓ `openTask()` Рё `saveTaskEdits()` РїСЂРѕРґРѕР»Р¶Р°СЋС‚ С‡РёС‚Р°С‚СЊ/РїРёСЃР°С‚СЊ С‚Рµ Р¶Рµ РґР°РЅРЅС‹Рµ. Р”Р»СЏ РјРѕР±РёР»СЊРЅРѕР№ С€РёСЂРёРЅС‹ detail rows Рё checklist-add РїРµСЂРµРІРµРґРµРЅС‹ РІ РІРµСЂС‚РёРєР°Р»СЊРЅС‹Р№ СЂРµР¶РёРј С‡РµСЂРµР· media-rule `max-width:560px`, С‡С‚РѕР±С‹ РєРѕРЅС‚СЂРѕР»С‹ РЅРµ РѕР±СЂРµР·Р°Р»РёСЃСЊ СЃРїСЂР°РІР°.
-
-**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` markers РґРѕ РїСЂР°РІРєРё: 65; РїРѕСЃР»Рµ РїСЂР°РІРєРё: 65.
-
-**РўРµСЃС‚:** `Select-String` РґРѕ/РїРѕСЃР»Рµ РїРѕ РјР°СЂРєРµСЂР°Рј `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`; `npm run build:css`; `git diff --check`; headless Chrome preview РґР»СЏ task detail desktop/mobile РЅР° Р»РѕРєР°Р»СЊРЅРѕРј `file:///.../__codex_task_detail_preview.html`.
-
-### BACK-043 вЂ” profile responsive UI pass
-
-**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` Рё `styles/screens/profile.less` РїСЂРёРІРµРґРµРЅР° РјРѕР±РёР»СЊРЅР°СЏ С„РѕСЂРјР° РїСЂРѕС„РёР»СЏ Рє Р±РѕР»РµРµ СЂРѕРІРЅРѕР№ СЃС‚СЂСѓРєС‚СѓСЂРµ. Telegram-СЃС‚СЂРѕРєР° С‚РµРїРµСЂСЊ СЂР°СЃС‚СЏРіРёРІР°РµС‚СЃСЏ РЅР° РїРѕР»РЅСѓСЋ С€РёСЂРёРЅСѓ СЃРµС‚РєРё Рё РїРѕР»СѓС‡РёР»Р° РѕС‚РґРµР»СЊРЅС‹Р№ РєР»Р°СЃСЃ РґР»СЏ РѕР±СЂРµР·РєРё РґР»РёРЅРЅРѕРіРѕ username Р±РµР· СЂР°СЃРїРѕР»Р·Р°РЅРёСЏ badge. Р”Р»СЏ phone/email РЅР° СѓР·РєРёС… СЌРєСЂР°РЅР°С… СЃС‚Р°С‚СѓСЃРЅС‹Р№ badge РїРµСЂРµРЅРѕСЃРёС‚СЃСЏ РїРѕРґ input РІРјРµСЃС‚Рѕ С‚РµСЃРЅРѕР№ РїСЂР°РІРѕР№ РєРѕР»РѕРЅРєРё. РљР°СЂС‚РѕС‡РєРё `Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ` Рё `Рћ СЃРµР±Рµ` РїРѕР»СѓС‡РёР»Рё СЏРІРЅС‹Р№ `profile-form-card` layout СЃ РїСЂРµРґСЃРєР°Р·СѓРµРјС‹РјРё РѕС‚СЃС‚СѓРїР°РјРё, textarea Р·Р°РєСЂРµРїР»РµРЅР° С‡РµСЂРµР· `profile-about-field`, Р° СЃС‡С‘С‚С‡РёРє `profile-field-counter` РІРёР·СѓР°Р»СЊРЅРѕ РїСЂРёРІСЏР·Р°РЅ Рє РїРѕР»СЋ. РџР°СЂР°Р»Р»РµР»СЊРЅРѕ РІРµС‚РєР° СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅР° СЃ UI-РѕР±РѕР»РѕС‡РєРѕР№: РїРµСЂРµРЅРµСЃС‘РЅ С„РёРєСЃ `BACK-046` РЅР° С€РёСЂРёРЅСѓ `bottom-nav-v2`/`global-nav`, Р° backlog РѕР±РЅРѕРІР»С‘РЅ РґРѕ Р°РєС‚СѓР°Р»СЊРЅС‹С… ID/СЃС‚Р°С‚СѓСЃРѕРІ (`BACK-046`, `BACK-047 Done`, `BACK-043 In Progress` -> СЂРµР°Р»РёР·Р°С†РёСЏ).
-
-**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` markers РґРѕ РїСЂР°РІРєРё: 65; РїРѕСЃР»Рµ РїСЂР°РІРєРё: 65.
-
-**РўРµСЃС‚:** `Select-String` РґРѕ/РїРѕСЃР»Рµ РїРѕ РјР°СЂРєРµСЂР°Рј `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`; `npm run build:css`; `git diff --check`; headless Chrome preview РґР»СЏ profile desktop/mobile РЅР° Р»РѕРєР°Р»СЊРЅРѕРј `file:///.../__codex_profile_preview.html`.
->>>>>>> Stashed changes
 
 ### BACK-047 вЂ” v2 auth/privacy routes wired into live worker
 
@@ -1164,7 +1156,6 @@
 
 ## РџРђРўРўР•Р РќР« РћРЁРР‘РћРљ (РґР»СЏ РѕР±СѓС‡РµРЅРёСЏ)
 
-<<<<<<< Updated upstream
 1. **Кодировка** — самая частая. Любой PowerShell-агент без явного UTF-8 ломает кириллицу.
 2. **KV + chatId** — путаница между `telegramId` и `chatId` при ключах в KV. Правило: передавать chatId явно.
 3. **Revert циклы** — 2 раза за один день делали fix → revert → fix. Причина: не тестировали перед коммитом.
@@ -1183,9 +1174,3 @@
 **Тест:** `node --check worker.js`; inline JS parse check для `index.html` вернул `inline-js-ok`; модульный smoke воркера через `node --input-type=module` с мок-KV подтвердил `GET /tariff-config`, `GET /admin/users`, `PUT /admin/tariff-config`, `PUT /admin/users/:id/plan`.
 
 **Коммит:** pending
-=======
-1. **РљРѕРґРёСЂРѕРІРєР°** вЂ” СЃР°РјР°СЏ С‡Р°СЃС‚Р°СЏ. Р›СЋР±РѕР№ PowerShell-Р°РіРµРЅС‚ Р±РµР· СЏРІРЅРѕРіРѕ UTF-8 Р»РѕРјР°РµС‚ РєРёСЂРёР»Р»РёС†Сѓ.
-2. **KV + chatId** вЂ” РїСѓС‚Р°РЅРёС†Р° РјРµР¶РґСѓ `telegramId` Рё `chatId` РїСЂРё РєР»СЋС‡Р°С… РІ KV. РџСЂР°РІРёР»Рѕ: РїРµСЂРµРґР°РІР°С‚СЊ chatId СЏРІРЅРѕ.
-3. **Revert С†РёРєР»С‹** вЂ” 2 СЂР°Р·Р° Р·Р° РѕРґРёРЅ РґРµРЅСЊ РґРµР»Р°Р»Рё fix в†’ revert в†’ fix. РџСЂРёС‡РёРЅР°: РЅРµ С‚РµСЃС‚РёСЂРѕРІР°Р»Рё РїРµСЂРµРґ РєРѕРјРјРёС‚РѕРј.
-4. **VK iframe РѕРіСЂР°РЅРёС‡РµРЅРёСЏ** вЂ” Google Fonts, РІРЅРµС€РЅРёРµ СЂРµСЃСѓСЂСЃС‹, Telegram SDK РЅРµРґРѕСЃС‚СѓРїРЅС‹ РІ VK.
->>>>>>> Stashed changes

@@ -41,15 +41,9 @@
 | Auth / Telegram Web return | После START в `@Denzel89bot` пользователь получает ссылку назад на сайт; возврат с `?telegram_start=<token>` завершает веб-вход | Ready for QA | App-side и bot-side подготовлены; нужен сквозной live smoke веб-входа |
 | Voice | Микрофон, запись, распознавание, fallback в Telegram WebView | Triaged | `BUG-2026-06-29-002` подтверждён скрином; `main` сейчас использует SpeechRecognition после отката MediaRecorder |
 | Home / AI-планер | Утренний дашборд, AI-сводка, пульс дня, смысловые секции задач, glass UI | In Progress | `BACK-025` добавлен как P1 перед реализацией интерфейса |
-<<<<<<< Updated upstream
 | Navigation / Bottom nav width | `bottom-nav-v2` на Home и `global-nav` на остальных экранах не выходят за ширину app-контейнера в desktop/web; на телефоне остаются по ширине экрана | Ready for QA | `BUG-2026-07-05-001` / `BACK-046`; ветка `fix/bottom-nav-app-width`, commit `748dcfd`; нужен smoke Алексея на 1440/1024/390 |
 | Profile / Mobile layout | Строки phone/email/telegram, бейджи статусов, заголовки секций, textarea "О себе", счётчик символов и расстояние до нижней навигации | Ready for QA | `BUG-2026-07-05-002` / `BACK-043`; ветка `fix/profile-responsive-ui`, commit `33903b4`; приложить desktop+mobile скрины к ревью |
 | Task detail / Card layout | Описание под заголовком, отсутствие вкладки "Описание", порядок полей, отступ быстрых сроков, отсутствие строк "Направление" и "Человек", сохранение статуса/приоритета/срока/описания | Ready for QA | `BACK-044`; ветка `fix/task-detail-card-cleanup`, commit `250f35b`; проверить mobile/web и сохранение карточки |
-=======
-| Navigation / Bottom nav width | `bottom-nav-v2` на Home и `global-nav` на остальных экранах не выходят за ширину app-контейнера в desktop/web; на телефоне остаются по ширине экрана | Triaged | `BUG-2026-07-05-001` / `BACK-046`; скрин Алексея 2026-07-05 |
-| Profile / Mobile layout | Строки phone/email/telegram, бейджи статусов, заголовки секций, textarea "О себе", счётчик символов и расстояние до нижней навигации | Triaged | `BUG-2026-07-05-002` / `BACK-043`; два скрина Алексея 2026-07-05 |
-| Task detail / Card layout | Описание под заголовком, отсутствие вкладки "Описание", порядок полей, отступ быстрых сроков, отсутствие строк "Направление" и "Человек", сохранение статуса/приоритета/срока/описания | Triaged | `BACK-044`; требования Алексея 2026-07-05, код делает Юрий |
->>>>>>> Stashed changes
 | Баг-триаж | Severity, priority, шаги воспроизведения | Todo | |
 | Roadmap | Now/Next/Later, зависимости, риски | Todo | |
 | QA | Чеклисты, acceptance criteria, тестовые данные | Todo | |

@@ -8,6 +8,16 @@
 
 ### 2026-07-06 — Codex
 
+**Задача:** Контроль ветки `feat/admin-tariff-api` перед следующим шагом по `BACK-049`
+**Результат:** Переключился на локальную ветку от `origin/feat/admin-tariff-api`; подтвердил, что `BACK-048`, `BACK-049`, `BACK-050` в `pm/backlog.md` уже `Done`. По коду `BACK-049`: клик по аватару и фото-превью открывает единый скрытый file input, отдельная дублирующая кнопка настройки фото из разметки убрана. Дополнительно сняты PR-блокеры ветки: portable-path ссылки в `docs/infra-005-yandex-ru-proxy.md` заменены на относительные, conflict markers убраны из `pm/bugs.md`, `pm/qa-checklist.md`, `DEVELOPMENT_LOG.md`.
+**Коммит:** `docs(process): clean admin tariff branch blockers`
+**Статус:** ✅ контроль выполнен локально
+**Следующий шаг:** Согласовать push ветки `feat/admin-tariff-api`; перед merge `docs/ui-architecture-guard` перенумеровать accessibility baseline `BACK-050` → `BACK-051`.
+
+---
+
+### 2026-07-06 — Codex
+
 **Задача:** Синхронизировать статусы спринта 1 после ночных merge/hotfix и UI-пакета
 **Результат:** В app-документации обновлены статусы уже закрытых пунктов очереди: `BACK-047` отмечен как Done по факту live worker+app smoke, `BACK-046` / `BACK-043` / `BACK-044` переведены в `Ready for QA` с привязкой к веткам `fix/bottom-nav-app-width`, `fix/profile-responsive-ui`, `fix/task-detail-card-cleanup` и их коммитам. В `pm/qa-checklist.md` и `pm/bugs.md` синхронизированы ревью-статусы и исправлена коллизия старого ID `BACK-042 -> BACK-046`.
 **Коммит:** N/A
