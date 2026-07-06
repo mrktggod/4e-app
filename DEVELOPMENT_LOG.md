@@ -17,6 +17,18 @@
 
 **Коммит:** N/A
 
+## 2026-07-05 — Mobile QA all screens
+
+### Первичный mobile smoke на 360/375/390px
+
+**Что сделано:** После `git fetch origin` подтверждено, что локальный `main` синхронен с `origin/main` (`0 0` ahead/behind), новых изменений от Юры в `origin/main` нет. Поднят локальный сервер `http://127.0.0.1:8000/index.html`. В браузере Codex проверены 114 состояний экранов `index.html` на viewport `375x667`, `390x844`, `360x800`: login/register, reset/forgot password, Home, AI chat, task detail, calendar, statistics, notifications, profile/settings, subscription/payment, support/FAQ, chats/conversation, new task/confirm/move/done, voice, biometric consent, quick-add и contact bottom sheet. Auth/tasks проверялись в локальном mock-состоянии без отправки реальных внешних запросов.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Browser QA sweep: глобального горизонтального скролла не найдено. CTA sanity: пустой login остаётся на `login` и показывает `Введи email и пароль`; пустой/невалидный forgot password остаётся на `forgot-password` и показывает полевые ошибки `Введите email` / `Введите корректный email`; payment screen показывает CTA `Оплатить картой`. Найден новый баг `BUG-2026-07-05-003`: Home после 22:00 показывает отрицательное время `2 задач горят · -1 ч до конца дня`. Внешние live flows Telegram-login и CloudPayments/Telegram Stars/VK Pay не отправлялись.
+
+**Коммит:** N/A
+
 ## 2026-07-06
 
 ### BACK-044 — task detail card cleanup
