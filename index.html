@@ -1136,6 +1136,10 @@
         <div class="notif-time-control"><input id="notif-briefing-time" type="time" value="09:00" onchange="saveNotifPref('briefingTime',this.value)"><label class="toggle-wrap"><input id="notif-pref-morningBriefing" type="checkbox" onchange="saveNotifPref('morningBriefing',this.checked)"><div class="toggle-slider"></div></label></div>
       </div>
       <div class="sub-row">
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M3 17l6-6 4 4 7-8"/><path d="M14 7h6v6"/></svg></div><div><div class="sub-row-text">Умное время брифинга</div><div class="sub-row-sub" id="notif-adaptive-briefing-summary">Подстроим время под ваши часы активности</div></div></div>
+        <label class="toggle-wrap"><input id="notif-pref-adaptiveBriefing" type="checkbox" onchange="saveNotifPref('adaptiveBriefing',this.checked)"><div class="toggle-slider"></div></label>
+      </div>
+      <div class="sub-row">
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="sub-row-text">Просроченные задачи</div><div class="sub-row-sub">Бот напомнит, когда дедлайн уже прошёл</div></div></div>
         <label class="toggle-wrap"><input id="notif-pref-overdueTasks" type="checkbox" onchange="saveNotifPref('overdueTasks',this.checked)"><div class="toggle-slider"></div></label>
       </div>
@@ -4409,7 +4413,7 @@ async function handleTaskReschedule(taskId,value){
     setTimeout(loadTasks,400);
   }catch(e){console.log(e);showToast('Не удалось перенести срок');if(shell)shell.style.opacity='';}
 }
-async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
+async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});recordAdaptiveActivity('task_done',2);showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
 
 function setNavActive(id){
   document.querySelectorAll('.nav-item,.nav-mic,.nav-mic-v2').forEach(n=>n.classList.remove('active'));
@@ -4470,6 +4474,7 @@ async function loadNotifications(){
     if(!res.ok) throw new Error('not ok');
     const data = await res.json();
     notifCache = Array.isArray(data) ? data : [];
+    if(notifCache.length) recordAdaptiveActivity('notifications',1);
   } catch(e) {
     console.error('loadNotifications:', e);
     notifCache = [];
@@ -5933,6 +5938,7 @@ async function saveTaskToWorker(task){
     const data = await res.json().catch(()=>({}));
     if(!res.ok || data.ok === false) throw new Error(data.error || 'save-task failed');
     if(typeof loadTasks === 'function') await loadTasks();
+    recordAdaptiveActivity('task_create',1.25);
     return {ok:true, merged:false, taskId:task.id};
   } catch(e) {
     console.error('saveTaskToWorker:', e);
@@ -6365,6 +6371,7 @@ async function sendAsk(){
     askHistory.push({id:assistantMessageId,role:'assistant', content:text, actions:parsedActions.actions});
     saveAskHistoryLocal();
     await saveAskMessageRemote('assistant', text);
+    recordAdaptiveActivity('ai_chat',1.5);
     ensureAskFactsLoaded(true).catch(e=>console.warn('refresh ask facts:', e));
   }catch(e){
     lb.textContent='Нет соединения. Проверь интернет и попробуй снова.';
@@ -6754,13 +6761,115 @@ async function createPrivacyDataRequest(requestType){
 }
 
 // ===== NOTIFICATIONS PREFS =====
-const DEFAULT_NOTIF_PREFS={push:true,email:true,telegram:true,tasks:true,morningBriefing:false,briefingTime:'09:00',overdueTasks:true};
+const DEFAULT_NOTIF_PREFS={push:true,email:true,telegram:true,tasks:true,morningBriefing:false,briefingTime:'09:00',overdueTasks:true,adaptiveBriefing:false};
+const ADAPTIVE_ACTIVITY_K='adaptive_briefing_activity_v1';
 let notifSaveTimer=null;
 function getLocalNotifPrefs(){try{return{...DEFAULT_NOTIF_PREFS,...JSON.parse(localStorage.getItem('notif_prefs')||'{}')}}catch(e){return{...DEFAULT_NOTIF_PREFS};}}
+function pad2(n){return String(n).padStart(2,'0');}
+function getAdaptiveActivityStore(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(ADAPTIVE_ACTIVITY_K)||'{}')||{};
+    return raw&&typeof raw==='object'?raw:{};
+  }catch(e){
+    return {};
+  }
+}
+function saveAdaptiveActivityStore(store){
+  try{localStorage.setItem(ADAPTIVE_ACTIVITY_K,JSON.stringify(store||{}));}catch(e){}
+}
+function getAdaptiveActivityUserKey(){
+  return String(currentUser?.id||'guest').trim();
+}
+function getLocalDayKey(date){
+  const d=date||new Date();
+  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
+}
+function pruneAdaptiveActivityBucket(bucket){
+  const days=bucket?.days||{};
+  const keys=Object.keys(days).sort();
+  const keep=keys.slice(-21);
+  const nextDays={};
+  keep.forEach(function(key){nextDays[key]=days[key];});
+  bucket.days=nextDays;
+  return bucket;
+}
+function recordAdaptiveActivity(kind, weight){
+  if(!getToken()||!currentUser?.id) return;
+  const prefs=getLocalNotifPrefs();
+  if(!prefs.adaptiveBriefing) return;
+  const store=getAdaptiveActivityStore();
+  const userKey=getAdaptiveActivityUserKey();
+  const bucket=pruneAdaptiveActivityBucket(store[userKey]||{days:{}});
+  const now=new Date();
+  const dayKey=getLocalDayKey(now);
+  const hourKey=pad2(now.getHours());
+  if(!bucket.days[dayKey]) bucket.days[dayKey]={hours:{}};
+  if(!bucket.days[dayKey].hours) bucket.days[dayKey].hours={};
+  bucket.days[dayKey].hours[hourKey]=Number(bucket.days[dayKey].hours[hourKey]||0)+(Number(weight)||1);
+  bucket.lastKind=String(kind||'activity');
+  bucket.updatedAt=Date.now();
+  store[userKey]=bucket;
+  saveAdaptiveActivityStore(store);
+  applyAdaptiveBriefingIfNeeded('activity').catch(()=>{});
+}
+function computeAdaptiveBriefingTime(){
+  const userKey=getAdaptiveActivityUserKey();
+  const store=getAdaptiveActivityStore();
+  const bucket=pruneAdaptiveActivityBucket(store[userKey]||{days:{}});
+  const dayEntries=Object.entries(bucket.days||{});
+  if(dayEntries.length<2) return null;
+  const hourScores=Array.from({length:24},function(){return 0;});
+  const todayStart=new Date();
+  todayStart.setHours(0,0,0,0);
+  dayEntries.forEach(function(entry){
+    const dayKey=entry[0];
+    const dayData=entry[1]||{};
+    const dayDate=new Date(dayKey+'T00:00:00');
+    const ageDays=Math.max(0,Math.round((todayStart-dayDate)/86400000));
+    const recencyWeight=Math.max(0.35,1-(ageDays*0.08));
+    Object.entries(dayData.hours||{}).forEach(function(hourEntry){
+      const hour=Number(hourEntry[0]);
+      const count=Number(hourEntry[1]||0);
+      if(Number.isFinite(hour)&&hour>=0&&hour<24&&count>0){
+        hourScores[hour]+=count*recencyWeight;
+      }
+    });
+  });
+  let bestHour=-1;
+  let bestScore=0;
+  for(let hour=7;hour<=22;hour++){
+    if(hourScores[hour]>bestScore){
+      bestScore=hourScores[hour];
+      bestHour=hour;
+    }
+  }
+  if(bestHour<0||bestScore<3) return null;
+  const briefingHour=Math.max(7,Math.min(11,bestHour-1));
+  return pad2(briefingHour)+':30';
+}
+function getAdaptiveBriefingSummary(prefs){
+  if(!prefs.adaptiveBriefing) return 'Подстроим время под ваши часы активности';
+  const suggested=computeAdaptiveBriefingTime();
+  if(!suggested) return 'Нужно 2-3 дня активности, чтобы подобрать время';
+  return 'Сейчас 4 шлёт брифинг около '+suggested;
+}
+async function applyAdaptiveBriefingIfNeeded(source){
+  const prefs=getLocalNotifPrefs();
+  const summary=document.getElementById('notif-adaptive-briefing-summary');
+  if(summary) summary.textContent=getAdaptiveBriefingSummary(prefs);
+  if(!prefs.adaptiveBriefing) return;
+  const suggested=computeAdaptiveBriefingTime();
+  if(!suggested||prefs.briefingTime===suggested) return;
+  const nextPrefs={...prefs,briefingTime:suggested};
+  persistNotificationSettings(nextPrefs);
+  setNotifControls(nextPrefs);
+  if(source==='toggle') showToast('Подстроили брифинг на '+suggested);
+}
 function setNotifControls(prefs){
   const data={...DEFAULT_NOTIF_PREFS,...prefs};
-  ['push','email','telegram','tasks','morningBriefing','overdueTasks'].forEach(key=>{const el=document.getElementById('notif-pref-'+key);if(el)el.checked=!!data[key];});
-  const time=document.getElementById('notif-briefing-time');if(time)time.value=data.briefingTime||'09:00';
+  ['push','email','telegram','tasks','morningBriefing','overdueTasks','adaptiveBriefing'].forEach(key=>{const el=document.getElementById('notif-pref-'+key);if(el)el.checked=!!data[key];});
+  const time=document.getElementById('notif-briefing-time');if(time){time.value=data.briefingTime||'09:00';time.disabled=!!data.adaptiveBriefing;}
+  const summary=document.getElementById('notif-adaptive-briefing-summary');if(summary)summary.textContent=getAdaptiveBriefingSummary(data);
 }
 async function loadNotificationSettings(){
   const local=getLocalNotifPrefs();
@@ -6769,7 +6878,7 @@ async function loadNotificationSettings(){
   try{
     const r=await withTimeout(fetch(WORKER+'/notifications/settings',{headers:authHeaders()}),10000);
     const d=await readJsonSafe(r);
-    if(d.ok&&d.settings){localStorage.setItem('notif_prefs',JSON.stringify({...DEFAULT_NOTIF_PREFS,...d.settings}));setNotifControls(d.settings);}
+    if(d.ok&&d.settings){localStorage.setItem('notif_prefs',JSON.stringify({...DEFAULT_NOTIF_PREFS,...d.settings}));setNotifControls(d.settings);await applyAdaptiveBriefingIfNeeded('load');}
   }catch(e){console.warn('notification settings load failed',e);}
 }
 function persistNotificationSettings(prefs){
@@ -6785,6 +6894,11 @@ function saveNotifPref(key, val){
   prefs[key]=key==='briefingTime'?(val||'09:00'):!!val;
   persistNotificationSettings(prefs);
   setNotifControls(prefs);
+  if(key==='adaptiveBriefing'){
+    applyAdaptiveBriefingIfNeeded('toggle').catch(()=>{});
+    showToast(prefs[key]?'Умное время включено':'Умное время выключено');
+    return;
+  }
   showToast(key==='briefingTime'?'Время сохранено':(prefs[key]?'Включено':'Отключено'));
 }
 
