@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-05 — BACK-048: dev/test accounts task
+
+### Постановка задачи на тестовые аккаунты разработчиков
+
+**Что сделано:** Код приложения не менялся. В `pm/backlog.md` добавлена задача `BACK-048` на dev/test аккаунты с Premium/full-access для Алексея, Юрия и QA/dev. Создан task-файл `docs/tasks/BACK-048-dev-test-accounts.md` с требованиями к worker/admin-механизму, staging-first подходом, seed-данными и запретом хранить реальные пароли, токены и `ADMIN_SECRET` в git. В `pm/qa-checklist.md` добавлена проверка dev/test аккаунтов.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `pm/backlog.md` → `docs/tasks/BACK-048-dev-test-accounts.md` → `pm/qa-checklist.md`; код не менялся.
+
+**Коммит:** N/A
+
 ## 2026-07-06
 
 ### BACK-044 — task detail card cleanup
