@@ -10,6 +10,11 @@
 
 **Задача:** BACK-055 — вынести password-toggle helpers из `index.html`
 **Результат:** Общий helper переключения видимости пароля перенесён в `scripts/platform-adapter.js` как `togglePasswordVisibility()`. В `index.html` функции `togglePass()` и `togglePassField()` оставлены как совместимые обёртки для login/reset/privacy экранов, без изменения UI-сценариев.
+**Коммит:** `7f5f071`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+
+**Задача:** BACK-055 — вынести Enter-submit helper из `index.html`
+**Результат:** Общая проверка Enter-нажатия по input вынесена в `scripts/platform-adapter.js` как `shouldHandleEnterSubmit()`. В `index.html` `submitLoginOnEnter()` остался совместимой обёрткой, а login/register/forgot/reset keydown-ветки теперь используют единый helper без изменения submit-сценариев.
 **Коммит:** `pending`
 **Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
 

@@ -2811,7 +2811,7 @@ async function doRegister(){
 
 // ── login ─────────────────────────────────────────────────────
 function submitLoginOnEnter(event){
-  if(event.key!=='Enter')return;
+  if(!PLATFORM.shouldHandleEnterSubmit(event))return;
   event.preventDefault();
   const btn=document.getElementById('login-submit-btn');
   if(btn&&btn.disabled)return;
@@ -6893,25 +6893,25 @@ function initAuthA11yHandlers(){
 
   const loginForm=document.getElementById('form-login');
   if(loginForm) loginForm.addEventListener('keydown',event=>{
-    if(event.key==='Enter'&&event.target?.matches('input')) submitLoginOnEnter(event);
+    if(PLATFORM.shouldHandleEnterSubmit(event)) submitLoginOnEnter(event);
   });
   const registerForm=document.getElementById('form-register');
   if(registerForm) registerForm.addEventListener('keydown',event=>{
-    if(event.key==='Enter'&&event.target?.matches('input')){
+    if(PLATFORM.shouldHandleEnterSubmit(event)){
       event.preventDefault();
       doRegister();
     }
   });
   const forgotScreen=document.getElementById('forgot-password');
   if(forgotScreen) forgotScreen.addEventListener('keydown',event=>{
-    if(event.key==='Enter'&&event.target?.matches('input')){
+    if(PLATFORM.shouldHandleEnterSubmit(event)){
       event.preventDefault();
       doForgotPassword();
     }
   });
   const resetScreen=document.getElementById('reset-password');
   if(resetScreen) resetScreen.addEventListener('keydown',event=>{
-    if(event.key==='Enter'&&event.target?.matches('input')){
+    if(PLATFORM.shouldHandleEnterSubmit(event)){
       event.preventDefault();
       doResetPassword();
     }

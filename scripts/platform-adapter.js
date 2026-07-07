@@ -210,6 +210,10 @@
     return true;
   }
 
+  function shouldHandleEnterSubmit(event) {
+    return !!(event && event.key === 'Enter' && event.target?.matches('input'));
+  }
+
   function setFormFieldError(fieldId, message, invalidClass) {
     const input = document.getElementById(fieldId);
     const error = document.getElementById(fieldId + '-error');
@@ -558,6 +562,7 @@
     handleAccessibleDialogKeydown,
     isValidEmail,
     togglePasswordVisibility,
+    shouldHandleEnterSubmit,
     setFormFieldError,
     clearFormFieldError,
     clearFormErrors,
