@@ -8,8 +8,15 @@
 
 ### 2026-07-07 — Codex
 
-**Задача:** BACK-055 — вынести email-validator из index.html$logNl**Результат:** isValidEmail() перенесён в scripts/platform-adapter.js; в index.html оставлена совместимая обёртка для login/register/forgot/reset flow. BACK-055 остаётся поэтапным распилом без смены статуса.
-**Коммит:** pending$logNl**Статус:** ✅ маленький шаг распила готов, BACK-055 остаётся In Progress$logNl
+**Задача:** BACK-055 — вынести password-toggle helpers из `index.html`
+**Результат:** Общий helper переключения видимости пароля перенесён в `scripts/platform-adapter.js` как `togglePasswordVisibility()`. В `index.html` функции `togglePass()` и `togglePassField()` оставлены как совместимые обёртки для login/reset/privacy экранов, без изменения UI-сценариев.
+**Коммит:** `pending`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+
+**Задача:** BACK-055 — вынести email-validator из `index.html`
+**Результат:** `isValidEmail()` перенесён в `scripts/platform-adapter.js`; в `index.html` оставлена совместимая обёртка для login/register/forgot/reset flow. `BACK-055` остаётся поэтапным распилом без смены статуса.
+**Коммит:** `196a5c3`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
 **Задача:** BACK-055 — вынести form-error helpers из `index.html`
 **Результат:** Общие helpers для доступных ошибок форм (`setFormFieldError`, `clearFormFieldError`, `clearFormErrors`, `focusFirstInvalid`) перенесены в `scripts/platform-adapter.js`. В `index.html` остались совместимые auth-обёртки, поэтому login/register/forgot/reset продолжают использовать прежние `setAuthFieldError`, `clearAuthErrors`, `focusFirstInvalid`.
 **Коммит:** `b8d360e`

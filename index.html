@@ -3012,8 +3012,7 @@ function doLogout(){
 }
 
 function togglePass(id){
-  const inp=document.getElementById(id||'login-pass');
-  if(inp) inp.type=inp.type==='password'?'text':'password';
+  PLATFORM.togglePasswordVisibility(id||'login-pass');
 }
 
 // ── CloudPayments config ──────────────────────────────────────
@@ -7265,8 +7264,7 @@ function saveNotifPref(key, val){
 
 // ===== PASSWORD =====
 function togglePassField(id){
-  const inp=document.getElementById(id);
-  if(inp) inp.type=inp.type==='password'?'text':'password';
+  PLATFORM.togglePasswordVisibility(id);
 }
 
 function checkPassReqs(){

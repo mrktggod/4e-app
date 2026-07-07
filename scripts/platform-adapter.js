@@ -200,9 +200,17 @@
   }
 
   function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
-}
- setFormFieldError(fieldId, message, invalidClass) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+  }
+
+  function togglePasswordVisibility(fieldId) {
+    const input = document.getElementById(fieldId);
+    if (!input) return false;
+    input.type = input.type === 'password' ? 'text' : 'password';
+    return true;
+  }
+
+  function setFormFieldError(fieldId, message, invalidClass) {
     const input = document.getElementById(fieldId);
     const error = document.getElementById(fieldId + '-error');
     const hasError = !!message;
@@ -549,6 +557,7 @@
     closeAccessibleDialog,
     handleAccessibleDialogKeydown,
     isValidEmail,
+    togglePasswordVisibility,
     setFormFieldError,
     clearFormFieldError,
     clearFormErrors,
