@@ -60,7 +60,7 @@
 | SMART-003 | Кнопка «Написать» исполнителю | Product/UI | P1 | Codex | Done | Г1 | В карточке задачи и сообщении бота кнопка открывает чат: t.me/username или tg://user?id; фолбэк при закрытом профиле |
 | SMART-007 | Память фактов между сессиями (AI-память v1) | Product/AI | P1 | Codex | Done | Г1 | Фоновое извлечение фактов (Haiku) → D1 `user_facts`, топ-15 в system prompt; экран «Что 4 знает обо мне» с удалением (152-ФЗ) |
 | SMART-005 | Утренняя сводка по чату | Product/Bot | P2 | Codex | Done | Г1 | Подключить готовый `checkBriefings()` + per-group сводка; расписание через Cloudflare Cron Triggers; связан с BACK-017 |
-| BACK-036 | Распил index.html: общее ядро + адаптеры TG/VK | Tech | P1 | Codex, поэтапно | Todo | Г1–Г2 | CSS/JS вынесены в модули, vk.html использует общее ядро; готовит MAX и сторы; снимает проблему кириллицы при правках |
+| BACK-036 | Распил index.html: общее ядро + адаптеры TG/VK | Tech | P1 | Codex, поэтапно | In Progress | Г1–Г2 | Начат поэтапный распил: добавлен `scripts/platform-adapter.js` для Telegram/VK/web detection, `index.html` подключает общий platform layer с fallback, whitelist-сборка Workers Static Assets включает runtime script; дальше выносить VK adapter и auth helpers малыми шагами |
 | BACK-037 | CI + смоук-тесты API | Tech | P2 | Codex | Ready for QA | Г1–Г2 | GitHub Actions: проверка кодировки, линт, минификация; `api-smoke` покрывает reset-password negative cases, auth, tasks CRUD и transcribe(no-file); staging smoke против `restless-lab-d737-staging` прошёл 2026-07-07 |
 | BACK-038 | Аналитика событий + D1/D7 retention | Tech/Product | P2 | Codex | Ready for QA | Г1–Г2 | События: вход, создание задачи, шеринг; дашборд retention для оценки беты и виральности |
 

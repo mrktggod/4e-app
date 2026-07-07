@@ -8,6 +8,16 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-036 — первый безопасный шаг распила platform layer
+**Результат:** Добавлен `scripts/platform-adapter.js`: единая точка для Telegram WebApp, VK bridge, определения VK Mini App context, surface и bot username. `index.html` подключает адаптер до основного скрипта и использует его для `tg`, `TELEGRAM_BOT_USERNAME`, `tgUser`, `tgInitData`, `isVkMiniAppContext()` с fallback на старые выражения. `scripts/build-pages-whitelist.mjs` теперь включает runtime script в Workers Static Assets artifact. `pm/backlog.md` переведён в `In Progress`, потому что полный распил монолита ещё продолжается.
+**Коммит:** `pending`
+**Статус:** ✅ первый модульный слой готов
+**Следующий шаг:** Вынести VK Mini Apps adapter из хвоста `index.html` в отдельный файл, сохранив текущие hooks `showScreen`, storage и haptic.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-037 — staging API smoke перед Ready for QA
 **Результат:** `npm run api-smoke` пройден против `https://restless-lab-d737-staging.shelckograff.workers.dev`: `forgot-password(empty)=400`, `forgot-password(invalid)=400`, register/login/auth-me `200`, tasks list/create/done/delete `200`, `transcribe(no-file)=400`. Это закрывает живой staging-прогон для автосмоука; `pm/backlog.md` переведён в `Ready for QA`.
 **Коммит:** `pending`

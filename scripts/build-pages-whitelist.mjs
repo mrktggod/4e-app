@@ -1,5 +1,5 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 const repoRoot = process.cwd();
 const outDir = resolve(repoRoot, ".pages-dist");
@@ -10,6 +10,7 @@ const requiredFiles = [
   "vk.html",
   "privacy.html",
   "styles.min.css",
+  "scripts/platform-adapter.js",
 ];
 
 const optionalPaths = [
@@ -34,7 +35,9 @@ for (const relPath of requiredFiles) {
   if (!existsSync(srcPath)) {
     throw new Error(`Required Pages file is missing: ${relPath}`);
   }
-  cpSync(srcPath, resolve(outDir, relPath), { recursive: true });
+  const destPath = resolve(outDir, relPath);
+  mkdirSync(dirname(destPath), { recursive: true });
+  cpSync(srcPath, destPath, { recursive: true });
 }
 
 for (const relPath of optionalPaths) {

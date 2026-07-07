@@ -8,6 +8,7 @@
 <link rel="shortcut icon" href="favicon.ico" sizes="any">
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
+<script src="scripts/platform-adapter.js"></script>
 <script src="assets/vendor/marked.min.js"></script>
 <link rel="stylesheet" href="styles.min.css">
 </head>
@@ -2121,11 +2122,11 @@
 <script>
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
-const tg=window.Telegram?.WebApp;
-if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}
-if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
+const PLATFORM=window.FourPlatform||{};
+const tg=PLATFORM.telegramApp||window.Telegram?.WebApp;
+if(PLATFORM.initTelegram){PLATFORM.initTelegram();}else{if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}}
 const WORKER='https://edge.4-ai.site';
-const TELEGRAM_BOT_USERNAME=new URLSearchParams(location.search).get('bot')||'Denzel89bot';
+const TELEGRAM_BOT_USERNAME=PLATFORM.getTelegramBotUsername?PLATFORM.getTelegramBotUsername():(new URLSearchParams(location.search).get('bot')||'Denzel89bot');
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
 const D1_TOKEN_K='chetam_d1_token';
@@ -2143,8 +2144,8 @@ let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
 let analyticsSummaryCache={at:0, summary:null};
 
-const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
-const tgInitData=window.Telegram?.WebApp?.initData||'';
+const tgUser=PLATFORM.getTelegramUser?PLATFORM.getTelegramUser():window.Telegram?.WebApp?.initDataUnsafe?.user;
+const tgInitData=PLATFORM.getTelegramInitData?PLATFORM.getTelegramInitData():(window.Telegram?.WebApp?.initData||'');
 
 // ── helpers ──────────────────────────────────────────────────
 function getToken(){ return localStorage.getItem(TOKEN_K); }
@@ -2295,6 +2296,7 @@ async function processOAuthCallback(){
 }
 
 function isVkMiniAppContext(){
+  if(PLATFORM.isVkMiniAppContext) return PLATFORM.isVkMiniAppContext();
   const raw=[window.location.search,window.location.hash].filter(Boolean).join('&');
   return /(?:^|[?#&])vk_/.test(raw)||/(?:^|[?#&])sign=/.test(raw);
 }
