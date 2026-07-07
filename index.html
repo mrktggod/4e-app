@@ -5748,7 +5748,22 @@ function switchDetailTab(tab, el){
 async function addDetailComment(){
   const inp=document.getElementById('detail-comment-input');
   const text=(inp.value||'').trim();
-  if(!text||!currentTaskId||!getToken()) return;
+  if(!text){
+    showToast('Введите текст комментария');
+    if(inp) inp.focus();
+    return;
+  }
+  const token=getToken();
+  const taskId = currentTaskId || currentDetailTask?.id;
+  if(!taskId){
+    showToast('Нет активной задачи для комментария');
+    return;
+  }
+  if(!token){
+    showToast('Нужно повторно войти в приложение');
+    return;
+  }
+  currentTaskId = taskId;
   inp.disabled=true;
   try{
     await saveTaskChatMessage('user',text,currentUser?.name||'Вы');
