@@ -2164,51 +2164,21 @@ async function readJsonSafe(response){
   }
 }
 
-function searchLike(value){
-  if(!value || typeof value!=='string') return '';
-  const clean=value.startsWith('#')?value.slice(1):value;
-  return clean.startsWith('?')?clean:'?'+clean;
-}
-
 function getOAuthRedirectUri(){
-  return window.location.origin + window.location.pathname;
-}
-
-function base64UrlFromBytes(bytes){
-  let binary='';
-  bytes.forEach((b)=>{binary+=String.fromCharCode(b);});
-  return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-}
-
-function randomOAuthVerifier(){
-  const bytes=new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  return base64UrlFromBytes(bytes);
-}
-
-async function sha256Base64Url(value){
-  const data=new TextEncoder().encode(value);
-  const digest=await crypto.subtle.digest('SHA-256',data);
-  return base64UrlFromBytes(new Uint8Array(digest));
+  return PLATFORM.getOAuthRedirectUri ? PLATFORM.getOAuthRedirectUri() : window.location.origin + window.location.pathname;
 }
 
 async function createOAuthPkce(){
-  const verifier=randomOAuthVerifier();
-  return {verifier, challenge:await sha256Base64Url(verifier)};
+  if(!PLATFORM.createOAuthPkce) throw new Error('platform adapter unavailable');
+  return PLATFORM.createOAuthPkce();
 }
 
 function rememberOAuthState(state, provider, redirectUri, codeVerifier){
-  if(!state) return;
-  sessionStorage.setItem(OAUTH_PENDING_PREFIX + state, JSON.stringify({provider, redirectUri, codeVerifier, createdAt:Date.now()}));
+  if(PLATFORM.rememberOAuthState) PLATFORM.rememberOAuthState(OAUTH_PENDING_PREFIX,state,provider,redirectUri,codeVerifier);
 }
 
 function consumeOAuthState(state){
-  if(!state) return null;
-  const key=OAUTH_PENDING_PREFIX + state;
-  const raw=sessionStorage.getItem(key);
-  sessionStorage.removeItem(key);
-  if(!raw) return null;
-  try{return JSON.parse(raw);}catch(e){return null;}
+  return PLATFORM.consumeOAuthState ? PLATFORM.consumeOAuthState(OAUTH_PENDING_PREFIX,state) : null;
 }
 
 async function startOAuthLogin(provider){

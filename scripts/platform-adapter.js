@@ -38,6 +38,56 @@
     return 'web';
   }
 
+  function getOAuthRedirectUri() {
+    return window.location.origin + window.location.pathname;
+  }
+
+  function base64UrlFromBytes(bytes) {
+    let binary = '';
+    bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function randomOAuthVerifier() {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    return base64UrlFromBytes(bytes);
+  }
+
+  async function sha256Base64Url(value) {
+    const data = new TextEncoder().encode(value);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    return base64UrlFromBytes(new Uint8Array(digest));
+  }
+
+  async function createOAuthPkce() {
+    const verifier = randomOAuthVerifier();
+    return { verifier, challenge: await sha256Base64Url(verifier) };
+  }
+
+  function rememberOAuthState(prefix, state, provider, redirectUri, codeVerifier) {
+    if (!prefix || !state) return;
+    sessionStorage.setItem(prefix + state, JSON.stringify({
+      provider,
+      redirectUri,
+      codeVerifier,
+      createdAt: Date.now(),
+    }));
+  }
+
+  function consumeOAuthState(prefix, state) {
+    if (!prefix || !state) return null;
+    const key = prefix + state;
+    const raw = sessionStorage.getItem(key);
+    sessionStorage.removeItem(key);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      return null;
+    }
+  }
+
   function getHashParams() {
     return new URLSearchParams((window.location.hash || '').replace(/^#/, '?'));
   }
@@ -344,6 +394,10 @@
     initTelegram,
     isVkMiniAppContext,
     getSurface,
+    getOAuthRedirectUri,
+    createOAuthPkce,
+    rememberOAuthState,
+    consumeOAuthState,
     getTelegramStartTokenFromLaunch,
     getTelegramReturnUrl,
     saveTelegramPendingStart,

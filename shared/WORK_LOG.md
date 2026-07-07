@@ -8,9 +8,19 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-055 — вынести OAuth PKCE/state helpers из `index.html`
+**Результат:** В `scripts/platform-adapter.js` перенесены `getOAuthRedirectUri()`, PKCE verifier/challenge generation и хранение/чтение pending OAuth state. В `index.html` остались короткие совместимые обёртки, а `createOAuthPkce()` теперь явно падает в catch входа, если platform layer не загрузился, вместо отправки пустого challenge.
+**Коммит:** `pending`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+**Следующий шаг:** Следующим безопасным шагом вынести referral helpers или продолжить auth-секцию в отдельный модуль.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-055 — вынести platform auth helpers из `index.html`
 **Результат:** В `scripts/platform-adapter.js` перенесены Telegram start-token/return-url helpers, хранение pending Telegram start token, чистка auth URL, построение и открытие `t.me` login URL, а также сбор VK launch params. В `index.html` оставлены совместимые короткие обёртки, поэтому `loginWithTelegram()`, `resumePendingTelegramLogin()` и VK auto-login продолжают вызывать прежние имена.
-**Коммит:** `pending`
+**Коммит:** `edc5317`
 **Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
 **Следующий шаг:** Следующим безопасным шагом вынести OAuth state/PKCE helpers или referral helpers отдельным блоком.
 
