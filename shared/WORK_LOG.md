@@ -8,6 +8,16 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-034 — уточнить живой блокер staging AI smoke
+**Результат:** Перепроверено по коду и docs: staging-контур уже поднят, `wrangler.toml`/`wrangler.staging.toml` содержат отдельный `env.staging`, а dev Mini App живёт на `https://4-ai-staging.pages.dev`. Username бота в коде по умолчанию `Denzel89bot`, плюс dev-сборка умеет переопределять его через `?bot=...`, так что это больше не главный вопрос. В `pm/backlog.md` уточнено, что реальный blocker для AI smoke — отсутствие staging `ANTHROPIC_KEY` и связанных secrets.
+**Коммит:** `pending`
+**Статус:** ⚠️ блокер подтверждён
+**Следующий шаг:** Юрий вручную добавляет staging secrets (`ANTHROPIC_KEY` как минимум), после чего можно запускать staging AI smoke для `BACK-034`/`SMART-006`.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** INFRA-001 — сверить фактический статус фронта на Workers Static Assets
 **Результат:** Повторно подтверждено, что кодовая часть `INFRA-001` уже в репозитории: `wrangler.toml` указывает `main = "worker-static.js"`, routes на `app.4-ai.site` и binding `ASSETS` с `run_worker_first = true`; `worker-static.js` обслуживает `/`, `/vk`, `/privacy` и распознаёт VK launch params на корне. `pm/backlog.md` переведён в `Ready for QA`, потому что от Codex больше не осталось кодовых шагов — нужен только ручной phone/web smoke Юрия из РФ-сети без VPN.
 **Коммит:** `pending`
