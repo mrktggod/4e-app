@@ -1,5 +1,4 @@
 const BASE_URL = process.env.WORKER_BASE_URL || process.env.API_BASE_URL || 'https://edge.4-ai.site';
-const TASK_CHAT = `smoke-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
 
 function log(message) {
   process.stdout.write(String(message) + '\n');
@@ -71,8 +70,9 @@ function sanitizeTask(taskText) {
   log(`auth/me: ${me.status} ${me.elapsed}ms`);
   assert(me.status === 200 && me.body?.ok === true, 'auth/me failed');
 
-  const taskText = `SMART-013 smoke ${sanitizeTask(TASK_CHAT)}`;
-  const before = await request(`/tasks?chatId=${encodeURIComponent(TASK_CHAT)}`, {
+  const taskText = `SMART-013 smoke ${sanitizeTask(Date.now())}`;
+  const taskId = `smoke-task-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+  const before = await request('/tasks', {
     method: 'GET',
     headers: authHeaders,
   });
@@ -84,8 +84,8 @@ function sanitizeTask(taskText) {
     method: 'POST',
     headers: { ...authHeaders, 'x-action': 'save-task' },
     body: JSON.stringify({
-      chatId: TASK_CHAT,
       task: {
+        id: taskId,
         text: taskText,
         person: 'Smoke Person',
         direction: 'outgoing',
@@ -97,7 +97,7 @@ function sanitizeTask(taskText) {
   log(`tasks.create: ${create.status} ${create.elapsed}ms`);
   assert(create.status === 200 && create.body?.ok !== false, 'tasks create failed');
 
-  const after = await request(`/tasks?chatId=${encodeURIComponent(TASK_CHAT)}`, {
+  const after = await request('/tasks', {
     method: 'GET',
     headers: authHeaders,
   });
@@ -108,13 +108,13 @@ function sanitizeTask(taskText) {
   const created = afterTasks.find((item) => {
     return sanitizeTask(item.text) === taskText && !beforeIds.has(String(item.id || ''));
   });
-  const createdId = created?.id;
+  const createdId = created?.id || taskId;
   assert(createdId, 'created task id not found');
 
   const done = await request('', {
     method: 'POST',
     headers: { ...authHeaders, 'x-action': 'done-task' },
-    body: JSON.stringify({ chatId: TASK_CHAT, taskId: createdId }),
+    body: JSON.stringify({ taskId: createdId }),
   });
   log(`tasks.done: ${done.status} ${done.elapsed}ms`);
   assert(done.status === 200 && done.body?.ok !== false, 'done-task failed');
@@ -122,7 +122,7 @@ function sanitizeTask(taskText) {
   const del = await request('', {
     method: 'POST',
     headers: { ...authHeaders, 'x-action': 'delete-task' },
-    body: JSON.stringify({ chatId: TASK_CHAT, taskId: createdId }),
+    body: JSON.stringify({ taskId: createdId }),
   });
   log(`tasks.delete: ${del.status} ${del.elapsed}ms`);
   assert(del.status === 200 && del.body?.ok !== false, 'delete-task failed');
