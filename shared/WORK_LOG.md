@@ -8,9 +8,19 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-055 — вынести общие dialog/focus helpers из `index.html`
+**Результат:** Общие helpers для dialog/bottom sheet (`getDialogFocusable`, `openAccessibleDialog`, `closeAccessibleDialog`, `handleAccessibleDialogKeydown`) перенесены в `scripts/platform-adapter.js`. В `index.html` остались совместимые обёртки, поэтому quick-add, contact panel и biometric consent продолжают использовать прежние имена, а platform layer забирает повторяемое DOM-поведение.
+**Коммит:** `pending`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+**Следующий шаг:** Продолжить auth-секцию или вынести следующий общий UI helper без изменения пользовательского сценария.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-055 — вынести referral helpers из `index.html`
 **Результат:** Referral helpers (`normalizeReferralCode`, чтение `ref/referral/invite`, pending referral storage и сборка referral link) перенесены в `scripts/platform-adapter.js`. В `index.html` оставлены совместимые обёртки, чтобы регистрация, Telegram/VK/OAuth login и кнопка копирования реферальной ссылки продолжили вызывать прежние имена.
-**Коммит:** `pending`
+**Коммит:** `38c8bfd`
 **Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
 **Следующий шаг:** Продолжить auth-секцию или вынести следующий платформенный helper без изменения пользовательского сценария.
 

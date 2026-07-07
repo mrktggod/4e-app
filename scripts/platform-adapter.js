@@ -145,6 +145,60 @@
     return url.toString();
   }
 
+  const dialogReturnFocus = new Map();
+
+  function getDialogFocusable(root) {
+    if (!root) return [];
+    return Array.from(root.querySelectorAll('a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+      .filter(element => element.offsetParent !== null || element === document.activeElement);
+  }
+
+  function openAccessibleDialog(dialogId, focusSelector) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog) return;
+    dialogReturnFocus.set(dialogId, document.activeElement);
+    dialog.setAttribute('aria-hidden', 'false');
+    setTimeout(() => {
+      const target = focusSelector ? dialog.querySelector(focusSelector) : null;
+      const focusable = target || getDialogFocusable(dialog)[0] || dialog.querySelector('[tabindex="-1"]') || dialog;
+      focusable?.focus?.();
+    }, 0);
+  }
+
+  function closeAccessibleDialog(dialogId, options) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog) return;
+    dialog.setAttribute('aria-hidden', 'true');
+    const shouldRestore = !options || options.restoreFocus !== false;
+    const previous = dialogReturnFocus.get(dialogId);
+    dialogReturnFocus.delete(dialogId);
+    if (shouldRestore && previous && document.contains(previous)) {
+      setTimeout(() => previous.focus?.(), 0);
+    }
+  }
+
+  function handleAccessibleDialogKeydown(event, dialogId, closeFn) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog || dialog.getAttribute('aria-hidden') === 'true') return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeFn?.();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const focusable = getDialogFocusable(dialog);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function getTelegramStartTokenFromLaunch() {
     const initStart = telegramApp?.initDataUnsafe?.start_param;
     if (initStart) return String(initStart).trim();
@@ -458,6 +512,10 @@
     clearPendingReferralCode,
     capturePendingReferralCode,
     buildReferralLink,
+    getDialogFocusable,
+    openAccessibleDialog,
+    closeAccessibleDialog,
+    handleAccessibleDialogKeydown,
     getTelegramStartTokenFromLaunch,
     getTelegramReturnUrl,
     saveTelegramPendingStart,
