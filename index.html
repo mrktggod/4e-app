@@ -694,6 +694,7 @@
         </div>
         <div class="detail-person-actions">
           <span id="detail-person" class="detail-person-name">—</span>
+          <span id="detail-person-meta" class="detail-person-meta detail-person-meta--hidden">пользователь 4</span>
           <button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden">Написать</button>
         </div>
       </div>
@@ -3764,9 +3765,12 @@ function openPersonPicker(){
   if(choice===null) return;
   const value = choice.trim();
   if(!value) return;
-  newTaskDraft.person=value;
+  const parsed = parsePersonChoice(value, current);
+  newTaskDraft.person=parsed.person;
+  newTaskDraft.assigneeUsername=parsed.assigneeUsername;
+  newTaskDraft.assigneeTgId=parsed.assigneeTgId;
   const personLabel=document.getElementById('nt-person-label');
-  if(personLabel) personLabel.textContent=value;
+  if(personLabel) personLabel.textContent=parsed.person;
 }
 function parseAssigneeFromPerson(value){
   const raw=String(value||'').trim();
@@ -3775,6 +3779,21 @@ function parseAssigneeFromPerson(value){
   const tgIdMatch=raw.match(/(\\d{6,})/);
   if(tgIdMatch && /id/i.test(raw)) return {assigneeTgId:tgIdMatch[1]};
   return {};
+}
+function parsePersonChoice(value, fallbackPerson){
+  const raw=String(value||'').trim();
+  const assignee=parseAssigneeFromPerson(raw);
+  const person=(raw
+    .replace(/(?:^|[^a-zA-Z0-9_])@[a-zA-Z0-9_]{3,}/ig,' ')
+    .replace(/\b(?:id\s*)?\d{6,}\b/ig,' ')
+    .replace(/[()]/g,' ')
+    .replace(/\s{2,}/g,' ')
+    .trim()) || String(fallbackPerson||'').trim() || raw;
+  return {
+    person,
+    assigneeUsername: assignee.assigneeUsername || '',
+    assigneeTgId: assignee.assigneeTgId || ''
+  };
 }
 function buildNewTaskPayload(){
   syncNewTaskDraftFromInputs();
@@ -4968,6 +4987,12 @@ function syncDetailContactButton(task){
   const person = String(task?.person || '').trim();
   btn.classList.toggle('detail-contact-btn--hidden', !person || /^я$/i.test(person));
 }
+function syncDetailPersonMeta(task){
+  const metaEl = document.getElementById('detail-person-meta');
+  if(!metaEl) return;
+  const hasLinkedUser = !!String(task?.assigneeTgId || '').trim() || !!normalizeTelegramUsername(task?.assigneeUsername || task?.telegramUsername || task?.username || '');
+  metaEl.classList.toggle('detail-person-meta--hidden', !hasLinkedUser);
+}
 
 function openContactPanel(person, taskText, taskMeta){
   const overlay = document.getElementById('contact-panel-overlay');
@@ -5019,13 +5044,21 @@ function openDetailContactPanel(){
 function openDetailPersonPicker(){
   if(!currentDetailTask) return;
   const current = (document.getElementById('detail-person')?.textContent || '').trim() || (currentDetailTask.person || 'Я');
-  const choice = window.prompt('Кто исполнитель / ответственный?', current);
+  const choice = window.prompt('Кто исполнитель / ответственный? Можно указать @username или ID 123456 для пользователя 4.', current);
   if(choice === null) return;
   const value = choice.trim();
   if(!value) return;
+  const parsed = parsePersonChoice(value, current);
   const personEl = document.getElementById('detail-person');
-  if(personEl) personEl.textContent = value;
-  syncDetailContactButton({ person: value });
+  if(personEl) personEl.textContent = parsed.person;
+  currentDetailTask = {
+    ...currentDetailTask,
+    person: parsed.person,
+    assigneeUsername: parsed.assigneeUsername,
+    assigneeTgId: parsed.assigneeTgId
+  };
+  syncDetailPersonMeta(currentDetailTask);
+  syncDetailContactButton(currentDetailTask);
 }
 
 // ── AI advice in task detail ──────────────────────────────────
@@ -5620,6 +5653,7 @@ function openTask(t,idx){
   const dateEl = document.getElementById('detail-date');
   const dirEl = document.getElementById('detail-direction');
   if(personEl) personEl.textContent = t.person || '—';
+  syncDetailPersonMeta(t);
   if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime || t.date || t.deadline || '');
   if(dirEl) dirEl.value = getDirectionLabel(currentDetailDirectionLabel);
   syncDetailContactButton(t);
@@ -5844,8 +5878,14 @@ async function saveTaskEdits(){
   const newDeadline = currentDetailTime || '';
   const newOrigMsg = document.getElementById('detail-description')?.value?.trim();
   const rawPerson = (document.getElementById('detail-person')?.textContent || '').trim();
-  const newPerson = rawPerson && rawPerson !== '—' ? rawPerson : (currentDetailTask.person || '—');
-  const assignee = parseAssigneeFromPerson(newPerson);
+  const hasEditedPerson = !!(rawPerson && rawPerson !== '—');
+  const personChoice = parsePersonChoice(hasEditedPerson ? rawPerson : (currentDetailTask.person || '—'), currentDetailTask.person || '—');
+  const newPerson = personChoice.person && personChoice.person !== '—' ? personChoice.person : (currentDetailTask.person || '—');
+  const preserveCurrentAssignee = !hasEditedPerson || (
+    newPerson === (currentDetailTask.person || '—') &&
+    !personChoice.assigneeUsername &&
+    !personChoice.assigneeTgId
+  );
   const updates = {
     text: newText || currentDetailTask.text,
     deadline: newDeadline || null,
@@ -5861,8 +5901,8 @@ async function saveTaskEdits(){
     reminder: currentDetailReminder,
     originalMsg: newOrigMsg || currentDetailTask.originalMsg,
     person: newPerson,
-    assigneeUsername: assignee.assigneeUsername || '',
-    assigneeTgId: assignee.assigneeTgId || '',
+    assigneeUsername: preserveCurrentAssignee ? (currentDetailTask.assigneeUsername || '') : (personChoice.assigneeUsername || ''),
+    assigneeTgId: preserveCurrentAssignee ? (currentDetailTask.assigneeTgId || '') : (personChoice.assigneeTgId || ''),
   };
 
   // Update local cache

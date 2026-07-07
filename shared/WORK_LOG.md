@@ -15,8 +15,13 @@
 
 **Задача:** BACK-055 — вынести Enter-submit helper из `index.html`
 **Результат:** Общая проверка Enter-нажатия по input вынесена в `scripts/platform-adapter.js` как `shouldHandleEnterSubmit()`. В `index.html` `submitLoginOnEnter()` остался совместимой обёрткой, а login/register/forgot/reset keydown-ветки теперь используют единый helper без изменения submit-сценариев.
-**Коммит:** `pending`
+**Коммит:** `0b3e516`
 **Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+
+**Задача:** BACK-030 — structured assignee в detail-flow
+**Результат:** `openDetailPersonPicker()` и `saveTaskEdits()` теперь сохраняют structured assignee (`@username` / `ID 123456`) отдельно от видимого имени. Detail-карточка показывает бейдж «пользователь 4», если задача реально привязана к аккаунту, а обычное сохранение больше не теряет `assigneeTgId` у уже связанных задач.
+**Коммит:** `pending`
+**Статус:** ✅ кодовый шаг готов, `BACK-030` остаётся `In Progress` до живого smoke
 
 **Задача:** BACK-055 — вынести email-validator из `index.html`
 **Результат:** `isValidEmail()` перенесён в `scripts/platform-adapter.js`; в `index.html` оставлена совместимая обёртка для login/register/forgot/reset flow. `BACK-055` остаётся поэтапным распилом без смены статуса.
