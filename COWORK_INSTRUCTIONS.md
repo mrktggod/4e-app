@@ -107,6 +107,17 @@ git log --oneline -10
 - Писать: `[System.IO.File]::WriteAllText($f, $content, (New-Object System.Text.UTF8Encoding $false))`
 - После правки проверять: `Select-String -Path $file -Pattern 'Войти|Задачи'`
 
+### UI-архитектура
+- Новый UI-код не должен увеличивать inline-долг в `index.html`/`vk.html`.
+- Новые стили писать в `styles/**/*.less`; новые классы — в BEM-подходе.
+- Базовая доступность входит в Definition of Done для нового и изменяемого UI: labels/accessible names, видимый focus, keyboard flow, доступные status/error сообщения, dialog-поведение и mobile touch targets.
+- Не добавлять новые `style=""` и inline-обработчики `onclick`/`oninput`/`onchange`.
+- Если видишь новый inline UI-код в diff, фиксируй как процессную ошибку и проси переделать через LESS + JS.
+- Если видишь новый UI без доступных подписей, фокуса, клавиатурного пути, status/alert или нормальных touch-targets, фиксируй как QA/process gap и отправляй на доработку.
+- Проверка для Codex/Юры: `bash scripts/check-ui-architecture.sh`.
+- Ручная проверка для UI-задач: accessibility smoke в `pm/qa-checklist.md`.
+- Подробности: `docs/ui-architecture-rules.md`.
+
 ### Скачивание файлов с GitHub
 ```powershell
 $bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()

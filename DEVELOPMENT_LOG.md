@@ -30,6 +30,41 @@
 **Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
 
 **Коммит:** `docs(process): add linear bug triage policy`
+## 2026-07-06 — Accessibility as permanent UI rule
+
+### Доступность закреплена в Definition of Done UI-задач
+
+**Что сделано:** Код приложения не менялся. Accessibility baseline закреплён как постоянное правило для нового и изменяемого UI, а не только как разовая задача `BACK-050`. Обновлены `docs/ui-architecture-rules.md`, `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `shared/ROADMAP.md`. Добавлена итоговая инструкция для Юры: `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-permanent-rule.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка постоянного правила в агентских инструкциях и roadmap; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Коммит:** `docs(ui): make accessibility a permanent rule`
+
+## 2026-07-06 — BACK-050: accessibility baseline
+
+### Базовая доступность критических сценариев
+
+**Что сделано:** Код приложения не менялся. После изучения материала HTML Academy по доступности веб-интерфейсов добавлен `BACK-050` в `shared/ROADMAP.md` и `pm/backlog.md`. В `pm/qa-checklist.md` добавлены проверки auth keyboard/focus, доступных labels/errors, status/toast, dialog bottom sheets и touch-targets. Создан `docs/tasks/BACK-050-accessibility-baseline.md` с порядком работ и `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-baseline.md` с тремя копируемыми задачами для Юры.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/BACK-050-accessibility-baseline.md` → `pm/agent-inbox/`.
+
+**Коммит:** `docs(qa): add accessibility baseline tasks`
+
+## 2026-07-06 — BACK-049: UI architecture guard
+
+### Правило LESS + BEM без роста inline-долга
+
+**Что сделано:** По решению Алексея закреплено правило для нового UI-кода: HTML = структура, LESS = стили, JS = поведение; новые классы — в BEM-подходе; новые inline `style=""`, `onclick`/`oninput`/`onchange`, inline `<style>` и inline `<script>` в `index.html` не добавлять. Добавлен `docs/ui-architecture-rules.md`, обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `shared/ROADMAP.md` и `pm/backlog.md`. Добавлен guard `scripts/check-ui-architecture.sh`, npm script `check:ui-architecture`, pre-commit и GitHub Actions проверка. `BACK-012` переведён в `Partial Done`: LESS/minification есть, BEM/legacy cleanup продолжаются через BACK-049 и поэкранные правки.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `bash scripts/check-ui-architecture.sh`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Коммит:** `docs(ui): add architecture guard for inline debt`
 
 ## 2026-07-05 — BACK-048: dev/test accounts task
 

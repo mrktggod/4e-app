@@ -142,6 +142,21 @@ GitHub Desktop — удобный вариант для Алексея и сла
 - `;` вместо `&&`
 - Скачивать файлы: `$bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()`
 
+### UI-архитектура — новое правило с 2026-07-06
+
+Для нового UI-кода действует правило: HTML = структура, LESS = стили, JS = поведение.
+
+- Новые визуальные стили писать в `styles/**/*.less`, затем запускать `npm run build:css`.
+- Новые CSS-классы называть в BEM-подходе: `block`, `block__element`, `block--modifier`.
+- Базовая доступность — часть Definition of Done для нового и изменяемого UI: labels/accessible names, видимый focus, keyboard flow, status/error сообщения, dialog-поведение и mobile touch targets.
+- Не добавлять новые `style=""` в `index.html`/`vk.html`, кроме явно обоснованных динамических CSS-переменных.
+- Не добавлять новые `onclick`/`oninput`/`onchange` и другие inline-обработчики; использовать `addEventListener()` или делегирование событий.
+- Не добавлять новые inline `<style>` и inline `<script>` блоки в `index.html`.
+- Старый inline-код и accessibility-долг не переписывать массово без отдельной задачи; при правке экрана переносить близкий старый долг и доводить доступность сценария до baseline по мере возможности.
+- Перед коммитом запускать `bash scripts/check-ui-architecture.sh`; pre-commit и GitHub Actions не должны пропускать рост inline-долга.
+- Для UI-задач сверяться с accessibility smoke в `pm/qa-checklist.md`, особенно auth, формы, toast/status, dialog/bottom sheet и touch targets.
+- Подробности: `docs/ui-architecture-rules.md`.
+
 ---
 
 ## Архитектура

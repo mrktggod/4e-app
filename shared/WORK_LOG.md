@@ -69,7 +69,7 @@
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-045 / BACK-048 — VK ID + Яндекс ID OAuth и staging dev/test аккаунты
-**Результат:** В `4e-worker` добавлены web OAuth endpoints для VK ID и Яндекс ID: `/auth/vk-id/start`, `/auth/vk-id`, `/auth/yandex-id/start`, `/auth/yandex-id`. OAuth login создаёт/находит аккаунт через provider mapping, email и активную legacy-сессию, использует `mergeAccounts`, не дублирует пользователя и возвращает legacy token для текущего фронта. В `index.html` добавлены кнопки «Войти через VK ID» и «Войти через Яндекс ID» без новых inline handlers; callback по `code/state` пишет token и открывает Home. Staging worker задеплоен, OAuth start endpoints корректно требуют реальные secrets. Для `BACK-048` засеяны `dev1.4e@example.com`, `dev2.4e@example.com`, `dev3.4e@example.com`; smoke login → `/auth/me` → `/tasks` прошёл, у всех `plan=paid` и 5 seed-задач. Пароли лежат локально вне git в `C:\Users\shelc\Documents\4\_local-secrets\back-048-staging-dev-accounts.json`.
+**Результат:** В `4e-worker` добавлены web OAuth endpoints для VK ID и Яндекс ID: `/auth/vk-id/start`, `/auth/vk-id`, `/auth/yandex-id/start`, `/auth/yandex-id`. OAuth login создаёт/находит аккаунт через provider mapping, email и активную legacy-сессию, использует `mergeAccounts`, не дублирует пользователя и возвращает legacy token для текущего фронта. В `index.html` добавлены кнопки «Войти через VK ID» и «Войти через Яндекс ID» без новых inline handlers; callback по `code/state` пишет token и открывает Home. Staging worker задеплоен, OAuth start endpoints корректно требуют реальные secrets. Для `BACK-048` засеяны `dev1.4e@example.com`, `dev2.4e@example.com`, `dev3.4e@example.com`; smoke login → `/auth/me` → `/tasks` прошёл, у всех `plan=paid` и 5 seed-задач. Пароли лежат локально вне git в `<project-root>\_local-secrets\back-048-staging-dev-accounts.json`.
 **Коммит:** `pending`
 **Статус:** ✅ код и staging smoke готовы; live OAuth smoke ждёт secrets провайдеров
 **Следующий шаг:** Юрий добавляет реальные `VK_ID_CLIENT_ID`, `VK_ID_CLIENT_SECRET`, `YANDEX_CLIENT_ID`, `YANDEX_CLIENT_SECRET` в staging/prod secrets и Алексей/Юрий проходят живой OAuth redirect smoke.
@@ -205,12 +205,27 @@
 **Следующий шаг:** Юра и агенты используют правило при разборе новых багов перед созданием Linear issue.
 
 ---
+### 2026-07-06 — Codex
+
+**Задача:** закрепить accessibility как постоянное правило для будущей UI-разработки
+**Результат:** Accessibility baseline переведён из разовой задачи `BACK-050` в постоянную часть Definition of Done для нового и изменяемого UI. Обновлены `docs/ui-architecture-rules.md`, `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `shared/ROADMAP.md`. Для Юры добавлена итоговая инструкция `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-permanent-rule.md`.
+**Коммит:** `docs(ui): make accessibility a permanent rule`
+**Статус:** ✅ правило закреплено
+**Следующий шаг:** Юрий применяет правило во всех следующих UI-ветках; `BACK-050` остаётся отдельной задачей на практическое доведение критических сценариев до baseline.
+
+### 2026-07-06 — Codex
+
+**Задача:** оформить BACK-050 accessibility baseline и отправить Юре задачи по шагам
+**Результат:** В `shared/ROADMAP.md` и `pm/backlog.md` добавлен `BACK-050` на базовую доступность критических сценариев. В `pm/qa-checklist.md` добавлен ручной accessibility smoke: auth keyboard/focus, формы, status/toast, dialog bottom sheets и touch-targets. Создан task-файл `docs/tasks/BACK-050-accessibility-baseline.md` и инбокс-сообщение `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-baseline.md` с тремя последовательными задачами для Юры.
+**Коммит:** `docs(qa): add accessibility baseline tasks`
+**Статус:** ✅ задача оформлена
+**Следующий шаг:** Юрий берёт шаг 1 в ветке `fix/accessibility-auth-baseline`; после проверки auth/forms переходить к status/toast и dialog/focus/touch-targets.
 
 ### 2026-07-05 — Codex
 
 **Задача:** поставить Юре задачу на dev/test аккаунты с полными правами
 **Результат:** Добавлена `BACK-048` в `pm/backlog.md`, создан task-файл `docs/tasks/BACK-048-dev-test-accounts.md`, в `pm/qa-checklist.md` добавлена проверка dev/test аккаунтов. Зафиксированы границы безопасности: сначала staging, production только после подтверждения Алексея; full-access через защищённый backend/admin-механизм; пароли, токены и `ADMIN_SECRET` не хранить в git.
-**Коммит:** N/A
+**Коммит:** `docs(ui): add architecture guard for inline debt`
 **Статус:** ✅ задача оформлена
 **Следующий шаг:** Юрий делает реализацию в worker-ветке `feat/dev-test-accounts` и передаёт Алексею логины/пароли вне репозитория.
 
@@ -868,5 +883,13 @@
 **Следующий шаг:** Проверить https://mrktggod.github.io/4e-app в десктопном браузере
 
 ---
+
+### 2026-07-06 — Codex
+
+**Задача:** BACK-049 — закрепить UI-архитектурное правило LESS + BEM и запретить рост inline-долга
+**Результат:** Добавлены `docs/ui-architecture-rules.md` и `scripts/check-ui-architecture.sh`; правило внесено в AGENTS/CLAUDE/COWORK, `pm/backlog.md` и `shared/ROADMAP.md`; pre-commit и GitHub Actions теперь проверяют, что `index.html` не наращивает inline `style`, inline handlers и inline script/style blocks.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** При следующих UI-задачах переносить затронутые стили в LESS и обработчики в JS, не делая массовый рефакторинг всего `index.html`.
 
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->
