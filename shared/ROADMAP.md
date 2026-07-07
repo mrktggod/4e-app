@@ -52,7 +52,7 @@
 | VK-хостинг | INFRA-004 — VK-поверхность переехала на хостинг VK Mini Apps; API остаётся на `edge.4-ai.site`, потому что Workers доступны из РФ | P1 | Done |
 | VK на мобильном интернете РФ | INFRA-005 — промежуточный RU API proxy в Yandex Cloud для VK Mini App; шаг 1 = gateway-прокси на `edge.4-ai.site` + VK-сборка с новым API base, без полного переноса backend | P0 | In Progress |
 | UI-архитектурный guard | BACK-049 — правило LESS + BEM для нового UI-кода, запрет роста inline `style`/handlers, проверка в pre-commit и GitHub Actions | P1 | Done |
-| Accessibility baseline | BACK-050 — базовая доступность критических сценариев: auth-формы, статусные сообщения, keyboard/focus, dialog-поведение quick-add/contact/consent и touch-target smoke перед закрытым тестом | P1 | In Progress — auth/forms и status/toast baseline подготовлены; dialogs/focus/touch-targets дальше |
+| Accessibility baseline | BACK-050 — базовая доступность критических сценариев: auth-формы, статусные сообщения, keyboard/focus, dialog-поведение quick-add/contact/consent и touch-target smoke перед закрытым тестом | P1 | Ready for QA — code baseline готов, нужен ручной keyboard/mobile smoke |
 | Единая рабочая копия | Одна рабочая папка, обмен только через git (убрать расхождение Documents/Desktop) | P1 | Todo |
 
 ---

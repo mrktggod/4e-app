@@ -2517,6 +2517,14 @@ body {
   border: 1px solid var(--border);
   color: var(--muted);
 }
+.contact-panel-btn:focus-visible,
+.quick-add-submit:focus-visible,
+.quick-add-cancel:focus-visible,
+.quick-add-text:focus-visible,
+.quick-add-person:focus-visible {
+  outline: 2px solid rgba(154, 194, 60, 0.75);
+  outline-offset: 3px;
+}
 .quick-add-overlay {
   display: none;
   position: fixed;
@@ -6698,4 +6706,10 @@ html[data-theme="light"] .promise-row-v2 {
 .bio-consent-cancel:hover {
   background: var(--card2, rgba(255, 255, 255, 0.04));
   color: var(--text);
+}
+.bio-consent-btn:focus-visible,
+.bio-consent-cancel:focus-visible,
+.bio-consent-check:focus-within .bio-check-box {
+  outline: 2px solid rgba(154, 194, 60, 0.75);
+  outline-offset: 3px;
 }

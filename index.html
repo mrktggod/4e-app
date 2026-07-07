@@ -2082,8 +2082,8 @@
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <!-- CONTACT PANEL -->
-<div id="contact-panel-overlay" class="contact-panel-overlay">
-  <div class="contact-panel">
+<div id="contact-panel-overlay" class="contact-panel-overlay" role="dialog" aria-modal="true" aria-labelledby="contact-panel-name" aria-describedby="contact-panel-task contact-panel-note" aria-hidden="true">
+  <div class="contact-panel" tabindex="-1">
     <div class="contact-panel-name" id="contact-panel-name">Контакт</div>
     <div class="contact-panel-task" id="contact-panel-task"></div>
     <div id="contact-panel-note" class="contact-panel-note"></div>
@@ -2102,11 +2102,13 @@
 </div>
 
 <!-- QUICK ADD OVERLAY -->
-<div id="quick-add-overlay" class="quick-add-overlay">
-  <div class="quick-add-sheet">
-    <div class="quick-add-title">Новая задача</div>
+<div id="quick-add-overlay" class="quick-add-overlay" role="dialog" aria-modal="true" aria-labelledby="quick-add-title" aria-hidden="true">
+  <div class="quick-add-sheet" tabindex="-1">
+    <div id="quick-add-title" class="quick-add-title">Новая задача</div>
+    <label class="form-label" for="quick-add-text">Текст задачи</label>
     <textarea id="quick-add-text" class="detail-edit-field quick-add-text" placeholder="Например: позвонить Антону завтра в 15:00..." autofocus></textarea>
     <div class="quick-add-row">
+      <label class="form-label" for="quick-add-person">Исполнитель</label>
       <input id="quick-add-person" class="detail-edit-field quick-add-person" placeholder="Исполнитель (необязательно)" />
     </div>
     <div class="quick-add-actions">
@@ -3690,9 +3692,63 @@ async function loadTasks(){
 
 
 // ── Quick Add ─────────────────────────────────────────────────
+const dialogReturnFocus = new Map();
+
+function getDialogFocusable(root){
+  if(!root) return [];
+  return Array.from(root.querySelectorAll('a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+    .filter(el=>el.offsetParent!==null || el===document.activeElement);
+}
+
+function openAccessibleDialog(dialogId,focusSelector){
+  const dialog=document.getElementById(dialogId);
+  if(!dialog) return;
+  dialogReturnFocus.set(dialogId,document.activeElement);
+  dialog.setAttribute('aria-hidden','false');
+  setTimeout(()=>{
+    const target=focusSelector?dialog.querySelector(focusSelector):null;
+    const focusable=target||getDialogFocusable(dialog)[0]||dialog.querySelector('[tabindex="-1"]')||dialog;
+    focusable?.focus?.();
+  },0);
+}
+
+function closeAccessibleDialog(dialogId,options){
+  const dialog=document.getElementById(dialogId);
+  if(!dialog) return;
+  dialog.setAttribute('aria-hidden','true');
+  const shouldRestore=!options||options.restoreFocus!==false;
+  const previous=dialogReturnFocus.get(dialogId);
+  dialogReturnFocus.delete(dialogId);
+  if(shouldRestore&&previous&&document.contains(previous)){
+    setTimeout(()=>previous.focus?.(),0);
+  }
+}
+
+function handleAccessibleDialogKeydown(event,dialogId,closeFn){
+  const dialog=document.getElementById(dialogId);
+  if(!dialog||dialog.getAttribute('aria-hidden')==='true') return;
+  if(event.key==='Escape'){
+    event.preventDefault();
+    closeFn?.();
+    return;
+  }
+  if(event.key!=='Tab') return;
+  const focusable=getDialogFocusable(dialog);
+  if(!focusable.length) return;
+  const first=focusable[0];
+  const last=focusable[focusable.length-1];
+  if(event.shiftKey&&document.activeElement===first){
+    event.preventDefault();
+    last.focus();
+  }else if(!event.shiftKey&&document.activeElement===last){
+    event.preventDefault();
+    first.focus();
+  }
+}
+
 function openQuickAdd(){
   const overlay = document.getElementById('quick-add-overlay');
-  if(overlay){ overlay.style.display='flex'; setTimeout(()=>document.getElementById('quick-add-text')?.focus(),100); }
+  if(overlay){ overlay.style.display='flex'; openAccessibleDialog('quick-add-overlay','#quick-add-text'); }
 }
 function getNewTaskDirectionValue(label){
   const raw=(label||'').trim().toLowerCase();
@@ -3871,6 +3927,7 @@ function initNewTaskHandlers(){
 function closeQuickAdd(){
   const overlay = document.getElementById('quick-add-overlay');
   if(overlay) overlay.style.display='none';
+  closeAccessibleDialog('quick-add-overlay');
   document.getElementById('quick-add-text').value='';
   document.getElementById('quick-add-person').value='';
 }
@@ -4989,11 +5046,13 @@ function openContactPanel(person, taskText, taskMeta){
   overlay.dataset.tgId = meta?.tgId || '';
   syncContactPanelNote(meta || {person});
   overlay.style.display = 'flex';
+  openAccessibleDialog('contact-panel-overlay','#contact-panel-telegram-btn');
 }
 
 function closeContactPanel(){
   const overlay = document.getElementById('contact-panel-overlay');
   if(overlay) overlay.style.display = 'none';
+  closeAccessibleDialog('contact-panel-overlay');
 }
 
 function contactViaTelegram(){
@@ -6922,6 +6981,10 @@ function initAuthA11yHandlers(){
       doResetPassword();
     }
   });
+  const quickAddOverlay=document.getElementById('quick-add-overlay');
+  if(quickAddOverlay) quickAddOverlay.addEventListener('keydown',event=>handleAccessibleDialogKeydown(event,'quick-add-overlay',closeQuickAdd));
+  const contactPanelOverlay=document.getElementById('contact-panel-overlay');
+  if(contactPanelOverlay) contactPanelOverlay.addEventListener('keydown',event=>handleAccessibleDialogKeydown(event,'contact-panel-overlay',closeContactPanel));
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -8309,11 +8372,11 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
    ===================================================== -->
 
 <!-- Экран согласия на биометрию -->
-<div class="screen" id="biometric-consent" style="display:none">
-  <div class="bio-consent-wrap">
+<div class="screen" id="biometric-consent" style="display:none" role="dialog" aria-modal="true" aria-labelledby="bio-consent-title" aria-describedby="bio-consent-text" aria-hidden="true">
+  <div class="bio-consent-wrap" tabindex="-1">
 
     <div class="bio-consent-icon">
-      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <svg aria-hidden="true" width="56" height="56" viewBox="0 0 56 56" fill="none">
         <circle cx="28" cy="28" r="28" fill="rgba(154,194,60,0.1)"/>
         <circle cx="28" cy="28" r="20" fill="rgba(154,194,60,0.15)"/>
         <rect x="24" y="16" width="8" height="16" rx="4" fill="#9AC23C"/>
@@ -8325,24 +8388,24 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
 
     <div class="bio-consent-badge">152-ФЗ · Статья 11</div>
 
-    <h2 class="bio-consent-title">Согласие на обработку голоса</h2>
+    <h2 class="bio-consent-title" id="bio-consent-title">Согласие на обработку голоса</h2>
 
-    <p class="bio-consent-text">
+    <p class="bio-consent-text" id="bio-consent-text">
       Ваш голос является <strong>биометрическими персональными данными</strong>.
       Для преобразования голоса в задачу приложению необходимо обработать аудиозапись.
     </p>
 
     <div class="bio-consent-details">
       <div class="bio-detail-row">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#9AC23C" stroke-width="1.5"/><path d="M8 5v4M8 11v.5" stroke="#9AC23C" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#9AC23C" stroke-width="1.5"/><path d="M8 5v4M8 11v.5" stroke="#9AC23C" stroke-width="1.5" stroke-linecap="round"/></svg>
         <span>Сырая запись не сохраняется — только распознанный текст</span>
       </div>
       <div class="bio-detail-row">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#9AC23C" stroke-width="1.5"/><path d="M8 5v4M8 11v.5" stroke="#9AC23C" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#9AC23C" stroke-width="1.5"/><path d="M8 5v4M8 11v.5" stroke="#9AC23C" stroke-width="1.5" stroke-linecap="round"/></svg>
         <span>Аудио передаётся через зашифрованное соединение</span>
       </div>
       <div class="bio-detail-row">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#9AC23C" stroke-width="1.5"/><path d="M8 5v4M8 11v.5" stroke="#9AC23C" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#9AC23C" stroke-width="1.5"/><path d="M8 5v4M8 11v.5" stroke="#9AC23C" stroke-width="1.5" stroke-linecap="round"/></svg>
         <span>Согласие можно отозвать в Профиле → Настройки</span>
       </div>
     </div>
@@ -8373,6 +8436,14 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
 (function() {
   const CONSENT_KEY = 'biometric_consent_v1';
 
+  function hideBiometricConsent(restoreFocus) {
+    const screen = document.getElementById('biometric-consent');
+    if (screen) screen.style.display = 'none';
+    if (typeof closeAccessibleDialog === 'function') {
+      closeAccessibleDialog('biometric-consent', { restoreFocus: restoreFocus !== false });
+    }
+  }
+
   // Включить/выключить кнопку по чекбоксу
   const checkbox = document.getElementById('bio-consent-checkbox');
   const confirmBtn = document.getElementById('bio-consent-confirm');
@@ -8392,7 +8463,7 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
         date: new Date().toISOString(),
         version: '1.0'
       }));
-      document.getElementById('biometric-consent').style.display = 'none';
+      hideBiometricConsent(false);
       // Продолжить открытие голосового экрана
       if (typeof openVoice === 'function') openVoice();
     });
@@ -8401,7 +8472,16 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
   // Отменить
   if (cancelBtn) {
     cancelBtn.addEventListener('click', function() {
-      document.getElementById('biometric-consent').style.display = 'none';
+      hideBiometricConsent(true);
+    });
+  }
+
+  const screen = document.getElementById('biometric-consent');
+  if (screen && typeof handleAccessibleDialogKeydown === 'function') {
+    screen.addEventListener('keydown', function(event) {
+      handleAccessibleDialogKeydown(event, 'biometric-consent', function() {
+        hideBiometricConsent(true);
+      });
     });
   }
 
@@ -8419,7 +8499,11 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
       } catch(e) {}
     }
     // Показать экран согласия
-    document.getElementById('biometric-consent').style.display = 'flex';
+    const screen = document.getElementById('biometric-consent');
+    if (screen) {
+      screen.style.display = 'flex';
+      if (typeof openAccessibleDialog === 'function') openAccessibleDialog('biometric-consent', '#bio-consent-checkbox');
+    }
     return false;
   };
 

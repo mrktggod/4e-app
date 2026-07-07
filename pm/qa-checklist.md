@@ -58,7 +58,7 @@
 | Roadmap | Now/Next/Later, зависимости, риски | Todo | |
 | QA | Чеклисты, acceptance criteria, тестовые данные | Todo | |
 | QA / Dev test accounts | У каждого dev/test аккаунта активен Premium/full-access, есть seed-задачи, пароли не хранятся в git | In Progress | `BACK-048`; admin seed/delete контур уже в `4e-worker`, для полного smoke нужен staging `ADMIN_SECRET` и реальный seed |
-| Accessibility / Critical UI | Auth-формы, keyboard/focus, status/toast, dialog bottom sheets, touch-targets на mobile | In Progress | `BACK-050`; auth/forms и status/toast code baseline подготовлены, ручной smoke перед закрытым тестом; dialogs/focus/touch-targets остаются следующим шагом |
+| Accessibility / Critical UI | Auth-формы, keyboard/focus, status/toast, dialog bottom sheets, touch-targets на mobile | Ready for QA | `BACK-050`; code baseline подготовлен, нужен ручной keyboard/mobile smoke перед закрытым тестом |
 | Коммуникация | Краткие отчеты, понятный тон, без лишней воды | Todo | |
 | Надежность | Нет выдуманных ссылок, дат, статусов | Todo | |
 

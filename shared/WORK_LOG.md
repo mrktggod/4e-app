@@ -8,9 +8,19 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-050 — accessibility baseline dialogs/focus/touch-targets, шаг 3
+**Результат:** Quick-add overlay, contact panel и biometric consent получили `role="dialog"`, `aria-modal`, `aria-labelledby`/`aria-describedby`, `aria-hidden`, перенос фокуса внутрь при открытии, возврат фокуса после закрытия и общий Tab/Escape handling. Для dialog-контролов добавлен видимый `focus-visible` через LESS; декоративные SVG в biometric consent скрыты от accessibility tree. `BACK-050` переведён в `Ready for QA`, потому что code baseline закрыт, а дальше нужен ручной keyboard/mobile smoke.
+**Коммит:** `pending`
+**Статус:** ✅ code baseline готов
+**Следующий шаг:** Алексей/Юрий проходят ручной smoke: Tab/Shift+Tab/Enter/Escape на auth и dialogs, плюс mobile touch-targets на 360/375/390px.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-050 — accessibility baseline status/toast, шаг 2
 **Результат:** `#toast` в `index.html` получил `role="status"`, `aria-live="polite"` и `aria-atomic="true"`. `showToast()` теперь переключает обычные сообщения в polite status, а критические ошибки/валидацию/сетевые сбои — в `role="alert"` + `aria-live="assertive"`; текст очищается перед новым сообщением, чтобы live-region стабильно переозвучивался.
-**Коммит:** `pending`
+**Коммит:** `f5480eb`
 **Статус:** ✅ status/toast code baseline готов к ручному smoke
 **Следующий шаг:** BACK-050 шаг 3 — dialogs/focus/touch-targets для quick-add, contact panel и biometric consent.
 
