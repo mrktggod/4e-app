@@ -2283,19 +2283,7 @@ function isVkMiniAppContext(){
 }
 
 function getTelegramStartTokenFromLaunch() {
-  const initStart = window.Telegram?.WebApp?.initDataUnsafe?.start_param;
-  if (initStart)
-    return String(initStart).trim();
-
-  const fromSearch = new URLSearchParams(window.location.search || '');
-  const fromHash = new URLSearchParams((window.location.hash || '').replace(/^#/, '?'));
-
-  const keys=['startapp','tgWebAppStartParam','telegram_start','telegramStartToken','startToken','tgAuth'];
-  for(const key of keys){
-    const value=fromSearch.get(key)||fromHash.get(key);
-    if(value)return String(value).trim();
-  }
-  return '';
+  return PLATFORM.getTelegramStartTokenFromLaunch ? PLATFORM.getTelegramStartTokenFromLaunch() : '';
 }
 
 function normalizeReferralCode(value){
@@ -2353,84 +2341,40 @@ async function copyReferralLink(){
 }
 
 function getTelegramReturnUrl(){
-  try{
-    const url=new URL(window.location.href);
-    ['startapp','tgWebAppStartParam','telegram_start','telegramStartToken','startToken','tgAuth'].forEach(key=>{
-      url.searchParams.delete(key);
-      url.hash=url.hash.replace(new RegExp('([#&?])'+key+'=[^&]*&?','g'),'$1').replace(/[?&]$/,'');
-    });
-    return url.toString();
-  }catch(e){
-    return window.location.origin+window.location.pathname;
-  }
+  return PLATFORM.getTelegramReturnUrl ? PLATFORM.getTelegramReturnUrl() : window.location.origin+window.location.pathname;
 }
 
 function saveTelegramPendingStart(startToken){
-  if(!startToken)return;
-  try{localStorage.setItem(TG_PENDING_START_K,startToken);}catch(e){}
+  if(PLATFORM.saveTelegramPendingStart) PLATFORM.saveTelegramPendingStart(TG_PENDING_START_K,startToken);
 }
 
 function clearTelegramPendingStart(){
-  try{localStorage.removeItem(TG_PENDING_START_K);}catch(e){}
+  if(PLATFORM.clearTelegramPendingStart) PLATFORM.clearTelegramPendingStart(TG_PENDING_START_K);
 }
 
 function getTelegramPendingStart(){
-  try{return (localStorage.getItem(TG_PENDING_START_K)||'').trim();}catch(e){return'';}
+  return PLATFORM.getTelegramPendingStart ? PLATFORM.getTelegramPendingStart(TG_PENDING_START_K) : '';
 }
 
 function cleanTelegramAuthUrl(){
-  try{
-    const url=new URL(window.location.href);
-    let changed=false;
-    ['startapp','tgWebAppStartParam','telegram_start','telegramStartToken','startToken','tgAuth'].forEach(key=>{
-      if(url.searchParams.has(key)){url.searchParams.delete(key);changed=true;}
-    });
-    if(changed)history.replaceState(null,'',url.pathname+(url.search||'')+(url.hash||''));
-  }catch(e){}
+  if(PLATFORM.cleanTelegramAuthUrl) PLATFORM.cleanTelegramAuthUrl();
 }
 
 function buildTelegramBotLoginUrl(startToken) {
-  const bot = String(TELEGRAM_BOT_USERNAME || 'Denzel89bot').replace(/^@/, '').trim() || 'Denzel89bot';
-  const base = 'https://t.me/' + encodeURIComponent(bot);
-  return startToken ? base + '?start=' + encodeURIComponent(startToken) : base;
+  if(PLATFORM.buildTelegramBotLoginUrl) return PLATFORM.buildTelegramBotLoginUrl(startToken, TELEGRAM_BOT_USERNAME);
+  const bot=String(TELEGRAM_BOT_USERNAME||'Denzel89bot').replace(/^@/,'').trim()||'Denzel89bot';
+  const base='https://t.me/'+encodeURIComponent(bot);
+  return startToken?base+'?start='+encodeURIComponent(startToken):base;
 }
 
 function openTelegramLoginUrl(url){
-  const tgApp = window.Telegram?.WebApp;
-  const inTelegramMiniApp = !!tgInitData;
-  if (inTelegramMiniApp && tgApp?.openTelegramLink && /^https:\/\/t\.me\//i.test(url)) {
-    try {
-      const result = tgApp.openTelegramLink(url);
-      if (result && typeof result.catch === 'function') {
-        result.catch(() => { window.location.href = url; });
-      }
-      return true;
-    } catch (e) {
-      console.warn('openTelegramLink failed, falling back to web link', e);
-    }
-  }
-  window.location.href = url;
+  if(PLATFORM.openTelegramLoginUrl) return PLATFORM.openTelegramLoginUrl(url);
+  window.location.href=url;
   return true;
 }
 
 async function getVkLaunchParams(){
-  const candidates=[];
-  if(window.location.search) candidates.push(window.location.search);
-  if(window.location.hash) candidates.push(searchLike(window.location.hash));
-  try{
-    if(window.vkBridge?.send){
-      const bridgeParams=await vkBridge.send('VKWebAppGetLaunchParams');
-      const params=new URLSearchParams();
-      Object.entries(bridgeParams||{}).forEach(([key,value])=>{
-        if(value!==undefined&&value!==null) params.set(key,String(value));
-      });
-      const qs=params.toString();
-      if(qs) candidates.push('?'+qs);
-    }
-  }catch(e){}
-  return candidates.find(v=>v.includes('sign=')&&v.includes('vk_user_id'))||
-         candidates.find(v=>v.includes('vk_'))||
-         '';
+  return PLATFORM.getVkLaunchParams ? PLATFORM.getVkLaunchParams() : '';
 }
 
 // ── init ─────────────────────────────────────────────────────

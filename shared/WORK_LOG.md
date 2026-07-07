@@ -8,9 +8,19 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-055 — вынести platform auth helpers из `index.html`
+**Результат:** В `scripts/platform-adapter.js` перенесены Telegram start-token/return-url helpers, хранение pending Telegram start token, чистка auth URL, построение и открытие `t.me` login URL, а также сбор VK launch params. В `index.html` оставлены совместимые короткие обёртки, поэтому `loginWithTelegram()`, `resumePendingTelegramLogin()` и VK auto-login продолжают вызывать прежние имена.
+**Коммит:** `pending`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+**Следующий шаг:** Следующим безопасным шагом вынести OAuth state/PKCE helpers или referral helpers отдельным блоком.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-055 — вынести VK Mini Apps adapter из хвоста `index.html`
 **Результат:** Реализация старого блока `ПАТЧ 08 — VK MINI APPS АДАПТЕР` перенесена в `scripts/platform-adapter.js` как `FourPlatform.initVkMiniAppAdapter()`. В `index.html` остался короткий вызов после объявления основных функций, поэтому порядок инициализации `showScreen`, storage, haptic, safe-area и VK Pay сохранён.
-**Коммит:** `pending`
+**Коммит:** `0da8e76`
 **Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
 **Следующий шаг:** Следующим безопасным шагом вынести auth helpers из `index.html` без изменения пользовательских сценариев.
 
