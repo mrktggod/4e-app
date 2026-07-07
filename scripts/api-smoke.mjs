@@ -43,6 +43,21 @@ function sanitizeTask(taskText) {
   const password = 'SmokePass123!';
   const name = 'Smoke User';
 
+  const forgotEmpty = await request('/auth/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({}),
+  });
+  log(`forgot-password(empty): ${forgotEmpty.status} ${forgotEmpty.elapsed}ms`);
+  assert(forgotEmpty.status === 400, 'forgot-password without email should return 400');
+
+  const forgotInvalid = await request('/auth/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'fff' }),
+  });
+  log(`forgot-password(invalid): ${forgotInvalid.status} ${forgotInvalid.elapsed}ms`);
+  assert(forgotInvalid.status === 400, 'forgot-password with invalid email should return 400');
   const reg = await request('/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
