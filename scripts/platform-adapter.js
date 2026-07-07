@@ -199,6 +199,35 @@
     }
   }
 
+  function setFormFieldError(fieldId, message, invalidClass) {
+    const input = document.getElementById(fieldId);
+    const error = document.getElementById(fieldId + '-error');
+    const hasError = !!message;
+    if (input) {
+      input.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+      if (invalidClass) input.classList.toggle(invalidClass, hasError);
+    }
+    if (error) {
+      error.textContent = message || '';
+      error.classList.toggle('show', hasError);
+    }
+  }
+
+  function clearFormFieldError(fieldId, invalidClass) {
+    setFormFieldError(fieldId, '', invalidClass);
+  }
+
+  function clearFormErrors(fieldIds, invalidClass) {
+    (fieldIds || []).forEach(fieldId => clearFormFieldError(fieldId, invalidClass));
+  }
+
+  function focusFirstInvalid(fieldIds) {
+    const invalid = (fieldIds || [])
+      .map(fieldId => document.getElementById(fieldId))
+      .find(element => element && element.getAttribute('aria-invalid') === 'true');
+    if (invalid) invalid.focus();
+  }
+
   function getTelegramStartTokenFromLaunch() {
     const initStart = telegramApp?.initDataUnsafe?.start_param;
     if (initStart) return String(initStart).trim();
@@ -516,6 +545,10 @@
     openAccessibleDialog,
     closeAccessibleDialog,
     handleAccessibleDialogKeydown,
+    setFormFieldError,
+    clearFormFieldError,
+    clearFormErrors,
+    focusFirstInvalid,
     getTelegramStartTokenFromLaunch,
     getTelegramReturnUrl,
     saveTelegramPendingStart,

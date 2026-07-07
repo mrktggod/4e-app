@@ -2722,17 +2722,7 @@ function pluralDays(n){
 const AUTH_FIELD_IDS=['login-email','login-pass','reg-name','reg-email','reg-pass','forgot-email','reset-pass','reset-pass2'];
 
 function setAuthFieldError(fieldId,message){
-  const input=document.getElementById(fieldId);
-  const err=document.getElementById(fieldId+'-error');
-  const hasError=!!message;
-  if(input){
-    input.setAttribute('aria-invalid',hasError?'true':'false');
-    input.classList.toggle('login-input--invalid',hasError);
-  }
-  if(err){
-    err.textContent=message||'';
-    err.classList.toggle('show',hasError);
-  }
+  if(PLATFORM.setFormFieldError) PLATFORM.setFormFieldError(fieldId,message,'login-input--invalid');
 }
 
 function clearAuthFieldError(fieldId){
@@ -2740,12 +2730,11 @@ function clearAuthFieldError(fieldId){
 }
 
 function clearAuthErrors(fieldIds){
-  (fieldIds||AUTH_FIELD_IDS).forEach(clearAuthFieldError);
+  if(PLATFORM.clearFormErrors) PLATFORM.clearFormErrors(fieldIds||AUTH_FIELD_IDS,'login-input--invalid');
 }
 
 function focusFirstInvalid(fieldIds){
-  const invalid=(fieldIds||AUTH_FIELD_IDS).map(id=>document.getElementById(id)).find(el=>el&&el.getAttribute('aria-invalid')==='true');
-  if(invalid) invalid.focus();
+  if(PLATFORM.focusFirstInvalid) PLATFORM.focusFirstInvalid(fieldIds||AUTH_FIELD_IDS);
 }
 
 function switchAuthTab(tab, focusFirst){

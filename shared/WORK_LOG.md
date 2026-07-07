@@ -8,9 +8,19 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-055 — вынести form-error helpers из `index.html`
+**Результат:** Общие helpers для доступных ошибок форм (`setFormFieldError`, `clearFormFieldError`, `clearFormErrors`, `focusFirstInvalid`) перенесены в `scripts/platform-adapter.js`. В `index.html` остались совместимые auth-обёртки, поэтому login/register/forgot/reset продолжают использовать прежние `setAuthFieldError`, `clearAuthErrors`, `focusFirstInvalid`.
+**Коммит:** `pending`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+**Следующий шаг:** Продолжить auth-секцию или вынести следующий общий helper без изменения пользовательского сценария.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-055 — вынести общие dialog/focus helpers из `index.html`
 **Результат:** Общие helpers для dialog/bottom sheet (`getDialogFocusable`, `openAccessibleDialog`, `closeAccessibleDialog`, `handleAccessibleDialogKeydown`) перенесены в `scripts/platform-adapter.js`. В `index.html` остались совместимые обёртки, поэтому quick-add, contact panel и biometric consent продолжают использовать прежние имена, а platform layer забирает повторяемое DOM-поведение.
-**Коммит:** `pending`
+**Коммит:** `1c1fb8f`
 **Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
 **Следующий шаг:** Продолжить auth-секцию или вынести следующий общий UI helper без изменения пользовательского сценария.
 
