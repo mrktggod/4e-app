@@ -8,6 +8,16 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** Срочный фикс сборки `4e-worker` после падения `wrangler deploy`
+**Результат:** В `4e-worker/worker.js` восстановлены закрывающие скобки `DEFAULT_TARIFF_CONFIG`: блок `plans` и сам объект config теперь закрываются до `var CORS`. Проблема существовала в тарифной структуре и не была поймана прежним локальным smoke, потому что фактическая Wrangler-сборка worker не запускалась перед статусами Ready for QA/Done. После фикса пройдены `node --check worker.js`, `npx wrangler deploy --dry-run` и реальный `npx wrangler deploy --env staging`; staging worker поднялся на `https://restless-lab-d737-staging.shelckograff.workers.dev`, `/tariff-config` отвечает `200`, `POST /auth/forgot-password` с `fff` отвечает `400`.
+**Коммит:** `pending`
+**Статус:** ✅ staging deploy прошёл end-to-end
+**Следующий шаг:** Для всех будущих задач по `4e-worker` перед переводом в Done/Ready for QA запускать Wrangler dry-run или staging deploy; прод-деплой отдельно по команде Юрия.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-035 — закрыть дефект reset-password для невалидного email и передать короткий ручной хвост Алексею
 **Результат:** В `4e-worker/worker.js` `POST /auth/forgot-password` теперь использует существующий `isValidEmailAddress` и больше не принимает `fff` как успешный кейс: для пустого email остаётся `400`, для невалидного email теперь тоже `400`. В `scripts/api-smoke.mjs` добавлены оба негативных кейса как регрессия. `pm/backlog.md` обновлён: `BACK-035` переведён в `Ready for QA`, а ручной хвост явно ссылается на `pm/back-035-manual-shortlist.md`. Shortlist готов и передан Алексею как единственный оставшийся ручной шаг.
 **Коммит:** `pending`
