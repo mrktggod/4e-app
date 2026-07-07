@@ -4238,10 +4238,11 @@ let plannerSectionsCache = {first:[], hot:[], people:[], defer:[]};
 function updateHomeAiPlanner({outgoing=[], incoming=[], done=[], all=[], raw=[]}){
   const outgoingTasks = (outgoing || []).filter(t => !t.done);
   const incomingTasks = (incoming || []).filter(t => !t.done);
-  const totalDone = (done || []).length;
+  const totalDone = Math.max(0, (done || []).length);
   const totalPending = outgoingTasks.length + incomingTasks.length;
-  const totalTasks = (all || []).length || 1;
-  const doneRate = Math.round((totalDone / totalTasks) * 100);
+  const totalTasks = Math.max(0, (all || []).length);
+  const doneRate = totalTasks > 0 ? Math.round((totalDone / totalTasks) * 100) : 0;
+  const clampedDoneRate = Math.max(0, Math.min(100, doneRate));
   const nowDay = startOfLocalDay(new Date());
   const priorityRank = {p0: 0, p1: 1, p2: 2, p3: 3};
 
@@ -4306,9 +4307,9 @@ function updateHomeAiPlanner({outgoing=[], incoming=[], done=[], all=[], raw=[]}
     if(nextEl) nextEl.textContent = 'Ни одной задачи в фокусе';
   } else {
     if(summaryEl) summaryEl.textContent = `${outgoingTasks.length} задач в работе и ${incomingTasks.length} обещаний. ${hot.length} горящие.`;
-    if(pulseEl) pulseEl.textContent = `Пульс дня: ${doneRate}%`;
+    if(pulseEl) pulseEl.textContent = `Пульс дня: ${clampedDoneRate}%`;
     if(moodEl) moodEl.textContent = `Состояние: ${risks > 2 ? 'осторожно' : (hot.length > 2 ? 'в фокусе' : 'спокойный')}`;
-    if(trendEl) trendEl.textContent = `Тенденция: ${doneRate >= 70 ? 'в росте' : (doneRate >= 40 ? 'ровно' : 'переориентация')}`;
+    if(trendEl) trendEl.textContent = `Тенденция: ${clampedDoneRate >= 70 ? 'в росте' : (clampedDoneRate >= 40 ? 'ровно' : 'переориентация')}`;
     const nextTask = plannerSectionsCache.first[0] || plannerSectionsCache.hot[0] || plannerSectionsCache.people[0] || null;
     if(nextEl) nextEl.textContent = nextTask ? `«${e2(nextTask.text || 'Без текста')}»` : 'Открой список дел';
   }
