@@ -685,7 +685,8 @@
         <datalist id="detail-tag-options"></datalist>
         <button id="detail-tag-add-btn" class="detail-quick-btn" onclick="addTagFromInput()">Добавить</button>
       </div>
-      <input id="detail-direction" class="detail-control detail-field-row-hidden" placeholder="Направление" oninput="setDetailDirectionLabel(this.value)">
+      <input id="detail-direction" class="detail-control detail-field-row-hidden" placeholder="Направление" list="detail-direction-options" oninput="setDetailDirectionLabel(this.value)">
+      <datalist id="detail-direction-options"></datalist>
 
       <div class="detail-field-row detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="Изменить исполнителя задачи">
         <div class="detail-field-row-title">
@@ -5295,8 +5296,41 @@ function setQuickDeadline(kind){
   setDetailDeadline(toDetailDateTimeLocal(d.toISOString()));
 }
 
+function renderDetailDirectionOptions(){
+  const list = document.getElementById('detail-direction-options');
+  if(!list) return;
+  const rawOptions = ['Работа', 'Личное'];
+  const seen = new Set();
+  rawOptions.forEach(function(item){
+    if(item){
+      seen.add(item);
+    }
+  });
+
+  const taskOptions = (allTasksCache || []).map(function(task){
+    return getDirectionLabel(task?.directionLabel || task?.direction || '').trim();
+  }).filter(Boolean);
+  taskOptions.forEach(function(item){
+    if(item && !seen.has(item)){
+      seen.add(item);
+    }
+  });
+
+  const entries = Array.from(seen);
+  if(!entries.includes('Работа')) entries.unshift('Работа');
+  if(!entries.includes('Личное')) entries.unshift('Личное');
+  list.innerHTML = entries.slice(0, 20).map(function(item){
+    return '<option value="' + e2(item) + '"></option>';
+  }).join('');
+}
+
 function setDetailDirectionLabel(value){
-  currentDetailDirectionLabel = (value || '').trim();
+  const normalized = getDirectionLabel((value || '').trim());
+  currentDetailDirectionLabel = normalized;
+  const dirEl = document.getElementById('detail-direction');
+  if(dirEl && dirEl.value !== normalized){
+    dirEl.value = normalized;
+  }
 }
 
 function setDetailReminder(value){
@@ -5657,6 +5691,7 @@ function openTask(t,idx){
   syncDetailPersonMeta(t);
   if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime || t.date || t.deadline || '');
   if(dirEl) dirEl.value = getDirectionLabel(currentDetailDirectionLabel);
+  renderDetailDirectionOptions();
   syncDetailContactButton(t);
   setDetailStatus(currentDetailStatus);
   setDetailPriority(currentDetailPriority);
