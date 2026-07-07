@@ -8,7 +8,17 @@
 
 ### 2026-07-07 — Codex
 
-**Задача:** BACK-036 — первый безопасный шаг распила platform layer
+**Задача:** BACK-055 / task-move / BACK-038 / BACK-044 — ночная гигиена после аудита
+**Результат:** Коллизия ID исправлена: старый `BACK-036` оставлен за Telegram web fallback, а распил `index.html` перенесён в `BACK-055`; зависимость `PLAT-001` обновлена на `BACK-055`. В модалке `task-move` оживлены три быстрых варианта переноса и выбор даты: они используют существующий `handleTaskReschedule()` / `openTaskReschedule()` вместо несуществующих функций. Глобальная карточка «Аналитика» убрана из личного экрана «Статистика», а `/analytics/summary` в worker теперь закрыт `requireAdmin`. Описание `BACK-044` уточнено: скрыто только «Направление», «Человек» снова видим и работает через person picker.
+**Коммит:** `pending`
+**Статус:** ✅ гигиена и security-fix готовы
+**Следующий шаг:** Прогнать Wrangler dry-run/staging для worker и закоммитить app+worker.
+
+---
+
+### 2026-07-07 — Codex
+
+**Задача:** BACK-055 — первый безопасный шаг распила platform layer
 **Результат:** Добавлен `scripts/platform-adapter.js`: единая точка для Telegram WebApp, VK bridge, определения VK Mini App context, surface и bot username. `index.html` подключает адаптер до основного скрипта и использует его для `tg`, `TELEGRAM_BOT_USERNAME`, `tgUser`, `tgInitData`, `isVkMiniAppContext()` с fallback на старые выражения. `scripts/build-pages-whitelist.mjs` теперь включает runtime script в Workers Static Assets artifact. `pm/backlog.md` переведён в `In Progress`, потому что полный распил монолита ещё продолжается.
 **Коммит:** `pending`
 **Статус:** ✅ первый модульный слой готов
@@ -22,7 +32,7 @@
 **Результат:** `npm run api-smoke` пройден против `https://restless-lab-d737-staging.shelckograff.workers.dev`: `forgot-password(empty)=400`, `forgot-password(invalid)=400`, register/login/auth-me `200`, tasks list/create/done/delete `200`, `transcribe(no-file)=400`. Это закрывает живой staging-прогон для автосмоука; `pm/backlog.md` переведён в `Ready for QA`.
 **Коммит:** `pending`
 **Статус:** ✅ staging API smoke зелёный
-**Следующий шаг:** Следующий незаблокированный пункт ближайшего горизонта — аккуратно начать `BACK-036` по распилу `index.html` маленькими безопасными шагами или взять отдельный P2/P3 UI-хвост.
+**Следующий шаг:** Следующий незаблокированный пункт ближайшего горизонта — аккуратно продолжить `BACK-055` по распилу `index.html` маленькими безопасными шагами или взять отдельный P2/P3 UI-хвост.
 
 ---
 

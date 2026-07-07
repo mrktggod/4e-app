@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
@@ -816,25 +816,7 @@
           </div>
         </div>
       </div>
-      <div class="section">
-        <div class="progress-card">
-          <div class="progress-header">
-            <span class="progress-title">Аналитика</span>
-            <span id="analytics-generated-at" style="font-size:11px;color:var(--muted)">—</span>
-          </div>
-          <div class="cat-list" id="analytics-metrics">
-            <div class="cat-item"><span class="cat-name">Пользователи</span><span><strong id="analytics-users-total">—</strong></span></div>
-            <div class="cat-item"><span class="cat-name">Задачи</span><span><strong id="analytics-tasks-total">—</strong><span style="font-size:10px;color:var(--muted)" id="analytics-tasks-done">—</span></span></div>
-            <div class="cat-item"><span class="cat-name">AI-сообщения</span><span><strong id="analytics-messages-total">—</strong></span></div>
-            <div class="cat-item"><span class="cat-name">Аудит-события</span><span><strong id="analytics-audit-total">—</strong></span></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:12px;row-gap:6px;font-size:11px;color:var(--muted);margin-top:10px">
-            <div><span style="color:var(--text)">Retention D1:</span> <span id="analytics-users-retention-d1">—</span>, <span id="analytics-tasks-retention-d1">—</span>, <span id="analytics-messages-retention-d1">—</span>, <span id="analytics-audit-retention-d1">—</span></div>
-            <div><span style="color:var(--text)">Retention D7:</span> <span id="analytics-users-retention-d7">—</span>, <span id="analytics-tasks-retention-d7">—</span>, <span id="analytics-messages-retention-d7">—</span>, <span id="analytics-audit-retention-d7">—</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="section">
+<div class="section">
         <div class="progress-card">
           <div class="progress-header"><span class="progress-title">Обещания</span><span class="progress-period" onclick="openPromiseList()">Смотреть все</span></div>
           <div class="cat-list" id="stats-promises-list">
@@ -2142,7 +2124,6 @@ const REF_PENDING_K='pendingReferralCode';
 let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
-let analyticsSummaryCache={at:0, summary:null};
 
 const tgUser=PLATFORM.getTelegramUser?PLATFORM.getTelegramUser():window.Telegram?.WebApp?.initDataUnsafe?.user;
 const tgInitData=PLATFORM.getTelegramInitData?PLATFORM.getTelegramInitData():(window.Telegram?.WebApp?.initData||'');
@@ -4238,65 +4219,6 @@ async function loadStats(outgoing = [], done = [], tasks = []){
     tipsEl.innerHTML = tips.map(text => '<div class="active-task-row"><span class="active-task-name">' + e2(text) + '</span></div>').join('');
   }
 
-  const summary = await fetchAnalyticsSummary();
-  if(!summary){
-    safeText('analytics-generated-at','—');
-    safeText('analytics-users-total','—');
-    safeText('analytics-users-retention-d1','—');
-    safeText('analytics-users-retention-d7','—');
-    safeText('analytics-tasks-total', String(activeOutgoing.length + activeIncoming.length + completed.length));
-    safeText('analytics-tasks-done', `вып: ${completed.length}`);
-    safeText('analytics-tasks-retention-d1','—');
-    safeText('analytics-tasks-retention-d7','—');
-    safeText('analytics-messages-total','—');
-    safeText('analytics-messages-retention-d1','—');
-    safeText('analytics-messages-retention-d7','—');
-    safeText('analytics-audit-total','—');
-    safeText('analytics-audit-retention-d1','—');
-    safeText('analytics-audit-retention-d7','—');
-    return;
-  }
-  const users=summary.users || {};
-  const tasksSummary=summary.tasks || {};
-  const messages=summary.messages || {};
-  const audit=summary.auditEvents || {};
-  const usersRetention = users.retention || {};
-  const tasksRetention = tasksSummary.retention || {};
-  const messagesRetention = messages.retention || {};
-  const auditRetention = audit.retention || {};
-  safeText('analytics-generated-at', summary.generatedAt ? new Date(summary.generatedAt).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '—');
-  safeText('analytics-users-total', String(safeNum(users.total)));
-  safeText('analytics-users-retention-d1', String(safeNum(usersRetention.d1)));
-  safeText('analytics-users-retention-d7', String(safeNum(usersRetention.d7)));
-  safeText('analytics-tasks-total', String(safeNum(tasksSummary.total)));
-  safeText('analytics-tasks-done', `вып: ${safeNum(tasksSummary.done)}`);
-  safeText('analytics-tasks-retention-d1', String(safeNum(tasksRetention.d1)));
-  safeText('analytics-tasks-retention-d7', String(safeNum(tasksRetention.d7)));
-  safeText('analytics-messages-total', String(safeNum(messages.total)));
-  safeText('analytics-messages-retention-d1', String(safeNum(messagesRetention.d1)));
-  safeText('analytics-messages-retention-d7', String(safeNum(messagesRetention.d7)));
-  safeText('analytics-audit-total', String(safeNum(audit.total)));
-  safeText('analytics-audit-retention-d1', String(safeNum(auditRetention.d1)));
-  safeText('analytics-audit-retention-d7', String(safeNum(auditRetention.d7)));
-}
-
-async function fetchAnalyticsSummary(){
-  const now = Date.now();
-  if(analyticsSummaryCache.summary && now - analyticsSummaryCache.at < 30000){
-    return analyticsSummaryCache.summary;
-  }
-  try {
-    const response = await withTimeout(fetch(WORKER + '/analytics/summary'), 10000);
-    const data = await readJsonSafe(response);
-    if(response && response.ok && data?.ok && data.summary){
-      analyticsSummaryCache = {at: now, summary: data.summary};
-      return data.summary;
-    }
-  } catch (e){
-    console.log('analytics summary failed', e?.message || e);
-  }
-  return analyticsSummaryCache.summary;
-}
 
 let plannerCompactMode = false;
 let plannerSectionsCache = {first:[], hot:[], people:[], defer:[]};
@@ -4600,7 +4522,7 @@ function handleTaskSwipeButton(btn, event){
   if(btn.dataset.taskAction==='cancel'){resetTaskSwipe(shell);return;}
   if(btn.dataset.taskAction==='move'){
     resetTaskSwipe(shell);
-    openTaskById(taskId);
+    openTaskMove(taskId);
     return;
   }
   if(btn.dataset.taskAction==='done'){quickDoneTask(taskId,btn);}
@@ -5783,8 +5705,51 @@ async function addDetailComment(){
   inp.disabled=false;
 }
 
+let currentMoveTaskId = '';
+let currentMoveDeadlineValue = '';
+
+function toDateInputValue(date){
+  const pad = n => String(n).padStart(2,'0');
+  return date.getFullYear() + '-' + pad(date.getMonth()+1) + '-' + pad(date.getDate());
+}
+
+function getMoveDateValue(kind){
+  const date = new Date();
+  if(kind === 'tomorrow') date.setDate(date.getDate()+1);
+  if(kind === 'week') date.setDate(date.getDate()+7);
+  return toDateInputValue(date);
+}
+
+function setMoveSubText(id, value){
+  const el = document.getElementById(id);
+  const date = parseTaskDate(value);
+  if(el && date) el.textContent = formatTaskShortDate(date);
+}
+
 function openTaskMove(taskId){
+  currentMoveTaskId = taskId || currentTaskId || '';
+  currentMoveDeadlineValue = '';
+  setMoveSubText('move-later-sub', getMoveDateValue('later'));
+  setMoveSubText('move-tomorrow-sub', getMoveDateValue('tomorrow'));
+  setMoveSubText('move-week-sub', getMoveDateValue('week'));
   showScreen('task-move');
+}
+
+async function moveTaskTo(kind){
+  if(!currentMoveTaskId){showToast('Задача не выбрана');return;}
+  currentMoveDeadlineValue = getMoveDateValue(kind);
+  await handleTaskReschedule(currentMoveTaskId, currentMoveDeadlineValue);
+  showScreen('home');
+}
+
+function openCustomDate(){
+  if(!currentMoveTaskId){showToast('Задача не выбрана');return;}
+  showScreen('home');
+  openTaskReschedule(currentMoveTaskId);
+}
+
+function confirmMoveTask(){
+  openCustomDate();
 }
 
 function enterEditMode(){

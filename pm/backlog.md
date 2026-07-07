@@ -35,7 +35,7 @@
 | BACK-041 | Bot-side web fallback Telegram-входа: возврат на сайт из `/start auth_*` | Bug/Auth | P1 | Codex + Юрий / bot | Ready for QA | Г1 | В обработчике `/start` payload `auth_*` извлекает `startToken` и шлёт inline-кнопку «Вернуться в 4» → `${APP_BASE_URL}/?telegram_start=<token>`; TTL 10 минут и одноразовость уже обеспечены worker-ом; прод worker задеплоен (`88b3ab16-fc44-4567-b98c-a8ca4125a5f4`), polling bot code запушен в `4e-worker/main`; Алексей проходит сквозной live smoke веб-входа |
 | BACK-046 | Ограничить нижнюю панель шириной экрана приложения | Bug/UI | P2 | Codex | Done | Г1 | Ветка `fix/bottom-nav-app-width`: `bottom-nav-v2` и `global-nav` на desktop/web теперь ограничены шириной app-контейнера; проверка: desktop 1440/1024 и mobile 390, без регрессии safe-area и скрытия nav при клавиатуре |
 | BACK-043 | Выровнять мобильную верстку экрана профиля | Bug/UI | P2 | Codex | Done | Г1 | Ветка `fix/profile-responsive-ui`: mobile profile выровнен — phone/email/telegram не конфликтуют со статусными badge, карточки "Дата рождения" и "О себе" получили ровный ритм, счётчик textarea и кнопка сохранения не спорят с нижней навигацией |
-| BACK-044 | Упростить детальную карточку задачи | Product/UI | P2 | Codex | Done | Г1 | Ветка `fix/task-detail-card-cleanup`: описание поднято под заголовок, вкладка "Описание" убрана, порядок полей приведён к `Срок → быстрые кнопки → Статус → Приоритет → Напоминание`, строки "Направление" и "Человек" скрыты без удаления из data model, mobile rows складываются вертикально без регрессии `saveTaskEdits()` |
+| BACK-044 | Упростить детальную карточку задачи | Product/UI | P2 | Codex | Done | Г1 | Ветка `fix/task-detail-card-cleanup`: описание поднято под заголовок, вкладка "Описание" убрана, порядок полей приведён к `Срок → быстрые кнопки → Статус → Приоритет → Напоминание`; скрыто только поле "Направление", а "Человек" снова видим и работает через person picker, mobile rows складываются вертикально без регрессии `saveTaskEdits()` |
 
 ## Next
 
@@ -60,9 +60,9 @@
 | SMART-003 | Кнопка «Написать» исполнителю | Product/UI | P1 | Codex | Done | Г1 | В карточке задачи и сообщении бота кнопка открывает чат: t.me/username или tg://user?id; фолбэк при закрытом профиле |
 | SMART-007 | Память фактов между сессиями (AI-память v1) | Product/AI | P1 | Codex | Done | Г1 | Фоновое извлечение фактов (Haiku) → D1 `user_facts`, топ-15 в system prompt; экран «Что 4 знает обо мне» с удалением (152-ФЗ) |
 | SMART-005 | Утренняя сводка по чату | Product/Bot | P2 | Codex | Done | Г1 | Подключить готовый `checkBriefings()` + per-group сводка; расписание через Cloudflare Cron Triggers; связан с BACK-017 |
-| BACK-036 | Распил index.html: общее ядро + адаптеры TG/VK | Tech | P1 | Codex, поэтапно | In Progress | Г1–Г2 | Начат поэтапный распил: добавлен `scripts/platform-adapter.js` для Telegram/VK/web detection, `index.html` подключает общий platform layer с fallback, whitelist-сборка Workers Static Assets включает runtime script; дальше выносить VK adapter и auth helpers малыми шагами |
+| BACK-055 | Распил index.html: общее ядро + адаптеры TG/VK | Tech | P1 | Codex, поэтапно | In Progress | Г1–Г2 | Начат поэтапный распил: добавлен `scripts/platform-adapter.js` для Telegram/VK/web detection, `index.html` подключает общий platform layer с fallback, whitelist-сборка Workers Static Assets включает runtime script; дальше выносить VK adapter и auth helpers малыми шагами |
 | BACK-037 | CI + смоук-тесты API | Tech | P2 | Codex | Ready for QA | Г1–Г2 | GitHub Actions: проверка кодировки, линт, минификация; `api-smoke` покрывает reset-password negative cases, auth, tasks CRUD и transcribe(no-file); staging smoke против `restless-lab-d737-staging` прошёл 2026-07-07 |
-| BACK-038 | Аналитика событий + D1/D7 retention | Tech/Product | P2 | Codex | Ready for QA | Г1–Г2 | События: вход, создание задачи, шеринг; дашборд retention для оценки беты и виральности |
+| BACK-038 | Аналитика событий + D1/D7 retention | Tech/Product | P2 | Codex | Ready for QA | Г1–Г2 | `/analytics/summary` закрыт `ADMIN_SECRET`; глобальная retention-аналитика убрана из личного экрана «Статистика» и доступна только как admin API |
 
 ## Later
 
@@ -100,7 +100,7 @@
 | VIRAL-004 | Streak + достижения в шеринг-карточке | Growth | P3 | Мимо → Codex | Todo | Г2 | «N дней с планом» + 2–3 достижения внутри VIRAL-001 |
 | VIRAL-005 | Онбординг с wow-моментом: первый AI-план за 60 сек | Growth/UX | P2 | Мимо | Todo | Г2 | Новый пользователь надиктовывает 3 задачи и сразу получает план |
 | VIRAL-006 | Еженедельная AI-сводка «Твоя неделя» | Growth | P3 | Мимо → Codex | Todo | Г2 | Персональная статистика недели в шерабельном формате (мини-Wrapped) |
-| PLAT-001 | Мини-апп + бот в MAX | Platform | P2 | Юрий (профиль ИП) + Codex | Todo | Г2 | Четвёртый адаптер на MAX Bridge (dev.max.ru); требует BACK-036 и верифицированный профиль на платформе MAX |
+| PLAT-001 | Мини-апп + бот в MAX | Platform | P2 | Юрий (профиль ИП) + Codex | Todo | Г2 | Четвёртый адаптер на MAX Bridge (dev.max.ru); требует BACK-055 и верифицированный профиль на платформе MAX |
 | PLAT-002 | RuStore: PWA-обёртка | Platform | P2 | Codex | Todo | Г2 | Standalone-режим без TG/VK SDK на домене 4-ai.site, публикация в RuStore |
 | PLAT-003 | Google Play (TWA) → App Store (Capacitor) | Platform | P3 | Codex | Todo | Г3 | После PLAT-002; Apple потребует нативных элементов и учёта правил платежей; заменяет ICE-002 |
 | NATIVE-001 | Системный календарь: двусторонняя синхронизация | Platform/Product | P2 | Codex | Todo | Г3 (после PLAT-003) | Задачи с датой видны в календаре телефона, события календаря — в «Плане на сегодня»; AI учитывает занятость при планировании («в 15:00 не успеешь — у тебя встреча»). Идея Юрия 2026-07-04 |
