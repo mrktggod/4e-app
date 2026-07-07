@@ -8,9 +8,11 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-055 — вынести email-validator из index.html$logNl**Результат:** isValidEmail() перенесён в scripts/platform-adapter.js; в index.html оставлена совместимая обёртка для login/register/forgot/reset flow. BACK-055 остаётся поэтапным распилом без смены статуса.
+**Коммит:** pending$logNl**Статус:** ✅ маленький шаг распила готов, BACK-055 остаётся In Progress$logNl
 **Задача:** BACK-055 — вынести form-error helpers из `index.html`
 **Результат:** Общие helpers для доступных ошибок форм (`setFormFieldError`, `clearFormFieldError`, `clearFormErrors`, `focusFirstInvalid`) перенесены в `scripts/platform-adapter.js`. В `index.html` остались совместимые auth-обёртки, поэтому login/register/forgot/reset продолжают использовать прежние `setAuthFieldError`, `clearAuthErrors`, `focusFirstInvalid`.
-**Коммит:** `pending`
+**Коммит:** `b8d360e`
 **Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
 **Следующий шаг:** Продолжить auth-секцию или вынести следующий общий helper без изменения пользовательского сценария.
 

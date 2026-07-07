@@ -7683,7 +7683,7 @@ function setForgotPasswordError(message){
 }
 
 function isValidEmail(email){
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return PLATFORM.isValidEmail(email);
 }
 
 async function doForgotPassword(){

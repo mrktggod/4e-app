@@ -199,7 +199,10 @@
     }
   }
 
-  function setFormFieldError(fieldId, message, invalidClass) {
+  function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+ setFormFieldError(fieldId, message, invalidClass) {
     const input = document.getElementById(fieldId);
     const error = document.getElementById(fieldId + '-error');
     const hasError = !!message;
@@ -545,6 +548,7 @@
     openAccessibleDialog,
     closeAccessibleDialog,
     handleAccessibleDialogKeydown,
+    isValidEmail,
     setFormFieldError,
     clearFormFieldError,
     clearFormErrors,
