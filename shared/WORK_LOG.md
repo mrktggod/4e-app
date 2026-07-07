@@ -8,6 +8,16 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-050 — accessibility baseline auth/forms, шаг 1
+**Результат:** В `index.html` экраны login/register/forgot/reset получили явные labels, `aria-describedby`, `aria-invalid`, полевые ошибки рядом с input, keyboard submit через JS-обработчики и доступные кнопки показа пароля. В `styles/layout.less` добавлены focus-visible, invalid-state и стили auth-ссылок/переключателей без новых inline handlers/styles. Заодно снижена baseline-планка `scripts/check-ui-architecture.sh`: inline styles `434 → 428`, inline handlers `415 → 402`. `BACK-050` переведён в `In Progress`: status/toast и dialogs/focus/touch-targets остаются следующими шагами.
+**Коммит:** `pending`
+**Статус:** ✅ auth/forms code baseline готов к ручному keyboard/focus smoke
+**Следующий шаг:** BACK-050 шаг 2 — status/toast baseline (`role=status`/`aria-live`, критические ошибки как alert/полевые ошибки).
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-055 — вынести OAuth PKCE/state helpers из `index.html`
 **Результат:** В `scripts/platform-adapter.js` перенесены `getOAuthRedirectUri()`, PKCE verifier/challenge generation и хранение/чтение pending OAuth state. В `index.html` остались короткие совместимые обёртки, а `createOAuthPkce()` теперь явно падает в catch входа, если platform layer не загрузился, вместо отправки пустого challenge.
 **Коммит:** `pending`

@@ -3,8 +3,8 @@ set -euo pipefail
 
 file="${1:-index.html}"
 
-max_inline_styles=434
-max_inline_handlers=415
+max_inline_styles=428
+max_inline_handlers=402
 max_style_tags=0
 max_inline_script_tags=2
 
