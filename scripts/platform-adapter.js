@@ -92,6 +92,59 @@
     return new URLSearchParams((window.location.hash || '').replace(/^#/, '?'));
   }
 
+  function normalizeReferralCode(value) {
+    return String(value || '').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '').slice(0, 32);
+  }
+
+  function getReferralCodeFromLaunch() {
+    const fromSearch = getSearchParams();
+    const fromHash = getHashParams();
+    const keys = ['ref', 'referral', 'invite'];
+    for (const key of keys) {
+      const value = fromSearch.get(key) || fromHash.get(key);
+      const normalized = normalizeReferralCode(value);
+      if (normalized) return normalized;
+    }
+    return '';
+  }
+
+  function savePendingReferralCode(storageKey, code) {
+    const normalized = normalizeReferralCode(code);
+    if (!storageKey || !normalized) return;
+    try {
+      localStorage.setItem(storageKey, normalized);
+    } catch (error) {}
+  }
+
+  function getPendingReferralCode(storageKey) {
+    if (!storageKey) return '';
+    try {
+      return normalizeReferralCode(localStorage.getItem(storageKey) || '');
+    } catch (error) {
+      return '';
+    }
+  }
+
+  function clearPendingReferralCode(storageKey) {
+    if (!storageKey) return;
+    try {
+      localStorage.removeItem(storageKey);
+    } catch (error) {}
+  }
+
+  function capturePendingReferralCode(storageKey) {
+    const code = getReferralCodeFromLaunch();
+    if (code) savePendingReferralCode(storageKey, code);
+  }
+
+  function buildReferralLink(code) {
+    const normalized = normalizeReferralCode(code);
+    if (!normalized) return '';
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('ref', normalized);
+    return url.toString();
+  }
+
   function getTelegramStartTokenFromLaunch() {
     const initStart = telegramApp?.initDataUnsafe?.start_param;
     if (initStart) return String(initStart).trim();
@@ -398,6 +451,13 @@
     createOAuthPkce,
     rememberOAuthState,
     consumeOAuthState,
+    normalizeReferralCode,
+    getReferralCodeFromLaunch,
+    savePendingReferralCode,
+    getPendingReferralCode,
+    clearPendingReferralCode,
+    capturePendingReferralCode,
+    buildReferralLink,
     getTelegramStartTokenFromLaunch,
     getTelegramReturnUrl,
     saveTelegramPendingStart,

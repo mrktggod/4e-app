@@ -8,9 +8,19 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-055 — вынести referral helpers из `index.html`
+**Результат:** Referral helpers (`normalizeReferralCode`, чтение `ref/referral/invite`, pending referral storage и сборка referral link) перенесены в `scripts/platform-adapter.js`. В `index.html` оставлены совместимые обёртки, чтобы регистрация, Telegram/VK/OAuth login и кнопка копирования реферальной ссылки продолжили вызывать прежние имена.
+**Коммит:** `pending`
+**Статус:** ✅ маленький шаг распила готов, `BACK-055` остаётся `In Progress`
+**Следующий шаг:** Продолжить auth-секцию или вынести следующий платформенный helper без изменения пользовательского сценария.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-050 — accessibility baseline dialogs/focus/touch-targets, шаг 3
 **Результат:** Quick-add overlay, contact panel и biometric consent получили `role="dialog"`, `aria-modal`, `aria-labelledby`/`aria-describedby`, `aria-hidden`, перенос фокуса внутрь при открытии, возврат фокуса после закрытия и общий Tab/Escape handling. Для dialog-контролов добавлен видимый `focus-visible` через LESS; декоративные SVG в biometric consent скрыты от accessibility tree. `BACK-050` переведён в `Ready for QA`, потому что code baseline закрыт, а дальше нужен ручной keyboard/mobile smoke.
-**Коммит:** `pending`
+**Коммит:** `b91e97b`
 **Статус:** ✅ code baseline готов
 **Следующий шаг:** Алексей/Юрий проходят ручной smoke: Tab/Shift+Tab/Enter/Escape на auth и dialogs, плюс mobile touch-targets на 360/375/390px.
 

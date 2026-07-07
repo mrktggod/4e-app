@@ -2274,46 +2274,31 @@ function getTelegramStartTokenFromLaunch() {
 }
 
 function normalizeReferralCode(value){
-  return String(value||'').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'').slice(0,32);
+  return PLATFORM.normalizeReferralCode ? PLATFORM.normalizeReferralCode(value) : String(value||'').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'').slice(0,32);
 }
 
 function getReferralCodeFromLaunch(){
-  const fromSearch = new URLSearchParams(window.location.search || '');
-  const fromHash = new URLSearchParams((window.location.hash || '').replace(/^#/, '?'));
-  const keys=['ref','referral','invite'];
-  for(const key of keys){
-    const value=fromSearch.get(key)||fromHash.get(key);
-    const normalized=normalizeReferralCode(value);
-    if(normalized) return normalized;
-  }
-  return '';
+  return PLATFORM.getReferralCodeFromLaunch ? PLATFORM.getReferralCodeFromLaunch() : '';
 }
 
 function savePendingReferralCode(code){
-  const normalized=normalizeReferralCode(code);
-  if(!normalized) return;
-  try{localStorage.setItem(REF_PENDING_K,normalized);}catch(e){}
+  if(PLATFORM.savePendingReferralCode) PLATFORM.savePendingReferralCode(REF_PENDING_K,code);
 }
 
 function getPendingReferralCode(){
-  try{return normalizeReferralCode(localStorage.getItem(REF_PENDING_K)||'');}catch(e){return'';}
+  return PLATFORM.getPendingReferralCode ? PLATFORM.getPendingReferralCode(REF_PENDING_K) : '';
 }
 
 function clearPendingReferralCode(){
-  try{localStorage.removeItem(REF_PENDING_K);}catch(e){}
+  if(PLATFORM.clearPendingReferralCode) PLATFORM.clearPendingReferralCode(REF_PENDING_K);
 }
 
 function capturePendingReferralCode(){
-  const code=getReferralCodeFromLaunch();
-  if(code) savePendingReferralCode(code);
+  if(PLATFORM.capturePendingReferralCode) PLATFORM.capturePendingReferralCode(REF_PENDING_K);
 }
 
 function buildReferralLink(){
-  const code=normalizeReferralCode(currentUser?.referralCode||'');
-  if(!code) return '';
-  const url=new URL(window.location.origin+window.location.pathname);
-  url.searchParams.set('ref',code);
-  return url.toString();
+  return PLATFORM.buildReferralLink ? PLATFORM.buildReferralLink(currentUser?.referralCode||'') : '';
 }
 
 async function copyReferralLink(){
