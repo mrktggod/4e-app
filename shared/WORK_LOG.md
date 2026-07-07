@@ -8,6 +8,16 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-037 — staging API smoke перед Ready for QA
+**Результат:** `npm run api-smoke` пройден против `https://restless-lab-d737-staging.shelckograff.workers.dev`: `forgot-password(empty)=400`, `forgot-password(invalid)=400`, register/login/auth-me `200`, tasks list/create/done/delete `200`, `transcribe(no-file)=400`. Это закрывает живой staging-прогон для автосмоука; `pm/backlog.md` переведён в `Ready for QA`.
+**Коммит:** `pending`
+**Статус:** ✅ staging API smoke зелёный
+**Следующий шаг:** Следующий незаблокированный пункт ближайшего горизонта — аккуратно начать `BACK-036` по распилу `index.html` маленькими безопасными шагами или взять отдельный P2/P3 UI-хвост.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-045 / BACK-048 — VK ID + Яндекс ID OAuth и staging dev/test аккаунты
 **Результат:** В `4e-worker` добавлены web OAuth endpoints для VK ID и Яндекс ID: `/auth/vk-id/start`, `/auth/vk-id`, `/auth/yandex-id/start`, `/auth/yandex-id`. OAuth login создаёт/находит аккаунт через provider mapping, email и активную legacy-сессию, использует `mergeAccounts`, не дублирует пользователя и возвращает legacy token для текущего фронта. В `index.html` добавлены кнопки «Войти через VK ID» и «Войти через Яндекс ID» без новых inline handlers; callback по `code/state` пишет token и открывает Home. Staging worker задеплоен, OAuth start endpoints корректно требуют реальные secrets. Для `BACK-048` засеяны `dev1.4e@example.com`, `dev2.4e@example.com`, `dev3.4e@example.com`; smoke login → `/auth/me` → `/tasks` прошёл, у всех `plan=paid` и 5 seed-задач. Пароли лежат локально вне git в `C:\Users\shelc\Documents\4\_local-secrets\back-048-staging-dev-accounts.json`.
 **Коммит:** `pending`
