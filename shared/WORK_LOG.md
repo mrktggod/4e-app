@@ -8,6 +8,16 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-045 / BACK-048 — VK ID + Яндекс ID OAuth и staging dev/test аккаунты
+**Результат:** В `4e-worker` добавлены web OAuth endpoints для VK ID и Яндекс ID: `/auth/vk-id/start`, `/auth/vk-id`, `/auth/yandex-id/start`, `/auth/yandex-id`. OAuth login создаёт/находит аккаунт через provider mapping, email и активную legacy-сессию, использует `mergeAccounts`, не дублирует пользователя и возвращает legacy token для текущего фронта. В `index.html` добавлены кнопки «Войти через VK ID» и «Войти через Яндекс ID» без новых inline handlers; callback по `code/state` пишет token и открывает Home. Staging worker задеплоен, OAuth start endpoints корректно требуют реальные secrets. Для `BACK-048` засеяны `dev1.4e@example.com`, `dev2.4e@example.com`, `dev3.4e@example.com`; smoke login → `/auth/me` → `/tasks` прошёл, у всех `plan=paid` и 5 seed-задач. Пароли лежат локально вне git в `C:\Users\shelc\Documents\4\_local-secrets\back-048-staging-dev-accounts.json`.
+**Коммит:** `pending`
+**Статус:** ✅ код и staging smoke готовы; live OAuth smoke ждёт secrets провайдеров
+**Следующий шаг:** Юрий добавляет реальные `VK_ID_CLIENT_ID`, `VK_ID_CLIENT_SECRET`, `YANDEX_CLIENT_ID`, `YANDEX_CLIENT_SECRET` в staging/prod secrets и Алексей/Юрий проходят живой OAuth redirect smoke.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** Срочный фикс сборки `4e-worker` после падения `wrangler deploy`
 **Результат:** В `4e-worker/worker.js` восстановлены закрывающие скобки `DEFAULT_TARIFF_CONFIG`: блок `plans` и сам объект config теперь закрываются до `var CORS`. Проблема существовала в тарифной структуре и не была поймана прежним локальным smoke, потому что фактическая Wrangler-сборка worker не запускалась перед статусами Ready for QA/Done. После фикса пройдены `node --check worker.js`, `npx wrangler deploy --dry-run` и реальный `npx wrangler deploy --env staging`; staging worker поднялся на `https://restless-lab-d737-staging.shelckograff.workers.dev`, `/tariff-config` отвечает `200`, `POST /auth/forgot-password` с `fff` отвечает `400`.
 **Коммит:** `pending`

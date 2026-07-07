@@ -55,6 +55,16 @@
 }
 ```
 
+## Фактически засеяно на staging
+
+2026-07-07 Codex засеял и проверил через API smoke три dev/test аккаунта:
+
+- `dev1.4e@example.com` — `plan=paid`, 5 seed-задач.
+- `dev2.4e@example.com` — `plan=paid`, 5 seed-задач.
+- `dev3.4e@example.com` — `plan=paid`, 5 seed-задач.
+
+Пароли сохранены только локально вне git: `C:\Users\shelc\Documents\4\_local-secrets\back-048-staging-dev-accounts.json`.
+
 ## Seed-команда
 
 ```bash

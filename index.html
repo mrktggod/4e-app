@@ -260,6 +260,10 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.829.941z"/></svg>
       Войти через Telegram
     </button>
+    <div class="login-oauth-grid">
+      <button class="login-oauth-btn login-oauth-btn--vk" id="login-vk-id-btn" type="button">Войти через VK ID</button>
+      <button class="login-oauth-btn login-oauth-btn--yandex" id="login-yandex-id-btn" type="button">Войти через Яндекс ID</button>
+    </div>
     <p class="legal-note" style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin:14px 0 0;max-width:320px">Нажимая «Войти» или «Создать аккаунт», вы соглашаетесь с <a href="privacy.html" target="_blank" style="color:var(--green);text-decoration:none">Политикой конфиденциальности</a></p>
   </div>
 </div>
@@ -2127,6 +2131,7 @@ const ONBOARD_K='chetam_onboarded';
 const D1_TOKEN_K='chetam_d1_token';
 const LOGOUT_K='chetam_logged_out';
 const TG_PENDING_START_K='chetam_tg_pending_start';
+const OAUTH_PENDING_PREFIX='chetam_oauth_pending_';
 const NEW_TASK_DIRECTIONS=['Работа','Личное'];
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
@@ -2181,6 +2186,112 @@ function searchLike(value){
   if(!value || typeof value!=='string') return '';
   const clean=value.startsWith('#')?value.slice(1):value;
   return clean.startsWith('?')?clean:'?'+clean;
+}
+
+function getOAuthRedirectUri(){
+  return window.location.origin + window.location.pathname;
+}
+
+function base64UrlFromBytes(bytes){
+  let binary='';
+  bytes.forEach((b)=>{binary+=String.fromCharCode(b);});
+  return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+
+function randomOAuthVerifier(){
+  const bytes=new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return base64UrlFromBytes(bytes);
+}
+
+async function sha256Base64Url(value){
+  const data=new TextEncoder().encode(value);
+  const digest=await crypto.subtle.digest('SHA-256',data);
+  return base64UrlFromBytes(new Uint8Array(digest));
+}
+
+async function createOAuthPkce(){
+  const verifier=randomOAuthVerifier();
+  return {verifier, challenge:await sha256Base64Url(verifier)};
+}
+
+function rememberOAuthState(state, provider, redirectUri, codeVerifier){
+  if(!state) return;
+  sessionStorage.setItem(OAUTH_PENDING_PREFIX + state, JSON.stringify({provider, redirectUri, codeVerifier, createdAt:Date.now()}));
+}
+
+function consumeOAuthState(state){
+  if(!state) return null;
+  const key=OAUTH_PENDING_PREFIX + state;
+  const raw=sessionStorage.getItem(key);
+  sessionStorage.removeItem(key);
+  if(!raw) return null;
+  try{return JSON.parse(raw);}catch(e){return null;}
+}
+
+async function startOAuthLogin(provider){
+  const map={vk_id:{path:'/auth/vk-id/start', label:'VK ID'}, yandex:{path:'/auth/yandex-id/start', label:'Яндекс ID'}};
+  const cfg=map[provider];
+  if(!cfg) return;
+  const btn=document.querySelector('[data-oauth-provider="'+provider+'"]') || document.getElementById(provider==='vk_id'?'login-vk-id-btn':'login-yandex-id-btn');
+  const prev=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='Открываем...';}
+  try{
+    const state='oauth_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const redirectUri=getOAuthRedirectUri();
+    const pkce=await createOAuthPkce();
+    const startUrl=WORKER+cfg.path+'?redirectUri='+encodeURIComponent(redirectUri)+'&state='+encodeURIComponent(state)+'&codeChallenge='+encodeURIComponent(pkce.challenge);
+    const r=await withTimeout(fetch(startUrl,{headers:authHeaders()}),10000);
+    const d=await readJsonSafe(r);
+    if(!r.ok||!d.ok||!d.authUrl){
+      showToast(d.error||cfg.label+' пока не настроен');
+      return;
+    }
+    rememberOAuthState(d.state||state, provider, d.redirectUri||redirectUri, pkce.verifier);
+    window.location.href=d.authUrl;
+  }catch(e){
+    showToast('Не удалось открыть вход через '+cfg.label);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=prev;}
+  }
+}
+
+async function processOAuthCallback(){
+  const params=new URLSearchParams(window.location.search);
+  const code=params.get('code');
+  const state=params.get('state');
+  if(!code||!state) return false;
+  const pending=consumeOAuthState(state);
+  if(!pending||!pending.provider){
+    showToast('Сессия входа истекла. Попробуйте ещё раз');
+    return false;
+  }
+  window.history.replaceState({},'',window.location.pathname);
+  const path=pending.provider==='yandex'?'/auth/yandex-id':'/auth/vk-id';
+  try{
+    showScreen('login');
+    const pendingRef=getPendingReferralCode();
+    const r=await withTimeout(fetch(WORKER+path,{method:'POST',headers:authHeaders(),body:JSON.stringify({code,redirectUri:pending.redirectUri||getOAuthRedirectUri(),codeVerifier:pending.codeVerifier||'',...(pendingRef?{ref:pendingRef}:{})})}),15000);
+    const d=await readJsonSafe(r);
+    if(d.ok&&d.token){
+      setLegacyToken(d.token);
+      localStorage.removeItem(LOGOUT_K);
+      currentUser=d.user;
+      chatId='user_'+currentUser.id;
+      clearPendingReferralCode();
+      applyUserInfo();
+      localStorage.setItem(ONBOARD_K,'1');
+      showScreen('home');
+      loadTasks();
+      showAccountMergeToast(d);
+      showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
+      return true;
+    }
+    showToast(d.error||'Ошибка входа через сервис');
+  }catch(e){
+    showToast('Нет соединения');
+  }
+  return false;
 }
 
 function isVkMiniAppContext(){
@@ -6765,6 +6876,11 @@ function _showSubScreenBase(id){
 
 // Profile menu wiring
 document.addEventListener('DOMContentLoaded',()=>{
+  processOAuthCallback();
+  const vkIdBtn = document.getElementById('login-vk-id-btn');
+  if(vkIdBtn) vkIdBtn.addEventListener('click', () => startOAuthLogin('vk_id'));
+  const yandexIdBtn = document.getElementById('login-yandex-id-btn');
+  if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => startOAuthLogin('yandex'));
   // Wire up profile menu items
   const profileMenu = document.querySelector('#profile .profile-menu');
   const profileItems = profileMenu ? [...profileMenu.querySelectorAll('.profile-item')].filter(item=>!item.hasAttribute('onclick')) : [];
