@@ -8,9 +8,19 @@
 
 ### 2026-07-07 — Codex
 
+**Задача:** BACK-050 — accessibility baseline status/toast, шаг 2
+**Результат:** `#toast` в `index.html` получил `role="status"`, `aria-live="polite"` и `aria-atomic="true"`. `showToast()` теперь переключает обычные сообщения в polite status, а критические ошибки/валидацию/сетевые сбои — в `role="alert"` + `aria-live="assertive"`; текст очищается перед новым сообщением, чтобы live-region стабильно переозвучивался.
+**Коммит:** `pending`
+**Статус:** ✅ status/toast code baseline готов к ручному smoke
+**Следующий шаг:** BACK-050 шаг 3 — dialogs/focus/touch-targets для quick-add, contact panel и biometric consent.
+
+---
+
+### 2026-07-07 — Codex
+
 **Задача:** BACK-050 — accessibility baseline auth/forms, шаг 1
 **Результат:** В `index.html` экраны login/register/forgot/reset получили явные labels, `aria-describedby`, `aria-invalid`, полевые ошибки рядом с input, keyboard submit через JS-обработчики и доступные кнопки показа пароля. В `styles/layout.less` добавлены focus-visible, invalid-state и стили auth-ссылок/переключателей без новых inline handlers/styles. Заодно снижена baseline-планка `scripts/check-ui-architecture.sh`: inline styles `434 → 428`, inline handlers `415 → 402`. `BACK-050` переведён в `In Progress`: status/toast и dialogs/focus/touch-targets остаются следующими шагами.
-**Коммит:** `pending`
+**Коммит:** `0860245`
 **Статус:** ✅ auth/forms code baseline готов к ручному keyboard/focus smoke
 **Следующий шаг:** BACK-050 шаг 2 — status/toast baseline (`role=status`/`aria-live`, критические ошибки как alert/полевые ошибки).
 

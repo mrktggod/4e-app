@@ -36,7 +36,7 @@
 - [ ] Dev/test аккаунты входят без ручной оплаты и имеют активный Premium/full-access для smoke задач, AI-чата, голоса, подписки и платежных экранов. `Ручной staging smoke: admin seed-контур готов, но нужен staging ADMIN_SECRET/seed`
 - [ ] Accessibility / Auth: вход, регистрация и сброс пароля проходятся с клавиатуры; Tab/Shift+Tab идут в логичном порядке, Enter запускает основное действие, фокус видимый. `Ready for QA: auth/forms code baseline добавлен, нужен ручной keyboard/focus smoke`
 - [ ] Accessibility / Forms: поля auth/profile/task detail имеют понятные labels или accessible names; ошибки связаны с полями через `aria-describedby`/`aria-invalid` или эквивалентный доступный механизм. `Алексей вручную: формы и ошибки`
-- [ ] Accessibility / Status: toast, ошибки и успешные системные сообщения не являются единственным визуальным тупиком и доступны как `role="status"`/`aria-live` или `role="alert"` в зависимости от сценария. `Алексей вручную: status/toast`
+- [ ] Accessibility / Status: toast, ошибки и успешные системные сообщения не являются единственным визуальным тупиком и доступны как `role="status"`/`aria-live` или `role="alert"` в зависимости от сценария. `Ready for QA: #toast получил status/alert live-region, нужен ручной smoke`
 - [ ] Accessibility / Dialogs: quick-add, contact panel и biometric consent ведут себя как dialog/bottom sheet: фокус попадает внутрь, не теряется при закрытии и есть понятный способ отмены. `Алексей вручную: dialog/focus`
 - [ ] Accessibility / Touch targets: нижняя навигация, иконки, tab-кнопки, быстрые действия и кнопки карточек имеют достаточную область нажатия на мобильном экране и не требуют точного попадания в мелкий текст. `Алексей вручную: mobile touch targets`
 
@@ -58,7 +58,7 @@
 | Roadmap | Now/Next/Later, зависимости, риски | Todo | |
 | QA | Чеклисты, acceptance criteria, тестовые данные | Todo | |
 | QA / Dev test accounts | У каждого dev/test аккаунта активен Premium/full-access, есть seed-задачи, пароли не хранятся в git | In Progress | `BACK-048`; admin seed/delete контур уже в `4e-worker`, для полного smoke нужен staging `ADMIN_SECRET` и реальный seed |
-| Accessibility / Critical UI | Auth-формы, keyboard/focus, status/toast, dialog bottom sheets, touch-targets на mobile | In Progress | `BACK-050`; auth/forms baseline подготовлен, ручной smoke перед закрытым тестом; status/toast и dialogs/focus остаются следующими шагами |
+| Accessibility / Critical UI | Auth-формы, keyboard/focus, status/toast, dialog bottom sheets, touch-targets на mobile | In Progress | `BACK-050`; auth/forms и status/toast code baseline подготовлены, ручной smoke перед закрытым тестом; dialogs/focus/touch-targets остаются следующим шагом |
 | Коммуникация | Краткие отчеты, понятный тон, без лишней воды | Todo | |
 | Надежность | Нет выдуманных ссылок, дат, статусов | Todo | |
 

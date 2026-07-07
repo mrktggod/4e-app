@@ -2079,7 +2079,7 @@
   </div>
   <div class="lock-error" id="lock-error">Неверный PIN. Попробуй ещё раз.</div>
 </div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <!-- CONTACT PANEL -->
 <div id="contact-panel-overlay" class="contact-panel-overlay">
@@ -6691,7 +6691,29 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
 
 })();
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+let toastHideTimer=null;
+function isCriticalToastMessage(message,type){
+  if(type==='error'||type==='alert') return true;
+  if(type==='success'||type==='status') return false;
+  const text=String(message||'').toLowerCase();
+  return /\b(ошибка|не удалось|нет соединения|не могу|не найден|истек|истёк|недоступ|слишком короткий|не совпадают|введите|введи|выберите|проверьте|нужен вход|сначала войдите|пробный период истёк)\b/i.test(text);
+}
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  if(!t) return;
+  const critical=isCriticalToastMessage(msg,type);
+  clearTimeout(toastHideTimer);
+  t.classList.toggle('toast--error',critical);
+  t.setAttribute('role',critical?'alert':'status');
+  t.setAttribute('aria-live',critical?'assertive':'polite');
+  t.setAttribute('aria-atomic','true');
+  t.textContent='';
+  requestAnimationFrame(()=>{
+    t.textContent=msg;
+    t.classList.add('show');
+  });
+  toastHideTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
 function toggleTheme(){
   const current=document.documentElement.getAttribute('data-theme')||'dark';
   const next=current==='dark'?'light':'dark';
