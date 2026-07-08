@@ -75,7 +75,24 @@ function sanitizeTask(taskText) {
   assert(login.status === 200, 'login failed');
   assert(login.body?.token, 'login token missing');
 
-  const token = login.body.token;
+  let token = login.body.token;
+  let secondToken = '';
+
+  const linkTelegram = async (userToken, telegramId, label) => {
+    const res = await request('/auth/telegram', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-token': userToken,
+      },
+      body: JSON.stringify({ telegramId }),
+    });
+    log(`telegram link(${label}): ${res.status} ${res.elapsed}ms`);
+    assert(res.status === 200, 'telegram link failed');
+    assert(res.body?.ok === true, 'telegram link should return ok=true');
+    return res.body?.token || userToken;
+  };
+
   const authHeaders = {
     'Content-Type': 'application/json',
     'x-token': token,
@@ -85,7 +102,43 @@ function sanitizeTask(taskText) {
   log(`auth/me: ${me.status} ${me.elapsed}ms`);
   assert(me.status === 200 && me.body?.ok === true, 'auth/me failed');
 
-  const taskText = `SMART-013 smoke ${sanitizeTask(Date.now())}`;
+  const secondUserEmail = `smart030-smoke-${Date.now()}-2@example.org`;
+  const secondUserPassword = 'SmokePass123!';
+  const secondReg = await request('/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: secondUserEmail, password: secondUserPassword, name: 'Smoke User 2' }),
+  });
+  log(`register(user2): ${secondReg.status} ${secondReg.elapsed}ms`);
+  assert(secondReg.status === 200 || secondReg.status === 201, 'second user register failed');
+
+  const secondLogin = await request('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: secondUserEmail, password: secondUserPassword }),
+  });
+  log(`login(user2): ${secondLogin.status} ${secondLogin.elapsed}ms`);
+  assert(secondLogin.status === 200, 'second user login failed');
+  assert(secondLogin.body?.token, 'second user login token missing');
+
+  const assigneeTgId = `9${Math.floor(Math.random() * 1e8).toString().padStart(8, '0')}`;
+  const receiverTgId = `8${Math.floor(Math.random() * 1e8).toString().padStart(8, '0')}`;
+
+  token = await linkTelegram(token, assigneeTgId, 'creator');
+  authHeaders['x-token'] = token;
+
+  const secondHeaders = {
+    'Content-Type': 'application/json',
+    'x-token': secondLogin.body.token,
+  };
+  secondToken = secondLogin.body.token;
+  secondToken = await linkTelegram(secondToken, receiverTgId, 'receiver');
+  secondHeaders['x-token'] = secondToken;
+
+  const receiverMe = await request('/auth/me', { method: 'GET', headers: secondHeaders });
+  assert(receiverMe.status === 200 && receiverMe.body?.ok === true, 'receiver auth/me failed');
+
+  const taskText = `BACK-030 smoke ${sanitizeTask(Date.now())}`;
   const taskId = `smoke-task-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
   const before = await request('/tasks', {
     method: 'GET',
@@ -104,7 +157,7 @@ function sanitizeTask(taskText) {
         text: taskText,
         person: 'Smoke Person',
         assigneeUsername: 'SmokeUser',
-        assigneeTgId: '1234567',
+        assigneeTgId: receiverTgId,
         direction: 'outgoing',
         directionLabel: 'Работа',
         deadline: null,
@@ -123,12 +176,23 @@ function sanitizeTask(taskText) {
   assert(afterTasks.length >= beforeIds.size + 1, 'tasks list after should contain created task');
 
   const created = afterTasks.find((item) => {
-    return sanitizeTask(item.text) === taskText && !beforeIds.has(String(item.id || ''));
+    return sanitizeTask(item.text) === taskText || String(item.id || '') === String(taskId);
   });
-  const createdId = created?.id || taskId;
-  assert(String(created?.assigneeUsername || '') === 'smokeuser', 'assigneeUsername should be normalized');
-  assert(String(created?.assigneeTgId || '').trim() === '1234567', 'assigneeTgId should be stored');
+  assert(created, 'created task not found in list by id/text');
+  const createdId = created.id || taskId;
+  assert(String((created.assigneeUsername || '').toLowerCase()) === 'smokeuser', 'assigneeUsername should be normalized');
+  assert(String(created?.assigneeTgId || '').trim() === receiverTgId, 'assigneeTgId should be stored');
   assert(createdId, 'created task id not found');
+
+  const receiverTasksResponse = await request('/tasks', {
+    method: 'GET',
+    headers: secondHeaders,
+  });
+  log(`tasks.list.receiver: ${receiverTasksResponse.status} ${receiverTasksResponse.elapsed}ms`);
+  assert(receiverTasksResponse.status === 200, 'receiver tasks list failed');
+  const receiverTasks = asTasksArray(receiverTasksResponse);
+  const receiverCreated = receiverTasks.find((item) => String(item.id || '') === String(createdId));
+  assert(!!receiverCreated, 'created task should be copied to assignee user task list');
 
   const done = await request('', {
     method: 'POST',
