@@ -718,9 +718,9 @@
     </div>
 
     <!-- Табы -->
-    <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
-      <button class="detail-tab active" id="tab-comments" onclick="switchDetailTab('comments',this)">Обсудить задачу</button>
-      <button class="detail-tab" id="tab-history" onclick="switchDetailTab('history',this)">История</button>
+    <div id="task-detail-tabs" style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
+      <button class="detail-tab active" id="tab-comments" data-detail-tab="comments">Обсудить задачу</button>
+      <button class="detail-tab" id="tab-history" data-detail-tab="history">История</button>
     </div>
 
     <!-- Комментарии -->
