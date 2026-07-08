@@ -256,6 +256,61 @@
     return true;
   }
 
+  function bindTaskUiHandlers(bind = bindClick) {
+    const aiMemoryForgetBtn = document.getElementById('ai-memory-forget-btn');
+    if (aiMemoryForgetBtn) bind(aiMemoryForgetBtn.id, handleForgetAllAiFacts);
+
+    const detailContactBtn = document.getElementById('detail-contact-btn');
+    if (detailContactBtn) bind(detailContactBtn.id, openDetailContactPanel);
+
+    const detailPersonRow = document.getElementById('detail-person-row');
+    if (detailPersonRow) {
+      detailPersonRow.addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'detail-contact-btn') return;
+        openDetailPersonPicker();
+      });
+      detailPersonRow.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openDetailPersonPicker();
+        }
+      });
+    }
+
+    const contactTelegramBtn = document.getElementById('contact-panel-telegram-btn');
+    if (contactTelegramBtn) bind(contactTelegramBtn.id, contactViaTelegram);
+    const contactWriteBtn = document.getElementById('contact-panel-write-btn');
+    if (contactWriteBtn) bind(contactWriteBtn.id, contactViaWrite);
+    const contactCancelBtn = document.getElementById('contact-panel-cancel-btn');
+    if (contactCancelBtn) bind(contactCancelBtn.id, closeContactPanel);
+
+    const quickAddSubmitBtn = document.getElementById('quick-add-submit');
+    if (quickAddSubmitBtn) bind(quickAddSubmitBtn.id, submitQuickAdd);
+    const quickAddCancelBtn = document.getElementById('quick-add-cancel');
+    if (quickAddCancelBtn) bind(quickAddCancelBtn.id, closeQuickAdd);
+
+    const aiMemoryRows = document.getElementById('ai-memory-list');
+    if (aiMemoryRows) {
+      aiMemoryRows.addEventListener('click', function (e) {
+        const btn = e.target.closest('button.ai-memory-delete-btn');
+        if (!btn || !btn.dataset.factId) return;
+        deleteAiMemoryFact(btn.dataset.factId);
+      });
+    }
+
+    const quickAddOverlay = document.getElementById('quick-add-overlay');
+    if (quickAddOverlay) {
+      quickAddOverlay.addEventListener('keydown', (event) => handleAccessibleDialogKeydown(event, 'quick-add-overlay', closeQuickAdd));
+    }
+
+    const contactPanelOverlay = document.getElementById('contact-panel-overlay');
+    if (contactPanelOverlay) {
+      contactPanelOverlay.addEventListener('keydown', (event) => handleAccessibleDialogKeydown(event, 'contact-panel-overlay', closeContactPanel));
+    }
+
+    return true;
+  }
+
   function focusFirstInvalid(fieldIds) {
     const invalid = (fieldIds || [])
       .map(fieldId => document.getElementById(fieldId))
@@ -585,6 +640,7 @@
     shouldHandleEnterSubmit,
     bindClick,
     bindOAuthLoginButtons,
+    bindTaskUiHandlers,
     setFormFieldError,
     clearFormFieldError,
     clearFormErrors,

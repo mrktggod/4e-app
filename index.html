@@ -7088,39 +7088,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   const themeItem = document.querySelector('#profile .profile-menu:nth-child(2) .profile-item');
   if(themeItem) themeItem.onclick=()=>showSubScreen('theme-settings');
   if(typeof initNewTaskHandlers==='function') initNewTaskHandlers();
-  const aiMemoryForgetBtn = document.getElementById('ai-memory-forget-btn');
-  if(aiMemoryForgetBtn) aiMemoryForgetBtn.addEventListener('click', handleForgetAllAiFacts);
-  const detailContactBtn = document.getElementById('detail-contact-btn');
-  if(detailContactBtn) detailContactBtn.addEventListener('click', openDetailContactPanel);
-  const detailPersonRow = document.getElementById('detail-person-row');
-  if(detailPersonRow){
-    detailPersonRow.addEventListener('click', (e)=>{
-      if(e.target && e.target.id === 'detail-contact-btn') return;
-      openDetailPersonPicker();
-    });
-    detailPersonRow.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        openDetailPersonPicker();
-      }
-    });
+  const bindTaskUiHandlers = PLATFORM.bindTaskUiHandlers;
+  const bindUi = typeof bindTaskUiHandlers === 'function'
+    ? bindTaskUiHandlers.bind(PLATFORM, bindClick)
+    : null;
+  if (typeof bindUi === 'function') {
+    bindUi();
   }
-  const contactTelegramBtn = document.getElementById('contact-panel-telegram-btn');
-  if(contactTelegramBtn) contactTelegramBtn.addEventListener('click', contactViaTelegram);
-  const contactWriteBtn = document.getElementById('contact-panel-write-btn');
-  if(contactWriteBtn) contactWriteBtn.addEventListener('click', contactViaWrite);
-  const contactCancelBtn = document.getElementById('contact-panel-cancel-btn');
-  if(contactCancelBtn) contactCancelBtn.addEventListener('click', closeContactPanel);
-  const quickAddSubmitBtn = document.getElementById('quick-add-submit');
-  if(quickAddSubmitBtn) quickAddSubmitBtn.addEventListener('click', submitQuickAdd);
-  const quickAddCancelBtn = document.getElementById('quick-add-cancel');
-  if(quickAddCancelBtn) quickAddCancelBtn.addEventListener('click', closeQuickAdd);
-  const aiMemoryRows = document.getElementById('ai-memory-list');
-  if(aiMemoryRows) aiMemoryRows.addEventListener('click', function(e){
-    const btn = e.target.closest('button.ai-memory-delete-btn');
-    if(!btn || !btn.dataset.factId) return;
-    deleteAiMemoryFact(btn.dataset.factId);
-  });
 });
 
 // ===== PRIVACY CENTER =====
