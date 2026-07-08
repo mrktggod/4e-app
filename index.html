@@ -2587,22 +2587,6 @@ function pluralDays(n){
 // ── auth tab switch ───────────────────────────────────────────
 const AUTH_FIELD_IDS=['login-email','login-pass','reg-name','reg-email','reg-pass','forgot-email','reset-pass','reset-pass2'];
 
-function setAuthFieldError(fieldId,message){
-  if(PLATFORM.setFormFieldError) PLATFORM.setFormFieldError(fieldId,message,'login-input--invalid');
-}
-
-function clearAuthFieldError(fieldId){
-  setAuthFieldError(fieldId,'');
-}
-
-function clearAuthErrors(fieldIds){
-  if(PLATFORM.clearFormErrors) PLATFORM.clearFormErrors(fieldIds||AUTH_FIELD_IDS,'login-input--invalid');
-}
-
-function focusFirstInvalid(fieldIds){
-  if(PLATFORM.focusFirstInvalid) PLATFORM.focusFirstInvalid(fieldIds||AUTH_FIELD_IDS);
-}
-
 function switchAuthTab(tab, focusFirst){
   const isLogin=tab==='login';
   const loginForm=document.getElementById('form-login');
@@ -7606,10 +7590,6 @@ function showForgotPassword(){
 
 function setForgotPasswordError(message){
   setAuthFieldError('forgot-email',message||'');
-}
-
-function isValidEmail(email){
-  return PLATFORM.isValidEmail(email);
 }
 
 async function doForgotPassword(){

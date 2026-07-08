@@ -152,6 +152,60 @@
     return window.PLATFORM?.getTelegramReturnUrl ? window.PLATFORM.getTelegramReturnUrl() : window.location.origin+window.location.pathname;
   }
 
+  const AUTH_FIELD_IDS=['login-email','login-pass','reg-name','reg-email','reg-pass','forgot-email','reset-pass','reset-pass2'];
+  const AUTH_INVALID_CLASS='login-input--invalid';
+
+  function isValidEmail(email){
+    return window.PLATFORM?.isValidEmail ? window.PLATFORM.isValidEmail(email) : String(email||'').trim().includes('@');
+  }
+
+  function setAuthFieldError(fieldId, message){
+    if(window.PLATFORM?.setFormFieldError){
+      window.PLATFORM.setFormFieldError(fieldId, message, AUTH_INVALID_CLASS);
+      return;
+    }
+    const input = document.getElementById(fieldId);
+    if(input){
+      input.classList.toggle(AUTH_INVALID_CLASS,!!message);
+      input.setAttribute('aria-invalid',String(!!message));
+    }
+    const err = input?.parentElement?.querySelector('.form-error');
+    if(err) {
+      err.textContent = message || '';
+      err.setAttribute('role','alert');
+      err.setAttribute('aria-live','polite');
+    }
+  }
+
+  function clearAuthFieldError(fieldId){
+    setAuthFieldError(fieldId, '');
+  }
+
+  function clearAuthErrors(fieldIds){
+    const ids = Array.isArray(fieldIds) ? fieldIds : AUTH_FIELD_IDS;
+    if(window.PLATFORM?.clearFormErrors){
+      window.PLATFORM.clearFormErrors(ids, AUTH_INVALID_CLASS);
+      return;
+    }
+    for(const fieldId of ids){
+      clearAuthFieldError(fieldId);
+    }
+  }
+
+  function focusFirstInvalid(fieldIds){
+    const ids = Array.isArray(fieldIds) ? fieldIds : AUTH_FIELD_IDS;
+    if(window.PLATFORM?.focusFirstInvalid){
+      return window.PLATFORM.focusFirstInvalid(ids);
+    }
+    for(const fieldId of ids){
+      const input = document.getElementById(fieldId);
+      if(input?.classList?.contains(AUTH_INVALID_CLASS)){
+        input.focus();
+        return;
+      }
+    }
+  }
+
   window.authStartOAuthLogin = startOAuthLogin;
   window.authProcessOAuthCallback = processOAuthCallback;
   window.authGetOAuthRedirectUri = getOAuthRedirectUri;
@@ -169,6 +223,11 @@
   window.authBuildReferralLink = buildReferralLink;
   window.copyReferralLink = copyReferralLink;
   window.getTelegramReturnUrl = getTelegramReturnUrl;
+  window.isValidEmail = isValidEmail;
+  window.setAuthFieldError = setAuthFieldError;
+  window.clearAuthFieldError = clearAuthFieldError;
+  window.clearAuthErrors = clearAuthErrors;
+  window.focusFirstInvalid = focusFirstInvalid;
 
   window.startOAuthLogin = startOAuthLogin;
   window.processOAuthCallback = processOAuthCallback;
