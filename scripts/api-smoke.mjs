@@ -103,6 +103,8 @@ function sanitizeTask(taskText) {
         id: taskId,
         text: taskText,
         person: 'Smoke Person',
+        assigneeUsername: 'SmokeUser',
+        assigneeTgId: '1234567',
         direction: 'outgoing',
         directionLabel: 'Работа',
         deadline: null,
@@ -124,6 +126,8 @@ function sanitizeTask(taskText) {
     return sanitizeTask(item.text) === taskText && !beforeIds.has(String(item.id || ''));
   });
   const createdId = created?.id || taskId;
+  assert(String(created?.assigneeUsername || '') === 'smokeuser', 'assigneeUsername should be normalized');
+  assert(String(created?.assigneeTgId || '').trim() === '1234567', 'assigneeTgId should be stored');
   assert(createdId, 'created task id not found');
 
   const done = await request('', {
@@ -142,6 +146,29 @@ function sanitizeTask(taskText) {
   log(`tasks.delete: ${del.status} ${del.elapsed}ms`);
   assert(del.status === 200 && del.body?.ok !== false, 'delete-task failed');
 
+  if (process.env.SKIP_SMART013_SMOKE !== '1') {
+    const prompt = {
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 128,
+      messages: [
+        {
+          role: 'user',
+          content: 'Generate 4-8 task steps: ' + taskText,
+        },
+      ],
+      stream: false,
+    };
+    const ai = await request('/anthropic', {
+      method: 'POST',
+      headers: { ...authHeaders, 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify(prompt),
+    });
+    log('anthropic(smoke): ' + ai.status + ' ' + ai.elapsed + 'ms');
+    assert(ai.status === 200, 'anthropic endpoint should be available for SMART-013 smoke');
+  } else {
+    log('smart013 smoke skipped (SKIP_SMART013_SMOKE=1)');
+  }
+
   const emptyTranscribe = await request('/transcribe', {
     method: 'POST',
     headers: authHeaders,
@@ -155,3 +182,5 @@ function sanitizeTask(taskText) {
   console.error('api-smoke failed:', error.message);
   process.exit(1);
 });
+
+
