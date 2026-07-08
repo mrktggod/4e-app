@@ -389,42 +389,6 @@
     return true;
   }
 
-  function bindNotificationHandlers() {
-    const list = document.getElementById('notif-list');
-    if (!list) return false;
-
-    list.addEventListener('click', event => {
-      const actionBtn = event.target.closest('[data-notif-action]');
-      if (actionBtn) {
-        event.preventDefault();
-        const action = actionBtn.dataset.notifAction;
-        const notifId = actionBtn.dataset.nid;
-        if (!notifId) return;
-        if (action === 'go-to-task') {
-          notifGoToTask(notifId);
-          return;
-        }
-        if (action === 'mark-read') {
-          notifMarkRead(notifId);
-          return;
-        }
-        if (action === 'delete') {
-          notifDelete(notifId);
-          return;
-        }
-        return;
-      }
-
-      const header = event.target.closest('.notif-card-header');
-      if (header) {
-        const nid = header.dataset.nid;
-        if (nid) toggleNotif(header);
-      }
-    }, { passive: false });
-
-    return true;
-  }
-
   function focusFirstInvalid(fieldIds) {
     const invalid = (fieldIds || [])
       .map(fieldId => document.getElementById(fieldId))
@@ -755,7 +719,6 @@
     bindClick,
     bindOAuthLoginButtons,
     bindAuthA11yHandlers,
-    bindNotificationHandlers,
     bindTaskUiHandlers,
     bindProfileMenuItems,
     setFormFieldError,
