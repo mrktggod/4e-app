@@ -1,0 +1,130 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#080B0D"/>
+      <stop offset="1" stop-color="#11171A"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .muted { fill: #859098; }
+      .text { fill: #EEF4F2; }
+      .sub { fill: #B6C0C5; }
+      .green { fill: #9AC23C; }
+      .smallcaps { font-size: 11px; font-weight: 750; letter-spacing: 1.2px; text-transform: uppercase; }
+      .label { font-size: 18px; font-weight: 750; fill: #EEF4F2; }
+      .caption { font-size: 13px; fill: #91A0A8; }
+      .phone-title { font-size: 14px; font-weight: 700; fill: #EEF4F2; }
+      .field-label { font-size: 13px; fill: #B6C0C5; }
+      .field-value { font-size: 13px; font-weight: 650; fill: #EEF4F2; }
+      .button-text { font-size: 13px; font-weight: 750; }
+      .step-text { font-size: 13px; fill: #E8EFEC; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <circle cx="713" cy="152" r="190" fill="#9AC23C" opacity="0.055"/>
+  <circle cx="1116" cy="692" r="230" fill="#9AC23C" opacity="0.035"/>
+
+  <text x="96" y="70" class="green smallcaps">SMART-013</text>
+  <text x="96" y="104" font-size="30" font-weight="820" class="text">AI-декомпозиция задачи в чек-лист</text>
+  <text x="96" y="132" class="caption">MVP: 4 предлагает этапы, пользователь подтверждает, шаги сохраняются как обычный checklist.</text>
+
+  <text x="214" y="194" class="label">1. Пустой чек-лист</text>
+  <text x="864" y="194" class="label">2. Preview перед записью</text>
+  <text x="604" y="485" font-size="15" font-weight="760" class="green">AI не меняет задачу</text>
+  <text x="607" y="509" class="caption">без подтверждения</text>
+  <path d="M560 455 C640 415 730 415 810 455" stroke="#9AC23C" stroke-opacity="0.45" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M803 444 L824 463 L796 468" stroke="#9AC23C" stroke-opacity="0.55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Phone 1 -->
+  <g filter="url(#softShadow)">
+    <rect x="142" y="220" width="390" height="630" rx="40" fill="#070A0C" stroke="#252D31" stroke-width="2"/>
+    <rect x="162" y="244" width="350" height="584" rx="28" fill="#0C1114"/>
+    <rect x="286" y="235" width="102" height="8" rx="4" fill="#1F282D"/>
+
+    <rect x="162" y="244" width="350" height="62" rx="28" fill="#0C1114"/>
+    <circle cx="190" cy="281" r="16" fill="#151B1F" stroke="#263137"/>
+    <path d="M194 273 L186 281 L194 289" stroke="#AEB8BE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="222" y="286" class="phone-title">Задача</text>
+
+    <rect x="184" y="326" width="94" height="25" rx="13" fill="#172116" stroke="#2B4122"/>
+    <circle cx="201" cy="338" r="3.5" fill="#9AC23C"/>
+    <text x="214" y="343" font-size="12" font-weight="700" class="green">Активная</text>
+
+    <text x="184" y="382" font-size="20" font-weight="820" class="text">Подготовить тестовый отчёт</text>
+    <rect x="184" y="407" width="306" height="74" rx="14" fill="#12181C" stroke="#222C31"/>
+    <text x="201" y="432" class="caption">Собрать результаты smoke и отправить</text>
+    <text x="201" y="454" class="caption">Юре короткий итог.</text>
+
+    <rect x="184" y="500" width="306" height="158" rx="16" fill="#11171B" stroke="#232D32"/>
+    <line x1="184" y1="553" x2="490" y2="553" stroke="#232D32"/>
+    <line x1="184" y1="606" x2="490" y2="606" stroke="#232D32"/>
+
+    <text x="204" y="532" class="field-label">Срок</text>
+    <rect x="370" y="515" width="96" height="29" rx="10" fill="#151D21" stroke="#29343A"/>
+    <text x="390" y="534" class="field-value">Сегодня</text>
+
+    <text x="204" y="585" class="field-label">Статус</text>
+    <text x="398" y="585" class="field-value">Активная</text>
+
+    <text x="204" y="638" class="field-label">Приоритет</text>
+    <text x="382" y="638" class="field-value">Высокий</text>
+
+    <rect x="184" y="682" width="306" height="118" rx="16" fill="#11171B" stroke="#26343A"/>
+    <text x="204" y="711" class="muted smallcaps">Чек-лист</text>
+    <text x="204" y="744" font-size="15" font-weight="760" class="text">Пока нет этапов</text>
+    <text x="204" y="767" class="caption">4 может разложить задачу</text>
+    <text x="204" y="787" class="caption">на понятные шаги.</text>
+    <rect x="344" y="735" width="126" height="44" rx="22" fill="#9AC23C"/>
+    <text x="364" y="762" class="button-text" fill="#0A0E10">Разбить</text>
+  </g>
+
+  <!-- Phone 2 -->
+  <g filter="url(#softShadow)">
+    <rect x="794" y="220" width="390" height="630" rx="40" fill="#070A0C" stroke="#252D31" stroke-width="2"/>
+    <rect x="814" y="244" width="350" height="584" rx="28" fill="#0C1114"/>
+    <rect x="938" y="235" width="102" height="8" rx="4" fill="#1F282D"/>
+
+    <rect x="814" y="244" width="350" height="62" rx="28" fill="#0C1114"/>
+    <circle cx="842" cy="281" r="16" fill="#151B1F" stroke="#263137"/>
+    <path d="M846 273 L838 281 L846 289" stroke="#AEB8BE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="874" y="286" class="phone-title">Задача</text>
+
+    <text x="836" y="348" font-size="20" font-weight="820" class="text">Подготовить тестовый отчёт</text>
+    <rect x="836" y="374" width="306" height="70" rx="14" fill="#12181C" stroke="#222C31"/>
+    <text x="853" y="400" class="caption">Собрать результаты smoke и отправить</text>
+    <text x="853" y="422" class="caption">Юре короткий итог.</text>
+
+    <rect x="836" y="464" width="306" height="118" rx="16" fill="#11171B" stroke="#26343A"/>
+    <text x="856" y="493" class="muted smallcaps">Чек-лист</text>
+    <rect x="856" y="512" width="17" height="17" rx="5" fill="#151D21" stroke="#39454A"/>
+    <text x="884" y="526" class="caption">AI предлагает этапы...</text>
+    <rect x="856" y="544" width="126" height="26" rx="13" fill="#172116" stroke="#2B4122"/>
+    <text x="874" y="562" font-size="12" font-weight="750" class="green">Preview открыт</text>
+
+    <rect x="814" y="594" width="350" height="234" rx="28" fill="#151B1F" stroke="#2C363B"/>
+    <rect x="963" y="610" width="52" height="5" rx="3" fill="#3A464D"/>
+    <text x="842" y="650" font-size="18" font-weight="820" class="text">4 предлагает 5 этапов</text>
+    <text x="842" y="675" class="caption">Проверь и добавь в чек-лист.</text>
+
+    <circle cx="851" cy="706" r="9" fill="#223019"/><text x="848" y="711" font-size="10" font-weight="850" class="green">1</text>
+    <text x="872" y="711" class="step-text">Собрать результаты smoke</text>
+    <circle cx="851" cy="734" r="9" fill="#223019"/><text x="848" y="739" font-size="10" font-weight="850" class="green">2</text>
+    <text x="872" y="739" class="step-text">Отметить критичные ошибки</text>
+    <circle cx="851" cy="762" r="9" fill="#223019"/><text x="848" y="767" font-size="10" font-weight="850" class="green">3</text>
+    <text x="872" y="767" class="step-text">Сформулировать короткий итог</text>
+
+    <rect x="842" y="789" width="145" height="42" rx="21" fill="#9AC23C"/>
+    <text x="866" y="815" class="button-text" fill="#0A0E10">Добавить</text>
+    <rect x="996" y="789" width="70" height="42" rx="21" fill="#20282D" stroke="#344047"/>
+    <text x="1014" y="815" class="button-text sub">Ещё</text>
+    <rect x="1074" y="789" width="68" height="42" rx="21" fill="#20282D" stroke="#344047"/>
+    <text x="1091" y="815" class="button-text sub">Отмена</text>
+  </g>
+
+  <rect x="118" y="842" width="1090" height="1" fill="#233037"/>
+  <text x="120" y="876" class="caption">Визуальный reference для ТЗ. Не финальный дизайн: задача макета — показать расположение действия и preview-сценарий.</text>
+</svg>

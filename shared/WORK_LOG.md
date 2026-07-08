@@ -8,6 +8,36 @@
 
 ### 2026-07-08 — Codex
 
+**Задача:** пересобрать roadmap по фильтрам beta gate, личного штаба дня и монетизации
+**Результат:** `shared/ROADMAP.md`, `pm/backlog.md`, `pm/next-actions.md`, `pm/bugs.md` и `pm/qa-checklist.md` синхронизированы по схеме Now / Next / Later / Future / Icebox. Убрана коллизия `BACK-036`: Telegram fallback остался `BACK-036`, архитектурный распил получил `ARCH-001`. Добавлены `BACK-056`, `BETA-001`, `ANALYTICS-001`, `FEEDBACK-001`, `ONBOARD-001`; `BACK-055` поднят до P1. Подготовлен отчёт Юре `pm/agent-inbox/codex-to-yuri-2026-07-08-roadmap-filters-monetization.md`.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Юре проверить отчёт и двигать Now-задачи: `BACK-055`, `BACK-048`, `BACK-036/BACK-041`, `BACK-056`, затем закрытый тест `BETA-001`.
+
+---
+
+### 2026-07-08 — Codex
+
+**Задача:** добавить в roadmap будущий календарный слой и омниканальные поверхности 4
+**Результат:** В `shared/ROADMAP.md` зафиксировано позиционирование 4 как омниканального личного штаба дня и поднятие календаря в ближайшую продуктовую проработку. В `pm/backlog.md` добавлены `CAL-001`, `CAL-002`, `CAL-003`, `OMNI-001`. Созданы документы `docs/tasks/CAL-001-calendar-concept.md`, `docs/tasks/OMNI-001-omnichannel-surfaces.md` и письмо на согласование `pm/agent-inbox/codex-to-team-2026-07-08-omnichannel-calendar-roadmap.md`.
+**Коммит:** N/A
+**Статус:** ✅ задача оформлена
+**Следующий шаг:** Отправить письмо Юрию/Claude, согласовать первый календарный провайдер, privacy-границы и момент старта CAL-002.
+
+---
+
+### 2026-07-08 — Codex
+
+**Задача:** составить ТЗ для SMART-013 — AI-декомпозиция задачи на этапы
+**Результат:** Создано ТЗ `docs/tasks/SMART-013-ai-task-decomposition.md`; добавлен PNG-reference `docs/tasks/assets/SMART-013-ai-task-decomposition-mockup.png`; `SMART-013` в `pm/backlog.md` переведён в `Triaged`; в `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` добавлена ссылка на ТЗ и зафиксировано решение MVP: AI предлагает preview этапов, пользователь подтверждает, этапы сохраняются как обычный чек-лист без новой сущности подзадач.
+**Коммит:** N/A
+**Статус:** ✅ задача оформлена
+**Следующий шаг:** После закрытия ближайших beta/QA-блокеров взять реализацию в ветке `feat/smart-013-task-decomposition` или передать Юре это ТЗ.
+
+---
+
+### 2026-07-08 — Codex
+
 **Задача:** подготовить ТЗ для Юрия по уведомлениям как ленте внимания
 **Результат:** Добавлена задача `BACK-055` в `pm/backlog.md`, создано ТЗ `docs/tasks/BACK-055-notifications-action-cards.md`, сохранён visual reference `docs/tasks/assets/BACK-055-notifications-action-cards-wireframe.svg`, обновлены roadmap и QA-чеклист. Зафиксировано решение: делать MVP карточек уведомлений с действиями `К задаче / Готово / Отложить`, а AI-декомпозицию, историю и умное отложение оставить будущим слоем.
 **Коммит:** N/A
