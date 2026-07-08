@@ -39,7 +39,7 @@
 
 **Тест:** Документальная проверка связки `pm/backlog.md` → `docs/tasks/SMART-013-ai-task-decomposition.md` → `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md`; визуальная проверка PNG-reference; `git diff --check`; `bash scripts/check-portable-paths.sh`.
 
-**Коммит:** N/A
+**Коммит:** `docs(ai): add smart 013 decomposition spec`
 
 ## 2026-07-08 — BACK-055: notifications action cards task
 
@@ -52,6 +52,30 @@
 **Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `docs/tasks/BACK-055-notifications-action-cards.md` → `pm/qa-checklist.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
 
 **Коммит:** N/A
+
+## 2026-07-08 — Team Sync: Yuri Claude-driven Git
+
+### Поправка инструкции Юры без GitHub Desktop
+
+**Что сделано:** Код приложения не менялся. В `docs/team-sync-protocol.md`, `pm/team-sync.md`, `docs/git-team-rules.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `AGENTS.md` уточнено, что Юрий не пользуется GitHub Desktop и управляет Git через Claude. Для Юры добавлена стартовая фраза: Claude должен проверить ветку, `git status`, сделать `git fetch origin` и подтягивать изменения только если нет риска потерять незакоммиченные изменения.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(process): clarify yuri git via claude`
+
+## 2026-07-08 — Team Sync protocol
+
+### Единая синхронизация Алексея, Юрия, Codex и Claude
+
+**Что сделано:** Код приложения не менялся. Добавлены `docs/team-sync-protocol.md` и `pm/team-sync.md`: ключевые фразы `Что там у Лехи?`, `Что там у Юры?`, `Закрой задачу и синхронизируй`, определение завершенной задачи, правило commit/push в рабочую ветку и запрет автоматического merge в `main`. В `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `docs/git-team-rules.md` добавлены ссылки на новый протокол, чтобы Codex и Claude читали один и тот же источник правил.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(process): add team sync protocol`
 
 ## 2026-07-06 — Linear bug triage policy
 
