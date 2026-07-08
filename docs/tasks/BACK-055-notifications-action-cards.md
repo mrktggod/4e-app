@@ -1,10 +1,10 @@
 # BACK-055 — Уведомления как лента внимания
 
-**Дата:** 2026-07-08  
-**Владелец:** Юрий  
-**Тип:** Product/UI  
+**Дата:** 2026-07-08
+**Владелец:** Юрий
+**Тип:** Product/UI
 **Приоритет:** P1
-**Статус:** Triaged  
+**Статус:** Triaged
 **Рекомендуемая ветка:** `feat/notifications-action-cards`
 
 ## Контекст
@@ -280,5 +280,5 @@ Reference-макет: `docs/tasks/assets/BACK-055-notifications-action-cards-wir
 
 ## Git
 
-Работать в ветке `feat/notifications-action-cards`.  
+Работать в ветке `feat/notifications-action-cards`.
 Не мержить в `main` без проверки Алексеем.
