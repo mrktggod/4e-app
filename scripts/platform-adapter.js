@@ -236,6 +236,13 @@
     (fieldIds || []).forEach(fieldId => clearFormFieldError(fieldId, invalidClass));
   }
 
+  function bindClick(id, handler) {
+    const el = document.getElementById(id);
+    if (!el) return false;
+    el.addEventListener('click', handler);
+    return true;
+  }
+
   function focusFirstInvalid(fieldIds) {
     const invalid = (fieldIds || [])
       .map(fieldId => document.getElementById(fieldId))
@@ -563,6 +570,7 @@
     isValidEmail,
     togglePasswordVisibility,
     shouldHandleEnterSubmit,
+    bindClick,
     setFormFieldError,
     clearFormFieldError,
     clearFormErrors,

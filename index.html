@@ -6999,17 +6999,14 @@ function _showSubScreenBase(id){
 
 // Profile menu wiring
 function initAuthA11yHandlers(){
-  const bindClick=(id,handler)=>{
-    const el=document.getElementById(id);
-    if(el) el.addEventListener('click',handler);
-  };
-  bindClick('login-submit-btn',doLogin);
-  bindClick('reg-submit-btn',doRegister);
-  bindClick('forgot-submit-btn',doForgotPassword);
-  bindClick('reset-submit-btn',doResetPassword);
-  bindClick('show-forgot-btn',showForgotPassword);
-  bindClick('forgot-back-btn',()=>showScreen('login'));
-  bindClick('login-telegram-btn',()=>loginWithTelegram());
+  const bindClick = PLATFORM.bindClick || ((id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('click', handler); });
+  bindClick('login-submit-btn', doLogin);
+  bindClick('reg-submit-btn', doRegister);
+  bindClick('forgot-submit-btn', doForgotPassword);
+  bindClick('reset-submit-btn', doResetPassword);
+  bindClick('show-forgot-btn', showForgotPassword);
+  bindClick('forgot-back-btn', () => showScreen('login'));
+  bindClick('login-telegram-btn', () => loginWithTelegram());
 
   document.querySelectorAll('[data-toggle-pass]').forEach(btn=>{
     btn.addEventListener('click',()=>togglePass(btn.dataset.togglePass));
