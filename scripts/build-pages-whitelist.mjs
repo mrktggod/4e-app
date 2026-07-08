@@ -12,6 +12,7 @@ const requiredFiles = [
   "styles.min.css",
   "scripts/platform-adapter.js",
   "scripts/task-ui-renderers.js",
+  "scripts/auth-handlers.js",
 ];
 
 const optionalPaths = [
