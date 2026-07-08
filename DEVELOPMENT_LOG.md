@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-08 — Team Sync: Yuri Claude-driven Git
+
+### Поправка инструкции Юры без GitHub Desktop
+
+**Что сделано:** Код приложения не менялся. В `docs/team-sync-protocol.md`, `pm/team-sync.md`, `docs/git-team-rules.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `AGENTS.md` уточнено, что Юрий не пользуется GitHub Desktop и управляет Git через Claude. Для Юры добавлена стартовая фраза: Claude должен проверить ветку, `git status`, сделать `git fetch origin` и подтягивать изменения только если нет риска потерять незакоммиченные изменения.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(process): clarify yuri git via claude`
+
 ## 2026-07-08 — Team Sync protocol
 
 ### Единая синхронизация Алексея, Юрия, Codex и Claude

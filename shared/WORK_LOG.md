@@ -8,6 +8,16 @@
 
 ### 2026-07-08 — Codex
 
+**Задача:** уточнить Team Sync под рабочий процесс Юры через Claude, без GitHub Desktop
+**Результат:** В `docs/team-sync-protocol.md`, `pm/team-sync.md`, `docs/git-team-rules.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `AGENTS.md` закреплено, что Юра управляет Git через Claude. Добавлена простая стартовая фраза для безопасного обновления проекта: Claude проверяет ветку, `git status`, делает `git fetch origin` и останавливается при риске конфликта или потери незакоммиченных изменений.
+**Коммит:** `docs(process): clarify yuri git via claude`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Запушить ветку `docs/team-sync-yuri-claude-git` и принять поправку в `main`.
+
+---
+
+### 2026-07-08 — Codex
+
 **Задача:** закрепить простой team-sync процесс для Алексея, Юрия, Codex и Claude
 **Результат:** Добавлены `docs/team-sync-protocol.md` и `pm/team-sync.md`, а также ссылки в `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `docs/git-team-rules.md`. Зафиксированы ключевые фразы `Что там у Лехи?`, `Что там у Юры?`, `Закрой задачу и синхронизируй`; правило commit/push после завершения задачи; запрет автоматического merge в `main`.
 **Коммит:** `docs(process): add team sync protocol`
