@@ -332,6 +332,63 @@
     return true;
   }
 
+  function bindAuthA11yHandlers(bind = bindClick) {
+    bind('login-submit-btn', doLogin);
+    bind('reg-submit-btn', doRegister);
+    bind('forgot-submit-btn', doForgotPassword);
+    bind('reset-submit-btn', doResetPassword);
+    bind('show-forgot-btn', showForgotPassword);
+    bind('forgot-back-btn', () => showScreen('login'));
+    bind('login-telegram-btn', () => loginWithTelegram());
+
+    document.querySelectorAll('[data-toggle-pass]').forEach(btn => {
+      btn.addEventListener('click', () => togglePass(btn.dataset.togglePass));
+    });
+
+    document.querySelectorAll('[data-auth-tab]').forEach(tab => {
+      tab.addEventListener('click', () => switchAuthTab(tab.dataset.authTab, true));
+      tab.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        const next = tab.dataset.authTab === 'login' ? 'register' : 'login';
+        switchAuthTab(next, true);
+      });
+    });
+
+    AUTH_FIELD_IDS.forEach(fieldId => {
+      const input = document.getElementById(fieldId);
+      if (input) input.addEventListener('input', () => clearAuthFieldError(fieldId));
+    });
+
+    const loginForm = document.getElementById('form-login');
+    if (loginForm) loginForm.addEventListener('keydown', event => {
+      if (PLATFORM.shouldHandleEnterSubmit(event)) submitLoginOnEnter(event);
+    });
+    const registerForm = document.getElementById('form-register');
+    if (registerForm) registerForm.addEventListener('keydown', event => {
+      if (PLATFORM.shouldHandleEnterSubmit(event)) {
+        event.preventDefault();
+        doRegister();
+      }
+    });
+    const forgotScreen = document.getElementById('forgot-password');
+    if (forgotScreen) forgotScreen.addEventListener('keydown', event => {
+      if (PLATFORM.shouldHandleEnterSubmit(event)) {
+        event.preventDefault();
+        doForgotPassword();
+      }
+    });
+    const resetScreen = document.getElementById('reset-password');
+    if (resetScreen) resetScreen.addEventListener('keydown', event => {
+      if (PLATFORM.shouldHandleEnterSubmit(event)) {
+        event.preventDefault();
+        doResetPassword();
+      }
+    });
+
+    return true;
+  }
+
   function focusFirstInvalid(fieldIds) {
     const invalid = (fieldIds || [])
       .map(fieldId => document.getElementById(fieldId))
@@ -661,6 +718,7 @@
     shouldHandleEnterSubmit,
     bindClick,
     bindOAuthLoginButtons,
+    bindAuthA11yHandlers,
     bindTaskUiHandlers,
     bindProfileMenuItems,
     setFormFieldError,

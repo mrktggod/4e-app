@@ -6997,74 +6997,19 @@ function _showSubScreenBase(id){
   if(id==='profile') setNavActive('profile');
 }
 
-// Profile menu wiring
-function initAuthA11yHandlers(){
-  const bindClick = PLATFORM.bindClick || ((id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('click', handler); });
-  bindClick('login-submit-btn', doLogin);
-  bindClick('reg-submit-btn', doRegister);
-  bindClick('forgot-submit-btn', doForgotPassword);
-  bindClick('reset-submit-btn', doResetPassword);
-  bindClick('show-forgot-btn', showForgotPassword);
-  bindClick('forgot-back-btn', () => showScreen('login'));
-  bindClick('login-telegram-btn', () => loginWithTelegram());
-
-  document.querySelectorAll('[data-toggle-pass]').forEach(btn=>{
-    btn.addEventListener('click',()=>togglePass(btn.dataset.togglePass));
-  });
-
-  document.querySelectorAll('[data-auth-tab]').forEach(tab=>{
-    tab.addEventListener('click',()=>switchAuthTab(tab.dataset.authTab,true));
-    tab.addEventListener('keydown',event=>{
-      if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight') return;
-      event.preventDefault();
-      const next=tab.dataset.authTab==='login'?'register':'login';
-      switchAuthTab(next,true);
-    });
-  });
-
-  AUTH_FIELD_IDS.forEach(id=>{
-    const input=document.getElementById(id);
-    if(input) input.addEventListener('input',()=>clearAuthFieldError(id));
-  });
-
-  const loginForm=document.getElementById('form-login');
-  if(loginForm) loginForm.addEventListener('keydown',event=>{
-    if(PLATFORM.shouldHandleEnterSubmit(event)) submitLoginOnEnter(event);
-  });
-  const registerForm=document.getElementById('form-register');
-  if(registerForm) registerForm.addEventListener('keydown',event=>{
-    if(PLATFORM.shouldHandleEnterSubmit(event)){
-      event.preventDefault();
-      doRegister();
-    }
-  });
-  const forgotScreen=document.getElementById('forgot-password');
-  if(forgotScreen) forgotScreen.addEventListener('keydown',event=>{
-    if(PLATFORM.shouldHandleEnterSubmit(event)){
-      event.preventDefault();
-      doForgotPassword();
-    }
-  });
-  const resetScreen=document.getElementById('reset-password');
-  if(resetScreen) resetScreen.addEventListener('keydown',event=>{
-    if(PLATFORM.shouldHandleEnterSubmit(event)){
-      event.preventDefault();
-      doResetPassword();
-    }
-  });
-  const quickAddOverlay=document.getElementById('quick-add-overlay');
-  if(quickAddOverlay) quickAddOverlay.addEventListener('keydown',event=>handleAccessibleDialogKeydown(event,'quick-add-overlay',closeQuickAdd));
-  const contactPanelOverlay=document.getElementById('contact-panel-overlay');
-  if(contactPanelOverlay) contactPanelOverlay.addEventListener('keydown',event=>handleAccessibleDialogKeydown(event,'contact-panel-overlay',closeContactPanel));
-}
-
 document.addEventListener('DOMContentLoaded',()=>{
   processOAuthCallback();
-  initAuthA11yHandlers();
   const bindClick = PLATFORM.bindClick || ((id, handler) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('click', handler);
   });
+  const bindAuthA11yHandlers = PLATFORM.bindAuthA11yHandlers;
+  const bindAuth = typeof bindAuthA11yHandlers === 'function'
+    ? bindAuthA11yHandlers.bind(PLATFORM, bindClick)
+    : null;
+  if (typeof bindAuth === 'function') {
+    bindAuth();
+  }
   const bindOAuthLoginButtons = PLATFORM.bindOAuthLoginButtons;
   const bindOAuth = typeof bindOAuthLoginButtons === 'function'
     ? bindOAuthLoginButtons.bind(PLATFORM, bindClick)
