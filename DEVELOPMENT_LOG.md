@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-08 — Team Sync protocol
+
+### Единая синхронизация Алексея, Юрия, Codex и Claude
+
+**Что сделано:** Код приложения не менялся. Добавлены `docs/team-sync-protocol.md` и `pm/team-sync.md`: ключевые фразы `Что там у Лехи?`, `Что там у Юры?`, `Закрой задачу и синхронизируй`, определение завершенной задачи, правило commit/push в рабочую ветку и запрет автоматического merge в `main`. В `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `docs/git-team-rules.md` добавлены ссылки на новый протокол, чтобы Codex и Claude читали один и тот же источник правил.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(process): add team sync protocol`
+
 ## 2026-07-06 — Linear bug triage policy
 
 ### Правило, когда баг заводим в Linear
