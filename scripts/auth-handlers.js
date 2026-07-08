@@ -282,3 +282,49 @@ function togglePass(id){
 // ── CloudPayments config ──────────────────────────────────────
 // ⚠️ Замени на свой Public ID из личного кабинета CloudPayments
 
+
+function togglePassField(id){
+  PLATFORM.togglePasswordVisibility(id||'cp-current');
+}
+
+function checkPassReqs(){
+  const v = document.getElementById('cp-new')?.value || '';
+  const setReq=(id,ok)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.toggle('ok',ok);
+    const dot=el.querySelector('.pass-req-dot');
+    if(dot) dot.style.background=ok?'var(--green)':'var(--muted)';
+  };
+  setReq('req-len', v.length>=8);
+  setReq('req-case', /[a-z]/.test(v)&&/[A-Z]/.test(v));
+  setReq('req-special', /[0-9!@#$%^&*]/.test(v));
+}
+
+function savePassword(){
+  const cur = document.getElementById('cp-current')?.value || '';
+  const nw = document.getElementById('cp-new')?.value || '';
+  const conf = document.getElementById('cp-confirm')?.value || '';
+  if(!cur){showToast('Current password is required');return;}
+  if(nw.length < 8){showToast('Password must be at least 8 characters');return;}
+  if(nw !== conf){showToast('Passwords do not match');return;}
+  showToast('Password updated');
+  setTimeout(()=>showSubScreen('security'),800);
+}
+
+function bindChangePasswordHandlers(){
+  ['cp-current','cp-new','cp-confirm'].forEach((id)=>{
+    const input=document.getElementById(id);
+    if(!input) return;
+    const eye=input.closest('.pass-input-wrap')?.querySelector('.pass-eye');
+    if(eye) eye.addEventListener('click',()=>togglePassField(id));
+  });
+
+  const cpNew=document.getElementById('cp-new');
+  if(cpNew) cpNew.addEventListener('input',checkPassReqs);
+  const saveBtn=document.getElementById('change-password-save-btn');
+  if(saveBtn) saveBtn.addEventListener('click',savePassword);
+}
+
+document.addEventListener('DOMContentLoaded',bindChangePasswordHandlers);
+

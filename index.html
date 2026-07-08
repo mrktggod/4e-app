@@ -1314,15 +1314,15 @@
     </div>
     <div class="pass-input-wrap">
       <input class="pass-input" id="cp-current" type="password" placeholder="Текущий пароль"/>
-      <div class="pass-eye" onclick="togglePassField('cp-current')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="pass-eye"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
     </div>
     <div class="pass-input-wrap">
-      <input class="pass-input" id="cp-new" type="password" placeholder="Новый пароль" oninput="checkPassReqs()"/>
-      <div class="pass-eye" onclick="togglePassField('cp-new')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <input class="pass-input" id="cp-new" type="password" placeholder="Новый пароль" />
+      <div class="pass-eye"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
     </div>
     <div class="pass-input-wrap">
       <input class="pass-input" id="cp-confirm" type="password" placeholder="Подтвердите новый пароль"/>
-      <div class="pass-eye" onclick="togglePassField('cp-confirm')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="pass-eye"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
     </div>
     <div class="sub-section-title" style="margin-top:4px">Требования к паролю:</div>
     <div class="pass-req">
@@ -1330,7 +1330,7 @@
       <div class="pass-req-item" id="req-case"><div class="pass-req-dot"></div>Заглавные и строчные буквы</div>
       <div class="pass-req-item" id="req-special"><div class="pass-req-dot"></div>Цифры и спецсимволы</div>
     </div>
-    <button class="cal-add-btn" onclick="savePassword()" style="margin-top:8px">Сохранить пароль</button>
+    <button class="cal-add-btn" id="change-password-save-btn" style="margin-top:8px">Сохранить пароль</button>
   </div>
 </div>
 
@@ -6509,35 +6509,6 @@ function saveNotifPref(key, val){
   showToast(key==='briefingTime'?'Время сохранено':(prefs[key]?'Включено':'Отключено'));
 }
 
-// ===== PASSWORD =====
-function togglePassField(id){
-  PLATFORM.togglePasswordVisibility(id);
-}
-
-function checkPassReqs(){
-  const v = document.getElementById('cp-new')?.value||'';
-  const setReq=(id,ok)=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    el.classList.toggle('ok',ok);
-    el.querySelector('.pass-req-dot').style.background=ok?'var(--green)':'var(--muted)';
-  };
-  setReq('req-len', v.length>=8);
-  setReq('req-case', /[a-z]/.test(v)&&/[A-Z]/.test(v));
-  setReq('req-special', /[0-9!@#$%^&*]/.test(v));
-}
-
-function savePassword(){
-  const cur=document.getElementById('cp-current')?.value||'';
-  const nw=document.getElementById('cp-new')?.value||'';
-  const conf=document.getElementById('cp-confirm')?.value||'';
-  if(!cur){showToast('Введите текущий пароль');return;}
-  if(nw.length<8){showToast('Пароль слишком короткий');return;}
-  if(nw!==conf){showToast('Пароли не совпадают');return;}
-  showToast('Пароль изменён ✓');
-  setTimeout(()=>showSubScreen('security'),800);
-}
-
 // ===== THEME =====
 function applyTheme(theme){
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -7715,3 +7686,4 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
 
 </body>
 </html>
+
