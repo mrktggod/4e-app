@@ -289,6 +289,25 @@
     const quickAddCancelBtn = document.getElementById('quick-add-cancel');
     if (quickAddCancelBtn) bind(quickAddCancelBtn.id, closeQuickAdd);
 
+    const taskMoveOptions = document.getElementById('task-move');
+    if (taskMoveOptions) {
+      taskMoveOptions.addEventListener('click', event => {
+        const option = event.target.closest('.move-option[data-move-kind]');
+        if (option && option.dataset.moveKind) {
+          const kind = option.dataset.moveKind;
+          if (typeof moveTaskTo === 'function') moveTaskTo(kind);
+          return;
+        }
+        const custom = event.target.closest('.move-option[data-move-action="open-custom-date"]');
+        if (custom && typeof openCustomDate === 'function') {
+          openCustomDate();
+        }
+      });
+    }
+
+    const moveTaskConfirm = document.getElementById('confirm-task-move-btn');
+    if (moveTaskConfirm) bind(moveTaskConfirm.id, confirmMoveTask);
+
     const aiMemoryRows = document.getElementById('ai-memory-list');
     if (aiMemoryRows) {
       aiMemoryRows.addEventListener('click', function (e) {
