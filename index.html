@@ -9,6 +9,7 @@
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
 <script src="scripts/platform-adapter.js"></script>
+<script src="scripts/auth.js"></script>
 <script src="assets/vendor/marked.min.js"></script>
 <link rel="stylesheet" href="styles.min.css">
 </head>
@@ -2133,13 +2134,11 @@ const ONBOARD_K='chetam_onboarded';
 const D1_TOKEN_K='chetam_d1_token';
 const LOGOUT_K='chetam_logged_out';
 const TG_PENDING_START_K='chetam_tg_pending_start';
-const OAUTH_PENDING_PREFIX='chetam_oauth_pending_';
 const NEW_TASK_DIRECTIONS=['Работа','Личное'];
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
 const notifReadSet = new Set();
 let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
-const REF_PENDING_K='pendingReferralCode';
 let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
@@ -2181,141 +2180,6 @@ async function readJsonSafe(response){
   }catch(e){
     return {ok:false,error:response?.ok?'Некорректный ответ сервера':'Сервер временно недоступен'};
   }
-}
-
-function getOAuthRedirectUri(){
-  return PLATFORM.getOAuthRedirectUri ? PLATFORM.getOAuthRedirectUri() : window.location.origin + window.location.pathname;
-}
-
-async function createOAuthPkce(){
-  if(!PLATFORM.createOAuthPkce) throw new Error('platform adapter unavailable');
-  return PLATFORM.createOAuthPkce();
-}
-
-function rememberOAuthState(state, provider, redirectUri, codeVerifier){
-  if(PLATFORM.rememberOAuthState) PLATFORM.rememberOAuthState(OAUTH_PENDING_PREFIX,state,provider,redirectUri,codeVerifier);
-}
-
-function consumeOAuthState(state){
-  return PLATFORM.consumeOAuthState ? PLATFORM.consumeOAuthState(OAUTH_PENDING_PREFIX,state) : null;
-}
-
-async function startOAuthLogin(provider){
-  const map={vk_id:{path:'/auth/vk-id/start', label:'VK ID'}, yandex:{path:'/auth/yandex-id/start', label:'Яндекс ID'}};
-  const cfg=map[provider];
-  if(!cfg) return;
-  const btn=document.querySelector('[data-oauth-provider="'+provider+'"]') || document.getElementById(provider==='vk_id'?'login-vk-id-btn':'login-yandex-id-btn');
-  const prev=btn?btn.textContent:'';
-  if(btn){btn.disabled=true;btn.textContent='Открываем...';}
-  try{
-    const state='oauth_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-    const redirectUri=getOAuthRedirectUri();
-    const pkce=await createOAuthPkce();
-    const startUrl=WORKER+cfg.path+'?redirectUri='+encodeURIComponent(redirectUri)+'&state='+encodeURIComponent(state)+'&codeChallenge='+encodeURIComponent(pkce.challenge);
-    const r=await withTimeout(fetch(startUrl,{headers:authHeaders()}),10000);
-    const d=await readJsonSafe(r);
-    if(!r.ok||!d.ok||!d.authUrl){
-      showToast(d.error||cfg.label+' пока не настроен');
-      return;
-    }
-    rememberOAuthState(d.state||state, provider, d.redirectUri||redirectUri, pkce.verifier);
-    window.location.href=d.authUrl;
-  }catch(e){
-    showToast('Не удалось открыть вход через '+cfg.label);
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent=prev;}
-  }
-}
-
-async function processOAuthCallback(){
-  const params=new URLSearchParams(window.location.search);
-  const code=params.get('code');
-  const state=params.get('state');
-  if(!code||!state) return false;
-  const pending=consumeOAuthState(state);
-  if(!pending||!pending.provider){
-    showToast('Сессия входа истекла. Попробуйте ещё раз');
-    return false;
-  }
-  window.history.replaceState({},'',window.location.pathname);
-  const path=pending.provider==='yandex'?'/auth/yandex-id':'/auth/vk-id';
-  try{
-    showScreen('login');
-    const pendingRef=getPendingReferralCode();
-    const r=await withTimeout(fetch(WORKER+path,{method:'POST',headers:authHeaders(),body:JSON.stringify({code,redirectUri:pending.redirectUri||getOAuthRedirectUri(),codeVerifier:pending.codeVerifier||'',...(pendingRef?{ref:pendingRef}:{})})}),15000);
-    const d=await readJsonSafe(r);
-    if(d.ok&&d.token){
-      setLegacyToken(d.token);
-      localStorage.removeItem(LOGOUT_K);
-      currentUser=d.user;
-      chatId='user_'+currentUser.id;
-      clearPendingReferralCode();
-      applyUserInfo();
-      localStorage.setItem(ONBOARD_K,'1');
-      showScreen('home');
-      loadTasks();
-      showAccountMergeToast(d);
-      showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
-      return true;
-    }
-    showToast(d.error||'Ошибка входа через сервис');
-  }catch(e){
-    showToast('Нет соединения');
-  }
-  return false;
-}
-
-function isVkMiniAppContext(){
-  if(PLATFORM.isVkMiniAppContext) return PLATFORM.isVkMiniAppContext();
-  const raw=[window.location.search,window.location.hash].filter(Boolean).join('&');
-  return /(?:^|[?#&])vk_/.test(raw)||/(?:^|[?#&])sign=/.test(raw);
-}
-
-function getTelegramStartTokenFromLaunch() {
-  return PLATFORM.getTelegramStartTokenFromLaunch ? PLATFORM.getTelegramStartTokenFromLaunch() : '';
-}
-
-function normalizeReferralCode(value){
-  return PLATFORM.normalizeReferralCode ? PLATFORM.normalizeReferralCode(value) : String(value||'').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'').slice(0,32);
-}
-
-function getReferralCodeFromLaunch(){
-  return PLATFORM.getReferralCodeFromLaunch ? PLATFORM.getReferralCodeFromLaunch() : '';
-}
-
-function savePendingReferralCode(code){
-  if(PLATFORM.savePendingReferralCode) PLATFORM.savePendingReferralCode(REF_PENDING_K,code);
-}
-
-function getPendingReferralCode(){
-  return PLATFORM.getPendingReferralCode ? PLATFORM.getPendingReferralCode(REF_PENDING_K) : '';
-}
-
-function clearPendingReferralCode(){
-  if(PLATFORM.clearPendingReferralCode) PLATFORM.clearPendingReferralCode(REF_PENDING_K);
-}
-
-function capturePendingReferralCode(){
-  if(PLATFORM.capturePendingReferralCode) PLATFORM.capturePendingReferralCode(REF_PENDING_K);
-}
-
-function buildReferralLink(){
-  return PLATFORM.buildReferralLink ? PLATFORM.buildReferralLink(currentUser?.referralCode||'') : '';
-}
-
-async function copyReferralLink(){
-  const link=buildReferralLink();
-  if(!link){showToast('Ссылка появится после входа');return;}
-  try{
-    await navigator.clipboard?.writeText(link);
-    showToast('Ссылка скопирована');
-  }catch(e){
-    showToast('Не удалось скопировать');
-  }
-}
-
-function getTelegramReturnUrl(){
-  return PLATFORM.getTelegramReturnUrl ? PLATFORM.getTelegramReturnUrl() : window.location.origin+window.location.pathname;
 }
 
 function saveTelegramPendingStart(startToken){
