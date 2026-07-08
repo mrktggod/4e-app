@@ -7061,10 +7061,22 @@ function initAuthA11yHandlers(){
 document.addEventListener('DOMContentLoaded',()=>{
   processOAuthCallback();
   initAuthA11yHandlers();
-  const vkIdBtn = document.getElementById('login-vk-id-btn');
-  if(vkIdBtn) vkIdBtn.addEventListener('click', () => startOAuthLogin('vk_id'));
-  const yandexIdBtn = document.getElementById('login-yandex-id-btn');
-  if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => startOAuthLogin('yandex'));
+  const bindClick = PLATFORM.bindClick || ((id, handler) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', handler);
+  });
+  const bindOAuthLoginButtons = PLATFORM.bindOAuthLoginButtons;
+  const bindOAuth = typeof bindOAuthLoginButtons === 'function'
+    ? bindOAuthLoginButtons.bind(PLATFORM, bindClick)
+    : null;
+  if (typeof bindOAuth === 'function') {
+    bindOAuth();
+  } else {
+    const vkIdBtn = document.getElementById('login-vk-id-btn');
+    if(vkIdBtn) vkIdBtn.addEventListener('click', () => startOAuthLogin('vk_id'));
+    const yandexIdBtn = document.getElementById('login-yandex-id-btn');
+    if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => startOAuthLogin('yandex'));
+  }
   // Wire up profile menu items
   const profileMenu = document.querySelector('#profile .profile-menu');
   const profileItems = profileMenu ? [...profileMenu.querySelectorAll('.profile-item')].filter(item=>!item.hasAttribute('onclick')) : [];

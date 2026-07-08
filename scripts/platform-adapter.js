@@ -243,6 +243,19 @@
     return true;
   }
 
+  function bindOAuthLoginButtons(bind = bindClick) {
+    const vkButton = document.getElementById('login-vk-id-btn');
+    const yandexButton = document.getElementById('login-yandex-id-btn');
+    const safeStartOAuth = window.startOAuthLogin;
+    if (vkButton && typeof safeStartOAuth === 'function') {
+      bind(vkButton.id, () => safeStartOAuth('vk_id'));
+    }
+    if (yandexButton && typeof safeStartOAuth === 'function') {
+      bind(yandexButton.id, () => safeStartOAuth('yandex'));
+    }
+    return true;
+  }
+
   function focusFirstInvalid(fieldIds) {
     const invalid = (fieldIds || [])
       .map(fieldId => document.getElementById(fieldId))
@@ -571,6 +584,7 @@
     togglePasswordVisibility,
     shouldHandleEnterSubmit,
     bindClick,
+    bindOAuthLoginButtons,
     setFormFieldError,
     clearFormFieldError,
     clearFormErrors,
