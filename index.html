@@ -7077,16 +7077,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     const yandexIdBtn = document.getElementById('login-yandex-id-btn');
     if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => startOAuthLogin('yandex'));
   }
-  // Wire up profile menu items
-  const profileMenu = document.querySelector('#profile .profile-menu');
-  const profileItems = profileMenu ? [...profileMenu.querySelectorAll('.profile-item')].filter(item=>!item.hasAttribute('onclick')) : [];
-  const map = ['subscription','notif-settings','language-settings','security','privacy-center','support'];
-  profileItems.forEach((item,i)=>{
-    if(map[i]) item.onclick=()=>showSubScreen(map[i]);
-  });
-  // Theme item
-  const themeItem = document.querySelector('#profile .profile-menu:nth-child(2) .profile-item');
-  if(themeItem) themeItem.onclick=()=>showSubScreen('theme-settings');
+  const bindProfileMenuItems = PLATFORM.bindProfileMenuItems;
+  const bindProfileMenu = typeof bindProfileMenuItems === 'function'
+    ? bindProfileMenuItems.bind(PLATFORM, bindClick)
+    : null;
+  if (typeof bindProfileMenu === 'function') {
+    bindProfileMenu();
+  }
   if(typeof initNewTaskHandlers==='function') initNewTaskHandlers();
   const bindTaskUiHandlers = PLATFORM.bindTaskUiHandlers;
   const bindUi = typeof bindTaskUiHandlers === 'function'

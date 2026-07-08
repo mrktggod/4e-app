@@ -311,6 +311,27 @@
     return true;
   }
 
+  function bindProfileMenuItems(bind = bindClick) {
+    const profileMenu = document.querySelector('#profile .profile-menu');
+    const profileItems = profileMenu
+      ? [...profileMenu.querySelectorAll('.profile-item')].filter(item => !item.hasAttribute('onclick'))
+      : [];
+    const profileSections = ['subscription', 'notif-settings', 'language-settings', 'security', 'privacy-center', 'support'];
+    profileItems.forEach((item, index) => {
+      if (profileSections[index] && item?.id) {
+        bind(item.id, () => window.showSubScreen(profileSections[index]));
+      } else if (profileSections[index] && item) {
+        item.addEventListener('click', () => window.showSubScreen(profileSections[index]));
+      }
+    });
+
+    const themeItem = document.querySelector('#profile .profile-menu:nth-child(2) .profile-item');
+    if (themeItem) {
+      themeItem.addEventListener('click', () => window.showSubScreen('theme-settings'));
+    }
+    return true;
+  }
+
   function focusFirstInvalid(fieldIds) {
     const invalid = (fieldIds || [])
       .map(fieldId => document.getElementById(fieldId))
@@ -641,6 +662,7 @@
     bindClick,
     bindOAuthLoginButtons,
     bindTaskUiHandlers,
+    bindProfileMenuItems,
     setFormFieldError,
     clearFormFieldError,
     clearFormErrors,
