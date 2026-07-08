@@ -308,6 +308,32 @@
     const moveTaskConfirm = document.getElementById('confirm-task-move-btn');
     if (moveTaskConfirm) bind(moveTaskConfirm.id, confirmMoveTask);
 
+    const taskDetailActions = document.getElementById('task-detail-actions');
+    if (taskDetailActions) {
+      taskDetailActions.addEventListener('click', event => {
+        const button = event.target.closest('[data-detail-action]');
+        if (!button) return;
+        const action = button.dataset.detailAction;
+        if (action === 'open-task-move' && typeof openTaskMove === 'function') {
+          openTaskMove(currentTaskId);
+          return;
+        }
+        if (action === 'enter-edit-mode' && typeof enterEditMode === 'function') {
+          enterEditMode();
+          return;
+        }
+        if (action === 'complete' && typeof completeTask === 'function') {
+          completeTask(currentTaskId);
+          return;
+        }
+      });
+    }
+
+    const taskAdviceBtn = document.getElementById('detail-load-advice-btn');
+    if (taskAdviceBtn) bind(taskAdviceBtn.id, loadTaskAdvice);
+    const taskCommentSendBtn = document.getElementById('detail-comment-send-btn');
+    if (taskCommentSendBtn) bind(taskCommentSendBtn.id, addDetailComment);
+
     const aiMemoryRows = document.getElementById('ai-memory-list');
     if (aiMemoryRows) {
       aiMemoryRows.addEventListener('click', function (e) {
