@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-08 — BACK-055: notifications action cards task
+
+### Постановка задачи на уведомления как ленту внимания
+
+**Что сделано:** Код приложения не менялся. Создано ТЗ `docs/tasks/BACK-055-notifications-action-cards.md` для Юрия: экран `Уведомления` должен стать лентой внимания AI-планера, а не архивом событий. В `pm/backlog.md` добавлена задача `BACK-055`, в `shared/ROADMAP.md` направление AI-планерного дашборда дополнено уведомлениями, в `pm/qa-checklist.md` добавлены проверки action cards. Visual reference сохранён в `docs/tasks/assets/BACK-055-notifications-action-cards-wireframe.svg`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `docs/tasks/BACK-055-notifications-action-cards.md` → `pm/qa-checklist.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A
+
 ## 2026-07-06 — Linear bug triage policy
 
 ### Правило, когда баг заводим в Linear
