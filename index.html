@@ -5410,6 +5410,14 @@ function formatHistoryDate(value){
 
 function getTaskHistoryRows(task){
   const rows = [];
+  const toHistoryTs = function(value){
+    if (value == null) return 0;
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+    const n = Number(value);
+    if (Number.isFinite(n) && String(value).trim() !== '') return n;
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+  };
   const hasHistory = Array.isArray(task.history) && task.history.length > 0;
   if(hasHistory){
     task.history.forEach(function(item){
@@ -5425,15 +5433,15 @@ function getTaskHistoryRows(task){
     });
     return rows;
   }
-  const createdAt = Number(task.createdAt) || 0;
+  const createdAt = toHistoryTs(task.createdAt || task.created_at || task.createdTs || task.created_timestamp || task.createAt || task.create_time);
   if(createdAt){
     rows.push('Задача создана (' + formatHistoryDate(createdAt) + ')');
   }
-  const updatedAt = Number(task.updatedAt) || 0;
+  const updatedAt = toHistoryTs(task.updatedAt || task.updated_at || task.updatedTs || task.updated_timestamp || task.updateAt || task.updated_time);
   if(updatedAt && (!createdAt || Math.abs(updatedAt - createdAt) > 1e3)){
     rows.push('Обновлена (' + formatHistoryDate(updatedAt) + ')');
   }
-  const doneAt = Number(task.doneAt) || 0;
+  const doneAt = toHistoryTs(task.doneAt || task.done_at || task.doneTs || task.done_timestamp || task.done_time);
   if((task.done || task.status === 'done') && doneAt){
     rows.push('Выполнена (' + formatHistoryDate(doneAt) + ')');
   }
@@ -6943,6 +6951,24 @@ function setVoiceStep(idx,state){
 }
 async function sendVoiceMessage(text){
   closeVoice();
+  const spoken = (text || '').trim();
+  if (spoken && looksLikeTaskRequest(spoken)) {
+    try {
+      const taskData = fallbackTaskFromText(spoken);
+      taskData.originalMsg = spoken;
+      const result = await createTaskFromChat(taskData);
+      if (result && result.ok) {
+        const msg = result.merged
+          ? 'Task merged and updated.'
+          : 'Task created.';
+        showToast(msg);
+        return;
+      }
+    } catch (e) {
+      console.error('sendVoiceMessage createTaskFromChat:', e);
+      showToast('Task save failed, fallback to chat.');
+    }
+  }
   await openAsk();
   const welcome=document.getElementById('ask-welcome');
   if(welcome) welcome.style.display='none';
