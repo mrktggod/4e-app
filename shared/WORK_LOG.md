@@ -8,6 +8,16 @@
 
 ### 2026-07-08 — Codex
 
+**Задача:** составить ТЗ для SMART-013 — AI-декомпозиция задачи на этапы
+**Результат:** Создано ТЗ `docs/tasks/SMART-013-ai-task-decomposition.md`; добавлен PNG-reference `docs/tasks/assets/SMART-013-ai-task-decomposition-mockup.png`; `SMART-013` в `pm/backlog.md` переведён в `Triaged`; в `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` добавлена ссылка на ТЗ и зафиксировано решение MVP: AI предлагает preview этапов, пользователь подтверждает, этапы сохраняются как обычный чек-лист без новой сущности подзадач.
+**Коммит:** `docs(ai): add smart 013 decomposition spec`
+**Статус:** ✅ задача оформлена
+**Следующий шаг:** После закрытия ближайших beta/QA-блокеров взять реализацию в ветке `feat/smart-013-task-decomposition` или передать Юре это ТЗ.
+
+---
+
+### 2026-07-08 — Codex
+
 **Задача:** уточнить Team Sync под рабочий процесс Юры через Claude, без GitHub Desktop
 **Результат:** В `docs/team-sync-protocol.md`, `pm/team-sync.md`, `docs/git-team-rules.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `AGENTS.md` закреплено, что Юра управляет Git через Claude. Добавлена простая стартовая фраза для безопасного обновления проекта: Claude проверяет ветку, `git status`, делает `git fetch origin` и останавливается при риске конфликта или потери незакоммиченных изменений.
 **Коммит:** `docs(process): clarify yuri git via claude`

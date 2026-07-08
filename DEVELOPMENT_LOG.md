@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-08 — SMART-013: AI task decomposition spec
+
+### Постановка задачи на AI-декомпозицию задачи в чек-лист
+
+**Что сделано:** Код приложения не менялся. Создано ТЗ `docs/tasks/SMART-013-ai-task-decomposition.md`: кнопка `Разбить на этапы` должна жить в блоке чек-листа `task-detail`, AI показывает preview 3-7 шагов, пользователь подтверждает, после чего этапы сохраняются как обычные пункты `checklist`. Добавлен visual reference `docs/tasks/assets/SMART-013-ai-task-decomposition-mockup.png` с source SVG рядом. В `pm/backlog.md` статус `SMART-013` переведён в `Triaged`; в `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` добавлена ссылка на ТЗ и зафиксирована граница MVP без отдельной сущности подзадач.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `pm/backlog.md` → `docs/tasks/SMART-013-ai-task-decomposition.md` → `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md`; визуальная проверка PNG-reference; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(ai): add smart 013 decomposition spec`
+
 ## 2026-07-08 — Team Sync: Yuri Claude-driven Git
 
 ### Поправка инструкции Юры без GitHub Desktop
