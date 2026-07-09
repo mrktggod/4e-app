@@ -522,12 +522,47 @@
           const action = actionBtn.dataset.homeAction;
           if (action === 'open-profile' && typeof openProfile === 'function') {
             openProfile();
+            return;
           }
           if (action === 'open-notifications' && typeof openNotifications === 'function') {
             openNotifications();
+            return;
           }
           if (action === 'open-focus-list' && typeof openFocusList === 'function') {
             openFocusList();
+            return;
+          }
+          if (action === 'start-with-first-task' && typeof plannerStartWithFirstTask === 'function') {
+            plannerStartWithFirstTask();
+            return;
+          }
+          if (action === 'toggle-planner-compact' && typeof togglePlannerCompact === 'function') {
+            togglePlannerCompact();
+            return;
+          }
+          if (action === 'open-done-list' && typeof openDoneList === 'function') {
+            openDoneList();
+            return;
+          }
+          if (action === 'open-promise-list' && typeof openPromiseList === 'function') {
+            openPromiseList();
+            return;
+          }
+          if (action === 'open-statistics' && typeof openStatistics === 'function') {
+            openStatistics();
+            return;
+          }
+          if (action === 'toggle-all-tasks' && typeof toggleAllTasks === 'function') {
+            toggleAllTasks();
+          }
+          return;
+        }
+
+        const plannerSectionBtn = event.target.closest('[data-home-planner-section]');
+        if (plannerSectionBtn) {
+          const section = plannerSectionBtn.dataset.homePlannerSection;
+          if (section && typeof openHomePlannerSection === 'function') {
+            openHomePlannerSection(section);
           }
           return;
         }

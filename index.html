@@ -406,36 +406,36 @@
       </div>
 
       <div class="home-ai-planner__actions">
-        <button class="home-ai-action" onclick="plannerStartWithFirstTask()">РќР°С‡Р°С‚СЊ СЃ</button>
-        <button class="home-ai-action home-ai-action--ghost" id="home-ai-collapse-btn" onclick="togglePlannerCompact()">РЎРІРµСЂРЅСѓС‚СЊ 4</button>
+        <button class="home-ai-action" data-home-action="start-with-first-task">РќР°С‡Р°С‚СЊ СЃ</button>
+        <button class="home-ai-action home-ai-action--ghost" id="home-ai-collapse-btn" data-home-action="toggle-planner-compact">РЎРІРµСЂРЅСѓС‚СЊ 4</button>
       </div>
 
       <div class="home-ai-sections">
         <div class="home-ai-section" id="planner-section-first">
           <div class="home-ai-section__head">
             <span class="home-ai-section__title">РЎРґРµР»Р°С‚СЊ РїРµСЂРІС‹Рј</span>
-            <button class="home-ai-section__action" onclick="openHomePlannerSection('first')">РћС‚РєСЂС‹С‚СЊ</button>
+            <button class="home-ai-section__action" data-home-planner-section="first">РћС‚РєСЂС‹С‚СЊ</button>
           </div>
           <div class="home-ai-section__rows" id="home-ai-section-first"></div>
         </div>
         <div class="home-ai-section" id="planner-section-hot">
           <div class="home-ai-section__head">
             <span class="home-ai-section__title">Р“РѕСЂРёС‚</span>
-            <button class="home-ai-section__action" onclick="openHomePlannerSection('hot')">РћС‚РєСЂС‹С‚СЊ</button>
+            <button class="home-ai-section__action" data-home-planner-section="hot">РћС‚РєСЂС‹С‚СЊ</button>
           </div>
           <div class="home-ai-section__rows" id="home-ai-section-hot"></div>
         </div>
         <div class="home-ai-section" id="planner-section-people">
           <div class="home-ai-section__head">
             <span class="home-ai-section__title">Р–РґСѓ РѕС‚ Р»СЋРґРµР№</span>
-            <button class="home-ai-section__action" onclick="openHomePlannerSection('people')">РћС‚РєСЂС‹С‚СЊ</button>
+            <button class="home-ai-section__action" data-home-planner-section="people">РћС‚РєСЂС‹С‚СЊ</button>
           </div>
           <div class="home-ai-section__rows" id="home-ai-section-people"></div>
         </div>
         <div class="home-ai-section" id="planner-section-defer">
           <div class="home-ai-section__head">
             <span class="home-ai-section__title">РњРѕР¶РЅРѕ РїРµСЂРµРЅРµСЃС‚Рё</span>
-            <button class="home-ai-section__action" onclick="openHomePlannerSection('defer')">РћС‚РєСЂС‹С‚СЊ</button>
+            <button class="home-ai-section__action" data-home-planner-section="defer">РћС‚РєСЂС‹С‚СЊ</button>
           </div>
           <div class="home-ai-section__rows" id="home-ai-section-defer"></div>
         </div>
@@ -443,7 +443,7 @@
     </section>
 
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
-      <div class="stat-mini glass" onclick="openDoneList()" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
+      <div class="stat-mini glass" data-home-action="open-done-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
         <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Р’С‹РїРѕР»РЅРµРЅРѕ</div>
         <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-done">вЂ”</div>
         <div class="stat-mini-line" style="height:2px;background:var(--green);border-radius:1px;margin-top:6px;opacity:.4"></div>
@@ -453,12 +453,12 @@
         <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-tasks">вЂ”</div>
         <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
       </div>
-      <div class="stat-mini glass" onclick="openPromiseList()" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
+      <div class="stat-mini glass" data-home-action="open-promise-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
         <div style="font-size:11px;color:var(--text2);margin-bottom:4px">РћР±РµС‰Р°РЅРёСЏ</div>
         <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-promises">вЂ”</div>
         <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
       </div>
-      <div class="stat-mini glass-green" onclick="openStatistics()" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
+      <div class="stat-mini glass-green" data-home-action="open-statistics" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
         <div style="font-size:11px;color:var(--green);margin-bottom:4px">РџСЂРѕРіСЂРµСЃСЃ</div>
         <div style="position:relative;width:36px;height:36px;margin:0 auto">
           <svg width="36" height="36" viewBox="0 0 36 36" style="transform:rotate(-90deg)">
@@ -475,7 +475,7 @@
       <div id="home-task-list">
         <div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Р·Р°РіСЂСѓР¶Р°СЋ Р·Р°РґР°С‡Рё...</div>
       </div>
-      <div id="home-show-all-btn" onclick="toggleAllTasks()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2)">
+      <div id="home-show-all-btn" data-home-action="toggle-all-tasks" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2)">
         <span id="home-show-all-label">РЎРјРѕС‚СЂРµС‚СЊ РІСЃРµ РґРµР»Р°</span>
         <svg id="home-show-all-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
