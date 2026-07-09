@@ -408,6 +408,10 @@
         const button = event.target.closest('[data-detail-action]');
         if (!button) return;
         const action = button.dataset.detailAction;
+        if (action === 'edit-title' && typeof makeDetailEditable === 'function') {
+          makeDetailEditable(button);
+          return;
+        }
         if (action === 'decompose-task' && typeof decomposeCurrentTask === 'function') {
           decomposeCurrentTask();
           return;
@@ -422,6 +426,13 @@
         }
         if (action === 'add-tag-from-input' && typeof addTagFromInput === 'function') {
           addTagFromInput();
+          return;
+        }
+        if (action === 'set-reminder-quick' && typeof setReminder === 'function') {
+          const reminder = button.dataset.detailReminder || '';
+          if (reminder) {
+            setReminder(reminder, button);
+          }
           return;
         }
       });

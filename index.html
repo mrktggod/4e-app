@@ -603,7 +603,7 @@
       </div>
       <div id="detail-title" contenteditable="false"
         style="font-size:20px;font-weight:700;color:var(--text);line-height:1.3;padding:4px 0;word-break:break-word"
-        onclick="makeDetailEditable(this)">
+        data-detail-action="edit-title">
         Задача
       </div>
       <div class="detail-inline-desc">
@@ -668,9 +668,9 @@
         </select>
       </div>
       <div id="detail-reminder-grid" class="reminder-grid" style="padding:0 16px 12px;border-bottom:1px solid var(--border)">
-        <button class="reminder-opt" data-reminder="15min" onclick="setReminder('15min', this)">Через 15 мин</button>
-        <button class="reminder-opt" data-reminder="1hour" onclick="setReminder('1hour', this)">Через 1 час</button>
-        <button class="reminder-opt" data-reminder="1day" onclick="setReminder('1day', this)">Через день</button>
+        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="15min">Через 15 мин</button>
+        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1hour">Через 1 час</button>
+        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1day">Через день</button>
       </div>
 
       <div class="detail-field-row">
