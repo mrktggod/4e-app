@@ -295,7 +295,7 @@
   <header style="flex-shrink:0;position:relative;z-index:2;padding:16px 20px 0" aria-label="Р“Р»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <!-- РђРІР°С‚Р°СЂ / РїСЂРѕС„РёР»СЊ -->
-      <div onclick="openProfile()" role="button" tabindex="0" aria-label="РћС‚РєСЂС‹С‚СЊ РїСЂРѕС„РёР»СЊ" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
+      <div data-home-action="open-profile" role="button" tabindex="0" aria-label="РћС‚РєСЂС‹С‚СЊ РїСЂРѕС„РёР»СЊ" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
       <!-- Р›РѕРіРѕ РїРѕ С†РµРЅС‚СЂСѓ -->
       <div class="header-logo-center" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:34px;height:34px">
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
@@ -304,7 +304,7 @@
         <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
       </div>
       <!-- РљРѕР»РѕРєРѕР» -->
-      <div class="h-btn" onclick="openNotifications()" role="button" tabindex="0" aria-label="РћС‚РєСЂС‹С‚СЊ СѓРІРµРґРѕРјР»РµРЅРёСЏ" style="position:relative;cursor:pointer">
+      <div class="h-btn" data-home-action="open-notifications" role="button" tabindex="0" aria-label="РћС‚РєСЂС‹С‚СЊ СѓРІРµРґРѕРјР»РµРЅРёСЏ" style="position:relative;cursor:pointer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="h-btn-dot" id="bell-dot" style="display:none"></div>
       </div>
@@ -312,19 +312,19 @@
 
     <!-- Р¤РР›Р¬РўР -РўРђР‘Р« -->
     <div class="home-filter-tabs" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:12px">
-      <button class="home-tab active" data-filter="today" onclick="setHomeFilter('today',this)">
+      <button class="home-tab active" data-filter="today" data-home-filter="today">
         <span class="home-tab-dot"></span>РЎРµРіРѕРґРЅСЏ
       </button>
-      <button class="home-tab" data-filter="hot" onclick="setHomeFilter('hot',this)">
+      <button class="home-tab" data-filter="hot" data-home-filter="hot">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/></svg>Р“РѕСЂРёС‚
       </button>
-      <button class="home-tab" data-filter="people" onclick="setHomeFilter('people',this)">
+      <button class="home-tab" data-filter="people" data-home-filter="people">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Р›СЋРґРё
       </button>
-      <button class="home-tab" data-filter="week" onclick="setHomeFilter('week',this)">
+      <button class="home-tab" data-filter="week" data-home-filter="week">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>РќРµРґРµР»СЏ
       </button>
-      <button class="home-tab" data-filter="month" onclick="setHomeFilter('month',this)">
+      <button class="home-tab" data-filter="month" data-home-filter="month">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>РњРµСЃСЏС†
       </button>
     </div>
@@ -334,7 +334,7 @@
   <div data-screen-scroll style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 100px">
 
     <!-- РљРђР РўРћР§РљРђ Р¤РћРљРЈРЎ Р”РќРЇ -->
-    <div class="focus-day-card glass" style="border-radius:20px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;min-height:106px;cursor:pointer" onclick="openFocusList()">
+    <div class="focus-day-card glass" style="border-radius:20px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;min-height:106px;cursor:pointer" data-home-action="open-focus-list">
       <!-- Sparkle icon -->
       <div style="width:50px;height:50px;min-width:50px;border-radius:50%;border:1.5px solid rgba(154,194,60,0.45);background:rgba(154,194,60,0.08);display:flex;align-items:center;justify-content:center;z-index:1">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3L13.8 9.8L20.5 12L13.8 14.2L12 21L10.2 14.2L3.5 12L10.2 9.8L12 3Z" fill="rgba(154,194,60,0.9)"/><circle cx="12" cy="12" r="2" fill="rgba(154,194,60,0.4)"/></svg>

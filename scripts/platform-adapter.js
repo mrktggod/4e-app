@@ -514,6 +514,33 @@
       });
     }
 
+    const homeScreen = document.getElementById('home');
+    if (homeScreen) {
+      homeScreen.addEventListener('click', event => {
+        const actionBtn = event.target.closest('[data-home-action]');
+        if (actionBtn) {
+          const action = actionBtn.dataset.homeAction;
+          if (action === 'open-profile' && typeof openProfile === 'function') {
+            openProfile();
+          }
+          if (action === 'open-notifications' && typeof openNotifications === 'function') {
+            openNotifications();
+          }
+          if (action === 'open-focus-list' && typeof openFocusList === 'function') {
+            openFocusList();
+          }
+          return;
+        }
+
+        const tabBtn = event.target.closest('[data-home-filter]');
+        if (!tabBtn) return;
+        const filter = tabBtn.dataset.homeFilter;
+        if (filter && typeof setHomeFilter === 'function') {
+          setHomeFilter(filter, tabBtn);
+        }
+      });
+    }
+
     const notificationsScreen = document.getElementById('notifications');
     if (notificationsScreen) {
       notificationsScreen.addEventListener('click', event => {
