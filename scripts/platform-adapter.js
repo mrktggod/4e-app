@@ -351,6 +351,35 @@
       });
     }
 
+    const detailDeadlineInput = document.getElementById('detail-time-input');
+    if (detailDeadlineInput) {
+      detailDeadlineInput.addEventListener('change', event => {
+        const value = event?.target?.value || '';
+        if (typeof setDetailDeadline === 'function') setDetailDeadline(value);
+      });
+    }
+
+    const detailStatusSelect = document.getElementById('detail-status-select');
+    if (detailStatusSelect) {
+      detailStatusSelect.addEventListener('change', event => {
+        if (typeof setDetailStatus === 'function') setDetailStatus(event?.target?.value || 'active');
+      });
+    }
+
+    const detailPrioritySelect = document.getElementById('detail-priority-select');
+    if (detailPrioritySelect) {
+      detailPrioritySelect.addEventListener('change', event => {
+        if (typeof setDetailPriority === 'function') setDetailPriority(event?.target?.value || 'normal');
+      });
+    }
+
+    const detailReminderSelect = document.getElementById('detail-reminder');
+    if (detailReminderSelect) {
+      detailReminderSelect.addEventListener('change', event => {
+        if (typeof setDetailReminder === 'function') setDetailReminder(event?.target?.value || 'none');
+      });
+    }
+
     const detailChecklistInput = document.getElementById('detail-checklist-input');
     if (detailChecklistInput) {
       detailChecklistInput.addEventListener('keydown', event => {
