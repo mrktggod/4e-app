@@ -509,8 +509,8 @@
 
 <!-- WRITE -->
 <div class="screen" id="write">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="back-bar">
+    <button class="back-btn" data-cal-action="back-home" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title" id="wt-title">Написать</div><div class="back-sub">4 составит сообщение</div></div>
     <div class="w-avatar" id="wt-avatar">К</div>
   </div>
@@ -784,12 +784,12 @@
     <div style="flex:1"><div class="back-title">Календарь</div></div>
   </div>
   <div class="cal-scroll">
-    <div class="cal-tabs"><div class="cal-tab" onclick="setCalView('day',this)">День</div><div class="cal-tab active" onclick="setCalView('week',this)">Неделя</div><div class="cal-tab" onclick="setCalView('month',this)">Месяц</div></div>
+    <div class="cal-tabs"><div class="cal-tab" data-cal-view="day">День</div><div class="cal-tab active" data-cal-view="week">Неделя</div><div class="cal-tab" data-cal-view="month">Месяц</div></div>
     <div class="cal-month-nav">
       <span class="cal-month-title" id="cal-month-title">Май 2026</span>
       <div style="display:flex;gap:6px">
-        <div class="cal-nav-btn" onclick="calNav(-1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
-        <div class="cal-nav-btn" onclick="calNav(1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div class="cal-nav-btn" data-cal-nav="-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <div class="cal-nav-btn" data-cal-nav="1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
     </div>
     <div class="cal-weekdays"><div class="cal-weekday">ПН</div><div class="cal-weekday">ВТ</div><div class="cal-weekday">СР</div><div class="cal-weekday">ЧТ</div><div class="cal-weekday">ПТ</div><div class="cal-weekday">СБ</div><div class="cal-weekday">ВС</div></div>

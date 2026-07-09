@@ -463,6 +463,37 @@
     const taskCommentSendBtn = document.getElementById('detail-comment-send-btn');
     if (taskCommentSendBtn) bind(taskCommentSendBtn.id, addDetailComment);
 
+    const calendarScreen = document.getElementById('calendar');
+    if (calendarScreen) {
+      calendarScreen.addEventListener('click', event => {
+        const calAction = event.target.closest('[data-cal-action]');
+        if (calAction) {
+          const action = calAction.dataset.calAction;
+          if (action === 'back-home' && typeof goHome === 'function') {
+            goHome();
+          }
+          return;
+        }
+
+        const calTab = event.target.closest('[data-cal-view]');
+        if (calTab) {
+          const view = calTab.dataset.calView;
+          if (view && typeof setCalView === 'function') {
+            setCalView(view, calTab);
+          }
+          return;
+        }
+
+        const navBtn = event.target.closest('[data-cal-nav]');
+        if (navBtn) {
+          const delta = Number.parseInt(navBtn.dataset.calNav || '0', 10);
+          if (!Number.isNaN(delta) && typeof calNav === 'function') {
+            calNav(delta);
+          }
+        }
+      });
+    }
+
     const aiMemoryRows = document.getElementById('ai-memory-list');
     if (aiMemoryRows) {
       aiMemoryRows.addEventListener('click', function (e) {
