@@ -380,6 +380,16 @@
       });
     }
 
+    const detailDirectionInput = document.getElementById('detail-direction');
+    if (detailDirectionInput) {
+      detailDirectionInput.addEventListener('input', event => {
+        const value = event?.target?.value || '';
+        if (typeof setDetailDirectionLabel === 'function') {
+          setDetailDirectionLabel(value);
+        }
+      });
+    }
+
     const detailChecklistInput = document.getElementById('detail-checklist-input');
     if (detailChecklistInput) {
       detailChecklistInput.addEventListener('keydown', event => {
