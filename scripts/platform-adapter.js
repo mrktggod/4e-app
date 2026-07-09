@@ -567,6 +567,23 @@
           return;
         }
 
+        const navActionBtn = event.target.closest('[data-home-nav-action]');
+        if (navActionBtn) {
+          const action = navActionBtn.dataset.homeNavAction;
+          if (action === 'chats' && typeof openChats === 'function') {
+            openChats();
+          } else if (action === 'tasks' && typeof goHome === 'function') {
+            goHome();
+          } else if ((action === 'calendar' || action === 'cal') && typeof openCalendar === 'function') {
+            openCalendar();
+          } else if (action === 'voice' && typeof openVoice === 'function') {
+            openVoice();
+          } else if (action === 'brain' && typeof openAsk === 'function') {
+            openAsk();
+          }
+          return;
+        }
+
         const tabBtn = event.target.closest('[data-home-filter]');
         if (!tabBtn) return;
         const filter = tabBtn.dataset.homeFilter;
