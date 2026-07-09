@@ -351,6 +351,18 @@
       });
     }
 
+    const detailChecklistInput = document.getElementById('detail-checklist-input');
+    if (detailChecklistInput) {
+      detailChecklistInput.addEventListener('keydown', event => {
+        if (event && event.key === 'Enter') {
+          event.preventDefault();
+          if (typeof addDetailChecklistItem === 'function') {
+            addDetailChecklistItem();
+          }
+        }
+      });
+    }
+
     const taskDetailActionArea = document.getElementById('task-detail');
     if (taskDetailActionArea) {
       taskDetailActionArea.addEventListener('click', event => {
