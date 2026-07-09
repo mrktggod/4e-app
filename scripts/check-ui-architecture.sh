@@ -48,6 +48,15 @@ check_max() {
   fi
 }
 
+check_mojibake() {
+  # Detect common UTF-8 decode artifacts (cp1251 bytes interpreted as UTF-8),
+  # which usually appear as mojibake-like character sequences.
+  if rg -q '�|Ð' "$file"; then
+    printf 'UI architecture guard failed: encoding suspicion in %s (possible mojibake)\n' "$file" >&2
+    fail=1
+  fi
+}
+
 if [[ ! -f "$file" ]]; then
   printf 'UI architecture guard failed: %s not found\n' "$file" >&2
   exit 1
@@ -57,6 +66,8 @@ if ! rg -q '<link[^>]+href="styles\.min\.css"' "$file"; then
   printf 'UI architecture guard failed: %s must link styles.min.css\n' "$file" >&2
   fail=1
 fi
+
+check_mojibake
 
 check_max 'inline style attributes' "$inline_styles" "$max_inline_styles"
 check_max 'inline event handlers' "$inline_handlers" "$max_inline_handlers"

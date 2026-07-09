@@ -30,6 +30,7 @@
 4. `pm/bugs.md`, `shared/ROADMAP.md` и `pm/backlog.md` — текущий PM/QA-контур
 5. `docs/tasks/` — атомарные задачи от команды
 6. `docs/tasks/done/` — что уже сделано, если папка существует
+7. `pm/team-sync.md` — статусный канал между Codex и ручными шагами (что сделано / что проверяет Алексей).
 
 ---
 
@@ -83,6 +84,7 @@ Write-Host "После правки: $($after.Count) совпадений"
 ```
 
 **НИКОГДА не использовать:** `Set-Content`, `Out-File`, `-replace`, `>>` для файлов с кириллицей.
+- После изменения index.html запускай: `bash scripts/check-ui-architecture.sh` и `node scripts/check-doc-encoding.mjs`; если fail — не коммитить.
 
 ### Git — согласуемый процесс команды
 
