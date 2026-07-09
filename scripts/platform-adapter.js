@@ -408,6 +408,10 @@
         const button = event.target.closest('[data-detail-action]');
         if (!button) return;
         const action = button.dataset.detailAction;
+        if (action === 'back-to-home' && typeof goHome === 'function') {
+          goHome();
+          return;
+        }
         if (action === 'edit-title' && typeof makeDetailEditable === 'function') {
           makeDetailEditable(button);
           return;
@@ -433,6 +437,10 @@
           if (reminder) {
             setReminder(reminder, button);
           }
+          return;
+        }
+        if (action === 'open-task-menu' && typeof openTaskMenu === 'function') {
+          openTaskMenu();
           return;
         }
       });

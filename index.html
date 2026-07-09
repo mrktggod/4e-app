@@ -582,11 +582,11 @@
 
   <!-- Шапка -->
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()" aria-label="Назад">
+    <button class="back-btn" data-detail-action="back-to-home" aria-label="Назад">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <div style="flex:1"><div class="back-title">Задача</div></div>
-    <button style="background:transparent;border:none;cursor:pointer;padding:4px 8px;color:var(--text2)" onclick="openTaskMenu()">
+    <button style="background:transparent;border:none;cursor:pointer;padding:4px 8px;color:var(--text2)" data-detail-action="open-task-menu">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
     </button>
   </div>
