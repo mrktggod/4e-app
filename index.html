@@ -881,17 +881,17 @@
 <!-- NOTIFICATIONS v2 -->
 <div class="screen" id="notifications">
   <div class="back-bar">
-    <button class="back-btn" onclick="goHome()" aria-label="РќР°Р·Р°Рґ"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back-btn" data-notifs-action="back-home" aria-label="РќР°Р·Р°Рґ"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">РЈРІРµРґРѕРјР»РµРЅРёСЏ</div></div>
     <div id="notif-unread-count" style="background:var(--green);color:var(--bg);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;display:none"></div>
   </div>
   <!-- Filters -->
   <div class="notif-filters" style="padding:0 16px 4px">
-    <button class="notif-filter active" onclick="filterNotifs('all',this)">Р’СЃРµ</button>
-    <button class="notif-filter" onclick="filterNotifs('task',this)">Р—Р°РґР°С‡Рё</button>
-    <button class="notif-filter" onclick="filterNotifs('deadline',this)">Р”РµРґР»Р°Р№РЅС‹</button>
-    <button class="notif-filter" onclick="filterNotifs('reminder',this)">РќР°РїРѕРјРёРЅР°РЅРёСЏ</button>
-    <button class="notif-filter" onclick="filterNotifs('system',this)">РЎРёСЃС‚РµРјР°</button>
+    <button class="notif-filter active" data-notifs-filter="all">Р’СЃРµ</button>
+    <button class="notif-filter" data-notifs-filter="task">Р—Р°РґР°С‡Рё</button>
+    <button class="notif-filter" data-notifs-filter="deadline">Р”РµРґР»Р°Р№РЅС‹</button>
+    <button class="notif-filter" data-notifs-filter="reminder">РќР°РїРѕРјРёРЅР°РЅРёСЏ</button>
+    <button class="notif-filter" data-notifs-filter="system">РЎРёСЃС‚РµРјР°</button>
   </div>
   <div class="notif-scroll" id="notif-list-wrap" style="padding:0 16px 96px">
     <div id="notif-list"></div>

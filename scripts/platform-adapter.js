@@ -514,6 +514,26 @@
       });
     }
 
+    const notificationsScreen = document.getElementById('notifications');
+    if (notificationsScreen) {
+      notificationsScreen.addEventListener('click', event => {
+        const backAction = event.target.closest('[data-notifs-action]');
+        if (backAction) {
+          const action = backAction.dataset.notifsAction;
+          if (action === 'back-home' && typeof goHome === 'function') {
+            goHome();
+          }
+          return;
+        }
+        const filterBtn = event.target.closest('[data-notifs-filter]');
+        if (!filterBtn) return;
+        const filter = filterBtn.dataset.notifsFilter;
+        if (filter && typeof filterNotifs === 'function') {
+          filterNotifs(filter, filterBtn);
+        }
+      });
+    }
+
     const aiMemoryRows = document.getElementById('ai-memory-list');
     if (aiMemoryRows) {
       aiMemoryRows.addEventListener('click', function (e) {
