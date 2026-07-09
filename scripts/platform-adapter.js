@@ -613,6 +613,24 @@
       });
     }
 
+    const globalNav = document.getElementById('global-nav');
+    if (globalNav) {
+      globalNav.addEventListener('click', event => {
+        const navActionBtn = event.target.closest('[data-global-nav-action]');
+        if (!navActionBtn) return;
+        const action = navActionBtn.dataset.globalNavAction;
+        if (action === 'chats' && typeof openChats === 'function') {
+          openChats();
+        } else if ((action === 'calendar' || action === 'cal') && typeof openCalendar === 'function') {
+          openCalendar();
+        } else if (action === 'voice' && typeof openVoice === 'function') {
+          openVoice();
+        } else if (action === 'brain' && typeof openAsk === 'function') {
+          openAsk();
+        }
+      });
+    }
+
     const aiMemoryRows = document.getElementById('ai-memory-list');
     if (aiMemoryRows) {
       aiMemoryRows.addEventListener('click', function (e) {
