@@ -708,12 +708,12 @@
     <div class="glass" style="border-radius:16px;padding:14px 16px;margin-bottom:20px">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
         <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Чек-лист</span>
-        <button id="detail-split-btn" class="detail-quick-btn" onclick="decomposeCurrentTask()">Разбить на этапы</button>
+        <button id="detail-split-btn" class="detail-quick-btn" data-detail-action="decompose-task">Разбить на этапы</button>
       </div>
       <div id="detail-checklist" class="detail-checklist"></div>
       <div class="detail-check-add">
         <input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт" onkeydown="if(event.key==='Enter')addDetailChecklistItem()">
-        <button class="detail-quick-btn" onclick="addDetailChecklistItem()">Добавить</button>
+        <button id="detail-checklist-add-btn" class="detail-quick-btn" data-detail-action="add-checklist-item">Добавить</button>
       </div>
     </div>
 

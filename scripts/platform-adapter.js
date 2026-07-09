@@ -351,6 +351,23 @@
       });
     }
 
+    const taskDetailActionArea = document.getElementById('task-detail');
+    if (taskDetailActionArea) {
+      taskDetailActionArea.addEventListener('click', event => {
+        const button = event.target.closest('[data-detail-action]');
+        if (!button) return;
+        const action = button.dataset.detailAction;
+        if (action === 'decompose-task' && typeof decomposeCurrentTask === 'function') {
+          decomposeCurrentTask();
+          return;
+        }
+        if (action === 'add-checklist-item' && typeof addDetailChecklistItem === 'function') {
+          addDetailChecklistItem();
+          return;
+        }
+      });
+    }
+
     const taskAdviceBtn = document.getElementById('detail-load-advice-btn');
     if (taskAdviceBtn) bind(taskAdviceBtn.id, loadTaskAdvice);
     const taskCommentSendBtn = document.getElementById('detail-comment-send-btn');
