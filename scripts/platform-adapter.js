@@ -377,6 +377,26 @@
           addDetailChecklistItem();
           return;
         }
+        if (action === 'toggle-tag-input' && typeof toggleTagInput === 'function') {
+          toggleTagInput();
+          return;
+        }
+        if (action === 'add-tag-from-input' && typeof addTagFromInput === 'function') {
+          addTagFromInput();
+          return;
+        }
+      });
+    }
+
+    const detailTagInput = document.getElementById('detail-tag-input');
+    if (detailTagInput) {
+      detailTagInput.addEventListener('keydown', event => {
+        if (event && event.key === 'Enter') {
+          event.preventDefault();
+          if (typeof addTagFromInput === 'function') {
+            addTagFromInput();
+          }
+        }
       });
     }
 

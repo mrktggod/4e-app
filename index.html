@@ -680,13 +680,13 @@
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;width:100%">
           <div id="detail-tags-wrap" class="tags-wrap"></div>
-          <button id="detail-tag-toggle-btn" class="tag-add" onclick="toggleTagInput()">+ Тег</button>
+          <button id="detail-tag-toggle-btn" class="tag-add" data-detail-action="toggle-tag-input">+ Тег</button>
         </div>
       </div>
       <div id="detail-tag-input-wrap" class="tag-input-wrap" style="display:none;padding:0 16px 12px;border-bottom:1px solid var(--border)">
-        <input id="detail-tag-input" class="tag-input" placeholder="Название тега" list="detail-tag-options" onkeydown="if(event.key==='Enter'){event.preventDefault();addTagFromInput();}">
+        <input id="detail-tag-input" class="tag-input" placeholder="Название тега" list="detail-tag-options">
         <datalist id="detail-tag-options"></datalist>
-        <button id="detail-tag-add-btn" class="detail-quick-btn" onclick="addTagFromInput()">Добавить</button>
+        <button id="detail-tag-add-btn" class="detail-quick-btn" data-detail-action="add-tag-from-input">Добавить</button>
       </div>
       <input id="detail-direction" class="detail-control detail-field-row-hidden" placeholder="Направление" list="detail-direction-options" oninput="setDetailDirectionLabel(this.value)">
       <datalist id="detail-direction-options"></datalist>
