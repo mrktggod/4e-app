@@ -340,6 +340,17 @@
       });
     }
 
+    const detailQuickDeadline = document.getElementById('detail-quick-deadline');
+    if (detailQuickDeadline) {
+      detailQuickDeadline.addEventListener('click', event => {
+        const button = event.target.closest('button[data-detail-deadline-kind]');
+        if (!button) return;
+        const kind = button.dataset.detailDeadlineKind;
+        if (!kind || typeof setQuickDeadline !== 'function') return;
+        setQuickDeadline(kind);
+      });
+    }
+
     const taskAdviceBtn = document.getElementById('detail-load-advice-btn');
     if (taskAdviceBtn) bind(taskAdviceBtn.id, loadTaskAdvice);
     const taskCommentSendBtn = document.getElementById('detail-comment-send-btn');

@@ -623,10 +623,10 @@
         </div>
         <input id="detail-time-input" class="detail-control" type="datetime-local" onchange="setDetailDeadline(this.value)">
       </div>
-      <div class="detail-quick-row">
-        <button class="detail-quick-btn" onclick="setQuickDeadline('today')">Сегодня</button>
-        <button class="detail-quick-btn" onclick="setQuickDeadline('tomorrow')">Завтра</button>
-        <button class="detail-quick-btn" onclick="setQuickDeadline('week')">Неделя</button>
+      <div id="detail-quick-deadline" class="detail-quick-row">
+        <button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button>
+        <button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button>
+        <button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button>
         <span id="detail-date" style="font-size:13px;color:var(--muted);font-weight:500;align-self:center">—</span>
       </div>
 
