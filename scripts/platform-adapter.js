@@ -494,6 +494,26 @@
       });
     }
 
+    const statisticsScreen = document.getElementById('statistics');
+    if (statisticsScreen) {
+      statisticsScreen.addEventListener('click', event => {
+        const actionBtn = event.target.closest('[data-stats-action]');
+        if (!actionBtn) return;
+        const action = actionBtn.dataset.statsAction;
+        if (action === 'back-home' && typeof goHome === 'function') {
+          goHome();
+          return;
+        }
+        if (action === 'open-promises' && typeof openPromiseList === 'function') {
+          openPromiseList();
+          return;
+        }
+        if (action === 'open-active-tasks' && typeof openActiveTaskList === 'function') {
+          openActiveTaskList();
+        }
+      });
+    }
+
     const aiMemoryRows = document.getElementById('ai-memory-list');
     if (aiMemoryRows) {
       aiMemoryRows.addEventListener('click', function (e) {
