@@ -3148,7 +3148,7 @@ async function loadTasks(){
     slider.innerHTML = html;
   }
   try{
-    const res=await fetch(WORKER+'/tasks?chatId='+chatId, {headers: getToken()?{'x-token':getToken()}:{}});
+    const res=await fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()});
     const tasks=await res.json();
     const active=(tasks||[]).filter(t=>!t.done);
     const done=(tasks||[]).filter(t=>t.done);
@@ -5972,8 +5972,7 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
   function onKeyboardOpen(){
     keyboardOpen=true;
     if(nav)nav.classList.add('hidden');
-    // РЈР±РёСЂР°РµРј РѕС‚СЃС‚СѓРї РїРѕРґ nav вЂ” С‚РµРїРµСЂСЊ РѕРЅ РЅРµ РЅСѓР¶РµРЅ
-    if(askBar)askBar.style.paddingBottom='10px';
+    if(askBar)askBar.classList.add('ask-bar--keyboard-open');
   }
   function onKeyboardClose(){
     keyboardOpen=false;
@@ -5983,7 +5982,7 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
       const noNav=['login','voice','home'];
       if(nav&&active&&!noNav.includes(active.id))nav.classList.remove('hidden');
       // Р’РѕР·РІСЂР°С‰Р°РµРј РѕС‚СЃС‚СѓРї РїРѕРґ nav
-      if(askBar)askBar.style.paddingBottom='96px';
+      if(askBar)askBar.classList.remove('ask-bar--keyboard-open');
     },150);
   }
 
@@ -6051,7 +6050,7 @@ function renderCalendar(){
   const total=startDay+daysInMonth,remaining=total%7===0?0:7-(total%7);
   for(let d=1;d<=remaining;d++)html+=`<div class="cal-day other-month">${d}</div>`;
   document.getElementById('cal-days').innerHTML=html;
-  fetch(WORKER+'/tasks?chatId='+chatId).then(r=>r.json()).then(tasks=>{
+  fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
     const hot=(tasks||[]).filter(t=>!t.done&&t.deadline);
     if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">РќРµС‚ СЃРѕР±С‹С‚РёР№</div>';return;}
@@ -6064,7 +6063,7 @@ function selectCalDay(d){
   event.target.classList.add('selected');
   const y=calDate.getFullYear(),m=calDate.getMonth();
   const sel=new Date(y,m,d);
-  fetch(WORKER+'/tasks?chatId='+chatId).then(r=>r.json()).then(tasks=>{
+  fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
     const MONTHS_MAP={'СЏРЅРІР°СЂСЏ':0,'С„РµРІСЂР°Р»СЏ':1,'РјР°СЂС‚Р°':2,'Р°РїСЂРµР»СЏ':3,'РјР°СЏ':4,'РёСЋРЅСЏ':5,'РёСЋР»СЏ':6,'Р°РІРіСѓСЃС‚Р°':7,'СЃРµРЅС‚СЏР±СЂСЏ':8,'РѕРєС‚СЏР±СЂСЏ':9,'РЅРѕСЏР±СЂСЏ':10,'РґРµРєР°Р±СЂСЏ':11};
     const dayTasks=(tasks||[]).filter(t=>{
@@ -6373,8 +6372,25 @@ async function createPrivacyDataRequest(requestType){
 // ===== NOTIFICATIONS PREFS =====
 const DEFAULT_NOTIF_PREFS={push:true,email:true,telegram:true,tasks:true,morningBriefing:false,briefingTime:'09:00',overdueTasks:true,adaptiveBriefing:false};
 const ADAPTIVE_ACTIVITY_K='adaptive_briefing_activity_v1';
+const NOTIF_PREFS_KEY_PREFIX='notif_prefs';
 let notifSaveTimer=null;
-function getLocalNotifPrefs(){try{return{...DEFAULT_NOTIF_PREFS,...JSON.parse(localStorage.getItem('notif_prefs')||'{}')}}catch(e){return{...DEFAULT_NOTIF_PREFS};}}
+function getNotifPrefsKey(){return `${NOTIF_PREFS_KEY_PREFIX}:${String(currentUser?.id||'guest')}`;}
+function migrateLegacyNotifPrefs(){
+  try{
+    const legacy=localStorage.getItem('notif_prefs');
+    if(legacy===null) return;
+    const target=getNotifPrefsKey();
+    if(localStorage.getItem(target)===null){
+      localStorage.setItem(target,legacy);
+    }
+  }catch(e){
+    return;
+  }
+}
+function getLocalNotifPrefs(){
+  migrateLegacyNotifPrefs();
+  try{return{...DEFAULT_NOTIF_PREFS,...JSON.parse(localStorage.getItem(getNotifPrefsKey())||'{}')}}catch(e){return{...DEFAULT_NOTIF_PREFS};}
+}
 function pad2(n){return String(n).padStart(2,'0');}
 function getAdaptiveActivityStore(){
   try{
@@ -6488,11 +6504,11 @@ async function loadNotificationSettings(){
   try{
     const r=await withTimeout(fetch(WORKER+'/notifications/settings',{headers:authHeaders()}),10000);
     const d=await readJsonSafe(r);
-    if(d.ok&&d.settings){localStorage.setItem('notif_prefs',JSON.stringify({...DEFAULT_NOTIF_PREFS,...d.settings}));setNotifControls(d.settings);await applyAdaptiveBriefingIfNeeded('load');}
+    if(d.ok&&d.settings){localStorage.setItem(getNotifPrefsKey(),JSON.stringify({...DEFAULT_NOTIF_PREFS,...d.settings}));setNotifControls(d.settings);await applyAdaptiveBriefingIfNeeded('load');}
   }catch(e){console.warn('notification settings load failed',e);}
 }
 function persistNotificationSettings(prefs){
-  localStorage.setItem('notif_prefs',JSON.stringify(prefs));
+  localStorage.setItem(getNotifPrefsKey(),JSON.stringify(prefs));
   clearTimeout(notifSaveTimer);
   notifSaveTimer=setTimeout(async()=>{
     if(!getToken()) return;

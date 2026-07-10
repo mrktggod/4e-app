@@ -19,6 +19,10 @@
   --card: #151c10;
   --card2: #1e2918;
   --shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  --safe-area-inset-bottom: 0px;
+  --screen-scroll-padding: 16px;
+  --screen-scroll-padding-home: 96px;
+  --bottom-nav-offset: 16px;
 }
 [data-theme="light"] {
   --bg: #FFFFFF;
@@ -571,7 +575,7 @@ body {
 /* ===== NAV ===== */
 .bottom-nav {
   position: fixed;
-  bottom: 16px;
+  bottom: calc(var(--bottom-nav-offset) + var(--safe-area-inset-bottom));
   left: 16px;
   right: 16px;
   height: 64px;
@@ -633,7 +637,10 @@ body {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 96px;
+  padding-bottom: calc(var(--screen-scroll-padding) + var(--safe-area-inset-bottom));
+}
+.scroll-body--home {
+  padding-bottom: calc(var(--screen-scroll-padding-home) + var(--safe-area-inset-bottom));
 }
 .scroll-body::-webkit-scrollbar {
   width: 0;
@@ -2377,7 +2384,10 @@ body {
   display: flex;
   gap: 8px;
   align-items: flex-end;
-  padding: 10px 0 96px;
+  padding: 10px 0 calc(96px + var(--safe-area-inset-bottom));
+}
+.ask-bar--keyboard-open {
+  padding-bottom: 10px;
 }
 .ask-field {
   flex: 1;
@@ -5426,7 +5436,7 @@ html[data-theme="light"] .promise-row-v2 {
 /* Bottom nav v2 */
 .bottom-nav-v2 {
   flex-shrink: 0;
-  padding: 8px 14px 14px;
+  padding: 8px 14px calc(14px + var(--safe-area-inset-bottom));
   box-sizing: border-box;
   width: 100%;
 }
@@ -6543,9 +6553,7 @@ html[data-theme="light"] .promise-row-v2 {
   }
 }
 @supports (padding:env(safe-area-inset-bottom)) {
-  .bottom-nav-v2 {
-    padding-bottom: calc(8px + env(safe-area-inset-bottom));
-  }
+  :root { --safe-area-inset-bottom: env(safe-area-inset-bottom); }
   .screen {
     padding-top: env(safe-area-inset-top);
   }

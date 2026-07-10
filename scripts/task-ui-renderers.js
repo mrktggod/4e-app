@@ -200,7 +200,7 @@ function showScreen(id){
   if(nav)nav.classList.toggle('hidden',noNav.includes(id));
   // bottom-nav-v2 is inside #home so it's only visible when home is active — no action needed
   const hs=document.querySelector('.scroll-body');
-  if(hs)hs.style.paddingBottom=id==='home'?'96px':'16px';
+  if(hs)hs.classList.toggle('scroll-body--home', id==='home');
 }
 function goHome(){showScreen('home');setNavActive('tasks');loadTasks();}
 async function openAsk(){

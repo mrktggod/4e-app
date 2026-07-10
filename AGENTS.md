@@ -86,6 +86,8 @@ Write-Host "После правки: $($after.Count) совпадений"
 **НИКОГДА не использовать:** `Set-Content`, `Out-File`, `-replace`, `>>` для файлов с кириллицей.
 - После изменения index.html запускай: `bash scripts/check-ui-architecture.sh` и `node scripts/check-doc-encoding.mjs`; если fail — не коммитить.
 
+Это правило действует на каждый коммит в рамках сессии, включая цепочку продолжений («дальше»), а не только один раз в начале.
+
 ### Git — согласуемый процесс команды
 
 `main` связан с GitHub Pages, поэтому push/merge может сразу повлиять на live.
