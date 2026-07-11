@@ -9,10 +9,10 @@
 ### 2026-07-11 — Codex
 
 **Задача:** INFRA-005 — создать Yandex API Gateway и подготовить VK hosting к RU API base
-**Результат:** Через `yc` создан Yandex API Gateway `ai-ru-proxy` в folder `b1gsug9tik07tshenega`, домен `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`, upstream остаётся `https://edge.4-ai.site`. `npm run build:vk-hosting` успешно собирает `.vk-hosting-dist/index.html` с новым `VK_API_BASE_URL`. Попытка non-interactive `vk-miniapps-deploy` остановилась на `access_token is missing`, поэтому production VK hosting ещё не подтверждён как обновлённый.
+**Результат:** Через `yc` создан Yandex API Gateway `ai-ru-proxy` в folder `b1gsug9tik07tshenega`, домен `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`, upstream остаётся `https://edge.4-ai.site`. `npm run build:vk-hosting` успешно собирает `.vk-hosting-dist/index.html` с новым `VK_API_BASE_URL`. Сохранённый VK token найден в configstore, `vk-miniapps-deploy` загрузил version `1783760421`; dev URLs обновлены на `https://stage-app54636698-6d0441567e74.pages.vk-apps.com/index.html`. Production deploy остановился на ручном подтверждении VK: `Please, enter code from Administration`.
 **Коммит:** N/A
-**Статус:** ⚠️ gateway создан, VK deploy ждёт deploy token / авторизованную сессию
-**Следующий шаг:** передать `access_token`/авторизовать `vk-miniapps-deploy`, завершить VK deploy и пройти phone-smoke VK Mini App без VPN
+**Статус:** ⚠️ gateway создан, dev hosting обновлён, production VK deploy ждёт confirm code
+**Следующий шаг:** ввести VK confirm code из Administration, завершить production VK deploy и пройти phone-smoke VK Mini App без VPN
 
 ### 2026-07-08 — Codex
 

@@ -44,6 +44,8 @@ $env:VK_API_BASE_URL = "https://<gateway-domain>"
 npm run deploy:vk-hosting
 ```
 
+Текущий статус деплоя VK hosting: сборка проходит, `.vk-hosting-dist/index.html` получает новый API base, сохранённый VK token найден в configstore, version `1783760421` загружена. Dev URLs обновлены на `https://stage-app54636698-6d0441567e74.pages.vk-apps.com/index.html`. Production deploy остановился на ручном подтверждении VK: `Please, enter code from Administration`.
+
 ## Проверки
 
 1. Локально проверить артефакт:
@@ -66,7 +68,5 @@ Select-String -Path .vk-hosting-dist/index.html -Pattern 'edge.4-ai.site'
 
 ## Остаток ручных блокеров
 
-- `folder-id` / доступ к Yandex Cloud.
-- Технический домен gateway после создания.
-- Ручной VK deploy confirm code.
+- Ручной VK deploy confirm code из Administration для production deploy.
 - Mobile smoke из РФ-сети без VPN.
