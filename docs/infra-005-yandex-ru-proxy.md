@@ -44,7 +44,7 @@ $env:VK_API_BASE_URL = "https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.
 npm run deploy:vk-hosting
 ```
 
-Текущий статус деплоя VK hosting: сборка проходит, `.vk-hosting-dist/index.html` получает новый API base, но `vk-miniapps-deploy` в non-interactive запуске остановился на `access_token is missing`. Нужен VK deploy token / ручной deploy session.
+Текущий статус деплоя VK hosting: сборка проходит, `.vk-hosting-dist/index.html` получает новый API base, сохранённый VK token найден в configstore, version `1783760421` загружена. Dev URLs обновлены на `https://stage-app54636698-6d0441567e74.pages.vk-apps.com/index.html`. Production deploy остановился на ручном подтверждении VK: `Please, enter code from Administration`.
 
 ## Проверки
 
@@ -68,6 +68,5 @@ Select-String -Path .vk-hosting-dist/index.html -Pattern 'edge.4-ai.site'
 
 ## Остаток ручных блокеров
 
-- VK deploy token / авторизованная deploy-сессия для `vk-miniapps-deploy`.
-- Ручной VK deploy confirm code, если VK запросит подтверждение.
+- Ручной VK deploy confirm code из Administration для production deploy.
 - Mobile smoke из РФ-сети без VPN.

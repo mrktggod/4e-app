@@ -7,7 +7,7 @@
 **Статус:** In Progress  
 **Рекомендуемая ветка:** `feat/infra-005-yandex-ru-proxy-step1`
 
-**Факт 2026-07-11:** gateway создан в Yandex Cloud как `ai-ru-proxy`, домен `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`. VK artifact собирается с этим `VK_API_BASE_URL`; deploy в VK hosting заблокирован отсутствующим `access_token` для `vk-miniapps-deploy`.
+**Факт 2026-07-11:** gateway создан в Yandex Cloud как `ai-ru-proxy`, домен `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`. VK artifact собирается с этим `VK_API_BASE_URL`; version `1783760421` загружена в VK hosting, dev URLs обновлены на `https://stage-app54636698-6d0441567e74.pages.vk-apps.com/index.html`. Production deploy ждёт ручной confirm code из VK Administration.
 
 ## Контекст
 
@@ -52,7 +52,7 @@ npm run deploy:vk-hosting
 ```
 
 6. Проверить, что `.vk-hosting-dist/index.html` содержит новый API base, а не `https://edge.4-ai.site`.
-7. Передать/обновить VK deploy token для `vk-miniapps-deploy` и завершить deploy.
+7. Ввести VK confirm code из Administration и завершить production deploy.
 8. Прогнать phone-smoke VK Mini App без VPN.
 
 ## Опционально после шага 1
