@@ -691,7 +691,7 @@
       <input id="detail-direction" class="detail-control detail-field-row-hidden" placeholder="РќР°РїСЂР°РІР»РµРЅРёРµ" list="detail-direction-options" data-detail-field="direction">
       <datalist id="detail-direction-options"></datalist>
 
-      <div class="detail-field-row detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="РР·РјРµРЅРёС‚СЊ РёСЃРїРѕР»РЅРёС‚РµР»СЏ Р·Р°РґР°С‡Рё">
+      <div class="detail-field-row detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="РР·РјРµРЅРёС‚СЊ РёСЃРїРѕР»РЅРёС‚РµР»СЏ Р·Р°РґР°С‡Рё" onclick="openDetailPersonPicker()" onkeydown="handleDetailPersonRowKeydown(event)">
         <div class="detail-field-row-title">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           <span class="detail-field-row-caption">Р§РµР»РѕРІРµРє</span>
@@ -699,7 +699,7 @@
         <div class="detail-person-actions">
           <span id="detail-person" class="detail-person-name">вЂ”</span>
           <span id="detail-person-meta" class="detail-person-meta detail-person-meta--hidden">РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ 4</span>
-          <button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden">РќР°РїРёСЃР°С‚СЊ</button>
+          <button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden" type="button" onclick="event.stopPropagation();openDetailContactPanel()">РќР°РїРёСЃР°С‚СЊ</button>
         </div>
       </div>
 
@@ -4247,6 +4247,12 @@ function openDetailPersonPicker(){
   };
   syncDetailPersonMeta(currentDetailTask);
   syncDetailContactButton(currentDetailTask);
+}
+
+function handleDetailPersonRowKeydown(event){
+  if(event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  openDetailPersonPicker();
 }
 
 // в”Ђв”Ђ AI advice in task detail в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
