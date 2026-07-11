@@ -7,6 +7,8 @@
 - OpenAPI spec: [infra/yandex-api-gateway/ru-proxy-openapi.yaml](../infra/yandex-api-gateway/ru-proxy-openapi.yaml)
 - VK build с параметром `VK_API_BASE_URL`: [scripts/build-vk-hosting.mjs](../scripts/build-vk-hosting.mjs)
 - Операционная задача: [docs/tasks/INFRA-005-yandex-ru-proxy-step1.md](tasks/INFRA-005-yandex-ru-proxy-step1.md)
+- Yandex API Gateway создан: `ai-ru-proxy`
+- Технический домен gateway: `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`
 
 ## Команды
 

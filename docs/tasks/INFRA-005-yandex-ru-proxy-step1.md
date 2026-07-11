@@ -7,6 +7,8 @@
 **Статус:** In Progress  
 **Рекомендуемая ветка:** `feat/infra-005-yandex-ru-proxy-step1`
 
+**Факт 2026-07-11:** gateway создан в Yandex Cloud как `ai-ru-proxy`, домен `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`. VK artifact собирается с этим `VK_API_BASE_URL`; deploy в VK hosting заблокирован отсутствующим `access_token` для `vk-miniapps-deploy`.
+
 ## Контекст
 
 VK hosting в белом списке мобильных сетей РФ, `edge.4-ai.site` — нет. Поэтому VK Mini App может открыться, но API-вызовы до Cloudflare worker ломаются на мобильном интернете без VPN.
@@ -31,7 +33,7 @@ VK hosting в белом списке мобильных сетей РФ, `edge.
 
 ```powershell
 yc serverless api-gateway create `
-  --name 4-ai-ru-proxy `
+  --name ai-ru-proxy `
   --spec infra/yandex-api-gateway/ru-proxy-openapi.yaml `
   --variables backend_origin=https://edge.4-ai.site,backend_host=edge.4-ai.site
 ```
@@ -39,18 +41,19 @@ yc serverless api-gateway create `
 4. Получить технический домен gateway:
 
 ```powershell
-yc serverless api-gateway get --name 4-ai-ru-proxy
+yc serverless api-gateway get --name ai-ru-proxy
 ```
 
 5. Собрать и задеплоить VK hosting уже с российским API-адресом:
 
 ```powershell
-$env:VK_API_BASE_URL = "https://<gateway-domain>"
+$env:VK_API_BASE_URL = "https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net"
 npm run deploy:vk-hosting
 ```
 
 6. Проверить, что `.vk-hosting-dist/index.html` содержит новый API base, а не `https://edge.4-ai.site`.
-7. Прогнать phone-smoke VK Mini App без VPN.
+7. Передать/обновить VK deploy token для `vk-miniapps-deploy` и завершить deploy.
+8. Прогнать phone-smoke VK Mini App без VPN.
 
 ## Опционально после шага 1
 
