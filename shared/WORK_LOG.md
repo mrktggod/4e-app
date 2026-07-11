@@ -6,6 +6,16 @@
 
 ---
 
+### 2026-07-11 — Codex
+
+**Задача:** INFRA-005 — создать Yandex API Gateway и подготовить VK hosting к RU API base
+**Результат:** Через `yc` создан Yandex API Gateway `ai-ru-proxy` в folder `b1gsug9tik07tshenega`, домен `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`, upstream остаётся `https://edge.4-ai.site`. `npm run build:vk-hosting` успешно собирает `.vk-hosting-dist/index.html` с новым `VK_API_BASE_URL`. Попытка non-interactive `vk-miniapps-deploy` остановилась на `access_token is missing`, поэтому production VK hosting ещё не подтверждён как обновлённый.
+**Коммит:** N/A
+**Статус:** ⚠️ gateway создан, VK deploy ждёт deploy token / авторизованную сессию
+**Следующий шаг:** передать `access_token`/авторизовать `vk-miniapps-deploy`, завершить VK deploy и пройти phone-smoke VK Mini App без VPN
+
+---
+
 ### 2026-07-06 — Codex
 
 **Задача:** Синхронизировать статусы спринта 1 после ночных merge/hotfix и UI-пакета

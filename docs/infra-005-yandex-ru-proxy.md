@@ -7,6 +7,8 @@
 - OpenAPI spec: [infra/yandex-api-gateway/ru-proxy-openapi.yaml](/C:/Users/shelc/Documents/4/.tmp-4e-app-publish/infra/yandex-api-gateway/ru-proxy-openapi.yaml)
 - VK build с параметром `VK_API_BASE_URL`: [scripts/build-vk-hosting.mjs](/C:/Users/shelc/Documents/4/.tmp-4e-app-publish/scripts/build-vk-hosting.mjs)
 - Операционная задача: [docs/tasks/INFRA-005-yandex-ru-proxy-step1.md](/C:/Users/shelc/Documents/4/.tmp-4e-app-publish/docs/tasks/INFRA-005-yandex-ru-proxy-step1.md)
+- Yandex API Gateway создан: `ai-ru-proxy`
+- Технический домен gateway: `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`
 
 ## Команды
 
@@ -14,7 +16,7 @@
 
 ```powershell
 yc serverless api-gateway create `
-  --name 4-ai-ru-proxy `
+  --name ai-ru-proxy `
   --spec infra/yandex-api-gateway/ru-proxy-openapi.yaml `
   --variables backend_origin=https://edge.4-ai.site,backend_host=edge.4-ai.site
 ```
@@ -23,7 +25,7 @@ yc serverless api-gateway create `
 
 ```powershell
 yc serverless api-gateway update `
-  --name 4-ai-ru-proxy `
+  --name ai-ru-proxy `
   --spec infra/yandex-api-gateway/ru-proxy-openapi.yaml `
   --variables backend_origin=https://edge.4-ai.site,backend_host=edge.4-ai.site
 ```
@@ -31,16 +33,18 @@ yc serverless api-gateway update `
 Собрать VK artifact с новым API base:
 
 ```powershell
-$env:VK_API_BASE_URL = "https://<gateway-domain>"
+$env:VK_API_BASE_URL = "https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net"
 npm run build:vk-hosting
 ```
 
 Задеплоить VK hosting:
 
 ```powershell
-$env:VK_API_BASE_URL = "https://<gateway-domain>"
+$env:VK_API_BASE_URL = "https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net"
 npm run deploy:vk-hosting
 ```
+
+Текущий статус деплоя VK hosting: сборка проходит, `.vk-hosting-dist/index.html` получает новый API base, но `vk-miniapps-deploy` в non-interactive запуске остановился на `access_token is missing`. Нужен VK deploy token / ручной deploy session.
 
 ## Проверки
 
@@ -64,7 +68,6 @@ Select-String -Path .vk-hosting-dist/index.html -Pattern 'edge.4-ai.site'
 
 ## Остаток ручных блокеров
 
-- `folder-id` / доступ к Yandex Cloud.
-- Технический домен gateway после создания.
-- Ручной VK deploy confirm code.
+- VK deploy token / авторизованная deploy-сессия для `vk-miniapps-deploy`.
+- Ручной VK deploy confirm code, если VK запросит подтверждение.
 - Mobile smoke из РФ-сети без VPN.
