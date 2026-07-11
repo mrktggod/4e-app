@@ -635,12 +635,15 @@
         <input id="detail-direction" class="detail-control" placeholder="Направление" oninput="setDetailDirectionLabel(this.value)">
       </div>
 
-      <div class="detail-field-row">
+      <div class="detail-field-row" id="detail-person-row" role="button" tabindex="0" aria-label="Change task assignee" onclick="openDetailPersonPicker()" onkeydown="handleDetailPersonRowKeydown(event)">
         <div style="display:flex;align-items:center;gap:10px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           <span style="font-size:14px;color:var(--text2)">Человек</span>
         </div>
-        <span id="detail-person" style="font-size:14px;color:var(--text);font-weight:500">—</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="detail-person" style="font-size:14px;color:var(--text);font-weight:500">—</span>
+          <button id="detail-contact-btn" class="detail-quick-btn" type="button" style="display:none" onclick="event.stopPropagation();openDetailContactPanel()">&#1053;&#1072;&#1087;&#1080;&#1089;&#1072;&#1090;&#1100;</button>
+        </div>
       </div>
 
       <div class="detail-field-row" style="border-bottom:none">
@@ -4035,6 +4038,55 @@ function removeDetailChecklistItem(idx){
   saveTaskEdits();
 }
 
+function getDetailPeopleOptions(){
+  const names = [
+    ...(allTasksCache || []).map((task) => (task?.person || '').trim()).filter(Boolean),
+    currentUser?.name || '',
+    currentDetailTask?.person || '',
+    'Client'
+  ];
+  return Array.from(new Set(names.filter(Boolean)));
+}
+
+function setDetailPerson(person){
+  const nextPerson = (person || '').trim();
+  if(!nextPerson) return;
+  const personEl = document.getElementById('detail-person');
+  if(personEl) personEl.textContent = nextPerson;
+  syncDetailContactButton();
+  saveTaskEdits();
+}
+
+function openDetailPersonPicker(){
+  const personEl = document.getElementById('detail-person');
+  const current = (personEl?.textContent || currentDetailTask?.person || '').trim();
+  const people = getDetailPeopleOptions();
+  const choice = prompt('Choose assignee:\n' + people.map((name,i)=>(i+1) + '. ' + name).join('\n'), current);
+  if(choice === null) return;
+  const n = Number(choice.trim());
+  const nextPerson = Number.isInteger(n) && n >= 1 && n <= people.length ? people[n-1] : choice.trim();
+  setDetailPerson(nextPerson);
+}
+
+function handleDetailPersonRowKeydown(event){
+  if(event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  openDetailPersonPicker();
+}
+
+function openDetailContactPanel(){
+  if(!currentDetailTask) return;
+  const person = (document.getElementById('detail-person')?.textContent || currentDetailTask.person || '').trim();
+  openContactPanel(person || 'Contact', currentDetailTask.text || '', currentDetailTask.id);
+}
+
+function syncDetailContactButton(){
+  const btn = document.getElementById('detail-contact-btn');
+  if(!btn) return;
+  const person = (document.getElementById('detail-person')?.textContent || '').trim();
+  btn.style.display = person && person !== '—' && !/^я$/i.test(person) ? '' : 'none';
+}
+
 function openTask(t,idx){
   currentDetailTask = t;
   currentTaskId = t.id;
@@ -4057,6 +4109,7 @@ function openTask(t,idx){
   const dateEl = document.getElementById('detail-date');
   const dirEl = document.getElementById('detail-direction');
   if(personEl) personEl.textContent = t.person || '—';
+  syncDetailContactButton();
   if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime || t.date || t.deadline || '');
   if(dirEl) dirEl.value = currentDetailDirectionLabel;
   setDetailStatus(currentDetailStatus);
@@ -4181,10 +4234,12 @@ function snoozeCurrentTask(){
 async function saveTaskEdits(){
   if(!currentDetailTask) return;
   const newText = (document.getElementById('detail-title')?.textContent||'').trim();
+  const newPerson = (document.getElementById('detail-person')?.textContent||'').trim();
   const newDeadline = currentDetailTime || '';
   const newOrigMsg = document.getElementById('detail-description')?.value?.trim();
   const updates = {
     text: newText || currentDetailTask.text,
+    person: newPerson && newPerson !== '—' ? newPerson : currentDetailTask.person,
     deadline: newDeadline || null,
     time: newDeadline || null,
     status: currentDetailStatus,
