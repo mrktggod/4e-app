@@ -55,6 +55,7 @@
 | Accessibility baseline | BACK-050 — базовая доступность критических сценариев: auth-формы, статусные сообщения, keyboard/focus, dialog-поведение quick-add/contact/consent и touch-target smoke перед закрытым тестом | P1 | Ready for QA — code baseline готов, нужен ручной keyboard/mobile smoke |
 | Единая рабочая копия | Одна рабочая папка, обмен только через git (убрать расхождение Documents/Desktop) | P1 | Todo |
 | Закрытый тест и измерение | BACK-035 — QA smoke; BACK-048 — dev/test аккаунты; BETA-001 — закрытый тест 5-10 пользователей; ANALYTICS-001 — lite-события активации; FEEDBACK-001 — быстрый feedback loop | P1 | Todo |
+| Стратегия монетизации и роста | STRAT-001 — evidence-first аудит монетизации, виральности, промо, процесса разработки и English expansion. Подробности: [пакет анализа](../docs/strategy/monetization-analysis-2026-07-13/README.md) | P1 | Done — реализация разложена по BACK/ONBOARD/ANALYTICS/VIRAL и I18N-001 |
 
 ---
 
@@ -73,6 +74,7 @@
 | Слияние аккаунтов | BACK-026 — поиск существующего профиля по telegramId/vkId/email, перенос задач (механика существовала раньше, подтверждена ревью). BACK-051 — тост-уведомление после слияния. Предпосылка рефералок | P1 | BACK-026 Done (2026-07-06); BACK-051 Done |
 | Авторизация через сервисы РФ | BACK-045 — VK ID + Яндекс ID OAuth готовы и задеплоены на staging; ждут реальных client_id/secret от Юрия для live smoke | P1 | Ready for QA |
 | Активация | ONBOARD-001 — первый AI-план за 60 секунд: пользователь создаёт 3 задачи и сразу видит полезный план дня | P1 | Todo |
+| English expansion / i18n | I18N-001 — слой `ru/en` и закрытая English beta для Telegram-native консультантов и владельцев небольших агентств; критический маршрут `вход → 3 задачи → первый план → возврат → paywall`, затем расширение только по данным beta. [План English expansion](../docs/strategy/monetization-analysis-2026-07-13/10-english-expansion.md) | P2 | Todo — i18n foundation рядом с activation slice; beta после первых 3–5 оплат и payment safety gate |
 | CI и смоук-тесты | BACK-037 — GitHub Actions: проверка кодировки, линт, минификация; `api-smoke` покрывает auth/tasks CRUD/transcribe, staging smoke пройден | P2 | Ready for QA |
 | Аналитика | BACK-038 — события (вход, задача, шеринг) + D1/D7 retention; `/analytics/summary` закрыт `ADMIN_SECRET`, убран из личного экрана статистики | P2 | Ready for QA |
 | Данные в России | Перенос ПД в Yandex Cloud PostgreSQL | P1 | Manual blocker — ждёт Yandex Cloud PostgreSQL от Алексея |
@@ -170,6 +172,7 @@
 | 2026-07-08 | Календарь поднят в ближайшую продуктовую проработку | Календарь становится связующим слоем задач, уведомлений, AI-дашборда и AI-памяти. Сначала CAL-001 как концепция и privacy-модель, затем внутренний календарный MVP, затем read-only внешняя синхронизация и только после доверия — двусторонняя запись |
 | 2026-07-08 | Roadmap фильтруется через beta gate и монетизацию | Now — только то, что помогает первым активным пользователям понять ценность, пройти вход, дать обратную связь и не упереться в сломанные сценарии. Later/Future не удаляются, но не забирают командное время до первых сигналов удержания и готовности платить |
 | 2026-07-12 | ⚠️ Авто-деплой `4e-worker` на `main` — последние 4 запуска упали (failure) | При диагностике `NEW-018` обнаружено: GitHub Actions `Deploy Worker` (`.github/workflows/deploy.yml`, триггер `push` на `main`) — последние 4 прогона (2026-07-04/05) все завершились `failure`. Push в `feat/admin-tariff-api` эту автоматизацию вообще не запускает (только `main`), поэтому пока ветка не смержена, это не блокирует текущую работу — но если и когда `feat/admin-tariff-api` смержат в `main`, автодеплой по факту, скорее всего, тоже упадёт, если причину не разобрать заранее. Нужно отдельно проверить логи этих 4 упавших ранов перед любым мерджем в `main` |
+| 2026-07-13 | Путь к монетизации и English expansion зафиксирован через измеримые gates | Сначала payment integrity, release path, HOME/ONBOARD, корректные события и закрытая beta, затем первые 3–5 оплат, safe-referral и промо. English сейчас закладывается как `ru/en` foundation критического маршрута, но широкий перевод и acquisition не забирают более 20% разработки до первых оплат; первый ICP — English-speaking Telegram-native консультанты и владельцы небольших агентств. [Полный анализ](../docs/strategy/monetization-analysis-2026-07-13/README.md) |
 
 ## Пожелания / ожидают решения
 
