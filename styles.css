@@ -572,6 +572,7 @@ body {
 :root {
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --app-keyboard-offset: 0px;
   --app-bottom-nav-reserve: calc(96px + var(--safe-area-bottom));
 }
 .bottom-nav {
@@ -2400,6 +2401,10 @@ body {
   gap: 8px;
   align-items: flex-end;
   padding: 10px 0 var(--app-bottom-nav-reserve);
+  transition: padding-bottom 0.18s ease;
+}
+.ask-bar--keyboard-open {
+  padding-bottom: calc(16px + var(--safe-area-bottom) + var(--app-keyboard-offset));
 }
 .ask-field {
   flex: 1;

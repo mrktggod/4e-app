@@ -954,12 +954,13 @@
     });
     bridge.subscribe(event => {
       if (event.detail.type === 'VKWebAppKeyboardShown') {
-        document.body.style.paddingBottom = event.detail.data.keyboardHeight + 'px';
+        const keyboardHeight = Number(event.detail?.data?.keyboardHeight || 0);
+        document.documentElement.style.setProperty('--app-keyboard-offset', `${Math.max(0, keyboardHeight)}px`);
         setTimeout(() => {
           if (document.activeElement) document.activeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 100);
       }
-      if (event.detail.type === 'VKWebAppKeyboardHidden') document.body.style.paddingBottom = '';
+      if (event.detail.type === 'VKWebAppKeyboardHidden') document.documentElement.style.setProperty('--app-keyboard-offset', '0px');
     });
 
     const vkCache = {};

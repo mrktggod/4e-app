@@ -165,7 +165,8 @@
 .ask-msgs::-webkit-scrollbar{width:0}
 .bubble-user{align-self:flex-end;background:var(--green);color:var(--bg);padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:13px;line-height:1.5;max-width:85%;font-weight:500}
 .bubble-ai{align-self:flex-start;background:var(--card2);border:1px solid var(--border);padding:10px 14px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.5;max-width:85%;color:var(--text)}
-.ask-bar{display:flex;gap:8px;align-items:flex-end;padding:10px 0 var(--app-bottom-nav-reserve)}
+.ask-bar{display:flex;gap:8px;align-items:flex-end;padding:10px 0 var(--app-bottom-nav-reserve);transition:padding-bottom .18s ease}
+.ask-bar--keyboard-open{padding-bottom:calc(16px + var(--safe-area-bottom) + var(--app-keyboard-offset))}
 .ask-field{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:13px;padding:10px 12px;outline:none;font-family:'Inter',sans-serif;resize:none;line-height:1.4;max-height:100px}
 .ask-field:focus{border-color:rgba(154,194,60,0.4)}
 /* Welcome */
