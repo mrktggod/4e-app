@@ -166,7 +166,7 @@ async function loginWithTelegramLegacy(){
 // Привязываем Telegram ID к аккаунту после логина
 function getTelegramManualStartCommand(startToken){
   const token=String(startToken||'').trim();
-  return token?/start auth_:'/start';
+  return token ? '/start auth_' + token : '/start';
 }
 
 function getTelegramManualStartPanel(){
@@ -178,7 +178,7 @@ function getTelegramManualStartPanel(){
   panel.hidden=true;
   panel.setAttribute('aria-live','polite');
   panel.style.cssText='margin:12px 0 0;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);display:flex;flex-direction:column;gap:10px;';
-  panel.innerHTML=
+  panel.innerHTML=`
     <div style="font-size:13px;line-height:1.45;opacity:.92;">Если Telegram просто открыл чат с ботом и не отправил команду сам, отправьте её вручную:</div>
     <code data-telegram-start-command style="display:block;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.24);font-size:14px;word-break:break-all;">/start</code>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -186,7 +186,7 @@ function getTelegramManualStartPanel(){
       <button type="button" data-telegram-start-open class="chip-btn">Открыть Telegram ещё раз</button>
     </div>
     <div style="font-size:12px;line-height:1.45;opacity:.75;">Если бот сам не ответил, отправьте эту команду вручную в текущий чат с ботом.</div>
-  ;
+  `;
 
   const loginForm=document.getElementById('form-login');
   const loginHost=loginForm?.parentElement || document.getElementById('auth') || document.getElementById('login') || document.body;
