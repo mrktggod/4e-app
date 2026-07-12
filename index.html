@@ -2047,6 +2047,20 @@
   </div>
 </div>
 
+<div id="focus-panel-overlay" class="quick-add-overlay" role="dialog" aria-modal="true" aria-labelledby="focus-panel-title" aria-hidden="true">
+  <div class="quick-add-sheet" tabindex="-1">
+    <div id="focus-panel-title" class="quick-add-title">Фокус дня</div>
+    <div id="focus-panel-subtitle" class="home-ai-summary-line">4 уже собрал главные приоритеты</div>
+    <div id="focus-panel-list" class="home-ai-section__rows">
+      <div class="home-ai-empty">Собираю приоритеты...</div>
+    </div>
+    <div class="quick-add-actions">
+      <button class="quick-add-submit" onclick="openFocusPanelAllTasks()">Открыть все задачи</button>
+      <button class="quick-add-cancel" onclick="closeFocusPanel()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
@@ -3721,6 +3735,59 @@ function getHomeDashboardTasks(){
     seen.add(id);
     return true;
   }).slice(0,3);
+}
+
+function renderFocusPanel(){
+  const subtitle=document.getElementById('focus-panel-subtitle');
+  const list=document.getElementById('focus-panel-list');
+  if(!list) return;
+  const tasks=getHomeDashboardTasks();
+  const hotCount=(plannerSectionsCache.hot||[]).length;
+  const incomingCount=(plannerSectionsCache.people||[]).length;
+  if(subtitle){
+    if(tasks.length){
+      subtitle.textContent=hotCount+' горят, '+incomingCount+' ждут ответа, 4 выделил главное';
+    }else{
+      subtitle.textContent='Сейчас критичных задач не видно';
+    }
+  }
+  if(!tasks.length){
+    list.innerHTML='<div class="home-ai-empty">Сейчас в фокусе пусто</div>';
+    return;
+  }
+  list.innerHTML=tasks.map((task,index)=>{
+    const id=String(task.id||'');
+    const safeId=e2(id);
+    const safeTitle=e2((index+1)+'. '+(task.person?task.person+' — ':'')+(task.text||'Без текста'));
+    const safeMeta=e2(task.deadline?formatTaskDateMeta(task):(task.direction==='incoming'?'Ждём ответа':'Без дедлайна'));
+    const avatar=e2((task.person||'?')[0]?.toUpperCase()||'?');
+    const cacheIndex=allTasksCache.findIndex(t=>String(t.id)===id);
+    return '<div class="home-ai-row" data-task-id="'+safeId+'" role="button" tabindex="0">'
+      +'<div class="home-ai-row-main" onclick="closeFocusPanel();openTaskById(\''+safeId+'\','+cacheIndex+')">'
+      +'<span class="home-ai-row-avatar">'+avatar+'</span>'
+      +'<div class="home-ai-row-main-text"><div class="home-ai-row-title">'+safeTitle+'</div><div class="home-ai-row-meta">'+safeMeta+'</div></div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function openFocusList(){
+  const overlay=document.getElementById('focus-panel-overlay');
+  if(!overlay) return;
+  renderFocusPanel();
+  overlay.style.display='flex';
+  openAccessibleDialog('focus-panel-overlay','#focus-panel-list .home-ai-row');
+}
+
+function closeFocusPanel(){
+  const overlay=document.getElementById('focus-panel-overlay');
+  if(overlay) overlay.style.display='none';
+  closeAccessibleDialog('focus-panel-overlay');
+}
+
+function openFocusPanelAllTasks(){
+  closeFocusPanel();
+  openActiveTaskList();
 }
 
 function updateHomeDashboardList({outgoing=[],incoming=[]}){
@@ -6593,13 +6660,6 @@ function setThemeChoice(theme, el){
 }
 
 // ===== HOME FILTER (Patch 02) =====
-function openFocusList(){
-  // Показываем «горящие» задачи через фильтр
-  const hotTab = document.querySelector('.home-tab[data-filter="hot"]');
-  setHomeFilter('hot', hotTab);
-  if(hotTab) { document.querySelectorAll('.home-tab').forEach(t=>t.classList.remove('active')); hotTab.classList.add('active'); }
-}
-
 function toggleAllTasks(){
   const homeList = document.getElementById('home-task-list');
   const label = document.getElementById('home-show-all-label');
