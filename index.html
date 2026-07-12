@@ -3737,6 +3737,36 @@ function getHomeDashboardTasks(){
   }).slice(0,3);
 }
 
+function getHomePriorityMeta(task){
+  const deadlineMeta=formatTaskCardDeadline(task);
+  const whenLabel=deadlineMeta&&deadlineMeta.text?deadlineMeta.text:(task.deadline?String(task.deadline):'без срока');
+  const directionLabel=(task.directionLabel||'').trim()||(task.direction==='incoming'?'Личное':'Работа');
+  const priorityLabelMap={p0:'срочно',p1:'скоро',p2:'в работе',p3:'позже'};
+  const priorityKey=getTaskCardPriority(task);
+  const priorityLabel=priorityLabelMap[priorityKey]||'в работе';
+  return [whenLabel,directionLabel,priorityLabel].join(' · ');
+}
+
+function renderHomePriorityCard(task,index,options={}){
+  const id=String(task?.id||'');
+  const safeId=e2(id);
+  const title=e2((task?.person?task.person+' — ':'')+(task?.text||'Без текста'));
+  const meta=e2(getHomePriorityMeta(task));
+  const badge=e2(String((index||0)+1));
+  const openAction=options.closePanelFirst
+    ? 'closeFocusPanel();openTaskById(\''+safeId+'\','+options.cacheIndex+')'
+    : 'openTaskById(\''+safeId+'\','+options.cacheIndex+')';
+  return '<div class="home-ai-row" data-task-id="'+safeId+'" role="button" tabindex="0">'
+    +'<div class="home-ai-row-main" onclick="'+openAction+'">'
+    +'<span class="home-ai-row-avatar">'+badge+'</span>'
+    +'<div class="home-ai-row-main-text">'
+    +'<div class="home-ai-row-title">'+title+'</div>'
+    +'<div class="home-ai-row-meta">'+meta+'</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>';
+}
+
 function renderFocusPanel(){
   const subtitle=document.getElementById('focus-panel-subtitle');
   const list=document.getElementById('focus-panel-list');
@@ -3756,18 +3786,8 @@ function renderFocusPanel(){
     return;
   }
   list.innerHTML=tasks.map((task,index)=>{
-    const id=String(task.id||'');
-    const safeId=e2(id);
-    const safeTitle=e2((index+1)+'. '+(task.person?task.person+' — ':'')+(task.text||'Без текста'));
-    const safeMeta=e2(task.deadline?formatTaskDateMeta(task):(task.direction==='incoming'?'Ждём ответа':'Без дедлайна'));
-    const avatar=e2((task.person||'?')[0]?.toUpperCase()||'?');
-    const cacheIndex=allTasksCache.findIndex(t=>String(t.id)===id);
-    return '<div class="home-ai-row" data-task-id="'+safeId+'" role="button" tabindex="0">'
-      +'<div class="home-ai-row-main" onclick="closeFocusPanel();openTaskById(\''+safeId+'\','+cacheIndex+')">'
-      +'<span class="home-ai-row-avatar">'+avatar+'</span>'
-      +'<div class="home-ai-row-main-text"><div class="home-ai-row-title">'+safeTitle+'</div><div class="home-ai-row-meta">'+safeMeta+'</div></div>'
-      +'</div>'
-      +'</div>';
+    const cacheIndex=allTasksCache.findIndex(t=>String(t.id)===String(task.id||''));
+    return renderHomePriorityCard(task,index,{cacheIndex,closePanelFirst:true});
   }).join('');
 }
 
@@ -3814,8 +3834,8 @@ function updateHomeDashboardList({outgoing=[],incoming=[]}){
     return;
   }
   homeList.innerHTML=dashboardTasks.map((task,index)=>{
-    const rankedTask={...task,text:(index+1)+'. '+(task.text||'Без текста')};
-    return renderTaskCard(rankedTask,index);
+    const cacheIndex=allTasksCache.findIndex(t=>String(t.id)===String(task.id||''));
+    return renderHomePriorityCard(task,index,{cacheIndex,closePanelFirst:false});
   }).join('');
 }
 
