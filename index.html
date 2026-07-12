@@ -6054,8 +6054,43 @@ function toggleTheme(){
 
 let calDate=new Date(),calView='week';
 const MONTHS_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const CAL_MONTHS_MAP={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
+const CAL_MONTHS_SHORT=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
 function setCalView(v,el){calView=v;document.querySelectorAll('.cal-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderCalendar();}
 function calNav(dir){calDate.setMonth(calDate.getMonth()+dir);renderCalendar();}
+function parseCalendarTaskDeadline(task, fallbackYear){
+  const raw=String(task?.deadline||'').trim();
+  if(!raw) return null;
+  const parts=raw.split(/\s+/);
+  if(parts.length>=2&&CAL_MONTHS_MAP[parts[1]]!==undefined){
+    const year=parts[2]?parseInt(parts[2],10):(fallbackYear||calDate.getFullYear());
+    const date=new Date(year,CAL_MONTHS_MAP[parts[1]],parseInt(parts[0],10));
+    return Number.isNaN(date.getTime())?null:date;
+  }
+  const parsed=new Date(raw);
+  return Number.isNaN(parsed.getTime())?null:parsed;
+}
+function renderCalendarDeadlinesList(tasks){
+  const listEl=document.getElementById('cal-deadlines-list');
+  if(!listEl) return;
+  const hot=(tasks||[])
+    .filter(t=>!t.done&&t.deadline)
+    .map(t=>({task:t,date:parseCalendarTaskDeadline(t)}))
+    .filter(item=>item.date)
+    .sort((a,b)=>a.date-b.date);
+  if(!hot.length){
+    listEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:12px 0;text-align:center">Нет дедлайнов</div>';
+    return;
+  }
+  listEl.innerHTML=hot.map(item=>{
+    const t=item.task;
+    return '<div class="cal-event" data-cal-task-id="'+e2(String(t.id||''))+'">'
+      +'<div class="cal-event-time">'+e2(t.deadline||'')+'</div>'
+      +'<div class="cal-event-dot"></div>'
+      +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
+      +'</div>';
+  }).join('');
+}
 function renderCalendar(){
   const now=new Date(),y=calDate.getFullYear(),m=calDate.getMonth();
   document.getElementById('cal-month-title').textContent=MONTHS_RU[m]+' '+y;
@@ -6070,6 +6105,7 @@ function renderCalendar(){
   fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
     const hot=(tasks||[]).filter(t=>!t.done&&t.deadline);
+    renderCalendarDeadlinesList(tasks);
     if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
     titEl.textContent='Дедлайны';
     evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${t.deadline||''}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
@@ -6082,20 +6118,13 @@ function selectCalDay(d){
   const sel=new Date(y,m,d);
   fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
-    const MONTHS_MAP={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
     const dayTasks=(tasks||[]).filter(t=>{
       if(t.done||!t.deadline)return false;
-      let td;
-      const parts=t.deadline.trim().split(' ');
-      if(parts.length>=2&&MONTHS_MAP[parts[1]]!==undefined){
-        const year=parts[2]?parseInt(parts[2]):sel.getFullYear();
-        td=new Date(year,MONTHS_MAP[parts[1]],parseInt(parts[0]));
-      } else {
-        td=new Date(t.deadline);
-      }
+      const td=parseCalendarTaskDeadline(t,sel.getFullYear());
+      if(!td) return false;
       return td.getDate()===sel.getDate()&&td.getMonth()===sel.getMonth()&&td.getFullYear()===sel.getFullYear();
     });
-    titEl.textContent='Дедлайны — '+d+' '+['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'][m];
+    titEl.textContent='Дедлайны — '+d+' '+CAL_MONTHS_SHORT[m];
     if(dayTasks.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет задач на этот день</div>';return;}
     evEl.innerHTML=dayTasks.map(t=>{
       const tid=t.id;

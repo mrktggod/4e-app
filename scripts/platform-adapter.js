@@ -490,6 +490,15 @@
           if (!Number.isNaN(delta) && typeof calNav === 'function') {
             calNav(delta);
           }
+          return;
+        }
+
+        const calTaskRow = event.target.closest('[data-cal-task-id]');
+        if (calTaskRow) {
+          const taskId = calTaskRow.dataset.calTaskId;
+          if (taskId && typeof openTaskById === 'function') {
+            openTaskById(taskId, 0);
+          }
         }
       });
     }
