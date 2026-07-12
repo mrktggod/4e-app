@@ -27,10 +27,11 @@
 1. `DEVELOPMENT_LOG.md` — детальная история, критические правила, известные проблемы
 2. `shared/DEVELOPMENT_HISTORY.md` — архитектурные решения и ключевые компоненты
 3. `shared/WORK_LOG.md` — что делает команда прямо сейчас (все агенты)
-4. `pm/bugs.md`, `shared/ROADMAP.md` и `pm/backlog.md` — текущий PM/QA-контур
-5. `docs/tasks/` — атомарные задачи от команды
-6. `docs/tasks/done/` — что уже сделано, если папка существует
-7. `pm/team-sync.md` — статусный канал между Codex и ручными шагами (что сделано / что проверяет Алексей).
+4. `pm/team-sync.md` — короткая синхронизация Алексея, Юрия, Codex и Claude
+5. `pm/bugs.md`, `shared/ROADMAP.md` и `pm/backlog.md` — текущий PM/QA-контур
+6. `docs/team-sync-protocol.md` — правила коротких статусов `Что там у Юры?` / `Что там у Лехи?`
+7. `docs/tasks/` — атомарные задачи от команды
+8. `docs/tasks/done/` — что уже сделано, если папка существует
 
 ---
 
@@ -84,9 +85,6 @@ Write-Host "После правки: $($after.Count) совпадений"
 ```
 
 **НИКОГДА не использовать:** `Set-Content`, `Out-File`, `-replace`, `>>` для файлов с кириллицей.
-- После изменения index.html запускай: `bash scripts/check-ui-architecture.sh`, `node scripts/check-doc-encoding.mjs` и `node scripts/check-js-syntax.mjs`; если fail — не коммитить.
-
-Это правило действует на каждый коммит в рамках сессии, включая цепочку продолжений («дальше»), а не только один раз в начале.
 
 ### Git — согласуемый процесс команды
 
@@ -108,6 +106,7 @@ Write-Host "После правки: $($after.Count) совпадений"
 4. Что нужно подтвердить человеку.
 
 GitHub Desktop — удобный вариант для Алексея и слабых пользователей Git, но не обязательное правило для Юрия или опытных участников.
+Юрий обычно управляет Git через Claude: агент должен сначала проверить ветку и `git status`, затем выполнять fetch/pull/commit/push только если нет риска потерять чужие или незакоммиченные изменения.
 
 ### Ветки — стратегия
 
@@ -119,6 +118,14 @@ GitHub Desktop — удобный вариант для Алексея и сла
 | Hotfix P0, прямо в прод | `main` — только если быстро и понятно, с записью в лог |
 
 После работы: merge ветки в `main` через Pull Request или после проверки командой.
+
+### Team Sync — короткие статусы между Алексеем и Юрой
+
+Если Алексей спрашивает `Что там у Юры?` или `Дай статус проекта`, сначала читай `docs/team-sync-protocol.md`, затем `pm/team-sync.md`, `pm/backlog.md`, `pm/bugs.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md` и актуальное Git-состояние.
+
+Завершённая задача должна быть синхронизирована с GitHub: проверка, commit, push в рабочую ветку, обновление `pm/team-sync.md`, затем короткий отчёт с веткой, commit/PR и следующим шагом.
+
+Merge в `main` не является частью автоматического завершения задачи и требует отдельного подтверждения Алексея или Юрия.
 
 ### Решения и approval-gate
 
@@ -145,21 +152,6 @@ GitHub Desktop — удобный вариант для Алексея и сла
 ### PowerShell
 - `;` вместо `&&`
 - Скачивать файлы: `$bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()`
-
-### UI-архитектура — новое правило с 2026-07-06
-
-Для нового UI-кода действует правило: HTML = структура, LESS = стили, JS = поведение.
-
-- Новые визуальные стили писать в `styles/**/*.less`, затем запускать `npm run build:css`.
-- Новые CSS-классы называть в BEM-подходе: `block`, `block__element`, `block--modifier`.
-- Базовая доступность — часть Definition of Done для нового и изменяемого UI: labels/accessible names, видимый focus, keyboard flow, status/error сообщения, dialog-поведение и mobile touch targets.
-- Не добавлять новые `style=""` в `index.html`/`vk.html`, кроме явно обоснованных динамических CSS-переменных.
-- Не добавлять новые `onclick`/`oninput`/`onchange` и другие inline-обработчики; использовать `addEventListener()` или делегирование событий.
-- Не добавлять новые inline `<style>` и inline `<script>` блоки в `index.html`.
-- Старый inline-код и accessibility-долг не переписывать массово без отдельной задачи; при правке экрана переносить близкий старый долг и доводить доступность сценария до baseline по мере возможности.
-- Перед коммитом запускать `bash scripts/check-ui-architecture.sh` и `node scripts/check-js-syntax.mjs`; pre-commit не должен пропускать ни рост inline-долга, ни синтаксически битые JS/inline script.
-- Для UI-задач сверяться с accessibility smoke в `pm/qa-checklist.md`, особенно auth, формы, toast/status, dialog/bottom sheet и touch targets.
-- Подробности: `docs/ui-architecture-rules.md`.
 
 ---
 

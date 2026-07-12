@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#071006"/>
+  <circle cx="44" cy="58" r="24" fill="#12200f" stroke="#2b3d27"/>
+  <text x="40" y="66" fill="#eef4ea" font-family="Arial, sans-serif" font-size="28" font-weight="700">&lt;</text>
+  <text x="78" y="66" fill="#f2f6ef" font-family="Arial, sans-serif" font-size="24" font-weight="800">Уведомления</text>
+  <rect x="20" y="96" width="55" height="34" rx="17" fill="#a6d632"/>
+  <text x="39" y="118" fill="#071006" font-family="Arial, sans-serif" font-size="14" font-weight="800">Все</text>
+  <rect x="84" y="96" width="74" height="34" rx="17" fill="none" stroke="#2b3d27"/>
+  <text x="105" y="118" fill="#a8afa3" font-family="Arial, sans-serif" font-size="14" font-weight="700">Задачи</text>
+  <rect x="166" y="96" width="64" height="34" rx="17" fill="none" stroke="#2b3d27"/>
+  <text x="184" y="118" fill="#a8afa3" font-family="Arial, sans-serif" font-size="14" font-weight="700">Горит</text>
+  <rect x="238" y="96" width="104" height="34" rx="17" fill="none" stroke="#2b3d27"/>
+  <text x="258" y="118" fill="#a8afa3" font-family="Arial, sans-serif" font-size="14" font-weight="700">Напоминания</text>
+  <text x="20" y="176" fill="#a8afa3" font-family="Arial, sans-serif" font-size="20" font-weight="800">Сейчас важно</text>
+  <rect x="20" y="196" width="350" height="168" rx="10" fill="#0b170b" stroke="#2b3d27"/>
+  <rect x="20" y="196" width="4" height="168" rx="2" fill="#f0a326"/>
+  <circle cx="58" cy="238" r="22" fill="#18260f"/>
+  <text x="50" y="247" fill="#f0a326" font-family="Arial, sans-serif" font-size="20" font-weight="800">!</text>
+  <text x="92" y="230" fill="#f2f6ef" font-family="Arial, sans-serif" font-size="18" font-weight="800">Горит дедлайн</text>
+  <text x="318" y="230" fill="#9ca498" font-family="Arial, sans-serif" font-size="14" font-weight="700">14:15</text>
+  <circle cx="352" cy="225" r="4" fill="#a6d632"/>
+  <text x="92" y="258" fill="#a8afa3" font-family="Arial, sans-serif" font-size="15">Через 45 минут: отправить</text>
+  <text x="92" y="280" fill="#a8afa3" font-family="Arial, sans-serif" font-size="15">тестовый отчёт</text>
+  <rect x="92" y="302" width="96" height="36" rx="18" fill="#a6d632"/>
+  <text x="118" y="325" fill="#071006" font-family="Arial, sans-serif" font-size="14" font-weight="800">К задаче</text>
+  <rect x="198" y="302" width="98" height="36" rx="18" fill="none" stroke="#58634f"/>
+  <text x="217" y="325" fill="#a6d632" font-family="Arial, sans-serif" font-size="14" font-weight="800">Отложить</text>
+  <text x="92" y="352" fill="#8e9788" font-family="Arial, sans-serif" font-size="12">После нажатия: 15 мин / 1 час / 3 часа / Завтра</text>
+  <rect x="20" y="384" width="350" height="158" rx="10" fill="#0b170b" stroke="#2b3d27"/>
+  <circle cx="58" cy="426" r="22" fill="#18260f"/>
+  <rect x="49" y="418" width="18" height="18" rx="3" fill="none" stroke="#a6d632" stroke-width="2"/>
+  <text x="92" y="418" fill="#f2f6ef" font-family="Arial, sans-serif" font-size="18" font-weight="800">Утренний брифинг</text>
+  <text x="318" y="418" fill="#9ca498" font-family="Arial, sans-serif" font-size="14" font-weight="700">09:00</text>
+  <circle cx="352" cy="413" r="4" fill="#a6d632"/>
+  <text x="92" y="446" fill="#a8afa3" font-family="Arial, sans-serif" font-size="15">Сегодня главное: закрыть</text>
+  <text x="92" y="468" fill="#a8afa3" font-family="Arial, sans-serif" font-size="15">2 задачи и дождаться ответа</text>
+  <rect x="92" y="490" width="96" height="36" rx="18" fill="#a6d632"/>
+  <text x="118" y="513" fill="#071006" font-family="Arial, sans-serif" font-size="14" font-weight="800">План дня</text>
+  <rect x="198" y="490" width="108" height="36" rx="18" fill="none" stroke="#58634f"/>
+  <text x="219" y="513" fill="#a6d632" font-family="Arial, sans-serif" font-size="14" font-weight="800">Спросить 4</text>
+  <rect x="20" y="562" width="350" height="142" rx="10" fill="#0b170b" stroke="#2b3d27"/>
+  <circle cx="58" cy="604" r="22" fill="#18260f"/>
+  <circle cx="58" cy="598" r="7" fill="none" stroke="#a6d632" stroke-width="2"/>
+  <path d="M43 624c3-10 27-10 30 0" fill="none" stroke="#a6d632" stroke-width="2"/>
+  <text x="92" y="596" fill="#f2f6ef" font-family="Arial, sans-serif" font-size="18" font-weight="800">Ждёшь ответ</text>
+  <text x="318" y="596" fill="#9ca498" font-family="Arial, sans-serif" font-size="14" font-weight="700">Вчера</text>
+  <circle cx="352" cy="591" r="4" fill="#8e9788"/>
+  <text x="92" y="624" fill="#a8afa3" font-family="Arial, sans-serif" font-size="15">По макету нужен ответ</text>
+  <text x="92" y="646" fill="#a8afa3" font-family="Arial, sans-serif" font-size="15">от Юрия</text>
+  <rect x="92" y="668" width="100" height="36" rx="18" fill="#a6d632"/>
+  <text x="114" y="691" fill="#071006" font-family="Arial, sans-serif" font-size="14" font-weight="800">Написать</text>
+  <rect x="202" y="668" width="86" height="36" rx="18" fill="none" stroke="#58634f"/>
+  <text x="222" y="691" fill="#a6d632" font-family="Arial, sans-serif" font-size="14" font-weight="800">Открыть</text>
+  <text x="102" y="746" fill="#8e9788" font-family="Arial, sans-serif" font-size="14">Показаны важные уведомления</text>
+  <text x="143" y="774" fill="#a6d632" font-family="Arial, sans-serif" font-size="15" font-weight="700">Показать всё</text>
+</svg>

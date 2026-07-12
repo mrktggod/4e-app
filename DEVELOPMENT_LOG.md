@@ -19,6 +19,78 @@
 
 ---
 
+## 2026-07-08 — Roadmap filters and monetization alignment
+
+### Синхронизация roadmap по Now / Next / Later / Future / Icebox
+
+**Что сделано:** Код приложения не менялся. Roadmap и backlog пересобраны через продуктовые фильтры: проблема пользователя, усиление "личного штаба дня", необходимость до первых активных/платящих пользователей, стоимость и горизонт. В `pm/backlog.md` добавлен фильтр горизонтов, `BACK-055` поднят до P1, `BUG-2026-07-05-003` связан с новой задачей `BACK-056`, а архитектурный распил `index.html` переименован из конфликтного `BACK-036` в `ARCH-001`. Добавлены `BETA-001`, `ANALYTICS-001`, `FEEDBACK-001` и `ONBOARD-001`. `pm/next-actions.md` заменён актуальной последовательностью: beta gate → закрытый тест → усиление штаба дня → монетизация. Для Юрия создан отчёт `pm/agent-inbox/codex-to-yuri-2026-07-08-roadmap-filters-monetization.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `pm/next-actions.md` → `pm/bugs.md` / `pm/qa-checklist.md` → `pm/agent-inbox/codex-to-yuri-2026-07-08-roadmap-filters-monetization.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A
+
+## 2026-07-08 — CAL-001 / OMNI-001 roadmap planning
+
+### Календарь и омниканальные поверхности как будущий слой штаба дня
+
+**Что сделано:** Код приложения не менялся. В `shared/ROADMAP.md` добавлено решение: 4 позиционируется как омниканальный личный штаб дня, а не как бот или generic task manager; календарь поднят в ближайшую продуктовую проработку. В `pm/backlog.md` добавлены `CAL-001`, `CAL-002`, `CAL-003` и `OMNI-001`. Созданы task-документы `docs/tasks/CAL-001-calendar-concept.md` и `docs/tasks/OMNI-001-omnichannel-surfaces.md`. Для согласования с Юрием/Claude подготовлено письмо `pm/agent-inbox/codex-to-team-2026-07-08-omnichannel-calendar-roadmap.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `docs/tasks/CAL-001-calendar-concept.md` / `docs/tasks/OMNI-001-omnichannel-surfaces.md` → `pm/agent-inbox/codex-to-team-2026-07-08-omnichannel-calendar-roadmap.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A
+
+## 2026-07-08 — SMART-013: AI task decomposition spec
+
+### Постановка задачи на AI-декомпозицию задачи в чек-лист
+
+**Что сделано:** Код приложения не менялся. Создано ТЗ `docs/tasks/SMART-013-ai-task-decomposition.md`: кнопка `Разбить на этапы` должна жить в блоке чек-листа `task-detail`, AI показывает preview 3-7 шагов, пользователь подтверждает, после чего этапы сохраняются как обычные пункты `checklist`. Добавлен visual reference `docs/tasks/assets/SMART-013-ai-task-decomposition-mockup.png` с source SVG рядом. В `pm/backlog.md` статус `SMART-013` переведён в `Triaged`; в `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` добавлена ссылка на ТЗ и зафиксирована граница MVP без отдельной сущности подзадач.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `pm/backlog.md` → `docs/tasks/SMART-013-ai-task-decomposition.md` → `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md`; визуальная проверка PNG-reference; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(ai): add smart 013 decomposition spec`
+
+## 2026-07-08 — BACK-055: notifications action cards task
+
+### Постановка задачи на уведомления как ленту внимания
+
+**Что сделано:** Код приложения не менялся. Создано ТЗ `docs/tasks/BACK-055-notifications-action-cards.md` для Юрия: экран `Уведомления` должен стать лентой внимания AI-планера, а не архивом событий. В `pm/backlog.md` добавлена задача `BACK-055`, в `shared/ROADMAP.md` направление AI-планерного дашборда дополнено уведомлениями, в `pm/qa-checklist.md` добавлены проверки action cards. Visual reference сохранён в `docs/tasks/assets/BACK-055-notifications-action-cards-wireframe.svg`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `docs/tasks/BACK-055-notifications-action-cards.md` → `pm/qa-checklist.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** N/A
+
+## 2026-07-08 — Team Sync: Yuri Claude-driven Git
+
+### Поправка инструкции Юры без GitHub Desktop
+
+**Что сделано:** Код приложения не менялся. В `docs/team-sync-protocol.md`, `pm/team-sync.md`, `docs/git-team-rules.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `AGENTS.md` уточнено, что Юрий не пользуется GitHub Desktop и управляет Git через Claude. Для Юры добавлена стартовая фраза: Claude должен проверить ветку, `git status`, сделать `git fetch origin` и подтягивать изменения только если нет риска потерять незакоммиченные изменения.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(process): clarify yuri git via claude`
+
+## 2026-07-08 — Team Sync protocol
+
+### Единая синхронизация Алексея, Юрия, Codex и Claude
+
+**Что сделано:** Код приложения не менялся. Добавлены `docs/team-sync-protocol.md` и `pm/team-sync.md`: ключевые фразы `Что там у Лехи?`, `Что там у Юры?`, `Закрой задачу и синхронизируй`, определение завершенной задачи, правило commit/push в рабочую ветку и запрет автоматического merge в `main`. В `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `docs/git-team-rules.md` добавлены ссылки на новый протокол, чтобы Codex и Claude читали один и тот же источник правил.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `docs(process): add team sync protocol`
+
 ## 2026-07-06 — Linear bug triage policy
 
 ### Правило, когда баг заводим в Linear
