@@ -1,4 +1,4 @@
-// AUTH HANDLERS extracted for BACK-055
+﻿// AUTH HANDLERS extracted for BACK-055
 const AUTH_FIELD_IDS=['login-email','login-pass','reg-name','reg-email','reg-pass','forgot-email','reset-pass','reset-pass2'];
 
 function switchAuthTab(tab, focusFirst){
@@ -164,8 +164,80 @@ async function loginWithTelegramLegacy(){
 
 
 // Привязываем Telegram ID к аккаунту после логина
+function getTelegramManualStartCommand(startToken){
+  const token=String(startToken||'').trim();
+  return token?/start auth_:'/start';
+}
+
+function getTelegramManualStartPanel(){
+  let panel=document.getElementById('telegram-manual-start-panel');
+  if(panel)return panel;
+
+  panel=document.createElement('section');
+  panel.id='telegram-manual-start-panel';
+  panel.hidden=true;
+  panel.setAttribute('aria-live','polite');
+  panel.style.cssText='margin:12px 0 0;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);display:flex;flex-direction:column;gap:10px;';
+  panel.innerHTML=
+    <div style="font-size:13px;line-height:1.45;opacity:.92;">Если Telegram просто открыл чат с ботом и не отправил команду сам, отправьте её вручную:</div>
+    <code data-telegram-start-command style="display:block;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.24);font-size:14px;word-break:break-all;">/start</code>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button type="button" data-telegram-start-copy class="chip-btn">Скопировать команду</button>
+      <button type="button" data-telegram-start-open class="chip-btn">Открыть Telegram ещё раз</button>
+    </div>
+    <div style="font-size:12px;line-height:1.45;opacity:.75;">Если бот сам не ответил, отправьте эту команду вручную в текущий чат с ботом.</div>
+  ;
+
+  const loginForm=document.getElementById('form-login');
+  const loginHost=loginForm?.parentElement || document.getElementById('auth') || document.getElementById('login') || document.body;
+  if(loginForm){
+    loginForm.insertAdjacentElement('afterend',panel);
+  }else{
+    loginHost.appendChild(panel);
+  }
+
+  panel.querySelector('[data-telegram-start-copy]')?.addEventListener('click',async ()=>{
+    const command=panel.querySelector('[data-telegram-start-command]')?.textContent||'/start';
+    try{
+      if(typeof copyMsg==='function'){
+        copyMsg(command,'Команда скопирована');
+        return;
+      }
+      if(navigator.clipboard?.writeText){
+        await navigator.clipboard.writeText(command);
+        showToast('Команда скопирована');
+        return;
+      }
+    }catch(e){}
+    showToast('Скопируйте команду вручную');
+  });
+
+  panel.querySelector('[data-telegram-start-open]')?.addEventListener('click',()=>{
+    const token=panel.dataset.startToken||'';
+    openTelegramLoginUrl(buildTelegramBotLoginUrl(token));
+  });
+
+  return panel;
+}
+
+function showTelegramManualStartFallback(startToken){
+  if(!startToken)return;
+  const panel=getTelegramManualStartPanel();
+  const command=getTelegramManualStartCommand(startToken);
+  panel.dataset.startToken=String(startToken);
+  const commandNode=panel.querySelector('[data-telegram-start-command]');
+  if(commandNode)commandNode.textContent=command;
+  panel.hidden=false;
+}
+
+function hideTelegramManualStartFallback(){
+  const panel=document.getElementById('telegram-manual-start-panel');
+  if(panel)panel.hidden=true;
+}
+
 async function loginWithTelegram(startToken=''){
   if(startToken){
+    showTelegramManualStartFallback(startToken);
     const body = { startToken };
     const pendingRef = getPendingReferralCode();
     if (pendingRef)
@@ -189,6 +261,7 @@ async function loginWithTelegram(startToken=''){
         localStorage.setItem(ONBOARD_K, '1');
         clearPendingReferralCode();
         clearTelegramPendingStart();
+        hideTelegramManualStartFallback();
         cleanTelegramAuthUrl();
         showScreen('home');
         loadTasks();
@@ -226,6 +299,7 @@ async function loginWithTelegram(startToken=''){
   } catch (e) {}
   if (tokenData.ok && tokenData.startToken) {
     saveTelegramPendingStart(tokenData.startToken);
+    showTelegramManualStartFallback(tokenData.startToken);
     openTelegramLoginUrl(buildTelegramBotLoginUrl(tokenData.startToken));
     return true;
   }
@@ -327,4 +401,5 @@ function bindChangePasswordHandlers(){
 }
 
 document.addEventListener('DOMContentLoaded',bindChangePasswordHandlers);
+
 
