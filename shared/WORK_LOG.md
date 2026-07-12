@@ -14,6 +14,14 @@
 **Статус:** ⚠️ gateway создан, dev hosting обновлён, production VK deploy ждёт confirm code
 **Следующий шаг:** ввести VK confirm code из Administration, завершить production VK deploy и пройти phone-smoke VK Mini App без VPN
 
+### 2026-07-12 — Codex
+
+**Задача:** синхронизировать `feat/admin-tariff-api` с `origin/main` без merge в `main`
+**Результат:** Ветка подтянута merge-коммитом `a3c9ea1`. Разрулены конфликты в `AGENTS.md`, `FILE_MAP.md`, `pm/backlog.md`, `pm/bugs.md`, `pm/qa-checklist.md`, `pm/team-sync.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md`: process-протокол и новые task/docs-файлы из `main` сохранены, более свежие статусы и локальные записи ветки не потеряны. В backlog/roadmap добавлены `BACK-055`, `BACK-056`, `CAL-001/002/003`, `OMNI-001`, `ONBOARD-001`, `BETA-001`, `ANALYTICS-001`, `FEEDBACK-001`; в репо пришли `docs/team-sync-protocol.md`, `pm/next-actions.md` и связанные task-доки/asset-файлы.
+**Коммит:** `a3c9ea1`
+**Статус:** ✅ ветка синхронизирована с `main`, push выполнен
+**Следующий шаг:** перейти к `NEW-006` и затем `NEW-008` на мобильном Telegram safe-area / keyboard overlap
+
 ### 2026-07-08 — Codex
 
 **Задача:** пересобрать roadmap по фильтрам beta gate, личного штаба дня и монетизации
