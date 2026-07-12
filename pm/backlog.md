@@ -56,7 +56,7 @@
 | NEW-016 | Фокус дня: текст наезжает на декоративный элемент | Bug/UI | P3 | Юрий + Codex | Todo | Г2 | Исправить перекрытие текста и планеты/декора в блоке фокуса |
 | NEW-017 | Календарь: при первом запуске показываются демо-задачи | Bug/UX | P2 | Юрий + Codex | Todo | Г2 | На первом открытии календаря показывать реальные пользовательские задачи, не демо-сет |
 | NEW-019 | Карточка задачи: "Человек" не кликабелен | Bug/Accessibility | P2 | Codex | Done | Г2 | Подтверждено кодом и живым smoke 2026-07-10: `#detail-person-row` (index.html) был размечен `role="button" tabindex="0"`, но без обработчика клика/клавиатуры. Исправлено коммитом `fix(tasks): make detail assignee row actionable` — добавлены `onclick="openDetailPersonPicker()"` и `onkeydown="handleDetailPersonRowKeydown(event)"` на строку, `onclick` на кнопку `detail-contact-btn`. Живой повторный smoke после фикса ещё не проводился. |
-| NEW-018 | Профиль: email в поле "Email" склеен из двух значений | Bug/Data | P1 | Codex | Todo | Г2 | На проде у аккаунта Юрия (ID `1efd3fc2-2b76-403e-bf5e-db787df4358ce`, phone `+79256020666`) поле email в профиле показывает `shelckograff@gmail.comelckograff@gmail.comegram.local` — похоже на склейку реального `shelckograff@gmail.com` и синтетического `tg_<id>@telegram.local` (см. `worker.js` строки 3046/3106) с потерей общих символов, а не визуальный глитч (строка одинакова при повторной проверке). `mergeAccounts` (worker.js ~1072) email не трогает, значит источник не там — нужно проверить фактическое значение поля `email` в KV-записи `user:<id>` для этого юзера напрямую (`wrangler kv key get --binding=KV --remote`) и найти, где именно строка формируется/сохраняется таким образом. Диагностика через wrangler ещё не выполнена/не подтверждена (RAW-вывод не получен). |
+| NEW-018 | Профиль: email в поле "Email" склеен из двух значений | Bug/Data | P1 | Codex | Ready for QA | Г2 | KV-проверка 2026-07-12 выполнена: запрос по ID из старой заметки `1efd3fc2-2b76-403e-bf5e-db787df4358ce` дал 404, а по реальному user ID `1efd3fc2-2b76-403e-bf5e-db787df458ce` ключ `user_id:<id>` вернул `shelckograff@gmail.com`; запись `user:shelckograff@gmail.com` тоже содержит чистый `email` без склейки. Значит источник не в KV-поле `email`; вероятнее всего, симптом был связан с теневым Telegram-пользователем/устаревшим профайл-пейлоадом. После worker-фикса `aefbd0d` нужен ручной smoke профиля на проде. |
 
 ## Next
 
@@ -165,4 +165,5 @@
 | ICE-001 | WhatsApp Business API | Сложная интеграция, нет спроса пока | Горизонт 3 |
 | ICE-002 | Нативные iOS/Android приложения | Mini App достаточно на старте | После 10k пользователей |
 | ICE-003 | Proactive mode — 4 сам инициирует общение | Требует зрелой AI-логики | Горизонт 2 |
+
 
