@@ -4283,8 +4283,13 @@ function toStepList(text){
     .map((line) => String(line || '')
       .replace(/^\s*[-*•]\s*/, '')
       .replace(/^\s*\d+[.)]\s*/, '')
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/^\\?["']?steps\\?["']?\s*:\s*\[?\s*$/i, '')
+      .replace(/^[\[\]{},\s]+$/, '')
+      .replace(/^["'\s]+/, '')
+      .replace(/["',\s]+$/, '')
       .trim())
-    .filter((line) => line.length > 2);
+    .filter((line) => line.length > 2 && !/^steps\\?["']?\s*:\s*\[?\s*$/i.test(line));
 }
 
 function parseTaskStepsFromAiResponse(payload){
@@ -4296,7 +4301,11 @@ function parseTaskStepsFromAiResponse(payload){
   }
   const rawText = parseAIText(payload);
   if (typeof rawText !== 'string') return [];
-  const jsonMatch = rawText.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+  const normalizedRawText = rawText.trim();
+  if (!normalizedRawText || /^ошибка:/i.test(normalizedRawText) || /^not found$/i.test(normalizedRawText) || /^error:/i.test(normalizedRawText)) {
+    return [];
+  }
+  const jsonMatch = normalizedRawText.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
   if (jsonMatch) {
     try {
       const parsed = JSON.parse(jsonMatch[0]);
@@ -4309,7 +4318,7 @@ function parseTaskStepsFromAiResponse(payload){
       // ignore parse errors, fallback to line list
     }
   }
-  return toStepList(rawText);
+  return toStepList(normalizedRawText);
 }
 
 function getSmart013FallbackSteps(taskText){
@@ -5232,7 +5241,7 @@ function openWrite(name,avatar,title,context){currentCtx={name,avatar,title,cont
 function setTone(tone,el){if(isGenerating)return;currentTone=tone;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');regenMsg();}
 function regenMsg(){document.getElementById('msg-text').innerHTML='<span class="dots"><span></span><span></span><span></span></span>';generateMessage();}
 async function aiCall(body){
-  const r=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify(body)});
+  const r=await fetch(WORKER + '/anthropic',{method:'POST',headers:{...authHeaders(),'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify(body)});
   const text=await r.text();
   console.log('[4 Worker response]',r.status,text.slice(0,500));
   try{return JSON.parse(text);}catch(e){return {_raw:text};}
