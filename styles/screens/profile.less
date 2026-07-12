@@ -1,5 +1,5 @@
 /* ===== PROFILE ===== */
-.profile-scroll{flex:1;overflow-y:auto;padding:0 16px 100px}
+.profile-scroll{flex:1;overflow-y:auto;padding:0 16px calc(var(--app-bottom-nav-reserve) + 4px)}
 .profile-scroll::-webkit-scrollbar{width:0}
 .profile-user{display:flex;align-items:center;gap:14px;padding:16px 0 20px}
 .profile-avatar{width:60px;height:60px;border-radius:50%;background:var(--green3);border:2px solid var(--green-dark);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--green);flex-shrink:0}
@@ -37,7 +37,7 @@
 .profile-telegram-value{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .profile-about-field textarea{min-height:104px}
 .profile-field small,.profile-field-counter{align-self:flex-end;font-size:11px;color:var(--muted)}
-@media(max-width:560px){.profile-scroll{padding:0 16px 112px}.profile-photo-row{align-items:flex-start}.profile-photo-actions{flex:1}.profile-photo-btn{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px}.profile-field-grid{gap:14px}.profile-form-card{padding:18px 16px}.profile-input-status{grid-template-columns:minmax(0,1fr);gap:6px}.profile-status-badge{justify-self:start}.profile-telegram-line{grid-template-columns:minmax(0,1fr);align-items:flex-start;padding:10px 12px;min-height:auto}.profile-telegram-line .profile-status-badge{justify-self:start}.profile-field small,.profile-field-counter{align-self:flex-start}.profile-save-btn{margin-top:20px;margin-bottom:12px}}
+@media(max-width:560px){.profile-scroll{padding:0 16px calc(var(--app-bottom-nav-reserve) + 16px)}.profile-photo-row{align-items:flex-start}.profile-photo-actions{flex:1}.profile-photo-btn{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px}.profile-field-grid{gap:14px}.profile-form-card{padding:18px 16px}.profile-input-status{grid-template-columns:minmax(0,1fr);gap:6px}.profile-status-badge{justify-self:start}.profile-telegram-line{grid-template-columns:minmax(0,1fr);align-items:flex-start;padding:10px 12px;min-height:auto}.profile-telegram-line .profile-status-badge{justify-self:start}.profile-field small,.profile-field-counter{align-self:flex-start}.profile-save-btn{margin-top:20px;margin-bottom:12px}}
 @media(min-width:768px){.profile-field-grid{grid-template-columns:1fr 1fr}.profile-field-full{grid-column:1/-1}}
 .notif-time-control{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .notif-time-control input[type="time"]{height:34px;width:88px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:0 8px;box-sizing:border-box;outline:none}

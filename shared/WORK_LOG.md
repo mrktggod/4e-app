@@ -16,6 +16,14 @@
 
 ### 2026-07-12 — Codex
 
+**Задача:** NEW-006 — Safe Area: нижняя навигация Telegram Mini Apps не должна перекрывать контент
+**Результат:** В LESS и собранном `styles.min.css` добавлены общие переменные `--safe-area-top`, `--safe-area-bottom`, `--app-bottom-nav-reserve`; нижняя навигация (`.bottom-nav`, `.bottom-nav-v2`) теперь учитывает `env(safe-area-inset-bottom)`, а базовые scroll-контейнеры (`.scroll-body`, `.sub-scroll`, `.profile-scroll`, `.notif-scroll`, `.ask-bar`) получили reserve под панель + safe-area. Headless mobile smoke на `390x844` после пересборки CSS: forced-screen `profile` с прокруткой до низа показывает последний action `Выйти` выше `#global-nav` (`lastBottom=732.18`, `navTop=764`), empty `notifications` остаётся чистым и не заезжает под nav. Отдельный keyboard-overlap для AI-чата оставлен на `NEW-008`.
+**Коммит:** `pending`
+**Статус:** ✅ safe-area слой подготовлен, baseline smoke зелёный
+**Следующий шаг:** перейти к `NEW-008` и разрулить keyboard / input overlap у AI-чата
+
+### 2026-07-12 — Codex
+
 **Задача:** синхронизировать `feat/admin-tariff-api` с `origin/main` без merge в `main`
 **Результат:** Ветка подтянута merge-коммитом `a3c9ea1`. Разрулены конфликты в `AGENTS.md`, `FILE_MAP.md`, `pm/backlog.md`, `pm/bugs.md`, `pm/qa-checklist.md`, `pm/team-sync.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md`: process-протокол и новые task/docs-файлы из `main` сохранены, более свежие статусы и локальные записи ветки не потеряны. В backlog/roadmap добавлены `BACK-055`, `BACK-056`, `CAL-001/002/003`, `OMNI-001`, `ONBOARD-001`, `BETA-001`, `ANALYTICS-001`, `FEEDBACK-001`; в репо пришли `docs/team-sync-protocol.md`, `pm/next-actions.md` и связанные task-доки/asset-файлы.
 **Коммит:** `a3c9ea1`
