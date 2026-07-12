@@ -907,7 +907,7 @@
   <div class="profile-scroll">
     <div class="profile-user">
       <div class="profile-avatar" id="profile-avatar" role="button" aria-label="РР·РјРµРЅРёС‚СЊ С„РѕС‚Рѕ" onclick="openProfilePhotoPicker()" style="cursor:pointer;">?</div>
-      <div class="profile-user-copy"><div class="profile-name" id="profile-name">РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</div><div class="profile-status">Premium</div><div class="profile-user-id" id="profile-user-id">ID вЂ”</div></div>
+      <div class="profile-user-copy"><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div><div class="profile-user-id" id="profile-user-id">ID вЂ”</div></div>
     </div>
     <!-- trial banner injected here by JS -->
     <div id="trial-banner-wrap"></div>
@@ -932,8 +932,8 @@
       </div>
       <div id="profile-pii-section" style="display:none;padding:4px 12px 0">
         <div class="profile-field-grid">
-          <label class="profile-field"><span>РўРµР»РµС„РѕРЅ</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.stopPropagation();toggleProfileVerified('phone')">РќРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ</button></div></label>
-          <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="event.stopPropagation();requestEmailVerification()" aria-label="РџРѕРґС‚РІРµСЂРґРёС‚СЊ email">РќРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ</button></div></label>
+          <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.stopPropagation();toggleProfileVerified('phone')">Не подтверждён</button></div></label>
+          <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="event.stopPropagation();requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
           <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">РќРµ РїСЂРёРІСЏР·Р°РЅ</span><span class="profile-status-badge" id="profile-telegram-status">РќРµ РїСЂРёРІСЏР·Р°РЅ</span></div></div>
           <label class="profile-field" style="padding-top:4px"><span>Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ</span><input id="profile-field-birthdate" type="date" onclick="event.stopPropagation()"></label>
         </div>
@@ -2311,13 +2311,13 @@ function applyUserInfo(){
 const EXT_PROFILE_K='extendedProfileDraft';
 function getExtendedProfileDraft(){try{return JSON.parse(localStorage.getItem(EXT_PROFILE_K)||'{}')||{};}catch(e){return{};}}
 function saveExtendedProfileDraft(draft){localStorage.setItem(EXT_PROFILE_K,JSON.stringify(draft));}
-function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ').trim();}
+function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'Пользователь').trim();}
 function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();if(draft.photoDataUrl){el.textContent='';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';el.textContent=initials;}}
 function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
 function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
-function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'РџРѕРґС‚РІРµСЂР¶РґС‘РЅ':'РќРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ');el.classList.toggle('verified',!!verified);}
+function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
 function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerified&&String(email||'').trim().toLowerCase()===String(currentUser.email||'').trim().toLowerCase();}
-function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'РџРѕРґС‚РІРµСЂР¶РґС‘РЅ вњ…':'РќРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
+function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Не подтверждён');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
 function closeProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(sec)sec.style.display='none';if(arrow)arrow.textContent='вЂє';}
 function toggleProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(!sec)return;const hidden=sec.style.display==='none' || sec.style.display==='';sec.style.display=hidden?'block':'none';if(arrow)arrow.textContent=hidden?'вЊ„':'вЂє';}
 function openProfilePhotoPicker(){const el=document.getElementById('profile-photo-input');if(el)el.click();}
@@ -4838,7 +4838,7 @@ async function saveTaskChatMessage(role, content, from, actions){
 function buildTaskChatPrompt(userText){
   const task=currentDetailTask||{};
   const history=currentTaskMessages.slice(-6).map(function(message){
-    const author=message.role==='assistant'?'4':(message.from||'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ');
+    const author=message.role==='assistant'?'4':(message.from||'Пользователь');
     return author+': '+String(message.content||'').replace(/\s+/g,' ').trim();
   }).join('\n');
   return [
@@ -5389,7 +5389,7 @@ function buildAskUserProfileSummary(){
     const doneTs = getAskTaskDoneTimestamp(task);
     return doneTs !== null && doneTs >= weekAgo;
   }).length;
-  const currentName = (getExtendedProfileDisplayName?.() || currentUser?.name || currentUser?.email || 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ').trim();
+  const currentName = (getExtendedProfileDisplayName?.() || currentUser?.name || currentUser?.email || 'Пользователь').trim();
   const currentNameLower = currentName.toLowerCase();
   const topPeopleMap = new Map();
   for(const task of activeTasks){
@@ -6826,7 +6826,7 @@ async function registerBiometric() {
       publicKey: {
         challenge,
         rp: { name: '4 AI-СЃРµРєСЂРµС‚Р°СЂСЊ', id: window.location.hostname || 'localhost' },
-        user: { id: userId, name: 'user', displayName: 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ' },
+        user: { id: userId, name: 'user', displayName: 'Пользователь' },
         pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
         authenticatorSelection: {
           authenticatorAttachment: 'platform',
