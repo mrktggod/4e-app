@@ -1107,6 +1107,15 @@
 **Комментарий:** Найден и исправлен реальный дефект в `index.html`: общий `aiCall()` бил в корень worker вместо `/anthropic`, из-за чего `Разбить на этапы` сохранял мусорный пункт `Ошибка: "Not found"`; дополнительно очищен parser step-list от fenced JSON / служебных строк. После фикса fresh-target smoke локальной ветки `http://127.0.0.1:4173/?fresh=...` с fetch-rewrite на staging worker создаёт задачу, вызывает `decomposeCurrentTask()` и сохраняет 8 нормальных шагов и в UI, и в persisted `checklist`. Отдельно зафиксировано расхождение поверхности: реальная `https://4-ai-staging.pages.dev/` пока на старом деплое и ещё не содержит `decomposeCurrentTask`, так что live deploy smoke возможен только после публикации ветки.
 
 ---
+### 2026-07-12 — Codex
+
+**Задача:** SMART-013 — live staging deploy smoke после фикса AI-декомпозиции
+**Делал:** Codex
+**Коммит:** pending
+**Состояние:** ✅ Выполнено
+**Комментарий:** Для безопасного smoke собран временный staging-артефакт из `HEAD` с подменой `const WORKER` на `https://restless-lab-d737-staging.shelckograff.workers.dev`, затем выполнен `wrangler pages deploy ... --project-name 4-ai-staging --branch dev`. Wrangler вернул deployment URL `https://c4b8195f.4-ai-staging.pages.dev`. На этом live deployment headless smoke подтвердил, что `decomposeCurrentTask` существует, страница смотрит в staging worker, и сценарий `создать задачу -> Разбить на этапы` сохраняет 8 нормальных шагов как в UI, так и в persisted `checklist`. Отдельно замечено, что алиас `https://4-ai-staging.pages.dev/` некоторое время оставался на старом деплое, поэтому для проверки использовался прямой deployment URL.
+
+---
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex
