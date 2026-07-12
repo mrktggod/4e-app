@@ -6141,23 +6141,60 @@ function selectCalDay(d){
 }
 
 // VOICE
-let voiceTimer=null,recognition=null;
+let voiceTimer=null,recognition=null,voicePerfRun=null;
 function showVoiceInfo(){showToast('Говорите — 4 распознает и выполнит задачу');}
-function toggleVoice(){if(recognition)closeVoice();else openVoice();}
+function voicePerfNow(){
+  return window.performance&&typeof window.performance.now==='function' ? window.performance.now() : Date.now();
+}
+function beginVoicePerf(){
+  voicePerfRun={startedAt:voicePerfNow(),startedAtIso:new Date().toISOString(),marks:{},meta:{}};
+  voicePerfMark('voice_open');
+}
+function voicePerfMark(name,meta){
+  if(!voicePerfRun) return;
+  voicePerfRun.marks[name]=voicePerfNow();
+  if(meta&&typeof meta==='object') Object.assign(voicePerfRun.meta,meta);
+}
+function finishVoicePerf(status,meta){
+  if(!voicePerfRun) return null;
+  const endedAt=voicePerfNow();
+  if(meta&&typeof meta==='object') Object.assign(voicePerfRun.meta,meta);
+  const marks=voicePerfRun.marks;
+  const sample={
+    status,
+    startedAtIso:voicePerfRun.startedAtIso,
+    branch:voicePerfRun.meta.branch||null,
+    transcriptLength:voicePerfRun.meta.transcriptLength||0,
+    recognitionMs:marks.speech_start&&marks.speech_result?Math.round(marks.speech_result-marks.speech_start):null,
+    preDispatchUiMs:marks.speech_result&&marks.dispatch_start?Math.round(marks.dispatch_start-marks.speech_result):null,
+    branchMs:marks.dispatch_start?Math.round(endedAt-marks.dispatch_start):null,
+    totalMs:Math.round(endedAt-voicePerfRun.startedAt),
+    error:voicePerfRun.meta.error||null,
+    merged:voicePerfRun.meta.merged===true
+  };
+  window.__voicePerfLast=sample;
+  window.__voicePerfHistory=(window.__voicePerfHistory||[]).concat(sample).slice(-10);
+  try{console.log('[voice-perf]',sample);}catch(_){}
+  voicePerfRun=null;
+  return sample;
+}
+function toggleVoice(){if(recognition){finishVoicePerf('cancelled');closeVoice();}else openVoice();}
 async function openVoice(){
   if (!window.biometricConsentRequired()) return;
+  beginVoicePerf();
   showScreen('voice');
   setNavActive('voice');
   document.getElementById('voice-title').textContent='Говори...';
   ['vs-1','vs-2','vs-3','vs-4','vs-5'].forEach(id=>setVoiceStep(id.replace('vs-',''),'pending'));
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){document.getElementById('voice-title').textContent='Голос недоступен';setTimeout(()=>{closeVoice();openAsk();},1200);return;}
+  if(!SR){document.getElementById('voice-title').textContent='Голос недоступен';finishVoicePerf('speech_unavailable');setTimeout(()=>{closeVoice();openAsk();},1200);return;}
   let resultReceived=false;
   recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=false;
-  recognition.onstart=()=>{document.getElementById('voice-title').textContent='Слушаю...';setVoiceStep(1,'spin');};
+  recognition.onstart=()=>{voicePerfMark('speech_start');document.getElementById('voice-title').textContent='Слушаю...';setVoiceStep(1,'spin');};
   recognition.onresult=(e)=>{
     resultReceived=true;
     const text=e.results[0][0].transcript;
+    voicePerfMark('speech_result',{transcriptLength:text.length});
     document.getElementById('voice-title').textContent='«'+text+'»';
     setVoiceStep(1,'done');setVoiceStep(2,'spin');
     setTimeout(()=>{setVoiceStep(2,'done');setVoiceStep(3,'spin');document.getElementById('voice-title').textContent='4 анализирует...';},600);
@@ -6167,10 +6204,11 @@ async function openVoice(){
   };
   recognition.onerror=(e)=>{
     const messages={'not-allowed':'Нет доступа к микрофону','no-speech':'Ничего не услышал','network':'Ошибка сети','aborted':'Отменено'};
+    finishVoicePerf('speech_error',{error:e?.error||'speech_error'});
     document.getElementById('voice-title').textContent=messages[e.error]||'Ошибка микрофона';
     setTimeout(closeVoice,1800);
   };
-  recognition.onend=()=>{if(!resultReceived&&document.getElementById('voice-title').textContent==='Слушаю...'){document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);}};
+  recognition.onend=()=>{if(!resultReceived&&document.getElementById('voice-title').textContent==='Слушаю...'){finishVoicePerf('no_result');document.getElementById('voice-title').textContent='Не расслышал';setTimeout(closeVoice,1200);}};
   recognition.start();
 }
 function setVoiceStep(idx,state){
@@ -6183,19 +6221,24 @@ function setVoiceStep(idx,state){
 async function sendVoiceMessage(text){
   closeVoice();
   const spoken = (text || '').trim();
+  const taskIntent = !!(spoken && looksLikeTaskRequest(spoken));
+  voicePerfMark('dispatch_start',{branch:taskIntent?'task':'ask',transcriptLength:spoken.length});
   if (spoken && looksLikeTaskRequest(spoken)) {
     try {
       const taskData = fallbackTaskFromText(spoken);
       taskData.originalMsg = spoken;
       const result = await createTaskFromChat(taskData);
       if (result && result.ok) {
+        finishVoicePerf(result.merged ? 'task_merged' : 'task_created',{merged:!!result.merged});
         const msg = result.merged
           ? 'Task merged and updated.'
           : 'Task created.';
         showToast(msg);
         return;
       }
+      finishVoicePerf('task_failed',{error:'task_create_not_ok'});
     } catch (e) {
+      finishVoicePerf('task_failed',{error:e?.message||'task_create_failed'});
       console.error('sendVoiceMessage createTaskFromChat:', e);
       showToast('Task save failed, fallback to chat.');
     }
@@ -6205,7 +6248,8 @@ async function sendVoiceMessage(text){
   if(welcome) welcome.style.display='none';
   const field = document.getElementById('ask-field');
   if(field) field.value = text;
-  sendAsk();
+  await sendAsk();
+  finishVoicePerf('ask_sent');
 }
 function closeVoice(){if(recognition){recognition.onend=null;recognition.onresult=null;recognition.onerror=null;try{recognition.stop();}catch(e){}recognition=null;}clearTimeout(voiceTimer);voiceTimer=null;goHome();}
 
