@@ -525,6 +525,30 @@
 
     const homeScreen = document.getElementById('home');
     if (homeScreen) {
+      const assistantBtn = document.getElementById('home-nav-voice');
+      if (assistantBtn && !assistantBtn.dataset.longPressInit) {
+        assistantBtn.dataset.longPressInit = '1';
+        let pressTimer = null;
+        const clearPressTimer = () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+        };
+        assistantBtn.addEventListener('pointerdown', event => {
+          if (event.pointerType === 'mouse' && event.button !== 0) return;
+          assistantBtn.dataset.longPressTriggered = '0';
+          clearPressTimer();
+          pressTimer = setTimeout(() => {
+            assistantBtn.dataset.longPressTriggered = '1';
+            if (typeof openVoice === 'function') openVoice();
+          }, 550);
+        });
+        ['pointerup', 'pointerleave', 'pointercancel'].forEach(eventName => {
+          assistantBtn.addEventListener(eventName, clearPressTimer);
+        });
+      }
+
       homeScreen.addEventListener('click', event => {
         const actionBtn = event.target.closest('[data-home-action]');
         if (actionBtn) {
@@ -553,6 +577,10 @@
             openDoneList();
             return;
           }
+          if (action === 'open-active-list' && typeof openActiveTaskList === 'function') {
+            openActiveTaskList();
+            return;
+          }
           if (action === 'open-promise-list' && typeof openPromiseList === 'function') {
             openPromiseList();
             return;
@@ -578,15 +606,15 @@
 
         const navActionBtn = event.target.closest('[data-home-nav-action]');
         if (navActionBtn) {
+          if (navActionBtn.dataset.longPressTriggered === '1') {
+            navActionBtn.dataset.longPressTriggered = '0';
+            return;
+          }
           const action = navActionBtn.dataset.homeNavAction;
-          if (action === 'chats' && typeof openChats === 'function') {
-            openChats();
-          } else if (action === 'tasks' && typeof goHome === 'function') {
+          if (action === 'today' && typeof goHome === 'function') {
             goHome();
           } else if ((action === 'calendar' || action === 'cal') && typeof openCalendar === 'function') {
             openCalendar();
-          } else if (action === 'voice' && typeof openVoice === 'function') {
-            openVoice();
           } else if (action === 'brain' && typeof openAsk === 'function') {
             openAsk();
           }
