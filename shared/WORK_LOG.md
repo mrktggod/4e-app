@@ -8415,7 +8415,16 @@
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
----<!-- Добавляйте новые записи ВЫШЕ этой строки -->
+---### 2026-07-13 — Codex
+
+**Задача:** CI / team-sync handoff — починить guard workflow на GitHub Actions runner
+**Делал:** Codex
+**Коммит:** pending
+**Состояние:** ✅ Выполнено
+**Комментарий:** По живым GitHub Actions logs для `Quality guard` на PR #27 и PR #34 подтверждена одна и та же причина падения: на `ubuntu-latest` отсутствует `rg`, из-за чего `check-portable-paths.sh` и `check-ui-architecture.sh` падают на `command not found`, а UI guard потом ещё и даёт ложный `index.html must link styles.min.css`. Фикс сделан в одном месте: в `.github/workflows/path-guard.yml` добавлен шаг установки `ripgrep` перед guard-скриптами, чтобы обе проверки работали на runner так же, как локально, без переписывания самих shell-скриптов.
+
+---
+<!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex
 

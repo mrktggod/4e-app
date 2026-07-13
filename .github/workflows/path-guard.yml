@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
       - name: Check portable paths
         run: bash scripts/check-portable-paths.sh
       - name: Check markdown encoding for pm/ and shared/
