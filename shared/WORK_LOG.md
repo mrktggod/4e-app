@@ -8,6 +8,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -69,6 +78,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -104,6 +122,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -143,6 +170,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -180,6 +216,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -215,6 +260,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -289,6 +343,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -324,6 +387,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -363,6 +435,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -398,6 +479,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -437,6 +527,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -472,6 +571,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -511,6 +619,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -546,6 +663,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -585,6 +711,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -620,6 +755,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -659,6 +803,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -694,6 +847,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -733,6 +895,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -768,6 +939,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -807,6 +987,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -842,6 +1031,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -881,6 +1079,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -916,6 +1123,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -955,6 +1171,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -990,6 +1215,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1029,6 +1263,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1064,6 +1307,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1103,6 +1355,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1138,6 +1399,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1177,6 +1447,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1212,6 +1491,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1282,6 +1570,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1317,6 +1614,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1356,6 +1662,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1391,6 +1706,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1430,6 +1754,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1465,6 +1798,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1504,6 +1846,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1539,6 +1890,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1578,6 +1938,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1613,6 +1982,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1652,6 +2030,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1685,6 +2072,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1724,6 +2120,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1759,6 +2164,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1800,6 +2214,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1847,6 +2270,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1910,6 +2342,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -1945,6 +2386,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -1984,6 +2434,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2019,6 +2478,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2058,6 +2526,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2092,6 +2569,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2130,6 +2616,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2164,6 +2659,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2209,6 +2713,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2244,6 +2757,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2283,6 +2805,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2318,6 +2849,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2357,6 +2897,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2392,6 +2941,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2431,6 +2989,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2466,6 +3033,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2505,6 +3081,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2540,6 +3125,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2579,6 +3173,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2614,6 +3217,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2653,6 +3265,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2689,6 +3310,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2723,6 +3353,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2762,6 +3401,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2797,6 +3445,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2836,6 +3493,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2871,6 +3537,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2910,6 +3585,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -2945,6 +3629,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -2984,6 +3677,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3019,6 +3721,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3058,6 +3769,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3093,6 +3813,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3132,6 +3861,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3167,6 +3905,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3206,6 +3953,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3241,6 +3997,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3280,6 +4045,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3315,6 +4089,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3354,6 +4137,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3389,6 +4181,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3428,6 +4229,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3463,6 +4273,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3501,6 +4320,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3537,6 +4365,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3584,6 +4421,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3618,6 +4464,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3656,6 +4511,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3690,6 +4554,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3729,6 +4602,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3763,6 +4645,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
@@ -3801,6 +4692,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
 **Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
 **Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
@@ -3835,6 +4735,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
