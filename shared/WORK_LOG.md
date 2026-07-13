@@ -8,6 +8,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -105,6 +114,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -176,6 +194,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -251,6 +278,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -324,6 +360,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -395,6 +440,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -505,6 +559,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -576,6 +639,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -651,6 +723,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -722,6 +803,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -797,6 +887,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -868,6 +967,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -943,6 +1051,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -1014,6 +1131,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -1089,6 +1215,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -1160,6 +1295,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -1235,6 +1379,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -1306,6 +1459,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -1381,6 +1543,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -1452,6 +1623,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -1527,6 +1707,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -1598,6 +1787,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -1673,6 +1871,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -1744,6 +1951,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -1819,6 +2035,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -1890,6 +2115,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -1965,6 +2199,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -2036,6 +2279,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -2111,6 +2363,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -2182,6 +2443,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -2257,6 +2527,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -2328,6 +2607,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -2434,6 +2722,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -2505,6 +2802,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -2580,6 +2886,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -2651,6 +2966,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -2726,6 +3050,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -2797,6 +3130,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -2872,6 +3214,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -2943,6 +3294,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3018,6 +3378,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -3089,6 +3458,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3164,6 +3542,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -3233,6 +3620,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3308,6 +3704,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -3379,6 +3784,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3456,6 +3870,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3539,6 +3962,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3638,6 +4070,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -3709,6 +4150,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3784,6 +4234,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -3855,6 +4314,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -3930,6 +4398,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -4000,6 +4477,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -4074,6 +4560,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -4144,6 +4639,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -4225,6 +4729,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -4296,6 +4809,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -4371,6 +4893,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -4442,6 +4973,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -4517,6 +5057,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -4588,6 +5137,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -4663,6 +5221,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -4734,6 +5301,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -4809,6 +5385,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -4880,6 +5465,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -4955,6 +5549,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5026,6 +5629,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -5101,6 +5713,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5173,6 +5794,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5243,6 +5873,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -5318,6 +5957,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5389,6 +6037,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -5464,6 +6121,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5535,6 +6201,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -5610,6 +6285,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5681,6 +6365,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -5756,6 +6449,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5827,6 +6529,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -5902,6 +6613,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -5973,6 +6693,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -6048,6 +6777,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -6119,6 +6857,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -6194,6 +6941,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -6265,6 +7021,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -6340,6 +7105,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -6411,6 +7185,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -6486,6 +7269,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -6557,6 +7349,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -6632,6 +7433,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -6703,6 +7513,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -6777,6 +7596,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -6849,6 +7677,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -6932,6 +7769,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -7002,6 +7848,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -7076,6 +7931,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -7146,6 +8010,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -7221,6 +8094,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -7291,6 +8173,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
@@ -7365,6 +8256,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 7, честный paywall copy
 **Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
 **Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
@@ -7435,6 +8335,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 7, честный paywall copy
