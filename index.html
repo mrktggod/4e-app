@@ -2540,6 +2540,9 @@ const DEFAULT_TARIFF_CONFIG = {
       telegramStars: 'Оплата внутри Telegram через Stars<br>Premium включится после подтверждения ботом'
     }
   },
+  payments: {
+    vkPayEnabled: false
+  },
   features: [
     { title: 'Неограниченные задачи', description: 'Добавляй сколько угодно задач и обещаний' },
     { title: 'AI-чат без ограничений', description: 'Спрашивай, советуйся, составляй сообщения' },
@@ -2628,6 +2631,9 @@ function normalizeTariffConfig(raw) {
         priceRub: toPositiveInt(source.plans?.year?.priceRub, defaults.plans.year.priceRub),
         stars: toPositiveInt(source.plans?.year?.stars, defaults.plans.year.stars)
       }
+    },
+    payments: {
+      vkPayEnabled: !!(source.payments?.vkPayEnabled ?? defaults.payments.vkPayEnabled)
     }
   };
 }
@@ -2722,7 +2728,7 @@ function isTelegramPaymentContext() {
 }
 
 function getPaymentProvider() {
-  if (isVKPaymentContext()) return 'vk';
+  if (isVKPaymentContext() && tariffConfig?.payments?.vkPayEnabled) return 'vk';
   if (isTelegramPaymentContext()) return 'telegram-stars';
   return 'card';
 }

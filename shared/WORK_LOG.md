@@ -8,6 +8,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -78,6 +87,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -122,6 +140,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -170,6 +197,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -216,6 +252,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -260,6 +305,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -343,6 +397,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -387,6 +450,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -435,6 +507,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -479,6 +560,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -527,6 +617,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -571,6 +670,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -619,6 +727,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -663,6 +780,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -711,6 +837,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -755,6 +890,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -803,6 +947,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -847,6 +1000,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -895,6 +1057,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -939,6 +1110,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -987,6 +1167,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1031,6 +1220,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1079,6 +1277,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1123,6 +1330,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1171,6 +1387,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1215,6 +1440,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1263,6 +1497,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1307,6 +1550,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1355,6 +1607,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1399,6 +1660,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1447,6 +1717,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1491,6 +1770,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1570,6 +1858,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1614,6 +1911,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1662,6 +1968,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1706,6 +2021,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1754,6 +2078,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1798,6 +2131,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1846,6 +2188,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1890,6 +2241,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -1938,6 +2298,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -1982,6 +2351,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2030,6 +2408,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2072,6 +2459,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2120,6 +2516,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2164,6 +2569,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2214,6 +2628,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2270,6 +2693,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2342,6 +2774,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2386,6 +2827,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2434,6 +2884,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2478,6 +2937,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2526,6 +2994,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2569,6 +3046,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2616,6 +3102,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2659,6 +3154,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2713,6 +3217,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2757,6 +3270,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2805,6 +3327,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2849,6 +3380,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2897,6 +3437,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -2941,6 +3490,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -2989,6 +3547,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3033,6 +3600,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3081,6 +3657,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3125,6 +3710,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3173,6 +3767,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3217,6 +3820,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3265,6 +3877,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3310,6 +3931,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3353,6 +3983,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3401,6 +4040,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3445,6 +4093,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3493,6 +4150,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3537,6 +4203,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3585,6 +4260,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3629,6 +4313,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3677,6 +4370,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3721,6 +4423,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3769,6 +4480,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3813,6 +4533,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3861,6 +4590,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3905,6 +4643,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -3953,6 +4700,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -3997,6 +4753,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4045,6 +4810,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4089,6 +4863,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4137,6 +4920,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4181,6 +4973,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4229,6 +5030,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4273,6 +5083,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4320,6 +5139,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4365,6 +5193,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4421,6 +5258,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4464,6 +5310,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4511,6 +5366,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4554,6 +5418,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4602,6 +5475,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4645,6 +5527,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
@@ -4692,6 +5583,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
 **Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
 **Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
@@ -4735,6 +5635,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
