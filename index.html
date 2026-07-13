@@ -945,7 +945,7 @@
     <div class="pricing-card" id="pricing-month" onclick="selectPlan('month')">
       <div style="flex:1">
         <div class="pricing-name" id="pricing-month-name">1 месяц</div>
-        <div class="pricing-desc" id="pricing-month-desc">Автопродление каждый месяц</div>
+        <div class="pricing-desc" id="pricing-month-desc">Разовый доступ на 30 дней</div>
       </div>
       <div style="text-align:right">
         <div class="pricing-price" id="pricing-month-price">990 ₽</div>
@@ -957,7 +957,7 @@
       <div class="pricing-badge-save" id="pricing-year-badge">Выгода 20%</div>
       <div style="flex:1">
         <div class="pricing-name" id="pricing-year-name">12 месяцев</div>
-        <div class="pricing-desc" id="pricing-year-desc">Экономия 2 376 ₽ в год</div>
+        <div class="pricing-desc" id="pricing-year-desc">Разовый доступ на 365 дней</div>
       </div>
       <div style="text-align:right">
         <div class="pricing-price" id="pricing-year-price">792 ₽</div>
@@ -970,7 +970,7 @@
       Оформить подписку
     </button>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6" id="subscription-payment-note">
-      Безопасная оплата через CloudPayments<br>Отмена в любой момент
+      Безопасная оплата через CloudPayments<br>Разовый доступ без автопродления
     </div>
 
   </div>
@@ -991,7 +991,7 @@
       </div>
       <div style="flex:1">
         <div style="font-size:14px;font-weight:700;color:var(--text)" id="order-title">Premium · 1 месяц</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="order-subtitle">Подписка на 4</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="order-subtitle">Доступ к 4</div>
       </div>
       <div style="font-size:20px;font-weight:800;color:var(--green)" id="order-price">990 ₽</div>
     </div>
@@ -1005,7 +1005,7 @@
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Все функции Premium</span></div>
       </div>
       <div class="sub-row" style="padding:10px 16px;border:none">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Отмена в любой момент</span></div>
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Разовый доступ без автопродления</span></div>
       </div>
     </div>
 
@@ -2532,11 +2532,11 @@ const DEFAULT_TARIFF_CONFIG = {
   trialDays: 30,
   paywall: {
     title: 'Продлить подписку',
-    orderSubtitle: 'Подписка на 4',
-    benefits: ['Мгновенная активация', 'Все функции Premium', 'Отмена в любой момент'],
+    orderSubtitle: 'Доступ к 4',
+    benefits: ['Мгновенная активация', 'Все функции Premium', 'Разовый доступ без автопродления'],
     paymentNotes: {
-      card: 'Безопасная оплата банковской картой<br>Отмена в любой момент',
-      vk: 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент',
+      card: 'Безопасная оплата банковской картой<br>Разовый доступ без автопродления',
+      vk: 'VK Pay будет включён после server-side верификации',
       telegramStars: 'Оплата внутри Telegram через Stars<br>Premium включится после подтверждения ботом'
     }
   },
@@ -2559,7 +2559,7 @@ const DEFAULT_TARIFF_CONFIG = {
       priceRub: 990,
       stars: 990,
       cardLabel: '1 месяц',
-      cardDescription: 'Автопродление каждый месяц',
+      cardDescription: 'Разовый доступ на 30 дней',
       periodLabel: '/ мес',
       saveBadge: ''
     },
@@ -2571,7 +2571,7 @@ const DEFAULT_TARIFF_CONFIG = {
       priceRub: 9504,
       stars: 9504,
       cardLabel: '12 месяцев',
-      cardDescription: 'Экономия 2 376 ₽ в год',
+      cardDescription: 'Разовый доступ на 365 дней',
       periodLabel: '/ мес · 9 504 ₽/год',
       saveBadge: 'Выгода 20%'
     }
