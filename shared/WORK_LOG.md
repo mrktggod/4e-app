@@ -8,6 +8,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -60,6 +69,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -86,6 +104,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -116,6 +143,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -144,6 +180,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -170,6 +215,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -235,6 +289,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -261,6 +324,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -291,6 +363,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -317,6 +398,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -347,6 +437,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -373,6 +472,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -403,6 +511,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -429,6 +546,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -459,6 +585,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -485,6 +620,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -515,6 +659,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -541,6 +694,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -571,6 +733,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -597,6 +768,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -627,6 +807,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -653,6 +842,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -683,6 +881,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -709,6 +916,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -739,6 +955,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -765,6 +990,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -795,6 +1029,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -821,6 +1064,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -851,6 +1103,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -877,6 +1138,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -907,6 +1177,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -933,6 +1212,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -994,6 +1282,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1020,6 +1317,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1050,6 +1356,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1076,6 +1391,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1106,6 +1430,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1132,6 +1465,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1162,6 +1504,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1188,6 +1539,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1218,6 +1578,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1244,6 +1613,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1274,6 +1652,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1298,6 +1685,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1328,6 +1724,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1354,6 +1759,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1386,6 +1800,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1424,6 +1847,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1478,6 +1910,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1504,6 +1945,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1534,6 +1984,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1560,6 +2019,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1590,6 +2058,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1615,6 +2092,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1644,6 +2130,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1669,6 +2164,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1705,6 +2209,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1731,6 +2244,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1761,6 +2283,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1787,6 +2318,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1817,6 +2357,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1843,6 +2392,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1873,6 +2431,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1899,6 +2466,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1929,6 +2505,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -1955,6 +2540,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -1985,6 +2579,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2011,6 +2614,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2041,6 +2653,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2068,6 +2689,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2093,6 +2723,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2123,6 +2762,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2149,6 +2797,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2179,6 +2836,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2205,6 +2871,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2235,6 +2910,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2261,6 +2945,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2291,6 +2984,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2317,6 +3019,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2347,6 +3058,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2373,6 +3093,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2403,6 +3132,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2429,6 +3167,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2459,6 +3206,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2485,6 +3241,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2515,6 +3280,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2541,6 +3315,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2571,6 +3354,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2597,6 +3389,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2627,6 +3428,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2653,6 +3463,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2682,6 +3501,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2709,6 +3537,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2747,6 +3584,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2772,6 +3618,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2801,6 +3656,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2826,6 +3690,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2856,6 +3729,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2881,6 +3763,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
@@ -2910,6 +3801,15 @@
 
 ### 2026-07-13 — Codex
 
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
 **Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
 **Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
@@ -2935,6 +3835,15 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
 ### 2026-07-13 — Codex
 
 **Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability

@@ -2755,7 +2755,7 @@ function openPayment() {
   showSubScreen('payment');
 }
 
-function startPayment() {
+async function startPayment() {
   if (!currentUser) { showToast('Войди в аккаунт'); return; }
   const plan = getPlanConfig(selectedPlan);
   const provider = getPaymentProvider();
@@ -2769,16 +2769,25 @@ function startPayment() {
   }
   const btn  = document.getElementById('pay-btn');
   setPaymentButtonState('Открываю форму оплаты...', true);
+  let order = null;
+  try {
+    order = await createCloudPaymentsOrder();
+  } catch (e) {
+    console.warn('[CloudPayments order]', e);
+    showToast('Не удалось подготовить оплату. Попробуй позже');
+    setPaymentButtonState('Оплатить картой');
+    return;
+  }
 
   // Загружаем скрипт CP если ещё не загружен
   if (!window.cp) {
     const s = document.createElement('script');
     s.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js';
-    s.onload = () => launchWidget(plan, btn);
+    s.onload = () => launchWidget(plan, btn, order);
     s.onerror = () => { showToast('Ошибка загрузки виджета'); setPaymentButtonState('Оплатить картой'); };
     document.head.appendChild(s);
   } else {
-    launchWidget(plan, btn);
+    launchWidget(plan, btn, order);
   }
 }
 
@@ -2857,24 +2866,57 @@ async function startTelegramStarsPayment(plan) {
     setPaymentButtonState('Оплатить через Telegram Stars');
   }
 }
-function launchWidget(plan, btn) {
+async function createCloudPaymentsOrder() {
+  const r = await fetch(WORKER + '/payments/cloudpayments/order', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ plan: selectedPlan })
+  });
+  const d = await r.json();
+  if (!r.ok || !d.ok || !d.invoiceId) throw new Error(d.error || 'cloudpayments_order_failed');
+  return d;
+}
+async function refreshUserAfterCloudPayment() {
+  for (let i = 0; i < 6; i++) {
+    await new Promise(resolve => setTimeout(resolve, 900));
+    try {
+      const r = await fetch(WORKER + '/auth/me', { headers: authHeaders() });
+      const d = await r.json();
+      if (d.ok && d.user) {
+        currentUser = d.user;
+        renderTrialBanner();
+        updateSubscriptionScreen();
+        const accessUntil = Number(d.user?.entitlement?.accessUntil || d.user?.trialEndsAt || 0);
+        if ((d.user?.entitlement?.status === 'active' && accessUntil > Date.now()) || d.user.plan === 'paid' || d.user.trialActive) {
+          showPaymentSuccessScreen();
+          return true;
+        }
+      }
+    } catch (e) {}
+  }
+  return false;
+}
+function launchWidget(plan, btn, order) {
   const widget = new cp.CloudPayments();
   widget.pay('charge', {
     publicId:    CP_PUBLIC_ID,
-    description: plan.title,
-    amount:      plan.priceRub,
-    currency:    'RUB',
-    email:       currentUser.email || '',
-    accountId:   currentUser.id,
-    data: {
-      userId:   currentUser.id,
-      plan:     selectedPlan,
-      token:    getToken(),
+    description: order.description || plan.title,
+    amount:      order.amount || plan.priceRub,
+    currency:    order.currency || 'RUB',
+    email:       order.email || currentUser.email || '',
+    accountId:   order.accountId || currentUser.id,
+    invoiceId:   order.invoiceId,
+    data:        order.data || {
+      userId: currentUser.id,
+      plan: selectedPlan,
+      invoiceId: order.invoiceId,
+      orderId: order.invoiceId
     },
   }, {
-    onSuccess: () => {
+    onSuccess: async () => {
       setPaymentButtonState('Оплатить картой');
-      onPaymentSuccess(plan);
+      const synced = await refreshUserAfterCloudPayment();
+      if (!synced) showToast('Платёж принят. Premium включится после подтверждения webhook');
     },
     onFail: (reason) => {
       setPaymentButtonState('Оплатить картой');
@@ -2884,6 +2926,14 @@ function launchWidget(plan, btn) {
       setPaymentButtonState('Оплатить картой');
     },
   });
+}
+function showPaymentSuccessScreen() {
+  const untilTs = Number(currentUser?.entitlement?.accessUntil || currentUser?.trialEndsAt || 0);
+  const until = new Date(untilTs || Date.now());
+  const opts  = { day: 'numeric', month: 'long', year: 'numeric' };
+  const el    = document.getElementById('success-until');
+  if (el) el.textContent = until.toLocaleDateString('ru-RU', opts);
+  showSubScreen('payment-success');
 }
 
 function onPaymentSuccess(plan) {
@@ -2897,12 +2947,7 @@ function onPaymentSuccess(plan) {
     renderTrialBanner();
     updateSubscriptionScreen();
   }
-  // Показываем экран успеха
-  const until = new Date(currentUser.trialEndsAt);
-  const opts  = { day: 'numeric', month: 'long', year: 'numeric' };
-  const el    = document.getElementById('success-until');
-  if (el) el.textContent = until.toLocaleDateString('ru-RU', opts);
-  showSubScreen('payment-success');
+  showPaymentSuccessScreen();
 }
 
 function simulatePaymentSuccess() {
