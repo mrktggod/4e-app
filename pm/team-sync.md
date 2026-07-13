@@ -33,7 +33,30 @@
 
 ## Что Юра сделал / вернул
 
-Пока нет отдельных записей Юры в формате Team Sync после ввода протокола.
+### Ответ на сообщение Алексея от 2026-07-10 (PR #27 не готов к main)
+
+**Статус:** Готово к повторному ревью
+**Контекст:** Сообщение Алексея от 2026-07-10 14:15 (commit `33db2a2`, 117 коммитов вперёд / 11 позади `main`, `mergeable=false`) устарело — с тех пор ветка обновлена.
+**Что сделано:**
+- 2026-07-12 выполнен запрошенный sync коммитом `a3c9ea1` (`merge(main): sync origin/main into feat/admin-tariff-api`). Сохранены все свежие документы из `main`: `docs/team-sync-protocol.md`, `pm/next-actions.md`, `pm/team-sync.md` (объединён — формат Алексея сохранён как основной, старая сессионная запись Кодекса перенесена отдельным разделом, не удалена), а также `BACK-055`, `BACK-056`, `CAL-001/002/003`, `OMNI-001`, `BETA-001`, `ANALYTICS-001`, `FEEDBACK-001`, `ONBOARD-001` из roadmap/backlog `main`. Конфликтов-маркеров не осталось — проверено Claude напрямую по файлам.
+- После sync продолжена работа и запушено ещё 8 коммитов: `NEW-006`/`NEW-008` (safe area / keyboard offset), `NEW-001`/`NEW-017` (закрыты после живого staging smoke), `BACK-030` и `SMART-013` (оба закрыты после живого smoke на реальном staging deployment `https://c4b8195f.4-ai-staging.pages.dev` — Claude независимо проверил, что деплой реальный и рабочий), плюс спека `HOME-001` (редизайн главного экрана, docs-only).
+**Ветка / commit / PR:** `feat/admin-tariff-api`, HEAD == `origin/feat/admin-tariff-api` на `d6cf83f` (проверено Claude напрямую по `.git/refs`, не со слов Кодекса). PR #27 — **проверено только что напрямую на GitHub: статус сменился на «Able to merge» (было «Can't automatically merge»)**.
+**Про «почему не сохраняешь на GitHub»:** сохраняется постоянно — push идёт после каждого коммита в рабочую сессию, HEAD и origin сверяются Claude вручную после каждого шага в этом чате. Расхождение с тем, что видел Алексей, — просто из-за того, что его снимок состояния был на 2026-07-10, а работа продолжилась после.
+**Что проверить:** Алексею стоит обновить локальную информацию о ветке (`git fetch origin`) и заново посмотреть PR #27 — mergeable-статус на GitHub сейчас положительный.
+**Блокеры:** нет технических. Сам merge `feat/admin-tariff-api` → `main` — отдельное решение, требует явного подтверждения Юрия и/или Алексея, не входит в автоматическое закрытие задач.
+**Следующий шаг:** Алексей проверяет `a3c9ea1` и последующие коммиты; при готовности — отдельное решение о мердже PR #27 в `main`.
+
+### Payment security P0 (следствие аудита STRAT-001) — 2026-07-13
+
+**Статус:** Код запушен, ждёт staging-верификации перед production
+**Контекст:** По итогам evidence-first аудита `STRAT-001` (PR #34, `docs/strategy/monetization-analysis-2026-07-13/`) собран отдельный бриф на 4 P0 платёжной безопасности + cleanup. Кодекс отработал в изолированных checkout'ах (`4e-worker-p0`, `.tmp-4e-app-p0`).
+**Что сделано:**
+- `4e-worker`: `036ac78` unified premium entitlement gate; `c39eeb1` CloudPayments webhook HMAC verification; `5979f38` Telegram Stars bot-signature trust; `3c83e57` VK Pay спрятан за конфиг-флаг; `7411667` честный paywall copy (без «автопродления»); `f57149b` payment funnel analytics events.
+- `4e-app`: `d161d17` восстановлен `WORK_LOG.md` после сбойного коммита; `0b6e38d` verified CloudPayments orders; `a94b261` убран Stars client-side fallback; `808535c` VK Pay выключен по умолчанию; `88bf104` убрана локальная self-активация Premium/`simulatePaymentSuccess()`; `c1e3f45` paywall copy; `5b740fc` payment funnel events.
+- Секреты `CLOUDPAYMENTS_API_SECRET` (реальный, из личного кабинета CloudPayments) и `TELEGRAM_STARS_WEBHOOK_SECRET`/`PAYMENTS_BOT_SECRET` (сгенерирован) установлены в Cloudflare Workers secrets (production + staging) и в env бота.
+**Что проверить:** HMAC-проверка CloudPayments — что настоящая подпись CloudPayments принимается, а подделанная или с неверной суммой отклоняется. Это ещё НЕ проверено живым тестом на момент этой записи — нужен staging deploy + негативные тесты до production deploy.
+**Блокеры:** нет технических; ждёт staging deploy + verification.
+**Не трогали:** цена (990 vs 999 ₽ — отдельное решение Юрия и/или Алексея), merge в `main`, дизайн `ONBOARD-001`.
 
 ## Изменения по проекту
 
