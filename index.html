@@ -2806,8 +2806,7 @@ async function startVKPayment(plan) {
       amount: plan.priceRub
     });
     if (order && (order.success || order.status === 'success')) {
-      onPaymentSuccess(plan);
-      showToast('Оплата VK Pay прошла');
+      showToast('VK Pay вернул успешный статус, но server-side активация пока отключена');
     } else {
       showToast('Оплата VK Pay отменена');
     }
@@ -2941,22 +2940,9 @@ function showPaymentSuccessScreen() {
   showSubScreen('payment-success');
 }
 
-function onPaymentSuccess(plan) {
-  // Обновляем юзера локально (Worker обновит через webhook)
-  if (currentUser) {
-    const trialDays = toPositiveInt(plan?.durationDays, tariffConfig.trialDays || 30);
-    currentUser.trialActive  = true;
-    currentUser.plan = 'paid';
-    currentUser.trialLeft    = trialDays;
-    currentUser.trialEndsAt  = Date.now() + trialDays * 24 * 60 * 60 * 1000;
-    renderTrialBanner();
-    updateSubscriptionScreen();
-  }
-  showPaymentSuccessScreen();
-}
-
 function simulatePaymentSuccess() {
-  onPaymentSuccess(getPlanConfig(selectedPlan));
+  console.warn('simulatePaymentSuccess disabled in production');
+  showToast('Тестовая активация платежа отключена');
 }
 
 // Обновляем экран подписки данными из currentUser
@@ -7681,8 +7667,7 @@ if(window.FourPlatform?.initVkMiniAppAdapter){
     loadTasks,
     goHome,
     applyTheme,
-    getPlanConfig,
-    onPaymentSuccess
+    getPlanConfig
   });
 }
 
