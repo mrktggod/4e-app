@@ -8433,6 +8433,15 @@
 **Комментарий:** В `pm/team-sync.md` обновлён payment-P0 блок до реального состояния после сегодняшних прогонов: добавлен прямой staging URL `https://c4b8195f.4-ai-staging.pages.dev/`, список UI smoke (`HOME-001`, `NEW-006`, `NEW-008`, `NEW-021`) и честный payment smoke status. Зафиксировано, что positive CloudPayments (`200` / `{"code":0}`) и fake HMAC (`403` / `{"code":13}`) уже подтверждены live, а production по-прежнему блокируется на трёх хвостах: `badAmount` body, replay/idempotency и Telegram Stars после восстановления `BOT_TOKEN`/secret env.
 
 ---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — verify push, production deploy и живой prod smoke
+**Делал:** Codex
+**Коммит:** pending
+**Состояние:** ✅ Выполнено
+**Комментарий:** Сначала закрыто критичное расхождение по push: подтверждено буквально, что `HEAD == origin/feat/admin-tariff-api == f90a8392e0b72b4e4ad3d611e76c0367738802cb`, а `pm/team-sync.md` на remote уже содержит team-sync и staging handoff. После этого Codex независимо прогнал staging webhook smoke из своего shell: для CloudPayments подтвердились `positive` (`200` / `{"code":0}` + рост `accessUntil`), `fake HMAC` (`403` / `{"code":13}`), `badAmount` (`400` / `{"code":11}`) и idempotency; для Telegram Stars — `positive`, `fake-signature` (`403`) и `replay` (`duplicate: true`). Затем выполнен production deploy `npx wrangler deploy` в `4e-worker-p0`: опубликована версия `fa422fd3-3531-4cb2-9bfb-97f0cf6100e0`, custom domain `https://edge.4-ai.site`. На production тем же независимым shell-smoke повторно подтверждены CloudPayments `positive/fake/badAmount/idempotency` и Telegram Stars `positive/fake/replay`. Важная находка по ходу проверки: `/payment/webhook` принимает CloudPayments callback как `application/x-www-form-urlencoded`, а не JSON; именно это сначала дало ложный `200 {"code":0}` без изменения `accessUntil`, после чего smoke был повторён в правильном wire-format и стал зелёным.
+
+---
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex

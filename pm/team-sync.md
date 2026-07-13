@@ -48,20 +48,18 @@
 
 ### Payment security P0 (следствие аудита STRAT-001) — 2026-07-13
 
-**Статус:** Код запушен, ждёт staging-верификации перед production
+**Статус:** Production задеплоен и подтверждён живым smoke
 **Контекст:** По итогам evidence-first аудита `STRAT-001` (PR #34, `docs/strategy/monetization-analysis-2026-07-13/`) собран отдельный бриф на 4 P0 платёжной безопасности + cleanup. Кодекс отработал в изолированных checkout'ах (`4e-worker-p0`, `.tmp-4e-app-p0`).
 **Что сделано:**
 - `4e-worker`: `036ac78` unified premium entitlement gate; `c39eeb1` CloudPayments webhook HMAC verification; `5979f38` Telegram Stars bot-signature trust; `3c83e57` VK Pay спрятан за конфиг-флаг; `7411667` честный paywall copy (без «автопродления»); `f57149b` payment funnel analytics events.
 - `4e-app`: `d161d17` восстановлен `WORK_LOG.md` после сбойного коммита; `0b6e38d` verified CloudPayments orders; `a94b261` убран Stars client-side fallback; `808535c` VK Pay выключен по умолчанию; `88bf104` убрана локальная self-активация Premium/`simulatePaymentSuccess()`; `c1e3f45` paywall copy; `5b740fc` payment funnel events.
 - Секреты `CLOUDPAYMENTS_API_SECRET` (реальный, из личного кабинета CloudPayments) и `TELEGRAM_STARS_WEBHOOK_SECRET`/`PAYMENTS_BOT_SECRET` (сгенерирован) установлены в Cloudflare Workers secrets (production + staging) и в env бота.
-**Что проверить / staging handoff для Алексея:**
-- UI staging URL для ручного smoke: `https://c4b8195f.4-ai-staging.pages.dev/` (живой Pages deployment, на котором уже подтверждался SMART-013; безопаснее использовать его напрямую, а не alias, пока ветка активно двигается).
-- UI smoke: `HOME-001` (дашборд, top-3 задач, 4 метрик-карточки), `NEW-006` (safe area), `NEW-008` (клавиатура AI-чата), `NEW-021` (календарь — нижний блок `Все дедлайны` не пуст до клика по дню).
-- Payment smoke 1: CloudPayments positive webhook на staging уже подтверждён live — `200` / `{"code":0}`, entitlement реально стал `active`, `source=cloudpayments`.
-- Payment smoke 2: fake HMAC на staging уже подтверждён live — `403` / `{"code":13}`.
-- Payment smoke 3: перед production остались `badAmount` body (`400` / ожидаемый `{"code":11}`), replay/idempotency (повтор того же webhook не должен продлевать доступ второй раз) и Telegram Stars positive + fake-signature после восстановления `BOT_TOKEN`.
-- Доп. заметка: локальный `4e-worker/.dev.vars` не содержит `BOT_TOKEN` или CloudPayments secret (там только `ANTHROPIC_KEY`, `BOT_API_TOKEN`, `ADMIN_SECRET`), поэтому для финального Stars/badAmount smoke нужен либо отдельный secret-file, либо тот shell/env, где токены уже экспортированы вручную.
-**Блокеры:** production всё ещё заблокирован до live-подтверждения `badAmount`, replay/idempotency и Telegram Stars после восстановления `BOT_TOKEN`.
+**Что подтверждено live:**
+- staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev`: независимый shell-smoke Codex подтвердил CloudPayments `positive` (`200` / `{"code":0}` + `accessUntil` вырос), `fake HMAC` (`403` / `{"code":13}`), `badAmount` (`400` / `{"code":11}`) и `idempotency` (повтор того же webhook не продлевает доступ второй раз). Telegram Stars на staging также подтверждены shell-smoke: `positive`, `fake-signature` (`403` / `{"ok":false,"error":"telegram stars signature invalid"}`) и `replay` (`duplicate: true`, `accessUntil` не меняется).
+- production worker: выполнен `wrangler deploy` из `4e-worker-p0`, опубликована версия `fa422fd3-3531-4cb2-9bfb-97f0cf6100e0`, custom domain `https://edge.4-ai.site`.
+- production smoke на `https://edge.4-ai.site` повторил те же результаты: CloudPayments `positive` (`200` / `{"code":0}` + `accessUntil` вырос с 30 до 60 дней), `fake HMAC` (`403` / `{"code":13}`), `badAmount` (`400` / `{"code":11}`), `idempotency` (повтор того же webhook не меняет `accessUntil`); Telegram Stars `positive`, `fake-signature` (`403`) и `replay` (`duplicate: true`) также зелёные.
+- migration-safety для старых пользователей подтверждена чтением кода перед деплоем: entitlement-логика по-прежнему опирается на старый `trialEndsAt`, так что пользователи без нового поля `user.entitlement` доступ не теряют.
+**Блокеры:** P0 payment-security блокеров на staging/prod больше нет. Сознательно не покрывали только реальную покупку через живой Telegram client — backend callback path уже подтверждён синтетически, этого достаточно для P0.
 **Не трогали:** цена (990 vs 999 ₽ — отдельное решение Юрия и/или Алексея), merge в `main`, дизайн `ONBOARD-001`.
 
 ## Изменения по проекту
