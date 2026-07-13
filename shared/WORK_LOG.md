@@ -6,6 +6,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-11 — Codex
 
 **Задача:** INFRA-005 — создать Yandex API Gateway и подготовить VK hosting к RU API base
@@ -40,6 +112,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-08 — Codex
 
 **Задача:** добавить в roadmap будущий календарный слой и омниканальные поверхности 4
@@ -50,6 +194,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-08 — Codex
 
 **Задача:** составить ТЗ для SMART-013 — AI-декомпозиция задачи на этапы
@@ -60,6 +276,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-08 — Codex
 
 **Задача:** подготовить ТЗ для Юрия по уведомлениям как ленте внимания
@@ -70,6 +358,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-08 — Codex
 
 **Задача:** уточнить Team Sync под рабочий процесс Юры через Claude, без GitHub Desktop
@@ -80,6 +440,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-08 — Codex
 
 **Задача:** закрепить простой team-sync процесс для Алексея, Юрия, Codex и Claude
@@ -125,6 +557,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-055 — вынести общие dialog/focus helpers из `index.html`
@@ -135,6 +639,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-055 — вынести referral helpers из `index.html`
@@ -145,6 +721,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-050 — accessibility baseline dialogs/focus/touch-targets, шаг 3
@@ -155,6 +803,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-050 — accessibility baseline status/toast, шаг 2
@@ -165,6 +885,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-050 — accessibility baseline auth/forms, шаг 1
@@ -175,6 +967,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-055 — вынести OAuth PKCE/state helpers из `index.html`
@@ -185,6 +1049,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-055 — вынести platform auth helpers из `index.html`
@@ -195,6 +1131,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-055 — вынести VK Mini Apps adapter из хвоста `index.html`
@@ -205,6 +1213,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-055 / task-move / BACK-038 / BACK-044 — ночная гигиена после аудита
@@ -215,6 +1295,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-055 — первый безопасный шаг распила platform layer
@@ -225,6 +1377,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-037 — staging API smoke перед Ready for QA
@@ -235,6 +1459,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-045 / BACK-048 — VK ID + Яндекс ID OAuth и staging dev/test аккаунты
@@ -245,6 +1541,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** Срочный фикс сборки `4e-worker` после падения `wrangler deploy`
@@ -255,6 +1623,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-035 — закрыть дефект reset-password для невалидного email и передать короткий ручной хвост Алексею
@@ -265,6 +1705,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-034 / SMART-006 — реальный staging AI smoke после добавления `ANTHROPIC_KEY`
@@ -275,6 +1787,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-035 — сократить QA smoke до короткого ручного хвоста и автоматизировать всё, что можно
@@ -285,6 +1869,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-034 — уточнить живой блокер staging AI smoke
@@ -295,6 +1951,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** INFRA-001 — сверить фактический статус фронта на Workers Static Assets
@@ -305,6 +2033,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** INFRA-002 — синхронизировать статус правила про РФ-доступность без VPN
@@ -315,6 +2115,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-07 — Codex
 
 **Задача:** BACK-048 — безопасный контур dev/test аккаунтов для staging
@@ -325,6 +2197,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** Разрешить merge-конфликты `feat/admin-tariff-api` с `origin/main`
@@ -335,6 +2279,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** Контроль ветки `feat/admin-tariff-api` перед следующим шагом по `BACK-053`
@@ -345,6 +2361,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** Синхронизировать статусы спринта 1 после ночных merge/hotfix и UI-пакета
@@ -355,6 +2443,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** INFRA-005 шаг 1 — подготовить RU API proxy для VK Mini App
@@ -365,6 +2525,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** перенести актуальное правило Linear-триажа багов на свежую ветку от `origin/main`
@@ -374,7 +2606,79 @@
 **Следующий шаг:** Юра и агенты используют правило при разборе новых багов перед созданием Linear issue.
 
 ---
-### 2026-07-06 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-07-06 — Codex
 
 **Задача:** закрепить accessibility как постоянное правило для будущей UI-разработки
 **Результат:** Accessibility baseline переведён из разовой задачи `BACK-050` в постоянную часть Definition of Done для нового и изменяемого UI. Обновлены `docs/ui-architecture-rules.md`, `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `shared/ROADMAP.md`. Для Юры добавлена итоговая инструкция `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-permanent-rule.md`.
@@ -416,6 +2720,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** BACK-043 — выровнять мобильную верстку экрана профиля
@@ -426,6 +2802,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** BACK-047 — вшить v2 auth/privacy routes в worker и снять ночные фронтовые fallback
@@ -436,6 +2884,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** Добавить в roadmap авторизацию через сервисы РФ — VK ID и Яндекс ID
@@ -446,6 +2966,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** Поставить Юре задачу по упрощению детальной карточки задачи
@@ -456,6 +3048,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** Поставить Юре задачу по неаккуратной мобильной верстке профиля
@@ -466,6 +3130,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** Зафиксировать для Юры UI-баг ширины нижней панели
@@ -476,6 +3212,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-04 — Codex
 
 **Задача:** Исправить Enter на экране email-входа
@@ -486,6 +3294,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** INFRA-004 + merge-пакет long-session-3 — довести VK-хостинг, синхронизировать PM/CI и закрыть инфраструктурные хвосты
@@ -496,6 +3376,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** INFRA-001 — перевести whitelist-фронт на Workers Static Assets и вернуть `app.4-ai.site` в доступный для РФ контур без VPN
@@ -506,6 +3458,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-04 — Codex
 
 **Задача:** Delta-sync стратегии и бэклога после сессии SMART-001/002/004
@@ -516,6 +3540,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 **Задача:** Продвинуть SMART-001 и SMART-002 — roster участников и assignee с TG ID
 **Результат:** В локальном `<worker-repo-root>` добавлен D1-ростер `chat_members` с endpoint'ами `upsert/get/mark-chat-members-left`; bot `handler.js` теперь копит участников из `msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`, передаёт список участников в Haiku и сохраняет в задачу `assigneeTgId` / `assigneeUsername` по `text_mention`, `@mention`, reply и fuzzy-матчу имени. Staging worker обновлён: миграция `0007_chat_members.sql` применена, версия `231a8070-f7ab-46d2-8983-f3939063afad` отвечает `200 OK`.
 **Коммит:** `этот коммит`
@@ -524,6 +3620,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-04 — Codex
 
 **Задача:** Продвинуть SMART-004 — лаконичная фиксация задач в группах
@@ -534,6 +3702,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-01 — Codex + Юрий
 
 **Задача:** BACK-022 — Ручной MVP детальной карточки задачи  
@@ -544,6 +3784,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ## Как добавить запись
 
 ```markdown
@@ -558,6 +3870,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ## Лог
 
 ### 2026-07-05 — Codex
@@ -578,6 +3962,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** Встроить SMART-006 — профиль пользователя в контекст AI-чата
@@ -612,6 +4068,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-29 — Codex
 
 **Задача:** Триаж ошибки голосового режима
@@ -622,6 +4150,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-29 — Codex
 
 **Задача:** Триаж ошибки входа через Telegram
@@ -632,6 +4232,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-29 — Codex
 
 **Задача:** Завести PM-задачи по детальной карточке задачи
@@ -642,6 +4314,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-30 — Codex
 
 **Задача:** BACK-019 mobile bugfix + vibration
@@ -651,7 +4395,79 @@
 **Следующий шаг:** Проверить на телефоне `Отменить`, `Перенести`, `Завершить` и вибрацию.
 
 ---
-### 2026-06-28 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-06-28 — Codex
 
 **Задача:** BACK-019 web bugfix — скрыть swipe-кнопки в браузере
 **Результат:** Swipe-actions скрыты по умолчанию через opacity/visibility/translate; на non-touch устройствах (`pointer:fine`) кнопки полностью отключены, чтобы web Telegram/browser не показывал их статично.
@@ -660,7 +4476,79 @@
 **Следующий шаг:** Проверить web Telegram/browser и телефонные свайпы.
 
 ---
-### 2026-06-28 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-06-28 — Codex
 
 **Задача:** BACK-019 bugfix — скрыть swipe-кнопки по умолчанию
 **Результат:** Исправлена причина статичного отображения кнопок `Завершить`, `Отменить`, `Перенести`: CSS больше не зависит от отсутствующего `.tasks-wrap` у `#home-task-list`, action-слой привязан к `.task-card-shell`.
@@ -669,7 +4557,79 @@
 **Следующий шаг:** Проверить на телефоне, что кнопки появляются только при свайпе.
 
 ---
-### 2026-06-28 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-06-28 — Codex
 
 **Задача:** BACK-019 — улучшенные карточки задач
 **Результат:** В `index.html` добавлена новая структура карточки задач: номер с приоритетом, категория, дедлайн, двухстрочное название, подсветка просрочки и swipe-действия `Завершить`, `Отменить`, `Перенести` с date picker. LESS/CSS пересобран.
@@ -678,7 +4638,79 @@
 **Следующий шаг:** Ручной smoke на телефоне: свайп влево/вправо, перенос дедлайна и завершение задачи.
 
 ---
-### 2026-06-28 — Юрий + Мимо (Cowork)
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-06-28 — Юрий + Мимо (Cowork)
 
 **Задача:** Актуализация backlog, фиксы голоса, мерж веток
 **Результат:**
@@ -695,6 +4727,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** Зафиксировать ответственного за РКН
@@ -705,6 +4809,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** Отменить жёсткое правило "только GitHub Desktop"
@@ -715,6 +4891,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** Самостоятельно закрепить безопасный Git-процесс и следующий PM-план
@@ -725,6 +4973,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** Записать пожелание Алексея по ритму разбора веток в roadmap
@@ -735,6 +5055,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** Подготовить запрос к Claude Юры по правилу разбора веток и merge в `main`
@@ -745,6 +5137,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** BACK-021 — голосовой ввод через MediaRecorder + Whisper
@@ -755,6 +5219,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** BACK-020 — подтверждение email в профиле для связки аккаунтов
@@ -765,6 +5301,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** BACK-017 — оживить настройки уведомлений
@@ -775,6 +5383,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** BACK-016 — расширенный профиль пользователя
@@ -785,6 +5465,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** BACK-010 — Telegram Stars / ЮKassa
@@ -795,6 +5547,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** Фаза 11 — относительные даты в карточках задач
@@ -805,6 +5629,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-28 — Codex
 
 **Задача:** BACK-009 — VK Pay для подписки
@@ -814,7 +5710,79 @@
 **Следующий шаг:** Проверить оплату внутри VK Mini App; после успешного smoke перевести BACK-009 в Done.
 
 ---
-### 2026-06-27 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-06-27 — Codex
 
 **Задача:** BACK-014 — подготовка кода под PostgreSQL заранее
 **Результат:** В `4e-worker` смержен PostgreSQL storage adapter для `app_sessions`/`app_task_lists` и добавлен будущий DDL `migrations/postgres_app_state.sql`. Без `POSTGRES_URL` production продолжает работать через D1/KV; live credentials не требовались.
@@ -823,7 +5791,79 @@
 **Следующий шаг:** BACK-008 остаётся manual blocker: Алексей создаёт Yandex Cloud PostgreSQL cluster и передаёт credentials/connection settings.
 
 ---
-### 2026-06-27 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-06-27 — Codex
 
 **Задача:** BACK-013 — Семантический HTML + aria-label
 **Результат:** В `index.html` добавлены `<main>`, `<header>`, `<nav>` для app/root, главного экрана, voice header и нижней навигации; иконочные nav/action элементы получили `aria-label`, `role="button"` и `tabindex="0"`. Визуальные классы и JS id/onclick сохранены.
@@ -833,6 +5873,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** Синхронизировать roadmap/backlog со статусом от Юры
@@ -843,6 +5955,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-012 — CSS-архитектура LESS + BEM + минификация
@@ -853,6 +6037,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-008 — перенос ПД в Yandex Cloud PostgreSQL
@@ -863,6 +6119,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** Объединить roadmap-документы в один источник
@@ -873,6 +6201,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-006 — миграция KV → D1 для sessions/tasks
@@ -883,6 +6283,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-005 — единая модель пользователя VK + TG + Email
@@ -893,6 +6365,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-004 — тестовый платёж, прогнать webhook до конца
@@ -903,6 +6447,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-27 — Codex
 
 **Задача:** BACK-002 — сброс пароля, backend reset endpoints
@@ -913,6 +6529,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-26 — Codex
 
 **Задача:** BACK-001 — Email через Resend, пользователи не получают писем
@@ -923,6 +6611,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-26 — Codex
 
 **Задача:** Исправить PM-roadmap/backlog по замечанию Юры
@@ -933,6 +6693,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** BACK-003 — установить Фазу 9: биометрическое согласие 152-ФЗ для голосового ввода
@@ -943,6 +6775,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** Исправить `BUG-2026-06-25-002` — сброс пароля принимает некорректный email и может вести на пустой экран
@@ -953,6 +6857,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** Зафиксировать P1-баг восстановления пароля по скринам пользователя
@@ -963,6 +6939,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** Закрепить напоминание о синхронизации перед работой
@@ -973,6 +7021,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** Ввести понятные заголовки коммитов для всей команды
@@ -983,6 +7103,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** Убрать локальные абсолютные пути из документации и добавить защиту
@@ -993,6 +7185,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** Исправить пустой экран после reload/logout и подсветку нижнего меню
@@ -1003,6 +7267,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-25 — Codex
 
 **Задача:** Проверить и подготовить `4e-app` к разработке и тестированию
@@ -1013,6 +7349,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-24 (сессия 2) — Cowork (Claude)
 
 **Задача:** Баги навигации: мессенджер для admin, порядок кнопок, подсветка, баг чатов
@@ -1023,6 +7431,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-24 — Cowork (Claude)
 
 **Задача:** Создать shared-папку с документацией для нового члена команды  
@@ -1033,6 +7513,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-06-24 (сессия 3) — Cowork (Claude)
 
 **Задача:** Патч 10 — починить веб-версию на десктопе (множественные экраны одновременно)  
@@ -1042,6 +7594,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-05 — Codex
 
 **Задача:** BACK-040 — вынести тарифы в worker `tariff-config` и подключить paywall к конфигу
@@ -1053,6 +7677,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-06 — Codex
 
 **Задача:** BACK-049 — закрепить UI-архитектурное правило LESS + BEM и запретить рост inline-долга
@@ -1070,7 +7766,79 @@
 **Комментарий:** В `platform-adapter.js` замена `body.paddingBottom` на CSS-переменную `--app-keyboard-offset`, в стилях `ask-bar` добавлен режим `ask-bar--keyboard-open`. Smoke на локальном `http://127.0.0.1:4173/`: экран `ask`, оффсет клавиатуры `260px`, `input.bottom=568`, панель ввода поднята (`padding-bottom=276px`), нижняя навигация не перекрывает поле.
 
 ---
-### 2026-07-12 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-07-12 — Codex
 
 **Задача:** NEW-001 — staging smoke по утреннему брифингу и account-scoped notification prefs
 **Делал:** Codex
@@ -1079,7 +7847,79 @@
 **Комментарий:** Прогнан живой smoke локальной ветки против staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev` через fetch-rewrite. На двух свежих staging-аккаунтах подтверждено: ключи `notif_prefs:<userId>` разные, bare `notif_prefs` не создаётся, `morningBriefing=true` + `briefingTime=08:45` сохраняются у первого пользователя локально и на сервере, второй пользователь эти настройки не наследует, повторный вход первого восстанавливает его собственные значения. Это закрывает исходный баг про «плавающий» утренний брифинг между профилями.
 
 ---
-### 2026-07-12 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-07-12 — Codex
 
 **Задача:** NEW-017 — проверить календарь на показ реальных задач вместо демо-набора
 **Делал:** Codex
@@ -1088,7 +7928,79 @@
 **Комментарий:** Перепроверено на двух поверхностях. (1) Локальная ветка `.tmp-4e-app-publish` против staging worker через fetch-rewrite: после регистрации свежего аккаунта и seed-а задач `Smoke calendar alpha/beta` календарь показывает именно их, без демо-сигналов. (2) Реальная staging-страница `https://4-ai-staging.pages.dev/`: после регистрации свежего аккаунта и seed-а задачи `Stage calendar task` календарь показывает реальную задачу `13 июля — Мария — Stage calendar task`; демо-набор не воспроизводится. Исходный баг про демо-задачи считаем закрытым как неподтверждённый на текущем коде/деплое. Отдельно замечено: нижний блок «Все дедлайны» по умолчанию остаётся в состоянии «Выберите дату», но это уже другой UX-вопрос, не демо-данные.
 
 ---
-### 2026-07-12 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-07-12 — Codex
 
 **Задача:** BACK-030 — staging smoke по structured assignee и доставке задачи другому пользователю 4
 **Делал:** Codex
@@ -1098,6 +8010,78 @@
 
 ---
 
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---
 ### 2026-07-12 — Codex
 
 **Задача:** SMART-013 — починить AI-декомпозицию задачи на этапы и перепроверить сохранение checklist
@@ -1107,7 +8091,79 @@
 **Комментарий:** Найден и исправлен реальный дефект в `index.html`: общий `aiCall()` бил в корень worker вместо `/anthropic`, из-за чего `Разбить на этапы` сохранял мусорный пункт `Ошибка: "Not found"`; дополнительно очищен parser step-list от fenced JSON / служебных строк. После фикса fresh-target smoke локальной ветки `http://127.0.0.1:4173/?fresh=...` с fetch-rewrite на staging worker создаёт задачу, вызывает `decomposeCurrentTask()` и сохраняет 8 нормальных шагов и в UI, и в persisted `checklist`. Отдельно зафиксировано расхождение поверхности: реальная `https://4-ai-staging.pages.dev/` пока на старом деплое и ещё не содержит `decomposeCurrentTask`, так что live deploy smoke возможен только после публикации ветки.
 
 ---
-### 2026-07-12 — Codex
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-07-12 — Codex
 
 **Задача:** SMART-013 — live staging deploy smoke после фикса AI-декомпозиции
 **Делал:** Codex
@@ -1116,7 +8172,79 @@
 **Комментарий:** Для безопасного smoke собран временный staging-артефакт из `HEAD` с подменой `const WORKER` на `https://restless-lab-d737-staging.shelckograff.workers.dev`, затем выполнен `wrangler pages deploy ... --project-name 4-ai-staging --branch dev`. Wrangler вернул deployment URL `https://c4b8195f.4-ai-staging.pages.dev`. На этом live deployment headless smoke подтвердил, что `decomposeCurrentTask` существует, страница смотрит в staging worker, и сценарий `создать задачу -> Разбить на этапы` сохраняет 8 нормальных шагов как в UI, так и в persisted `checklist`. Отдельно замечено, что алиас `https://4-ai-staging.pages.dev/` некоторое время оставался на старом деплое, поэтому для проверки использовался прямой deployment URL.
 
 ---
+
 ### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-07-13 — Codex
 
 **Задача:** NEW-021 — календарь: блок `Все дедлайны` пуст до клика по дню
 **Делал:** Codex
@@ -1125,7 +8253,79 @@
 **Комментарий:** В `index.html` вынесен отдельный рендер нижнего списка дедлайнов: `renderCalendarDeadlinesList(tasks)` сразу показывает все активные дедлайны, отсортированные по сроку, вместо заглушки `Выберите дату`. Верхний блок `Дедлайны` по-прежнему остаётся day-specific и обновляется по клику на день, то есть дефект закрыт без изменения основной логики выбора даты.
 
 ---
+
 ### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---### 2026-07-13 — Codex
 
 **Задача:** NEW-020 — замерить субъективную медлительность голосового ввода без слепого фикса
 **Делал:** Codex
@@ -1138,12 +8338,84 @@
 
 **Задача:** CI / team-sync handoff — запушить честный `pm/team-sync.md`
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `2cebc26`
 **Состояние:** ✅ Выполнено
-**Комментарий:** В `.tmp-4e-app-publish/pm/team-sync.md` уже лежал корректный незакоммиченный апдейт с ответом Алексею по состоянию `feat/admin-tariff-api` и отдельной записью про payment security P0. Контент не переписывался: перед коммитом проверен diff, подтверждено, что это именно локально забытый процессный push-gap, а не новый смысловой конфликт. Файл закоммичен и отправлен как есть, отдельно от следующих CI/staging правок.
+**Комментарий:** В `.tmp-4e-app-publish/pm/team-sync.md` уже лежал корректный незакоммиченный апдейт с ответом Алексею по состоянию `feat/admin-tariff-api` и отдельной записью про payment security P0. Контент не переписывался: перед коммитом проверен diff, подтверждено, что это именно локально забытый процессный push-gap, а не новый смысловой конфликт. Файл закоммичен как есть, а после расхождения с `origin/feat/admin-tariff-api` сохранён через merge рядом с payment-P0 цепочкой, без перетирания привезённых записей.
 
 ---
-<!-- Добавляйте новые записи ВЫШЕ этой строки -->
+
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 8, платёжная аналитика по воронке
+**Результат:** Поверх существующего `audit_events` добавлен узкий payment-event слой без отдельной инфраструктуры: app теперь отправляет user-step события `paywall_viewed`, `plan_selected`, `checkout_started`, а worker автоматически пишет `invoice_created`, `payment_provider_callback_received`, `payment_verified`, `payment_failed/payment_refunded`, `entitlement_activated` вокруг CloudPayments и Telegram Stars. Для этого добавлен endpoint `/analytics/payment-event`, а серверные платёжные хендлеры начали логировать lifecycle сами, так что воронка больше не заканчивается одним фактом «у пользователя стал paid`.
+**Коммит:** worker `f57149b` (`feat(analytics): track payment funnel events`), app `pending`
+**Статус:** ✅ базовая payment funnel analytics заведена end-to-end
+**Следующий шаг:** если останется время — отдельно сверить, нужен ли ещё объём для `ANALYTICS-001`, но P0 payment-block уже закрыт по сути
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 7, честный paywall copy
+**Результат:** В defaults worker и app убраны ложные формулировки про «подписку», «автопродление каждый месяц» и «отмену в любой момент», хотя текущий monetization-flow продаёт разовый доступ на фиксированный срок. Базовые тексты теперь говорят о `Доступе к 4`, `разовом доступе на 30/365 дней` и `разовом доступе без автопродления`, а заметка про VK Pay честно переведена в статус отложенного способа до server-side verification.
+**Коммит:** worker `7411667` (`fix(payments): make paywall copy honest`), app `pending`
+**Статус:** ✅ paywall copy приведён в соответствие реальной модели оплаты
+**Следующий шаг:** перейти к задаче 8 — добавить платёжную аналитику по воронке и provider callbacks
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 6, зачистить simulatePaymentSuccess и локальные self-activation хвосты
+**Результат:** Из production UI убрана оставшаяся локальная активация Premium без серверного подтверждения: `simulatePaymentSuccess()` больше не меняет пользователя и только явно сообщает, что тестовая активация отключена, а `startVKPayment()` перестал вызывать локальный `onPaymentSuccess()` даже в случае client-side success статуса. Экран `payment-success` теперь используется только как отображение уже подтверждённого server-state, а не как механизм самоназначения entitlement в клиенте.
+**Коммит:** app `pending`
+**Статус:** ✅ client-side self-activation для платежей вычищена из боевого потока
+**Следующий шаг:** перейти к задаче 7 — сделать paywall copy честным и убрать формулировки про автопродление/отмену там, где его нет
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 5, VK Pay только за feature flag
+**Результат:** В tariff-config добавлен явный флаг `payments.vkPayEnabled` с дефолтом `false`, и app перестал автоматически выбирать VK Pay только по факту запуска внутри VK Mini App. Пока серверной верификации для VK Pay нет, боевой путь уходит на подтверждаемые провайдеры, а включение VK Pay теперь возможно только осознанным конфигом через admin-layer, а не скрытой клиентской эвристикой по окружению.
+**Коммит:** worker `3c83e57` (`fix(payments): gate vk pay behind config`), app `pending`
+**Статус:** ✅ VK Pay выведен из production-path до появления backend verification
+**Следующий шаг:** перейти к задаче 6 — зачистить simulatePaymentSuccess()/локальные self-activation хвосты
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 4, Telegram Stars completion только от доверенного источника
+**Результат:** Закрыт обходной completion-контур для Stars: бот теперь подписывает raw JSON тела `successful_payment` через общий секрет, а `4e-worker` принимает `/payments/telegram-stars/complete` только с валидной подписью, совпавшим `telegramId`, `payload`, `totalAmount`, `currency=XTR` и обязательными charge ids. Серверная активация entitlement больше не зависит от голого клиентского POST, а фронт после Telegram Stars перестал включать локальный fallback `onPaymentSuccess()` при неуспевшем polling — если webhook ещё не дошёл, UI честно ждёт серверное подтверждение.
+**Коммит:** worker `5979f38` (`fix(payments): trust telegram stars bot callbacks`), app `pending`
+**Статус:** ✅ Telegram Stars переведён на signed bot completion без client-side self-activation
+**Следующий шаг:** перейти к задаче 5 — убрать VK Pay из боевого пути за feature flag, пока нет серверной верификации
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 3, CloudPayments webhook HMAC + order/amount/idempotency
+**Результат:** Для карточной оплаты добавлен серверный `pending order` контур: app перед открытием CloudPayments сначала получает из worker подтверждённый `invoiceId`/`accountId`/`amount`/`data`, а webhook в `4e-worker` теперь активирует Premium только после проверки `Content-HMAC` по официальной схеме CloudPayments, совпадения `invoiceId`, `AccountId`, `Amount`, `Currency` и живого pending-order в KV. Старый эвристический trust по `Description`/клиентскому payload убран: без серверного заказа и валидной подписи entitlement не включается. На клиенте карточный успех тоже больше не включает Premium мгновенно локально — сначала идёт повторный `auth/me` до серверного подтверждения webhook.
+**Коммит:** worker `c39eeb1` (`fix(payments): verify cloudpayments webhooks`), app `pending`
+**Статус:** ✅ CloudPayments переведён на signed callback + server-side order verification
+**Следующий шаг:** перейти к задаче 4 — убрать слепое доверие в Telegram Stars completion и добавить серверную подпись/проверку источника
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 2, единая entitlement-модель для premium capability
+**Результат:** В `4e-worker` premium-доступ перестал жить в разрозненных проверках `plan/trialEndsAt`: добавлены канонические `syncUserEntitlement()` и `hasPremiumAccess()`, а `publicUser` и `toAdminUser` теперь отдают единый объект `entitlement` как источник правды для статуса и срока доступа. Серверные premium-gate перенесены на этот слой для `/anthropic`, `save-task`, `update-task` и `transcribe`, поэтому клиент больше не может честно выглядеть premium только за счёт локального состояния или обходного payload.
+**Коммит:** worker `036ac78` (`fix(payments): unify premium entitlement gates`)
+**Статус:** ✅ единая entitlement-модель заведена в worker и стала обязательной для premium-capability
+**Следующий шаг:** перейти к задаче 3 — закрыть CloudPayments webhook HMAC, сумму/заказ и replay/idempotency на сервере
+
+---
+### 2026-07-13 — Codex
+
+**Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
+**Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
+**Коммит:** pending
+**Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
+**Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
+
+---<!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex
 

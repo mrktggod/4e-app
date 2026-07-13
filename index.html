@@ -945,7 +945,7 @@
     <div class="pricing-card" id="pricing-month" onclick="selectPlan('month')">
       <div style="flex:1">
         <div class="pricing-name" id="pricing-month-name">1 месяц</div>
-        <div class="pricing-desc" id="pricing-month-desc">Автопродление каждый месяц</div>
+        <div class="pricing-desc" id="pricing-month-desc">Разовый доступ на 30 дней</div>
       </div>
       <div style="text-align:right">
         <div class="pricing-price" id="pricing-month-price">990 ₽</div>
@@ -957,7 +957,7 @@
       <div class="pricing-badge-save" id="pricing-year-badge">Выгода 20%</div>
       <div style="flex:1">
         <div class="pricing-name" id="pricing-year-name">12 месяцев</div>
-        <div class="pricing-desc" id="pricing-year-desc">Экономия 2 376 ₽ в год</div>
+        <div class="pricing-desc" id="pricing-year-desc">Разовый доступ на 365 дней</div>
       </div>
       <div style="text-align:right">
         <div class="pricing-price" id="pricing-year-price">792 ₽</div>
@@ -970,7 +970,7 @@
       Оформить подписку
     </button>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6" id="subscription-payment-note">
-      Безопасная оплата через CloudPayments<br>Отмена в любой момент
+      Безопасная оплата через CloudPayments<br>Разовый доступ без автопродления
     </div>
 
   </div>
@@ -991,7 +991,7 @@
       </div>
       <div style="flex:1">
         <div style="font-size:14px;font-weight:700;color:var(--text)" id="order-title">Premium · 1 месяц</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="order-subtitle">Подписка на 4</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="order-subtitle">Доступ к 4</div>
       </div>
       <div style="font-size:20px;font-weight:800;color:var(--green)" id="order-price">990 ₽</div>
     </div>
@@ -1005,7 +1005,7 @@
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Все функции Premium</span></div>
       </div>
       <div class="sub-row" style="padding:10px 16px;border:none">
-        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Отмена в любой момент</span></div>
+        <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="sub-row-text">Разовый доступ без автопродления</span></div>
       </div>
     </div>
 
@@ -2532,13 +2532,16 @@ const DEFAULT_TARIFF_CONFIG = {
   trialDays: 30,
   paywall: {
     title: 'Продлить подписку',
-    orderSubtitle: 'Подписка на 4',
-    benefits: ['Мгновенная активация', 'Все функции Premium', 'Отмена в любой момент'],
+    orderSubtitle: 'Доступ к 4',
+    benefits: ['Мгновенная активация', 'Все функции Premium', 'Разовый доступ без автопродления'],
     paymentNotes: {
-      card: 'Безопасная оплата банковской картой<br>Отмена в любой момент',
-      vk: 'Оплата внутри VK Mini App через VK Pay<br>Отмена в любой момент',
+      card: 'Безопасная оплата банковской картой<br>Разовый доступ без автопродления',
+      vk: 'VK Pay будет включён после server-side верификации',
       telegramStars: 'Оплата внутри Telegram через Stars<br>Premium включится после подтверждения ботом'
     }
+  },
+  payments: {
+    vkPayEnabled: false
   },
   features: [
     { title: 'Неограниченные задачи', description: 'Добавляй сколько угодно задач и обещаний' },
@@ -2556,7 +2559,7 @@ const DEFAULT_TARIFF_CONFIG = {
       priceRub: 990,
       stars: 990,
       cardLabel: '1 месяц',
-      cardDescription: 'Автопродление каждый месяц',
+      cardDescription: 'Разовый доступ на 30 дней',
       periodLabel: '/ мес',
       saveBadge: ''
     },
@@ -2568,7 +2571,7 @@ const DEFAULT_TARIFF_CONFIG = {
       priceRub: 9504,
       stars: 9504,
       cardLabel: '12 месяцев',
-      cardDescription: 'Экономия 2 376 ₽ в год',
+      cardDescription: 'Разовый доступ на 365 дней',
       periodLabel: '/ мес · 9 504 ₽/год',
       saveBadge: 'Выгода 20%'
     }
@@ -2628,6 +2631,9 @@ function normalizeTariffConfig(raw) {
         priceRub: toPositiveInt(source.plans?.year?.priceRub, defaults.plans.year.priceRub),
         stars: toPositiveInt(source.plans?.year?.stars, defaults.plans.year.stars)
       }
+    },
+    payments: {
+      vkPayEnabled: !!(source.payments?.vkPayEnabled ?? defaults.payments.vkPayEnabled)
     }
   };
 }
@@ -2702,6 +2708,17 @@ async function loadTariffConfig() {
 
 applyTariffConfig(DEFAULT_TARIFF_CONFIG);
 
+async function trackPaymentEvent(action, metadata) {
+  if (!getToken()) return;
+  try {
+    await fetch(WORKER + '/analytics/payment-event', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ action, metadata: metadata || {} })
+    });
+  } catch (e) {}
+}
+
 function selectPlan(plan) {
   selectedPlan = plan;
   ['month','year'].forEach(p => {
@@ -2710,6 +2727,7 @@ function selectPlan(plan) {
     if (card)  card.classList.toggle('selected', p === plan);
     if (radio) radio.classList.toggle('selected', p === plan);
   });
+  trackPaymentEvent('plan_selected', { planId: plan, surface: 'subscription' });
 }
 
 function isVKPaymentContext() {
@@ -2722,7 +2740,7 @@ function isTelegramPaymentContext() {
 }
 
 function getPaymentProvider() {
-  if (isVKPaymentContext()) return 'vk';
+  if (isVKPaymentContext() && tariffConfig?.payments?.vkPayEnabled) return 'vk';
   if (isTelegramPaymentContext()) return 'telegram-stars';
   return 'card';
 }
@@ -2752,13 +2770,15 @@ function openPayment() {
   }
   if (badges) badges.style.display = provider === 'card' ? 'flex' : 'none';
   setPaymentButtonState(provider === 'vk' ? 'Оплатить через VK Pay' : provider === 'telegram-stars' ? 'Оплатить через Telegram Stars' : 'Оплатить картой');
+  trackPaymentEvent('paywall_viewed', { planId: selectedPlan, provider, surface: 'payment-screen' });
   showSubScreen('payment');
 }
 
-function startPayment() {
+async function startPayment() {
   if (!currentUser) { showToast('Войди в аккаунт'); return; }
   const plan = getPlanConfig(selectedPlan);
   const provider = getPaymentProvider();
+  trackPaymentEvent('checkout_started', { planId: selectedPlan, provider });
   if (provider === 'vk') {
     startVKPayment(plan);
     return;
@@ -2769,16 +2789,25 @@ function startPayment() {
   }
   const btn  = document.getElementById('pay-btn');
   setPaymentButtonState('Открываю форму оплаты...', true);
+  let order = null;
+  try {
+    order = await createCloudPaymentsOrder();
+  } catch (e) {
+    console.warn('[CloudPayments order]', e);
+    showToast('Не удалось подготовить оплату. Попробуй позже');
+    setPaymentButtonState('Оплатить картой');
+    return;
+  }
 
   // Загружаем скрипт CP если ещё не загружен
   if (!window.cp) {
     const s = document.createElement('script');
     s.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js';
-    s.onload = () => launchWidget(plan, btn);
+    s.onload = () => launchWidget(plan, btn, order);
     s.onerror = () => { showToast('Ошибка загрузки виджета'); setPaymentButtonState('Оплатить картой'); };
     document.head.appendChild(s);
   } else {
-    launchWidget(plan, btn);
+    launchWidget(plan, btn, order);
   }
 }
 
@@ -2791,8 +2820,7 @@ async function startVKPayment(plan) {
       amount: plan.priceRub
     });
     if (order && (order.success || order.status === 'success')) {
-      onPaymentSuccess(plan);
-      showToast('Оплата VK Pay прошла');
+      showToast('VK Pay вернул успешный статус, но server-side активация пока отключена');
     } else {
       showToast('Оплата VK Pay отменена');
     }
@@ -2825,7 +2853,6 @@ async function refreshUserAfterTelegramPayment(plan) {
       }
     } catch (e) {}
   }
-  onPaymentSuccess(plan);
   return false;
 }
 
@@ -2857,24 +2884,57 @@ async function startTelegramStarsPayment(plan) {
     setPaymentButtonState('Оплатить через Telegram Stars');
   }
 }
-function launchWidget(plan, btn) {
+async function createCloudPaymentsOrder() {
+  const r = await fetch(WORKER + '/payments/cloudpayments/order', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ plan: selectedPlan })
+  });
+  const d = await r.json();
+  if (!r.ok || !d.ok || !d.invoiceId) throw new Error(d.error || 'cloudpayments_order_failed');
+  return d;
+}
+async function refreshUserAfterCloudPayment() {
+  for (let i = 0; i < 6; i++) {
+    await new Promise(resolve => setTimeout(resolve, 900));
+    try {
+      const r = await fetch(WORKER + '/auth/me', { headers: authHeaders() });
+      const d = await r.json();
+      if (d.ok && d.user) {
+        currentUser = d.user;
+        renderTrialBanner();
+        updateSubscriptionScreen();
+        const accessUntil = Number(d.user?.entitlement?.accessUntil || d.user?.trialEndsAt || 0);
+        if ((d.user?.entitlement?.status === 'active' && accessUntil > Date.now()) || d.user.plan === 'paid' || d.user.trialActive) {
+          showPaymentSuccessScreen();
+          return true;
+        }
+      }
+    } catch (e) {}
+  }
+  return false;
+}
+function launchWidget(plan, btn, order) {
   const widget = new cp.CloudPayments();
   widget.pay('charge', {
     publicId:    CP_PUBLIC_ID,
-    description: plan.title,
-    amount:      plan.priceRub,
-    currency:    'RUB',
-    email:       currentUser.email || '',
-    accountId:   currentUser.id,
-    data: {
-      userId:   currentUser.id,
-      plan:     selectedPlan,
-      token:    getToken(),
+    description: order.description || plan.title,
+    amount:      order.amount || plan.priceRub,
+    currency:    order.currency || 'RUB',
+    email:       order.email || currentUser.email || '',
+    accountId:   order.accountId || currentUser.id,
+    invoiceId:   order.invoiceId,
+    data:        order.data || {
+      userId: currentUser.id,
+      plan: selectedPlan,
+      invoiceId: order.invoiceId,
+      orderId: order.invoiceId
     },
   }, {
-    onSuccess: () => {
+    onSuccess: async () => {
       setPaymentButtonState('Оплатить картой');
-      onPaymentSuccess(plan);
+      const synced = await refreshUserAfterCloudPayment();
+      if (!synced) showToast('Платёж принят. Premium включится после подтверждения webhook');
     },
     onFail: (reason) => {
       setPaymentButtonState('Оплатить картой');
@@ -2885,20 +2945,9 @@ function launchWidget(plan, btn) {
     },
   });
 }
-
-function onPaymentSuccess(plan) {
-  // Обновляем юзера локально (Worker обновит через webhook)
-  if (currentUser) {
-    const trialDays = toPositiveInt(plan?.durationDays, tariffConfig.trialDays || 30);
-    currentUser.trialActive  = true;
-    currentUser.plan = 'paid';
-    currentUser.trialLeft    = trialDays;
-    currentUser.trialEndsAt  = Date.now() + trialDays * 24 * 60 * 60 * 1000;
-    renderTrialBanner();
-    updateSubscriptionScreen();
-  }
-  // Показываем экран успеха
-  const until = new Date(currentUser.trialEndsAt);
+function showPaymentSuccessScreen() {
+  const untilTs = Number(currentUser?.entitlement?.accessUntil || currentUser?.trialEndsAt || 0);
+  const until = new Date(untilTs || Date.now());
   const opts  = { day: 'numeric', month: 'long', year: 'numeric' };
   const el    = document.getElementById('success-until');
   if (el) el.textContent = until.toLocaleDateString('ru-RU', opts);
@@ -2906,7 +2955,8 @@ function onPaymentSuccess(plan) {
 }
 
 function simulatePaymentSuccess() {
-  onPaymentSuccess(getPlanConfig(selectedPlan));
+  console.warn('simulatePaymentSuccess disabled in production');
+  showToast('Тестовая активация платежа отключена');
 }
 
 // Обновляем экран подписки данными из currentUser
@@ -7631,8 +7681,7 @@ if(window.FourPlatform?.initVkMiniAppAdapter){
     loadTasks,
     goHome,
     applyTheme,
-    getPlanConfig,
-    onPaymentSuccess
+    getPlanConfig
   });
 }
 
