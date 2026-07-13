@@ -8442,6 +8442,15 @@
 **Комментарий:** Сначала закрыто критичное расхождение по push: подтверждено буквально, что `HEAD == origin/feat/admin-tariff-api == f90a8392e0b72b4e4ad3d611e76c0367738802cb`, а `pm/team-sync.md` на remote уже содержит team-sync и staging handoff. После этого Codex независимо прогнал staging webhook smoke из своего shell: для CloudPayments подтвердились `positive` (`200` / `{"code":0}` + рост `accessUntil`), `fake HMAC` (`403` / `{"code":13}`), `badAmount` (`400` / `{"code":11}`) и idempotency; для Telegram Stars — `positive`, `fake-signature` (`403`) и `replay` (`duplicate: true`). Затем выполнен production deploy `npx wrangler deploy` в `4e-worker-p0`: опубликована версия `fa422fd3-3531-4cb2-9bfb-97f0cf6100e0`, custom domain `https://edge.4-ai.site`. На production тем же независимым shell-smoke повторно подтверждены CloudPayments `positive/fake/badAmount/idempotency` и Telegram Stars `positive/fake/replay`. Важная находка по ходу проверки: `/payment/webhook` принимает CloudPayments callback как `application/x-www-form-urlencoded`, а не JSON; именно это сначала дало ложный `200 {"code":0}` без изменения `accessUntil`, после чего smoke был повторён в правильном wire-format и стал зелёным.
 
 ---
+### 2026-07-13 — Codex
+
+**Задача:** INFRA-005 — довести VK production deploy через Yandex RU proxy до живого smoke
+**Делал:** Codex
+**Коммит:** pending
+**Состояние:** ✅ Выполнено
+**Комментарий:** В `.tmp-4e-app-publish` повторно запущен `npm run deploy:vk-hosting` с `VK_API_BASE_URL=https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`. Сборка `.vk-hosting-dist` прошла, `vk-miniapps-deploy` загрузил version `1783968473`, обновил dev URLs и дошёл до ручного production-confirm слоя VK. В живой интерактивный deploy-сеанс были переданы коды из VK Administration, после чего Юрий подтвердил практический runtime-smoke: приложение открывается и работает в самом VK-приложении. Этого достаточно, чтобы закрыть хвост `INFRA-005` как выполненный, даже несмотря на неидеальный финальный вывод CLI.
+
+---
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex

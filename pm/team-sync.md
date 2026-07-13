@@ -1,6 +1,6 @@
 # Team Sync
 
-Обновлено: 2026-07-12
+Обновлено: 2026-07-13
 
 Источник правды: GitHub + этот файл. Подробности живут в `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `shared/WORK_LOG.md` и `DEVELOPMENT_LOG.md`.
 
@@ -61,6 +61,18 @@
 - migration-safety для старых пользователей подтверждена чтением кода перед деплоем: entitlement-логика по-прежнему опирается на старый `trialEndsAt`, так что пользователи без нового поля `user.entitlement` доступ не теряют.
 **Блокеры:** P0 payment-security блокеров на staging/prod больше нет. Сознательно не покрывали только реальную покупку через живой Telegram client — backend callback path уже подтверждён синтетически, этого достаточно для P0.
 **Не трогали:** цена (990 vs 999 ₽ — отдельное решение Юрия и/или Алексея), merge в `main`, дизайн `ONBOARD-001`.
+
+### INFRA-005 — RU proxy для VK Mini App через Yandex Cloud — 2026-07-13
+
+**Статус:** Выполнено
+**Контекст:** Production VK deploy для surface с `VK_API_BASE_URL=https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net` дошёл до ручного VK Administration confirm, после чего Юрий подтвердил живой runtime-smoke: приложение открывается и работает внутри VK-приложения.
+**Что сделано:**
+- `vk-miniapps-deploy` повторно собрал и загрузил новую VK hosting version `1783968473`.
+- Во время deploy пройдены интерактивные шаги `update prod urls`, `update dev urls`; test-group URL сознательно не обновлялся.
+- Коды из VK Administration переданы в живой deploy-сеанс, после чего ручной runtime-smoke внутри VK подтвердил, что production surface открывается и работает.
+**Что проверено:** ручной smoke в VK app без отдельного браузера/VPN: приложение запускается на боевой VK-поверхности и использует Yandex RU proxy вместо прямого Cloudflare API base.
+**Блокеры:** нет. Остаток по INFRA-005 закрыт.
+**Следующий шаг:** считать `INFRA-005` закрытым, а если понадобится — отдельно записать/подтвердить новый production VK URL из кабинета VK Mini Apps.
 
 ## Изменения по проекту
 
