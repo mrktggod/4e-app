@@ -8424,6 +8424,15 @@
 **Комментарий:** По живым GitHub Actions logs для `Quality guard` на PR #27 и PR #34 подтверждена одна и та же причина падения: на `ubuntu-latest` отсутствует `rg`, из-за чего `check-portable-paths.sh` и `check-ui-architecture.sh` падают на `command not found`, а UI guard потом ещё и даёт ложный `index.html must link styles.min.css`. Фикс сделан в одном месте: в `.github/workflows/path-guard.yml` добавлен шаг установки `ripgrep` перед guard-скриптами, чтобы обе проверки работали на runner так же, как локально, без переписывания самих shell-скриптов.
 
 ---
+### 2026-07-13 — Codex
+
+**Задача:** CI / staging handoff — обновить `pm/team-sync.md` для Алексея
+**Делал:** Codex
+**Коммит:** pending
+**Состояние:** ✅ Выполнено частично / staging handoff готов, production всё ещё заблокирован
+**Комментарий:** В `pm/team-sync.md` обновлён payment-P0 блок до реального состояния после сегодняшних прогонов: добавлен прямой staging URL `https://c4b8195f.4-ai-staging.pages.dev/`, список UI smoke (`HOME-001`, `NEW-006`, `NEW-008`, `NEW-021`) и честный payment smoke status. Зафиксировано, что positive CloudPayments (`200` / `{"code":0}`) и fake HMAC (`403` / `{"code":13}`) уже подтверждены live, а production по-прежнему блокируется на трёх хвостах: `badAmount` body, replay/idempotency и Telegram Stars после восстановления `BOT_TOKEN`/secret env.
+
+---
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex
