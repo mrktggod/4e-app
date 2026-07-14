@@ -8511,3 +8511,19 @@
 **Коммит:** pending
 **Состояние:** ✅ Выполнено для этой итерации
 **Комментарий:** Внесены: запись в WORK_LOG, новый pm/team-sync.md, обновление AGENTS.md, расширение guard-а кодировки.
+
+## 2026-07-14 overnight staging QA follow-up (Codex)
+- BUG-2026-07-14-001: доведён до live staging green. Реальный browser-smoke на `https://4-ai-staging.pages.dev/` после уже внесённых auth-фиксов прошёл оба UI-сценария `Регистрация` и `Войти`: после submit экран переходит на home, `Нет соединения` и `ReferenceError` не воспроизводятся. Console содержит только штатные Telegram warnings про `Changing swipes behavior`.
+- ONBOARD-001: подтверждён empty-state home для нового аккаунта. Видна guided-card `Первый AI-план за 60 секунд` с CTA `Добавить задачу`, а quick-add реально открывается и не является мёртвой кнопкой.
+- HOME-001: подтверждён новый home-layout (`Сегодня`, focus-card, compact metrics, top-list) и основные точки входа: profile, notifications, AI-chat, calendar. После добавления первой задачи home перестраивается в `1 задача требуют внимания` + `Топ-1 задач`.
+- NEW-003 / NEW-004: профиль на staging показывает один верхний avatar (`Изменить фото`) и компактный блок `Личные данные аккаунта` без старой отдельной тяжёлой карточки.
+- NEW-005 / NEW-015 / NEW-016: после quick-add длинная задача с исполнителем `Антон` отображается без развала UI; в home/focus/statistics видна unified meta `Работа · поставлена сегодня · дедлайн сегодня`, а focus-card/focus-panel не конфликтуют с декоративным элементом.
+- NEW-014: отдельная сводка `Фокус дня` подтверждена живым кликом по focus-card. Открывается overlay со списком задач и CTA `Открыть все задачи`, который реально ведёт на экран `Статистика`.
+- NEW-007: в task detail после скролла вниз вкладка `История` открывается и показывает timeline-entry `Создана задача` для только что созданной задачи. Базовый history-path живой.
+- NEW-021 / BUG-2026-07-14-005: reproduced. Календарь не показывает дедлайн задачи, хотя тот же дедлайн уже виден в home/focus meta; после явного клика по дню UI меняет подпись, но список остаётся пустым.
+- BUG-2026-07-14-004: новая находка. В AI-чате quick action `📊 Статистика` не даёт нормального ответа и рендерит ошибку `messages.0.id: Extra inputs are not permitted`.
+- BUG-2026-07-14-002: старый `404` на `/analytics/lite-event` в текущем live staging не подтверждён. Pages сейчас указывает на `https://restless-lab-d737-staging.shelckograff.workers.dev`, прямой smoke `register -> login -> POST /analytics/lite-event` вернул `200 {ok:true}`, а home load не дал console-ошибок вокруг lite analytics. Но `/analytics/summary` без `x-admin-secret` всё ещё отвечает `401`, так что end-to-end подтверждение прихода событий в summary остаётся отдельной админ-проверкой.
+- Tooling: починен `.tmp-4e-app-publish/scripts/check-cp1251-mojibake.mjs` — проверка больше не зависает на гигантском append-only `shared/WORK_LOG.md`, и now returns `CP1251 mojibake check passed: 0 suspicious tokens`.
+- BACK-059: expired-account smoke этой ночью не закрыт. Без admin fixture / истёкшего entitlement не удалось честно воспроизвести expired path; оставить как BLOCKED для отдельного QA с подготовленным пользователем.
+- Bot-live retry: отдельный live-bot smoke этой ночью не доведён; нужен локальный runtime с доступным `BOT_TOKEN` в env или отдельное подтверждение через staging bot path.
+- Bot-local runtime follow-up: в `4e-worker` локальный `npm run start` поднимается после нормализации env-имен (`BOT_API_TOKEN -> BOT_TOKEN`, `ANTHROPIC_KEY -> ANTHROPIC_API_KEY`) и печатает `🛡 4 бот запущен...`. Полный live inbound smoke этой ночью всё равно не выполнен, потому что внешний Telegram message/update в сессию не подавался.
