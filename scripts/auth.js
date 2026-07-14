@@ -221,6 +221,7 @@
   window.authClearPendingReferralCode = clearPendingReferralCode;
   window.authCapturePendingReferralCode = capturePendingReferralCode;
   window.authBuildReferralLink = buildReferralLink;
+  window.buildReferralLink = buildReferralLink;
   window.copyReferralLink = copyReferralLink;
   window.getTelegramReturnUrl = getTelegramReturnUrl;
   window.isValidEmail = isValidEmail;

@@ -2288,7 +2288,7 @@ function renderExtendedProfile(){
   setProfileVerifiedBadge('profile-telegram-status',!!currentUser.telegramId,currentUser.telegramId?'Привязан':'Не привязан');
   setProfileVerifiedBadge('profile-phone-status',draft.phoneVerified??!!currentUser.phoneVerified);
   setProfileEmailBadge(isCurrentProfileEmailVerified(profileEmail));
-  setProfileFieldValue('profile-ref-link',buildReferralLink());
+  setProfileFieldValue('profile-ref-link',window.buildReferralLink ? window.buildReferralLink() : '');
   setProfileText('profile-ref-count','Приглашено: '+Number(currentUser.referralCount||0));
 }
 function updateProfileAboutCounter(){const el=document.getElementById('profile-field-about');const counter=document.getElementById('profile-about-counter');if(counter)counter.textContent=((el?.value||'').length)+' / 200';}
