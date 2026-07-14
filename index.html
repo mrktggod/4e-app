@@ -728,16 +728,6 @@
     <div class="cal-days" id="cal-days"></div>
     <div class="cal-events-title" id="cal-events-title">Дедлайны</div>
     <div id="cal-events"></div>
-    <div style="margin-top:20px;padding:16px;border-radius:20px;background:var(--card2);border:1px solid var(--border)">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
-        <div>
-          <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase">Штаб дня</div>
-          <div id="cal-day-plan-title" style="font-size:16px;font-weight:700;margin-top:4px">План на сегодня</div>
-        </div>
-        <div id="cal-day-plan-badge" style="font-size:11px;color:var(--muted);padding:6px 10px;border-radius:999px;background:var(--card);border:1px solid var(--border)">без перегруза</div>
-      </div>
-      <div id="cal-day-plan"></div>
-    </div>
 
     <!-- Секция дедлайнов -->
     <div style="margin-top:20px;padding-bottom:16px">
@@ -6349,11 +6339,8 @@ let calDate=new Date(),calView='week';
 const MONTHS_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const CAL_MONTHS_MAP={'января':0,'февраля':1,'марта':2,'апреля':3,'мая':4,'июня':5,'июля':6,'августа':7,'сентября':8,'октября':9,'ноября':10,'декабря':11};
 const CAL_MONTHS_SHORT=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-const CAL_DAY_START_HOUR=9;
-const CAL_DAY_END_HOUR=21;
-let calSelectedDay=null;
 function setCalView(v,el){calView=v;document.querySelectorAll('.cal-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderCalendar();}
-function calNav(dir){calDate.setMonth(calDate.getMonth()+dir);calSelectedDay=new Date(calDate.getFullYear(),calDate.getMonth(),1);renderCalendar();}
+function calNav(dir){calDate.setMonth(calDate.getMonth()+dir);renderCalendar();}
 function parseCalendarTaskDeadline(task, fallbackYear){
   const raw=String(task?.deadline||'').trim();
   if(!raw) return null;
@@ -6365,170 +6352,6 @@ function parseCalendarTaskDeadline(task, fallbackYear){
   }
   const parsed=new Date(raw);
   return Number.isNaN(parsed.getTime())?null:parsed;
-}
-function getCalendarSelectedDate(year,month,daysInMonth){
-  if(calSelectedDay&&calSelectedDay.getFullYear()===year&&calSelectedDay.getMonth()===month){
-    return new Date(year,month,Math.min(calSelectedDay.getDate(),daysInMonth));
-  }
-  const now=new Date();
-  if(now.getFullYear()===year&&now.getMonth()===month) return new Date(year,month,now.getDate());
-  return new Date(year,month,1);
-}
-function parseCalendarTaskStart(task, selectedDate){
-  const raw=String(task?.time||task?.scheduledStart||'').trim();
-  if(raw){
-    const parsed=new Date(raw);
-    if(!Number.isNaN(parsed.getTime())) return parsed;
-  }
-  const deadline=parseCalendarTaskDeadline(task,selectedDate.getFullYear());
-  if(deadline&&deadline.getFullYear()===selectedDate.getFullYear()&&deadline.getMonth()===selectedDate.getMonth()&&deadline.getDate()===selectedDate.getDate()) return deadline;
-  return null;
-}
-function getCalendarTaskDurationMin(task){
-  const explicit=Number(task?.durationMin||task?.duration||task?.estimateMin||0);
-  if(Number.isFinite(explicit)&&explicit>0) return Math.max(15,Math.min(240,Math.round(explicit)));
-  const priority=String(task?.priority||'').toLowerCase();
-  if(priority==='high') return 90;
-  if(priority==='medium') return 60;
-  return 45;
-}
-function formatCalendarClock(date){
-  if(!(date instanceof Date)||Number.isNaN(date.getTime())) return 'без времени';
-  return String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0');
-}
-function formatCalendarDuration(min){
-  const value=Math.max(0,Math.round(Number(min)||0));
-  if(value>=60){
-    const hours=Math.floor(value/60);
-    const minutes=value%60;
-    return minutes?hours+' ч '+minutes+' мин':hours+' ч';
-  }
-  return value+' мин';
-}
-function buildCalendarFreeWindows(scheduled,selectedDate){
-  const windows=[];
-  let cursor=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate(),CAL_DAY_START_HOUR,0,0,0).getTime();
-  const endOfDay=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate(),CAL_DAY_END_HOUR,0,0,0).getTime();
-  scheduled.forEach(item=>{
-    if(item.startTs>cursor){
-      windows.push({startTs:cursor,endTs:item.startTs,durationMin:Math.round((item.startTs-cursor)/60000)});
-    }
-    cursor=Math.max(cursor,item.endTs);
-  });
-  if(cursor<endOfDay){
-    windows.push({startTs:cursor,endTs:endOfDay,durationMin:Math.round((endOfDay-cursor)/60000)});
-  }
-  return windows.filter(item=>item.durationMin>=30);
-}
-function renderCalendarDayPlan(tasks,selectedDate){
-  const planEl=document.getElementById('cal-day-plan');
-  const titleEl=document.getElementById('cal-day-plan-title');
-  const badgeEl=document.getElementById('cal-day-plan-badge');
-  if(!planEl||!selectedDate) return;
-  if(titleEl) titleEl.textContent='План на '+selectedDate.getDate()+' '+CAL_MONTHS_SHORT[selectedDate.getMonth()];
-  const active=(tasks||[]).filter(t=>!t.done);
-  const dayTasks=active.filter(task=>{
-    const deadline=parseCalendarTaskDeadline(task,selectedDate.getFullYear());
-    return deadline&&deadline.getFullYear()===selectedDate.getFullYear()&&deadline.getMonth()===selectedDate.getMonth()&&deadline.getDate()===selectedDate.getDate();
-  });
-  if(!dayTasks.length){
-    if(badgeEl){
-      badgeEl.textContent='пустой день';
-      badgeEl.style.color='var(--muted)';
-      badgeEl.style.borderColor='var(--border)';
-    }
-    planEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:4px 0 2px">На этот день пока нет задач с датой. Когда появятся дедлайны, здесь соберётся реальный план времени.</div>';
-    return;
-  }
-  const scheduled=dayTasks.map(task=>{
-    const start=parseCalendarTaskStart(task,selectedDate);
-    const durationMin=getCalendarTaskDurationMin(task);
-    const startTs=start?start.getTime():NaN;
-    return {task,start,startTs,durationMin,endTs:Number.isNaN(startTs)?NaN:startTs+durationMin*60000};
-  }).filter(item=>item.start&&!Number.isNaN(item.startTs)).sort((a,b)=>a.startTs-b.startTs);
-  const unscheduled=dayTasks.filter(task=>!scheduled.some(item=>String(item.task?.id||'')===String(task?.id||'')));
-  const windows=buildCalendarFreeWindows(scheduled,selectedDate);
-  const totalScheduledMin=scheduled.reduce((sum,item)=>sum+item.durationMin,0);
-  const totalUnscheduledMin=unscheduled.reduce((sum,task)=>sum+getCalendarTaskDurationMin(task),0);
-  const capacityMin=(CAL_DAY_END_HOUR-CAL_DAY_START_HOUR)*60;
-  const overloaded=totalScheduledMin+totalUnscheduledMin>capacityMin;
-  if(badgeEl){
-    badgeEl.textContent=overloaded?'день перегружен':'план помещается';
-    badgeEl.style.color=overloaded?'#ff8e8e':'var(--green)';
-    badgeEl.style.borderColor=overloaded?'rgba(255,110,110,.35)':'rgba(154,194,60,.35)';
-  }
-  const summaryHtml='<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px">'
-    +'<div style="padding:10px 12px;border-radius:16px;background:var(--card);border:1px solid var(--border)"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">В плане</div><div style="font-size:16px;font-weight:700">'+scheduled.length+'</div><div style="font-size:11px;color:var(--muted)">'+formatCalendarDuration(totalScheduledMin)+'</div></div>'
-    +'<div style="padding:10px 12px;border-radius:16px;background:var(--card);border:1px solid var(--border)"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Без слота</div><div style="font-size:16px;font-weight:700">'+unscheduled.length+'</div><div style="font-size:11px;color:var(--muted)">'+formatCalendarDuration(totalUnscheduledMin)+'</div></div>'
-    +'<div style="padding:10px 12px;border-radius:16px;background:var(--card);border:1px solid var(--border)"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Свободно</div><div style="font-size:16px;font-weight:700">'+windows.length+'</div><div style="font-size:11px;color:var(--muted)">'+formatCalendarDuration(windows.reduce((sum,item)=>sum+item.durationMin,0))+'</div></div>'
-    +'</div>';
-  const timelineParts=[];
-  if(scheduled.length){
-    timelineParts.push('<div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Запланированные блоки</div>');
-    timelineParts.push(scheduled.map(item=>{
-      const task=item.task;
-      return '<div class="cal-event" onclick="openTaskById(\''+String(task.id||'')+'\',0)" style="cursor:pointer;margin-bottom:8px">'
-        +'<div class="cal-event-time">'+formatCalendarClock(item.start)+'</div>'
-        +'<div class="cal-event-dot"></div>'
-        +'<div style="flex:1">'
-        +'<div class="cal-event-name">'+e2(task.person||'Я')+' — '+e2(task.text||'Без названия')+'</div>'
-        +'<div style="font-size:12px;color:var(--muted);margin-top:4px">'+formatCalendarDuration(item.durationMin)+' · '+e2(formatTaskCardDeadline(task).text||'без срока')+'</div>'
-        +'</div></div>';
-    }).join(''));
-  }
-  if(windows.length){
-    timelineParts.push('<div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:12px 0 8px">Свободные окна</div>');
-    timelineParts.push(windows.map(item=>{
-      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:rgba(154,194,60,0.08);border:1px dashed rgba(154,194,60,0.28);margin-bottom:8px">'
-        +'<div style="font-size:12px;font-weight:600;color:var(--green)">'+formatCalendarClock(new Date(item.startTs))+'–'+formatCalendarClock(new Date(item.endTs))+'</div>'
-        +'<div style="font-size:12px;color:var(--muted)">'+formatCalendarDuration(item.durationMin)+' свободно</div>'
-        +'</div>';
-    }).join(''));
-  }
-  if(unscheduled.length){
-    timelineParts.push('<div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:12px 0 8px">Задачи без слота</div>');
-    timelineParts.push(unscheduled.map(task=>{
-      const estimate=getCalendarTaskDurationMin(task);
-      return '<div class="cal-event" onclick="openTaskById(\''+String(task.id||'')+'\',0)" style="cursor:pointer;margin-bottom:8px">'
-        +'<div class="cal-event-time">—</div>'
-        +'<div class="cal-event-dot"></div>'
-        +'<div style="flex:1">'
-        +'<div class="cal-event-name">'+e2(task.person||'Я')+' — '+e2(task.text||'Без названия')+'</div>'
-        +'<div style="font-size:12px;color:var(--muted);margin-top:4px">Нужно поставить в день · '+formatCalendarDuration(estimate)+'</div>'
-        +'</div></div>';
-    }).join(''));
-  }
-  const overloadHtml=overloaded
-    ? '<div style="margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(255,96,96,0.08);border:1px solid rgba(255,96,96,0.2);font-size:13px;color:#ffb0b0">День уже перегружен: даже без новых встреч суммарный объём задач превышает окно '+CAL_DAY_START_HOUR+':00–'+CAL_DAY_END_HOUR+':00. Стоит перенести часть задач или сократить слот.</div>'
-    : '<div style="margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(154,194,60,0.08);border:1px solid rgba(154,194,60,0.2);font-size:13px;color:var(--text)">План дня выглядит реалистично: можно идти по слотам и использовать свободные окна для коротких задач.</div>';
-  planEl.innerHTML=summaryHtml+timelineParts.join('')+overloadHtml;
-}
-function renderCalendarSelectedDay(tasks,selectedDate){
-  const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
-  const monthShort=CAL_MONTHS_SHORT[selectedDate.getMonth()];
-  const dayTasks=(tasks||[]).filter(t=>{
-    if(t.done||!t.deadline)return false;
-    const td=parseCalendarTaskDeadline(t,selectedDate.getFullYear());
-    if(!td) return false;
-    return td.getDate()===selectedDate.getDate()&&td.getMonth()===selectedDate.getMonth()&&td.getFullYear()===selectedDate.getFullYear();
-  });
-  titEl.textContent='Дедлайны — '+selectedDate.getDate()+' '+monthShort;
-  if(dayTasks.length===0){
-    evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет задач на этот день</div>';
-  }else{
-    evEl.innerHTML=dayTasks.map(t=>{
-      const tid=t.id;
-      return '<div class="cal-event" onclick="openTaskById(\''+tid+'\',0)" style="cursor:pointer">'
-        +'<div class="cal-event-time">'+(t.deadline||'')+'</div>'
-        +'<div class="cal-event-dot"></div>'
-        +'<div style="flex:1">'
-        +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
-        +'<div style="display:flex;gap:8px;margin-top:6px">'
-        +'<button onclick="event.stopPropagation();markDoneKV(this,\''+tid+'\')" style="font-size:11px;padding:3px 10px;border-radius:8px;background:var(--green3);border:1px solid var(--green-dark);color:var(--green);cursor:pointer;font-family:Inter,sans-serif">✓ Готово</button>'
-        +'</div></div></div>';
-    }).join('');
-  }
-  renderCalendarDayPlan(tasks,selectedDate);
 }
 function renderCalendarDeadlinesList(tasks){
   const listEl=document.getElementById('cal-deadlines-list');
@@ -6556,11 +6379,9 @@ function renderCalendar(){
   document.getElementById('cal-month-title').textContent=MONTHS_RU[m]+' '+y;
   const first=new Date(y,m,1);let startDay=first.getDay();startDay=startDay===0?6:startDay-1;
   const daysInMonth=new Date(y,m+1,0).getDate(),daysInPrev=new Date(y,m,0).getDate();
-  const selectedDate=getCalendarSelectedDate(y,m,daysInMonth);
-  calSelectedDay=selectedDate;
   let html='';
   for(let i=startDay-1;i>=0;i--)html+=`<div class="cal-day other-month">${daysInPrev-i}</div>`;
-  for(let d=1;d<=daysInMonth;d++){const isToday=d===now.getDate()&&m===now.getMonth()&&y===now.getFullYear();const isSelected=d===selectedDate.getDate();html+=`<div class="cal-day${isToday?' today':''}${isSelected?' selected':''}" onclick="selectCalDay(${d},this)">${d}</div>`;}
+  for(let d=1;d<=daysInMonth;d++){const isToday=d===now.getDate()&&m===now.getMonth()&&y===now.getFullYear();html+=`<div class="cal-day${isToday?' today':''}" onclick="selectCalDay(${d})">${d}</div>`;}
   const total=startDay+daysInMonth,remaining=total%7===0?0:7-(total%7);
   for(let d=1;d<=remaining;d++)html+=`<div class="cal-day other-month">${d}</div>`;
   document.getElementById('cal-days').innerHTML=html;
@@ -6568,18 +6389,37 @@ function renderCalendar(){
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
     const hot=(tasks||[]).filter(t=>!t.done&&t.deadline);
     renderCalendarDeadlinesList(tasks);
-    if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';}
-    renderCalendarSelectedDay(tasks,selectedDate);
+    if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
+    titEl.textContent='Дедлайны';
+    evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${t.deadline||''}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
   }).catch(()=>{});
 }
-function selectCalDay(d,el){
-  document.querySelectorAll('.cal-day').forEach(node=>node.classList.remove('selected'));
-  if(el) el.classList.add('selected');
+function selectCalDay(d){
+  document.querySelectorAll('.cal-day').forEach(el=>el.classList.remove('selected'));
+  event.target.classList.add('selected');
   const y=calDate.getFullYear(),m=calDate.getMonth();
   const sel=new Date(y,m,d);
-  calSelectedDay=sel;
   fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
-    renderCalendarSelectedDay(tasks,sel);
+    const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
+    const dayTasks=(tasks||[]).filter(t=>{
+      if(t.done||!t.deadline)return false;
+      const td=parseCalendarTaskDeadline(t,sel.getFullYear());
+      if(!td) return false;
+      return td.getDate()===sel.getDate()&&td.getMonth()===sel.getMonth()&&td.getFullYear()===sel.getFullYear();
+    });
+    titEl.textContent='Дедлайны — '+d+' '+CAL_MONTHS_SHORT[m];
+    if(dayTasks.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет задач на этот день</div>';return;}
+    evEl.innerHTML=dayTasks.map(t=>{
+      const tid=t.id;
+      return '<div class="cal-event" onclick="openTaskById(\''+tid+'\',0)" style="cursor:pointer">'
+        +'<div class="cal-event-time">'+(t.deadline||'')+'</div>'
+        +'<div class="cal-event-dot"></div>'
+        +'<div style="flex:1">'
+        +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
+        +'<div style="display:flex;gap:8px;margin-top:6px">'
+        +'<button onclick="event.stopPropagation();markDoneKV(this,\''+tid+'\')" style="font-size:11px;padding:3px 10px;border-radius:8px;background:var(--green3);border:1px solid var(--green-dark);color:var(--green);cursor:pointer;font-family:Inter,sans-serif">✓ Готово</button>'
+        +'</div></div></div>';
+    }).join('');
   }).catch(()=>{});
 }
 
