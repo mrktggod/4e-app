@@ -207,19 +207,33 @@
   }
 
   window.authStartOAuthLogin = startOAuthLogin;
+  window.startOAuthLogin = startOAuthLogin;
   window.authProcessOAuthCallback = processOAuthCallback;
+  window.processOAuthCallback = processOAuthCallback;
   window.authGetOAuthRedirectUri = getOAuthRedirectUri;
+  window.getOAuthRedirectUri = getOAuthRedirectUri;
   window.authCreateOAuthPkce = createOAuthPkce;
+  window.createOAuthPkce = createOAuthPkce;
   window.authRememberOAuthState = rememberOAuthState;
+  window.rememberOAuthState = rememberOAuthState;
   window.authConsumeOAuthState = consumeOAuthState;
+  window.consumeOAuthState = consumeOAuthState;
   window.authIsVkMiniAppContext = isVkMiniAppContext;
+  window.isVkMiniAppContext = isVkMiniAppContext;
   window.authGetTelegramStartTokenFromLaunch = getTelegramStartTokenFromLaunch;
+  window.getTelegramStartTokenFromLaunch = getTelegramStartTokenFromLaunch;
   window.authNormalizeReferralCode = normalizeReferralCode;
+  window.normalizeReferralCode = normalizeReferralCode;
   window.authGetReferralCodeFromLaunch = getReferralCodeFromLaunch;
+  window.getReferralCodeFromLaunch = getReferralCodeFromLaunch;
   window.authSavePendingReferralCode = savePendingReferralCode;
+  window.savePendingReferralCode = savePendingReferralCode;
   window.authGetPendingReferralCode = getPendingReferralCode;
+  window.getPendingReferralCode = getPendingReferralCode;
   window.authClearPendingReferralCode = clearPendingReferralCode;
+  window.clearPendingReferralCode = clearPendingReferralCode;
   window.authCapturePendingReferralCode = capturePendingReferralCode;
+  window.capturePendingReferralCode = capturePendingReferralCode;
   window.authBuildReferralLink = buildReferralLink;
   window.buildReferralLink = buildReferralLink;
   window.copyReferralLink = copyReferralLink;
