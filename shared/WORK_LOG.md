@@ -8,6 +8,26 @@
 
 ### 2026-07-14 — Codex
 
+**Задача:** Automated QA smoke по Ready for QA против staging
+**Результат:** Бриф `codex-session-2026-07-14-automated-qa-and-bot-live.md` начат с headless/API smoke по staging. Подтверждено, что staging-страница `https://4-ai-staging.pages.dev/` реально смотрит в `https://restless-lab-d737-staging.shelckograff.workers.dev`. Красный главный blocker: web auth-shell на staging после intro показывает `Нет соединения` и на регистрации, и на входе, хотя прямой API для тех же credentials отвечает `200` и отдаёт token. Поэтому UI smoke для `ONBOARD-001`, `HOME-001`, `NEW-002/003/004/005/007/014/015/016` честно не закрыт. При этом backend-path staging частично зелёный: fresh account проходит `/auth/register`, `/auth/login`, `/auth/me` и получает `entitlement.status=active`; create/update/done task проходят; `/anthropic` отвечает `200`; `/transcribe` без файла даёт ожидаемый `400`; paid dev-account `dev1.4e@example.com` логинится и отдаёт активный paid entitlement + seed tasks. Отдельные реальные находки заведены в `pm/bugs.md`: `BUG-2026-07-14-001` (staging auth-shell), `BUG-2026-07-14-002` (`/analytics/lite-event` -> `404`), `BUG-2026-07-14-003` (`/auth/telegram` -> Cloudflare 1101).
+**Коммит:** pending
+**Статус:** ⚠️ partial / smoke дал смешанный результат, staging не зелёный
+**Следующий шаг:** отдельно завершить bot-live часть, затем зафиксировать pass/fail таблицу и blockers без ретуши
+
+---
+
+### 2026-07-14 — Codex
+
+**Задача:** Живой bot/runtime smoke после установки `BOT_TOKEN` в Cloudflare
+**Результат:** Production/staging Cloudflare secret сам по себе не разблокировал локальный bot runtime: `npm run start` в `4e-worker` по-прежнему сразу падает с `❌ BOT_TOKEN не задан`, потому что локальному Node-процессу токен не передан через env. Отдельно staging telegram-link path тоже не зелёный: `POST /auth/telegram` после успешного login воспроизводимо возвращает Cloudflare `1101 Worker threw exception`. Из-за этой пары факторов реальную доставку сообщения через живого бота в эту сессию честно не удалось подтвердить.
+**Коммит:** pending
+**Статус:** ⚠️ fail / blocked реальным env-gap + worker exception
+**Следующий шаг:** для локального runtime нужен отдельный local env с `BOT_TOKEN`; для staging bot/auth smoke сначала починить `BUG-2026-07-14-003`
+
+---
+
+### 2026-07-14 — Codex
+
 **Задача:** Карантин CAL-001/CAL-002 из платежной ветки
 **Результат:** По решению Юрия CAL-коммиты `38b4d77` и `602fab9` вынесены в отдельную ветку `feat/cal-002-slice` без потери кода. На `feat/admin-tariff-api` выполнены revert-коммиты `99d1bd6` и `bb6a9e2`, строки `CAL-001` и `CAL-002` в `pm/backlog.md` и `shared/ROADMAP.md` возвращены к состоянию `Todo`, чтобы платежная/security-ветка снова соответствовала своему скоупу.
 **Коммит:** pending

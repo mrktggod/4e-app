@@ -1,6 +1,6 @@
 # Team Sync
 
-Обновлено: 2026-07-13
+Обновлено: 2026-07-14
 
 Источник правды: GitHub + этот файл. Подробности живут в `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `shared/WORK_LOG.md` и `DEVELOPMENT_LOG.md`.
 
@@ -75,6 +75,13 @@
 **Следующий шаг:** считать `INFRA-005` закрытым, а если понадобится — отдельно записать/подтвердить новый production VK URL из кабинета VK Mini Apps.
 
 ## Изменения по проекту
+
+### Ручные секреты Юрия — 2026-07-14
+
+**Статус:** Зафиксировано  
+**Контекст:** Юрий вручную обновил Cloudflare secrets для живых smoke-сценариев.  
+**Что выставлено:** `BOT_TOKEN` в production и staging; `VK_ID_CLIENT_ID` и `VK_ID_CLIENT_SECRET` в production.  
+**Что это меняет:** по `BACK-045` VK ID больше не упирается в отсутствие production client credentials; главным внешним блокером для полного live smoke остаются `YANDEX_CLIENT_ID` и `YANDEX_CLIENT_SECRET`.
 
 **Roadmap:** обновлялся в нескольких ветках; итог сводится в `shared/ROADMAP.md`.  
 **Backlog:** обновлялся параллельно с roadmap и QA-очередью; итог сводится в `pm/backlog.md`.  
