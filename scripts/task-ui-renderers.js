@@ -18,7 +18,7 @@ function getDirectionLabel(direction){
 function getTaskCardCategory(t){
   if(t?.direction==='incoming')return{label:'Личное',cls:'cat-badge-personal'};
   const tags=Array.isArray(t?.tags)?t.tags:(typeof t?.tags==='string'?t.tags.split(',').map(s=>s.trim()).filter(Boolean):[]);
-  if(tags.length)return{label:tags[0].slice(0,18),cls:'cat-badge-work'};
+  if(tags.length)return{label:tags[0].slice(0,12),cls:'cat-badge-work'};
   const directionLabel=getDirectionLabel(t?.directionLabel || t?.direction || '');
   return{label:directionLabel,cls:t?.deadline?'cat-badge-work':'cat-badge-personal'};
 }
@@ -34,8 +34,8 @@ function renderTaskCard(t,i){
     '<div class="task-swipe-actions task-swipe-actions-right" ><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
     '<div class="task-swipe-actions task-swipe-actions-left" ><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
     '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
-      '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
-      '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
+      '<div class="task-card-head" style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><span class="task-card-tag '+cat.cls+'" style="max-width:112px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+e2(cat.label)+'</span><span class="task-card-deadline '+deadline.cls+'" style="margin-left:auto;max-width:136px;white-space:normal;text-align:right;line-height:1.2">'+e2(deadline.text)+'</span></div>'+
+      '<div class="task-row-title task-card-title" style="white-space:normal;overflow:visible;display:block;line-height:1.35;word-break:break-word;margin-top:8px">'+e2(getTaskCardTitle(t))+'</div>'+
     '</div>'+
   '</div>';
 }
@@ -220,6 +220,12 @@ function openProfile(){showScreen('profile');setNavActive('profile');closeProfil
 // ── NOTIFICATIONS (реальные из KV) ───────────────────────────
 let notifFilter = 'all';
 let notifCache = []; // кэш загруженных уведомлений
+const NOTIF_SNOOZE_OPTIONS = [
+  {value:'15m', label:'15 мин'},
+  {value:'1h', label:'1 час'},
+  {value:'3h', label:'3 часа'},
+  {value:'tomorrow', label:'Завтра'}
+];
 
 async function openNotifications(){
   showScreen('notifications');
@@ -247,8 +253,205 @@ async function loadNotifications(){
 function filterNotifs(type, el){
   notifFilter = type;
   document.querySelectorAll('.notif-filter').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
+  if(el) el.classList.add('active');
   renderNotifs(notifCache);
+}
+
+function getNotifById(id){
+  return (notifCache || []).find(function(item){ return String(item?.id || '') === String(id || ''); }) || null;
+}
+
+function normalizeNotifType(type){
+  const raw = String(type || '').trim().toLowerCase();
+  if(raw === 'waiting' || raw === 'wait') return 'waiting';
+  if(raw === 'task' || raw === 'deadline' || raw === 'reminder' || raw === 'system') return raw;
+  return 'system';
+}
+
+function getNotifTaskId(notif){
+  return String(
+    notif?.taskId ||
+    notif?.task_id ||
+    notif?.relatedTaskId ||
+    notif?.related_task_id ||
+    notif?.task?.id ||
+    ''
+  ).trim();
+}
+
+function findTaskIndexById(taskId){
+  return (allTasksCache || []).findIndex(function(task){
+    return String(task?.id || '') === String(taskId || '');
+  });
+}
+
+function findTaskById(taskId){
+  const idx = findTaskIndexById(taskId);
+  return idx >= 0 ? (allTasksCache || [])[idx] : null;
+}
+
+function getNotifTask(notif){
+  return findTaskById(getNotifTaskId(notif));
+}
+
+function getNotifContactMeta(notif, task){
+  const source = task || {
+    person: notif?.person || notif?.assigneeName || notif?.assignee || '',
+    assigneeUsername: notif?.assigneeUsername || notif?.username || '',
+    assigneeTgId: notif?.assigneeTgId || notif?.telegramId || notif?.tgId || ''
+  };
+  return getTaskContactMeta(source) || {person:'Контакт', username:'', tgId:'', url:''};
+}
+
+function isNotifWaitingLike(notif){
+  const text = String(notif?.title || '') + ' ' + String(notif?.detail || '');
+  return normalizeNotifType(notif?.type) === 'waiting' || !!notif?.waiting || /жд[её]ш/i.test(text);
+}
+
+function canNotifWrite(notif, task){
+  const meta = getNotifContactMeta(notif, task);
+  if(!isNotifWaitingLike(notif)) return false;
+  return !!meta.username || !!meta.tgId || (!!meta.person && !/^я$/i.test(meta.person));
+}
+
+function getNotifKindLabel(notif, task){
+  const type = normalizeNotifType(notif?.type);
+  if(type === 'deadline'){
+    const deadline = formatTaskCardDeadline(task || {});
+    return deadline.overdue ? 'Просрочено' : 'Горит';
+  }
+  if(type === 'reminder') return 'Напоминание';
+  if(type === 'task') return 'Задача';
+  if(type === 'waiting') return 'Ждём ответ';
+  return 'Система';
+}
+
+function getNotifTitle(notif, task){
+  const raw = String(notif?.title || '').trim();
+  if(raw) return raw;
+  const type = normalizeNotifType(notif?.type);
+  if(type === 'deadline') return 'Горит дедлайн';
+  if(type === 'reminder') return 'Сработало напоминание';
+  if(type === 'waiting') return 'Ждём ответ';
+  if(type === 'task') return task?.text ? 'Новая задача' : 'Задача';
+  return 'Системное уведомление';
+}
+
+function getNotifDetail(notif, task){
+  const raw = String(notif?.detail || '').trim();
+  if(raw) return raw;
+  if(task){
+    const title = String(task?.text || '').trim() || 'Открыть задачу';
+    const meta = task?.deadline ? formatTaskDateMeta(task) : '';
+    return meta ? (title + ' · ' + meta) : title;
+  }
+  return 'Когда появится подробность, 4 покажет её здесь.';
+}
+
+function getNotifEmptyState(type){
+  if(type === 'deadline'){
+    return {
+      title:'Нет горящих задач',
+      text:'Сейчас нет просрочек и дедлайнов на ближайшее время.'
+    };
+  }
+  if(type === 'all'){
+    return {
+      title:'Пока всё спокойно',
+      text:'4 следит за задачами, дедлайнами и напоминаниями. Когда появится важное событие — оно будет здесь.'
+    };
+  }
+  return {
+    title:'Пока нет событий',
+    text:'Когда появится важное действие, 4 покажет его здесь.'
+  };
+}
+
+function renderNotifEmptyState(type){
+  const state = getNotifEmptyState(type);
+  return '<div class="notif-empty" style="padding:52px 18px 24px;text-align:center;border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,rgba(154,194,60,0.08),rgba(154,194,60,0.02));">'
+    + '<div style="width:44px;height:44px;margin:0 auto 14px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:rgba(154,194,60,0.12);color:var(--green);font-size:20px">•</div>'
+    + '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">' + e2(state.title) + '</div>'
+    + '<div style="font-size:13px;line-height:1.5;color:var(--muted)">' + e2(state.text) + '</div>'
+    + '</div>';
+}
+
+function toLocalDateTimeValue(date){
+  const pad = function(n){ return String(n).padStart(2, '0'); };
+  return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + 'T' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+}
+
+function getNotifSnoozeValue(kind){
+  const next = new Date();
+  if(kind === '15m') next.setMinutes(next.getMinutes() + 15);
+  else if(kind === '1h') next.setHours(next.getHours() + 1);
+  else if(kind === '3h') next.setHours(next.getHours() + 3);
+  else {
+    next.setDate(next.getDate() + 1);
+    next.setHours(9, 0, 0, 0);
+  }
+  return toLocalDateTimeValue(next);
+}
+
+function renderNotifActionButtons(notif, task){
+  const id = e2(String(notif?.id || ''));
+  const taskId = e2(getNotifTaskId(notif));
+  const type = normalizeNotifType(notif?.type);
+  const canOpenTask = !!taskId;
+  const canWrite = canNotifWrite(notif, task);
+  const canSnooze = type === 'deadline' || type === 'reminder';
+  let html = '';
+
+  if(type === 'system'){
+    return '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+  }
+
+  if(type === 'waiting'){
+    if(canWrite){
+      html += '<button class="notif-act-btn notif-act-task" onclick="notifWrite(this)" data-nid="' + id + '">Написать</button>';
+    }
+    if(canOpenTask){
+      html += '<button class="notif-act-btn notif-act-read" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Открыть задачу</button>';
+    }
+    if(!html){
+      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+    }
+    return html;
+  }
+
+  if(type === 'reminder'){
+    if(canOpenTask){
+      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkDone(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Готово</button>';
+      html += '<button class="notif-act-btn notif-act-del" onclick="notifToggleSnoozeMenu(this)" data-nid="' + id + '">Отложить</button>';
+      html += '<button class="notif-act-btn notif-act-task" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">К задаче</button>';
+    } else {
+      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+    }
+  } else {
+    if(canOpenTask){
+      html += '<button class="notif-act-btn notif-act-task" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">К задаче</button>';
+    }
+    if(canSnooze && canOpenTask){
+      html += '<button class="notif-act-btn notif-act-del" onclick="notifToggleSnoozeMenu(this)" data-nid="' + id + '">Отложить</button>';
+    }
+    if(canWrite){
+      html += '<button class="notif-act-btn notif-act-read" onclick="notifWrite(this)" data-nid="' + id + '">Написать</button>';
+    } else if(canOpenTask){
+      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkDone(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Готово</button>';
+    } else {
+      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+    }
+  }
+
+  if(canSnooze && canOpenTask){
+    html += '<div class="notif-snooze-menu" id="nsnooze-' + id + '" style="display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;margin-top:10px">';
+    html += NOTIF_SNOOZE_OPTIONS.map(function(option){
+      return '<button class="notif-act-btn notif-act-task" style="justify-content:center" onclick="notifSnooze(this)" data-nid="' + id + '" data-task-id="' + taskId + '" data-snooze-kind="' + e2(option.value) + '">' + e2(option.label) + '</button>';
+    }).join('');
+    html += '</div>';
+  }
+
+  return html;
 }
 
 function renderNotifs(notifs){
@@ -258,7 +461,7 @@ function renderNotifs(notifs){
   const filtered = notifFilter === 'all' ? notifs : notifs.filter(n => n.type === notifFilter);
 
   if(filtered.length === 0){
-    list.innerHTML = '<div class="notif-empty">Нет уведомлений этого типа</div>';
+    list.innerHTML = renderNotifEmptyState(notifFilter);
     return;
   }
 
@@ -311,33 +514,39 @@ function renderNotifGroup(label, items){
   var deadlineIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
   var reminderIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>';
   var systemIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
-  var icons = {task:taskIcon, deadline:deadlineIcon, reminder:reminderIcon, system:systemIcon};
+  var icons = {task:taskIcon, deadline:deadlineIcon, reminder:reminderIcon, system:systemIcon, waiting:systemIcon};
   var out = '<div class="notif-group-label">' + label + '</div>';
   items.forEach(function(n){
-    var isRead = notifReadSet.has(n.id);
+    var task = getNotifTask(n);
+    var type = normalizeNotifType(n.type);
+    var isRead = typeof notifReadSet !== 'undefined' && notifReadSet?.has ? notifReadSet.has(n.id) : false;
     var isUnread = n.unread && !isRead;
     var clr = isUnread ? 'var(--green)' : 'var(--muted)';
-    var svg = (icons[n.type]||icons.system).replace('stroke-width', 'stroke="'+clr+'" stroke-width');
+    var svg = (icons[type]||icons.system).replace('stroke-width', 'stroke="'+clr+'" stroke-width');
+    var chipBg = type === 'deadline' ? 'rgba(255,96,96,0.12)' : (type === 'reminder' ? 'rgba(255,214,102,0.12)' : 'rgba(154,194,60,0.12)');
+    var chipColor = type === 'deadline' ? '#ff8080' : (type === 'reminder' ? '#ffd666' : 'var(--green)');
+    var title = getNotifTitle(n, task);
+    var detail = getNotifDetail(n, task);
+    var kindLabel = getNotifKindLabel(n, task);
     out += '<div class="notif-card' + (isUnread?' unread':'') + '" id="ncard-'+n.id+'">';
     out += '<div class="notif-card-header" onclick="toggleNotif(this)" data-nid="'+n.id+'">';
     out += '<div class="notif-card-icon">'+svg+'</div>';
     out += '<div class="notif-card-body">';
-    out += '<div class="notif-card-title">'+e2(n.title)+'</div>';
+    out += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">';
+    out += '<span style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:'+chipBg+';color:'+chipColor+';font-size:10px;font-weight:700;letter-spacing:.02em;text-transform:uppercase">' + e2(kindLabel) + '</span>';
     out += '<div class="notif-card-time">'+e2(n.time)+'</div>';
+    out += '</div>';
+    out += '<div class="notif-card-title">'+e2(title)+'</div>';
+    out += '<div style="font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px">' + e2(detail) + '</div>';
     out += '</div>';
     out += '<div class="notif-card-right">';
     if(isUnread) out += '<div class="notif-unread-dot"></div>';
     out += '<span class="notif-chevron" id="nchev-'+n.id+'">&#8250;</span>';
     out += '</div></div>';
     out += '<div class="notif-detail" id="ndet-'+n.id+'">';
-    out += '<div class="notif-detail-text">'+e2(n.detail)+'</div>';
-    out += '<div class="notif-actions">';
-    if(n.type==='task'||n.type==='deadline'||n.type==='reminder'){
-      out += '<button class="notif-act-btn notif-act-task" onclick="notifGoToTask(this)" data-nid="'+n.id+'">&#8250; К задаче</button>';
-    }
-    out += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="'+n.id+'">✓ Прочитано</button>';
-    out += '<button class="notif-act-btn notif-act-del" onclick="notifDelete(this)" data-nid="'+n.id+'">✕</button>';
-    out += '</div></div></div>';
+    out += '<div class="notif-detail-text">' + e2(detail) + '</div>';
+    out += '<div class="notif-actions" style="display:flex;flex-wrap:wrap;gap:8px">' + renderNotifActionButtons(n, task) + '</div>';
+    out += '</div></div>';
   });
   return out;
 }
@@ -350,6 +559,7 @@ function toggleNotif(el){ var id=(typeof el==='string')?el:(el.closest?el.closes
   // Close all others
   document.querySelectorAll('.notif-detail.open').forEach(d => d.classList.remove('open'));
   document.querySelectorAll('.notif-chevron.open').forEach(c => c.classList.remove('open'));
+  document.querySelectorAll('.notif-snooze-menu').forEach(menu => { menu.style.display = 'none'; });
   if(!isOpen){
     det.classList.add('open');
     if(chev) chev.classList.add('open');
@@ -379,14 +589,104 @@ function notifDelete(el){
   var id=(typeof el==='string')?el:el.dataset?.nid;
   if(!id) return;
   notifCache = notifCache.filter(n => n.id !== id);
-  const card = document.getElementById('ncard-' + id);
-  if(card){ card.style.opacity='0'; card.style.transform='translateX(20px)'; card.style.transition='.2s'; setTimeout(()=>card.remove(),200); }
+  renderNotifs(notifCache);
   showToast('Уведомление удалено');
   updateBellDot(notifCache);
   if(getToken()) fetch(WORKER, { method:'POST', headers:{...authHeaders(),'x-action':'delete-notif'}, body:JSON.stringify({notifId:id}) }).catch(()=>{});
 }
 
-function notifGoToTask(el){ var id=(typeof el==='string')?el:el.dataset?.nid;
+function notifToggleSnoozeMenu(el){
+  var id=(typeof el==='string')?el:el.dataset?.nid;
+  if(!id) return;
+  document.querySelectorAll('.notif-snooze-menu').forEach(function(menu){
+    if(menu.id !== 'nsnooze-' + id) menu.style.display = 'none';
+  });
+  var menu = document.getElementById('nsnooze-' + id);
+  if(!menu) return;
+  menu.style.display = menu.style.display === 'grid' ? 'none' : 'grid';
+}
+
+async function notifSnooze(el){
+  var id = (typeof el === 'string') ? el : el.dataset?.nid;
+  var notif = getNotifById(id);
+  var taskId = (typeof el === 'string') ? getNotifTaskId(notif) : String(el.dataset?.taskId || getNotifTaskId(notif) || '').trim();
+  var snoozeKind = (typeof el === 'string') ? 'tomorrow' : String(el.dataset?.snoozeKind || 'tomorrow');
+  if(!taskId){
+    showToast('Нет связанной задачи');
+    return;
+  }
+  var deadline = getNotifSnoozeValue(snoozeKind);
+  var task = findTaskById(taskId);
+  try{
+    await fetch(WORKER, {
+      method:'POST',
+      headers:{...authHeaders(),'x-action':'update-task'},
+      body:JSON.stringify({chatId, taskId, updates:{deadline:deadline, time:deadline}})
+    });
+    if(task){
+      task.deadline = deadline;
+      task.time = deadline;
+    }
+    notifMarkRead(id, true);
+    notifToggleSnoozeMenu(id);
+    showToast('Отложено');
+    if(typeof loadTasks === 'function') setTimeout(loadTasks, 350);
+  }catch(e){
+    console.log(e);
+    showToast('Не удалось отложить');
+  }
+}
+
+async function notifMarkDone(el){
+  var id = (typeof el === 'string') ? el : el.dataset?.nid;
+  var notif = getNotifById(id);
+  var taskId = (typeof el === 'string') ? getNotifTaskId(notif) : String(el.dataset?.taskId || getNotifTaskId(notif) || '').trim();
+  if(!taskId){
+    notifMarkRead(id);
+    return;
+  }
+  notifMarkRead(id, true);
+  await markDoneKV(el, taskId);
+}
+
+function notifWrite(el){
+  var id = (typeof el === 'string') ? el : el.dataset?.nid;
+  var notif = getNotifById(id);
+  if(!notif) return;
+  var task = getNotifTask(notif);
+  var meta = getNotifContactMeta(notif, task);
+  var person = meta.person || 'Контакт';
+  if(!person || /^я$/i.test(person)){
+    showToast('Нет контакта для сообщения');
+    return;
+  }
+  var taskText = String(task?.text || notif?.taskText || notif?.detail || notif?.title || 'Нужен ответ').trim();
+  notifMarkRead(id, true);
+  openWrite(person, (person || '?')[0], 'Обсудить задачу', person + ' — задача: ' + taskText);
+}
+
+async function notifGoToTask(el){
+  var id = (typeof el === 'string') ? el : el.dataset?.nid;
+  var notif = getNotifById(id);
+  var taskId = (typeof el === 'string') ? getNotifTaskId(notif) : String(el.dataset?.taskId || getNotifTaskId(notif) || '').trim();
+  if(!taskId){
+    showToast('Связанная задача не найдена');
+    return;
+  }
+  notifMarkRead(id, true);
+  var idx = findTaskIndexById(taskId);
+  if(idx < 0 && typeof loadTasks === 'function'){
+    try{
+      await loadTasks();
+    }catch(e){
+      console.log(e);
+    }
+    idx = findTaskIndexById(taskId);
+  }
+  if(idx < 0){
+    showToast('Связанная задача не найдена');
+    return;
+  }
   showToast('Открываю задачу...');
-  goHome();
+  openTaskById(taskId, idx);
 }

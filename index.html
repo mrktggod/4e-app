@@ -296,12 +296,13 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <!-- Аватар / профиль -->
       <div data-home-action="open-profile" role="button" tabindex="0" aria-label="Открыть профиль" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
-      <!-- Лого по центру -->
-      <div class="header-logo-center" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:34px;height:34px">
-        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
-        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
-        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
-        <div class="lb" style="border-radius:50%;background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+      <!-- Заголовок периода -->
+      <div style="flex:1;min-width:0;padding:0 14px">
+        <div style="display:inline-flex;align-items:center;gap:6px;font-size:22px;font-weight:700;color:var(--text);line-height:1.1">
+          <span>Сегодня</span>
+          <span style="font-size:12px;color:var(--muted);transform:translateY(1px)">▼</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px">Текущий месяц</div>
       </div>
       <!-- Колокол -->
       <div class="h-btn" data-home-action="open-notifications" role="button" tabindex="0" aria-label="Открыть уведомления" style="position:relative;cursor:pointer">
@@ -322,9 +323,9 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3L13.8 9.8L20.5 12L13.8 14.2L12 21L10.2 14.2L3.5 12L10.2 9.8L12 3Z" fill="rgba(154,194,60,0.9)"/><circle cx="12" cy="12" r="2" fill="rgba(154,194,60,0.4)"/></svg>
       </div>
       <!-- Text -->
-      <div style="flex:1;z-index:1;min-width:0;padding-right:90px">
-        <div style="font-size:10px;color:var(--green);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Фокус дня</div>
-        <div style="font-size:17px;font-weight:700;color:var(--text);line-height:1.3" id="focus-day-text">загружаю...</div>
+      <div style="flex:1;z-index:1;min-width:0;padding-right:112px">
+        <div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3" id="focus-day-text">загружаю...</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.4" id="focus-day-sub">4 уже расставил приоритеты</div>
       </div>
       <!-- Planet SVG animation (no external deps) -->
       <div style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:148px;height:116px;pointer-events:none;z-index:1">
@@ -377,16 +378,19 @@
         <div class="stat-mini glass" data-home-action="open-done-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
           <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Выполнено</div>
           <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-done">—</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-done-meta">—</div>
           <div class="stat-mini-line" style="height:2px;background:var(--green);border-radius:1px;margin-top:6px;opacity:.4"></div>
         </div>
         <div class="stat-mini glass" data-home-action="open-active-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
           <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Задачи</div>
           <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-tasks">—</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-tasks-meta">—</div>
           <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
         </div>
         <div class="stat-mini glass" data-home-action="open-promise-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
           <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Обещания</div>
           <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-promises">—</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-promises-meta">—</div>
           <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
         </div>
         <div class="stat-mini glass-green" data-home-action="open-statistics" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
@@ -398,13 +402,14 @@
             </svg>
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)" id="stat-progress">0%</div>
           </div>
+          <div style="font-size:10px;color:var(--green);margin-top:4px;line-height:1.3" id="stat-progress-meta">—</div>
         </div>
       </div>
 
       <div id="home-task-list">
         <div class="home-ai-empty">Формирую список приоритетов...</div>
       </div>
-      <div id="home-show-all-btn" data-home-action="open-active-list" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2)">
+      <div id="home-show-all-btn" data-home-action="open-active-list" style="display:none;align-items:center;justify-content:center;gap:6px;padding:14px;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2)">
         <span id="home-show-all-label">Смотреть все задачи</span>
         <svg id="home-show-all-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
@@ -492,7 +497,13 @@
       </div>
     </div>
     <div class="ask-bar">
+      <button class="conv-ico" type="button" onclick="askAttachmentSoon()" aria-label="Добавить вложение" style="background:transparent;border:none;padding:6px 4px;display:flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 1 1-2.82-2.83l8.48-8.48"/></svg>
+      </button>
       <textarea class="ask-field" id="ask-field" placeholder="Напиши или выбери подсказку..." rows="1"></textarea>
+      <button class="conv-ico" type="button" onclick="openVoice()" aria-label="Открыть голосовой ввод" style="background:transparent;border:none;padding:6px 4px;display:flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
+      </button>
       <button class="ask-send" onclick="sendAsk()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
     </div>
   </div>
@@ -762,7 +773,7 @@
       </div>
 <div class="section">
         <div class="progress-card">
-          <div class="progress-header"><span class="progress-title">Обещания</span><span class="progress-period" data-stats-action="open-promises">Смотреть все</span></div>
+          <div class="progress-header"><span class="progress-title">Обещания</span><span class="progress-period" data-stats-action="open-promises" onclick="openPromiseList()" style="cursor:pointer">Смотреть все</span></div>
           <div class="cat-list" id="stats-promises-list">
             <div class="cat-item"><span class="cat-name">Активные обещания</span><span><strong id="stats-promises-total">—</strong></span></div>
             <div class="cat-item"><span class="cat-name">Просрочено</span><span><strong id="stats-promises-overdue">—</strong></span></div>
@@ -773,9 +784,17 @@
       </div>
       <div class="section">
         <div class="progress-card">
-          <div class="progress-header"><span class="progress-title">Активные задачи</span><span class="progress-period" data-stats-action="open-active-tasks">Смотреть все</span></div>
+          <div class="progress-header"><span class="progress-title">Активные задачи</span><span class="progress-period" data-stats-action="open-active-tasks" onclick="openActiveTaskList()" style="cursor:pointer">Смотреть все</span></div>
           <div class="active-tasks-list" id="stat-tasks-list">
             <div class="active-task-row"><span class="active-task-name">Загружаю...</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="progress-card">
+          <div class="progress-header"><span class="progress-title">Выполнено и история</span><span class="progress-period" onclick="openDoneList()" style="cursor:pointer">Смотреть все</span></div>
+          <div class="active-tasks-list" id="stats-done-list">
+            <div class="active-task-row"><span class="active-task-name">Собираю завершённые задачи...</span></div>
           </div>
         </div>
       </div>
@@ -810,7 +829,7 @@
   <div class="notif-filters" style="padding:0 16px 4px">
     <button class="notif-filter active" data-notifs-filter="all">Все</button>
     <button class="notif-filter" data-notifs-filter="task">Задачи</button>
-    <button class="notif-filter" data-notifs-filter="deadline">Дедлайны</button>
+    <button class="notif-filter" data-notifs-filter="deadline">Горит</button>
     <button class="notif-filter" data-notifs-filter="reminder">Напоминания</button>
     <button class="notif-filter" data-notifs-filter="system">Система</button>
   </div>
@@ -833,15 +852,7 @@
     <!-- trial banner injected here by JS -->
     <div id="trial-banner-wrap"></div>
 
-    <div class="sub-card profile-details-card">
-      <div class="profile-photo-row">
-        <div class="profile-photo-preview" id="profile-photo-preview" role="button" aria-label="Изменить фото" onclick="openProfilePhotoPicker()" style="cursor:pointer;">?</div>
-        <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
-      </div>
-      <div class="profile-field-grid">
-        <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name"></label>
-      </div>
-    </div>
+    <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
 
     <div class="sub-card profile-form-card">
       <div class="profile-item" onclick="toggleProfilePersonalData()" style="padding:10px 14px; margin:0 -2px; border:0">
@@ -853,6 +864,7 @@
       </div>
       <div id="profile-pii-section" style="display:none;padding:4px 12px 0">
         <div class="profile-field-grid">
+          <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name" onclick="event.stopPropagation()"></label>
           <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.stopPropagation();toggleProfileVerified('phone')">Не подтверждён</button></div></label>
           <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="event.stopPropagation();requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
           <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
@@ -2078,7 +2090,7 @@ const NEW_TASK_DIRECTIONS=['Работа','Личное'];
 let chatId='global', currentCtx={}, currentTone='мягко', generatedMsg='', isGenerating=false, allTasksCache=[];
 let convPollingTimer=null, currentConvPollingId=null;
 const notifReadSet = new Set();
-let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt }
+let currentUser=null; // { id, email, name, trialLeft, trialActive, trialEndsAt, entitlement }
 let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
@@ -2497,11 +2509,30 @@ function handleForgetAllAiFacts(){
   clearAllAiMemoryFacts();
 }
 
+function getCurrentEntitlement(user = currentUser){
+  const now = Date.now();
+  const accessUntil = Number(user?.entitlement?.accessUntil || user?.trialEndsAt || 0);
+  const explicitStatus = String(user?.entitlement?.status || '').trim().toLowerCase();
+  const active = accessUntil > now && (!user?.entitlement || explicitStatus === '' || explicitStatus === 'active');
+  return {
+    status: active ? 'active' : 'inactive',
+    accessUntil,
+    active,
+    daysLeft: Math.max(0, Math.ceil((accessUntil - now) / 864e5)),
+    plan: user?.entitlement?.plan || user?.plan || 'trial'
+  };
+}
+
+function hasCurrentPremiumAccess(user = currentUser){
+  return getCurrentEntitlement(user).active;
+}
+
 function renderTrialBanner(){
   const wrap=document.getElementById('trial-banner-wrap');
   if(!wrap||!currentUser) return;
-  if(currentUser.trialActive){
-    const days=currentUser.trialLeft||0;
+  const entitlement = getCurrentEntitlement(currentUser);
+  if(entitlement.active){
+    const days=entitlement.daysLeft||0;
     wrap.innerHTML=`<div class="trial-banner">
       <div style="font-size:22px">🎁</div>
       <div class="trial-banner-text">
@@ -2719,6 +2750,21 @@ async function trackPaymentEvent(action, metadata) {
   } catch (e) {}
 }
 
+const liteAnalyticsEventTs = {};
+async function trackLiteEvent(action, metadata) {
+  if (!getToken()) return;
+  const now = Date.now();
+  if ((liteAnalyticsEventTs[action] || 0) + 15000 > now) return;
+  liteAnalyticsEventTs[action] = now;
+  try {
+    await fetch(WORKER + '/analytics/lite-event', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ action, metadata: metadata || {} })
+    });
+  } catch (e) {}
+}
+
 function selectPlan(plan) {
   selectedPlan = plan;
   ['month','year'].forEach(p => {
@@ -2849,7 +2895,7 @@ async function refreshUserAfterTelegramPayment(plan) {
         currentUser = d.user;
         renderTrialBanner();
         updateSubscriptionScreen();
-        if (d.user.plan === 'paid' || d.user.trialActive) return true;
+        if (hasCurrentPremiumAccess(d.user)) return true;
       }
     } catch (e) {}
   }
@@ -2904,8 +2950,7 @@ async function refreshUserAfterCloudPayment() {
         currentUser = d.user;
         renderTrialBanner();
         updateSubscriptionScreen();
-        const accessUntil = Number(d.user?.entitlement?.accessUntil || d.user?.trialEndsAt || 0);
-        if ((d.user?.entitlement?.status === 'active' && accessUntil > Date.now()) || d.user.plan === 'paid' || d.user.trialActive) {
+        if (hasCurrentPremiumAccess(d.user)) {
           showPaymentSuccessScreen();
           return true;
         }
@@ -2962,6 +3007,7 @@ function simulatePaymentSuccess() {
 // Обновляем экран подписки данными из currentUser
 function updateSubscriptionScreen() {
   if (!currentUser) return;
+  const entitlement = getCurrentEntitlement(currentUser);
   const nameEl   = document.getElementById('plan-status-name');
   const subEl    = document.getElementById('plan-status-sub');
   const badgeEl  = document.getElementById('plan-status-badge');
@@ -2969,16 +3015,17 @@ function updateSubscriptionScreen() {
   const daysEl   = document.getElementById('trial-days-label');
   const wrapEl   = document.getElementById('trial-progress-wrap');
 
-  if (currentUser.trialActive) {
-    const days = currentUser.trialLeft || 0;
+  if (entitlement.active) {
+    const days = entitlement.daysLeft || 0;
+    const untilLabel = entitlement.accessUntil ? new Date(entitlement.accessUntil).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
     if (nameEl)  nameEl.textContent  = 'Premium';
-    if (subEl)   subEl.textContent   = 'Осталось ' + days + ' ' + pluralDays(days);
+    if (subEl)   subEl.textContent   = untilLabel ? ('Активен до ' + untilLabel) : ('Осталось ' + days + ' ' + pluralDays(days));
     if (badgeEl) { badgeEl.textContent = 'Активен'; badgeEl.className = 'plan-badge-active'; }
     const totalTrialDays = Math.max(1, toPositiveInt(tariffConfig?.trialDays, 30));
-    const pct = Math.min(100, Math.round((days / totalTrialDays) * 100));
+    const totalAccessDays = currentUser?.plan === 'trial' ? totalTrialDays : Math.max(days, 30);
+    const pct = Math.min(100, Math.round((days / totalAccessDays) * 100));
     if (barEl)  barEl.style.width  = pct + '%';
     if (daysEl) daysEl.textContent = days + ' ' + pluralDays(days);
-    // bar color — red if < 5 days
     if (barEl)  barEl.style.background = days < 5 ? '#ff6060' : 'var(--green)';
     if (wrapEl) wrapEl.style.display = 'block';
   } else {
@@ -3103,7 +3150,7 @@ initApp();
 
 
 function checkTrial(){
-  if(currentUser && currentUser.trialActive===false){
+  if(currentUser && !hasCurrentPremiumAccess(currentUser)){
     showToast('Пробный период истёк. Оформи подписку.');
     showSubScreen('subscription');
     return false;
@@ -3161,21 +3208,34 @@ async function loadTasks(){
     // Focus bar
     // Фокус дня
     const focusEl = document.getElementById('focus-day-text');
+    const focusSubEl = document.getElementById('focus-day-sub');
     if(focusEl){
-      const hr = new Date().getHours();
-      const left = 22 - hr;
-      if(hotCount > 0) focusEl.textContent = hotCount + ' задач' + (hotCount===1?'а':'') + ' горят · ' + left + ' ч до конца дня';
-      else if(outgoing.length > 0) focusEl.textContent = outgoing.length + ' задач · ' + done.length + ' выполнено сегодня';
-      else focusEl.textContent = 'Всё выполнено! Хороший день ✅';
+      const attentionCount = hotCount || outgoing.length || incoming.length;
+      const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
+      if(attentionCount > 0) focusEl.textContent = attentionCount + ' ' + taskWord + ' требуют внимания';
+      else focusEl.textContent = 'Сегодня всё спокойно';
+    }
+    if(focusSubEl){
+      if(hotCount > 0) focusSubEl.textContent = '4 уже расставил приоритеты';
+      else if(outgoing.length > 0 || incoming.length > 0) focusSubEl.textContent = 'План собран, можно идти по приоритету';
+      else focusSubEl.textContent = 'Добавьте первую задачу, и 4 соберёт фокус дня';
     }
 
     // Stat cards
     const setEl = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+    const nowTs = Date.now();
+    const weekAgoTs = nowTs - 7 * 24 * 60 * 60 * 1000;
+    const doneWeekCount = done.filter(t=>{ const ts=getAskTaskDoneTimestamp(t); return ts && ts >= weekAgoTs; }).length;
+    const overduePromises = incoming.filter(t=>{ const d=parseTaskDate(getTaskDeadlineValue(t)); return d && d < startOfLocalDay(new Date()); }).length;
     setEl('stat-done', done.length);
     setEl('stat-tasks', outgoing.length);
     setEl('stat-promises', incoming.length);
     const pct = (done.length+active.length) > 0 ? Math.round(done.length/(done.length+active.length)*100) : 0;
     setEl('stat-progress', pct + '%');
+    setEl('stat-done-meta', '+' + doneWeekCount + ' за 7 дней');
+    setEl('stat-tasks-meta', hotCount > 0 ? (hotCount + ' в фокусе') : 'спокойный темп');
+    setEl('stat-promises-meta', overduePromises > 0 ? (overduePromises + ' просрочено') : 'без просрочки');
+    setEl('stat-progress-meta', (done.length + active.length) > 0 ? (done.length + '/' + (done.length + active.length)) : 'нет данных');
     const arc = document.getElementById('progress-arc');
     if(arc){ const offset = Math.round(94 * (1 - pct/100)); arc.setAttribute('stroke-dashoffset', offset); }
     // legacy IDs (used by other screens)
@@ -3200,11 +3260,12 @@ async function loadTasks(){
     });
 
     updateHomeDashboardList({outgoing,incoming});
+    trackLiteEvent('plan-view', { surface: 'home' });
 
     // Show-all button visibility
     const showAllBtn = document.getElementById('home-show-all-btn');
     const allHome = [...outgoing, ...incoming];
-    if(showAllBtn) showAllBtn.style.display = allHome.length > 0 ? 'flex' : 'none';
+    if(showAllBtn) showAllBtn.style.display = 'none';
 
   selectedMonth = new Date().getMonth();
   loadStats(outgoing, done, tasks);
@@ -3216,6 +3277,10 @@ async function loadTasks(){
 // в”Ђв”Ђ Quick Add в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function getDialogFocusable(root){
   return PLATFORM.getDialogFocusable ? PLATFORM.getDialogFocusable(root) : [];
+}
+
+function askAttachmentSoon(){
+  showToast('Вложения будут следующим шагом');
 }
 
 function openAccessibleDialog(dialogId,focusSelector){
@@ -3718,9 +3783,10 @@ async function loadStats(outgoing = [], done = [], tasks = []){
   const bar=document.getElementById('bar-chart');
   const barLabels=document.getElementById('bar-labels');
   const tipsEl=document.getElementById('stats-ai-tips');
+  const doneList=document.getElementById('stats-done-list');
   const progressLine=document.getElementById('stat-progress-line');
   const progressArea=document.getElementById('stat-progress-area');
-  if(!list || !bar || !barLabels) return;
+  if(!list || !bar || !barLabels || !doneList) return;
   const localTasks = Array.isArray(tasks) ? tasks : [];
   const activeOutgoing = localTasks.filter(t=>!t.done && t.direction!=='incoming');
   const activeIncoming = localTasks.filter(t=>!t.done && t.direction==='incoming');
@@ -3748,12 +3814,34 @@ async function loadStats(outgoing = [], done = [], tasks = []){
   safeText('stats-promises-top-person', promiseTopPerson ? (promiseTopPerson.name + ' · ' + promiseTopPerson.count) : '—');
 
   if(activeOutgoing.length===0){
-    list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">Нет активных задач</span></div>';
+    const emptyActiveText = localTasks.length ? 'Сейчас нет активных задач' : 'Пока задач нет — добавьте первую';
+    list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">' + emptyActiveText + '</span></div>';
   }else{
     list.innerHTML = activeOutgoing.slice(0,4).map(t=>{
       const deadlineMeta = formatTaskCardDeadline(t);
       const personLabel = t.person ? (e2(t.person) + ' — ') : '';
       return '<div class="active-task-row"><span class="active-task-name">' + personLabel + e2(t.text) + '</span><div class="active-task-bar"><div class="active-task-fill" style="width:' + getStatsTaskUrgency(t) + '%"></div></div><span class="active-task-pct">' + e2(deadlineMeta.text) + '</span></div>';
+    }).join('');
+  }
+
+  const completedSorted = completed.slice().sort((a,b)=>{
+    const aTs = getAskTaskDoneTimestamp(a) || getTaskCreatedTimestamp(a) || 0;
+    const bTs = getAskTaskDoneTimestamp(b) || getTaskCreatedTimestamp(b) || 0;
+    return bTs - aTs;
+  });
+  if(completedSorted.length===0){
+    const emptyDoneText = localTasks.length ? 'Пока нет выполненных задач — история появится после первого закрытия' : 'История появится, когда здесь появятся первые задачи';
+    doneList.innerHTML = '<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">' + emptyDoneText + '</span></div>';
+  }else{
+    doneList.innerHTML = completedSorted.slice(0,4).map(function(task){
+      const personLabel = task.person ? (e2(task.person) + ' — ') : '';
+      const historyRows = getTaskHistoryRows(task);
+      const historyLine = historyRows.find(function(row){ return /Выполнена|Изменена|Создана/.test(row); }) || historyRows[0] || 'История обновлена';
+      return '<div class="active-task-row" onclick="openDoneList()" style="cursor:pointer">'
+        + '<span class="active-task-name">' + personLabel + e2(task.text || 'Задача') + '</span>'
+        + '<div class="active-task-bar"><div class="active-task-fill" style="width:100%"></div></div>'
+        + '<span class="active-task-pct" style="max-width:132px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + e2(historyLine) + '</span>'
+        + '</div>';
     }).join('');
   }
 
@@ -3767,7 +3855,11 @@ async function loadStats(outgoing = [], done = [], tasks = []){
   barLabels.innerHTML = dayBuckets.map(bucket => '<span style="font-size:10px;white-space:nowrap;color:var(--muted);">' + bucket.label + '</span>').join('');
 
   if(tipsEl){
-    const tips = buildStatsAiTips(activeOutgoing, activeIncoming, completed);
+    const tips = localTasks.length ? buildStatsAiTips(activeOutgoing, activeIncoming, completed) : [
+      'Добавьте первую задачу, и 4 начнёт показывать живую картину недели.',
+      'Когда появятся выполненные задачи, здесь появится история реального прогресса.',
+      'Статистика перестанет быть декоративной, как только накопится первый рабочий ритм.'
+    ];
     tipsEl.innerHTML = tips.map(text => '<div class="active-task-row"><span class="active-task-name">' + e2(text) + '</span></div>').join('');
   }
 }
@@ -3788,13 +3880,14 @@ function getHomeDashboardTasks(){
 }
 
 function getHomePriorityMeta(task){
+  const createdTs=getTaskCreatedTimestamp(task);
   const deadlineMeta=formatTaskCardDeadline(task);
-  const whenLabel=deadlineMeta&&deadlineMeta.text?deadlineMeta.text:(task.deadline?String(task.deadline):'без срока');
+  const deadlineLabel=deadlineMeta&&deadlineMeta.text?deadlineMeta.text:(task.deadline?String(task.deadline):'без срока');
   const directionLabel=(task.directionLabel||'').trim()||(task.direction==='incoming'?'Личное':'Работа');
-  const priorityLabelMap={p0:'срочно',p1:'скоро',p2:'в работе',p3:'позже'};
-  const priorityKey=getTaskCardPriority(task);
-  const priorityLabel=priorityLabelMap[priorityKey]||'в работе';
-  return [whenLabel,directionLabel,priorityLabel].join(' · ');
+  const createdLabel=createdTs!==null
+    ? ('поставлена ' + formatRelativeTaskDate(new Date(createdTs),{deadline:false}))
+    : 'поставлена недавно';
+  return [directionLabel,createdLabel,'дедлайн ' + deadlineLabel].join(' · ');
 }
 
 function renderHomePriorityCard(task,index,options={}){
@@ -3844,6 +3937,7 @@ function renderFocusPanel(){
 function openFocusList(){
   const overlay=document.getElementById('focus-panel-overlay');
   if(!overlay) return;
+  trackLiteEvent('focus-open', { surface: 'home' });
   renderFocusPanel();
   overlay.style.display='flex';
   openAccessibleDialog('focus-panel-overlay','#focus-panel-list .home-ai-row');
@@ -3860,27 +3954,45 @@ function openFocusPanelAllTasks(){
   openActiveTaskList();
 }
 
+function openHomeAssistantChat(){
+  showScreen('chat-conv');
+  const nav = document.getElementById('global-nav');
+  if (nav) nav.classList.add('hidden');
+}
+
 function updateHomeDashboardList({outgoing=[],incoming=[]}){
   const titleEl=document.getElementById('home-section-title');
   const subEl=document.getElementById('home-section-sub');
   const homeList=document.getElementById('home-task-list');
   const dashboardTasks=getHomeDashboardTasks();
-  const hotCount=(plannerSectionsCache.hot||[]).length;
   if(titleEl){
-    titleEl.textContent=dashboardTasks.length?dashboardTasks.length+' главных приоритета':'Сегодня можно выдохнуть';
+    titleEl.textContent=dashboardTasks.length?('Топ-' + dashboardTasks.length + ' задач'):'Задачи месяца';
   }
   if(subEl){
     if(dashboardTasks.length){
-      subEl.textContent=outgoing.length+' задач в работе, '+incoming.length+' обещаний, '+hotCount+' горят прямо сейчас';
+      subEl.textContent='Один список приоритетов, расставленный 4';
     }else if(outgoing.length||incoming.length){
-      subEl.textContent='4 не нашёл критичных задач, но список дел остаётся под рукой';
+      subEl.textContent='4 не нашёл критичных задач, но список дел уже собран';
     }else{
-      subEl.textContent='Активных задач пока нет — можно добавить новый фокус';
+      subEl.textContent='Когда появятся задачи, 4 соберёт здесь приоритеты';
     }
   }
   if(!homeList) return;
   if(!dashboardTasks.length){
-    homeList.innerHTML='<div class="home-ai-empty">Активных задач нет ✓</div>';
+    homeList.innerHTML='<div class="glass" style="border-radius:18px;padding:18px 16px;background:var(--card2);border:1px solid var(--border)">' +
+      '<div style="font-size:18px;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:6px">Первый AI-план за 60 секунд</div>' +
+      '<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px">Добавь 3 задачи любым удобным способом, и 4 сразу соберёт понятный фокус дня без пустого экрана.</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">' +
+        '<div class="task-history-row">1. Добавь первую задачу вручную</div>' +
+        '<div class="task-history-row">2. Если удобнее — надиктуй следующие голосом</div>' +
+        '<div class="task-history-row">3. Вернись на главный экран и открой фокус дня</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button onclick="openQuickAdd()" style="background:var(--green);border:none;border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--bg);font-weight:700">Добавить задачу</button>' +
+        '<button onclick="openHomeAssistantChat()" style="background:transparent;border:1px solid var(--border);border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--text)">Открыть AI-чат</button>' +
+        '<button onclick="openVoice()" style="background:transparent;border:1px solid var(--border);border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--text)">Надиктовать</button>' +
+      '</div>' +
+    '</div>';
     return;
   }
   homeList.innerHTML=dashboardTasks.map((task,index)=>{
@@ -3990,7 +4102,7 @@ function renderHomeAiSection(containerId, tasks){
   container.innerHTML = tasks.map(task => {
     const id = e2(String(task.id || ''));
     const title = e2((task.person ? task.person + ' — ' : '') + (task.text || 'Задача'));
-    const meta = task.deadline ? formatTaskDateMeta(task) : (task.direction === 'incoming' ? 'Из переписки' : 'Без дедлайна');
+    const meta = getHomePriorityMeta(task);
     const avatar = e2((task.person || '?')[0]?.toUpperCase() || '?');
     return `<div class="home-ai-row" data-task-id="${id}" role="button" tabindex="0">
       <div class="home-ai-row-main" onclick="openTaskFromPlannerRow(this)">
@@ -4133,6 +4245,7 @@ function formatTaskCardDeadline(t){
 
 // NOTE: task-card + notification render logic moved to scripts/task-ui-renderers.js
 function openStatistics(){
+  trackLiteEvent('statistics-open', { surface: 'home' });
   showScreen('statistics');
   setNavActive('stats');
   const overview = document.getElementById('stats-overview');
@@ -4181,7 +4294,7 @@ function openFilteredTaskList(title, tasks, isDone, emptyText){
   scroll.style.display = 'block';
   scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div><div style="margin-bottom:16px">' +
     tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
-      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(formatTaskDateSummary(t)) + '</div></div>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(getHomePriorityMeta(t)) + '</div></div>' +
       (isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="font-size:9px;color:var(--muted)">ждём</span>') +
     '</div>'
     ).join('') +
@@ -4729,15 +4842,103 @@ function getTaskHistoryRows(task){
   return rows;
 }
 
+function getTaskTimelineEntries(task){
+  const entries = [];
+  const toHistoryTs = function(value){
+    if (value == null) return 0;
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+    const n = Number(value);
+    if (Number.isFinite(n) && String(value).trim() !== '') return n;
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? 0 : d.getTime();
+  };
+  const pushEvent = function(ts, title, body){
+    entries.push({
+      type: 'event',
+      ts: ts || 0,
+      title: title || 'Событие',
+      body: body || ''
+    });
+  };
+
+  const hasHistory = Array.isArray(task.history) && task.history.length > 0;
+  if(hasHistory){
+    task.history.forEach(function(item){
+      if(!item || !item.action) return;
+      const ts = toHistoryTs(item.at);
+      const title = item.action === 'create' ? 'Создана задача' :
+        item.action === 'done' ? 'Выполнена' :
+        item.action === 'update' ? 'Изменена' :
+        'Событие';
+      const bodyParts = [];
+      if(item.message) bodyParts.push(String(item.message));
+      if(Array.isArray(item.changes) && item.changes.length){
+        bodyParts.push(item.changes.join('; '));
+      }
+      pushEvent(ts, title, bodyParts.join(' · '));
+    });
+  }else{
+    const createdAt = toHistoryTs(task.createdAt || task.created_at || task.createdTs || task.created_timestamp || task.createAt || task.create_time);
+    if(createdAt){
+      pushEvent(createdAt, 'Создана задача', '');
+    }
+    const updatedAt = toHistoryTs(task.updatedAt || task.updated_at || task.updatedTs || task.updated_timestamp || task.updateAt || task.updated_time);
+    if(updatedAt && (!createdAt || Math.abs(updatedAt - createdAt) > 1e3)){
+      pushEvent(updatedAt, 'Изменена', '');
+    }
+    const doneAt = toHistoryTs(task.doneAt || task.done_at || task.doneTs || task.done_timestamp || task.done_time);
+    if((task.done || task.status === 'done') && doneAt){
+      pushEvent(doneAt, 'Выполнена', '');
+    }
+  }
+
+  (Array.isArray(currentTaskMessages) ? currentTaskMessages : []).forEach(function(message){
+    if(!message) return;
+    const role = message.role === 'assistant' ? 'assistant' : 'user';
+    const author = role === 'assistant' ? '4' : (message.from || currentUser?.name || 'Вы');
+    const actions = Array.isArray(message.actions) ? message.actions : [];
+    const alreadyApplied = actions.length ? taskChatActionsAlreadyApplied(actions) : false;
+    const actionTitle = actions.length
+      ? (alreadyApplied ? 'Подтвержденные действия' : 'Предлагаемые действия')
+      : '';
+    const actionPreview = actions.length
+      ? '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">' + actionTitle + '</div><div style="display:flex;flex-direction:column;gap:6px">' + actions.map(function(action){ return '<div class="task-history-row">' + e2(describeTaskChatAction(action)) + '</div>'; }).join('') + '</div></div>'
+      : '';
+    const body = role === 'assistant'
+      ? '<div class="md-body">' + parseMarkdown(String(message.content || '')) + '</div>'
+      : String(e2(message.content || '')).replace(/\n/g, '<br>');
+    entries.push({
+      type: 'message',
+      ts: toHistoryTs(message.ts || message.createdAt || message.at || 0),
+      role: role,
+      author: author,
+      body: body,
+      preview: actionPreview
+    });
+  });
+
+  return entries.sort(function(a, b){
+    return (a.ts || 0) - (b.ts || 0);
+  });
+}
+
 function renderTaskHistory(task){
   const historyEl = document.getElementById('detail-history-list');
   if(!historyEl) return;
-  const rows = getTaskHistoryRows(task).filter(Boolean);
-  if(!rows.length){
+  const entries = getTaskTimelineEntries(task).filter(Boolean);
+  if(!entries.length){
     historyEl.textContent = 'История изменений пуста';
     return;
   }
-  historyEl.innerHTML = rows.map(function(row){ return '<div class="task-history-row">'+row+'</div>'; }).join('\n');
+  historyEl.innerHTML = entries.map(function(entry){
+    const when = e2(formatHistoryDate(entry.ts) || 'сейчас');
+    if(entry.type === 'message'){
+      const bubbleClass = entry.role === 'assistant' ? 'bubble-ai' : 'bubble-user';
+      return '<div style="margin-bottom:12px"><div class="' + bubbleClass + '">' + entry.body + (entry.preview || '') + '</div><div class="task-history-row">' + e2(entry.author || 'Вы') + ' · ' + when + '</div></div>';
+    }
+    const body = entry.body ? '<div style="font-size:12px;color:var(--text2);line-height:1.5;margin-top:4px">' + e2(entry.body) + '</div>' : '';
+    return '<div class="sub-card" style="margin-bottom:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:11px;color:var(--muted);margin-bottom:2px">История · ' + when + '</div><div style="font-size:13px;color:var(--text);font-weight:600">' + e2(entry.title) + '</div>' + body + '</div>';
+  }).join('\n');
 }
 
 function renderTaskChatMessages(){
@@ -4761,6 +4962,8 @@ function renderTaskChatMessages(){
       : '';
     return '<div class="'+bubbleClass+'">'+body+preview+'</div><div class="task-history-row">'+e2(author)+' · '+e2(formatHistoryDate(message.ts)||'сейчас')+'</div>';
   }).join('');
+  const currentTask = Array.isArray(allTasksCache) ? allTasksCache.find(function(task){ return String(task.id) === String(currentTaskId); }) : null;
+  if(currentTask) renderTaskHistory(currentTask);
 }
 
 function normalizeTaskChatActions(actions){
@@ -5500,9 +5703,10 @@ function buildAskUserProfileSummary(){
     month: 'long'
   });
   let planLabel = 'не указан';
-  if(currentUser?.plan) planLabel = String(currentUser.plan);
-  else if(currentUser?.trialActive === true) planLabel = 'trial';
-  else if(currentUser?.trialActive === false) planLabel = 'trial_expired';
+  const entitlement = getCurrentEntitlement(currentUser);
+  if(entitlement.active) planLabel = String(entitlement.plan || currentUser?.plan || 'premium');
+  else if(currentUser?.plan) planLabel = String(currentUser.plan);
+  else if(currentUser) planLabel = 'trial_expired';
   return [
     'Профиль пользователя:',
     '- Имя: ' + currentName,
