@@ -8460,15 +8460,6 @@
 **Комментарий:** В `.tmp-4e-app-publish` сохранён ночной пакет home/dashboard/task UX: action-feed уведомлений (BACK-055), исправление focus copy (BACK-056), доработки HOME-001 и связанных NEW-003/004/007/014/015/016, плюс ONBOARD-001 как побочный ночной проход. В `4e-worker` сохранены premium gates и lite activation analytics (BACK-059, ANALYTICS-001) поверх актуального origin без перезаписи payment-security P0. Отдельно исправлен staging auth bug: после успешных `POST /auth/register` и `POST /auth/login` фронт падал на клиенте в профиле из-за обращения к неэкспортированной `buildReferralLink()`, поэтому UI оставался на auth-экране и показывал ложный тост `Нет соединения`; фикс — отвязка `renderExtendedProfile()` от скрытой глобали и явный экспорт helper в `scripts/auth.js`.
 
 ---
-### 2026-07-14 — Codex
-
-**Задача:** CAL-001 — концепция календаря 4 как штаба дня.
-**Делал:** Codex
-**Коммит:** pending
-**Состояние:** ✅ Ready for QA
-**Комментарий:** В `docs/tasks/CAL-001-calendar-concept.md` собрана продуктовая рамка календарного слоя 4: зачем он нужен, чем отличается от generic calendar app, какие сущности и поля нужны для CAL-002, какие privacy-границы действуют для CAL-003, и что сознательно не входит в первый MVP. `pm/backlog.md` и `shared/ROADMAP.md` синхронизированы с новым статусом.
-
----
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex
