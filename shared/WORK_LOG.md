@@ -8451,6 +8451,15 @@
 **Комментарий:** В `.tmp-4e-app-publish` повторно запущен `npm run deploy:vk-hosting` с `VK_API_BASE_URL=https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`. Сборка `.vk-hosting-dist` прошла, `vk-miniapps-deploy` загрузил version `1783968473`, обновил dev URLs и дошёл до ручного production-confirm слоя VK. В живой интерактивный deploy-сеанс были переданы коды из VK Administration, после чего Юрий подтвердил практический runtime-smoke: приложение открывается и работает в самом VK-приложении. Этого достаточно, чтобы закрыть хвост `INFRA-005` как выполненный, даже несмотря на неидеальный финальный вывод CLI.
 
 ---
+### 2026-07-14 — Codex
+
+**Задача:** Ночная сессия: BACK-055/056, NEW-003/004/007/014/015/016, HOME-001, ONBOARD-001, BACK-059, ANALYTICS-001; затем fix staging auth post-success crash.
+**Делал:** Codex
+**Коммит:** 17f5d84, a7daa31, 9f97dc7
+**Состояние:** ✅ Ready for QA
+**Комментарий:** В `.tmp-4e-app-publish` сохранён ночной пакет home/dashboard/task UX: action-feed уведомлений (BACK-055), исправление focus copy (BACK-056), доработки HOME-001 и связанных NEW-003/004/007/014/015/016, плюс ONBOARD-001 как побочный ночной проход. В `4e-worker` сохранены premium gates и lite activation analytics (BACK-059, ANALYTICS-001) поверх актуального origin без перезаписи payment-security P0. Отдельно исправлен staging auth bug: после успешных `POST /auth/register` и `POST /auth/login` фронт падал на клиенте в профиле из-за обращения к неэкспортированной `buildReferralLink()`, поэтому UI оставался на auth-экране и показывал ложный тост `Нет соединения`; фикс — отвязка `renderExtendedProfile()` от скрытой глобали и явный экспорт helper в `scripts/auth.js`.
+
+---
 <!-- Добавляйте новые записи ВЫШЕ этой строки -->
 
 ### 2026-07-08 — Codex
