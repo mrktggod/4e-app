@@ -8630,3 +8630,9 @@
 **Live результат:** second-pass staging deploy выполнен, после чего unsigned `POST /` с `x-action=get-chat-members` и body `{"chatId":"group_back060_smoke","limit":5}` начал возвращать `403 {"ok":false,"error":"bot signature invalid"}`. Это и есть нужное отрицательное доказательство, что дыра по missing bot-signature на staging закрылась.
 
 **Статус:** `BACK-060` остаётся в `Ready for QA`, а не в `Done`, потому что signed happy-path (`200` с корректной подписью) в этом автономном проходе не был переподтверждён: в non-interactive shell не было видимого `BOT_TOKEN` для повторного подписанного smoke.
+
+## 2026-07-15 - BACK-060 signed smoke complete
+
+**Результат:** `BACK-060` закрыт полностью после ручного signed smoke Юрия на staging. Уже подтверждённый negative path остался зелёным (`unsigned get-chat-members -> 403 {"ok":false,"error":"bot signature invalid"}`), а signed happy-path теперь также подтверждён: `signed get-chat-members -> 200 {"ok":true,"members":[]}`.
+
+**Статус:** `BACK-060` переведён из `Ready for QA` в `Done`.

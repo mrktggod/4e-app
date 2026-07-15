@@ -113,3 +113,8 @@
 **Что произошло:** первый fix-коммит `54583de` попал на staging, но не закрыл дыру: unsigned `get-chat-members` всё ещё давал `200`. Вторым проходом guard был упрощён и перенесён в явные route-level `x-action` ветки worker-а.
 **Что подтверждено live:** после second-pass deploy unsigned `get-chat-members` на staging начал возвращать `403 {"ok":false,"error":"bot signature invalid"}`.
 **Что осталось:** отдельный QA-проход с signed bot-request (`200`) для полного закрытия `BACK-060`.
+
+### BACK-060 signed smoke complete — 2026-07-15
+
+**Статус:** Done
+**Что подтверждено:** после second-pass worker fix `f9e840a` и staging deploy Юрий прогнал signed smoke с реальным `BOT_TOKEN`: signed `get-chat-members` вернул `200 {"ok":true,"members":[]}`. В паре с уже подтверждённым unsigned `403` это закрывает `BACK-060`.
