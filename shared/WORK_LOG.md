@@ -21,6 +21,16 @@
 
 ### 2026-07-15 — Codex
 
+**Задача:** Remaining NEW UI smoke + fixes for completed stats and focus overlap
+**Результат:** На fresh staging user прогнан пакет `NEW-003/004/005/007/012/016` против `https://44ccd355.4-ai-staging.pages.dev`. `NEW-003`, `NEW-004`, `NEW-005` и `NEW-007` прошли без кодовых изменений. Два хвоста оказались реальными: completed task не появлялась в statistics/history, потому что `loadTasks()` сохранял в `allTasksCache` только active-задачи; focus-card всё ещё геометрически пересекался с декоративным блоком. В `index.html` исправлено: `allTasksCache=tasks||[]`, текстовый слой focus-card поднят на `z-index:2`, декоративный слой опущен на `z-index:0`, padding-right увеличен до `144px`. Fresh Pages deploy `https://88193776.4-ai-staging.pages.dev` подтвердил оба фикса: done task видна в `#stats-done-list`, `doneInCache=1`, focus contentRight=209 до decorLeft=237.
+**Коммит:** pending
+**Статус:** Done для `NEW-003/004/005/007/012/016`
+**Следующий шаг:** продолжать по оставшимся Ready for QA/Todo без ручных действий; `HOME-001` и `BACK-056` всё ещё требуют отдельного ручного/визуального или time-mocked QA.
+
+---
+
+### 2026-07-15 — Codex
+
 **Задача:** Fresh staging deploy + headless smoke по Ready for QA UI-пунктам
 **Результат:** Найдено, что текущий код уже содержит auth-fix для `buildReferralLink`, но прежний direct Pages deployment `https://c4b8195f.4-ai-staging.pages.dev` всё ещё отдавал старый runtime и падал после успешного `/auth/me`. Выполнен fresh deploy Cloudflare Pages project `4-ai-staging` на `https://44ccd355.4-ai-staging.pages.dev`. После deploy headless browser smoke с новым staging user и seeded real tasks подтвердил: auth shell открывает `home`, `HOME-001` базово рендерит top-3/focus, `NEW-014` focus overlay открывается, `NEW-015` meta строка содержит направление/дату/дедлайн, `NEW-002` statistics и active CTA работают, `NEW-009` ask quick actions видимы и wired, `NEW-021` calendar default `Все дедлайны` заполнен без выбора дня. Для `BACK-056` подтверждён только обычный smoke без harsh copy; after-22 сценарий оставлен Ready for QA.
 **Коммит:** pending

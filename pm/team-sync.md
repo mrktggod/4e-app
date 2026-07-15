@@ -74,6 +74,14 @@
 
 ## Изменения по проекту
 
+### Remaining NEW UI closeout — 2026-07-15
+
+**Статус:** Закрыто на staging, без production/main
+**Что подтверждено:** `NEW-003`, `NEW-004`, `NEW-005`, `NEW-007` прошли live headless smoke на real staging user.
+**Что исправлено кодом:** `NEW-012` completed/history stats теперь получают полный `allTasksCache`, а не active-only; `NEW-016` focus-card получил safe text space перед декоративным блоком.
+**Fresh deploy / smoke:** `https://88193776.4-ai-staging.pages.dev`; done task отображается в `#stats-done-list`, focus contentRight=209 < decorLeft=237.
+
+
 ### UI Ready-for-QA smoke — 2026-07-15
 
 **Статус:** Частично закрыто, без production/main
