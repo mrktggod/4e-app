@@ -165,3 +165,7 @@
 - Live API smoke на staging: fresh register OK, `plan-view`, `focus-open`, `statistics-open` в `/analytics/lite-event` вернули `200 {"ok":true}`.
 - Remote D1 `audit_events` подтвердил по marker `codex-back038-closeout`: `lite-plan-view=1`, `lite-focus-open=1`, `lite-statistics-open=1`.
 - Admin `/analytics/summary` с действующим header вернул `200` и ненулевые counters: `auditEvents.total=85`, `planView.d1=10`, `focusOpen.d1=4`, `statisticsOpen.d1=6`. `BACK-038` и `ANALYTICS-001` переведены в Done.
+
+## BACK-059 bug-status sync — 2026-07-15
+
+- `BACK-059` уже был `Done` по staging negative tests через reversible expired fixture. Документальная рассинхронизация закрыта: `BUG-2026-07-15-004` переведён в `Done` без изменений runtime-кода.

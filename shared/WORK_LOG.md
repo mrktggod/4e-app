@@ -8704,3 +8704,9 @@
 **Результат:** На staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev` fresh email-user зарегистрирован успешно, `POST /analytics/lite-event` для `plan-view`, `focus-open`, `statistics-open` вернули `200 {"ok":true}`. Прямой D1 query по marker `codex-back038-closeout` подтвердил строки `lite-plan-view=1`, `lite-focus-open=1`, `lite-statistics-open=1`. Admin `GET /analytics/summary` вернул `200`: `auditEvents.total=85`, `dailyValue.planView.d1=10`, `focusOpen.d1=4`, `statisticsOpen.d1=6`, `auth.register.d1=47`.
 **Статус:** Done для `BACK-038`, `ANALYTICS-001`, `BUG-2026-07-14-002`, `BUG-2026-07-15-003`.
 **Следующий шаг:** не требуются ручные действия; продолжать по backlog, кроме Telegram Mini App/microphone/manual visual smoke.
+
+## 2026-07-15 — BACK-059 bug-status sync
+
+**Задача:** Синхронизировать статус `BUG-2026-07-15-004` с уже закрытым `BACK-059`.
+**Результат:** `BACK-059` уже находится в `Done` после staging negative tests через reversible expired fixture: premium-path возвращали `403` после `mode=apply` и восстанавливались после `mode=revert`. Связанный bug про отсутствие fixture path переведён из `Ready for QA` в `Done`, без изменений кода.
+**Статус:** Done для `BUG-2026-07-15-004`.
