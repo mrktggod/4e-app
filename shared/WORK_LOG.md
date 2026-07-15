@@ -8800,3 +8800,9 @@
 **Задача:** SMART-010 — подтвердить дедупликацию похожих задач при создании.
 **Результат:** Source QA подтвердил, что `saveTaskWithDedup()` используется и в ручном создании, и в AI-chat creation path. `findSimilarActiveTask()` ищет похожие активные задачи по similarity score с boost за совпадающего исполнителя; пользователю показывается confirm `OK — объединить, Отмена — создать новую`. При подтверждении `mergeIntoSimilarTask()` дополняет существующую задачу через `update-task` и открывает merged task.
 **Статус:** Done для `SMART-010`; live smoke не выполнялся.
+
+## 2026-07-16 — SMART-012 adaptive briefing source QA
+
+**Задача:** SMART-012 — проверить, можно ли закрыть адаптивное время брифинга/напоминаний.
+**Результат:** Source QA подтвердил готовую часть: `adaptiveBriefing` собирает локальную активность пользователя (`task_create`, `ai_chat`, `task_done`, notifications) по часам, хранит последние 21 день, после 2+ дней активности выбирает лучший час в диапазоне 07:00–22:00 и сдвигает briefing на 1 час раньше, ограничивая итог 07:30–11:30. `applyAdaptiveBriefingIfNeeded()` сохраняет suggested time как `briefingTime` и обновляет controls. Отдельной адаптации обычных task-reminders не найдено.
+**Статус:** `SMART-012` переведён в `Partial Done`, не `Done`.

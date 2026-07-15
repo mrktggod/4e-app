@@ -230,3 +230,7 @@
 ## SMART-010 task dedup source QA — 2026-07-16
 
 - `SMART-010` закрыт по source QA: `saveTaskWithDedup()` применяется в ручном и AI creation path, ищет похожую активную задачу, спрашивает пользователя через confirm и по OK объединяет полезные поля в существующую задачу.
+
+## SMART-012 adaptive briefing source QA — 2026-07-16
+
+- `SMART-012` честно оставлен `Partial Done`: adaptive briefing time реализован через local activity memory и автосохранение `briefingTime`, но adaptive scheduling обычных task-reminders не найден.
