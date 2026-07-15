@@ -8690,3 +8690,10 @@
 **Статус:** mixed
 - `BACK-004` -> `Done`
 - `BACK-010` -> `Ready for QA`
+
+## 2026-07-15 — BACK-007 RKN/privacy live closeout
+
+**Задача:** BACK-007 — закрыть уведомление РКН и видимость privacy-ссылок после live QA.
+**Результат:** Source-check подтвердил ссылки на `privacy.html` на login/register и onboarding. Live staging check с follow-redirect подтвердил: `https://88193776.4-ai-staging.pages.dev/privacy.html` и `https://4-ai-staging.pages.dev/privacy.html` отвечают `200`, содержат заголовок `Политика конфиденциальности` и номер РКН `102299/77`.
+**Статус:** Done для `BACK-007`.
+**Следующий шаг:** продолжать по backlog-пунктам без ручных действий; ручные Telegram Mini App и microphone smoke не закрывать синтетически.

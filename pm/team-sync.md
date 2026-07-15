@@ -154,3 +154,8 @@
 **Что подтверждено:** повторный autonomous staging smoke прогнан с правильным provider wire-format. CloudPayments form-urlencoded callback с валидным `Content-HMAC` подтвердил positive activation, `badAmount -> 400 {"code":11}` и replay без повторного продления. Telegram Stars signed completion со строковым `invoice_payload` подтвердил positive activation, wrong amount rejection и replay `duplicate:true`.
 **Почему статусы изменились:** прежние красные результаты были артефактами synthetic smoke: CloudPayments отправлялся JSON body вместо CloudPayments form callback, а Stars `payload` отправлялся объектом `{ invoiceId }` вместо строки, которую реально шлёт Telegram bot (`payment.invoice_payload`).
 **Остаток:** для `BACK-010` реальная покупка Stars в Telegram всё ещё не выполнялась, поэтому статус не `Done`, а `Ready for QA`.
+
+## BACK-007 RKN/privacy closeout — 2026-07-15
+
+- Проверено на live staging после fresh Pages deploy: direct URL `https://88193776.4-ai-staging.pages.dev/privacy.html` и alias `https://4-ai-staging.pages.dev/privacy.html` после 308 redirect возвращают `200`, содержат `Политика конфиденциальности` и номер РКН `102299/77`.
+- В source UI ссылки на `privacy.html` присутствуют на login/register и onboarding. `BACK-007` переведён в Done в backlog/roadmap.

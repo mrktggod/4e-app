@@ -46,7 +46,7 @@
 | Качество задач | Фаза 11 — относительные даты в карточках задач; BACK-019 — улучшенные карточки в списке; BACK-022 — ручной MVP детальной карточки задачи; BACK-044 — упрощение детальной карточки | P1 | BACK-022 Done; BACK-044 Done; BACK-019 Ready for QA |
 | Доступ и авторизация | BACK-024 — Telegram вход не должен упираться в тупиковую подсказку между Mini App и ботом; BACK-036 — web fallback Telegram-входа без `tg://resolve`; BACK-041 — bot-side возврат на сайт из `/start auth_*` | P1 | BACK-024 Done; BACK-036 Ready for QA; BACK-041 Ready for QA |
 | Голосовой ввод | BACK-021 — MediaRecorder + Whisper вместо SpeechRecognition (фикс BUG-2026-06-29-002, iOS) | P1 | Triaged |
-| 152-ФЗ | BACK-007 — номер уведомления РКН вшит в privacy.html, ссылка видна на login/register/онбординге | P1 | Ready for QA |
+| 152-ФЗ | BACK-007 — номер уведомления РКН вшит в privacy.html, ссылка видна на login/register/онбординге, live staging `privacy.html` отдаёт `200` и содержит `102299/77` | P1 | Done |
 | Staging-контур | BACK-034 — Staging D1/KV + `wrangler --env staging`, тестовый бот, dev-версия Pages подняты; staging AI smoke пройден | P1 | Ready for QA |
 | Хостинг фронта | INFRA-001 — whitelist-фронт на Workers Static Assets + маршрут `app.4-ai.site/*` через Worker; контрольная точка: проверка из РФ-сети без VPN | P0 | In Progress |
 | VK-хостинг | INFRA-004 — VK-поверхность переехала на хостинг VK Mini Apps; API остаётся на `edge.4-ai.site`, потому что Workers доступны из РФ | P1 | Done |
