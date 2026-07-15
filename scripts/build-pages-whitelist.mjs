@@ -21,6 +21,7 @@ const optionalPaths = [
   "favicon.svg",
   "manifest.webmanifest",
   "site.webmanifest",
+  "sw.js",
   "robots.txt",
   "sitemap.xml",
   "icons",

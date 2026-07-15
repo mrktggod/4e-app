@@ -8850,3 +8850,9 @@
 **Задача:** VIRAL-003 — добавить сдержанную AI-персону в приложение.
 **Результат:** Home focus-card и AI planner summary получили единый спокойный голос `4`: `4 рядом`, `я держу фокус`, `я держу спокойный штаб`, next-step copy. Реализация намеренно не добавляет тяжёлого маскота и не меняет HOME-001 layout.
 **Статус:** `VIRAL-003` переведён в `Partial Done`: runtime tone MVP готов; brand bible, аватарные правила и связка с VK Clips остаются отдельным хвостом.
+
+## 2026-07-16 — PLAT-002 PWA wrapper groundwork
+
+**Задача:** PLAT-002 — подготовить PWA-обёртку как шаг к RuStore.
+**Результат:** Добавлен `manifest.webmanifest`, PWA meta в `index.html`, регистрация `sw.js` и service worker с network-first navigation/offline shell cache. `scripts/build-pages-whitelist.mjs` теперь копирует `sw.js` в Pages artifact.
+**Статус:** `PLAT-002` переведён в `Partial Done`: runtime groundwork готов; installed-PWA smoke, PNG/maskable icons и публикация в RuStore остаются отдельными шагами.

@@ -264,3 +264,9 @@
 
 - Home focus-card и AI planner summary получили единый спокойный голос `4`: `4 рядом`, `я держу фокус`, `я держу спокойный штаб`, next-step copy.
 - `VIRAL-003` переведён в `Partial Done`: runtime tone MVP готов; brand bible, аватарные правила и VK Clips остаются отдельным продуктовым хвостом.
+
+## PLAT-002 PWA wrapper groundwork — 2026-07-16
+
+- Добавлены `manifest.webmanifest`, PWA meta в `index.html`, регистрация `sw.js` и service worker с network-first navigation/offline shell cache.
+- `scripts/build-pages-whitelist.mjs` теперь копирует `sw.js` в Pages artifact.
+- `PLAT-002` переведён в `Partial Done`: installed-PWA smoke, PNG/maskable icons и публикация в RuStore остаются отдельными шагами.

@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#0E140B"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="4"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>4</title>
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="favicon.ico" sizes="any">
 <script src="assets/vendor/telegram-web-app.js"></script>
@@ -14,6 +20,15 @@
 <script src="scripts/task-ui-renderers.js"></script>
 <script src="assets/vendor/marked.min.js"></script>
 <link rel="stylesheet" href="styles.min.css">
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/sw.js').catch(function(err){
+      console.warn('PWA service worker registration failed',err);
+    });
+  });
+}
+</script>
 </head>
 <body>
 <main id="app">
