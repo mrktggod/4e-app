@@ -8734,3 +8734,9 @@
 **Задача:** Синхронизировать SMART-статусы, где staging-smoke evidence уже записан в work log/backlog.
 **Результат:** `SMART-006` переведён в `Done` по staging AI smoke с реальными задачами и вопросами `Как меня зовут?`, `Что у меня горит?`, `Кому я больше всего должен?`. `SMART-001` и `SMART-002` переведены в `Done` по staging-worker smoke: roster в D1 `chat_members`, join/leave, `assigneeTgId`/`assigneeUsername` из mention/reply/fuzzy. `SMART-004` оставлен `Ready for QA`, потому что его живой bot-flow не закрывался в этом проходе.
 **Статус:** Done для `SMART-001`, `SMART-002`, `SMART-006`.
+
+## 2026-07-16 — BACK-060 / BUG-2026-07-15-005 status sync
+
+**Задача:** Синхронизировать bug-status после полного закрытия bot-signature guard.
+**Результат:** `BACK-060` уже находится в `Done`: second-pass route-level guard задеплоен, unsigned `get-chat-members` вернул `403 {"ok":false,"error":"bot signature invalid"}`, signed happy-path с реальным `BOT_TOKEN` вернул `200 {"ok":true,"members":[]}`. Дополнительно сверено, что bot runtime paths в `src/bot/tasks.js`, `src/bot/commands.js`, `src/bot/handler.js` ходят через `workerFetch()`, который подписывает запросы через `x-bot-timestamp`, `x-bot-nonce`, `x-bot-signature`.
+**Статус:** `BUG-2026-07-15-005` переведён в `Done`; runtime-код не менялся.

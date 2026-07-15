@@ -185,3 +185,8 @@
 ## SMART-001/002/006 status sync — 2026-07-15
 
 - По уже записанным staging-smoke evidence закрыты `SMART-001`, `SMART-002`, `SMART-006`. `SMART-004` сознательно оставлен `Ready for QA`, чтобы не подменять живой bot-flow документальной синхронизацией.
+
+## BACK-060 / BUG-2026-07-15-005 status sync — 2026-07-16
+
+- `BACK-060` уже был `Done` по двум live доказательствам: unsigned `403 bot signature invalid`, signed `200 {"ok":true,"members":[]}`.
+- Сверено, что текущие bot runtime paths используют `workerFetch()`, а не прямой unsigned `fetch`. Документальная рассинхронизация закрыта: `BUG-2026-07-15-005` переведён в `Done`.
