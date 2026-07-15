@@ -8794,3 +8794,9 @@
 **Задача:** SMART-009 — AI-chat должен задавать максимум один уточняющий вопрос с кнопками, если для задачи не хватает дедлайна или исполнителя.
 **Результат:** Подключён существующий clarification UI к реальному task-creation flow. Теперь при `<create_task>` или fallback task intent без дедлайна/исполнителя `startAskTaskClarification()` заменяет loading bubble на один вопрос с кнопками, сохраняет pending draft в `askHistory`, а `answerAskClarification()` после выбора вызывает `finalizeAskClarifiedTask()` и создаёт задачу. Если не хватает двух полей, задаётся только первый вопрос, чтобы сохранить обещание "максимум один".
 **Статус:** Done для `SMART-009`; live AI smoke не выполнялся.
+
+## 2026-07-16 — SMART-010 task dedup source QA
+
+**Задача:** SMART-010 — подтвердить дедупликацию похожих задач при создании.
+**Результат:** Source QA подтвердил, что `saveTaskWithDedup()` используется и в ручном создании, и в AI-chat creation path. `findSimilarActiveTask()` ищет похожие активные задачи по similarity score с boost за совпадающего исполнителя; пользователю показывается confirm `OK — объединить, Отмена — создать новую`. При подтверждении `mergeIntoSimilarTask()` дополняет существующую задачу через `update-task` и открывает merged task.
+**Статус:** Done для `SMART-010`; live smoke не выполнялся.

@@ -226,3 +226,7 @@
 ## SMART-009 one clarification question — 2026-07-16
 
 - `SMART-009` закрыт runtime-правкой в `index.html`: при создании задачи из AI-chat без дедлайна/исполнителя показывается один clarification question с кнопками, pending draft сохраняется в `askHistory`, а после выбора создаётся задача.
+
+## SMART-010 task dedup source QA — 2026-07-16
+
+- `SMART-010` закрыт по source QA: `saveTaskWithDedup()` применяется в ручном и AI creation path, ищет похожую активную задачу, спрашивает пользователя через confirm и по OK объединяет полезные поля в существующую задачу.
