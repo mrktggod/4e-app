@@ -27,6 +27,8 @@
 **Статус:** Done для `NEW-002/009/014/015/021`; `HOME-001` и `BACK-056` остаются Ready for QA с уточнённым остатком
 **Следующий шаг:** ручной визуальный QA `HOME-001` в светлой/тёмной теме и after-22/time-mocked QA для `BACK-056`.
 
+**ONBOARD-001 follow-up:** Fresh empty-account smoke on `https://44ccd355.4-ai-staging.pages.dev` confirmed guided-card `Первый AI-план за 60 секунд`, 3 steps, quick-add overlay, AI-chat CTA and voice CTA. Backlog moved to Done.
+
 ---
 
 ### 2026-07-14 — Codex
