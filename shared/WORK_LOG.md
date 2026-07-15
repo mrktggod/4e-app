@@ -1,4 +1,4 @@
-# WORK LOG — Командный журнал задач
+﻿# WORK LOG — Командный журнал задач
 
 > Сюда пишут все участники команды после завершения задачи.  
 > Формат: дата — агент — что сделано — статус.  
@@ -8587,3 +8587,46 @@
 **Результат:** Staging secrets аудированы без чтения значений. До правки на Cloudflare уже одновременно существовали старые и новые bot-имена (`BOT_API_TOKEN` и `BOT_TOKEN`), а для Anthropic был только старый `ANTHROPIC_KEY`, поэтому staging-мягкая миграция сведена к добавлению нового `ANTHROPIC_API_KEY` без трогания prod. После staging deploy `7205d97a-a310-4f5c-a83a-806656b437ee` live smoke зелёный: fresh user получил `POST /anthropic -> 200`, а Telegram-dependent path тоже прошёл через `POST /auth/link-telegram -> 200` и `POST /payments/telegram-stars/invoice -> 200` c `invoiceUrl`. Локальный `npm run start` под новой `.dev.vars` тоже стартует без manual mapping; короткий автозавершаемый run печатает `🛡 4 бот запущен...`.
 
 **Следующий шаг:** Юрий вручную довыставляет canonical secret names на production (`ANTHROPIC_API_KEY`, при желании позже cleanup старых имён), после чего можно отдельной безопасной сессией убрать legacy secret names уже без staging-risks.
+
+## 2026-07-15 - payment P0 verification on staging
+
+**Задача:** добить verify-first бриф codex-session-2026-07-15-payment-p0-verification.md на staging без production deploy: проверить negative/positive payment-path для CloudPayments и Telegram Stars, прогнать unified entitlement gate через expired fixture, подтвердить судьбу simulatePaymentSuccess() и синхронизировать backlog по фактам.
+
+**Результат:** По unified entitlement model staging verification зелёный. Через fresh user и reversible fixture PUT /admin/users/:id/fixture/expired подтверждено, что после mode=apply server-side gate закрывает все ключевые paid-path: /anthropic, /transcribe, x-action=save-task, x-action=update-task и даже unsigned bot-style save-task по 	elegramUserId возвращают 403, а после mode=revert entitlement и 	rialActive возвращаются в исходное состояние. Это поднимает BACK-059 из Ready for QA в Done: gate живой и проверен не по коду, а по реальным staging-ответам.
+
+**Результат:** По payment provider paths staging verification красный и backlog обновлён вниз, а не вверх. Для CloudPayments bad/missing HMAC режется как ожидается, wrong-amount signed callback premium не активирует, но всё ещё отвечает {"code":0} вместо явного reject, и главное — positive signed callback на staging сейчас тоже не поднимает entitlement: пользователь остаётся на 	rial. Для Telegram Stars negative auth-часть тоже зелёная (ad signature -> 403), но signed completion-path сейчас не проходит: POST /payments/telegram-stars/complete с валидной HMAC подписью отвечает 404 {"ok":false,"error":"invoice not found"} даже после свежего invoice creation и короткой паузы. Поэтому BACK-004 и BACK-010 переведены в Blocked, чтобы backlog больше не выглядел оптимистичнее реального staging.
+
+**Результат:** Отдельно подтверждён новый security follow-up вне самой entitlement-логики. Для active user worker принимает прямой POST / с x-action=save-task и 	elegramUserId без x-bot-signature / x-bot-timestamp / x-bot-nonce, создаёт задачу и отдаёт 200 {"ok":true}. Это не premium-bypass — expired fixture потом честно режет тот же путь — но это реальный missing bot-request authentication. По этой находке pm/bugs.md уже получил BUG-2026-07-15-005, а в backlog заведён новый P0 BACK-060.
+
+**simulatePaymentSuccess():** проверено дополнительно: в app это остаётся только отключённым UI-stub без backend entitlement-активации; production-reachable self-activation path по этой функции не найден.
+
+**Ручные действия / cowork sync:** сверил ручные прогоны из чата и наших файлов. Фикстура expired отработала как ожидается, staging secrets для smoke уже были выставлены вручную, а в логах команды теперь отражено, что payment P0 ещё не зелёный. Отдельно зафиксировано, что в одном из ручных PowerShell-выводов ADMIN_SECRET оказался напечатан в явном виде; сам секрет не записывался в проектные файлы, но его нужно ротировать в Cloudflare как скомпрометированный выводом терминала.
+
+**Статус:** mixed
+- BACK-059 -> Done
+- BACK-004 -> Blocked
+- BACK-010 -> Blocked
+- BACK-060 -> Todo
+
+**Следующий шаг:** чинить provider completion paths отдельно от entitlement gate: сначала CloudPayments positive/wrong-amount response semantics и entitlement activation, затем Telegram Stars invoice not found, затем закрыть BACK-060 с обязательной bot-signature проверкой на x-action bot-path.
+
+
+## 2026-07-15 - BACK-060 bot signature guard
+
+**Задача:** закрыть найденную на staging дыру, где worker принимал sessionless bot-style `x-action` запросы без `x-bot-signature` / `x-bot-timestamp` / `x-bot-nonce`.
+
+**Что сделано:** в `4e-worker/worker.js` добавлена server-side проверка bot HMAC-подписи и окна свежести timestamp для sessionless bot-only POST действий (`save-message`, `register-chat`, `upsert-chat-members`, `get-chat-members`, `mark-chat-members-left`, `telegram-auth`) и для bot-scoped shared действий (`save-task`, `done-task`, `delete-task`, когда запрос идёт с `telegramUserId` или в `user_`/`group_` scope). Подпись считается по той же схеме, что уже использует `4e-worker/src/bot/worker-client.js`: `timestamp + nonce + method + path + body`.
+
+**Статус:** `BACK-060` переведён в `Ready for QA`.
+
+**Что осталось:** staging smoke без подписи должен вернуть `403`, а корректно подписанный bot-запрос должен проходить штатно.
+
+## 2026-07-15 - BACK-060 second pass on staging
+
+**Контекст:** Первый фикс `BACK-060` был закоммичен в `4e-worker` как `54583de` и задеплоен на staging, но live smoke показал, что unsigned `get-chat-members` всё ещё отдаёт `200`. Это подтвердило, что первая абстрактная guard-логика не закрыла маршрут фактически.
+
+**Что сделано:** Во втором проходе защита перенесена в явные route-level `x-action` ветки `worker.js`. Вместо общего pre-pass каждый чувствительный bot action теперь читает body локально и отдельно валидирует `x-bot-signature` / `x-bot-timestamp` / `x-bot-nonce` перед handler-ом. Это распространяется на bot-only actions (`save-message`, `register-chat`, `upsert-chat-members`, `get-chat-members`, `mark-chat-members-left`, `telegram-auth`) и на bot-scoped shared actions (`save-task`, `done-task`, `delete-task`).
+
+**Live результат:** second-pass staging deploy выполнен, после чего unsigned `POST /` с `x-action=get-chat-members` и body `{"chatId":"group_back060_smoke","limit":5}` начал возвращать `403 {"ok":false,"error":"bot signature invalid"}`. Это и есть нужное отрицательное доказательство, что дыра по missing bot-signature на staging закрылась.
+
+**Статус:** `BACK-060` остаётся в `Ready for QA`, а не в `Done`, потому что signed happy-path (`200` с корректной подписью) в этом автономном проходе не был переподтверждён: в non-interactive shell не было видимого `BOT_TOKEN` для повторного подписанного smoke.

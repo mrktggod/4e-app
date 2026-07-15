@@ -1,4 +1,4 @@
-# Team Sync
+﻿# Team Sync
 
 Обновлено: 2026-07-14
 
@@ -46,22 +46,20 @@
 **Блокеры:** нет технических. Сам merge `feat/admin-tariff-api` → `main` — отдельное решение, требует явного подтверждения Юрия и/или Алексея, не входит в автоматическое закрытие задач.
 **Следующий шаг:** Алексей проверяет `a3c9ea1` и последующие коммиты; при готовности — отдельное решение о мердже PR #27 в `main`.
 
-### Payment security P0 (следствие аудита STRAT-001) — 2026-07-13
+### Payment security P0 (verify-first перепроверка) — 2026-07-15
 
-**Статус:** Production задеплоен и подтверждён живым smoke
-**Контекст:** По итогам evidence-first аудита `STRAT-001` (PR #34, `docs/strategy/monetization-analysis-2026-07-13/`) собран отдельный бриф на 4 P0 платёжной безопасности + cleanup. Кодекс отработал в изолированных checkout'ах (`4e-worker-p0`, `.tmp-4e-app-p0`).
-**Что сделано:**
-- `4e-worker`: `036ac78` unified premium entitlement gate; `c39eeb1` CloudPayments webhook HMAC verification; `5979f38` Telegram Stars bot-signature trust; `3c83e57` VK Pay спрятан за конфиг-флаг; `7411667` честный paywall copy (без «автопродления»); `f57149b` payment funnel analytics events.
-- `4e-app`: `d161d17` восстановлен `WORK_LOG.md` после сбойного коммита; `0b6e38d` verified CloudPayments orders; `a94b261` убран Stars client-side fallback; `808535c` VK Pay выключен по умолчанию; `88bf104` убрана локальная self-активация Premium/`simulatePaymentSuccess()`; `c1e3f45` paywall copy; `5b740fc` payment funnel events.
-- Секреты `CLOUDPAYMENTS_API_SECRET` (реальный, из личного кабинета CloudPayments) и `TELEGRAM_STARS_WEBHOOK_SECRET`/`PAYMENTS_BOT_SECRET` (сгенерирован) установлены в Cloudflare Workers secrets (production + staging) и в env бота.
+**Статус:** Частично подтверждено, но payment-path не зелёный
+**Контекст:** После ручных прогонов Юрия и отдельной verify-first сессии по брифу codex-session-2026-07-15-payment-p0-verification.md прежний optimistic handoff по payment P0 больше нельзя считать актуальным без оговорок.
 **Что подтверждено live:**
-- staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev`: независимый shell-smoke Codex подтвердил CloudPayments `positive` (`200` / `{"code":0}` + `accessUntil` вырос), `fake HMAC` (`403` / `{"code":13}`), `badAmount` (`400` / `{"code":11}`) и `idempotency` (повтор того же webhook не продлевает доступ второй раз). Telegram Stars на staging также подтверждены shell-smoke: `positive`, `fake-signature` (`403` / `{"ok":false,"error":"telegram stars signature invalid"}`) и `replay` (`duplicate: true`, `accessUntil` не меняется).
-- production worker: выполнен `wrangler deploy` из `4e-worker-p0`, опубликована версия `fa422fd3-3531-4cb2-9bfb-97f0cf6100e0`, custom domain `https://edge.4-ai.site`.
-- production smoke на `https://edge.4-ai.site` повторил те же результаты: CloudPayments `positive` (`200` / `{"code":0}` + `accessUntil` вырос с 30 до 60 дней), `fake HMAC` (`403` / `{"code":13}`), `badAmount` (`400` / `{"code":11}`), `idempotency` (повтор того же webhook не меняет `accessUntil`); Telegram Stars `positive`, `fake-signature` (`403`) и `replay` (`duplicate: true`) также зелёные.
-- migration-safety для старых пользователей подтверждена чтением кода перед деплоем: entitlement-логика по-прежнему опирается на старый `trialEndsAt`, так что пользователи без нового поля `user.entitlement` доступ не теряют.
-**Блокеры:** P0 payment-security блокеров на staging/prod больше нет. Сознательно не покрывали только реальную покупку через живой Telegram client — backend callback path уже подтверждён синтетически, этого достаточно для P0.
-**Не трогали:** цена (990 vs 999 ₽ — отдельное решение Юрия и/или Алексея), merge в `main`, дизайн `ONBOARD-001`.
-
+- BACK-059 реально зелёный: через staging fixture PUT /admin/users/:id/fixture/expired подтверждён единый entitlement gate. После mode=apply ключевые premium-path (/anthropic, /transcribe, x-action=save-task, x-action=update-task, unsigned bot-style save-task) возвращают 403; после mode=revert entitlement и 	rialActive восстанавливаются.
+- CloudPayments negative auth-path подтверждён: bad/missing HMAC режется.
+- Telegram Stars negative auth-path подтверждён: bad/missing signature режется.
+**Что оказалось красным:**
+- CloudPayments signed positive callback на staging сейчас не поднимает entitlement; signed wrong-amount callback premium не активирует, но всё ещё отвечает {"code":0} вместо явного reject. Это переводит BACK-004 в Blocked.
+- Telegram Stars signed completion-path на staging сейчас отвечает 404 {"ok":false,"error":"invoice not found"} даже после свежего invoice creation и короткой паузы. Это переводит BACK-010 в Blocked.
+- Для active user найден отдельный security gap: worker принимает bot-style x-action=save-task без x-bot-signature / x-bot-timestamp / x-bot-nonce. Это заведено как новый P0 BACK-060 и bug BUG-2026-07-15-005.
+**Ручные действия Юрия, уже отражённые в файлах:** Cloudflare secrets для smoke действительно были выставлены вручную, и это помогло добить signed staging-проверки. Отдельно важно: в одном из ручных PowerShell выводов ADMIN_SECRET оказался напечатан в явном виде, поэтому его нужно ротировать как скомпрометированный выводом терминала.
+**Что нужно от Юры / Алексея:** не merge в main, а отдельный follow-up на фиксы BACK-004, BACK-010, BACK-060; после этого — повторный signed staging-smoke по тем же сценариям.
 ### INFRA-005 — RU proxy для VK Mini App через Yandex Cloud — 2026-07-13
 
 **Статус:** Выполнено
@@ -107,3 +105,11 @@
   - `scripts/check-ui-architecture.sh` содержит дополнительную грубую проверку кодировки.
 - **Блокеры:** нет
 - **Следующий шаг:** закрыть текущий процессный хвост и переходить к ZONE 1 — NEW-006 / BACK-049 / BACK-046.
+
+
+### BACK-060 second pass — 2026-07-15
+
+**Статус:** Ready for QA
+**Что произошло:** первый fix-коммит `54583de` попал на staging, но не закрыл дыру: unsigned `get-chat-members` всё ещё давал `200`. Вторым проходом guard был упрощён и перенесён в явные route-level `x-action` ветки worker-а.
+**Что подтверждено live:** после second-pass deploy unsigned `get-chat-members` на staging начал возвращать `403 {"ok":false,"error":"bot signature invalid"}`.
+**Что осталось:** отдельный QA-проход с signed bot-request (`200`) для полного закрытия `BACK-060`.
