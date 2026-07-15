@@ -181,3 +181,7 @@
 ## BACK-056 after-22 focus copy closeout — 2026-07-15
 
 - Current home focus copy no longer has an hour-based branch, so the old after-22 negative-time bug has no runtime path. `BACK-056` and `BUG-2026-07-05-003` moved to `Done`; unrelated demo text containing `до конца дня` was not part of focus-copy.
+
+## SMART-001/002/006 status sync — 2026-07-15
+
+- По уже записанным staging-smoke evidence закрыты `SMART-001`, `SMART-002`, `SMART-006`. `SMART-004` сознательно оставлен `Ready for QA`, чтобы не подменять живой bot-flow документальной синхронизацией.
