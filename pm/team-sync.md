@@ -190,3 +190,7 @@
 
 - `BACK-060` уже был `Done` по двум live доказательствам: unsigned `403 bot signature invalid`, signed `200 {"ok":true,"members":[]}`.
 - Сверено, что текущие bot runtime paths используют `workerFetch()`, а не прямой unsigned `fetch`. Документальная рассинхронизация закрыта: `BUG-2026-07-15-005` переведён в `Done`.
+
+## BUG-2026-07-04-003 enter-login status sync — 2026-07-16
+
+- Старый bug про Enter на email-входе закрыт по code path: `#form-login` получает `keydown` listener в `platform-adapter.js`, а `submitLoginOnEnter()` вызывает `doLogin()` из обоих полей. Статус переведён в `Done`.

@@ -8740,3 +8740,9 @@
 **Задача:** Синхронизировать bug-status после полного закрытия bot-signature guard.
 **Результат:** `BACK-060` уже находится в `Done`: second-pass route-level guard задеплоен, unsigned `get-chat-members` вернул `403 {"ok":false,"error":"bot signature invalid"}`, signed happy-path с реальным `BOT_TOKEN` вернул `200 {"ok":true,"members":[]}`. Дополнительно сверено, что bot runtime paths в `src/bot/tasks.js`, `src/bot/commands.js`, `src/bot/handler.js` ходят через `workerFetch()`, который подписывает запросы через `x-bot-timestamp`, `x-bot-nonce`, `x-bot-signature`.
 **Статус:** `BUG-2026-07-15-005` переведён в `Done`; runtime-код не менялся.
+
+## 2026-07-16 — BUG-2026-07-04-003 enter-login status sync
+
+**Задача:** Сверить старый bug про Enter на email-входе.
+**Результат:** Кодовая проверка подтвердила, что `submitLoginOnEnter(event)` уже реализован, а `platform-adapter.js` навешивает `keydown` на весь `#form-login`: Enter из `#login-email` и `#login-pass` проходит через `PLATFORM.shouldHandleEnterSubmit(event)`, вызывает `submitLoginOnEnter(event)` и далее `doLogin()`, если кнопка входа не disabled.
+**Статус:** `BUG-2026-07-04-003` переведён в `Done`; runtime-код не менялся.
