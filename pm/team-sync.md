@@ -234,3 +234,7 @@
 ## SMART-012 adaptive briefing source QA — 2026-07-16
 
 - `SMART-012` честно оставлен `Partial Done`: adaptive briefing time реализован через local activity memory и автосохранение `briefingTime`, но adaptive scheduling обычных task-reminders не найден.
+
+## VIRAL-002 referral source QA — 2026-07-16
+
+- `VIRAL-002` закрыт по source QA: frontend строит/копирует referral link и показывает counter; worker начисляет +30 дней обоим, увеличивает `referralCount`, отдаёт code/count в `publicUser()` и принимает `ref` во всех auth paths.

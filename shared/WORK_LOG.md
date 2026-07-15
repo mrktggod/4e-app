@@ -8806,3 +8806,9 @@
 **Задача:** SMART-012 — проверить, можно ли закрыть адаптивное время брифинга/напоминаний.
 **Результат:** Source QA подтвердил готовую часть: `adaptiveBriefing` собирает локальную активность пользователя (`task_create`, `ai_chat`, `task_done`, notifications) по часам, хранит последние 21 день, после 2+ дней активности выбирает лучший час в диапазоне 07:00–22:00 и сдвигает briefing на 1 час раньше, ограничивая итог 07:30–11:30. `applyAdaptiveBriefingIfNeeded()` сохраняет suggested time как `briefingTime` и обновляет controls. Отдельной адаптации обычных task-reminders не найдено.
 **Статус:** `SMART-012` переведён в `Partial Done`, не `Done`.
+
+## 2026-07-16 — VIRAL-002 referral source QA
+
+**Задача:** VIRAL-002 — подтвердить реферальную ссылку, +30 дней обоим и счётчик приглашений.
+**Результат:** Source QA подтвердил полный path: frontend принимает `ref/referral/invite`, сохраняет pending referral, строит ссылку через `PLATFORM.buildReferralLink()`, показывает её в профиле и копирует через `copyReferralLink()`. Worker держит `REFERRAL_BONUS_DAYS=30`; `applyReferralReward()` начисляет бонус invited user и inviter, увеличивает `referralCount`, защищается от self-referral/replay, а `publicUser()` отдаёт `referralCode/referralCount`. `ref` проходит через email register, OAuth, Telegram auth и VK auth.
+**Статус:** Done для `VIRAL-002`; live referral smoke не выполнялся.
