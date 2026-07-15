@@ -4259,6 +4259,45 @@ function canvasWrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
   if(line&&lines<maxLines) ctx.fillText(line,x,y);
   return y+lineHeight;
 }
+function getShareCardDayKey(ts){
+  const d=new Date(ts);
+  if(!Number.isFinite(d.getTime())) return '';
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function getShareCardStreakAndAchievements(){
+  const tasks=Array.isArray(allTasksCache)?allTasksCache:[];
+  const active=tasks.filter(task=>!task.done&&task.direction!=='incoming');
+  const incoming=tasks.filter(task=>!task.done&&task.direction==='incoming');
+  const done=tasks.filter(task=>task.done);
+  const planDays=new Set();
+  tasks.forEach(function(task){
+    const createdTs=getTaskCreatedTimestamp(task);
+    const doneTs=task.done?getAskTaskDoneTimestamp(task):0;
+    const key=getShareCardDayKey(doneTs||createdTs||Date.now());
+    if(key) planDays.add(key);
+  });
+  let streak=0;
+  const cursor=new Date();
+  cursor.setHours(0,0,0,0);
+  for(let i=0;i<60;i++){
+    const key=getShareCardDayKey(cursor.getTime());
+    if(!planDays.has(key)) break;
+    streak++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+  const todayKey=getShareCardDayKey(Date.now());
+  const doneToday=done.filter(task=>getShareCardDayKey(getAskTaskDoneTimestamp(task)||0)===todayKey).length;
+  const weekAgo=Date.now()-7*86400000;
+  const doneWeek=done.filter(task=>(getAskTaskDoneTimestamp(task)||0)>=weekAgo).length;
+  const achievements=[];
+  achievements.push((streak||1)+' '+pluralTaskDays(streak||1)+' с планом');
+  if(doneToday) achievements.push(doneToday+' закрыто сегодня');
+  else if(doneWeek) achievements.push(doneWeek+' закрыто за 7 дней');
+  if(active.length) achievements.push(active.length+' в фокусе');
+  if(incoming.length) achievements.push(incoming.length+' обещаний под контролем');
+  while(achievements.length<3) achievements.push('план собран');
+  return achievements.slice(0,3);
+}
 async function buildDailyShareCardBlob(){
   const canvas=document.createElement('canvas');
   canvas.width=1080;
@@ -4337,6 +4376,20 @@ async function buildDailyShareCardBlob(){
       y+=166;
     });
   }
+  const achievements=getShareCardStreakAndAchievements();
+  ctx.fillStyle='rgba(242,245,233,0.58)';
+  ctx.font='700 24px Inter, sans-serif';
+  ctx.fillText('Достижения',120,1092);
+  achievements.forEach(function(text,index){
+    const x=120+index*286;
+    ctx.fillStyle='rgba(154,194,60,0.15)';
+    ctx.beginPath();
+    ctx.roundRect(x,1120,258,54,22);
+    ctx.fill();
+    ctx.fillStyle='#9AC23C';
+    ctx.font='700 22px Inter, sans-serif';
+    canvasWrapText(ctx,text,x+22,1154,214,24,1);
+  });
   ctx.fillStyle='rgba(154,194,60,0.9)';
   ctx.font='800 42px Inter, sans-serif';
   ctx.fillText('4',120,1194);

@@ -250,3 +250,7 @@
 ## VIRAL-001 share card MVP — 2026-07-16
 
 - `VIRAL-001` продвинут до `Partial Done`: home получила кнопку `Поделиться планом дня`, canvas генерирует PNG-карточку 1080x1350 с метриками/top задачами/watermark, native share используется при поддержке, иначе fallback на download. Live VK/TG share smoke остаётся ручным.
+
+## VIRAL-004 share card streak — 2026-07-16
+
+- `VIRAL-004` закрыт runtime-правкой: share-card теперь добавляет streak `N дней с планом` и 2–3 достижения на основе локальных created/done timestamps.
