@@ -8764,3 +8764,9 @@
 **Задача:** Закрыть `BACK-016` по расширенному профилю без ручного smoke.
 **Результат:** Source QA подтвердил профильный набор: единый `#profile-avatar` с photo picker, `#profile-name`, `#profile-user-id`, поля `name/phone/email/birthdate/about`, phone/email/telegram status badges, about counter, local draft save. Дополнительно закрыт маленький хвост после `NEW-003`: preview выбранного фото теперь пишет в актуальный `#profile-avatar` с fallback на старый `#profile-photo-preview`, если он когда-нибудь встретится в старой разметке.
 **Статус:** Done для `BACK-016`.
+
+## 2026-07-16 — BACK-039 completed tasks dashboard
+
+**Задача:** BACK-039 — вкладка `Выполнено` должна иметь список завершённых задач и мини-дашборд.
+**Результат:** В `openDoneList()` / `openFilteredTaskList(...)` добавлен мини-дашборд для done-режима: счётчики за сегодня, 7 дней и 30 дней, а также сворачиваемая секция `За неделю` со списком завершённых задач или empty-state. Даты берутся из существующего done/history timestamp helper с fallback на created timestamp для старых записей.
+**Статус:** Done для `BACK-039`; live visual smoke не выполнялся.

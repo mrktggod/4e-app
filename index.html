@@ -4269,6 +4269,50 @@ function openDoneList(){
   openFilteredTaskList('Выполнено', done, true, 'Нет выполненных задач');
 }
 
+function getDoneTaskTimestamp(task){
+  return getAskTaskDoneTimestamp(task) || getTaskCreatedTimestamp(task) || 0;
+}
+
+function isSameDoneDay(ts, refDate){
+  if(!ts) return false;
+  const d = new Date(ts);
+  return d.getFullYear() === refDate.getFullYear() && d.getMonth() === refDate.getMonth() && d.getDate() === refDate.getDate();
+}
+
+function renderDoneMiniDashboard(tasks){
+  const list = Array.isArray(tasks) ? tasks.slice() : [];
+  const now = new Date();
+  const todayCount = list.filter(task => isSameDoneDay(getDoneTaskTimestamp(task), now)).length;
+  const weekAgo = Date.now() - 7 * 86400000;
+  const monthAgo = Date.now() - 30 * 86400000;
+  const weekTasks = list.filter(task => getDoneTaskTimestamp(task) >= weekAgo).sort((a,b)=>getDoneTaskTimestamp(b)-getDoneTaskTimestamp(a));
+  const monthCount = list.filter(task => getDoneTaskTimestamp(task) >= monthAgo).length;
+  const card = (label, value) => '<div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:5px">' + label + '</div><div style="font-size:22px;font-weight:800;color:var(--text)">' + value + '</div></div>';
+  const rows = weekTasks.length
+    ? weekTasks.map(function(task){
+        const ts = getDoneTaskTimestamp(task);
+        const when = ts ? new Date(ts).toLocaleDateString('ru-RU',{day:'numeric',month:'short'}) : 'без даты';
+        const who = task.person ? e2(task.person) + ' — ' : '';
+        return '<div class="active-task-row"><span class="active-task-name">' + who + e2(task.text || 'Задача') + '</span><span class="active-task-pct">' + e2(when) + '</span></div>';
+      }).join('')
+    : '<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">За неделю закрытых задач нет</span></div>';
+  return '<div style="display:flex;gap:8px;margin:10px 0 12px">' + card('Сегодня', todayCount) + card('7 дней', weekTasks.length) + card('Месяц', monthCount) + '</div>'
+    + '<div class="sub-card" style="padding:0;margin-bottom:14px;overflow:hidden">'
+    + '<button type="button" onclick="toggleDoneWeekSection()" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:none;border:0;color:var(--text);font:inherit;cursor:pointer">'
+    + '<span style="font-size:13px;font-weight:700">За неделю</span><span id="done-week-arrow" style="color:var(--muted)">›</span></button>'
+    + '<div id="done-week-section" style="display:none;border-top:1px solid var(--border);padding:6px 10px 10px">' + rows + '</div>'
+    + '</div>';
+}
+
+function toggleDoneWeekSection(){
+  const section = document.getElementById('done-week-section');
+  const arrow = document.getElementById('done-week-arrow');
+  if(!section) return;
+  const open = section.style.display !== 'none';
+  section.style.display = open ? 'none' : 'block';
+  if(arrow) arrow.textContent = open ? '›' : '⌄';
+}
+
 function openActiveTaskList(){
   const activeTasks = allTasksCache.filter(t=>!t.done && t.direction!=='incoming');
   openFilteredTaskList('Активные задачи', activeTasks, false, 'Нет активных задач');
@@ -4289,11 +4333,11 @@ function openFilteredTaskList(title, tasks, isDone, emptyText){
   if(overview) overview.style.display = 'none';
   if(!tasks.length){
     scroll.style.display = 'block';
-    scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div><div style="text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)">' + e2(emptyText || (isDone ? 'Нет выполненных задач' : 'Нет задач')) + '</div>';
+    scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div>' + (isDone ? renderDoneMiniDashboard(tasks) : '') + '<div style="text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)">' + e2(emptyText || (isDone ? 'Нет выполненных задач' : 'Нет задач')) + '</div>';
     return;
   }
   scroll.style.display = 'block';
-  scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div><div style="margin-bottom:16px">' +
+  scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div>' + (isDone ? renderDoneMiniDashboard(tasks) : '') + '<div style="margin-bottom:16px">' +
     tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
       '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(getHomePriorityMeta(t)) + '</div></div>' +
       (isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="font-size:9px;color:var(--muted)">ждём</span>') +

@@ -108,7 +108,7 @@
 | BACK-019 | Улучшенные карточки задач | Product/UI | P2 | Codex | Ready for QA | Г2 | `index.html` рендерит новую карточку с номером/приоритетом, тегом, дедлайном, 2 строками названия, подсветкой просрочки и swipe-действиями Завершить/Отменить/Перенести; требуется ручной smoke на телефоне |
 | BACK-020 | Подтверждение email в профиле для связки аккаунтов | Product/Tech | P2 | Codex | Done | Г2 | Production smoke passed: migration `0004_email_verifications.sql` applied, verification email request returned 200, app link returned 200, `/auth/verify-email` linked email to user, `used_at` burned token, repeat verify returned 400, occupied email conflict returned 409 |
 | BACK-023 | Расширение детальной карточки задачи после MVP | Product/UI | P2 | Алексей + Юрий + Codex | Later | Г2 | После проверки BACK-022 выбрать 1-2 функции следующей волны: повторы, вложения/ссылки, умные списки, поиск и фильтры по тегам, календарная синхронизация, командные комментарии |
-| BACK-039 | Вкладка «Выполнено» — список + мини-дашборд (быв. дубликат BACK-025) | Product/UI | P2 | Codex | Ready for QA | Г2 | Вкладка показывает список выполненных задач; сверху мини-дашборд: сделано за день / за неделю / за месяц; секция за неделю в списке дашборда сворачивается/разворачивается |
+| BACK-039 | Вкладка «Выполнено» — список + мини-дашборд (быв. дубликат BACK-025) | Product/UI | P2 | Codex | Done | Г2 | Вкладка `Выполнено` теперь показывает список завершённых задач и мини-дашборд сверху: счётчики за сегодня / 7 дней / 30 дней, плюс сворачиваемая секция `За неделю` с закрытыми задачами или спокойным empty-state. Реализация использует timestamps `doneAt/completedAt` через существующий history helper с fallback на created timestamp; live visual smoke не выполнялся. |
 | BACK-026 | Слияние аккаунтов с переносом задач | Product/Tech | P1 | Codex | Done | Г2 | Механика mergeAccounts в worker.js была уже ранее и существовала до этой сессии; сегодня подтверждена ревью: объединение делается по id, проигравший аккаунт soft-delete с `deletedAt`/`mergedTo`, победитель выбирается по лучшему тарифу/триалу. |
 | BACK-040 | Admin API управления тарифами (быв. дубликат BACK-027) | Product/Tech | P2 | Codex | Ready for QA | Г2 | В `4e-worker` добавлены `/admin/users`, `/admin/users/:id`, `/admin/users/:id/plan`, `/admin/tariff-config` и публичный `/tariff-config`; paywall в `index.html` читает тарифы из конфига, цены и trial больше не захардкожены в UI. Важно: текущее production `/tariff-config` по аудиту всё ещё может отвечать default-конфигом с `updatedAt: 0`, то есть это не доказанная admin-запись |
 | BACK-028 | Статистика результативности | Product/UI | P2 | Codex | Ready for QA | Г2 | Вкладка со статистикой задач, обещаний и прогресса обновлена: локальные рабочие графики, блок обещаний и советы 4 по улучшению результативности |
@@ -180,6 +180,5 @@
 | ICE-001 | WhatsApp Business API | Сложная интеграция, нет спроса пока | Горизонт 3 |
 | ICE-002 | Нативные iOS/Android приложения | Mini App достаточно на старте | После 10k пользователей |
 | ICE-003 | Proactive mode — 4 сам инициирует общение | Требует зрелой AI-логики | Горизонт 2 |
-
 
 

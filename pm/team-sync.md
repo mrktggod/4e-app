@@ -206,3 +206,7 @@
 ## BACK-016 extended profile source QA — 2026-07-16
 
 - `BACK-016` закрыт: extended profile fields и statuses есть в `index.html`; photo preview после удаления duplicate avatar теперь работает через текущий `#profile-avatar`.
+
+## BACK-039 completed tasks dashboard — 2026-07-16
+
+- `BACK-039` закрыт runtime-правкой в `index.html`: вкладка `Выполнено` получила мини-дашборд `Сегодня / 7 дней / 30 дней` и сворачиваемую секцию `За неделю` со списком завершённых задач. Live visual smoke не выполнялся.
