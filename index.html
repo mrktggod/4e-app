@@ -325,7 +325,7 @@
       <!-- Text -->
       <div style="flex:1;z-index:2;min-width:0;padding-right:144px">
         <div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3" id="focus-day-text">загружаю...</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.4" id="focus-day-sub">4 уже расставил приоритеты</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.4" id="focus-day-sub">4 рядом: держу фокус дня</div>
       </div>
       <!-- Planet SVG animation (no external deps) -->
       <div style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:148px;height:116px;pointer-events:none;z-index:0">
@@ -3323,9 +3323,9 @@ async function loadTasks(){
       else focusEl.textContent = 'Сегодня всё спокойно';
     }
     if(focusSubEl){
-      if(hotCount > 0) focusSubEl.textContent = '4 уже расставил приоритеты';
-      else if(outgoing.length > 0 || incoming.length > 0) focusSubEl.textContent = 'План собран, можно идти по приоритету';
-      else focusSubEl.textContent = 'Добавьте первую задачу, и 4 соберёт фокус дня';
+      if(hotCount > 0) focusSubEl.textContent = '4 рядом: сначала снимем горячее';
+      else if(outgoing.length > 0 || incoming.length > 0) focusSubEl.textContent = '4 держит штаб: идём по первому приоритету';
+      else focusSubEl.textContent = 'Добавь первую задачу, и я соберу фокус дня';
     }
 
     // Stat cards
@@ -4109,6 +4109,14 @@ function updateHomeDashboardList({outgoing=[],incoming=[]}){
   }).join('');
 }
 
+function getFourPersonaHomeSummary(outgoingCount,incomingCount,hotCount,risks,doneRate){
+  if(outgoingCount+incomingCount===0) return 'Я рядом: список свободен, можно выбрать один заметный шаг.';
+  if(risks>0) return 'Я рядом: вижу '+risks+' просроченных. Сначала снимем риск, потом вернём спокойный ритм.';
+  if(hotCount>0) return 'Я держу фокус: '+hotCount+' горящих, '+outgoingCount+' в работе, '+incomingCount+' обещаний под контролем.';
+  if(doneRate>=70) return 'Я вижу сильный темп: большая часть уже закрыта, держим короткий финиш.';
+  return 'Я держу спокойный штаб: '+outgoingCount+' в работе и '+incomingCount+' обещаний, без лишнего шума.';
+}
+
 function updateHomeAiPlanner({outgoing=[], incoming=[], done=[], all=[], raw=[]}){
   const outgoingTasks = (outgoing || []).filter(t => !t.done);
   const incomingTasks = (incoming || []).filter(t => !t.done);
@@ -4174,18 +4182,18 @@ function updateHomeAiPlanner({outgoing=[], incoming=[], done=[], all=[], raw=[]}
   const nextEl = document.getElementById('home-ai-next-task');
 
   if(totalPending === 0){
-    if(summaryEl) summaryEl.textContent = 'Сейчас дел на сегодня нет — можно добавить новый фокус в список.';
+    if(summaryEl) summaryEl.textContent = getFourPersonaHomeSummary(0,0,0,0,0);
     if(pulseEl) pulseEl.textContent = 'Пульс дня: 0%';
-    if(moodEl) moodEl.textContent = 'Состояние: пауза';
-    if(trendEl) trendEl.textContent = 'Тенденция: стабильная';
-    if(nextEl) nextEl.textContent = 'Ни одной задачи в фокусе';
+    if(moodEl) moodEl.textContent = '4: спокойная пауза';
+    if(trendEl) trendEl.textContent = 'Ритм: ждём первый шаг';
+    if(nextEl) nextEl.textContent = 'Я покажу фокус, когда появится задача';
   } else {
-    if(summaryEl) summaryEl.textContent = `${outgoingTasks.length} задач в работе и ${incomingTasks.length} обещаний. ${hot.length} горящие.`;
+    if(summaryEl) summaryEl.textContent = getFourPersonaHomeSummary(outgoingTasks.length,incomingTasks.length,hot.length,risks,clampedDoneRate);
     if(pulseEl) pulseEl.textContent = `Пульс дня: ${clampedDoneRate}%`;
-    if(moodEl) moodEl.textContent = `Состояние: ${risks > 2 ? 'осторожно' : (hot.length > 2 ? 'в фокусе' : 'спокойный')}`;
-    if(trendEl) trendEl.textContent = `Тенденция: ${clampedDoneRate >= 70 ? 'в росте' : (clampedDoneRate >= 40 ? 'ровно' : 'переориентация')}`;
+    if(moodEl) moodEl.textContent = `4: ${risks > 2 ? 'держу риск' : (hot.length > 2 ? 'держу фокус' : 'держу ритм')}`;
+    if(trendEl) trendEl.textContent = `Ритм: ${clampedDoneRate >= 70 ? 'сильный финиш' : (clampedDoneRate >= 40 ? 'ровно' : 'нужен первый рывок')}`;
     const nextTask = plannerSectionsCache.first[0] || plannerSectionsCache.hot[0] || plannerSectionsCache.people[0] || null;
-    if(nextEl) nextEl.textContent = nextTask ? `«${e2(nextTask.text || 'Без текста')}»` : 'Открой список дел';
+    if(nextEl) nextEl.textContent = nextTask ? `Следующий шаг: «${e2(nextTask.text || 'Без текста')}»` : 'Открой список дел';
   }
 
   renderHomeAiSection('home-ai-section-first', plannerSectionsCache.first || []);
