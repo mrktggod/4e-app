@@ -5537,6 +5537,17 @@ function parseAIText(d){
   if(typeof d==='string') return d;
   return JSON.stringify(d).slice(0,200);
 }
+function sanitizeClaudeMessages(history){
+  return (Array.isArray(history) ? history : [])
+    .slice(-ASK_HISTORY_MAX)
+    .map(function(message){
+      const role = message?.role === 'assistant' ? 'assistant' : 'user';
+      const content = typeof message?.content === 'string' ? message.content.trim() : String(message?.content || '').trim();
+      if(!content) return null;
+      return {role, content};
+    })
+    .filter(Boolean);
+}
 async function generateMessage(){
   if(isGenerating)return;isGenerating=true;
   const{name,context}=currentCtx;
@@ -6164,7 +6175,7 @@ async function sendAsk(){
   const factsSummary = await loadAskFactsSummary();
 
   try{
-    const messagesForClaude = askHistory.slice(-ASK_HISTORY_MAX);
+    const messagesForClaude = sanitizeClaudeMessages(askHistory);
     const systemParts = [SYS_BASE, '', 'Сегодня: ' + today, profileSummary];
     if(factsSummary) systemParts.push(factsSummary);
     systemParts.push(taskSummary);
@@ -6343,7 +6354,7 @@ const CAL_MONTHS_SHORT=['янв','фев','мар','апр','май','июн','�
 function setCalView(v,el){calView=v;document.querySelectorAll('.cal-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderCalendar();}
 function calNav(dir){calDate.setMonth(calDate.getMonth()+dir);renderCalendar();}
 function parseCalendarTaskDeadline(task, fallbackYear){
-  const raw=String(task?.deadline||'').trim();
+  const raw=String(getTaskDeadlineValue(task)||'').trim();
   if(!raw) return null;
   const parts=raw.split(/\s+/);
   if(parts.length>=2&&CAL_MONTHS_MAP[parts[1]]!==undefined){
@@ -6358,7 +6369,7 @@ function renderCalendarDeadlinesList(tasks){
   const listEl=document.getElementById('cal-deadlines-list');
   if(!listEl) return;
   const hot=(tasks||[])
-    .filter(t=>!t.done&&t.deadline)
+    .filter(t=>!t.done&&getTaskDeadlineValue(t))
     .map(t=>({task:t,date:parseCalendarTaskDeadline(t)}))
     .filter(item=>item.date)
     .sort((a,b)=>a.date-b.date);
@@ -6368,8 +6379,9 @@ function renderCalendarDeadlinesList(tasks){
   }
   listEl.innerHTML=hot.map(item=>{
     const t=item.task;
+    const deadlineValue=getTaskDeadlineValue(t);
     return '<div class="cal-event" data-cal-task-id="'+e2(String(t.id||''))+'">'
-      +'<div class="cal-event-time">'+e2(t.deadline||'')+'</div>'
+      +'<div class="cal-event-time">'+e2(deadlineValue||'')+'</div>'
       +'<div class="cal-event-dot"></div>'
       +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
       +'</div>';
@@ -6388,11 +6400,11 @@ function renderCalendar(){
   document.getElementById('cal-days').innerHTML=html;
   fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
-    const hot=(tasks||[]).filter(t=>!t.done&&t.deadline);
+    const hot=(tasks||[]).filter(t=>!t.done&&parseCalendarTaskDeadline(t));
     renderCalendarDeadlinesList(tasks);
     if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
     titEl.textContent='Дедлайны';
-    evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${t.deadline||''}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
+    evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${e2(getTaskDeadlineValue(t)||'')}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
   }).catch(()=>{});
 }
 function selectCalDay(d){
@@ -6403,7 +6415,7 @@ function selectCalDay(d){
   fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
     const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
     const dayTasks=(tasks||[]).filter(t=>{
-      if(t.done||!t.deadline)return false;
+      if(t.done||!getTaskDeadlineValue(t))return false;
       const td=parseCalendarTaskDeadline(t,sel.getFullYear());
       if(!td) return false;
       return td.getDate()===sel.getDate()&&td.getMonth()===sel.getMonth()&&td.getFullYear()===sel.getFullYear();
@@ -6413,7 +6425,7 @@ function selectCalDay(d){
     evEl.innerHTML=dayTasks.map(t=>{
       const tid=t.id;
       return '<div class="cal-event" onclick="openTaskById(\''+tid+'\',0)" style="cursor:pointer">'
-        +'<div class="cal-event-time">'+(t.deadline||'')+'</div>'
+        +'<div class="cal-event-time">'+e2(getTaskDeadlineValue(t)||'')+'</div>'
         +'<div class="cal-event-dot"></div>'
         +'<div style="flex:1">'
         +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'

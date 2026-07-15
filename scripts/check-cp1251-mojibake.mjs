@@ -32,7 +32,6 @@ for (let byte = 0; byte < cp1251Forward.length; byte += 1) {
 const cyrillicPattern = /\p{Script=Cyrillic}/u;
 const tokenPattern = /[^\t\n\r <>"'`=(){}[\],;]+/gu;
 const targetPattern = /index\.html$|scripts[\\/].*\.(?:js|mjs|cjs)$|(?:pm|shared)[\\/].*\.md$/i;
-const skipPattern = /shared[\\/]WORK_LOG\.md$/i;
 
 function walkDir(dirPath, output = []) {
   for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
@@ -51,7 +50,7 @@ function collectTargets() {
     if (stat.isDirectory()) files.push(...walkDir(root));
     else files.push(root);
   }
-  return files.filter(filePath => targetPattern.test(filePath) && !skipPattern.test(filePath));
+  return files.filter(filePath => targetPattern.test(filePath));
 }
 
 function encodeCp1251(value) {
@@ -148,24 +147,41 @@ for (const candidate of buildCandidateStrings()) {
 const fragmentEntries = [...fragmentFixMap.entries()].sort((a, b) => b[0].length - a[0].length);
 const fragmentRegex = new RegExp(fragmentEntries.map(([bad]) => escapeRegExp(bad)).join('|'), 'gu');
 
-function lineNumberForOffset(text, offset) {
-  return text.slice(0, offset).split(/\r?\n/).length;
+function buildLineStarts(text) {
+  const starts = [0];
+  for (let index = 0; index < text.length; index += 1) {
+    if (text.charCodeAt(index) === 10) starts.push(index + 1);
+  }
+  return starts;
+}
+
+function lineNumberForOffset(lineStarts, offset) {
+  let low = 0;
+  let high = lineStarts.length - 1;
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    if (lineStarts[mid] <= offset) low = mid + 1;
+    else high = mid - 1;
+  }
+  return high + 1;
 }
 
 function inspectFile(filePath) {
   const original = fs.readFileSync(filePath, 'utf8');
+  const originalLineStarts = buildLineStarts(original);
   const hits = [];
   let updated = original;
 
   updated = updated.replace(fragmentRegex, (bad, offset) => {
     const good = fragmentFixMap.get(bad) || bad;
     if (good !== bad) {
-      hits.push({ filePath, line: lineNumberForOffset(original, offset), token: bad, decoded: good });
+      hits.push({ filePath, line: lineNumberForOffset(originalLineStarts, offset), token: bad, decoded: good });
     }
     return good;
   });
 
   const seen = new Map();
+  const updatedLineStarts = buildLineStarts(updated);
   updated = updated.replace(tokenPattern, (token, offset) => {
     if (!cyrillicPattern.test(token) || token.length < 2) return token;
     let decoded = seen.get(token);
@@ -174,7 +190,7 @@ function inspectFile(filePath) {
       seen.set(token, decoded);
     }
     if (!decoded) return token;
-    hits.push({ filePath, line: lineNumberForOffset(updated, offset), token, decoded });
+    hits.push({ filePath, line: lineNumberForOffset(updatedLineStarts, offset), token, decoded });
     return decoded;
   });
 
