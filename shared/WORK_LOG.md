@@ -21,6 +21,16 @@
 
 ### 2026-07-15 — Codex
 
+**Задача:** Close HOME-covered legacy NEW issues
+**Результат:** На `https://88193776.4-ai-staging.pages.dev` fresh staging user с 3 задачами подтвердил, что старые home-проблемы, покрытые `HOME-001`, больше не воспроизводятся: `NEW-010` — на главном экране нет старых кнопок `Завершить`, вместо них top-3 priority rows; `NEW-011` — home разбит на focus, 4 metric cards и отдельные readable rows шириной 324px; `NEW-013` — focus copy короткий: `3 задачи требуют внимания` + короткая подпись.
+**Коммит:** pending
+**Статус:** Done для `NEW-010/011/013`
+**Следующий шаг:** `HOME-001` как общий редизайн всё ещё можно оставить Ready for QA до ручного visual pass в обеих темах.
+
+---
+
+### 2026-07-15 — Codex
+
 **Задача:** Remaining NEW UI smoke + fixes for completed stats and focus overlap
 **Результат:** На fresh staging user прогнан пакет `NEW-003/004/005/007/012/016` против `https://44ccd355.4-ai-staging.pages.dev`. `NEW-003`, `NEW-004`, `NEW-005` и `NEW-007` прошли без кодовых изменений. Два хвоста оказались реальными: completed task не появлялась в statistics/history, потому что `loadTasks()` сохранял в `allTasksCache` только active-задачи; focus-card всё ещё геометрически пересекался с декоративным блоком. В `index.html` исправлено: `allTasksCache=tasks||[]`, текстовый слой focus-card поднят на `z-index:2`, декоративный слой опущен на `z-index:0`, padding-right увеличен до `144px`. Fresh Pages deploy `https://88193776.4-ai-staging.pages.dev` подтвердил оба фикса: done task видна в `#stats-done-list`, `doneInCache=1`, focus contentRight=209 до decorLeft=237.
 **Коммит:** pending

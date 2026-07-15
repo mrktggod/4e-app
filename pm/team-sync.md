@@ -74,6 +74,12 @@
 
 ## Изменения по проекту
 
+### HOME-covered legacy NEW closeout — 2026-07-15
+
+**Статус:** Закрыто на staging
+**Что подтверждено:** `NEW-010`, `NEW-011`, `NEW-013` больше не воспроизводятся на `https://88193776.4-ai-staging.pages.dev`: old `Завершить` buttons absent, home split into focus/metrics/top rows, focus copy compact.
+
+
 ### Remaining NEW UI closeout — 2026-07-15
 
 **Статус:** Закрыто на staging, без production/main
