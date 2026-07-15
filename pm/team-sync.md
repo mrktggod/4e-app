@@ -173,3 +173,7 @@
 ## Bug status closeout from existing live smoke — 2026-07-15
 
 - По уже записанным live-smoke результатам закрыты `BUG-2026-07-14-004`, `BUG-2026-07-15-001`, `BUG-2026-07-15-002`, `BUG-2026-07-14-003`. Ручные хвосты вроде profile mobile, bottom-nav width, after-22 copy и Telegram fallback не тронуты.
+
+## BACK-051 account merge toast — 2026-07-15
+
+- Email-login и Telegram legacy уже показывали `showAccountMergeToast(d)` при `accountMerged`; OAuth callback VK/Yandex теперь тоже не дублирует обычный welcome-toast после merge. `BACK-051` синхронизирован в backlog как `Done`.

@@ -86,7 +86,7 @@
         showScreen('home');
         loadTasks();
         if(typeof showAccountMergeToast==='function') showAccountMergeToast(d);
-        showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
+        if(!d.accountMerged) showToast(d.isNew?'Добро пожаловать! 30 дней Premium 🎁':'С возвращением!');
         return true;
       }
       showToast(d.error||'Ошибка входа через сервис');

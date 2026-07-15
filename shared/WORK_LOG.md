@@ -8716,3 +8716,9 @@
 **Задача:** Закрыть bug-строки, где live-smoke evidence уже записан в `pm/bugs.md`, но статус оставался `Ready for QA`.
 **Результат:** В `Done` переведены: `BUG-2026-07-14-004` (AI quick action statistics no validation error), `BUG-2026-07-15-001` (AI chat task-first creates task before clarification), `BUG-2026-07-15-002` (ask composer no longer overlaps bottom nav), `BUG-2026-07-14-003` (`/auth/telegram` no longer throws Worker 1101). Новых runtime-изменений нет; это синхронизация статусов с уже записанными staging/live smoke результатами.
 **Статус:** Done для четырёх bug-строк.
+
+## 2026-07-15 — BACK-051 account merge toast
+
+**Задача:** BACK-051 — пользователь должен увидеть понятное уведомление после слияния аккаунтов.
+**Результат:** Подтверждено, что email-login и Telegram legacy уже вызывают `showAccountMergeToast(d)` при `accountMerged`. Закрыт недостающий OAuth callback path для VK/Yandex: после `showAccountMergeToast(d)` обычный welcome-toast теперь показывается только при `!d.accountMerged`, чтобы merge-message не дублировался и не перетирался.
+**Статус:** Done для `BACK-051`; runtime-код изменён только в `scripts/auth.js`.
