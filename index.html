@@ -405,7 +405,8 @@
           <div style="font-size:10px;color:var(--green);margin-top:4px;line-height:1.3" id="stat-progress-meta">—</div>
         </div>
       </div>
-      <button type="button" onclick="shareDailyCard()" style="width:100%;margin:0 0 14px;padding:12px 14px;border-radius:14px;border:1px solid rgba(154,194,60,.24);background:var(--green3);color:var(--green);font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">Поделиться планом дня</button>
+      <button type="button" onclick="shareDailyCard()" style="width:100%;margin:0 0 8px;padding:12px 14px;border-radius:14px;border:1px solid rgba(154,194,60,.24);background:var(--green3);color:var(--green);font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">Поделиться планом дня</button>
+      <button type="button" onclick="shareWeeklySummaryCard()" style="width:100%;margin:0 0 14px;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:rgba(242,245,233,.04);color:var(--text);font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">Итоги недели</button>
 
       <div id="home-task-list">
         <div class="home-ai-empty">Формирую список приоритетов...</div>
@@ -4298,6 +4299,64 @@ function getShareCardStreakAndAchievements(){
   while(achievements.length<3) achievements.push('план собран');
   return achievements.slice(0,3);
 }
+function getShareWeekStats(){
+  const tasks=Array.isArray(allTasksCache)?allTasksCache:[];
+  const end=new Date();
+  end.setHours(23,59,59,999);
+  const start=new Date(end);
+  start.setDate(start.getDate()-6);
+  start.setHours(0,0,0,0);
+  const startMs=start.getTime();
+  const endMs=end.getTime();
+  const days=[];
+  for(let i=0;i<7;i++){
+    const day=new Date(start);
+    day.setDate(start.getDate()+i);
+    const key=getShareCardDayKey(day.getTime());
+    days.push({
+      key,
+      label:day.toLocaleDateString('ru-RU',{weekday:'short'}).replace('.',''),
+      done:0,
+      created:0
+    });
+  }
+  const doneTasks=[];
+  let createdWeek=0;
+  tasks.forEach(function(task){
+    const createdTs=getTaskCreatedTimestamp(task)||0;
+    const doneTs=task.done?getAskTaskDoneTimestamp(task):0;
+    if(createdTs>=startMs&&createdTs<=endMs){
+      createdWeek++;
+      const createdDay=days.find(day=>day.key===getShareCardDayKey(createdTs));
+      if(createdDay) createdDay.created++;
+    }
+    if(doneTs>=startMs&&doneTs<=endMs){
+      doneTasks.push(task);
+      const doneDay=days.find(day=>day.key===getShareCardDayKey(doneTs));
+      if(doneDay) doneDay.done++;
+    }
+  });
+  const active=tasks.filter(task=>!task.done&&task.direction!=='incoming');
+  const incoming=tasks.filter(task=>!task.done&&task.direction==='incoming');
+  const planDays=days.filter(day=>day.done||day.created).length;
+  const bestDay=days.reduce(function(best,day){return (day.done+day.created)>(best.done+best.created)?day:best;},days[0]||{label:'',done:0,created:0});
+  const topDone=doneTasks
+    .slice()
+    .sort(function(a,b){return (getAskTaskDoneTimestamp(b)||0)-(getAskTaskDoneTimestamp(a)||0);})
+    .slice(0,3);
+  return {
+    start,
+    end,
+    days,
+    doneWeek:doneTasks.length,
+    createdWeek,
+    active:active.length,
+    incoming:incoming.length,
+    planDays,
+    bestDay,
+    topDone
+  };
+}
 async function buildDailyShareCardBlob(){
   const canvas=document.createElement('canvas');
   canvas.width=1080;
@@ -4398,6 +4457,132 @@ async function buildDailyShareCardBlob(){
   ctx.fillText('Собрано в 4-ai.site',172,1192);
   return new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.92));
 }
+async function buildWeeklySummaryCardBlob(){
+  const stats=getShareWeekStats();
+  const canvas=document.createElement('canvas');
+  canvas.width=1080;
+  canvas.height=1350;
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,1080,1350);
+  grad.addColorStop(0,'#10160C');
+  grad.addColorStop(0.5,'#1B2910');
+  grad.addColorStop(1,'#050805');
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,1080,1350);
+  const glow=ctx.createRadialGradient(160,180,20,160,180,560);
+  glow.addColorStop(0,'rgba(154,194,60,0.28)');
+  glow.addColorStop(1,'rgba(154,194,60,0)');
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,1080,1350);
+  ctx.fillStyle='rgba(255,255,255,0.055)';
+  ctx.strokeStyle='rgba(242,245,233,0.12)';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.roundRect(76,84,928,1182,42);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle='#9AC23C';
+  ctx.font='700 34px Inter, sans-serif';
+  ctx.fillText('4 · личный штаб недели',120,152);
+  ctx.fillStyle='#F2F5E9';
+  ctx.font='800 70px Inter, sans-serif';
+  ctx.fillText('Твоя неделя',120,244);
+  ctx.fillStyle='rgba(242,245,233,0.58)';
+  ctx.font='400 28px Inter, sans-serif';
+  const dateRange=stats.start.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' - '+stats.end.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+  ctx.fillText(dateRange,120,296);
+  const metrics=[['Закрыто',stats.doneWeek],['Новых',stats.createdWeek],['Дней с планом',stats.planDays]];
+  metrics.forEach(function(metric,index){
+    const x=120+index*285;
+    ctx.fillStyle='rgba(154,194,60,0.13)';
+    ctx.beginPath();
+    ctx.roundRect(x,342,250,128,28);
+    ctx.fill();
+    ctx.fillStyle='#9AC23C';
+    ctx.font='800 48px Inter, sans-serif';
+    ctx.fillText(String(metric[1]),x+28,410);
+    ctx.fillStyle='rgba(242,245,233,0.66)';
+    ctx.font='500 24px Inter, sans-serif';
+    ctx.fillText(metric[0],x+28,446);
+  });
+  ctx.fillStyle='rgba(242,245,233,0.58)';
+  ctx.font='700 26px Inter, sans-serif';
+  ctx.fillText('Ритм недели',120,548);
+  const maxDay=Math.max(1,...stats.days.map(day=>day.done+day.created));
+  stats.days.forEach(function(day,index){
+    const x=128+index*120;
+    const total=day.done+day.created;
+    const h=Math.max(12,Math.round((total/maxDay)*170));
+    ctx.fillStyle='rgba(242,245,233,0.08)';
+    ctx.beginPath();
+    ctx.roundRect(x,602,64,190,24);
+    ctx.fill();
+    ctx.fillStyle=day.done?'#9AC23C':'rgba(154,194,60,0.34)';
+    ctx.beginPath();
+    ctx.roundRect(x,792-h,64,h,24);
+    ctx.fill();
+    ctx.fillStyle='#F2F5E9';
+    ctx.font='800 22px Inter, sans-serif';
+    ctx.fillText(String(total),x+22,574);
+    ctx.fillStyle='rgba(242,245,233,0.62)';
+    ctx.font='600 20px Inter, sans-serif';
+    ctx.fillText(day.label,x+4,834);
+  });
+  let y=910;
+  ctx.fillStyle='rgba(242,245,233,0.58)';
+  ctx.font='700 24px Inter, sans-serif';
+  ctx.fillText('Главные итоги',120,y);
+  y+=52;
+  if(stats.topDone.length){
+    stats.topDone.forEach(function(task,index){
+      const title=safeText(task.title||task.text||task.name||'Закрытая задача');
+      ctx.fillStyle='rgba(242,245,233,0.075)';
+      ctx.beginPath();
+      ctx.roundRect(120,y-32,840,76,24);
+      ctx.fill();
+      ctx.fillStyle='#9AC23C';
+      ctx.font='800 24px Inter, sans-serif';
+      ctx.fillText(String(index+1),150,y+10);
+      ctx.fillStyle='#F2F5E9';
+      ctx.font='700 25px Inter, sans-serif';
+      canvasWrapText(ctx,title,198,y+8,710,30,1);
+      y+=92;
+    });
+  }else{
+    ctx.fillStyle='rgba(242,245,233,0.72)';
+    ctx.font='600 30px Inter, sans-serif';
+    ctx.fillText('Неделя только собирается',120,y);
+    y+=46;
+    ctx.fillStyle='rgba(242,245,233,0.45)';
+    ctx.font='400 24px Inter, sans-serif';
+    ctx.fillText('Добавь один заметный шаг - и будет что показать.',120,y);
+  }
+  const badges=[
+    stats.bestDay&&stats.bestDay.key?(stats.bestDay.label+' - лучший день'):'ритм собран',
+    stats.active+' задач в фокусе',
+    stats.incoming+' обещаний под контролем'
+  ];
+  ctx.fillStyle='rgba(242,245,233,0.58)';
+  ctx.font='700 24px Inter, sans-serif';
+  ctx.fillText('Фокус дальше',120,1160);
+  badges.forEach(function(text,index){
+    const x=120+index*286;
+    ctx.fillStyle='rgba(154,194,60,0.15)';
+    ctx.beginPath();
+    ctx.roundRect(x,1188,258,54,22);
+    ctx.fill();
+    ctx.fillStyle='#9AC23C';
+    ctx.font='700 21px Inter, sans-serif';
+    canvasWrapText(ctx,text,x+22,1222,214,24,1);
+  });
+  ctx.fillStyle='rgba(154,194,60,0.9)';
+  ctx.font='800 42px Inter, sans-serif';
+  ctx.fillText('4',120,1298);
+  ctx.fillStyle='rgba(242,245,233,0.42)';
+  ctx.font='400 24px Inter, sans-serif';
+  ctx.fillText('Собрано в 4-ai.site',172,1296);
+  return new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.92));
+}
 async function shareDailyCard(){
   try{
     const blob=await buildDailyShareCardBlob();
@@ -4421,6 +4606,31 @@ async function shareDailyCard(){
   }catch(e){
     console.error('shareDailyCard:',e);
     showToast('Не удалось собрать карточку');
+  }
+}
+async function shareWeeklySummaryCard(){
+  try{
+    const blob=await buildWeeklySummaryCardBlob();
+    if(!blob) throw new Error('weekly share card blob failed');
+    const file=new File([blob],'4-week-summary.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+      await navigator.share({files:[file],title:'Моя неделя в 4',text:'Итоги недели из 4'});
+      trackLiteEvent('share-weekly-card',{surface:'home',mode:'native'});
+      return;
+    }
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='4-week-summary.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    trackLiteEvent('share-weekly-card',{surface:'home',mode:'download'});
+    showToast('Итоги недели сохранены');
+  }catch(e){
+    console.error('shareWeeklySummaryCard:',e);
+    showToast('Не удалось собрать итоги недели');
   }
 }
 
