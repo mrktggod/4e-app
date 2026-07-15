@@ -8782,3 +8782,9 @@
 **Задача:** BACK-032 — подтвердить отдельный чат задачи с 4, комментарии и сохранение истории.
 **Результат:** Source QA подтвердил фронт и worker: task-detail имеет вкладку `Обсудить задачу`, поле комментария и `addDetailComment()`; комментарий пользователя сохраняется через `/messages/task`, AI-ответ приходит через `/anthropic`, затем assistant reply/actions сохраняются тем же endpoint и отображаются в обсуждении и timeline истории. В worker `GET/POST /messages/task` проверяют ownership задачи через `resolveTaskForSession`, читают/пишут KV-историю по user/task key и ограничивают её `MAX_TASK_MESSAGES_PER_CHAT=80`.
 **Статус:** Done для `BACK-032`; live smoke не выполнялся.
+
+## 2026-07-16 — SMART-008 chat actions source QA
+
+**Задача:** SMART-008 — подтвердить действия из AI-чата: перенести/закрыть/изменить/показать после подтверждения.
+**Результат:** Source QA подтвердил два action path: общий AI-chat просит Claude добавлять `<task_actions>[...]</task_actions>`, парсит их через `parseAskActionsFromText()`, показывает preview `Предлагаемые действия` и выполняет только после `confirmAskActions()`. Поддержаны `complete`, `reschedule`, `edit`, `remind`, `show`; мутации идут через `done-task`, `update-task`, `setReminderOnWorker()` или локальный `openTask()`. Task-detail chat использует аналогичный preview/confirm через `confirmTaskChatActions()`.
+**Статус:** Done для `SMART-008`; live AI smoke не выполнялся.

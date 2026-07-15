@@ -218,3 +218,7 @@
 ## BACK-032 task chat/comments source QA — 2026-07-16
 
 - `BACK-032` закрыт по source QA без runtime-изменений: фронт task-detail отправляет user comment, получает AI reply/actions и сохраняет обе стороны через `/messages/task`; worker authenticated endpoint проверяет ownership задачи и хранит bounded KV history.
+
+## SMART-008 chat actions source QA — 2026-07-16
+
+- `SMART-008` закрыт по source QA: общий AI-chat и task-detail chat показывают action preview и выполняют действия только после подтверждения; поддержаны `complete/reschedule/edit/remind/show`.
