@@ -177,3 +177,7 @@
 ## BACK-051 account merge toast — 2026-07-15
 
 - Email-login и Telegram legacy уже показывали `showAccountMergeToast(d)` при `accountMerged`; OAuth callback VK/Yandex теперь тоже не дублирует обычный welcome-toast после merge. `BACK-051` синхронизирован в backlog как `Done`.
+
+## BACK-056 after-22 focus copy closeout — 2026-07-15
+
+- Current home focus copy no longer has an hour-based branch, so the old after-22 negative-time bug has no runtime path. `BACK-056` and `BUG-2026-07-05-003` moved to `Done`; unrelated demo text containing `до конца дня` was not part of focus-copy.
