@@ -8541,3 +8541,17 @@
 **Бот/runtime:** внешний live inbound message по-прежнему не подтверждён, но bot-path стал честнее. Прямой `getMe` по токену вернул `@Denzel89bot`, а локальный `npm run start` в `4e-worker` реально стартует и печатает `🛡 4 бот запущен...`, если перед запуском сделать mapping `BOT_API_TOKEN -> BOT_TOKEN` и `ANTHROPIC_KEY -> ANTHROPIC_API_KEY`. Это же расхождение env-имён отдельно записано в `pm/team-sync.md`, чтобы не потерять operational root cause.
 
 **Следующий шаг:** короткий ручной QA можно вести уже против `https://73d33de6.4-ai-staging.pages.dev`; для полного bot-live confirmation всё ещё нужен реальный внешний Telegram update/message, которого в эту сессию не было.
+
+## 2026-07-15 - chat regressions on staging (task-first + composer)
+
+**Задача:** добить новый QA-бриф по AI-чату на staging: `BUG-2026-07-15-001` (task-first сломан) и `BUG-2026-07-15-002` (composer под нижним меню) без выхода в CAL/payment/prod.
+
+**Результат:** Для `BUG-2026-07-15-001` root cause найден во фронтовом flow `sendAsk()`. До фикса chat path сначала ждал ответ модели, а затем ещё и мог уйти в локальный clarify before save, потому что task-intent fallback вызывал `buildAskTaskClarification()` раньше `createTaskFromChat()`. Это ломало правило SMART-004: явный task-intent мог приводить к уточнению до сохранения задачи. Исправление сделано прямо в `index.html`: task-intent path (`<create_task>` и `looksLikeTaskRequest()`) теперь сохраняет задачу сразу, а подтверждение prepend-ится перед AI-текстом; `fallbackTaskFromText()` дополнительно нормализует фразы вроде `сделать текст завтра` в задачу `Сделать текст` с `deadline: завтра`.
+
+**Проверка:** fresh Pages deploy `https://1103d926.4-ai-staging.pages.dev`, live browser smoke на mobile viewport. Репро `сделать текст завтра` теперь даёт сообщения `сделать текст завтра` -> `✅ Задача «Сделать текст» добавлена. Понял! Создаю задачу 📝`, а тот же fresh аккаунт сразу видит в `/tasks` запись `text: "Сделать текст"`, `deadline: "завтра"`, `source: "ai_chat"`, `originalMsg: "сделать текст завтра"`.
+
+**Результат:** Для `BUG-2026-07-15-002` root cause тоже подтверждён на живом layout, а не предположением. До фикса AI-чат открывался с hidden nav, но после blur/send keyboard-close path снова показывал `global-nav`, хотя активный экран оставался `ask`; замер через Playwright на viewport `390x844` дал `overlap=64px` между `.ask-bar` и `#global-nav`. Фикс узкий: экран `ask` помечен как `screen--no-bottom-nav`, `noNav`-контуры в JS теперь включают `ask`, а `styles.css` и `styles.min.css` получили ask-specific padding без нижнего nav reserve и отдельный класс `ask-bar-icon` вместо новых inline-стилей.
+
+**Проверка:** повторный live smoke на `https://1103d926.4-ai-staging.pages.dev` показывает `navHidden=true` и `overlap=0` и до, и после отправки сообщения; composer остаётся видимым и кликабельным над местом нижнего меню.
+
+**Следующий шаг:** ручной QA по AI-чату вести уже против `https://1103d926.4-ai-staging.pages.dev`, а не alias `https://4-ai-staging.pages.dev`, потому что alias у этого проекта уже не раз отставал от свежего Pages deploy.

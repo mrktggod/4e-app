@@ -2403,8 +2403,28 @@ body {
   padding: 10px 0 var(--app-bottom-nav-reserve);
   transition: padding-bottom 0.18s ease;
 }
+.screen--no-bottom-nav .ask-bar {
+  padding-bottom: 12px;
+}
+.screen--no-bottom-nav .ask-bar.ask-bar--keyboard-open {
+  padding-bottom: calc(16px + var(--safe-area-bottom) + var(--app-keyboard-offset));
+}
 .ask-bar--keyboard-open {
   padding-bottom: calc(16px + var(--safe-area-bottom) + var(--app-keyboard-offset));
+}
+.ask-bar-icon {
+  background: transparent;
+  border: none;
+  padding: 6px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.ask-bar-icon:active {
+  color: var(--green);
 }
 .ask-field {
   flex: 1;

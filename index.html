@@ -469,7 +469,7 @@
 </div>
 
 <!-- ASK -->
-<div class="screen" id="ask">
+<div class="screen screen--no-bottom-nav" id="ask">
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
     <div style="flex:1"><div class="back-title">4</div><div class="back-sub">спроси что угодно</div></div>
@@ -497,11 +497,11 @@
       </div>
     </div>
     <div class="ask-bar">
-      <button class="conv-ico" type="button" onclick="askAttachmentSoon()" aria-label="Добавить вложение" style="background:transparent;border:none;padding:6px 4px;display:flex;align-items:center;justify-content:center">
+      <button class="ask-bar-icon" type="button" onclick="askAttachmentSoon()" aria-label="Добавить вложение">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 1 1-2.82-2.83l8.48-8.48"/></svg>
       </button>
       <textarea class="ask-field" id="ask-field" placeholder="Напиши или выбери подсказку..." rows="1"></textarea>
-      <button class="conv-ico" type="button" onclick="openVoice()" aria-label="Открыть голосовой ввод" style="background:transparent;border:none;padding:6px 4px;display:flex;align-items:center;justify-content:center">
+      <button class="ask-bar-icon" type="button" onclick="openVoice()" aria-label="Открыть голосовой ввод">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
       </button>
       <button class="ask-send" onclick="sendAsk()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
@@ -5739,6 +5739,12 @@ function looksLikeTaskRequest(text){
   return false;
 }
 
+function formatTaskIntentTitle(value){
+  const clean=String(value||'').replace(/\s+/g,' ').replace(/[.,;:!?]+$/,'').trim();
+  if(!clean) return '';
+  return clean.charAt(0).toUpperCase()+clean.slice(1);
+}
+
 function fallbackTaskFromText(text){
   let clean = (text || '').trim();
   clean = clean.replace(/^(поставь|добавь|создай|запиши|запомни)\s+(мне\s+)?(новую\s+)?задач[ауи]?\s*/i,'');
@@ -5747,7 +5753,14 @@ function fallbackTaskFromText(text){
   clean = clean.replace(/^нужно\s+/i,'');
   const deadlineMatch = clean.match(/\b(сегодня|завтра|послезавтра|в понедельник|во вторник|в среду|в четверг|в пятницу|в субботу|в воскресенье|вечером|утром|днем|днём)\b/i);
   const deadline = deadlineMatch ? deadlineMatch[0] : null;
-  return { text: clean || text, person: '', deadline };
+  if(deadlineMatch){
+    const before=clean.slice(0,deadlineMatch.index).trim();
+    const after=clean.slice(deadlineMatch.index+deadlineMatch[0].length).trim();
+    clean=(before+' '+after).trim();
+  }
+  clean=clean.replace(/\s+/g,' ').trim();
+  const normalizedText=formatTaskIntentTitle(clean);
+  return { text: normalizedText, person: '', deadline };
 }
 
 function normalizeTaskDupText(value){
@@ -6197,50 +6210,22 @@ async function sendAsk(){
     else text=JSON.stringify(d);
 
     let createdTaskText = '';
-    let askClarify = null;
     const taskMatch = text.match(/<create_task>([\s\S]*?)<\/create_task>/);
     if(taskMatch) {
       try {
         const taskData = JSON.parse(taskMatch[1]);
         taskData.originalMsg = v;
-        askClarify = buildAskTaskClarification(taskData);
-        if(askClarify){
-          const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_clarify');
-          pendingAskClarification={messageId:assistantMessageId,taskData,clarify:askClarify};
-          text = text.replace(/<create_task>[\s\S]*?<\/create_task>/g, '').trim();
-          if(!text) text=askClarify.question;
-          const parsedActions=parseAskActionsFromText(text);
-          text=parsedActions.cleanText||askClarify.question;
-          lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskClarificationPreview(assistantMessageId,askClarify)+renderAskActionPreview(assistantMessageId,parsedActions.actions);
-          askHistory.push({id:assistantMessageId,role:'assistant',content:text,actions:parsedActions.actions,clarify:askClarify,taskData});
-          saveAskHistoryLocal();
-          await saveAskMessageRemote('assistant', text);
-          isGenerating=false;
-          document.getElementById('ask-msgs').scrollTop=9999;
-          return;
-        }
         const result = await createTaskFromChat(taskData);
         if(result&&result.ok) createdTaskText = result.merged ? 'merged:'+taskData.text : taskData.text;
         text = text.replace(/<create_task>[\s\S]*?<\/create_task>/g, '').trim();
       } catch(e) { console.error('parse task json:', e); }
     } else if(looksLikeTaskRequest(v) && !/^ошибка:/i.test(text)) {
       const taskData = fallbackTaskFromText(v);
-      taskData.originalMsg = v;
-      askClarify = buildAskTaskClarification(taskData);
-      if(askClarify){
-        const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_clarify');
-        pendingAskClarification={messageId:assistantMessageId,taskData,clarify:askClarify};
-        const clarifyText=askClarify.question;
-        lb.innerHTML='<div class="md-body">'+parseMarkdown(clarifyText)+'</div>'+renderAskClarificationPreview(assistantMessageId,askClarify);
-        askHistory.push({id:assistantMessageId,role:'assistant',content:clarifyText,actions:[],clarify:askClarify,taskData});
-        saveAskHistoryLocal();
-        await saveAskMessageRemote('assistant', clarifyText);
-        isGenerating=false;
-        document.getElementById('ask-msgs').scrollTop=9999;
-        return;
+      if(taskData.text){
+        taskData.originalMsg = v;
+        const result = await createTaskFromChat(taskData);
+        if(result&&result.ok) createdTaskText = result.merged ? 'merged:'+taskData.text : taskData.text;
       }
-      const result = await createTaskFromChat(taskData);
-      if(result&&result.ok) createdTaskText = result.merged ? 'merged:'+taskData.text : taskData.text;
     }
 
     const parsedActions=parseAskActionsFromText(text);
@@ -6291,7 +6276,7 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
     setTimeout(()=>{
       if(keyboardOpen)return;
       const active=document.querySelector('.screen.active');
-      const noNav=['login','voice','home'];
+      const noNav=['login','voice','home','ask'];
       if(nav&&active&&!noNav.includes(active.id))nav.classList.remove('hidden');
       // Возвращаем отступ под nav
       if(askBar)askBar.classList.remove('ask-bar--keyboard-open');
@@ -6560,7 +6545,7 @@ function _showSubScreenBase(id){
   // Hide nav for sub-screens
   const nav=document.getElementById('global-nav');
   const mainScreens=['home','ask','calendar','notifications','statistics','profile'];
-  const noNav=['login','voice'];
+  const noNav=['login','voice','ask'];
   if(nav){
     if(noNav.includes(id)) nav.classList.add('hidden');
     else if(mainScreens.includes(id)) nav.classList.remove('hidden');
