@@ -2274,7 +2274,7 @@ function renderExtendedProfile(){
   const draft=getExtendedProfileDraft();
   const name=getExtendedProfileDisplayName();
   const initials=(name[0]||'?').toUpperCase();
-  const photo=document.getElementById('profile-photo-preview');
+  const photo=document.getElementById('profile-avatar')||document.getElementById('profile-photo-preview');
   if(photo)setProfileAvatarElement(photo,initials);
   setProfileFieldValue('profile-field-name',name);
   setProfileText('profile-user-id',currentUser.id?('ID '+currentUser.id):'ID —');
@@ -2323,7 +2323,7 @@ async function requestEmailVerification(){
   renderExtendedProfile();
 }
 
-function handleProfilePhotoChange(event){const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('Выбери изображение');return;}const previewUrl=URL.createObjectURL(file);const preview=document.getElementById('profile-photo-preview');if(preview){preview.textContent='';preview.style.backgroundImage='url("'+previewUrl+'")';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';}if(file.size>1500000){showToast('Фото выбрано. Загрузка в R2 будет подключена позже');return;}const reader=new FileReader();reader.onload=function(){const draft=getExtendedProfileDraft();draft.photoDataUrl=reader.result;saveExtendedProfileDraft(draft);applyUserInfo();showToast('Фото сохранено локально');};reader.readAsDataURL(file);}
+function handleProfilePhotoChange(event){const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('Выбери изображение');return;}const previewUrl=URL.createObjectURL(file);const preview=document.getElementById('profile-avatar')||document.getElementById('profile-photo-preview');if(preview){preview.textContent='';preview.style.backgroundImage='url("'+previewUrl+'")';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';}if(file.size>1500000){showToast('Фото выбрано. Загрузка в R2 будет подключена позже');return;}const reader=new FileReader();reader.onload=function(){const draft=getExtendedProfileDraft();draft.photoDataUrl=reader.result;saveExtendedProfileDraft(draft);applyUserInfo();showToast('Фото сохранено локально');};reader.readAsDataURL(file);}
 function saveExtendedProfile(){
   if(!currentUser)return;
   const draft=getExtendedProfileDraft();

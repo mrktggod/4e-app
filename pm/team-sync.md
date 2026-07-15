@@ -202,3 +202,7 @@
 ## BACK-055 notifications action-feed source QA — 2026-07-16
 
 - `BACK-055` закрыт по source QA: notifications action-feed покрывает filters, empty states, `К задаче`, `Готово`, `Отложить` с quick snooze, `Написать` для waiting-like payload и safe fallback без `taskId`.
+
+## BACK-016 extended profile source QA — 2026-07-16
+
+- `BACK-016` закрыт: extended profile fields и statuses есть в `index.html`; photo preview после удаления duplicate avatar теперь работает через текущий `#profile-avatar`.

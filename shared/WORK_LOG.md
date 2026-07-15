@@ -8758,3 +8758,9 @@
 **Задача:** Закрыть `BACK-055` без ручного smoke, если source path покрывает DoD.
 **Результат:** Source QA подтвердил реализацию в `scripts/task-ui-renderers.js`: `openNotifications()`/`loadNotifications()` грузят `/notifications`; фильтры и спокойные empty states есть; `getNotifTaskId()` нормализует `taskId`, `task_id`, `relatedTaskId`, `related_task_id`, `task.id`; action buttons показывают только возможные действия. Для task-linked уведомлений есть `К задаче` -> `openTaskById()`, `Готово` -> `markDoneKV()`, `Отложить` -> snooze menu `15 мин / 1 час / 3 часа / Завтра` и `update-task`; waiting-like payload получает `Написать`. Уведомления без `taskId` получают безопасный `Понятно`/fallback без невозможных действий.
 **Статус:** Done для `BACK-055`; runtime-код не менялся.
+
+## 2026-07-16 — BACK-016 extended profile source QA
+
+**Задача:** Закрыть `BACK-016` по расширенному профилю без ручного smoke.
+**Результат:** Source QA подтвердил профильный набор: единый `#profile-avatar` с photo picker, `#profile-name`, `#profile-user-id`, поля `name/phone/email/birthdate/about`, phone/email/telegram status badges, about counter, local draft save. Дополнительно закрыт маленький хвост после `NEW-003`: preview выбранного фото теперь пишет в актуальный `#profile-avatar` с fallback на старый `#profile-photo-preview`, если он когда-нибудь встретится в старой разметке.
+**Статус:** Done для `BACK-016`.
