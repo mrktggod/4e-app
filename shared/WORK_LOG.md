@@ -8697,3 +8697,10 @@
 **Результат:** Source-check подтвердил ссылки на `privacy.html` на login/register и onboarding. Live staging check с follow-redirect подтвердил: `https://88193776.4-ai-staging.pages.dev/privacy.html` и `https://4-ai-staging.pages.dev/privacy.html` отвечают `200`, содержат заголовок `Политика конфиденциальности` и номер РКН `102299/77`.
 **Статус:** Done для `BACK-007`.
 **Следующий шаг:** продолжать по backlog-пунктам без ручных действий; ручные Telegram Mini App и microphone smoke не закрывать синтетически.
+
+## 2026-07-15 — BACK-038 / ANALYTICS-001 live closeout
+
+**Задача:** Закрыть analytics e2e после фикса D1 shadow-sync и admin summary.
+**Результат:** На staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev` fresh email-user зарегистрирован успешно, `POST /analytics/lite-event` для `plan-view`, `focus-open`, `statistics-open` вернули `200 {"ok":true}`. Прямой D1 query по marker `codex-back038-closeout` подтвердил строки `lite-plan-view=1`, `lite-focus-open=1`, `lite-statistics-open=1`. Admin `GET /analytics/summary` вернул `200`: `auditEvents.total=85`, `dailyValue.planView.d1=10`, `focusOpen.d1=4`, `statisticsOpen.d1=6`, `auth.register.d1=47`.
+**Статус:** Done для `BACK-038`, `ANALYTICS-001`, `BUG-2026-07-14-002`, `BUG-2026-07-15-003`.
+**Следующий шаг:** не требуются ручные действия; продолжать по backlog, кроме Telegram Mini App/microphone/manual visual smoke.

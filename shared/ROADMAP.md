@@ -54,7 +54,7 @@
 | UI-архитектурный guard | BACK-049 — правило LESS + BEM для нового UI-кода, запрет роста inline `style`/handlers, проверка в pre-commit и GitHub Actions | P1 | Done |
 | Accessibility baseline | BACK-050 — базовая доступность критических сценариев: auth-формы, статусные сообщения, keyboard/focus, dialog-поведение quick-add/contact/consent и touch-target smoke перед закрытым тестом | P1 | Ready for QA — code baseline готов, нужен ручной keyboard/mobile smoke |
 | Единая рабочая копия | Одна рабочая папка, обмен только через git (убрать расхождение Documents/Desktop) | P1 | Todo |
-| Закрытый тест и измерение | BACK-035 — QA smoke; BACK-048 — dev/test аккаунты; BETA-001 — закрытый тест 5-10 пользователей; ANALYTICS-001 — lite-события активации; FEEDBACK-001 — быстрый feedback loop | P1 | Todo |
+| Закрытый тест и измерение | BACK-035 — QA smoke; BACK-048 — dev/test аккаунты; BETA-001 — закрытый тест 5-10 пользователей; ANALYTICS-001 — lite-события активации; FEEDBACK-001 — быстрый feedback loop | P1 | ANALYTICS-001 Done; BETA-001/FEEDBACK-001 Todo |
 
 ---
 
@@ -74,7 +74,7 @@
 | Авторизация через сервисы РФ | BACK-045 — VK ID + Яндекс ID OAuth готовы и задеплоены на staging; ждут реальных client_id/secret от Юрия для live smoke | P1 | Ready for QA |
 | Активация | ONBOARD-001 — первый AI-план за 60 секунд: пользователь создаёт 3 задачи и сразу видит полезный план дня | P1 | Todo |
 | CI и смоук-тесты | BACK-037 — GitHub Actions: проверка кодировки, линт, минификация; `api-smoke` покрывает auth/tasks CRUD/transcribe, staging smoke пройден | P2 | Ready for QA |
-| Аналитика | BACK-038 — события (вход, задача, шеринг) + D1/D7 retention; `/analytics/summary` закрыт `ADMIN_SECRET`, убран из личного экрана статистики | P2 | Ready for QA |
+| Аналитика | BACK-038 — события (вход, задача, шеринг) + D1/D7 retention; `/analytics/summary` закрыт `ADMIN_SECRET`, убран из личного экрана статистики | P2 | Done |
 | Данные в России | Перенос ПД в Yandex Cloud PostgreSQL | P1 | Manual blocker — ждёт Yandex Cloud PostgreSQL от Алексея |
 | Premium trust positioning | Обсудить с Claude Юры, как безопасность, приватность и контроль данных становятся частью дорогого позиционирования 4 | P1 | Ready for discussion |
 | CSS-архитектура | LESS + BEM + минификация | P2 | Partial Done — LESS/minification есть; BEM и очистка legacy inline-кода идут через BACK-049 и поэкранные правки |

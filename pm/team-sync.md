@@ -159,3 +159,9 @@
 
 - Проверено на live staging после fresh Pages deploy: direct URL `https://88193776.4-ai-staging.pages.dev/privacy.html` и alias `https://4-ai-staging.pages.dev/privacy.html` после 308 redirect возвращают `200`, содержат `Политика конфиденциальности` и номер РКН `102299/77`.
 - В source UI ссылки на `privacy.html` присутствуют на login/register и onboarding. `BACK-007` переведён в Done в backlog/roadmap.
+
+## BACK-038 / ANALYTICS-001 closeout — 2026-07-15
+
+- Live API smoke на staging: fresh register OK, `plan-view`, `focus-open`, `statistics-open` в `/analytics/lite-event` вернули `200 {"ok":true}`.
+- Remote D1 `audit_events` подтвердил по marker `codex-back038-closeout`: `lite-plan-view=1`, `lite-focus-open=1`, `lite-statistics-open=1`.
+- Admin `/analytics/summary` с действующим header вернул `200` и ненулевые counters: `auditEvents.total=85`, `planView.d1=10`, `focusOpen.d1=4`, `statisticsOpen.d1=6`. `BACK-038` и `ANALYTICS-001` переведены в Done.
