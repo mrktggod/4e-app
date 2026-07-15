@@ -3159,6 +3159,98 @@ function checkTrial(){
   return true;
 }
 
+const OFFLINE_TASK_CACHE_PREFIX='offline_tasks_cache';
+const OFFLINE_TASK_QUEUE_PREFIX='offline_task_queue';
+let offlineSyncInProgress=false;
+function getOfflineUserKey(){return String(currentUser?.id||chatId||'guest').trim()||'guest';}
+function getOfflineTaskCacheKey(){return OFFLINE_TASK_CACHE_PREFIX+':'+getOfflineUserKey();}
+function getOfflineTaskQueueKey(){return OFFLINE_TASK_QUEUE_PREFIX+':'+getOfflineUserKey();}
+function readJsonLocal(key,fallback){
+  try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}
+}
+function writeJsonLocal(key,value){
+  try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}
+}
+function cacheTasksForOffline(tasks){
+  if(!Array.isArray(tasks)) return;
+  writeJsonLocal(getOfflineTaskCacheKey(),{savedAt:Date.now(),tasks});
+}
+function readOfflineTaskCache(){
+  const cached=readJsonLocal(getOfflineTaskCacheKey(),null);
+  return cached&&Array.isArray(cached.tasks)?cached.tasks:null;
+}
+function getOfflineTaskQueue(){
+  const queue=readJsonLocal(getOfflineTaskQueueKey(),[]);
+  return Array.isArray(queue)?queue:[];
+}
+function setOfflineTaskQueue(queue){writeJsonLocal(getOfflineTaskQueueKey(),Array.isArray(queue)?queue:[]);}
+function isOfflineNetworkError(error){
+  if(typeof navigator!=='undefined'&&navigator.onLine===false) return true;
+  const message=String(error?.message||error||'').toLowerCase();
+  return /failed to fetch|networkerror|load failed|нет соединения|network request failed/.test(message);
+}
+function applyOfflineTaskMutationToList(list,actionName,payload){
+  const tasks=Array.isArray(list)?list.slice():[];
+  if(actionName==='save-task'){
+    const task={...(payload?.task||{})};
+    if(!task.id) task.id='offline_'+Date.now();
+    task._offlineQueued=true;
+    const idx=tasks.findIndex(item=>String(item.id)===String(task.id));
+    if(idx>=0) tasks[idx]={...tasks[idx],...task};
+    else tasks.unshift(task);
+    return tasks;
+  }
+  const taskId=String(payload?.taskId||payload?.task?.id||'');
+  if(!taskId) return tasks;
+  if(actionName==='delete-task') return tasks.filter(task=>String(task.id)!==taskId);
+  const idx=tasks.findIndex(task=>String(task.id)===taskId);
+  if(idx<0) return tasks;
+  if(actionName==='done-task') tasks[idx]={...tasks[idx],done:true,status:'done',doneAt:Date.now(),_offlineQueued:true};
+  if(actionName==='update-task') tasks[idx]={...tasks[idx],...(payload?.updates||{}),_offlineQueued:true};
+  return tasks;
+}
+function applyOfflineQueueToTasks(tasks,queue){
+  return (Array.isArray(queue)?queue:getOfflineTaskQueue()).reduce(function(list,item){
+    return applyOfflineTaskMutationToList(list,item.actionName,item.payload);
+  },Array.isArray(tasks)?tasks.slice():[]);
+}
+function queueOfflineTaskMutation(actionName,payload){
+  const queue=getOfflineTaskQueue();
+  queue.push({id:'offline_'+Date.now()+'_'+Math.random().toString(36).slice(2),actionName,payload,createdAt:Date.now()});
+  setOfflineTaskQueue(queue);
+  allTasksCache=applyOfflineTaskMutationToList(allTasksCache,actionName,payload);
+  cacheTasksForOffline(allTasksCache);
+  showToast('Нет соединения: сохранил локально, синхронизирую позже');
+  return {ok:true,offlineQueued:true};
+}
+async function processOfflineTaskQueue(){
+  if(offlineSyncInProgress||!getToken()||(typeof navigator!=='undefined'&&navigator.onLine===false)) return;
+  const queue=getOfflineTaskQueue();
+  if(!queue.length) return;
+  offlineSyncInProgress=true;
+  const remaining=[];
+  let synced=0;
+  try{
+    for(const item of queue){
+      try{
+        const res=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':item.actionName},body:JSON.stringify(item.payload)});
+        const data=await readJsonSafe(res);
+        if(!res.ok||data.ok===false) throw new Error(data.error||'offline sync failed');
+        synced++;
+      }catch(e){
+        remaining.push(item);
+      }
+    }
+    setOfflineTaskQueue(remaining);
+    if(synced&&remaining.length===0){
+      showToast('Офлайн-изменения синхронизированы');
+      await loadTasks();
+    }
+  }finally{
+    offlineSyncInProgress=false;
+  }
+}
+
 async function loadTasks(){
   // Init date
   const dateEl = document.getElementById('home-date');
@@ -3181,8 +3273,20 @@ async function loadTasks(){
     slider.innerHTML = html;
   }
   try{
-    const res=await fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()});
-    const tasks=await res.json();
+    let tasks=[];
+    try{
+      await processOfflineTaskQueue();
+      const res=await fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()});
+      if(!res.ok) throw new Error('tasks fetch failed');
+      tasks=await res.json();
+      tasks=applyOfflineQueueToTasks(tasks);
+      cacheTasksForOffline(tasks);
+    }catch(fetchError){
+      const cached=readOfflineTaskCache();
+      if(!cached) throw fetchError;
+      tasks=applyOfflineQueueToTasks(cached);
+      showToast('Офлайн-режим: показываю последний сохранённый план');
+    }
     const active=(tasks||[]).filter(t=>!t.done);
     const done=(tasks||[]).filter(t=>t.done);
     const outgoing=active.filter(t=>t.direction!=='incoming');
@@ -5104,10 +5208,17 @@ async function confirmTaskChatActions(messageId){
 }
 
 async function postTaskChatMutation(actionName, payload){
-  const r=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':actionName},body:JSON.stringify(payload)});
-  const d=await readJsonSafe(r);
-  if(!r.ok||d.ok===false) throw new Error(d.error||'Не удалось обновить задачу');
-  return d;
+  try{
+    const r=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':actionName},body:JSON.stringify(payload)});
+    const d=await readJsonSafe(r);
+    if(!r.ok||d.ok===false) throw new Error(d.error||'Не удалось обновить задачу');
+    return d;
+  }catch(e){
+    if(['save-task','update-task','done-task','delete-task'].includes(actionName)&&isOfflineNetworkError(e)){
+      return queueOfflineTaskMutation(actionName,payload);
+    }
+    throw e;
+  }
 }
 
 async function applyTaskChatAction(action){
@@ -5502,15 +5613,7 @@ async function saveTaskEdits(){
   // Save to KV via Worker
   try{
     // Re-save the whole tasks array
-    await fetch(WORKER, {
-      method: 'POST',
-      headers: {...authHeaders(), 'x-action': 'update-task'},
-      body: JSON.stringify({
-        chatId,
-        taskId: currentDetailTask.id,
-        updates
-      })
-    });
+    await postTaskChatMutation('update-task',{chatId,taskId:currentDetailTask.id,updates});
 
     // If reminder set — send to bot
     if(currentDetailReminder !== 'none'){
@@ -5875,16 +5978,11 @@ function buildDuplicateMergeUpdates(existingTask,newTask){
 
 async function saveTaskToWorker(task){
   try {
-    const res = await fetch(WORKER, {
-      method: 'POST',
-      headers: {...authHeaders(), 'x-action': 'save-task'},
-      body: JSON.stringify({chatId, task})
-    });
-    const data = await res.json().catch(()=>({}));
-    if(!res.ok || data.ok === false) throw new Error(data.error || 'save-task failed');
+    const data = await postTaskChatMutation('save-task',{chatId, task});
+    if(data.ok === false) throw new Error(data.error || 'save-task failed');
     if(typeof loadTasks === 'function') await loadTasks();
     recordAdaptiveActivity('task_create',1.25);
-    return {ok:true, merged:false, taskId:task.id};
+    return {ok:true, merged:false, taskId:task.id, offlineQueued:!!data.offlineQueued};
   } catch(e) {
     console.error('saveTaskToWorker:', e);
     showToast?.('Ошибка создания задачи');
@@ -6387,6 +6485,7 @@ function showToast(msg,type){
   });
   toastHideTimer=setTimeout(()=>t.classList.remove('show'),2200);
 }
+window.addEventListener('online',function(){processOfflineTaskQueue().catch(()=>{});});
 function toggleTheme(){
   const current=document.documentElement.getAttribute('data-theme')||'dark';
   const next=current==='dark'?'light':'dark';

@@ -242,3 +242,7 @@
 ## BACK-037 CI/API smoke source QA — 2026-07-16
 
 - `BACK-037` закрыт: `api-smoke.yml` запускает `npm run api-smoke`, smoke script покрывает auth/tasks/share/transcribe negative path, а `path-guard.yml` гоняет portable path, encoding и UI architecture guards с установленным `ripgrep`.
+
+## BACK-057 offline free mode MVP — 2026-07-16
+
+- `BACK-057` продвинут до `Partial Done`: localStorage-кэш задач и очередь `save/update/done/delete` работают через общий mutation path; при возврате сети queued-изменения синхронизируются. До полного Done остаются visible sync status, Free-лимиты, offline AI draft и Premium Sync.

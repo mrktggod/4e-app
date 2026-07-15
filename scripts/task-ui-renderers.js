@@ -174,7 +174,7 @@ async function handleTaskReschedule(taskId,value){
     setTimeout(loadTasks,400);
   }catch(e){console.log(e);showToast('Не удалось перенести срок');if(shell)shell.style.opacity='';}
 }
-async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});recordAdaptiveActivity('task_done',2);showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
+async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{if(typeof postTaskChatMutation==='function'){await postTaskChatMutation('done-task',{chatId,taskId});}else{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});}recordAdaptiveActivity('task_done',2);showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
 
 function setNavActive(id){
   document.querySelectorAll('.nav-item,.nav-mic,.nav-mic-v2').forEach(n=>n.classList.remove('active'));

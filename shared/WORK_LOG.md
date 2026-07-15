@@ -8818,3 +8818,9 @@
 **Задача:** BACK-037 — подтвердить CI и API smoke без нового ручного запуска.
 **Результат:** Source QA подтвердил `.github/workflows/api-smoke.yml` на PR/main и `scripts/api-smoke.mjs`: reset-password empty/invalid, register/login/auth-me, two-user Telegram link/share-flow, tasks create/list/done/delete, optional SMART-013 decomposition и `transcribe(no-file)`. `path-guard.yml` ставит `ripgrep` на runner и гоняет portable paths, doc encoding и UI architecture guard. Более ранний WORK_LOG уже содержит успешный staging run против `restless-lab-d737-staging` от 2026-07-07.
 **Статус:** Done для `BACK-037`.
+
+## 2026-07-16 — BACK-057 offline free mode MVP
+
+**Задача:** BACK-057 — начать бесплатный offline-mode без ручных секретов и без смены платёжной модели.
+**Результат:** В `index.html` добавлен user-scoped localStorage-кэш задач и очередь офлайн-мутаций `save-task/update-task/done-task/delete-task`. `loadTasks()` при сетевой ошибке показывает последний сохранённый план и накладывает queued-изменения поверх кэша. `postTaskChatMutation()` теперь ставит поддержанные task mutations в очередь при network error, а `online` event запускает синхронизацию. `saveTaskToWorker()` и `saveTaskEdits()` используют общий mutation path, а `markDoneKV()` из `scripts/task-ui-renderers.js` больше не обходит offline queue прямым `fetch`.
+**Статус:** `BACK-057` переведён в `Partial Done`: MVP cache+queue готов, но карточный статус `ждёт синхронизации`, Free-лимиты, offline AI draft и Premium Sync ещё не реализованы.
