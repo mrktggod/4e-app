@@ -8555,3 +8555,15 @@
 **Проверка:** повторный live smoke на `https://1103d926.4-ai-staging.pages.dev` показывает `navHidden=true` и `overlap=0` и до, и после отправки сообщения; composer остаётся видимым и кликабельным над местом нижнего меню.
 
 **Следующий шаг:** ручной QA по AI-чату вести уже против `https://1103d926.4-ai-staging.pages.dev`, а не alias `https://4-ai-staging.pages.dev`, потому что alias у этого проекта уже не раз отставал от свежего Pages deploy.
+
+## 2026-07-15 - staging admin smoke for BACK-059 and analytics summary
+
+**Задача:** с живым staging `ADMIN_SECRET` добить два старых хвоста: `/analytics/summary` end-to-end для `BACK-038 / ANALYTICS-001` и expired-path smoke для `BACK-059`, не рефакторя entitlement/payment код.
+
+**Результат:** `ADMIN_SECRET` как таковой больше не blocker. `GET /analytics/summary` на staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev` отвечает `200`, а не `401`. Но сам e2e оказался красным: fresh staging account успешно отправляет `plan-view`, `focus-open`, `statistics-open` в `/analytics/lite-event` (все три запроса `200 {"ok":true}`), а summary до и после smoke не меняется совсем — `auditEvents.total = 0`, а `summary.activation.dailyValue.planView/focusOpen/statisticsOpen` остаются `0`. Это заведено как `BUG-2026-07-15-003`, а статусы `BACK-038` и `ANALYTICS-001` переведены из `Ready for QA` в `Blocked`.
+
+**Результат:** Для `BACK-059` сама entitlement-логика в эту сессию не опровергнута, но staging не дал подготовить expired fixture честным admin-only способом. `GET /admin/users` с секретом вернул 67 users и `expiredCount = 0`. Текущий `PUT /admin/users/:id/plan` умеет только двигать срок вперёд через positive `days`, а `trialDays` в `/admin/tariff-config` и dev-seed `accessDays` нормализуются через positive integer fallback, так что сделать свежего expired-user обратимо через существующий admin API нельзя. Это оформлено как `BUG-2026-07-15-004`, а `BACK-059` переведён в `Blocked` именно на fixture-path, без самовольной правки worker-кода.
+
+**Безопасность:** секрет нигде не записывался в файлы проекта, не коммитился и использовался только как runtime header `x-admin-secret: <redacted>` в живых запросах.
+
+**Следующий шаг:** чтобы закрыть `BACK-059`, нужен либо узкий admin fixture path для expired entitlement, либо заранее подготовленный истёкший staging-account; чтобы закрыть `ANALYTICS-001`, нужно починить доставку `recordAuditEvent()` -> `audit_events`/summary read path, потому что UI и endpoint уже доходят до `200`.
