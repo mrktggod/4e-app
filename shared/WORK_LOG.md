@@ -8710,3 +8710,9 @@
 **Задача:** Синхронизировать статус `BUG-2026-07-15-004` с уже закрытым `BACK-059`.
 **Результат:** `BACK-059` уже находится в `Done` после staging negative tests через reversible expired fixture: premium-path возвращали `403` после `mode=apply` и восстанавливались после `mode=revert`. Связанный bug про отсутствие fixture path переведён из `Ready for QA` в `Done`, без изменений кода.
 **Статус:** Done для `BUG-2026-07-15-004`.
+
+## 2026-07-15 — bug status closeout from existing live smoke evidence
+
+**Задача:** Закрыть bug-строки, где live-smoke evidence уже записан в `pm/bugs.md`, но статус оставался `Ready for QA`.
+**Результат:** В `Done` переведены: `BUG-2026-07-14-004` (AI quick action statistics no validation error), `BUG-2026-07-15-001` (AI chat task-first creates task before clarification), `BUG-2026-07-15-002` (ask composer no longer overlaps bottom nav), `BUG-2026-07-14-003` (`/auth/telegram` no longer throws Worker 1101). Новых runtime-изменений нет; это синхронизация статусов с уже записанными staging/live smoke результатами.
+**Статус:** Done для четырёх bug-строк.

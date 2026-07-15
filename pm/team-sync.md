@@ -169,3 +169,7 @@
 ## BACK-059 bug-status sync — 2026-07-15
 
 - `BACK-059` уже был `Done` по staging negative tests через reversible expired fixture. Документальная рассинхронизация закрыта: `BUG-2026-07-15-004` переведён в `Done` без изменений runtime-кода.
+
+## Bug status closeout from existing live smoke — 2026-07-15
+
+- По уже записанным live-smoke результатам закрыты `BUG-2026-07-14-004`, `BUG-2026-07-15-001`, `BUG-2026-07-15-002`, `BUG-2026-07-14-003`. Ручные хвосты вроде profile mobile, bottom-nav width, after-22 copy и Telegram fallback не тронуты.
