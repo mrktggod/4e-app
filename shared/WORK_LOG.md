@@ -8752,3 +8752,9 @@
 **Задача:** Сверить старый bug про растянутую нижнюю панель браузера.
 **Результат:** `BACK-046` уже находится в `Done` в backlog. Source-check подтвердил текущий desktop/web override: `#app` центрируется и ограничивается `max-width:430px`, `.bottom-nav-v2` получает `left:50%`, `transform:translateX(-50%)`, `width:min(100%,430px)`, а `#global-nav` — `width:min(calc(100vw - 28px),402px)`. Это закрывает исходный сценарий, где nav растягивался на ширину browser viewport.
 **Статус:** `BUG-2026-07-05-001` переведён в `Done`; runtime-код не менялся.
+
+## 2026-07-16 — BACK-055 notifications action-feed source QA
+
+**Задача:** Закрыть `BACK-055` без ручного smoke, если source path покрывает DoD.
+**Результат:** Source QA подтвердил реализацию в `scripts/task-ui-renderers.js`: `openNotifications()`/`loadNotifications()` грузят `/notifications`; фильтры и спокойные empty states есть; `getNotifTaskId()` нормализует `taskId`, `task_id`, `relatedTaskId`, `related_task_id`, `task.id`; action buttons показывают только возможные действия. Для task-linked уведомлений есть `К задаче` -> `openTaskById()`, `Готово` -> `markDoneKV()`, `Отложить` -> snooze menu `15 мин / 1 час / 3 часа / Завтра` и `update-task`; waiting-like payload получает `Написать`. Уведомления без `taskId` получают безопасный `Понятно`/fallback без невозможных действий.
+**Статус:** Done для `BACK-055`; runtime-код не менялся.

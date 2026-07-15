@@ -42,7 +42,7 @@
 | Единая модель пользователя | VK + TG + Email в одном профиле | P1 | Done |
 | Миграция хранилища | KV → D1 | P2 | Done |
 | Продакшн email | Домен 4-ai.site верифицирован в Resend, FROM: noreply@4-ai.site | P1 | Done |
-| AI-планерный дашборд | BACK-025 — утренний AI-дашборд в стиле "План на сегодня"; BACK-055 — уведомления как лента внимания; BACK-056 — убрать отрицательное время после 22:00 | P1 | BACK-025 Done; BACK-055 Todo; BACK-056 Done |
+| AI-планерный дашборд | BACK-025 — утренний AI-дашборд в стиле "План на сегодня"; BACK-055 — уведомления как лента внимания; BACK-056 — убрать отрицательное время после 22:00 | P1 | BACK-025 Done; BACK-055 Done; BACK-056 Done |
 | Качество задач | Фаза 11 — относительные даты в карточках задач; BACK-019 — улучшенные карточки в списке; BACK-022 — ручной MVP детальной карточки задачи; BACK-044 — упрощение детальной карточки | P1 | BACK-022 Done; BACK-044 Done; BACK-019 Ready for QA |
 | Доступ и авторизация | BACK-024 — Telegram вход не должен упираться в тупиковую подсказку между Mini App и ботом; BACK-036 — web fallback Telegram-входа без `tg://resolve`; BACK-041 — bot-side возврат на сайт из `/start auth_*` | P1 | BACK-024 Done; BACK-036 Ready for QA; BACK-041 Ready for QA |
 | Голосовой ввод | BACK-021 — MediaRecorder + Whisper вместо SpeechRecognition (фикс BUG-2026-06-29-002, iOS) | P1 | Triaged |
