@@ -246,3 +246,7 @@
 ## BACK-057 offline free mode MVP — 2026-07-16
 
 - `BACK-057` продвинут до `Partial Done`: localStorage-кэш задач и очередь `save/update/done/delete` работают через общий mutation path; при возврате сети queued-изменения синхронизируются. Queued-задачи показывают `ждёт синхронизации` в home meta и task-card badge. До полного Done остаются Free-лимиты, offline AI draft и Premium Sync.
+
+## VIRAL-001 share card MVP — 2026-07-16
+
+- `VIRAL-001` продвинут до `Partial Done`: home получила кнопку `Поделиться планом дня`, canvas генерирует PNG-карточку 1080x1350 с метриками/top задачами/watermark, native share используется при поддержке, иначе fallback на download. Live VK/TG share smoke остаётся ручным.
