@@ -238,3 +238,7 @@
 ## VIRAL-002 referral source QA — 2026-07-16
 
 - `VIRAL-002` закрыт по source QA: frontend строит/копирует referral link и показывает counter; worker начисляет +30 дней обоим, увеличивает `referralCount`, отдаёт code/count в `publicUser()` и принимает `ref` во всех auth paths.
+
+## BACK-037 CI/API smoke source QA — 2026-07-16
+
+- `BACK-037` закрыт: `api-smoke.yml` запускает `npm run api-smoke`, smoke script покрывает auth/tasks/share/transcribe negative path, а `path-guard.yml` гоняет portable path, encoding и UI architecture guards с установленным `ripgrep`.

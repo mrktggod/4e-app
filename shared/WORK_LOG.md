@@ -8812,3 +8812,9 @@
 **Задача:** VIRAL-002 — подтвердить реферальную ссылку, +30 дней обоим и счётчик приглашений.
 **Результат:** Source QA подтвердил полный path: frontend принимает `ref/referral/invite`, сохраняет pending referral, строит ссылку через `PLATFORM.buildReferralLink()`, показывает её в профиле и копирует через `copyReferralLink()`. Worker держит `REFERRAL_BONUS_DAYS=30`; `applyReferralReward()` начисляет бонус invited user и inviter, увеличивает `referralCount`, защищается от self-referral/replay, а `publicUser()` отдаёт `referralCode/referralCount`. `ref` проходит через email register, OAuth, Telegram auth и VK auth.
 **Статус:** Done для `VIRAL-002`; live referral smoke не выполнялся.
+
+## 2026-07-16 — BACK-037 CI/API smoke source QA
+
+**Задача:** BACK-037 — подтвердить CI и API smoke без нового ручного запуска.
+**Результат:** Source QA подтвердил `.github/workflows/api-smoke.yml` на PR/main и `scripts/api-smoke.mjs`: reset-password empty/invalid, register/login/auth-me, two-user Telegram link/share-flow, tasks create/list/done/delete, optional SMART-013 decomposition и `transcribe(no-file)`. `path-guard.yml` ставит `ripgrep` на runner и гоняет portable paths, doc encoding и UI architecture guard. Более ранний WORK_LOG уже содержит успешный staging run против `restless-lab-d737-staging` от 2026-07-07.
+**Статус:** Done для `BACK-037`.

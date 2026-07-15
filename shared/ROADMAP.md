@@ -73,7 +73,7 @@
 | Слияние аккаунтов | BACK-026 — поиск существующего профиля по telegramId/vkId/email, перенос задач (механика существовала раньше, подтверждена ревью). BACK-051 — тост-уведомление после слияния. Предпосылка рефералок | P1 | BACK-026 Done (2026-07-06); BACK-051 Done |
 | Авторизация через сервисы РФ | BACK-045 — VK ID + Яндекс ID OAuth готовы и задеплоены на staging; ждут реальных client_id/secret от Юрия для live smoke | P1 | Ready for QA |
 | Активация | ONBOARD-001 — первый AI-план за 60 секунд: пользователь создаёт 3 задачи и сразу видит полезный план дня | P1 | Todo |
-| CI и смоук-тесты | BACK-037 — GitHub Actions: проверка кодировки, линт, минификация; `api-smoke` покрывает auth/tasks CRUD/transcribe, staging smoke пройден | P2 | Ready for QA |
+| CI и смоук-тесты | BACK-037 — GitHub Actions: проверка кодировки, UI/portable guards и `api-smoke` для auth/tasks CRUD/transcribe; staging smoke пройден | P2 | Done |
 | Аналитика | BACK-038 — события (вход, задача, шеринг) + D1/D7 retention; `/analytics/summary` закрыт `ADMIN_SECRET`, убран из личного экрана статистики | P2 | Done |
 | Данные в России | Перенос ПД в Yandex Cloud PostgreSQL | P1 | Manual blocker — ждёт Yandex Cloud PostgreSQL от Алексея |
 | Premium trust positioning | Обсудить с Claude Юры, как безопасность, приватность и контроль данных становятся частью дорогого позиционирования 4 | P1 | Ready for discussion |
@@ -187,4 +187,3 @@
 | Большой рефакторинг CSS до завершения редизайна и правовых задач | Фундамент запланирован на Горизонт 0.8 |
 | Наращивать inline UI-код в `index.html`/`vk.html` | Это ухудшает кеширование, скорость правок и поддержку; новый UI должен идти через LESS + JS |
 | Разгонять новые каналы до beta gate | MAX, RuStore, native, виджеты и email/browser sources усиливают продукт позже, но до первых активных пользователей важнее доказать ежедневную ценность "штаба дня" |
-
