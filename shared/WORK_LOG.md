@@ -21,6 +21,16 @@
 
 ### 2026-07-15 — Codex
 
+**Задача:** BACK-034 staging contour closeout
+**Результат:** Проверен live staging contour без production/main: direct Pages `https://88193776.4-ai-staging.pages.dev` отдаёт 200 и содержит `restless-lab-d737-staging.shelckograff.workers.dev`, alias `https://4-ai-staging.pages.dev/` сейчас тоже смотрит в staging worker, staging worker root возвращает `200 OK`. Это закрывает техническую часть staging Pages + staging worker + alias/current deploy routing.
+**Коммит:** pending
+**Статус:** BACK-034 Done
+**Следующий шаг:** для будущих QA по-прежнему предпочтителен прямой fresh deploy URL, потому что alias исторически мог отставать.
+
+---
+
+### 2026-07-15 — Codex
+
 **Задача:** Close HOME-covered legacy NEW issues
 **Результат:** На `https://88193776.4-ai-staging.pages.dev` fresh staging user с 3 задачами подтвердил, что старые home-проблемы, покрытые `HOME-001`, больше не воспроизводятся: `NEW-010` — на главном экране нет старых кнопок `Завершить`, вместо них top-3 priority rows; `NEW-011` — home разбит на focus, 4 metric cards и отдельные readable rows шириной 324px; `NEW-013` — focus copy короткий: `3 задачи требуют внимания` + короткая подпись.
 **Коммит:** pending

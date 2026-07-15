@@ -74,6 +74,12 @@
 
 ## Изменения по проекту
 
+### BACK-034 staging contour — 2026-07-15
+
+**Статус:** Done
+**Проверено:** direct Pages `https://88193776.4-ai-staging.pages.dev` and alias `https://4-ai-staging.pages.dev/` both resolve to staging worker in live HTML; `https://restless-lab-d737-staging.shelckograff.workers.dev/` returns `200 OK`.
+
+
 ### HOME-covered legacy NEW closeout — 2026-07-15
 
 **Статус:** Закрыто на staging
