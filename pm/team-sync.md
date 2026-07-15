@@ -118,3 +118,10 @@
 
 **Статус:** Done
 **Что подтверждено:** после second-pass worker fix `f9e840a` и staging deploy Юрий прогнал signed smoke с реальным `BOT_TOKEN`: signed `get-chat-members` вернул `200 {"ok":true,"members":[]}`. В паре с уже подтверждённым unsigned `403` это закрывает `BACK-060`.
+
+### Payment provider P0 recheck — 2026-07-15
+
+**Статус:** CloudPayments Done, Telegram Stars Ready for QA
+**Что подтверждено:** повторный autonomous staging smoke прогнан с правильным provider wire-format. CloudPayments form-urlencoded callback с валидным `Content-HMAC` подтвердил positive activation, `badAmount -> 400 {"code":11}` и replay без повторного продления. Telegram Stars signed completion со строковым `invoice_payload` подтвердил positive activation, wrong amount rejection и replay `duplicate:true`.
+**Почему статусы изменились:** прежние красные результаты были артефактами synthetic smoke: CloudPayments отправлялся JSON body вместо CloudPayments form callback, а Stars `payload` отправлялся объектом `{ invoiceId }` вместо строки, которую реально шлёт Telegram bot (`payment.invoice_payload`).
+**Остаток:** для `BACK-010` реальная покупка Stars в Telegram всё ещё не выполнялась, поэтому статус не `Done`, а `Ready for QA`.

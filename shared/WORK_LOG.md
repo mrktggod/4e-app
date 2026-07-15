@@ -8636,3 +8636,15 @@
 **Результат:** `BACK-060` закрыт полностью после ручного signed smoke Юрия на staging. Уже подтверждённый negative path остался зелёным (`unsigned get-chat-members -> 403 {"ok":false,"error":"bot signature invalid"}`), а signed happy-path теперь также подтверждён: `signed get-chat-members -> 200 {"ok":true,"members":[]}`.
 
 **Статус:** `BACK-060` переведён из `Ready for QA` в `Done`.
+
+## 2026-07-15 - payment provider P0 smoke recheck
+
+**Задача:** перепроверить `BACK-004` и `BACK-010` после закрытия `BACK-060`, без новых ручных действий и без production deploy.
+
+**Результат:** новый staging smoke показал, что provider completion-path уже работает при правильном wire-format. Для CloudPayments callback должен идти как `application/x-www-form-urlencoded` с `Content-HMAC` по raw form body; предыдущий красный synthetic smoke отправлял JSON и поэтому не доказывал реальный provider path. В корректном формате positive callback вернул `200 {"code":0}` и поднял entitlement, bad amount вернул `400 {"code":11}` без изменения entitlement, replay вернул `200 {"code":0}` без повторного продления. `BACK-004` переведён в `Done`.
+
+**Результат:** Telegram Stars backend completion также перепроверен через fresh invoice creation и signed completion со строковым Telegram `invoice_payload`. Positive вернул `200` и поднял entitlement, wrong amount вернул `400 telegram stars amount mismatch`, replay вернул `200 duplicate:true` без повторного продления. Предыдущий `invoice not found` был вызван synthetic payload shape, где `payload` отправлялся объектом `{ invoiceId }`, а реальный bot отправляет `payment.invoice_payload` строкой. `BACK-010` возвращён в `Ready for QA`: backend P0 зелёный, но реальная покупка Stars в Telegram не прогонялась.
+
+**Статус:** mixed
+- `BACK-004` -> `Done`
+- `BACK-010` -> `Ready for QA`
