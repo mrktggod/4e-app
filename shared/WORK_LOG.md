@@ -8776,3 +8776,9 @@
 **Задача:** BACK-028 — закрыть вкладку статистики результативности без ручного smoke, если source path покрывает DoD.
 **Результат:** Source/runtime check подтвердил, что `openStatistics()` вызывает `loadStats(...)` по всем задачам из `allTasksCache`, а экран содержит общий прогресс, недельный график, активные задачи, блок обещаний, историю выполненных и советы 4. Дополнительно исправлен видимый mojibake стрелки периода в заголовках статистики: `в–ѕ` заменён на HTML-entity `&#9662;`.
 **Статус:** Done для `BACK-028`; live visual smoke не выполнялся.
+
+## 2026-07-16 — BACK-032 task chat/comments source QA
+
+**Задача:** BACK-032 — подтвердить отдельный чат задачи с 4, комментарии и сохранение истории.
+**Результат:** Source QA подтвердил фронт и worker: task-detail имеет вкладку `Обсудить задачу`, поле комментария и `addDetailComment()`; комментарий пользователя сохраняется через `/messages/task`, AI-ответ приходит через `/anthropic`, затем assistant reply/actions сохраняются тем же endpoint и отображаются в обсуждении и timeline истории. В worker `GET/POST /messages/task` проверяют ownership задачи через `resolveTaskForSession`, читают/пишут KV-историю по user/task key и ограничивают её `MAX_TASK_MESSAGES_PER_CHAT=80`.
+**Статус:** Done для `BACK-032`; live smoke не выполнялся.

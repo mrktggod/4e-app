@@ -214,3 +214,7 @@
 ## BACK-028 productivity statistics source QA — 2026-07-16
 
 - `BACK-028` закрыт по source/runtime check: статистика считает прогресс и недельный график по `allTasksCache`, показывает активные задачи, обещания, выполненные/историю и советы 4. Заодно поправлен видимый mojibake стрелки периода в stats header через HTML-entity.
+
+## BACK-032 task chat/comments source QA — 2026-07-16
+
+- `BACK-032` закрыт по source QA без runtime-изменений: фронт task-detail отправляет user comment, получает AI reply/actions и сохраняет обе стороны через `/messages/task`; worker authenticated endpoint проверяет ownership задачи и хранит bounded KV history.
