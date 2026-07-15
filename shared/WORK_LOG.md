@@ -19,6 +19,16 @@
 
 ---
 
+### 2026-07-15 — Codex
+
+**Задача:** Fresh staging deploy + headless smoke по Ready for QA UI-пунктам
+**Результат:** Найдено, что текущий код уже содержит auth-fix для `buildReferralLink`, но прежний direct Pages deployment `https://c4b8195f.4-ai-staging.pages.dev` всё ещё отдавал старый runtime и падал после успешного `/auth/me`. Выполнен fresh deploy Cloudflare Pages project `4-ai-staging` на `https://44ccd355.4-ai-staging.pages.dev`. После deploy headless browser smoke с новым staging user и seeded real tasks подтвердил: auth shell открывает `home`, `HOME-001` базово рендерит top-3/focus, `NEW-014` focus overlay открывается, `NEW-015` meta строка содержит направление/дату/дедлайн, `NEW-002` statistics и active CTA работают, `NEW-009` ask quick actions видимы и wired, `NEW-021` calendar default `Все дедлайны` заполнен без выбора дня. Для `BACK-056` подтверждён только обычный smoke без harsh copy; after-22 сценарий оставлен Ready for QA.
+**Коммит:** pending
+**Статус:** Done для `NEW-002/009/014/015/021`; `HOME-001` и `BACK-056` остаются Ready for QA с уточнённым остатком
+**Следующий шаг:** ручной визуальный QA `HOME-001` в светлой/тёмной теме и after-22/time-mocked QA для `BACK-056`.
+
+---
+
 ### 2026-07-14 — Codex
 
 **Задача:** Automated QA smoke по Ready for QA против staging

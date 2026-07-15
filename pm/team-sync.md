@@ -1,6 +1,6 @@
 ﻿# Team Sync
 
-Обновлено: 2026-07-14
+Обновлено: 2026-07-15
 
 Источник правды: GitHub + этот файл. Подробности живут в `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `shared/WORK_LOG.md` и `DEVELOPMENT_LOG.md`.
 
@@ -73,6 +73,15 @@
 **Следующий шаг:** считать `INFRA-005` закрытым, а если понадобится — отдельно записать/подтвердить новый production VK URL из кабинета VK Mini Apps.
 
 ## Изменения по проекту
+
+### UI Ready-for-QA smoke — 2026-07-15
+
+**Статус:** Частично закрыто, без production/main
+**Контекст:** Старый direct Pages deployment `https://c4b8195f.4-ai-staging.pages.dev` ещё отдавал runtime с `ReferenceError: buildReferralLink is not defined`, хотя текущий `origin/feat/admin-tariff-api` уже содержал фикс.
+**Что сделано:** Выполнен fresh deploy staging Pages project `4-ai-staging` на `https://44ccd355.4-ai-staging.pages.dev` и headless browser smoke с новым staging user + seeded real tasks.
+**Что подтверждено:** `AUTH-SHELL`, `NEW-002`, `NEW-009`, `NEW-014`, `NEW-015`, `NEW-021` зелёные на live staging. `HOME-001` базово зелёный по auth/home/top-3/focus, но оставлен Ready for QA до ручного visual pass в обеих темах. `BACK-056` smoke-only зелёный, но after-22 сценарий не мокался.
+**Что важно для QA:** использовать прямой URL `https://44ccd355.4-ai-staging.pages.dev`, alias `https://4-ai-staging.pages.dev/` может отставать.
+
 
 ### Ручные секреты Юрия — 2026-07-14
 
