@@ -8824,3 +8824,5 @@
 **Задача:** BACK-057 — начать бесплатный offline-mode без ручных секретов и без смены платёжной модели.
 **Результат:** В `index.html` добавлен user-scoped localStorage-кэш задач и очередь офлайн-мутаций `save-task/update-task/done-task/delete-task`. `loadTasks()` при сетевой ошибке показывает последний сохранённый план и накладывает queued-изменения поверх кэша. `postTaskChatMutation()` теперь ставит поддержанные task mutations в очередь при network error, а `online` event запускает синхронизацию. `saveTaskToWorker()` и `saveTaskEdits()` используют общий mutation path, а `markDoneKV()` из `scripts/task-ui-renderers.js` больше не обходит offline queue прямым `fetch`.
 **Статус:** `BACK-057` переведён в `Partial Done`: MVP cache+queue готов, но карточный статус `ждёт синхронизации`, Free-лимиты, offline AI draft и Premium Sync ещё не реализованы.
+
+**Дополнение:** Queued-задачи теперь имеют видимый статус `ждёт синхронизации` в home meta и маленький badge в task-card, чтобы пользователь понимал, что изменение сохранено локально и ждёт сети.

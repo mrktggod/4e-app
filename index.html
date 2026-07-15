@@ -3992,7 +3992,8 @@ function getHomePriorityMeta(task){
   const createdLabel=createdTs!==null
     ? ('поставлена ' + formatRelativeTaskDate(new Date(createdTs),{deadline:false}))
     : 'поставлена недавно';
-  return [directionLabel,createdLabel,'дедлайн ' + deadlineLabel].join(' · ');
+  const syncLabel=task?._offlineQueued?'ждёт синхронизации':'';
+  return [directionLabel,createdLabel,'дедлайн ' + deadlineLabel,syncLabel].filter(Boolean).join(' · ');
 }
 
 function renderHomePriorityCard(task,index,options={}){

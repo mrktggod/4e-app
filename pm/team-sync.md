@@ -245,4 +245,4 @@
 
 ## BACK-057 offline free mode MVP — 2026-07-16
 
-- `BACK-057` продвинут до `Partial Done`: localStorage-кэш задач и очередь `save/update/done/delete` работают через общий mutation path; при возврате сети queued-изменения синхронизируются. До полного Done остаются visible sync status, Free-лимиты, offline AI draft и Premium Sync.
+- `BACK-057` продвинут до `Partial Done`: localStorage-кэш задач и очередь `save/update/done/delete` работают через общий mutation path; при возврате сети queued-изменения синхронизируются. Queued-задачи показывают `ждёт синхронизации` в home meta и task-card badge. До полного Done остаются Free-лимиты, offline AI draft и Premium Sync.
