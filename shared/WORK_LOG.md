@@ -8746,3 +8746,9 @@
 **Задача:** Сверить старый bug про Enter на email-входе.
 **Результат:** Кодовая проверка подтвердила, что `submitLoginOnEnter(event)` уже реализован, а `platform-adapter.js` навешивает `keydown` на весь `#form-login`: Enter из `#login-email` и `#login-pass` проходит через `PLATFORM.shouldHandleEnterSubmit(event)`, вызывает `submitLoginOnEnter(event)` и далее `doLogin()`, если кнопка входа не disabled.
 **Статус:** `BUG-2026-07-04-003` переведён в `Done`; runtime-код не менялся.
+
+## 2026-07-16 — BUG-2026-07-05-001 bottom nav width status sync
+
+**Задача:** Сверить старый bug про растянутую нижнюю панель браузера.
+**Результат:** `BACK-046` уже находится в `Done` в backlog. Source-check подтвердил текущий desktop/web override: `#app` центрируется и ограничивается `max-width:430px`, `.bottom-nav-v2` получает `left:50%`, `transform:translateX(-50%)`, `width:min(100%,430px)`, а `#global-nav` — `width:min(calc(100vw - 28px),402px)`. Это закрывает исходный сценарий, где nav растягивался на ширину browser viewport.
+**Статус:** `BUG-2026-07-05-001` переведён в `Done`; runtime-код не менялся.

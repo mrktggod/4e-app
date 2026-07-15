@@ -194,3 +194,7 @@
 ## BUG-2026-07-04-003 enter-login status sync — 2026-07-16
 
 - Старый bug про Enter на email-входе закрыт по code path: `#form-login` получает `keydown` listener в `platform-adapter.js`, а `submitLoginOnEnter()` вызывает `doLogin()` из обоих полей. Статус переведён в `Done`.
+
+## BUG-2026-07-05-001 bottom nav width status sync — 2026-07-16
+
+- `BACK-046` уже был `Done`; связанный bug про растянутый bottom-nav закрыт по source-check: app/container и оба nav-варианта ограничены шириной app, а не viewport.
