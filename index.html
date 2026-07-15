@@ -6356,6 +6356,8 @@ function calNav(dir){calDate.setMonth(calDate.getMonth()+dir);renderCalendar();}
 function parseCalendarTaskDeadline(task, fallbackYear){
   const raw=String(getTaskDeadlineValue(task)||'').trim();
   if(!raw) return null;
+  const normalized=parseTaskDate(raw);
+  if(normalized) return normalized;
   const parts=raw.split(/\s+/);
   if(parts.length>=2&&CAL_MONTHS_MAP[parts[1]]!==undefined){
     const year=parts[2]?parseInt(parts[2],10):(fallbackYear||calDate.getFullYear());

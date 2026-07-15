@@ -8527,3 +8527,17 @@
 - BACK-059: expired-account smoke этой ночью не закрыт. Без admin fixture / истёкшего entitlement не удалось честно воспроизвести expired path; оставить как BLOCKED для отдельного QA с подготовленным пользователем.
 - Bot-live retry: отдельный live-bot smoke этой ночью не доведён; нужен локальный runtime с доступным `BOT_TOKEN` в env или отдельное подтверждение через staging bot path.
 - Bot-local runtime follow-up: в `4e-worker` локальный `npm run start` поднимается после нормализации env-имен (`BOT_API_TOKEN -> BOT_TOKEN`, `ANTHROPIC_KEY -> ANTHROPIC_API_KEY`) и печатает `🛡 4 бот запущен...`. Полный live inbound smoke этой ночью всё равно не выполнен, потому что внешний Telegram message/update в сессию не подавался.
+
+## 2026-07-15 - post-QA sprint cleanup (BUG-004 / BUG-005 / bot runtime)
+
+**Задача:** довести post-QA brief после ночного smoke: честно перепроверить `BUG-2026-07-14-004` и `BUG-2026-07-14-005`, не ослабить mojibake-checker, добрать staging proof и ещё раз пройти bot/runtime path без ручных шагов Юрия.
+
+**Результат:** Для `BUG-2026-07-14-004` подтверждён фронтовый root cause: `sendAsk()` слал в Anthropic `messages` из `askHistory` вместе с запрещённым `id`, что и давало `messages.0.id: Extra inputs are not permitted`. В `.tmp-4e-app-publish/index.html` добавлена `sanitizeClaudeMessages()`, staging Pages вручную перелит сначала на `https://b39e029a.4-ai-staging.pages.dev`, затем после календарного фикса на `https://73d33de6.4-ai-staging.pages.dev`; live smoke на свежем URL подтвердил `POST /anthropic -> 200` и отсутствие `validation_error` в браузере.
+
+**Результат:** Для `BUG-2026-07-14-005` подтверждён именно branch-local календарный баг, а не CAL-скоуп. Причина была в том, что calendar path парсил дедлайны отдельной функцией и не понимал относительные строки `сегодня/завтра`, хотя home/statistics уже жили на `parseTaskDate()`. После переключения `parseCalendarTaskDeadline()` на общий parser live smoke с задачей `Smoke calendar task` (`deadline: сегодня`) показал её в календарном блоке `Все дедлайны` как `сегодня / Я — Smoke calendar task`.
+
+**Проверка guard-а:** `scripts/check-cp1251-mojibake.mjs` не ослаблен, а ускорен. Убрано исключение `shared/WORK_LOG.md` из scan-таргетов, вместо дорогого `text.slice(0, offset).split(...)` добавлен предрасчёт `lineStarts` + бинарный поиск номера строки. Smoke-проверка с временным `pm/_mojibake-smoke.md` на заведомо искажённом тестовом токене дала ожидаемый fail (`6 suspicious fragment(s)/token(s)`), после удаления файла checker снова проходит зелёно.
+
+**Бот/runtime:** внешний live inbound message по-прежнему не подтверждён, но bot-path стал честнее. Прямой `getMe` по токену вернул `@Denzel89bot`, а локальный `npm run start` в `4e-worker` реально стартует и печатает `🛡 4 бот запущен...`, если перед запуском сделать mapping `BOT_API_TOKEN -> BOT_TOKEN` и `ANTHROPIC_KEY -> ANTHROPIC_API_KEY`. Это же расхождение env-имён отдельно записано в `pm/team-sync.md`, чтобы не потерять operational root cause.
+
+**Следующий шаг:** короткий ручной QA можно вести уже против `https://73d33de6.4-ai-staging.pages.dev`; для полного bot-live confirmation всё ещё нужен реальный внешний Telegram update/message, которого в эту сессию не было.

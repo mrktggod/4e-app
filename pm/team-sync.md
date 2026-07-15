@@ -82,6 +82,8 @@
 **Контекст:** Юрий вручную обновил Cloudflare secrets для живых smoke-сценариев.  
 **Что выставлено:** `BOT_TOKEN` в production и staging; `VK_ID_CLIENT_ID` и `VK_ID_CLIENT_SECRET` в production.  
 **Что это меняет:** по `BACK-045` VK ID больше не упирается в отсутствие production client credentials; главным внешним блокером для полного live smoke остаются `YANDEX_CLIENT_ID` и `YANDEX_CLIENT_SECRET`.
+**Локальный runtime note для Юрия:** Cloudflare secrets уже не блокер, но локальный `4e-worker` всё ещё расходится по именам env: `src/bot/config.js` ожидает `BOT_TOKEN` и `ANTHROPIC_API_KEY`, а локальный `4e-worker/.dev.vars` сейчас хранит `BOT_API_TOKEN` и `ANTHROPIC_KEY`. Из-за этого `npm run start` падает с `BOT_TOKEN не задан`, пока не сделать явный mapping этих двух переменных или не унифицировать имена.
+**Staging deploy note:** alias `https://4-ai-staging.pages.dev/` может отставать от свежего Pages deploy; для smoke фиксов 2026-07-15 использовался прямой URL `https://73d33de6.4-ai-staging.pages.dev`.
 
 **Roadmap:** обновлялся в нескольких ветках; итог сводится в `shared/ROADMAP.md`.  
 **Backlog:** обновлялся параллельно с roadmap и QA-очередью; итог сводится в `pm/backlog.md`.  
