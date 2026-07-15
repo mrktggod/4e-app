@@ -8788,3 +8788,9 @@
 **Задача:** SMART-008 — подтвердить действия из AI-чата: перенести/закрыть/изменить/показать после подтверждения.
 **Результат:** Source QA подтвердил два action path: общий AI-chat просит Claude добавлять `<task_actions>[...]</task_actions>`, парсит их через `parseAskActionsFromText()`, показывает preview `Предлагаемые действия` и выполняет только после `confirmAskActions()`. Поддержаны `complete`, `reschedule`, `edit`, `remind`, `show`; мутации идут через `done-task`, `update-task`, `setReminderOnWorker()` или локальный `openTask()`. Task-detail chat использует аналогичный preview/confirm через `confirmTaskChatActions()`.
 **Статус:** Done для `SMART-008`; live AI smoke не выполнялся.
+
+## 2026-07-16 — SMART-009 one clarification question
+
+**Задача:** SMART-009 — AI-chat должен задавать максимум один уточняющий вопрос с кнопками, если для задачи не хватает дедлайна или исполнителя.
+**Результат:** Подключён существующий clarification UI к реальному task-creation flow. Теперь при `<create_task>` или fallback task intent без дедлайна/исполнителя `startAskTaskClarification()` заменяет loading bubble на один вопрос с кнопками, сохраняет pending draft в `askHistory`, а `answerAskClarification()` после выбора вызывает `finalizeAskClarifiedTask()` и создаёт задачу. Если не хватает двух полей, задаётся только первый вопрос, чтобы сохранить обещание "максимум один".
+**Статус:** Done для `SMART-009`; live AI smoke не выполнялся.

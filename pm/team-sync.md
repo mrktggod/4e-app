@@ -222,3 +222,7 @@
 ## SMART-008 chat actions source QA — 2026-07-16
 
 - `SMART-008` закрыт по source QA: общий AI-chat и task-detail chat показывают action preview и выполняют действия только после подтверждения; поддержаны `complete/reschedule/edit/remind/show`.
+
+## SMART-009 one clarification question — 2026-07-16
+
+- `SMART-009` закрыт runtime-правкой в `index.html`: при создании задачи из AI-chat без дедлайна/исполнителя показывается один clarification question с кнопками, pending draft сохраняется в `askHistory`, а после выбора создаётся задача.

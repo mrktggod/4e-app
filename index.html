@@ -6060,6 +6060,23 @@ function renderAskClarificationPreview(messageId, clarify){
   return '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:8px">'+e2(clarify.question||'Уточним деталь')+'</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+buttons+'</div></div>';
 }
 
+function startAskTaskClarification(taskData, originalText, bubbleEl){
+  const draft={...(taskData||{})};
+  if(originalText&&!draft.originalMsg) draft.originalMsg=originalText;
+  const clarify=buildAskTaskClarification(draft);
+  if(!clarify) return false;
+  const messageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_clarify');
+  const content='Уточню одну деталь перед созданием задачи.';
+  pendingAskClarification={messageId,taskData:draft,clarify};
+  const html='<div class="md-body">'+parseMarkdown(content)+'</div>'+renderAskClarificationPreview(messageId,clarify);
+  if(bubbleEl) bubbleEl.innerHTML=html;
+  else appendMsg(content,'ai',{messageId,clarify});
+  askHistory.push({id:messageId,role:'assistant',content,clarify,taskData:draft});
+  saveAskHistoryLocal();
+  saveAskMessageRemote('assistant',content);
+  return true;
+}
+
 function appendMsg(text,role,options){
   const opts=options||{};
   const msgs=document.getElementById('ask-msgs');
@@ -6254,22 +6271,37 @@ async function sendAsk(){
     else text=JSON.stringify(d);
 
     let createdTaskText = '';
+    let clarificationQueued = false;
     const taskMatch = text.match(/<create_task>([\s\S]*?)<\/create_task>/);
     if(taskMatch) {
       try {
         const taskData = JSON.parse(taskMatch[1]);
         taskData.originalMsg = v;
-        const result = await createTaskFromChat(taskData);
-        if(result&&result.ok) createdTaskText = result.merged ? 'merged:'+taskData.text : taskData.text;
         text = text.replace(/<create_task>[\s\S]*?<\/create_task>/g, '').trim();
+        if(startAskTaskClarification(taskData,v,lb)){
+          clarificationQueued = true;
+        }else{
+          const result = await createTaskFromChat(taskData);
+          if(result&&result.ok) createdTaskText = result.merged ? 'merged:'+taskData.text : taskData.text;
+        }
       } catch(e) { console.error('parse task json:', e); }
     } else if(looksLikeTaskRequest(v) && !/^ошибка:/i.test(text)) {
       const taskData = fallbackTaskFromText(v);
       if(taskData.text){
         taskData.originalMsg = v;
-        const result = await createTaskFromChat(taskData);
-        if(result&&result.ok) createdTaskText = result.merged ? 'merged:'+taskData.text : taskData.text;
+        if(startAskTaskClarification(taskData,v,lb)){
+          clarificationQueued = true;
+        }else{
+          const result = await createTaskFromChat(taskData);
+          if(result&&result.ok) createdTaskText = result.merged ? 'merged:'+taskData.text : taskData.text;
+        }
       }
+    }
+
+    if(clarificationQueued){
+      isGenerating=false;
+      document.getElementById('ask-msgs').scrollTop=9999;
+      return;
     }
 
     const parsedActions=parseAskActionsFromText(text);
