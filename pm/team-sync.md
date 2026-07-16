@@ -313,3 +313,9 @@
 - Добавлен `docs/tasks/NATIVE-PLATFORM-DECISIONS-2026-07-16.md`: порядок NATIVE/PLAT, решения по share sheet/widgets, push actions, voice shortcuts, system calendar, geofencing и MAX.
 - `PLAT-001` и `NATIVE-001..005` переведены в `Deferred`: не стартуют до beta/native wrapper/CAL readiness и отдельного брифа.
 - Приоритет после beta: share sheet/widgets -> push actions -> voice shortcuts -> system calendar -> geofencing.
+
+## Release and beta gates — 2026-07-16
+
+- Добавлен `docs/tasks/RELEASE-BETA-GATES-2026-07-16.md`: beta gate, manual-QA список, payment gate, production gate, success metrics и stop conditions.
+- `BETA-001` обновлён ссылкой на release gate; Ready for QA пункты не закрывались без ручного smoke.
+- Утренний порядок: manual QA -> auth/task-save/mobile -> share/PWA -> beta invite только после P0/P1 sanity.

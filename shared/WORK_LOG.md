@@ -8904,3 +8904,9 @@
 **Задача:** Зафиксировать порядок `NATIVE-*` и `PLAT-001`, чтобы не начинать платформенную экспансию до beta.
 **Результат:** Добавлен `docs/tasks/NATIVE-PLATFORM-DECISIONS-2026-07-16.md`: priority order, decisions for share sheet/widgets, push actions, voice shortcuts, system calendar, geofencing and MAX.
 **Статус:** `PLAT-001` и `NATIVE-001..005` переведены в `Deferred` до beta/native wrapper/CAL readiness по соответствующим условиям.
+
+## 2026-07-16 — Release and beta gates
+
+**Задача:** Зафиксировать go/no-go правила для closed beta, payment и production.
+**Результат:** Добавлен `docs/tasks/RELEASE-BETA-GATES-2026-07-16.md`: closed beta gate, что можно включать в beta, что остаётся за ручным QA, payment gate, production gate, success metrics, stop conditions и утренний порядок проверки.
+**Статус:** `BETA-001` получил явную ссылку на release gate; Ready for QA пункты не закрывались без ручного smoke.
