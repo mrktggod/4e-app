@@ -404,3 +404,7 @@
 
 - VK Pay verification plan added: `docs/tasks/BACK-009-vk-pay-verification-plan.md`.
 - VK Pay UI entrypoint is not enough for paid launch; entitlement must come only after backend-verified payment and negative tests.
+## 2026-07-17 — BACK-040 tariff config readiness
+
+- Tariff config readiness checklist added: `docs/tasks/BACK-040-tariff-config-readiness.md`.
+- Do not treat admin tariff API as paid-launch-ready until production `/tariff-config` is proven intentional and payment amount gates match it.

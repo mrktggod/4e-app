@@ -9006,3 +9006,8 @@
 - Added `docs/tasks/BACK-009-vk-pay-verification-plan.md` to prevent treating the VK Pay UI entrypoint as paid-ready.
 - Defined required backend verification, idempotency, entitlement grant, negative tests, feature flag behavior, and support-policy alignment.
 - Updated `BACK-009` context while keeping it `Ready for QA` rather than Done: backend verification/live smoke remain required.
+## 2026-07-17 — BACK-040 tariff config readiness checklist
+
+- Added `docs/tasks/BACK-040-tariff-config-readiness.md` to define readiness gates for admin tariff API before paid launch.
+- Clarified that code presence is not enough: staging/production `/tariff-config`, admin auth rejection, front paywall copy, payment amount matching, and release notes must be verified.
+- Updated `BACK-040` context while keeping it `Ready for QA`; no price, deploy, or runtime changes were made.
