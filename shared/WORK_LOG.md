@@ -8910,3 +8910,9 @@
 **Задача:** Зафиксировать go/no-go правила для closed beta, payment и production.
 **Результат:** Добавлен `docs/tasks/RELEASE-BETA-GATES-2026-07-16.md`: closed beta gate, что можно включать в beta, что остаётся за ручным QA, payment gate, production gate, success metrics, stop conditions и утренний порядок проверки.
 **Статус:** `BETA-001` получил явную ссылку на release gate; Ready for QA пункты не закрывались без ручного smoke.
+
+## 2026-07-16 — Monetization decisions
+
+**Задача:** Зафиксировать payment/product policy перед beta и paid launch.
+**Результат:** Добавлен `docs/tasks/MONETIZATION-DECISIONS-2026-07-16.md`: payment-ready criteria, trial/beta policy, VK Pay decision, Telegram Stars decision, admin tariff decision и beta monetization posture.
+**Статус:** `BACK-009`, `BACK-010`, `BACK-040` оставлены `Ready for QA`, но получили явные product gates; цена не менялась.

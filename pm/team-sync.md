@@ -319,3 +319,9 @@
 - Добавлен `docs/tasks/RELEASE-BETA-GATES-2026-07-16.md`: beta gate, manual-QA список, payment gate, production gate, success metrics и stop conditions.
 - `BETA-001` обновлён ссылкой на release gate; Ready for QA пункты не закрывались без ручного smoke.
 - Утренний порядок: manual QA -> auth/task-save/mobile -> share/PWA -> beta invite только после P0/P1 sanity.
+
+## Monetization decisions — 2026-07-16
+
+- Добавлен `docs/tasks/MONETIZATION-DECISIONS-2026-07-16.md`: payment-ready criteria, trial/beta policy, VK Pay, Telegram Stars, admin tariff и beta monetization posture.
+- `BACK-009`, `BACK-010`, `BACK-040` оставлены `Ready for QA`, но получили явные paid-launch gates; цену не меняли.
+- Главное: VK Pay UI-entrypoint не равен paid-ready; Telegram Stars backend evidence сильный, но публичный paid launch требует production smoke/support policy.
