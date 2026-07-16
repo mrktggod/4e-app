@@ -8916,3 +8916,9 @@
 **Задача:** Зафиксировать payment/product policy перед beta и paid launch.
 **Результат:** Добавлен `docs/tasks/MONETIZATION-DECISIONS-2026-07-16.md`: payment-ready criteria, trial/beta policy, VK Pay decision, Telegram Stars decision, admin tariff decision и beta monetization posture.
 **Статус:** `BACK-009`, `BACK-010`, `BACK-040` оставлены `Ready for QA`, но получили явные product gates; цена не менялась.
+
+## 2026-07-16 — Ready for QA triage
+
+**Задача:** Свести ручные `Ready for QA` пункты в утренний порядок проверки.
+**Результат:** Добавлен `pm/ready-for-qa-triage-2026-07-17.md`: P0/P1 before beta, bot/group flow, payment QA, product/UI later QA, список того, что нельзя закрывать source-only, и правила pass/fail записи.
+**Статус:** Backlog-статусы не закрывались; документ нужен для завтрашнего ручного smoke.

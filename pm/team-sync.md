@@ -325,3 +325,8 @@
 - Добавлен `docs/tasks/MONETIZATION-DECISIONS-2026-07-16.md`: payment-ready criteria, trial/beta policy, VK Pay, Telegram Stars, admin tariff и beta monetization posture.
 - `BACK-009`, `BACK-010`, `BACK-040` оставлены `Ready for QA`, но получили явные paid-launch gates; цену не меняли.
 - Главное: VK Pay UI-entrypoint не равен paid-ready; Telegram Stars backend evidence сильный, но публичный paid launch требует production smoke/support policy.
+
+## Ready for QA triage — 2026-07-16
+
+- Добавлен `pm/ready-for-qa-triage-2026-07-17.md`: P0/P1 before beta, bot/group flow, payment QA, product/UI later QA и правила pass/fail.
+- Backlog-статусы не закрывались: документ нужен для завтрашнего ручного smoke и beta go/no-go.
