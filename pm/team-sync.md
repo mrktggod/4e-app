@@ -285,3 +285,8 @@
 
 - Добавлен `pm/infra-006-workspace-unification.md`: каноничные app/worker папки, preflight-команды, маркировка `DO_NOT_WORK_HERE`, безопасный аудит копий и критерии Done.
 - `INFRA-006` переведён в `Partial Done`: план готов, но ручное архивирование/удаление копий и закрепление правила остаются за Юрием/Алексеем.
+
+## BACK-011 command workspace spec — 2026-07-16
+
+- Добавлен `docs/tasks/BACK-011-command-workspace.md`: MVP/non-goals, роли, data model, API sketch, UI sketch, AI/privacy rules и phased DoD.
+- `BACK-011` переведён в `Partial Done`: spec готов, реализация backend/frontend и QA с двумя аккаунтами остаются отдельными этапами.

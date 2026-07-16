@@ -8874,3 +8874,9 @@
 **Задача:** INFRA-006 — снизить риск работы в неправильной локальной копии.
 **Результат:** Добавлен `pm/infra-006-workspace-unification.md`: предложены каноничные app/worker папки, preflight-команды перед задачей, маркировка `DO_NOT_WORK_HERE`, безопасный аудит копий и критерии закрытия.
 **Статус:** `INFRA-006` переведён в `Partial Done`: план готов, но ручное решение по архивированию/удалению копий и закрепление правила остаются за Юрием/Алексеем.
+
+## 2026-07-16 — BACK-011 command workspace spec
+
+**Задача:** BACK-011 — подготовить основу командного workspace без реализации вслепую.
+**Результат:** Добавлен `docs/tasks/BACK-011-command-workspace.md`: product promise, MVP/non-goals, роли, data model, API sketch, UI sketch, AI behavior, privacy/security checks и phased DoD.
+**Статус:** `BACK-011` переведён в `Partial Done`: spec готов, реализация backend/frontend и QA с двумя аккаунтами остаются отдельными этапами.
