@@ -8886,3 +8886,9 @@
 **Задача:** PLAT-003 — подготовить путь Google Play TWA → App Store Capacitor.
 **Результат:** Добавлен `docs/tasks/PLAT-003-twa-capacitor-roadmap.md`: prerequisites после PWA, Android TWA phase, iOS Capacitor phase, payment-policy risks, non-goals и DoD.
 **Статус:** `PLAT-003` переведён в `Partial Done`: roadmap готов, но реальные wrappers/store assets/payment decision/manual smoke остаются следующими этапами.
+
+## 2026-07-16 — Product decision pack: calendar / omni / native sequencing
+
+**Задача:** Зафиксировать продуктовые решения вместо дальнейшей реализации вслепую.
+**Результат:** Добавлен `docs/tasks/PRODUCT-DECISIONS-2026-07-16.md`: северная звезда продукта, beta gate, calendar decision, omnichannel decision, native priority, growth/workspace boundaries и anti-scope rules. Обновлены `CAL-001-calendar-concept.md` и `OMNI-001-omnichannel-surfaces.md`.
+**Статус:** `CAL-001` и `OMNI-001` переведены в `Partial Done`; `CAL-002` и `CAL-003` переведены в `Deferred` до beta/CAL-002 readiness.

@@ -295,3 +295,9 @@
 
 - Добавлен `docs/tasks/PLAT-003-twa-capacitor-roadmap.md`: PWA prerequisites, Google Play TWA phase, App Store/Capacitor phase, payment-policy risks, non-goals и DoD.
 - `PLAT-003` переведён в `Partial Done`: roadmap готов, реальные wrappers/store assets/payment decision/manual smoke остаются следующими этапами.
+
+## Product decisions: calendar / omni / native sequencing — 2026-07-16
+
+- Добавлен `docs/tasks/PRODUCT-DECISIONS-2026-07-16.md`: северная звезда 4, beta gate, решения по calendar/omni/native/growth/workspace и anti-scope rules.
+- `CAL-001` и `OMNI-001` переведены в `Partial Done`; `CAL-002` и `CAL-003` переведены в `Deferred` до beta/CAL readiness.
+- Ключевое решение: сначала closed beta и retention blockers, затем calendar layer; новые native/platform launches не стартуют до доказанного repeat usage.
