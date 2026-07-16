@@ -377,3 +377,8 @@
 - Manual QA should record results in `pm/qa-results-2026-07-17.md`.
 - Only factual failures from that file should be copied into `pm/bugs.md` and promoted into backlog status changes.
 - P0/P1 fixes remain the only runtime work before beta invite decisions.
+## 2026-07-17 — docs tail closeout
+
+- Tail closeout added: `pm/tail-closeout-2026-07-17.md`.
+- Handoff addendum added: `pm/night-handoff-addendum-2026-07-17.md`.
+- Remaining open work is intentionally manual-QA-gated or secret/platform-gated; do not treat it as a coding tail without fresh evidence.

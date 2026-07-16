@@ -8976,3 +8976,8 @@
 - Added `pm/qa-results-2026-07-17.md` as the single intake file for morning manual QA.
 - Covered auth, task-first flow, chat composer, entitlement/paywall, analytics, PWA/share/onboarding/dashboard checks.
 - Added severity and go/no-go rules so morning findings can be converted into P0/P1 fixes or beta decisions without scope creep.
+## 2026-07-17 — tail closeout prepared
+
+- Added `pm/tail-closeout-2026-07-17.md` to separate closed documentation tails from items that still require manual QA or secrets/platform access.
+- Added `pm/night-handoff-addendum-2026-07-17.md` so the morning entrypoint reflects the later night commits after the original handoff.
+- Kept runtime, CAL, price, native launch, main merge, OAuth profile expansion, and `.pages-dist/privacy.html` out of scope.
