@@ -8946,3 +8946,9 @@
 **Задача:** Свести ночную работу в один проверяемый handoff.
 **Результат:** Добавлен `pm/night-handoff-2026-07-16-to-17.md`: текущий HEAD, список runtime/doc коммитов, что открыть утром, pass/fail path, список "не трогать" и известный грязный build artifact.
 **Статус:** Handoff готов; следующий шаг — ручной QA утром.
+
+## 2026-07-16 — BACK-012 CSS architecture plan
+
+**Задача:** Зафиксировать безопасный путь закрытия CSS/BEM долга.
+**Результат:** Добавлен `docs/tasks/BACK-012-css-architecture-plan.md`: current state, decision not to do broad refactor before beta, allowed pre-beta fixes, post-beta cleanup sequence and DoD.
+**Статус:** `BACK-012` оставлен `Partial Done`; broad inline/BEM cleanup deferred until after beta-critical QA.

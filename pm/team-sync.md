@@ -350,3 +350,8 @@
 
 - Добавлен `pm/night-handoff-2026-07-16-to-17.md`: HEAD, runtime/doc commit list, что открыть утром, pass/fail path, список `не трогать` и известный dirty artifact.
 - Следующий шаг: ручной QA утром по `pm/morning-command-center-2026-07-17.md`.
+
+## BACK-012 CSS architecture plan — 2026-07-16
+
+- Добавлен `docs/tasks/BACK-012-css-architecture-plan.md`: current state, запрет broad refactor до beta, allowed pre-beta fixes, post-beta BEM-island cleanup и DoD.
+- `BACK-012` оставлен `Partial Done`; runtime-код не трогали.
