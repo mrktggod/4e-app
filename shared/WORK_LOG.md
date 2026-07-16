@@ -8981,3 +8981,8 @@
 - Added `pm/tail-closeout-2026-07-17.md` to separate closed documentation tails from items that still require manual QA or secrets/platform access.
 - Added `pm/night-handoff-addendum-2026-07-17.md` so the morning entrypoint reflects the later night commits after the original handoff.
 - Kept runtime, CAL, price, native launch, main merge, OAuth profile expansion, and `.pages-dist/privacy.html` out of scope.
+## 2026-07-17 — INFRA-006 preflight checklist
+
+- Added `pm/infra-006-preflight-checklist.md` to make the workspace-unification rule operational before each task.
+- Documented canonical app/worker folders, dirty-state expectations, no-touch scope checks, behavior for non-canonical copies, and the minimum commit/push report.
+- Updated backlog context for INFRA-006: process checklist is now prepared; remaining blockers are manual archive/adoption decisions.

@@ -382,3 +382,8 @@
 - Tail closeout added: `pm/tail-closeout-2026-07-17.md`.
 - Handoff addendum added: `pm/night-handoff-addendum-2026-07-17.md`.
 - Remaining open work is intentionally manual-QA-gated or secret/platform-gated; do not treat it as a coding tail without fresh evidence.
+## 2026-07-17 — INFRA-006 preflight checklist
+
+- Before new app work, use `.tmp-4e-app-publish` as the current canonical app folder for `feat/admin-tariff-api` unless a separate migration decision is made.
+- Before worker work, confirm whether `4e-worker` or `4e-worker-p0` is authoritative for that exact task.
+- New checklist: `pm/infra-006-preflight-checklist.md`.
