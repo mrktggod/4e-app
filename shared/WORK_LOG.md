@@ -8856,3 +8856,9 @@
 **Задача:** PLAT-002 — подготовить PWA-обёртку как шаг к RuStore.
 **Результат:** Добавлен `manifest.webmanifest`, PWA meta в `index.html`, регистрация `sw.js` и service worker с network-first navigation/offline shell cache. `scripts/build-pages-whitelist.mjs` теперь копирует `sw.js` в Pages artifact.
 **Статус:** `PLAT-002` переведён в `Partial Done`: runtime groundwork готов; installed-PWA smoke, PNG/maskable icons и публикация в RuStore остаются отдельными шагами.
+
+## 2026-07-16 — BETA-001 closed beta runbook
+
+**Задача:** BETA-001 — подготовить закрытый тест 5-10 пользователей.
+**Результат:** Добавлен `pm/beta-run-2026-07.md`: критерии выбора тестеров, текст приглашения, обязательный smoke перед приглашением, сценарии дня 1 и дня 2-3, формат feedback и критерии выхода/остановки.
+**Статус:** `BETA-001` переведён в `Partial Done`: runbook готов, но реальный beta-run и перенос найденных blockers в `pm/bugs.md` остаются ручным этапом.

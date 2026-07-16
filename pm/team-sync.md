@@ -270,3 +270,8 @@
 - Добавлены `manifest.webmanifest`, PWA meta в `index.html`, регистрация `sw.js` и service worker с network-first navigation/offline shell cache.
 - `scripts/build-pages-whitelist.mjs` теперь копирует `sw.js` в Pages artifact.
 - `PLAT-002` переведён в `Partial Done`: installed-PWA smoke, PNG/maskable icons и публикация в RuStore остаются отдельными шагами.
+
+## BETA-001 closed beta runbook — 2026-07-16
+
+- Добавлен `pm/beta-run-2026-07.md`: кого звать, текст приглашения, smoke перед приглашением, сценарии дня 1/2-3, формат feedback и критерии выхода/остановки.
+- `BETA-001` переведён в `Partial Done`: runbook готов, но реальный запуск 5-10 пользователей и перенос blockers в `pm/bugs.md` остаются ручным этапом.
