@@ -9017,3 +9017,8 @@
 - New canonical local paths are now `X:\4\.tmp-4e-app-publish` for app work and `X:\4\4e-worker` for worker work.
 - Added `pm/infra-006-x-drive-migration-2026-07-16.md` and updated active INFRA-006 process docs/backlog/team-sync.
 - Carried over known dirty state intentionally: app `.pages-dist/privacy.html` and worker `kv-backups/`; neither was cleaned up in this migration.
+## 2026-07-16 — BACK-019 task card mobile smoke checklist
+
+- Added `docs/tasks/BACK-019-task-card-mobile-smoke.md` to define the remaining manual mobile QA for improved task cards.
+- Covered long titles, long assignee/contact names, overdue state, swipe actions, tap-to-detail, done/move actions, and bottom-nav overlap.
+- Updated `BACK-019` context while keeping it `Ready for QA`; no runtime changes were made.

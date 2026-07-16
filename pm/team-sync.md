@@ -415,3 +415,7 @@
 - New worker path: `X:\4\4e-worker`.
 - Old `C:\Users\shelc\Documents\4` copy is retained as rollback/archive and should not be edited for new work unless explicitly doing recovery.
 - Migration handoff: `pm/infra-006-x-drive-migration-2026-07-16.md`.
+## 2026-07-16 — BACK-019 mobile card QA
+
+- Task-card mobile smoke checklist added: `docs/tasks/BACK-019-task-card-mobile-smoke.md`.
+- Do not mark `BACK-019` Done until tap/swipe actions and mobile overflow are checked manually.
