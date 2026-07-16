@@ -8952,3 +8952,9 @@
 **Задача:** Зафиксировать безопасный путь закрытия CSS/BEM долга.
 **Результат:** Добавлен `docs/tasks/BACK-012-css-architecture-plan.md`: current state, decision not to do broad refactor before beta, allowed pre-beta fixes, post-beta cleanup sequence and DoD.
 **Статус:** `BACK-012` оставлен `Partial Done`; broad inline/BEM cleanup deferred until after beta-critical QA.
+
+## 2026-07-16 — SMART-012 adaptive reminders plan
+
+**Задача:** Зафиксировать безопасный путь от adaptive briefing к adaptive task reminders.
+**Результат:** Добавлен `docs/tasks/SMART-012-adaptive-reminders-plan.md`: current state, decision not to expand reminders before beta, signals, MVP phases, non-goals and DoD.
+**Статус:** `SMART-012` оставлен `Partial Done`; adaptive task reminders deferred until beta proves reminder value.

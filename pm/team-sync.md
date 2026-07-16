@@ -355,3 +355,8 @@
 
 - Добавлен `docs/tasks/BACK-012-css-architecture-plan.md`: current state, запрет broad refactor до beta, allowed pre-beta fixes, post-beta BEM-island cleanup и DoD.
 - `BACK-012` оставлен `Partial Done`; runtime-код не трогали.
+
+## SMART-012 adaptive reminders plan — 2026-07-16
+
+- Добавлен `docs/tasks/SMART-012-adaptive-reminders-plan.md`: current state, запрет расширять reminders до beta, signals, MVP phases, non-goals и DoD.
+- `SMART-012` оставлен `Partial Done`; adaptive task reminders deferred until beta proves reminder value.
