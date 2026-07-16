@@ -9011,3 +9011,9 @@
 - Added `docs/tasks/BACK-040-tariff-config-readiness.md` to define readiness gates for admin tariff API before paid launch.
 - Clarified that code presence is not enough: staging/production `/tariff-config`, admin auth rejection, front paywall copy, payment amount matching, and release notes must be verified.
 - Updated `BACK-040` context while keeping it `Ready for QA`; no price, deploy, or runtime changes were made.
+## 2026-07-16 — INFRA-006 X drive migration
+
+- Copied the local project workspace from `C:\Users\shelc\Documents\4` to `X:\4` using safe `robocopy /E /XJ` without deleting the source copy.
+- New canonical local paths are now `X:\4\.tmp-4e-app-publish` for app work and `X:\4\4e-worker` for worker work.
+- Added `pm/infra-006-x-drive-migration-2026-07-16.md` and updated active INFRA-006 process docs/backlog/team-sync.
+- Carried over known dirty state intentionally: app `.pages-dist/privacy.html` and worker `kv-backups/`; neither was cleaned up in this migration.

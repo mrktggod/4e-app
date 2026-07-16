@@ -6,7 +6,7 @@
 
 | Field | Value |
 | --- | --- |
-| Folder | `C:\Users\shelc\Documents\4\4e-worker` |
+| Folder | `C:\Users\shelc\Documents\4\4e-worker` at setup time; migrated canonical path is now `X:\4\4e-worker` |
 | Branch observed before secret setup | `feat/admin-tariff-api` |
 | Method | `npx wrangler secret put ... --env <env>` |
 

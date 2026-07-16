@@ -18,8 +18,8 @@
 
 Каноничные рабочие папки:
 
-- App/frontend: `C:\Users\shelc\Documents\4\.tmp-4e-app-publish`
-- Worker/API: `C:\Users\shelc\Documents\4\4e-worker`
+- App/frontend: `X:\4\.tmp-4e-app-publish`
+- Worker/API: `X:\4\4e-worker`
 
 Все остальные копии должны стать одним из трёх типов:
 
@@ -32,7 +32,7 @@
 Перед правками:
 
 ```powershell
-cd C:\Users\shelc\Documents\4\.tmp-4e-app-publish
+cd X:\4\.tmp-4e-app-publish
 git status --short
 git rev-parse --show-toplevel
 git branch --show-current
@@ -43,7 +43,7 @@ git rev-parse origin/feat/admin-tariff-api
 Для worker:
 
 ```powershell
-cd C:\Users\shelc\Documents\4\4e-worker
+cd X:\4\4e-worker
 git status --short
 git rev-parse --show-toplevel
 git branch --show-current
@@ -66,8 +66,8 @@ DO_NOT_WORK_HERE.txt
 ```text
 Эта папка не является каноничной рабочей копией Project 4.
 Перед любыми правками перейди в:
-- App: C:\Users\shelc\Documents\4\.tmp-4e-app-publish
-- Worker: C:\Users\shelc\Documents\4\4e-worker
+- App: X:\4\.tmp-4e-app-publish
+- Worker: X:\4\4e-worker
 ```
 
 Если копия всё ещё нужна как архив, лучше переименовать папку с префиксом:

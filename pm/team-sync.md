@@ -408,3 +408,10 @@
 
 - Tariff config readiness checklist added: `docs/tasks/BACK-040-tariff-config-readiness.md`.
 - Do not treat admin tariff API as paid-launch-ready until production `/tariff-config` is proven intentional and payment amount gates match it.
+## 2026-07-16 — project workspace moved to X drive
+
+- New canonical project root: `X:\4`.
+- New app path: `X:\4\.tmp-4e-app-publish`.
+- New worker path: `X:\4\4e-worker`.
+- Old `C:\Users\shelc\Documents\4` copy is retained as rollback/archive and should not be edited for new work unless explicitly doing recovery.
+- Migration handoff: `pm/infra-006-x-drive-migration-2026-07-16.md`.

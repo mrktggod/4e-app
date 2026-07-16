@@ -6,9 +6,9 @@
 
 | Поверхность | Каноничная папка | Правило |
 | --- | --- | --- |
-| App / Pages UI | `C:\Users\shelc\Documents\4\.tmp-4e-app-publish` | Использовать для текущей ветки `feat/admin-tariff-api` до отдельного решения о переносе |
-| Worker | `C:\Users\shelc\Documents\4\4e-worker` | Использовать только после явной проверки актуальности с origin и payment/security P0 |
-| Worker P0 copy | `C:\Users\shelc\Documents\4\4e-worker-p0` | Не считать основной без отдельного sync/merge решения |
+| App / Pages UI | `X:\4\.tmp-4e-app-publish` | Использовать для текущей ветки `feat/admin-tariff-api` до отдельного решения о переносе |
+| Worker | `X:\4\4e-worker` | Использовать только после явной проверки актуальности с origin и payment/security P0 |
+| Worker P0 copy | `X:\4\4e-worker-p0` | Не считать основной без отдельного sync/merge решения |
 | Старые/временные копии | Любые `.tmp-*`, backup, desktop copies | Не редактировать без явного брифа |
 
 ## 2. Preflight перед задачей
