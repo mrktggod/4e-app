@@ -392,3 +392,7 @@
 - Yuri installed these Worker secrets via local PowerShell/Wrangler for staging and production: `BOT_TOKEN`, `VK_ID_CLIENT_ID`, `VK_ID_CLIENT_SECRET`, `YANDEX_CLIENT_ID`, `YANDEX_CLIENT_SECRET`.
 - Secret values were not shared in chat and must not be written to repo files.
 - `BACK-045` is now unblocked for staging OAuth smoke; it is not Done until browser callback/login is verified.
+## 2026-07-17 — BACK-017 notification smoke
+
+- `BACK-017` now has a delivery-smoke checklist: `docs/tasks/BACK-017-notifications-delivery-smoke.md`.
+- Do not mark it Done from API/source evidence alone; it needs a real Telegram delivery to the intended linked user.

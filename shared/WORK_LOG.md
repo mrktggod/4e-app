@@ -8991,3 +8991,8 @@
 - Recorded Yuri's manual Cloudflare secret setup in `pm/cloudflare-secrets-handoff-2026-07-17.md` without storing any secret values.
 - Marked `BOT_TOKEN`, `VK_ID_CLIENT_ID`, `VK_ID_CLIENT_SECRET`, `YANDEX_CLIENT_ID`, and `YANDEX_CLIENT_SECRET` as installed for staging and production based on Yuri's PowerShell completion report.
 - Updated `BACK-045`: missing VK/Yandex credentials are no longer the blocker; remaining work is staging deploy/live OAuth smoke and production release decision.
+## 2026-07-17 — BACK-017 notification delivery smoke plan
+
+- Added `docs/tasks/BACK-017-notifications-delivery-smoke.md` to define the remaining manual smoke for Telegram notification delivery.
+- Clarified that settings API/D1 evidence is not enough for Done: real recipient, Telegram delivery, copy, and timing must be verified live.
+- Updated backlog context while keeping `BACK-017` at `QA partial` until the live delivery smoke passes.
