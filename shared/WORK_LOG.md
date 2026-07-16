@@ -9001,3 +9001,8 @@
 - Added `docs/tasks/BACK-010-payment-support-policy.md` to define support/reversal handling for paid flows before public launch.
 - Covered no-entitlement cases, replay/idempotency, wrong amount, bad signature, refund/dispute intake, manual grant rules, and minimum incident fields.
 - Updated `BACK-010` context while keeping it `Ready for QA`: production smoke and policy review remain required before paid launch.
+## 2026-07-17 — BACK-009 VK Pay verification plan
+
+- Added `docs/tasks/BACK-009-vk-pay-verification-plan.md` to prevent treating the VK Pay UI entrypoint as paid-ready.
+- Defined required backend verification, idempotency, entitlement grant, negative tests, feature flag behavior, and support-policy alignment.
+- Updated `BACK-009` context while keeping it `Ready for QA` rather than Done: backend verification/live smoke remain required.

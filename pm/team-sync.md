@@ -400,3 +400,7 @@
 
 - Payment support/reversal policy added: `docs/tasks/BACK-010-payment-support-policy.md`.
 - This does not change price or launch production payments; it defines what support should do if a real payment succeeds but entitlement does not, or if callbacks are replayed/bad/wrong amount.
+## 2026-07-17 — BACK-009 VK Pay paid-readiness guard
+
+- VK Pay verification plan added: `docs/tasks/BACK-009-vk-pay-verification-plan.md`.
+- VK Pay UI entrypoint is not enough for paid launch; entitlement must come only after backend-verified payment and negative tests.
