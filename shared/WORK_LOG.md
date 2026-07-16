@@ -8922,3 +8922,9 @@
 **Задача:** Свести ручные `Ready for QA` пункты в утренний порядок проверки.
 **Результат:** Добавлен `pm/ready-for-qa-triage-2026-07-17.md`: P0/P1 before beta, bot/group flow, payment QA, product/UI later QA, список того, что нельзя закрывать source-only, и правила pass/fail записи.
 **Статус:** Backlog-статусы не закрывались; документ нужен для завтрашнего ручного smoke.
+
+## 2026-07-16 — Beta invite pack
+
+**Задача:** Подготовить готовые тексты для закрытого beta-run.
+**Результат:** Добавлен `pm/beta-invite-pack-2026-07.md`: кого звать первым, длинное/короткое приглашение, follow-up через 2-4 часа, follow-up на день 2, ответы на blocker/feature request/payment question и шаблон daily summary.
+**Статус:** `BETA-001` дополнен ссылкой на invite pack; реальная рассылка остаётся ручным этапом.

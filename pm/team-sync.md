@@ -330,3 +330,8 @@
 
 - Добавлен `pm/ready-for-qa-triage-2026-07-17.md`: P0/P1 before beta, bot/group flow, payment QA, product/UI later QA и правила pass/fail.
 - Backlog-статусы не закрывались: документ нужен для завтрашнего ручного smoke и beta go/no-go.
+
+## Beta invite pack — 2026-07-16
+
+- Добавлен `pm/beta-invite-pack-2026-07.md`: кого звать первым, приглашение, follow-up 2-4 часа, follow-up день 2, ответы на blocker/feature request/payment question и daily summary.
+- `BETA-001` дополнен ссылкой на invite pack; реальная рассылка остаётся ручным этапом после beta gate.
