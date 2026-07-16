@@ -8986,3 +8986,8 @@
 - Added `pm/infra-006-preflight-checklist.md` to make the workspace-unification rule operational before each task.
 - Documented canonical app/worker folders, dirty-state expectations, no-touch scope checks, behavior for non-canonical copies, and the minimum commit/push report.
 - Updated backlog context for INFRA-006: process checklist is now prepared; remaining blockers are manual archive/adoption decisions.
+## 2026-07-17 — Cloudflare secrets handoff recorded
+
+- Recorded Yuri's manual Cloudflare secret setup in `pm/cloudflare-secrets-handoff-2026-07-17.md` without storing any secret values.
+- Marked `BOT_TOKEN`, `VK_ID_CLIENT_ID`, `VK_ID_CLIENT_SECRET`, `YANDEX_CLIENT_ID`, and `YANDEX_CLIENT_SECRET` as installed for staging and production based on Yuri's PowerShell completion report.
+- Updated `BACK-045`: missing VK/Yandex credentials are no longer the blocker; remaining work is staging deploy/live OAuth smoke and production release decision.

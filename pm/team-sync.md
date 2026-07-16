@@ -387,3 +387,8 @@
 - Before new app work, use `.tmp-4e-app-publish` as the current canonical app folder for `feat/admin-tariff-api` unless a separate migration decision is made.
 - Before worker work, confirm whether `4e-worker` or `4e-worker-p0` is authoritative for that exact task.
 - New checklist: `pm/infra-006-preflight-checklist.md`.
+## 2026-07-17 — Cloudflare secrets installed by Yuri
+
+- Yuri installed these Worker secrets via local PowerShell/Wrangler for staging and production: `BOT_TOKEN`, `VK_ID_CLIENT_ID`, `VK_ID_CLIENT_SECRET`, `YANDEX_CLIENT_ID`, `YANDEX_CLIENT_SECRET`.
+- Secret values were not shared in chat and must not be written to repo files.
+- `BACK-045` is now unblocked for staging OAuth smoke; it is not Done until browser callback/login is verified.
