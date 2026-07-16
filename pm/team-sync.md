@@ -423,3 +423,7 @@
 
 - Waiting-on-people live smoke checklist added: `docs/tasks/SMART-011-waiting-on-people-smoke.md`.
 - Do not mark `SMART-011` Done until a real Telegram/group smoke confirms recipient, copy, and no-spam behavior.
+## 2026-07-16 — SMART-004 group capture QA
+
+- Group task capture smoke checklist added: `docs/tasks/SMART-004-group-task-capture-smoke.md`.
+- Do not mark `SMART-004` Done until a real Telegram group confirms correct user/context mapping and no-spam behavior.

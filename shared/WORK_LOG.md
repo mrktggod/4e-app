@@ -9027,3 +9027,8 @@
 - Added `docs/tasks/SMART-011-waiting-on-people-smoke.md` to define the remaining live group/bot QA for reminders to assignees.
 - Covered recipient correctness, copy tone, duplicate/cooldown behavior, missing Telegram fallback, closed-task behavior, and history/status expectations.
 - Updated `SMART-011` context while keeping it `Ready for QA`; no runtime changes were made.
+## 2026-07-16 — SMART-004 group task capture smoke checklist
+
+- Added `docs/tasks/SMART-004-group-task-capture-smoke.md` to define live Telegram/group QA for laconic task capture.
+- Covered correct user/context mapping, one-line confirmation, app visibility, edit/delete buttons, multi-user separation, noise handling, and duplicate behavior.
+- Updated `SMART-004` context while keeping it `Ready for QA`; no bot/runtime changes were made.
