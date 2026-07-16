@@ -290,3 +290,8 @@
 
 - Добавлен `docs/tasks/BACK-011-command-workspace.md`: MVP/non-goals, роли, data model, API sketch, UI sketch, AI/privacy rules и phased DoD.
 - `BACK-011` переведён в `Partial Done`: spec готов, реализация backend/frontend и QA с двумя аккаунтами остаются отдельными этапами.
+
+## PLAT-003 TWA/Capacitor roadmap — 2026-07-16
+
+- Добавлен `docs/tasks/PLAT-003-twa-capacitor-roadmap.md`: PWA prerequisites, Google Play TWA phase, App Store/Capacitor phase, payment-policy risks, non-goals и DoD.
+- `PLAT-003` переведён в `Partial Done`: roadmap готов, реальные wrappers/store assets/payment decision/manual smoke остаются следующими этапами.

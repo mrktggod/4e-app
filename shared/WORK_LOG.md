@@ -8880,3 +8880,9 @@
 **Задача:** BACK-011 — подготовить основу командного workspace без реализации вслепую.
 **Результат:** Добавлен `docs/tasks/BACK-011-command-workspace.md`: product promise, MVP/non-goals, роли, data model, API sketch, UI sketch, AI behavior, privacy/security checks и phased DoD.
 **Статус:** `BACK-011` переведён в `Partial Done`: spec готов, реализация backend/frontend и QA с двумя аккаунтами остаются отдельными этапами.
+
+## 2026-07-16 — PLAT-003 TWA/Capacitor roadmap
+
+**Задача:** PLAT-003 — подготовить путь Google Play TWA → App Store Capacitor.
+**Результат:** Добавлен `docs/tasks/PLAT-003-twa-capacitor-roadmap.md`: prerequisites после PWA, Android TWA phase, iOS Capacitor phase, payment-policy risks, non-goals и DoD.
+**Статус:** `PLAT-003` переведён в `Partial Done`: roadmap готов, но реальные wrappers/store assets/payment decision/manual smoke остаются следующими этапами.
