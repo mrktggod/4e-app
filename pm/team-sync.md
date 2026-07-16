@@ -335,3 +335,8 @@
 
 - Добавлен `pm/beta-invite-pack-2026-07.md`: кого звать первым, приглашение, follow-up 2-4 часа, follow-up день 2, ответы на blocker/feature request/payment question и daily summary.
 - `BETA-001` дополнен ссылкой на invite pack; реальная рассылка остаётся ручным этапом после beta gate.
+
+## Post-beta decision tree — 2026-07-16
+
+- Добавлен `pm/post-beta-decision-tree-2026-07.md`: cases A-F для core broken, weak retention, time realism, outside capture, reminders value и team promises.
+- `FEEDBACK-001` дополнен ссылкой на decision tree; реальное применение после beta-feedback остаётся ручным этапом.
