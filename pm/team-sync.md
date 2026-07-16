@@ -360,3 +360,8 @@
 
 - Добавлен `docs/tasks/SMART-012-adaptive-reminders-plan.md`: current state, запрет расширять reminders до beta, signals, MVP phases, non-goals и DoD.
 - `SMART-012` оставлен `Partial Done`; adaptive task reminders deferred until beta proves reminder value.
+
+## BACK-057 offline mode plan — 2026-07-16
+
+- Добавлен `docs/tasks/BACK-057-offline-mode-plan.md`: current state, Free offline scope, Premium Sync separation, manual QA requirements and DoD.
+- `BACK-057` оставлен `Partial Done`; manual offline smoke is required before Done.

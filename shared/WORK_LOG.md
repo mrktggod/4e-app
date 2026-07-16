@@ -8958,3 +8958,9 @@
 **Задача:** Зафиксировать безопасный путь от adaptive briefing к adaptive task reminders.
 **Результат:** Добавлен `docs/tasks/SMART-012-adaptive-reminders-plan.md`: current state, decision not to expand reminders before beta, signals, MVP phases, non-goals and DoD.
 **Статус:** `SMART-012` оставлен `Partial Done`; adaptive task reminders deferred until beta proves reminder value.
+
+## 2026-07-16 — BACK-057 offline mode plan
+
+**Задача:** Зафиксировать границы Free offline mode после runtime MVP.
+**Результат:** Добавлен `docs/tasks/BACK-057-offline-mode-plan.md`: current state, Free offline scope, Premium Sync separation, manual QA requirements and DoD.
+**Статус:** `BACK-057` оставлен `Partial Done`; manual offline smoke is required before Done.
