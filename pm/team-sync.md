@@ -372,3 +372,8 @@
 - Morning QA should start from the matrix plus `pm/morning-command-center-2026-07-17.md`.
 - If morning QA finds auth/task/composer/paywall/analytics regressions, fix those before beta invites or any new product slices.
 - CAL remains out of scope for this branch unless explicitly re-opened in a separate branch/brief.
+## 2026-07-17 — QA result intake
+
+- Manual QA should record results in `pm/qa-results-2026-07-17.md`.
+- Only factual failures from that file should be copied into `pm/bugs.md` and promoted into backlog status changes.
+- P0/P1 fixes remain the only runtime work before beta invite decisions.

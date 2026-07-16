@@ -8971,3 +8971,8 @@
 - Captured the do-first QA order: auth/registration, task-first flow, chat composer, entitlement/paywall, analytics.
 - Split remaining backlog into safe buckets: Ready for QA, Partial Done without runtime changes, Deferred until explicit product/platform decision, and explicit no-touch items.
 - Kept the current guardrails unchanged: no merge to main, no price change, no CAL implementation, no native launches, no OAuth profile expansion without consent, and no staging build artifact cleanup in this slice.
+## 2026-07-17 — QA results template prepared
+
+- Added `pm/qa-results-2026-07-17.md` as the single intake file for morning manual QA.
+- Covered auth, task-first flow, chat composer, entitlement/paywall, analytics, PWA/share/onboarding/dashboard checks.
+- Added severity and go/no-go rules so morning findings can be converted into P0/P1 fixes or beta decisions without scope creep.
