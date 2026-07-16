@@ -9022,3 +9022,8 @@
 - Added `docs/tasks/BACK-019-task-card-mobile-smoke.md` to define the remaining manual mobile QA for improved task cards.
 - Covered long titles, long assignee/contact names, overdue state, swipe actions, tap-to-detail, done/move actions, and bottom-nav overlap.
 - Updated `BACK-019` context while keeping it `Ready for QA`; no runtime changes were made.
+## 2026-07-16 — SMART-011 waiting-on-people smoke checklist
+
+- Added `docs/tasks/SMART-011-waiting-on-people-smoke.md` to define the remaining live group/bot QA for reminders to assignees.
+- Covered recipient correctness, copy tone, duplicate/cooldown behavior, missing Telegram fallback, closed-task behavior, and history/status expectations.
+- Updated `SMART-011` context while keeping it `Ready for QA`; no runtime changes were made.

@@ -419,3 +419,7 @@
 
 - Task-card mobile smoke checklist added: `docs/tasks/BACK-019-task-card-mobile-smoke.md`.
 - Do not mark `BACK-019` Done until tap/swipe actions and mobile overflow are checked manually.
+## 2026-07-16 — SMART-011 group reminder QA
+
+- Waiting-on-people live smoke checklist added: `docs/tasks/SMART-011-waiting-on-people-smoke.md`.
+- Do not mark `SMART-011` Done until a real Telegram/group smoke confirms recipient, copy, and no-spam behavior.
