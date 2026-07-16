@@ -8892,3 +8892,9 @@
 **Задача:** Зафиксировать продуктовые решения вместо дальнейшей реализации вслепую.
 **Результат:** Добавлен `docs/tasks/PRODUCT-DECISIONS-2026-07-16.md`: северная звезда продукта, beta gate, calendar decision, omnichannel decision, native priority, growth/workspace boundaries и anti-scope rules. Обновлены `CAL-001-calendar-concept.md` и `OMNI-001-omnichannel-surfaces.md`.
 **Статус:** `CAL-001` и `OMNI-001` переведены в `Partial Done`; `CAL-002` и `CAL-003` переведены в `Deferred` до beta/CAL-002 readiness.
+
+## 2026-07-16 — Product decisions: onboarding wow and OAuth profile consent
+
+**Задача:** Зафиксировать решения по `VIRAL-005` и `BACK-058`.
+**Результат:** Добавлены `docs/tasks/VIRAL-005-first-ai-plan-wow.md` и `docs/tasks/BACK-058-oauth-profile-consent.md`. Решения: wow moment остаётся в first empty home, не отдельный wizard; OAuth profile data не запрашиваются "про запас", каждое поле требует отдельного consent и value.
+**Статус:** `VIRAL-005` переведён в `Partial Done`; `BACK-058` переведён в `Deferred` до `BACK-045` live smoke, beta signal и consent copy.

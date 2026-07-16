@@ -301,3 +301,9 @@
 - Добавлен `docs/tasks/PRODUCT-DECISIONS-2026-07-16.md`: северная звезда 4, beta gate, решения по calendar/omni/native/growth/workspace и anti-scope rules.
 - `CAL-001` и `OMNI-001` переведены в `Partial Done`; `CAL-002` и `CAL-003` переведены в `Deferred` до beta/CAL readiness.
 - Ключевое решение: сначала closed beta и retention blockers, затем calendar layer; новые native/platform launches не стартуют до доказанного repeat usage.
+
+## Product decisions: onboarding wow + OAuth profile consent — 2026-07-16
+
+- Добавлены `docs/tasks/VIRAL-005-first-ai-plan-wow.md` и `docs/tasks/BACK-058-oauth-profile-consent.md`.
+- `VIRAL-005` переведён в `Partial Done`: wow moment остаётся в first empty home, не отдельный wizard; нужны activation event и fresh-account smoke.
+- `BACK-058` переведён в `Deferred`: не просим email/phone/birthdate про запас; каждое поле только с отдельным consent и понятной value после BACK-045/beta.
