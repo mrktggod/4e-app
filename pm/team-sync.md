@@ -427,3 +427,7 @@
 
 - Group task capture smoke checklist added: `docs/tasks/SMART-004-group-task-capture-smoke.md`.
 - Do not mark `SMART-004` Done until a real Telegram group confirms correct user/context mapping and no-spam behavior.
+## 2026-07-16 — BACK-050 accessibility QA
+
+- Accessibility smoke checklist added: `docs/tasks/BACK-050-accessibility-smoke-checklist.md`.
+- Do not mark `BACK-050` Done until keyboard/focus/error/live-region behavior is checked manually.

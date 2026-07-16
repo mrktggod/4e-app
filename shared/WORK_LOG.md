@@ -9032,3 +9032,8 @@
 - Added `docs/tasks/SMART-004-group-task-capture-smoke.md` to define live Telegram/group QA for laconic task capture.
 - Covered correct user/context mapping, one-line confirmation, app visibility, edit/delete buttons, multi-user separation, noise handling, and duplicate behavior.
 - Updated `SMART-004` context while keeping it `Ready for QA`; no bot/runtime changes were made.
+## 2026-07-16 — BACK-050 accessibility smoke checklist
+
+- Added `docs/tasks/BACK-050-accessibility-smoke-checklist.md` to define the remaining manual keyboard/mobile accessibility QA.
+- Covered auth forms, invalid field errors, quick-add/contact dialogs, focus trap/return, Escape behavior, toast live-regions, bottom navigation, and mobile focus visibility.
+- Updated `BACK-050` context while keeping it `Ready for QA`; no runtime changes were made.
