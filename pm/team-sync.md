@@ -396,3 +396,7 @@
 
 - `BACK-017` now has a delivery-smoke checklist: `docs/tasks/BACK-017-notifications-delivery-smoke.md`.
 - Do not mark it Done from API/source evidence alone; it needs a real Telegram delivery to the intended linked user.
+## 2026-07-17 — BACK-010 payment support policy
+
+- Payment support/reversal policy added: `docs/tasks/BACK-010-payment-support-policy.md`.
+- This does not change price or launch production payments; it defines what support should do if a real payment succeeds but entitlement does not, or if callbacks are replayed/bad/wrong amount.

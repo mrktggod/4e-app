@@ -8996,3 +8996,8 @@
 - Added `docs/tasks/BACK-017-notifications-delivery-smoke.md` to define the remaining manual smoke for Telegram notification delivery.
 - Clarified that settings API/D1 evidence is not enough for Done: real recipient, Telegram delivery, copy, and timing must be verified live.
 - Updated backlog context while keeping `BACK-017` at `QA partial` until the live delivery smoke passes.
+## 2026-07-17 — BACK-010 payment support policy
+
+- Added `docs/tasks/BACK-010-payment-support-policy.md` to define support/reversal handling for paid flows before public launch.
+- Covered no-entitlement cases, replay/idempotency, wrong amount, bad signature, refund/dispute intake, manual grant rules, and minimum incident fields.
+- Updated `BACK-010` context while keeping it `Ready for QA`: production smoke and policy review remain required before paid launch.
