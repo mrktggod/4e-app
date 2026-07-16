@@ -8934,3 +8934,9 @@
 **Задача:** Подготовить правило выбора следующего продуктового шага после первых дней beta.
 **Результат:** Добавлен `pm/post-beta-decision-tree-2026-07.md`: cases A-F для core broken, weak retention, time realism, outside capture, reminders value и team promises; есть template decision meeting и правило выбора 1-2 задач.
 **Статус:** `FEEDBACK-001` дополнен ссылкой на decision tree; реальное применение после beta-feedback остаётся ручным этапом.
+
+## 2026-07-16 — Morning command center
+
+**Задача:** Сделать единый входной файл для утренней проверки после ночной подготовки.
+**Результат:** Добавлен `pm/morning-command-center-2026-07-17.md`: порядок core QA, beta invite, fail-path, post-beta decision tree, список "не трогать утром", ссылки на decision docs и шаблон короткого отчёта.
+**Статус:** Документ готов; runtime/backlog статусы не менялись.

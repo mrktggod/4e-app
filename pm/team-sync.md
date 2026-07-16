@@ -340,3 +340,8 @@
 
 - Добавлен `pm/post-beta-decision-tree-2026-07.md`: cases A-F для core broken, weak retention, time realism, outside capture, reminders value и team promises.
 - `FEEDBACK-001` дополнен ссылкой на decision tree; реальное применение после beta-feedback остаётся ручным этапом.
+
+## Morning command center — 2026-07-16
+
+- Добавлен `pm/morning-command-center-2026-07-17.md`: единый вход на утро, порядок core QA, beta invite, fail-path, post-beta decision tree, список `не трогать утром` и шаблон отчёта.
+- Runtime/backlog статусы не менялись.
