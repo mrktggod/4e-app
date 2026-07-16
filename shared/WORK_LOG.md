@@ -8964,3 +8964,10 @@
 **Задача:** Зафиксировать границы Free offline mode после runtime MVP.
 **Результат:** Добавлен `docs/tasks/BACK-057-offline-mode-plan.md`: current state, Free offline scope, Premium Sync separation, manual QA requirements and DoD.
 **Статус:** `BACK-057` оставлен `Partial Done`; manual offline smoke is required before Done.
+
+## 2026-07-17 — next-cycle matrix after overnight backlog/product pass
+
+- Added `pm/next-cycle-matrix-2026-07-17.md` as the next-cycle routing layer for morning QA and post-QA work.
+- Captured the do-first QA order: auth/registration, task-first flow, chat composer, entitlement/paywall, analytics.
+- Split remaining backlog into safe buckets: Ready for QA, Partial Done without runtime changes, Deferred until explicit product/platform decision, and explicit no-touch items.
+- Kept the current guardrails unchanged: no merge to main, no price change, no CAL implementation, no native launches, no OAuth profile expansion without consent, and no staging build artifact cleanup in this slice.

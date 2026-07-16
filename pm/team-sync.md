@@ -365,3 +365,10 @@
 
 - Добавлен `docs/tasks/BACK-057-offline-mode-plan.md`: current state, Free offline scope, Premium Sync separation, manual QA requirements and DoD.
 - `BACK-057` оставлен `Partial Done`; manual offline smoke is required before Done.
+
+## 2026-07-17 — next-cycle operating matrix
+
+- Next-cycle matrix added: `pm/next-cycle-matrix-2026-07-17.md`.
+- Morning QA should start from the matrix plus `pm/morning-command-center-2026-07-17.md`.
+- If morning QA finds auth/task/composer/paywall/analytics regressions, fix those before beta invites or any new product slices.
+- CAL remains out of scope for this branch unless explicitly re-opened in a separate branch/brief.
