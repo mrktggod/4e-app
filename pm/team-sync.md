@@ -345,3 +345,8 @@
 
 - Добавлен `pm/morning-command-center-2026-07-17.md`: единый вход на утро, порядок core QA, beta invite, fail-path, post-beta decision tree, список `не трогать утром` и шаблон отчёта.
 - Runtime/backlog статусы не менялись.
+
+## Night handoff — 2026-07-16
+
+- Добавлен `pm/night-handoff-2026-07-16-to-17.md`: HEAD, runtime/doc commit list, что открыть утром, pass/fail path, список `не трогать` и известный dirty artifact.
+- Следующий шаг: ручной QA утром по `pm/morning-command-center-2026-07-17.md`.
