@@ -307,3 +307,9 @@
 - Добавлены `docs/tasks/VIRAL-005-first-ai-plan-wow.md` и `docs/tasks/BACK-058-oauth-profile-consent.md`.
 - `VIRAL-005` переведён в `Partial Done`: wow moment остаётся в first empty home, не отдельный wizard; нужны activation event и fresh-account smoke.
 - `BACK-058` переведён в `Deferred`: не просим email/phone/birthdate про запас; каждое поле только с отдельным consent и понятной value после BACK-045/beta.
+
+## Product decisions: native/platform sequencing — 2026-07-16
+
+- Добавлен `docs/tasks/NATIVE-PLATFORM-DECISIONS-2026-07-16.md`: порядок NATIVE/PLAT, решения по share sheet/widgets, push actions, voice shortcuts, system calendar, geofencing и MAX.
+- `PLAT-001` и `NATIVE-001..005` переведены в `Deferred`: не стартуют до beta/native wrapper/CAL readiness и отдельного брифа.
+- Приоритет после beta: share sheet/widgets -> push actions -> voice shortcuts -> system calendar -> geofencing.

@@ -8898,3 +8898,9 @@
 **Задача:** Зафиксировать решения по `VIRAL-005` и `BACK-058`.
 **Результат:** Добавлены `docs/tasks/VIRAL-005-first-ai-plan-wow.md` и `docs/tasks/BACK-058-oauth-profile-consent.md`. Решения: wow moment остаётся в first empty home, не отдельный wizard; OAuth profile data не запрашиваются "про запас", каждое поле требует отдельного consent и value.
 **Статус:** `VIRAL-005` переведён в `Partial Done`; `BACK-058` переведён в `Deferred` до `BACK-045` live smoke, beta signal и consent copy.
+
+## 2026-07-16 — Product decisions: native/platform sequencing
+
+**Задача:** Зафиксировать порядок `NATIVE-*` и `PLAT-001`, чтобы не начинать платформенную экспансию до beta.
+**Результат:** Добавлен `docs/tasks/NATIVE-PLATFORM-DECISIONS-2026-07-16.md`: priority order, decisions for share sheet/widgets, push actions, voice shortcuts, system calendar, geofencing and MAX.
+**Статус:** `PLAT-001` и `NATIVE-001..005` переведены в `Deferred` до beta/native wrapper/CAL readiness по соответствующим условиям.
