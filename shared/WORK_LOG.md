@@ -9076,3 +9076,13 @@
 **Документ:** `docs/tasks/BUG-2026-07-15-005-staging-resmoke-2026-07-17.md`.
 
 **Статус:** `BUG-2026-07-15-005` и `BACK-060` остаются `Done`, теперь с точным 2026-07-17 exploit-proof в `pm/bugs.md` и `pm/backlog.md`.
+
+## 2026-07-17 — INFRA-006 worker canonicalization and BACK-057 scope answer
+
+**Задача:** закрыть два хвоста из вечерней координации: выбрать канонический worker checkout и дать определённый ответ по `BACK-057` runtime authorization.
+
+**Результат:** `X:\4\4e-worker` закреплён как canonical worker repo. Дубль `X:\4\4e-worker-p0` не удалён, а архивирован в `X:\4\4e-worker-p0_archived-2026-07-17`; внутрь добавлен `DO_NOT_WORK_HERE.txt` с пояснением, что это duplicate clone `mrktggod/4e-worker`, а канон — `X:\4\4e-worker`.
+
+**BACK-057:** по следам в `shared/WORK_LOG.md`, `pm/team-sync.md`, `docs/tasks/BACK-057-offline-mode-plan.md` и соседних `pm/`/`docs/` файлах не найден отдельный explicit brief, который разрешал бы runtime Offline Free Mode после no-touch guard 2026-07-14. Аудит обновлён определённым ответом: существующий runtime MVP считать unauthorized scope expansion до решения Юрия — оставить и QA-ить как `Partial Done`, либо карантинировать/откатить отдельной осознанной задачей.
+
+**Код:** runtime не менялся; только архивирование duplicate checkout и документация.

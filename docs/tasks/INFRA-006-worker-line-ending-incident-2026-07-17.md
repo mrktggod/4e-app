@@ -1,59 +1,57 @@
-# INFRA-006 — worker line-ending incident
+# INFRA-006 — worker line-ending and duplicate-clone incident
 
-Дата: 2026-07-17
+Date: 2026-07-17
 
-Цель: зафиксировать CRLF-инцидент в `4e-worker`, чтобы не держать детали в чате и не повторить ошибку в других локальных копиях.
+Purpose: record the CRLF incident and the local worker-copy decision so the team does not repeat the same workspace split.
 
-## 1. Summary
+## Summary
 
 | Field | Value |
 | --- | --- |
 | Affected repo | `X:\4\4e-worker` |
 | Branch | `feat/admin-tariff-api` |
-| Symptom | Massive CRLF-only diff after `git checkout -- .` attempts |
-| Root cause | `core.autocrlf=true` + no repo-level `.gitattributes` |
-| Fix commit | `6fd5a268532e3098fd9cc38e28c45d2b01274b7c` |
-| External check | https://github.com/mrktggod/4e-worker/commit/6fd5a268532e3098fd9cc38e28c45d2b01274b7c |
-| Final tracked diff | Clean after fix; only `kv-backups/` remains untracked |
+| Symptom | Massive CRLF-only diffs after rollback/checkout attempts |
+| Root cause | Windows Git `core.autocrlf=true` + missing repo-level `.gitattributes` |
+| Worker fix commit | `6fd5a268532e3098fd9cc38e28c45d2b01274b7c` |
+| App fix commit | `f29af90ad8c8457a8e6f36b648b324b7b622871f` |
+| Canonical app repo | `X:\4\.tmp-4e-app-publish` |
+| Canonical worker repo | `X:\4\4e-worker` |
+| Archived duplicate | `X:\4\4e-worker-p0_archived-2026-07-17` |
 
-## 2. What happened
+## What happened
 
-Repeated attempts to use `git checkout -- .` as a quick rollback were unsafe in this repository because Git for Windows had `core.autocrlf=true`. Without `.gitattributes`, checkout could rewrite tracked text files into CRLF and create huge 1:1 insertion/deletion diffs.
+Repeated attempts to use `git checkout -- .` as a quick rollback were unsafe while local Git could rewrite tracked files to CRLF. The rollback looked successful in text reports but the working tree still showed huge 1:1 insertion/deletion diffs.
 
-This made a normal rollback command look successful while still leaving, or even expanding, line-ending noise.
+The same risk existed in multiple local copies. Later audit confirmed that `X:\4\4e-worker-p0` was not a separate project: it was a duplicate clone of the same remote as `X:\4\4e-worker`.
 
-## 3. Fix applied
+## Fixes applied
 
-| Step | Result |
+| Repo | Decision / fix |
 | --- | --- |
-| Set local repo config | `git config core.autocrlf false` in `X:\4\4e-worker` |
-| Add repo policy | `.gitattributes` with `* text=auto eol=lf` |
-| Renormalize check | `git add --renormalize .` staged only `.gitattributes` at the time of fix |
-| Commit | `6fd5a268532e3098fd9cc38e28c45d2b01274b7c` |
-| Push evidence | Git push reported `f9e840a..6fd5a26 feat/admin-tariff-api -> feat/admin-tariff-api` |
+| `X:\4\4e-worker` | `core.autocrlf=false`, `.gitattributes` with LF policy, committed as `6fd5a26` |
+| `X:\4\.tmp-4e-app-publish` | `core.autocrlf=false`, `.gitattributes` with LF policy, committed as `f29af90` |
+| `X:\4\4e-worker-p0` | confirmed duplicate clone, then archived as `X:\4\4e-worker-p0_archived-2026-07-17` |
 
-## 4. Current local risk audit
+## Canonical path decision
 
-| Repo | `core.autocrlf` | `.gitattributes` | Current note |
-| --- | --- | --- | --- |
-| `X:\4\4e-worker` | `false` | yes | Fixed; only `kv-backups/` untracked |
-| `X:\4\.tmp-4e-app-publish` | `true` | no | Same risk exists; only `.pages-dist/privacy.html` dirty at audit time |
-| `X:\4\4e-worker-p0` | `true` | no | Same risk exists; untracked smoke scripts present |
+`worker-p0 is duplicate clone; canonical worker repo is X:\4\4e-worker`.
 
-## 5. Follow-up recommendation
+The archived duplicate contains `DO_NOT_WORK_HERE.txt`. Do not run git, edit, deploy, or smoke from that archived folder unless doing explicit recovery.
 
-| Priority | Action |
-| --- | --- |
-| P1 | Add `.gitattributes` and set `core.autocrlf=false` in app repo before any broad checkout/renormalize/pull operations |
-| P1 | Decide whether `4e-worker-p0` remains an active repo or archive; if active, apply same line-ending policy |
-| P2 | Avoid `git checkout -- .` as a first response to unexplained diffs on Windows until line-ending policy is known |
-| P2 | Include real `git status --short` and `git diff --stat` output in incident reports |
+## Current local risk audit
 
-## 6. What not to do
+| Path | Status | Note |
+| --- | --- | --- |
+| `X:\4\.tmp-4e-app-publish` | canonical app repo | clean after app LF normalization |
+| `X:\4\4e-worker` | canonical worker repo | clean except allowed untracked `kv-backups/` |
+| `X:\4\4e-worker-p0_archived-2026-07-17` | archived duplicate | read-only recovery copy, not active worktree |
+| `X:\4` root | not a repo | old accidental root `.git` disabled earlier |
+
+## What not to do
 
 | Do not | Reason |
 | --- | --- |
-| Do not run git from `X:\4` root | Root `.git` was disabled; workspace root is not a repo |
-| Do not delete `kv-backups/` automatically | It is an untracked worker artifact and needs separate decision |
-| Do not normalize all repos in one mixed commit | Keep line-ending policy changes per repo and easy to review |
-| Do not treat cached remote refs as fresh fetch proof | Worker fetch may fail due to credentials; use push output or GitHub commit URL |
+| Do not run git from `X:\4` root | Root is a workspace container, not a repo |
+| Do not work in `4e-worker-p0_archived-2026-07-17` | It is a duplicate archived copy |
+| Do not use broad checkout/reset as first reaction to Windows diffs | Check line-ending policy first |
+| Do not delete `kv-backups/` automatically | It is an untracked worker artifact needing a separate decision |

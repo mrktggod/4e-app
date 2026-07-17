@@ -464,3 +464,11 @@
 - Sibling checks `update-task` and `set-reminder` with bot-style `telegramUserId` returned `401 Не авторизован`, so no unsigned effect was observed there.
 - `pm/bugs.md` CP1251 mojibake was repaired and `scripts/check-cp1251-mojibake.mjs` now passes with `0 suspicious tokens`.
 - Signed positive path was not re-run from Codex because this process had no local `BOT_TOKEN`; earlier Юрий signed smoke remains the BACK-060 positive evidence.
+
+## 2026-07-17 — worker canonical path and BACK-057 scope answer
+
+- Canonical worker repo is now fixed: `X:\4\4e-worker`.
+- `X:\4\4e-worker-p0` was confirmed as a duplicate clone of `mrktggod/4e-worker` and archived to `X:\4\4e-worker-p0_archived-2026-07-17`.
+- The archive contains `DO_NOT_WORK_HERE.txt`; do not run git, edit, deploy or smoke from it except for explicit recovery.
+- BACK-057 scope audit answered from repo traces: no explicit authorization brief was found after the 2026-07-14 no-touch guard. Treat the existing Offline Free Mode runtime MVP as unauthorized scope expansion until Yuri decides keep vs quarantine/revert.
+- No runtime code was changed in this scope decision.
