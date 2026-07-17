@@ -9104,3 +9104,11 @@
 **Результат:** добавлен `pm/beta-invite-ready-checklist-2026-07-17.md`: что уже зелёное автоматически, какие 7 ручных go/no-go шагов нужно пройти перед отправкой приглашений, кого звать первым, короткий invite, follow-up через 2-4 часа, follow-up дня 2 и формат feedback intake.
 
 **Ограничение:** beta invite не отправлялся, статус `BETA-001` не переведён в Done. Цена, payment launch, CAL, native/platform и main merge не трогались.
+
+## 2026-07-17 — Partial Done runtime freeze audit
+
+**Задача:** пройти безопасную часть Section 4 из `pm/next-cycle-matrix-2026-07-17.md`: проверить `Partial Done`/`Deferred` хвосты без runtime-реализации и без самовольного повышения статусов.
+
+**Результат:** добавлен `pm/partial-done-runtime-freeze-audit-2026-07-17.md`. Зафиксировано, что `BACK-057`, `PLAT-002/003`, `BACK-012/011`, `SMART-012`, `VIRAL-*`, `OMNI-001`, `CAL-001` не переходят в Done из source/docs evidence и требуют ручного/device/product gate. Deferred-пункты `PLAT-001`, `NATIVE-001..005`, `BACK-058`, `CAL-002/003` остаются deferred.
+
+**Код:** runtime не менялся; deploy, price, main merge, beta sending и payment launch не выполнялись.

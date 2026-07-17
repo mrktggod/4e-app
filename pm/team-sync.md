@@ -487,3 +487,11 @@
 - It does not approve or send beta invites automatically: Yuri still needs the manual browser/mobile gate from the checklist.
 - The invite copy is ready, with explicit note that payment/tariffs are not being tested in this first closed beta batch.
 - Recommended first batch remains 3-5 testers, not 10.
+
+## 2026-07-17 — Partial Done runtime freeze audit
+
+- Added `pm/partial-done-runtime-freeze-audit-2026-07-17.md` to execute the safe Section 4 part of the next-cycle matrix.
+- No Partial Done item was promoted to Done from source/docs evidence alone.
+- Runtime remains frozen for `BACK-057`, `PLAT-002/003`, `BACK-012/011`, `SMART-012`, `VIRAL-*`, `OMNI-001`, `CAL-001` until the required manual/device/product gate exists.
+- Deferred items remain deferred: `PLAT-001`, `NATIVE-001..005`, `BACK-058`, `CAL-002/003`.
+- No code, deploy, price, main merge, beta sending or production payment work was performed.
