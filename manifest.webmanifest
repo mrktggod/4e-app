@@ -1,0 +1,41 @@
+{
+  "name": "4 - личный AI-штаб дня",
+  "short_name": "4",
+  "description": "Личный AI-штаб для задач, обещаний и фокуса дня.",
+  "lang": "ru",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0E140B",
+  "theme_color": "#0E140B",
+  "categories": ["productivity", "business"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Добавить задачу",
+      "short_name": "Задача",
+      "description": "Быстро открыть 4 для фиксации задачи.",
+      "url": "/?source=pwa-shortcut&action=task"
+    },
+    {
+      "name": "План дня",
+      "short_name": "План",
+      "description": "Открыть главный экран с фокусом дня.",
+      "url": "/?source=pwa-shortcut&action=plan"
+    }
+  ]
+}

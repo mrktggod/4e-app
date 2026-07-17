@@ -1,7 +1,21 @@
-# DEVELOPMENT LOG — проект 4 AI-секретарь
+# DEVELOPMENT LOG вЂ” РїСЂРѕРµРєС‚ 4 AI-СЃРµРєСЂРµС‚Р°СЂСЊ
 
-> Веду я (Cowork-наблюдатель). Обновляется после каждого значимого изменения.
-> Мимо и Codex дописывают раздел после каждой выполненной задачи.
+> Р’РµРґСѓ СЏ (Cowork-РЅР°Р±Р»СЋРґР°С‚РµР»СЊ). РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РїРѕСЃР»Рµ РєР°Р¶РґРѕРіРѕ Р·РЅР°С‡РёРјРѕРіРѕ РёР·РјРµРЅРµРЅРёСЏ.
+> РњРёРјРѕ Рё Codex РґРѕРїРёСЃС‹РІР°СЋС‚ СЂР°Р·РґРµР» РїРѕСЃР»Рµ РєР°Р¶РґРѕР№ РІС‹РїРѕР»РЅРµРЅРЅРѕР№ Р·Р°РґР°С‡Рё.
+
+---
+
+## 2026-07-06 — merge `origin/main` into `feat/admin-tariff-api`
+
+### Разрешение конфликтов перед PR
+
+**Что сделано:** Локально выполнен merge `origin/main` в `feat/admin-tariff-api` и вручную разобраны конфликты. В `index.html` сохранён новый inline-описательный блок task detail из `main`, убраны дубли `detail-time-input` / `detail-direction` / `detail-person`, оставлена контактная кнопка исполнителя из feature-ветки и раскрываемый блок «Личные данные аккаунта» в профиле. В PM-документах сохранён `BACK-048` для dev/test accounts, а профильные задачи feature-ветки перенумерованы в `BACK-052`, `BACK-053`, `BACK-054`. `styles.css` и `styles.min.css` пересобраны из `styles/main.less`; `FILE_MAP.md` и `FILE_MAP_UI.md` обновлены под фактические строки.
+
+**Проверка кодировки:** `index.html` markers до merge: 32; после разрешения конфликтов: 32.
+
+**Тест:** `rg -n "^(<<<<<<<|=======|>>>>>>>)" ...`; `git diff --check`; `bash scripts/check-portable-paths.sh`; LESS/minified CSS build через bundled Node 24 (`node .../lessc`, `node .../cleancss`), потому что системный `node v12/npm 6` не поддержал текущий `package-lock.json` v3.
+
+**Коммит:** `этот merge-коммит`
 
 ---
 
@@ -88,6 +102,41 @@
 **Тест:** `git diff --check`; `bash scripts/check-portable-paths.sh`.
 
 **Коммит:** `docs(process): add linear bug triage policy`
+## 2026-07-06 — Accessibility as permanent UI rule
+
+### Доступность закреплена в Definition of Done UI-задач
+
+**Что сделано:** Код приложения не менялся. Accessibility baseline закреплён как постоянное правило для нового и изменяемого UI, а не только как разовая задача `BACK-050`. Обновлены `docs/ui-architecture-rules.md`, `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `shared/ROADMAP.md`. Добавлена итоговая инструкция для Юры: `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-permanent-rule.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка постоянного правила в агентских инструкциях и roadmap; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Коммит:** `docs(ui): make accessibility a permanent rule`
+
+## 2026-07-06 — BACK-050: accessibility baseline
+
+### Базовая доступность критических сценариев
+
+**Что сделано:** Код приложения не менялся. После изучения материала HTML Academy по доступности веб-интерфейсов добавлен `BACK-050` в `shared/ROADMAP.md` и `pm/backlog.md`. В `pm/qa-checklist.md` добавлены проверки auth keyboard/focus, доступных labels/errors, status/toast, dialog bottom sheets и touch-targets. Создан `docs/tasks/BACK-050-accessibility-baseline.md` с порядком работ и `pm/agent-inbox/codex-to-yuri-2026-07-06-accessibility-baseline.md` с тремя копируемыми задачами для Юры.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/BACK-050-accessibility-baseline.md` → `pm/agent-inbox/`.
+
+**Коммит:** `docs(qa): add accessibility baseline tasks`
+
+## 2026-07-06 — BACK-049: UI architecture guard
+
+### Правило LESS + BEM без роста inline-долга
+
+**Что сделано:** По решению Алексея закреплено правило для нового UI-кода: HTML = структура, LESS = стили, JS = поведение; новые классы — в BEM-подходе; новые inline `style=""`, `onclick`/`oninput`/`onchange`, inline `<style>` и inline `<script>` в `index.html` не добавлять. Добавлен `docs/ui-architecture-rules.md`, обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `shared/ROADMAP.md` и `pm/backlog.md`. Добавлен guard `scripts/check-ui-architecture.sh`, npm script `check:ui-architecture`, pre-commit и GitHub Actions проверка. `BACK-012` переведён в `Partial Done`: LESS/minification есть, BEM/legacy cleanup продолжаются через BACK-049 и поэкранные правки.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** `bash scripts/check-ui-architecture.sh`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Коммит:** `docs(ui): add architecture guard for inline debt`
 
 ## 2026-07-05 — BACK-048: dev/test accounts task
 
@@ -131,1134 +180,1170 @@
 
 **Тест:** `Select-String` до/после по маркерам `Войти|Задачи|Сегодня`; `npm run build:css`; `git diff --check`; headless Chrome preview для profile desktop/mobile на локальном `file:///.../__codex_profile_preview.html`.
 
-### BACK-047 — v2 auth/privacy routes wired into live worker
+### feat/admin-tariff-api — контроль перед следующим шагом BACK-053
 
-**Что сделано:** В `4e-worker/worker.js` добавлены прямые импорты `handleV2AuthRequest` и `handleV2PrivacyRequest` из `src/worker/*`, прокинут `VK_SECRET_KEY` в runtime env и встроен routing для всего префикса `/v2/auth/*` и `/v2/privacy/*`. Для совместимости со старым `vk.html` добавлен алиас `GET /auth/identities`: по legacy `x-token` он поднимает D1 session через `/v2/auth/legacy-session` и возвращает identities из `/v2/auth/identities`. Staging deploy: version `c618e29f-e96e-4849-acc6-175311115dd6`; production deploy: version `02f8b9a9-2f13-41b2-9e2b-9c343736e473`. Positive smoke на staging и на prod прошёл через полный сценарий `auth/register` → legacy token → `/v2/auth/legacy-session` → `/auth/identities` → `/v2/privacy/settings`; во всех шагах ответы были `200`, а `legacy_user_id === d1_user_id`. Negative smoke подтвердил, что без токенов `/v2/auth/legacy-session`, `/auth/identities` и `/v2/privacy/settings` теперь отдают `401`, а не `404`.
+**Что сделано:** Переключена локальная рабочая ветка на `feat/admin-tariff-api` от `origin/feat/admin-tariff-api`. Подтверждено, что профильные задачи этой ветки закрыты и при merge с `main` перенумерованы: `BACK-052` — личные данные в раскрываемом блоке, `BACK-053` — настройка фото по клику на аватар, `BACK-054` — человекочитаемые направления. По `BACK-053` проверена реализация в `index.html`: основной аватар `profile-avatar` и превью `profile-photo-preview` открывают единый скрытый `profile-photo-input`, отдельная дублирующая кнопка настройки фото из HTML-разметки убрана. Дополнительно сняты блокеры перед PR: абсолютные Windows-ссылки в `docs/infra-005-yandex-ru-proxy.md` заменены на относительные, конфликтные маркеры убраны из `pm/bugs.md`, `pm/qa-checklist.md`, `DEVELOPMENT_LOG.md`.
 
-**Проверка кодировки:** `index.html` markers до правки: 61; после правки: 61.
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
 
-**Тест:** `node --check worker.js`; `npx wrangler secret list --env staging` (обнаружено, что на staging нет `VK_SECRET_KEY` и `RESEND_KEY`, но это не блокирует `legacy-session`/`identities`/`privacy`); `npx wrangler deploy --env staging`; positive smoke staging через временный email `codex-back047-20260705141833@example.com`; `npx wrangler deploy`; positive smoke prod через временный email `codex-back047-prod-20260705142059@example.com`; отдельный negative smoke на `/`, `/v2/auth/legacy-session`, `/auth/identities`, `/v2/privacy/settings`.
+**Тест:** `bash scripts/check-portable-paths.sh`; `git diff --check`; `rg -n "^<<<<<<<|^=======|^>>>>>>>" DEVELOPMENT_LOG.md pm/bugs.md pm/qa-checklist.md shared/WORK_LOG.md pm/backlog.md`; ручная code-review проверка profile photo flow по `index.html` и `styles/screens/profile.less`.
 
-**Коммит:** worker `21ddb48` (`feat(worker): expose v2 auth and privacy routes`)
+**Коммит:** `docs(process): clean admin tariff branch blockers`
 
-### BACK-047 — frontend cleanup after live 200
+### Sprint 1 status sync after hotfixes and UI package
 
-**Что сделано:** После live smoke worker создана отдельная app-ветка `fix/back-047-remove-auth-fallbacks`. В `index.html` удалено временное игнорирование `404/501/503` в `syncD1AuthSession()`. В `vk.html` удалён helper `isOptionalD1ApiStatus()`, убрана мягкая деградация при `legacy-session` и снят двойной fallback `v2/auth/identities -> /auth/identities`: экран снова читает identities напрямую из `/v2/auth/identities`, если D1 session уже поднята. Обновлены `FILE_MAP_WORKER.md` и `pm/backlog.md` с регистрацией состояния BACK-047.
+**Что сделано:** После сверки с фактическими ветками и коммитами синхронизированы статусы в app-документации. `BACK-047` переведён в `Done`: live worker уже обслуживает `/v2/auth/legacy-session`, `/auth/identities`, `/v2/privacy/settings`, а фронтовые fallback сняты отдельным app-коммитом после `200` на prod. UI-пакет Алексея отражён как `Ready for QA`: `BACK-046` (нижняя панель, commit `748dcfd`), `BACK-043` (мобильный профиль, commit `33903b4`) и `BACK-044` (карточка задачи, commit `250f35b`). В `pm/bugs.md` и `pm/qa-checklist.md` заодно исправлена ссылка на переименованный ID `BACK-046` вместо старого `BACK-042`.
 
-**Проверка кодировки:** `index.html` markers до правки: 61; после правки: 61.
+**Тест:** ручная сверка `git log` по веткам `fix/bottom-nav-app-width`, `fix/profile-responsive-ui`, `fix/task-detail-card-cleanup`, `feat/infra-005-yandex-ru-proxy-step1`; сверка `pm/backlog.md`, `pm/bugs.md`, `pm/qa-checklist.md` на соответствие sprint-очереди.
 
-**Тест:** `Select-String` до/после по маркерам `Войти|Задачи|Сегодня`; резервная копия `index.backup_20260705_1422.html`; `C:\Program Files\Git\bin\bash.exe ./scripts/check-portable-paths.sh`; `git diff` по `index.html`/`vk.html`.
+### INFRA-005 — RU proxy step 1 prepared
 
-**Коммит:** app `e85cd50` (`fix(auth): remove v2 bootstrap fallbacks`)
+**Что сделано:** Подготовлен кодовой пакет для промежуточного российского API-адреса под VK Mini App, без переноса основного backend из Cloudflare. В `scripts/build-vk-hosting.mjs` добавлена build-time подмена `WORKER` через переменную окружения `VK_API_BASE_URL`, поэтому один и тот же `vk.html` можно публиковать либо на `edge.4-ai.site`, либо на будущий Yandex proxy-домен без ручной правки исходника. Добавлен `infra/yandex-api-gateway/ru-proxy-openapi.yaml`: OpenAPI spec для Yandex API Gateway с `x-yc-apigateway-integration:http`, путями `/` и `/{path+}`, пробросом исходных headers/query, явным `Host: edge.4-ai.site` и отключённым gateway-side CORS intercept (`origin: false`), чтобы preflight `OPTIONS` уходил в текущий backend. Добавлены runbook `docs/infra-005-yandex-ru-proxy.md` и task-файл `docs/tasks/INFRA-005-yandex-ru-proxy-step1.md`; backlog и roadmap синхронизированы новым item `INFRA-005`.
 
-## КРИТИЧЕСКИЕ ПРАВИЛА ДЛЯ АГЕНТОВ
+**Тест:** `git diff --check`; ручная сверка spec с официальной документацией Yandex Cloud по `x-yc-apigateway-integration:http`, CORS (`origin: false`) и spec variables (`${var.*}`); локальный code review `scripts/build-vk-hosting.mjs` на подмену `const WORKER = '...'` в `.vk-hosting-dist/index.html`.
 
-### Кодировка (нарушалось 3+ раз — это самая частая ошибка)
-- **НИКОГДА** не использовать PowerShell `-replace`, `Set-Content`, `Out-File` для файлов с кириллицей
-- Читать: `[System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8)`
-- Писать: `[System.IO.File]::WriteAllText($f, $content, (New-Object System.Text.UTF8Encoding $false))`
-- После правки проверять: `Select-String -Path $file -Pattern 'Войти|Задачи'`
-- Если кириллица пропала → восстанавливать байтовым методом с GitHub (не редактировать!)
+### BACK-047 вЂ” v2 auth/privacy routes wired into live worker
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `4e-worker/worker.js` РґРѕР±Р°РІР»РµРЅС‹ РїСЂСЏРјС‹Рµ РёРјРїРѕСЂС‚С‹ `handleV2AuthRequest` Рё `handleV2PrivacyRequest` РёР· `src/worker/*`, РїСЂРѕРєРёРЅСѓС‚ `VK_SECRET_KEY` РІ runtime env Рё РІСЃС‚СЂРѕРµРЅ routing РґР»СЏ РІСЃРµРіРѕ РїСЂРµС„РёРєСЃР° `/v2/auth/*` Рё `/v2/privacy/*`. Р”Р»СЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё СЃРѕ СЃС‚Р°СЂС‹Рј `vk.html` РґРѕР±Р°РІР»РµРЅ Р°Р»РёР°СЃ `GET /auth/identities`: РїРѕ legacy `x-token` РѕРЅ РїРѕРґРЅРёРјР°РµС‚ D1 session С‡РµСЂРµР· `/v2/auth/legacy-session` Рё РІРѕР·РІСЂР°С‰Р°РµС‚ identities РёР· `/v2/auth/identities`. Staging deploy: version `c618e29f-e96e-4849-acc6-175311115dd6`; production deploy: version `02f8b9a9-2f13-41b2-9e2b-9c343736e473`. Positive smoke РЅР° staging Рё РЅР° prod РїСЂРѕС€С‘Р» С‡РµСЂРµР· РїРѕР»РЅС‹Р№ СЃС†РµРЅР°СЂРёР№ `auth/register` в†’ legacy token в†’ `/v2/auth/legacy-session` в†’ `/auth/identities` в†’ `/v2/privacy/settings`; РІРѕ РІСЃРµС… С€Р°РіР°С… РѕС‚РІРµС‚С‹ Р±С‹Р»Рё `200`, Р° `legacy_user_id === d1_user_id`. Negative smoke РїРѕРґС‚РІРµСЂРґРёР», С‡С‚Рѕ Р±РµР· С‚РѕРєРµРЅРѕРІ `/v2/auth/legacy-session`, `/auth/identities` Рё `/v2/privacy/settings` С‚РµРїРµСЂСЊ РѕС‚РґР°СЋС‚ `401`, Р° РЅРµ `404`.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` markers РґРѕ РїСЂР°РІРєРё: 61; РїРѕСЃР»Рµ РїСЂР°РІРєРё: 61.
+
+**РўРµСЃС‚:** `node --check worker.js`; `npx wrangler secret list --env staging` (РѕР±РЅР°СЂСѓР¶РµРЅРѕ, С‡С‚Рѕ РЅР° staging РЅРµС‚ `VK_SECRET_KEY` Рё `RESEND_KEY`, РЅРѕ СЌС‚Рѕ РЅРµ Р±Р»РѕРєРёСЂСѓРµС‚ `legacy-session`/`identities`/`privacy`); `npx wrangler deploy --env staging`; positive smoke staging С‡РµСЂРµР· РІСЂРµРјРµРЅРЅС‹Р№ email `codex-back047-20260705141833@example.com`; `npx wrangler deploy`; positive smoke prod С‡РµСЂРµР· РІСЂРµРјРµРЅРЅС‹Р№ email `codex-back047-prod-20260705142059@example.com`; РѕС‚РґРµР»СЊРЅС‹Р№ negative smoke РЅР° `/`, `/v2/auth/legacy-session`, `/auth/identities`, `/v2/privacy/settings`.
+
+**РљРѕРјРјРёС‚:** worker `21ddb48` (`feat(worker): expose v2 auth and privacy routes`)
+
+### BACK-047 вЂ” frontend cleanup after live 200
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕСЃР»Рµ live smoke worker СЃРѕР·РґР°РЅР° РѕС‚РґРµР»СЊРЅР°СЏ app-РІРµС‚РєР° `fix/back-047-remove-auth-fallbacks`. Р’ `index.html` СѓРґР°Р»РµРЅРѕ РІСЂРµРјРµРЅРЅРѕРµ РёРіРЅРѕСЂРёСЂРѕРІР°РЅРёРµ `404/501/503` РІ `syncD1AuthSession()`. Р’ `vk.html` СѓРґР°Р»С‘РЅ helper `isOptionalD1ApiStatus()`, СѓР±СЂР°РЅР° РјСЏРіРєР°СЏ РґРµРіСЂР°РґР°С†РёСЏ РїСЂРё `legacy-session` Рё СЃРЅСЏС‚ РґРІРѕР№РЅРѕР№ fallback `v2/auth/identities -> /auth/identities`: СЌРєСЂР°РЅ СЃРЅРѕРІР° С‡РёС‚Р°РµС‚ identities РЅР°РїСЂСЏРјСѓСЋ РёР· `/v2/auth/identities`, РµСЃР»Рё D1 session СѓР¶Рµ РїРѕРґРЅСЏС‚Р°. РћР±РЅРѕРІР»РµРЅС‹ `FILE_MAP_WORKER.md` Рё `pm/backlog.md` СЃ СЂРµРіРёСЃС‚СЂР°С†РёРµР№ СЃРѕСЃС‚РѕСЏРЅРёСЏ BACK-047.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` markers РґРѕ РїСЂР°РІРєРё: 61; РїРѕСЃР»Рµ РїСЂР°РІРєРё: 61.
+
+**РўРµСЃС‚:** `Select-String` РґРѕ/РїРѕСЃР»Рµ РїРѕ РјР°СЂРєРµСЂР°Рј `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`; СЂРµР·РµСЂРІРЅР°СЏ РєРѕРїРёСЏ `index.backup_20260705_1422.html`; `C:\Program Files\Git\bin\bash.exe ./scripts/check-portable-paths.sh`; `git diff` РїРѕ `index.html`/`vk.html`.
+
+**РљРѕРјРјРёС‚:** app `e85cd50` (`fix(auth): remove v2 bootstrap fallbacks`)
+
+## РљР РРўРР§Р•РЎРљРР• РџР РђР’РР›Рђ Р”Р›РЇ РђР“Р•РќРўРћР’
+
+### РљРѕРґРёСЂРѕРІРєР° (РЅР°СЂСѓС€Р°Р»РѕСЃСЊ 3+ СЂР°Р· вЂ” СЌС‚Рѕ СЃР°РјР°СЏ С‡Р°СЃС‚Р°СЏ РѕС€РёР±РєР°)
+- **РќРРљРћР“Р”Рђ** РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ PowerShell `-replace`, `Set-Content`, `Out-File` РґР»СЏ С„Р°Р№Р»РѕРІ СЃ РєРёСЂРёР»Р»РёС†РµР№
+- Р§РёС‚Р°С‚СЊ: `[System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8)`
+- РџРёСЃР°С‚СЊ: `[System.IO.File]::WriteAllText($f, $content, (New-Object System.Text.UTF8Encoding $false))`
+- РџРѕСЃР»Рµ РїСЂР°РІРєРё РїСЂРѕРІРµСЂСЏС‚СЊ: `Select-String -Path $file -Pattern 'Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё'`
+- Р•СЃР»Рё РєРёСЂРёР»Р»РёС†Р° РїСЂРѕРїР°Р»Р° в†’ РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ Р±Р°Р№С‚РѕРІС‹Рј РјРµС‚РѕРґРѕРј СЃ GitHub (РЅРµ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ!)
 
 ### Git
-- После `git reset --hard` нужен `git push --force`
-- Конфликты при `git revert` → `git revert --abort` + `git reset --hard <hash>`
-- Перед правкой VK/TG файлов: `git stash` как страховка
+- РџРѕСЃР»Рµ `git reset --hard` РЅСѓР¶РµРЅ `git push --force`
+- РљРѕРЅС„Р»РёРєС‚С‹ РїСЂРё `git revert` в†’ `git revert --abort` + `git reset --hard <hash>`
+- РџРµСЂРµРґ РїСЂР°РІРєРѕР№ VK/TG С„Р°Р№Р»РѕРІ: `git stash` РєР°Рє СЃС‚СЂР°С…РѕРІРєР°
 
 ### PowerShell
-- `;` вместо `&&`
-- Скачивать файлы: `$bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()`
-- Заголовки: `-Headers @{"Key"="Value"}`
+- `;` РІРјРµСЃС‚Рѕ `&&`
+- РЎРєР°С‡РёРІР°С‚СЊ С„Р°Р№Р»С‹: `$bytes = (Invoke-WebRequest -Uri $url).RawContentStream.ToArray()`
+- Р—Р°РіРѕР»РѕРІРєРё: `-Headers @{"Key"="Value"}`
 
 ---
 
-## АРХИТЕКТУРА
+## РђР РҐРРўР•РљРўРЈР Рђ
 
-| Файл | Назначение |
+| Р¤Р°Р№Р» | РќР°Р·РЅР°С‡РµРЅРёРµ |
 |------|-----------|
-| `4e-app/index.html` | Telegram Mini App — не трогать без крайней нужды |
-| `4e-app/vk.html` | VK Mini App — отдельный, без Telegram SDK |
-| `4e-worker/worker.js` | Cloudflare Worker (минифицирован) |
-| `4e-worker/src/bot/` | Telegram бот (разбит на модули) |
+| `4e-app/index.html` | Telegram Mini App вЂ” РЅРµ С‚СЂРѕРіР°С‚СЊ Р±РµР· РєСЂР°Р№РЅРµР№ РЅСѓР¶РґС‹ |
+| `4e-app/vk.html` | VK Mini App вЂ” РѕС‚РґРµР»СЊРЅС‹Р№, Р±РµР· Telegram SDK |
+| `4e-worker/worker.js` | Cloudflare Worker (РјРёРЅРёС„РёС†РёСЂРѕРІР°РЅ) |
+| `4e-worker/src/bot/` | Telegram Р±РѕС‚ (СЂР°Р·Р±РёС‚ РЅР° РјРѕРґСѓР»Рё) |
 
-### Ключевые эндпоинты Worker
-- `/anthropic` — прокси к Claude, требует `x-token`
-- `/tasks` — задачи по токену без chatId
-- `/auth/vk` — VK авто-логин
+### РљР»СЋС‡РµРІС‹Рµ СЌРЅРґРїРѕРёРЅС‚С‹ Worker
+- `/anthropic` вЂ” РїСЂРѕРєСЃРё Рє Claude, С‚СЂРµР±СѓРµС‚ `x-token`
+- `/tasks` вЂ” Р·Р°РґР°С‡Рё РїРѕ С‚РѕРєРµРЅСѓ Р±РµР· chatId
+- `/auth/vk` вЂ” VK Р°РІС‚Рѕ-Р»РѕРіРёРЅ
 
 ---
 
-## ИЗВЕСТНЫЕ ПРОБЛЕМЫ (открытые)
+## РР—Р’Р•РЎРўРќР«Р• РџР РћР‘Р›Р•РњР« (РѕС‚РєСЂС‹С‚С‹Рµ)
 
-| # | Проблема | Приоритет |
+| # | РџСЂРѕР±Р»РµРјР° | РџСЂРёРѕСЂРёС‚РµС‚ |
 |---|----------|-----------|
-| 1 | Уведомление РКН — ручной шаг Юрия | высокий |
-| 2 | Yandex Cloud PostgreSQL — ручной шаг Алексея перед BACK-008 | высокий |
-| 3 | `bottom-nav-v2` (в #home) и `global-nav` — два отдельных компонента, нужно держать синхронизированными | средний |
-| 4 | ANTHROPIC_KEY в worker.js должен быть только PLACEHOLDER — не коммитить реальный ключ | высокий |
+| 1 | РЈРІРµРґРѕРјР»РµРЅРёРµ Р РљРќ вЂ” СЂСѓС‡РЅРѕР№ С€Р°Рі Р®СЂРёСЏ | РІС‹СЃРѕРєРёР№ |
+| 2 | Yandex Cloud PostgreSQL вЂ” СЂСѓС‡РЅРѕР№ С€Р°Рі РђР»РµРєСЃРµСЏ РїРµСЂРµРґ BACK-008 | РІС‹СЃРѕРєРёР№ |
+| 3 | `bottom-nav-v2` (РІ #home) Рё `global-nav` вЂ” РґРІР° РѕС‚РґРµР»СЊРЅС‹С… РєРѕРјРїРѕРЅРµРЅС‚Р°, РЅСѓР¶РЅРѕ РґРµСЂР¶Р°С‚СЊ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅРЅС‹РјРё | СЃСЂРµРґРЅРёР№ |
+| 4 | ANTHROPIC_KEY РІ worker.js РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ PLACEHOLDER вЂ” РЅРµ РєРѕРјРјРёС‚РёС‚СЊ СЂРµР°Р»СЊРЅС‹Р№ РєР»СЋС‡ | РІС‹СЃРѕРєРёР№ |
 
 ---
 
-## ИСТОРИЯ ИЗМЕНЕНИЙ
-## 2026-07-05 — BACK-045: auth via Russian services roadmap (Codex)
+## РРЎРўРћР РРЇ РР—РњР•РќР•РќРР™
+## 2026-07-05 вЂ” BACK-045: auth via Russian services roadmap (Codex)
 
-**Что сделано:** В `shared/ROADMAP.md` добавлено направление ближайшего горизонта: авторизация через российские провайдеры VK ID и Яндекс ID. В `pm/backlog.md` добавлена задача `BACK-045` с критериями готовности: понятный вход на login/register, отсутствие дублей аккаунтов, видимость привязанных способов входа, smoke для web/VK/TG. Создан task-файл `docs/tasks/BACK-045-russian-service-auth.md`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `shared/ROADMAP.md` РґРѕР±Р°РІР»РµРЅРѕ РЅР°РїСЂР°РІР»РµРЅРёРµ Р±Р»РёР¶Р°Р№С€РµРіРѕ РіРѕСЂРёР·РѕРЅС‚Р°: Р°РІС‚РѕСЂРёР·Р°С†РёСЏ С‡РµСЂРµР· СЂРѕСЃСЃРёР№СЃРєРёРµ РїСЂРѕРІР°Р№РґРµСЂС‹ VK ID Рё РЇРЅРґРµРєСЃ ID. Р’ `pm/backlog.md` РґРѕР±Р°РІР»РµРЅР° Р·Р°РґР°С‡Р° `BACK-045` СЃ РєСЂРёС‚РµСЂРёСЏРјРё РіРѕС‚РѕРІРЅРѕСЃС‚Рё: РїРѕРЅСЏС‚РЅС‹Р№ РІС…РѕРґ РЅР° login/register, РѕС‚СЃСѓС‚СЃС‚РІРёРµ РґСѓР±Р»РµР№ Р°РєРєР°СѓРЅС‚РѕРІ, РІРёРґРёРјРѕСЃС‚СЊ РїСЂРёРІСЏР·Р°РЅРЅС‹С… СЃРїРѕСЃРѕР±РѕРІ РІС…РѕРґР°, smoke РґР»СЏ web/VK/TG. РЎРѕР·РґР°РЅ task-С„Р°Р№Р» `docs/tasks/BACK-045-russian-service-auth.md`.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `docs/tasks/`; код не менялся.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `shared/ROADMAP.md` в†’ `pm/backlog.md` в†’ `docs/tasks/`; РєРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ.
 
-**Коммит:** `docs(auth): add russian service auth roadmap`
+**РљРѕРјРјРёС‚:** `docs(auth): add russian service auth roadmap`
 
-**Статус:** Todo — перед разработкой нужно решить, кто регистрирует OAuth-приложение Яндекса и как это согласуется с BACK-026.
-
----
-## 2026-07-05 — BACK-044: task detail card cleanup triage (Codex)
-
-**Что сделано:** По замечаниям Алексея оформлена задача для Юрия на упрощение детальной карточки задачи: описание под заголовком, убрать вкладку `Описание`, поднять `Срок` первым, добавить отступ у быстрых сроков, скрыть строки `Направление` и `Человек` из видимого UI карточки. Код приложения не менялся. Обновлены `pm/backlog.md`, `pm/qa-checklist.md`, `shared/WORK_LOG.md`; добавлен `docs/tasks/BACK-044-task-detail-card-cleanup.md`.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** Документальная проверка связки `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/`; код не менялся.
-
-**Коммит:** N/A
-
-**Статус:** Triaged — реализация в ветке `fix/task-detail-card-cleanup`.
+**РЎС‚Р°С‚СѓСЃ:** Todo вЂ” РїРµСЂРµРґ СЂР°Р·СЂР°Р±РѕС‚РєРѕР№ РЅСѓР¶РЅРѕ СЂРµС€РёС‚СЊ, РєС‚Рѕ СЂРµРіРёСЃС‚СЂРёСЂСѓРµС‚ OAuth-РїСЂРёР»РѕР¶РµРЅРёРµ РЇРЅРґРµРєСЃР° Рё РєР°Рє СЌС‚Рѕ СЃРѕРіР»Р°СЃСѓРµС‚СЃСЏ СЃ BACK-026.
 
 ---
-## 2026-07-05 — BUG-2026-07-05-002: profile mobile layout triage (Codex)
+## 2026-07-05 вЂ” BACK-044: task detail card cleanup triage (Codex)
 
-**Что сделано:** По двум скринам Алексея зафиксирован UI-баг профиля на мобильной веб-версии: строка Telegram и статусный бейдж "Не привязан" выглядят неаккуратно, заголовки "Дата рождения" и "О себе" прижаты к соседним блокам, поле "О себе" и счётчик `0 / 200` не образуют гармоничную секцию. Добавлены `BUG-2026-07-05-002` в `pm/bugs.md`, `BACK-043` в `pm/backlog.md`, регрессия в `pm/qa-checklist.md` и task-файл `docs/tasks/BUG-2026-07-05-002_profile_mobile_layout.md` для Юры.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕ Р·Р°РјРµС‡Р°РЅРёСЏРј РђР»РµРєСЃРµСЏ РѕС„РѕСЂРјР»РµРЅР° Р·Р°РґР°С‡Р° РґР»СЏ Р®СЂРёСЏ РЅР° СѓРїСЂРѕС‰РµРЅРёРµ РґРµС‚Р°Р»СЊРЅРѕР№ РєР°СЂС‚РѕС‡РєРё Р·Р°РґР°С‡Рё: РѕРїРёСЃР°РЅРёРµ РїРѕРґ Р·Р°РіРѕР»РѕРІРєРѕРј, СѓР±СЂР°С‚СЊ РІРєР»Р°РґРєСѓ `РћРїРёСЃР°РЅРёРµ`, РїРѕРґРЅСЏС‚СЊ `РЎСЂРѕРє` РїРµСЂРІС‹Рј, РґРѕР±Р°РІРёС‚СЊ РѕС‚СЃС‚СѓРї Сѓ Р±С‹СЃС‚СЂС‹С… СЃСЂРѕРєРѕРІ, СЃРєСЂС‹С‚СЊ СЃС‚СЂРѕРєРё `РќР°РїСЂР°РІР»РµРЅРёРµ` Рё `Р§РµР»РѕРІРµРє` РёР· РІРёРґРёРјРѕРіРѕ UI РєР°СЂС‚РѕС‡РєРё. РљРѕРґ РїСЂРёР»РѕР¶РµРЅРёСЏ РЅРµ РјРµРЅСЏР»СЃСЏ. РћР±РЅРѕРІР»РµРЅС‹ `pm/backlog.md`, `pm/qa-checklist.md`, `shared/WORK_LOG.md`; РґРѕР±Р°РІР»РµРЅ `docs/tasks/BACK-044-task-detail-card-cleanup.md`.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** Документальная проверка связки `pm/bugs.md` → `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/`; код не менялся.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `pm/backlog.md` в†’ `pm/qa-checklist.md` в†’ `docs/tasks/`; РєРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ.
 
-**Коммит:** N/A
+**РљРѕРјРјРёС‚:** N/A
 
-**Статус:** Triaged — реализация в ветке `fix/profile-mobile-layout`.
-
----
-## 2026-07-05 — BUG-2026-07-05-001: bottom nav width triage (Codex)
-
-**Что сделано:** По скрину Алексея зафиксирован UI-баг: в desktop/web нижняя панель растягивается на ширину окна браузера, хотя сам экран приложения остаётся узким app-контейнером по центру. Добавлены `BUG-2026-07-05-001` в `pm/bugs.md`, `BACK-042` в `pm/backlog.md`, регрессия в `pm/qa-checklist.md` и task-файл `docs/tasks/BUG-2026-07-05-001_bottom_nav_width.md` для Юры. Отдельно отмечено, что проверять нужно оба nav-компонента: `bottom-nav-v2` на Home и `global-nav` на остальных экранах.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** Документальная проверка связки `pm/bugs.md` → `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/`; код не менялся.
-
-**Коммит:** N/A
-
-**Статус:** Triaged — реализация в ветке `fix/bottom-nav-app-width`.
+**РЎС‚Р°С‚СѓСЃ:** Triaged вЂ” СЂРµР°Р»РёР·Р°С†РёСЏ РІ РІРµС‚РєРµ `fix/task-detail-card-cleanup`.
 
 ---
-## 2026-07-04 — BUG-2026-07-04-003: Enter на email-входе (Codex)
+## 2026-07-05 вЂ” BUG-2026-07-05-002: profile mobile layout triage (Codex)
 
-**Что сделано:** В `index.html` добавлен `submitLoginOnEnter(event)`. Поля `login-email` и `login-pass` теперь перехватывают Enter и запускают `doLogin()`, если кнопка входа не заблокирована. Поведение кнопки "Войти" не менялось. В `pm/bugs.md` добавлен `BUG-2026-07-04-003`, в `pm/qa-checklist.md` добавлена регрессия Auth / Email keyboard submit.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕ РґРІСѓРј СЃРєСЂРёРЅР°Рј РђР»РµРєСЃРµСЏ Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅ UI-Р±Р°Рі РїСЂРѕС„РёР»СЏ РЅР° РјРѕР±РёР»СЊРЅРѕР№ РІРµР±-РІРµСЂСЃРёРё: СЃС‚СЂРѕРєР° Telegram Рё СЃС‚Р°С‚СѓСЃРЅС‹Р№ Р±РµР№РґР¶ "РќРµ РїСЂРёРІСЏР·Р°РЅ" РІС‹РіР»СЏРґСЏС‚ РЅРµР°РєРєСѓСЂР°С‚РЅРѕ, Р·Р°РіРѕР»РѕРІРєРё "Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ" Рё "Рћ СЃРµР±Рµ" РїСЂРёР¶Р°С‚С‹ Рє СЃРѕСЃРµРґРЅРёРј Р±Р»РѕРєР°Рј, РїРѕР»Рµ "Рћ СЃРµР±Рµ" Рё СЃС‡С‘С‚С‡РёРє `0 / 200` РЅРµ РѕР±СЂР°Р·СѓСЋС‚ РіР°СЂРјРѕРЅРёС‡РЅСѓСЋ СЃРµРєС†РёСЋ. Р”РѕР±Р°РІР»РµРЅС‹ `BUG-2026-07-05-002` РІ `pm/bugs.md`, `BACK-043` РІ `pm/backlog.md`, СЂРµРіСЂРµСЃСЃРёСЏ РІ `pm/qa-checklist.md` Рё task-С„Р°Р№Р» `docs/tasks/BUG-2026-07-05-002_profile_mobile_layout.md` РґР»СЏ Р®СЂС‹.
 
-**Проверка кодировки:** `index.html` до правки: 26 совпадений по `Войти|Задачи|Сегодня`; после правки: 26 совпадений.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** inline JS syntax check через Node; локальная проверка фрагмента подтвердила наличие `onkeydown="submitLoginOnEnter(event)"` на `login-email` и `login-pass`. Нужен ручной smoke на ноутбуке: email + пароль → Enter.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `pm/bugs.md` в†’ `pm/backlog.md` в†’ `pm/qa-checklist.md` в†’ `docs/tasks/`; РєРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ.
 
-**Коммит:** N/A
+**РљРѕРјРјРёС‚:** N/A
 
-**Статус:** Ready for QA — проверить Enter в полях email и пароля.
-
----
-
-## 2026-07-04 — BUG-2026-07-04-002: web Telegram login fallback fix (Codex)
-
-**Что сделано:** Исправлена причина ошибки `WebAppTgUrlInvalid` при входе через Telegram в веб-версии. `buildTelegramBotLoginUrl()` больше не строит `tg://resolve?...`; теперь используется `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` вызывает `Telegram.WebApp.openTelegramLink()` только в реальном Mini App-контексте с `initData`, а обычная веб-версия уходит по HTTPS-ссылке. Фронт сохраняет pending `startToken`, отправляет `returnUrl` в Worker, принимает возвратные параметры `telegram_start`/`telegramStartToken`/`startToken`/`tgAuth` и пробует завершить вход при `pageshow/focus`. В Telegram auth-ветке исправлены битые русские строки ошибок. Добавлены `BUG-2026-07-04-002`, `BACK-036`, task-файл и QA-запись. Продолжение 2026-07-05: bot-side часть тоже закрыта — в `4e-worker/src/bot/commands.js` `/start auth_*` теперь шлёт кнопку «Вернуться в 4» на `${APP_BASE_URL}/?telegram_start=<token>`, а в `4e-worker/worker.js` такой же сценарий реализован для `/bot`/`/webhook`; одноразовость и TTL 10 минут уже жили в `consumeTelegramLoginToken()` / `TELEGRAM_LOGIN_TOKEN_TTL_SECONDS = 600`. Production worker задеплоен как version `88b3ab16-fc44-4567-b98c-a8ca4125a5f4`.
-
-**Проверка кодировки:** `index.html` до правки: 26 совпадений по `Войти|Задачи|Сегодня`; после правки: 26 совпадений.
-
-**Тест:** inline JS syntax check через Node 24; JS-smoke для `buildTelegramBotLoginUrl()` и `openTelegramLoginUrl()` подтвердил, что веб-версия не вызывает `openTelegramLink()` и переходит на `https://t.me/Denzel89bot?start=auth_test`, а Mini App-контекст передаёт в SDK HTTPS-ссылку. Нужно дополнительно проверить возвратную bot-side кнопку после публикации. Полный Playwright-smoke не выполнен: в окружении нет установленного browser executable.
-
-**Коммит:** N/A
-
-**Статус:** Ready for QA — нужен live smoke в веб-версии и проверка ответа `@Denzel89bot` на `/start`.
+**РЎС‚Р°С‚СѓСЃ:** Triaged вЂ” СЂРµР°Р»РёР·Р°С†РёСЏ РІ РІРµС‚РєРµ `fix/profile-mobile-layout`.
 
 ---
-## 2026-07-05 — INFRA-004 + CI/PM follow-up (Codex)
+## 2026-07-05 вЂ” BUG-2026-07-05-001: bottom nav width triage (Codex)
 
-**Что сделано:** После серии rootfix-деплоев и диагностики РФ-сетей принят финальный расклад: Workers Static Assets остаются глобальным фронтовым контуром (`app.4-ai.site`), но жёсткие белые списки в отдельных РФ-сетях не считаются багом приложения; Telegram Mini App остаётся на GitHub Pages, а VK-поверхность уходит на собственный хостинг VK Mini Apps. В app-репо подготовлен deploy-пакет `INFRA-004`: добавлены `@vkontakte/vk-miniapps-deploy`, `scripts/build-vk-hosting.mjs`, `vk-hosting-config.json`, `homepage: "./"` и отдельная сборка `.vk-hosting-dist`, которая публикует `vk.html` как `index.html`, копирует локальные vendor-ассеты и не зависит от `jsdelivr`. Это продолжает урок `INFRA-001`: `run_worker_first` нужен для управляемых 404 и диагностики, а блокировка `jsdelivr` в РФ требовала self-hosted vendor-файлов (`vk-bridge`, `telegram-web-app`, `marked`) внутри репозитория. Параллельно синхронизированы PM-артефакты: в `pm/backlog.md` добавлен `INFRA-004`, у `INFRA-002` зафиксировано правило проверки минимум с двух независимых РФ-точек/операторов; в `shared/ROADMAP.md` записана итоговая схема хостинга 2026-07-05; в `pm/release-checklist.md` и `pm/qa-checklist.md` добавлены проверки внешних origin и post-deploy smoke; создана инструкция `pm/qa-smart-001-002-004-group-bot.md` для ручного QA Лёхи по групповому боту и отдельной проверке `app.4-ai.site` без VPN. В `.github/workflows/deploy-pages.yml` добавлены CI-защиты из постмортема: assert на production `WORKER` URL в артефакте, запрет staging/`workers.dev` origin, smoke по live Pages URL после деплоя и автосоздание incident issue при падении workflow.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕ СЃРєСЂРёРЅСѓ РђР»РµРєСЃРµСЏ Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅ UI-Р±Р°Рі: РІ desktop/web РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ СЂР°СЃС‚СЏРіРёРІР°РµС‚СЃСЏ РЅР° С€РёСЂРёРЅСѓ РѕРєРЅР° Р±СЂР°СѓР·РµСЂР°, С…РѕС‚СЏ СЃР°Рј СЌРєСЂР°РЅ РїСЂРёР»РѕР¶РµРЅРёСЏ РѕСЃС‚Р°С‘С‚СЃСЏ СѓР·РєРёРј app-РєРѕРЅС‚РµР№РЅРµСЂРѕРј РїРѕ С†РµРЅС‚СЂСѓ. Р”РѕР±Р°РІР»РµРЅС‹ `BUG-2026-07-05-001` РІ `pm/bugs.md`, `BACK-046` РІ `pm/backlog.md`, СЂРµРіСЂРµСЃСЃРёСЏ РІ `pm/qa-checklist.md` Рё task-С„Р°Р№Р» `docs/tasks/BUG-2026-07-05-001_bottom_nav_width.md` РґР»СЏ Р®СЂС‹. РћС‚РґРµР»СЊРЅРѕ РѕС‚РјРµС‡РµРЅРѕ, С‡С‚Рѕ РїСЂРѕРІРµСЂСЏС‚СЊ РЅСѓР¶РЅРѕ РѕР±Р° nav-РєРѕРјРїРѕРЅРµРЅС‚Р°: `bottom-nav-v2` РЅР° Home Рё `global-nav` РЅР° РѕСЃС‚Р°Р»СЊРЅС‹С… СЌРєСЂР°РЅР°С….
 
-**Проверка кодировки:** правки в кириллических файлах сделаны через `apply_patch` после чтения в UTF-8; контрольные тексты `Чек`, `Хостинг`, `Задача` в `pm/backlog.md`, `shared/ROADMAP.md`, `pm/qa-checklist.md`, `pm/release-checklist.md`, `shared/WORK_LOG.md` остались читаемыми.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** `npm run build:vk-hosting` → `.vk-hosting-dist/index.html`, `privacy.html`, `styles.css`, `styles.min.css`, `assets/vendor/*`; grep по `vk.html` и `.vk-hosting-dist/index.html` подтверждает `const WORKER = 'https://edge.4-ai.site'`; `git diff --check`; `wrangler --version` → `4.100.0`; `wrangler secret list --env staging` подтверждает `ANTHROPIC_KEY` и `BOT_API_TOKEN`; локальный smoke `node src/bot/index.js` на staging-переменных поднимается, но всё ещё ловит `409 Conflict`; `getWebhookInfo` возвращает пустой `url`, значит конфликт даёт другой polling consumer, а не webhook. Production deploy VK Mini Apps завершён через `vk-miniapps-deploy`: загружена version `1783191347`, подтверждён код из админки VK, production URL `https://prod-app54636698-c3cd4413b138.pages-ac.vk-apps.com/index.html`; пользователь подтвердил phone-smoke без VPN.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `pm/bugs.md` в†’ `pm/backlog.md` в†’ `pm/qa-checklist.md` в†’ `docs/tasks/`; РєРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ.
 
-**Коммит:** N/A
+**РљРѕРјРјРёС‚:** N/A
 
-## 2026-07-04 — SMART-001/002: chat roster + assignee tg id (Codex)
+**РЎС‚Р°С‚СѓСЃ:** Triaged вЂ” СЂРµР°Р»РёР·Р°С†РёСЏ РІ РІРµС‚РєРµ `fix/bottom-nav-app-width`.
 
-**Что сделано:** В локальном worker checkout добавлена миграция `4e-worker/migrations/0007_chat_members.sql` и три новых bot-only action'а в `worker.js`: `upsert-chat-members`, `get-chat-members`, `mark-chat-members-left`. Они ведут D1-таблицу `chat_members` по ключу `chat_id + tg_id` и позволяют боту копить roster группы. В `4e-worker/src/bot/handler.js` добавлены сбор roster-кандидатов из `msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`, загрузка roster перед анализом, эвристики резолва исполнителя по `text_mention`, `@mention`, reply и fuzzy-матчу имени, а также сохранение `assigneeTgId` / `assigneeUsername` в объект задачи. В `4e-worker/src/bot/analyzer.js` system prompt теперь получает список реальных участников чата и автора reply, чтобы Haiku чаще возвращал живое имя из roster вместо абстрактного «он/она».
+---
+## 2026-07-04 вЂ” BUG-2026-07-04-003: Enter РЅР° email-РІС…РѕРґРµ (Codex)
 
-**Проверка кодировки:** `pm/backlog.md` — контрольный поиск до правки `29`; `shared/WORK_LOG.md` — `171`; `DEVELOPMENT_LOG.md` — `177`; `FILE_MAP_WORKER.md` — `11`; `FILE_MAP_BOT.md` — `5`. Итоговая сверка после правок не должна давать уменьшения.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` РґРѕР±Р°РІР»РµРЅ `submitLoginOnEnter(event)`. РџРѕР»СЏ `login-email` Рё `login-pass` С‚РµРїРµСЂСЊ РїРµСЂРµС…РІР°С‚С‹РІР°СЋС‚ Enter Рё Р·Р°РїСѓСЃРєР°СЋС‚ `doLogin()`, РµСЃР»Рё РєРЅРѕРїРєР° РІС…РѕРґР° РЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР°. РџРѕРІРµРґРµРЅРёРµ РєРЅРѕРїРєРё "Р’РѕР№С‚Рё" РЅРµ РјРµРЅСЏР»РѕСЃСЊ. Р’ `pm/bugs.md` РґРѕР±Р°РІР»РµРЅ `BUG-2026-07-04-003`, РІ `pm/qa-checklist.md` РґРѕР±Р°РІР»РµРЅР° СЂРµРіСЂРµСЃСЃРёСЏ Auth / Email keyboard submit.
 
-**Тест:** `node --check <worker-repo-root>/src/bot/analyzer.js`; `node --check <worker-repo-root>/src/bot/handler.js`; `node --check <worker-repo-root>/worker.js`; `npx wrangler d1 migrations apply DB --env staging --remote` → `0007_chat_members.sql ✅`; `npx wrangler deploy --env staging` → version `231a8070-f7ab-46d2-8983-f3939063afad`; `GET https://restless-lab-d737-staging.shelckograff.workers.dev/` → `200`.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РґРѕ РїСЂР°РІРєРё: 26 СЃРѕРІРїР°РґРµРЅРёР№ РїРѕ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`; РїРѕСЃР»Рµ РїСЂР°РІРєРё: 26 СЃРѕРІРїР°РґРµРЅРёР№.
 
-**Коммит:** `этот коммит`
+**РўРµСЃС‚:** inline JS syntax check С‡РµСЂРµР· Node; Р»РѕРєР°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° С„СЂР°РіРјРµРЅС‚Р° РїРѕРґС‚РІРµСЂРґРёР»Р° РЅР°Р»РёС‡РёРµ `onkeydown="submitLoginOnEnter(event)"` РЅР° `login-email` Рё `login-pass`. РќСѓР¶РµРЅ СЂСѓС‡РЅРѕР№ smoke РЅР° РЅРѕСѓС‚Р±СѓРєРµ: email + РїР°СЂРѕР»СЊ в†’ Enter.
 
-**Блокеры:** Сам bot runtime по-прежнему живёт вне git-репозитория `4e-app`; staging worker уже умеет roster API, но без обновления процесса `node src/bot/index.js` нельзя честно проверить group smoke для `@mention`, reply и join/leave.
+**РљРѕРјРјРёС‚:** N/A
 
-## 2026-07-04 — SMART-004: concise group task confirmations (Codex)
-
-**Что сделано:** В локальном worker checkout обновлены bot-обработчики для `SMART-004`. `4e-worker/src/bot/handler.js` теперь формирует однострочное подтверждение `✓ Имя: задача — срок`, сохраняет задачу сразу после разбора сообщения, показывает только кнопки `✏️` и `✕`, а редактирование/отмена удаляют старую запись через `x-action: delete-task` и не рисуют ложное «Отменено», если бот уже потерял контекст callback. В `4e-worker/worker.js` подтверждён новый action `delete-task` с удалением по `taskId` из user/group KV-ключей; `saveTaskByName` в текущем checkout не реализован, поэтому дополнительных скрытых копий задачи этот сценарий сейчас не создаёт.
-
-**Проверка кодировки:** `pm/backlog.md` — контрольный поиск до правки `29`; `shared/WORK_LOG.md` — `167`; `DEVELOPMENT_LOG.md` — `173`; `FILE_MAP_WORKER.md` — `10`; `FILE_MAP_BOT.md` — `3`. Итоговая сверка после правок не должна давать уменьшения.
-
-**Тест:** `node --check <worker-repo-root>/worker.js`; `node --check <worker-repo-root>/src/bot/handler.js`; точечная проверка `handler.js`/`worker.js` на `formatTaskConfirmationLine`, `delete-task`, `handleDeleteTask`.
-
-**Коммит:** `этот коммит`
-
-**Блокеры:** Текущий `<worker-repo-root>` не является отдельным git-репозиторием, поэтому код bot/worker пока зафиксирован только локально. Для закрытия SMART-004 нужен runtime deploy процесса `node src/bot/index.js` и ручной smoke в тестовой группе.
-
-## 2026-07-05 — INFRA-001: whitelist-фронт на Workers Static Assets (Codex)
-
-**Что сделано:** В app-репо поднят отдельный фронтовый Worker `4-ai-app-worker`: `scripts/build-pages-whitelist.mjs` собирает `.pages-dist`, `wrangler.toml` публикует её через Static Assets на маршруте `app.4-ai.site/*`, а `worker-static.js` обслуживает assets и страхует VK-вход. Для VK добавлен внутренний rewrite: запросы на `vk.html` больше не требуют внешнего `307`, а если VK контейнер приходит в корень `/` с launch params (`vk_*`, `sign`), Worker сразу отдаёт VK-поверхность. Это сохраняет whitelist-модель, убирает зависимость от Cloudflare Pages в РФ и не затрагивает API worker на `edge.4-ai.site`.
-
-**Проверка кодировки:** Не требовалась — `index.html` и `vk.html` в этой задаче не редактировались.
-
-**Тест:** `npm run build:worker-assets`; `npx wrangler deploy`; HTTP-проверки `https://app.4-ai.site/`, `/vk`, `/privacy` -> `200`; `https://app.4-ai.site/pm/backlog.md` и `/shared/ROADMAP.md` -> `404`; preflight `OPTIONS` с origin `https://app.4-ai.site` до `https://edge.4-ai.site/auth/login` -> `204`; live HTML на домене содержит `https://edge.4-ai.site` и не содержит `workers.dev`, staging URL или `mrktggod.github.io`.
-
-**Коммит:** N/A
-
-## 2026-07-05 — SMART-006: user profile in AI chat context (Codex)
-
-**Что сделано:** В `index.html` расширен system prompt AI-чата: добавлено явное указание учитывать профиль пользователя. Рядом с `sendAsk()` добавлены helper-функции, которые собирают из `currentUser` и `allTasksCache` профильный блок для Claude: имя, локальное время и timezone, тариф, количество активных/горящих/просроченных задач, завершённые за 7 дней (по доступным timestamp-полям), топ-3 людей из активных задач. Этот блок теперь инжектится в `system` вместе с датой и summary активных задач.
-
-**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
-
-**Тест:** локальный grep подтвердил, что `index.html` на ветке содержит профильный блок и инжектит его в `system`. Полный staging smoke пока заблокирован: `npx wrangler secret list --env staging` не показывает `ANTHROPIC_KEY`, поэтому `/anthropic` на staging нельзя проверить честно.
-
-**Коммит:** `этот коммит`
-
-## 2026-07-05 — BACK-034: staging contour bootstrap (Codex)
-
-**Что сделано:** Для `<worker-repo-root>` staging-конфиг приведён к штатному виду: в `wrangler.toml` добавлен `[env.staging]` с отдельными D1/KV bindings и `routes = []`, чтобы staging не наследовал prod-домен `edge.4-ai.site`; `wrangler.staging.toml` синхронизирован. Применена миграция `postgres_app_state.sql` к D1 `4e-staging`, staging worker задеплоен на `https://restless-lab-d737-staging.shelckograff.workers.dev`. В app-репо создана ветка `dev`: `index.html` по умолчанию ходит в staging worker, username бота можно прокинуть через `?bot=<staging_bot_username>`, а при недоступности `startToken` dev-ветка делает fallback-открытие Telegram-бота без тупика. Создан Pages-проект `4-ai-staging`, загружена dev-версия приложения, добавлена инструкция `docs/staging-contour.md`.
-
-**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
-
-**Тест:** `node --check worker.js`; `npx wrangler d1 migrations apply DB --env staging --remote`; `npx wrangler deploy --env staging`; `curl https://restless-lab-d737-staging.shelckograff.workers.dev/` → `OK`; `curl -X OPTIONS ...` → `204`; `wrangler pages project create 4-ai-staging --production-branch dev`; `wrangler pages deploy . --project-name 4-ai-staging --branch dev`; `curl https://4-ai-staging.pages.dev/` содержит `const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev';`.
-
-**Коммит:** `этот коммит`
-
-**Блокеры:** `npx wrangler secret list --env staging` показывает только `BOT_API_TOKEN`; для AI smoke нужны как минимум `ANTHROPIC_KEY` и, вероятно, `OPENAI_KEY`/`RESEND_KEY`/`VK_SECRET_KEY`. Также нужен username тестового бота для полного ручного Telegram smoke, пока он не зафиксирован в репозитории и передаётся через `?bot=...`.
-
-## 2026-07-05 — BACK-007: privacy/RKN links and wording (Codex)
-
-**Что сделано:** В `privacy.html` строка про реестр РКН приведена к формулировке задачи: «Уведомление об обработке персональных данных зарегистрировано Роскомнадзором, рег. № 102299/77 от 01.07.2026». В `index.html` добавлена явная privacy-ссылка в onboarding и расширен legal-note на экране auth: теперь он покрывает и `Войти`, и `Создать аккаунт`.
-
-**Проверка кодировки:** `index.html` — совпадений `Войти|Задачи|Сегодня` до: `61`, после: `61`.
-
-**Тест:** `Invoke-WebRequest https://mrktggod.github.io/4e-app/privacy.html` вернул `200`; live-страница содержит `102299/77`. Локальный grep подтвердил privacy-ссылки в onboarding, auth и biometric consent.
-
-**Коммит:** `этот коммит`
-
-## 2026-07-04 — PM docs sync v2.1 (Codex)
-
-**Что сделано:** Найден реальный target-репозиторий `<repo-root>` вместо `Documents\4\4e-app`. Из Desktop-источника байтовым `Copy-Item` синхронизированы `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `docs/ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ.md` и `docs/ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ.md`. По дополнению inbox v2.1 переименованы task-файлы `BACK-025-completed-tasks-week.md` → `BACK-039-completed-tasks-week.md` и `BACK-027-admin-tariff-map.md` → `BACK-040-admin-tariff-map.md`, обновлены их внутренние идентификаторы и backlog-заметка про коллизию ID. Дополнительно приведены к portable-виду абсолютные пути в `CODEX_INSTRUCTIONS.md`, чтобы прошла repo-проверка путей.
-
-**Проверка кодировки:** кириллица source/target совпала для всех 5 копируемых файлов — `ROADMAP 6055/6055`, `backlog 6680/6680`, `bugs 5994/5994`, `ЗАДАЧИ_УМНЫЙ_АССИСТЕНТ 4791/4791`, `ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ 5264/5264`.
-
-**Тест:** `git diff --check`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; grep по репо на старые ссылки `BACK-025-completed-tasks-week` / `BACK-027-admin-tariff-map` и Later-дубликаты — лишних упоминаний не осталось.
-
-**Коммит:** `docs(pm): sync roadmap+backlog+bugs — SMART/VIRAL/PLAT задачи, аудит багов, решения 2026-07-04`
-
-## 2026-06-29 — BACK-025: AI planner glass dashboard PM setup (Codex)
-
-**Что сделано:** Создана PM-основа для переделки главного экрана в утренний AI-планер. В `shared/ROADMAP.md` добавлено направление "AI-планерный дашборд"; в `pm/backlog.md` добавлен `BACK-025 — Настраиваемый утренний AI-дашборд` как P1; `pm/next-actions.md` обновлён новым ближайшим фокусом; `pm/qa-checklist.md` получил smoke-проверки для "План на сегодня", "Пульс дня" и смысловых секций задач. Создан `docs/tasks/BACK-025_ai_planner_glass_dashboard.md`.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** Документальная проверка связки `shared/ROADMAP.md` → `pm/backlog.md` → `pm/next-actions.md` → `pm/qa-checklist.md` → `docs/tasks/BACK-025_ai_planner_glass_dashboard.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
-
-**Коммит:** этот коммит.
-
-**Статус:** PM setup выполнен. Следующий шаг — реализация UI в ветке `feat/ai-planner-glass-dashboard`.
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РїСЂРѕРІРµСЂРёС‚СЊ Enter РІ РїРѕР»СЏС… email Рё РїР°СЂРѕР»СЏ.
 
 ---
 
-## 2026-06-29 — BUG-2026-06-29-002: voice microphone error triage (Codex)
+## 2026-07-04 вЂ” BUG-2026-07-04-002: web Telegram login fallback fix (Codex)
 
-**Что сделано:** По скрину Алексея зафиксирован баг голосового режима: экран показывает "Ошибка микрофона" и не начинает запись. Точечная проверка `index.html` показала, что текущий `main` использует `SpeechRecognition` в `openVoice()`. В истории найден MediaRecorder-flow в `70a051f` / `origin/feat/voice-mediarecorder`, но он был откатан коммитом `e970d33` обратно к SpeechRecognition. Добавлены `BUG-2026-06-29-002` в `pm/bugs.md`, P1-строка `BACK-021` в Now `pm/backlog.md`, voice-проверки в `pm/qa-checklist.md` и уточнение в `docs/tasks/BACK-021-voice-mediarecorder.md`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РСЃРїСЂР°РІР»РµРЅР° РїСЂРёС‡РёРЅР° РѕС€РёР±РєРё `WebAppTgUrlInvalid` РїСЂРё РІС…РѕРґРµ С‡РµСЂРµР· Telegram РІ РІРµР±-РІРµСЂСЃРёРё. `buildTelegramBotLoginUrl()` Р±РѕР»СЊС€Рµ РЅРµ СЃС‚СЂРѕРёС‚ `tg://resolve?...`; С‚РµРїРµСЂСЊ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ `https://t.me/Denzel89bot?start=...`. `openTelegramLoginUrl()` РІС‹Р·С‹РІР°РµС‚ `Telegram.WebApp.openTelegramLink()` С‚РѕР»СЊРєРѕ РІ СЂРµР°Р»СЊРЅРѕРј Mini App-РєРѕРЅС‚РµРєСЃС‚Рµ СЃ `initData`, Р° РѕР±С‹С‡РЅР°СЏ РІРµР±-РІРµСЂСЃРёСЏ СѓС…РѕРґРёС‚ РїРѕ HTTPS-СЃСЃС‹Р»РєРµ. Р¤СЂРѕРЅС‚ СЃРѕС…СЂР°РЅСЏРµС‚ pending `startToken`, РѕС‚РїСЂР°РІР»СЏРµС‚ `returnUrl` РІ Worker, РїСЂРёРЅРёРјР°РµС‚ РІРѕР·РІСЂР°С‚РЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ `telegram_start`/`telegramStartToken`/`startToken`/`tgAuth` Рё РїСЂРѕР±СѓРµС‚ Р·Р°РІРµСЂС€РёС‚СЊ РІС…РѕРґ РїСЂРё `pageshow/focus`. Р’ Telegram auth-РІРµС‚РєРµ РёСЃРїСЂР°РІР»РµРЅС‹ Р±РёС‚С‹Рµ СЂСѓСЃСЃРєРёРµ СЃС‚СЂРѕРєРё РѕС€РёР±РѕРє. Р”РѕР±Р°РІР»РµРЅС‹ `BUG-2026-07-04-002`, `BACK-036`, task-С„Р°Р№Р» Рё QA-Р·Р°РїРёСЃСЊ. РџСЂРѕРґРѕР»Р¶РµРЅРёРµ 2026-07-05: bot-side С‡Р°СЃС‚СЊ С‚РѕР¶Рµ Р·Р°РєСЂС‹С‚Р° вЂ” РІ `4e-worker/src/bot/commands.js` `/start auth_*` С‚РµРїРµСЂСЊ С€Р»С‘С‚ РєРЅРѕРїРєСѓ В«Р’РµСЂРЅСѓС‚СЊСЃСЏ РІ 4В» РЅР° `${APP_BASE_URL}/?telegram_start=<token>`, Р° РІ `4e-worker/worker.js` С‚Р°РєРѕР№ Р¶Рµ СЃС†РµРЅР°СЂРёР№ СЂРµР°Р»РёР·РѕРІР°РЅ РґР»СЏ `/bot`/`/webhook`; РѕРґРЅРѕСЂР°Р·РѕРІРѕСЃС‚СЊ Рё TTL 10 РјРёРЅСѓС‚ СѓР¶Рµ Р¶РёР»Рё РІ `consumeTelegramLoginToken()` / `TELEGRAM_LOGIN_TOKEN_TTL_SECONDS = 600`. Production worker Р·Р°РґРµРїР»РѕРµРЅ РєР°Рє version `88b3ab16-fc44-4567-b98c-a8ca4125a5f4`.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РґРѕ РїСЂР°РІРєРё: 26 СЃРѕРІРїР°РґРµРЅРёР№ РїРѕ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`; РїРѕСЃР»Рµ РїСЂР°РІРєРё: 26 СЃРѕРІРїР°РґРµРЅРёР№.
 
-**Тест:** Документальная проверка связки `pm/bugs.md` → `pm/backlog.md` → `pm/qa-checklist.md` → `docs/tasks/BACK-021-voice-mediarecorder.md`; код не менялся.
+**РўРµСЃС‚:** inline JS syntax check С‡РµСЂРµР· Node 24; JS-smoke РґР»СЏ `buildTelegramBotLoginUrl()` Рё `openTelegramLoginUrl()` РїРѕРґС‚РІРµСЂРґРёР», С‡С‚Рѕ РІРµР±-РІРµСЂСЃРёСЏ РЅРµ РІС‹Р·С‹РІР°РµС‚ `openTelegramLink()` Рё РїРµСЂРµС…РѕРґРёС‚ РЅР° `https://t.me/Denzel89bot?start=auth_test`, Р° Mini App-РєРѕРЅС‚РµРєСЃС‚ РїРµСЂРµРґР°С‘С‚ РІ SDK HTTPS-СЃСЃС‹Р»РєСѓ. РќСѓР¶РЅРѕ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ РїСЂРѕРІРµСЂРёС‚СЊ РІРѕР·РІСЂР°С‚РЅСѓСЋ bot-side РєРЅРѕРїРєСѓ РїРѕСЃР»Рµ РїСѓР±Р»РёРєР°С†РёРё. РџРѕР»РЅС‹Р№ Playwright-smoke РЅРµ РІС‹РїРѕР»РЅРµРЅ: РІ РѕРєСЂСѓР¶РµРЅРёРё РЅРµС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕРіРѕ browser executable.
 
-**Коммит:** N/A
+**РљРѕРјРјРёС‚:** N/A
 
-**Статус:** Triaged — перед кодовым фиксом нужно понять причину отката `e970d33`, проверить Worker `/transcribe` и `OPENAI_KEY`, затем делать отдельную ветку `fix/voice-mediarecorder`.
-
----
-## 2026-06-29 — BUG-2026-06-29-001: Telegram login dead end triage (Codex)
-
-**Что сделано:** По скрину Алексея и точечной проверке `index.html` зафиксирован баг входа через Telegram: при отсутствии `Telegram.WebApp.initData` функция `loginWithTelegram()` показывает toast "Открой бота и нажми Start — получишь ссылку для входа", но UI не открывает бота и не даёт явный следующий шаг. Добавлены `BUG-2026-06-29-001` в `pm/bugs.md`, `BACK-024` в `pm/backlog.md`, строка риска в `shared/ROADMAP.md`, проверки в `pm/qa-checklist.md` и task-файл `docs/tasks/BUG-2026-06-29-001_telegram_login_dead_end.md`.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** Документальная проверка связки `pm/bugs.md` → `pm/backlog.md` → `shared/ROADMAP.md` → `pm/qa-checklist.md` → `docs/tasks/`. Код и bot-репозиторий не менялись.
-
-**Коммит:** этот коммит
-
-**Статус:** Triaged — нужен live smoke `@Denzel89bot` и исправление UX/app + bot handoff.
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РЅСѓР¶РµРЅ live smoke РІ РІРµР±-РІРµСЂСЃРёРё Рё РїСЂРѕРІРµСЂРєР° РѕС‚РІРµС‚Р° `@Denzel89bot` РЅР° `/start`.
 
 ---
-## 2026-06-29 — PM-задачи по детальной карточке задачи (Codex)
+## 2026-07-05 вЂ” INFRA-004 + CI/PM follow-up (Codex)
 
-**Что сделано:** В `pm/backlog.md` добавлены `BACK-022` — ручной MVP детальной карточки задачи и `BACK-023` — расширение карточки после MVP. В `shared/ROADMAP.md` направление "Качество задач" обновлено: `BACK-019` остаётся задачей про карточки в списке, `BACK-022` добавлен как следующий P1-фокус по экрану `task-detail`. В `pm/next-actions.md` добавлен PM-шаг подготовки `BACK-022`. Созданы `docs/tasks/BACK-022_task_detail_manual_mvp.md` и `docs/tasks/BACK-023_task_detail_future_expansion.md`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕСЃР»Рµ СЃРµСЂРёРё rootfix-РґРµРїР»РѕРµРІ Рё РґРёР°РіРЅРѕСЃС‚РёРєРё Р Р¤-СЃРµС‚РµР№ РїСЂРёРЅСЏС‚ С„РёРЅР°Р»СЊРЅС‹Р№ СЂР°СЃРєР»Р°Рґ: Workers Static Assets РѕСЃС‚Р°СЋС‚СЃСЏ РіР»РѕР±Р°Р»СЊРЅС‹Рј С„СЂРѕРЅС‚РѕРІС‹Рј РєРѕРЅС‚СѓСЂРѕРј (`app.4-ai.site`), РЅРѕ Р¶С‘СЃС‚РєРёРµ Р±РµР»С‹Рµ СЃРїРёСЃРєРё РІ РѕС‚РґРµР»СЊРЅС‹С… Р Р¤-СЃРµС‚СЏС… РЅРµ СЃС‡РёС‚Р°СЋС‚СЃСЏ Р±Р°РіРѕРј РїСЂРёР»РѕР¶РµРЅРёСЏ; Telegram Mini App РѕСЃС‚Р°С‘С‚СЃСЏ РЅР° GitHub Pages, Р° VK-РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ СѓС…РѕРґРёС‚ РЅР° СЃРѕР±СЃС‚РІРµРЅРЅС‹Р№ С…РѕСЃС‚РёРЅРі VK Mini Apps. Р’ app-СЂРµРїРѕ РїРѕРґРіРѕС‚РѕРІР»РµРЅ deploy-РїР°РєРµС‚ `INFRA-004`: РґРѕР±Р°РІР»РµРЅС‹ `@vkontakte/vk-miniapps-deploy`, `scripts/build-vk-hosting.mjs`, `vk-hosting-config.json`, `homepage: "./"` Рё РѕС‚РґРµР»СЊРЅР°СЏ СЃР±РѕСЂРєР° `.vk-hosting-dist`, РєРѕС‚РѕСЂР°СЏ РїСѓР±Р»РёРєСѓРµС‚ `vk.html` РєР°Рє `index.html`, РєРѕРїРёСЂСѓРµС‚ Р»РѕРєР°Р»СЊРЅС‹Рµ vendor-Р°СЃСЃРµС‚С‹ Рё РЅРµ Р·Р°РІРёСЃРёС‚ РѕС‚ `jsdelivr`. Р­С‚Рѕ РїСЂРѕРґРѕР»Р¶Р°РµС‚ СѓСЂРѕРє `INFRA-001`: `run_worker_first` РЅСѓР¶РµРЅ РґР»СЏ СѓРїСЂР°РІР»СЏРµРјС‹С… 404 Рё РґРёР°РіРЅРѕСЃС‚РёРєРё, Р° Р±Р»РѕРєРёСЂРѕРІРєР° `jsdelivr` РІ Р Р¤ С‚СЂРµР±РѕРІР°Р»Р° self-hosted vendor-С„Р°Р№Р»РѕРІ (`vk-bridge`, `telegram-web-app`, `marked`) РІРЅСѓС‚СЂРё СЂРµРїРѕР·РёС‚РѕСЂРёСЏ. РџР°СЂР°Р»Р»РµР»СЊРЅРѕ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅС‹ PM-Р°СЂС‚РµС„Р°РєС‚С‹: РІ `pm/backlog.md` РґРѕР±Р°РІР»РµРЅ `INFRA-004`, Сѓ `INFRA-002` Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅРѕ РїСЂР°РІРёР»Рѕ РїСЂРѕРІРµСЂРєРё РјРёРЅРёРјСѓРј СЃ РґРІСѓС… РЅРµР·Р°РІРёСЃРёРјС‹С… Р Р¤-С‚РѕС‡РµРє/РѕРїРµСЂР°С‚РѕСЂРѕРІ; РІ `shared/ROADMAP.md` Р·Р°РїРёСЃР°РЅР° РёС‚РѕРіРѕРІР°СЏ СЃС…РµРјР° С…РѕСЃС‚РёРЅРіР° 2026-07-05; РІ `pm/release-checklist.md` Рё `pm/qa-checklist.md` РґРѕР±Р°РІР»РµРЅС‹ РїСЂРѕРІРµСЂРєРё РІРЅРµС€РЅРёС… origin Рё post-deploy smoke; СЃРѕР·РґР°РЅР° РёРЅСЃС‚СЂСѓРєС†РёСЏ `pm/qa-smart-001-002-004-group-bot.md` РґР»СЏ СЂСѓС‡РЅРѕРіРѕ QA Р›С‘С…Рё РїРѕ РіСЂСѓРїРїРѕРІРѕРјСѓ Р±РѕС‚Сѓ Рё РѕС‚РґРµР»СЊРЅРѕР№ РїСЂРѕРІРµСЂРєРµ `app.4-ai.site` Р±РµР· VPN. Р’ `.github/workflows/deploy-pages.yml` РґРѕР±Р°РІР»РµРЅС‹ CI-Р·Р°С‰РёС‚С‹ РёР· РїРѕСЃС‚РјРѕСЂС‚РµРјР°: assert РЅР° production `WORKER` URL РІ Р°СЂС‚РµС„Р°РєС‚Рµ, Р·Р°РїСЂРµС‚ staging/`workers.dev` origin, smoke РїРѕ live Pages URL РїРѕСЃР»Рµ РґРµРїР»РѕСЏ Рё Р°РІС‚РѕСЃРѕР·РґР°РЅРёРµ incident issue РїСЂРё РїР°РґРµРЅРёРё workflow.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РїСЂР°РІРєРё РІ РєРёСЂРёР»Р»РёС‡РµСЃРєРёС… С„Р°Р№Р»Р°С… СЃРґРµР»Р°РЅС‹ С‡РµСЂРµР· `apply_patch` РїРѕСЃР»Рµ С‡С‚РµРЅРёСЏ РІ UTF-8; РєРѕРЅС‚СЂРѕР»СЊРЅС‹Рµ С‚РµРєСЃС‚С‹ `Р§РµРє`, `РҐРѕСЃС‚РёРЅРі`, `Р—Р°РґР°С‡Р°` РІ `pm/backlog.md`, `shared/ROADMAP.md`, `pm/qa-checklist.md`, `pm/release-checklist.md`, `shared/WORK_LOG.md` РѕСЃС‚Р°Р»РёСЃСЊ С‡РёС‚Р°РµРјС‹РјРё.
 
-**Тест:** Документальная проверка связки `pm/backlog.md` → `shared/ROADMAP.md` → `pm/next-actions.md` → `docs/tasks/`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+**РўРµСЃС‚:** `npm run build:vk-hosting` в†’ `.vk-hosting-dist/index.html`, `privacy.html`, `styles.css`, `styles.min.css`, `assets/vendor/*`; grep РїРѕ `vk.html` Рё `.vk-hosting-dist/index.html` РїРѕРґС‚РІРµСЂР¶РґР°РµС‚ `const WORKER = 'https://edge.4-ai.site'`; `git diff --check`; `wrangler --version` в†’ `4.100.0`; `wrangler secret list --env staging` РїРѕРґС‚РІРµСЂР¶РґР°РµС‚ `ANTHROPIC_KEY` Рё `BOT_API_TOKEN`; Р»РѕРєР°Р»СЊРЅС‹Р№ smoke `node src/bot/index.js` РЅР° staging-РїРµСЂРµРјРµРЅРЅС‹С… РїРѕРґРЅРёРјР°РµС‚СЃСЏ, РЅРѕ РІСЃС‘ РµС‰С‘ Р»РѕРІРёС‚ `409 Conflict`; `getWebhookInfo` РІРѕР·РІСЂР°С‰Р°РµС‚ РїСѓСЃС‚РѕР№ `url`, Р·РЅР°С‡РёС‚ РєРѕРЅС„Р»РёРєС‚ РґР°С‘С‚ РґСЂСѓРіРѕР№ polling consumer, Р° РЅРµ webhook. Production deploy VK Mini Apps Р·Р°РІРµСЂС€С‘РЅ С‡РµСЂРµР· `vk-miniapps-deploy`: Р·Р°РіСЂСѓР¶РµРЅР° version `1783191347`, РїРѕРґС‚РІРµСЂР¶РґС‘РЅ РєРѕРґ РёР· Р°РґРјРёРЅРєРё VK, production URL `https://prod-app54636698-c3cd4413b138.pages-ac.vk-apps.com/index.html`; РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРѕРґС‚РІРµСЂРґРёР» phone-smoke Р±РµР· VPN.
 
-**Коммит:** N/A — коммит/пуш выполняются отдельно человеком.
+**РљРѕРјРјРёС‚:** N/A
 
-**Статус:** локально выполнено.
+## 2026-07-04 вЂ” SMART-001/002: chat roster + assignee tg id (Codex)
 
----
-## 2026-06-30 — BACK-019 mobile swipe actions + vibration (Codex)
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ Р»РѕРєР°Р»СЊРЅРѕРј worker checkout РґРѕР±Р°РІР»РµРЅР° РјРёРіСЂР°С†РёСЏ `4e-worker/migrations/0007_chat_members.sql` Рё С‚СЂРё РЅРѕРІС‹С… bot-only action'Р° РІ `worker.js`: `upsert-chat-members`, `get-chat-members`, `mark-chat-members-left`. РћРЅРё РІРµРґСѓС‚ D1-С‚Р°Р±Р»РёС†Сѓ `chat_members` РїРѕ РєР»СЋС‡Сѓ `chat_id + tg_id` Рё РїРѕР·РІРѕР»СЏСЋС‚ Р±РѕС‚Сѓ РєРѕРїРёС‚СЊ roster РіСЂСѓРїРїС‹. Р’ `4e-worker/src/bot/handler.js` РґРѕР±Р°РІР»РµРЅС‹ СЃР±РѕСЂ roster-РєР°РЅРґРёРґР°С‚РѕРІ РёР· `msg.from`, `reply_to_message.from`, `new_chat_members`, `left_chat_member`, Р·Р°РіСЂСѓР·РєР° roster РїРµСЂРµРґ Р°РЅР°Р»РёР·РѕРј, СЌРІСЂРёСЃС‚РёРєРё СЂРµР·РѕР»РІР° РёСЃРїРѕР»РЅРёС‚РµР»СЏ РїРѕ `text_mention`, `@mention`, reply Рё fuzzy-РјР°С‚С‡Сѓ РёРјРµРЅРё, Р° С‚Р°РєР¶Рµ СЃРѕС…СЂР°РЅРµРЅРёРµ `assigneeTgId` / `assigneeUsername` РІ РѕР±СЉРµРєС‚ Р·Р°РґР°С‡Рё. Р’ `4e-worker/src/bot/analyzer.js` system prompt С‚РµРїРµСЂСЊ РїРѕР»СѓС‡Р°РµС‚ СЃРїРёСЃРѕРє СЂРµР°Р»СЊРЅС‹С… СѓС‡Р°СЃС‚РЅРёРєРѕРІ С‡Р°С‚Р° Рё Р°РІС‚РѕСЂР° reply, С‡С‚РѕР±С‹ Haiku С‡Р°С‰Рµ РІРѕР·РІСЂР°С‰Р°Р» Р¶РёРІРѕРµ РёРјСЏ РёР· roster РІРјРµСЃС‚Рѕ Р°Р±СЃС‚СЂР°РєС‚РЅРѕРіРѕ В«РѕРЅ/РѕРЅР°В».
 
-**Что сделано:** Исправлены мобильные действия карточек задач: кнопки `Завершить`, `Отменить`, `Перенести` теперь обрабатываются делегированно через `touchend` и `click`, без inline `onclick`, чтобы swipe gesture не гасил нажатие. Добавлена тактильная отдача через Vibration API: `10ms` при достижении порога свайпа и `20ms` при нажатии action-кнопки. Мобильная геометрия карточки уточнена: action-слой получил стабильные `width/height`, кнопки фиксированы по 72px, левый сдвиг карточки равен ширине двух кнопок (`144px`).
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `pm/backlog.md` вЂ” РєРѕРЅС‚СЂРѕР»СЊРЅС‹Р№ РїРѕРёСЃРє РґРѕ РїСЂР°РІРєРё `29`; `shared/WORK_LOG.md` вЂ” `171`; `DEVELOPMENT_LOG.md` вЂ” `177`; `FILE_MAP_WORKER.md` вЂ” `11`; `FILE_MAP_BOT.md` вЂ” `5`. РС‚РѕРіРѕРІР°СЏ СЃРІРµСЂРєР° РїРѕСЃР»Рµ РїСЂР°РІРѕРє РЅРµ РґРѕР»Р¶РЅР° РґР°РІР°С‚СЊ СѓРјРµРЅСЊС€РµРЅРёСЏ.
 
-**Проверка кодировки:** Файлы с кириллицей читались/писались через `[System.IO.File]::ReadAllText/WriteAllText` с UTF-8 без BOM.
+**РўРµСЃС‚:** `node --check <worker-repo-root>/src/bot/analyzer.js`; `node --check <worker-repo-root>/src/bot/handler.js`; `node --check <worker-repo-root>/worker.js`; `npx wrangler d1 migrations apply DB --env staging --remote` в†’ `0007_chat_members.sql вњ…`; `npx wrangler deploy --env staging` в†’ version `231a8070-f7ab-46d2-8983-f3939063afad`; `GET https://restless-lab-d737-staging.shelckograff.workers.dev/` в†’ `200`.
 
-**Тест:** `npm run build:css`, `git diff --check`, синтаксическая проверка JS из `index.html` через Node.
+**РљРѕРјРјРёС‚:** `СЌС‚РѕС‚ РєРѕРјРјРёС‚`
 
-**Коммит:** этот коммит.
+**Р‘Р»РѕРєРµСЂС‹:** РЎР°Рј bot runtime РїРѕ-РїСЂРµР¶РЅРµРјСѓ Р¶РёРІС‘С‚ РІРЅРµ git-СЂРµРїРѕР·РёС‚РѕСЂРёСЏ `4e-app`; staging worker СѓР¶Рµ СѓРјРµРµС‚ roster API, РЅРѕ Р±РµР· РѕР±РЅРѕРІР»РµРЅРёСЏ РїСЂРѕС†РµСЃСЃР° `node src/bot/index.js` РЅРµР»СЊР·СЏ С‡РµСЃС‚РЅРѕ РїСЂРѕРІРµСЂРёС‚СЊ group smoke РґР»СЏ `@mention`, reply Рё join/leave.
 
-**Статус:** Ready for QA — проверить на телефоне swipe left/right, кнопки действий и вибрацию.
+## 2026-07-04 вЂ” SMART-004: concise group task confirmations (Codex)
 
----
-## 2026-06-28 — BACK-019 web swipe actions hidden (Codex)
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ Р»РѕРєР°Р»СЊРЅРѕРј worker checkout РѕР±РЅРѕРІР»РµРЅС‹ bot-РѕР±СЂР°Р±РѕС‚С‡РёРєРё РґР»СЏ `SMART-004`. `4e-worker/src/bot/handler.js` С‚РµРїРµСЂСЊ С„РѕСЂРјРёСЂСѓРµС‚ РѕРґРЅРѕСЃС‚СЂРѕС‡РЅРѕРµ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ `вњ“ РРјСЏ: Р·Р°РґР°С‡Р° вЂ” СЃСЂРѕРє`, СЃРѕС…СЂР°РЅСЏРµС‚ Р·Р°РґР°С‡Сѓ СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ СЂР°Р·Р±РѕСЂР° СЃРѕРѕР±С‰РµРЅРёСЏ, РїРѕРєР°Р·С‹РІР°РµС‚ С‚РѕР»СЊРєРѕ РєРЅРѕРїРєРё `вњЏпёЏ` Рё `вњ•`, Р° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ/РѕС‚РјРµРЅР° СѓРґР°Р»СЏСЋС‚ СЃС‚Р°СЂСѓСЋ Р·Р°РїРёСЃСЊ С‡РµСЂРµР· `x-action: delete-task` Рё РЅРµ СЂРёСЃСѓСЋС‚ Р»РѕР¶РЅРѕРµ В«РћС‚РјРµРЅРµРЅРѕВ», РµСЃР»Рё Р±РѕС‚ СѓР¶Рµ РїРѕС‚РµСЂСЏР» РєРѕРЅС‚РµРєСЃС‚ callback. Р’ `4e-worker/worker.js` РїРѕРґС‚РІРµСЂР¶РґС‘РЅ РЅРѕРІС‹Р№ action `delete-task` СЃ СѓРґР°Р»РµРЅРёРµРј РїРѕ `taskId` РёР· user/group KV-РєР»СЋС‡РµР№; `saveTaskByName` РІ С‚РµРєСѓС‰РµРј checkout РЅРµ СЂРµР°Р»РёР·РѕРІР°РЅ, РїРѕСЌС‚РѕРјСѓ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… СЃРєСЂС‹С‚С‹С… РєРѕРїРёР№ Р·Р°РґР°С‡Рё СЌС‚РѕС‚ СЃС†РµРЅР°СЂРёР№ СЃРµР№С‡Р°СЃ РЅРµ СЃРѕР·РґР°С‘С‚.
 
-**Что сделано:** Исправлен web Telegram/browser regression: кнопки `Отменить`, `Перенести`, `Завершить` теперь скрыты по умолчанию через `opacity:0`, `visibility:hidden` и `translateX(...)`. На non-touch устройствах (`@media (pointer:fine)`) swipe-actions полностью отключены через `display:none!important`, чтобы в браузере они не висели статично над карточками.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `pm/backlog.md` вЂ” РєРѕРЅС‚СЂРѕР»СЊРЅС‹Р№ РїРѕРёСЃРє РґРѕ РїСЂР°РІРєРё `29`; `shared/WORK_LOG.md` вЂ” `167`; `DEVELOPMENT_LOG.md` вЂ” `173`; `FILE_MAP_WORKER.md` вЂ” `10`; `FILE_MAP_BOT.md` вЂ” `3`. РС‚РѕРіРѕРІР°СЏ СЃРІРµСЂРєР° РїРѕСЃР»Рµ РїСЂР°РІРѕРє РЅРµ РґРѕР»Р¶РЅР° РґР°РІР°С‚СЊ СѓРјРµРЅСЊС€РµРЅРёСЏ.
 
-**Проверка кодировки:** Файлы с кириллицей читались/писались через `[System.IO.File]::ReadAllText/WriteAllText` с UTF-8 без BOM.
+**РўРµСЃС‚:** `node --check <worker-repo-root>/worker.js`; `node --check <worker-repo-root>/src/bot/handler.js`; С‚РѕС‡РµС‡РЅР°СЏ РїСЂРѕРІРµСЂРєР° `handler.js`/`worker.js` РЅР° `formatTaskConfirmationLine`, `delete-task`, `handleDeleteTask`.
 
-**Тест:** `npm run build:css`, `git diff --check`, синтаксическая проверка JS из `index.html` через Node.
+**РљРѕРјРјРёС‚:** `СЌС‚РѕС‚ РєРѕРјРјРёС‚`
 
-**Коммит:** этот коммит.
+**Р‘Р»РѕРєРµСЂС‹:** РўРµРєСѓС‰РёР№ `<worker-repo-root>` РЅРµ СЏРІР»СЏРµС‚СЃСЏ РѕС‚РґРµР»СЊРЅС‹Рј git-СЂРµРїРѕР·РёС‚РѕСЂРёРµРј, РїРѕСЌС‚РѕРјСѓ РєРѕРґ bot/worker РїРѕРєР° Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅ С‚РѕР»СЊРєРѕ Р»РѕРєР°Р»СЊРЅРѕ. Р”Р»СЏ Р·Р°РєСЂС‹С‚РёСЏ SMART-004 РЅСѓР¶РµРЅ runtime deploy РїСЂРѕС†РµСЃСЃР° `node src/bot/index.js` Рё СЂСѓС‡РЅРѕР№ smoke РІ С‚РµСЃС‚РѕРІРѕР№ РіСЂСѓРїРїРµ.
 
-**Статус:** Ready for QA — проверить web Telegram/browser и touch-свайпы на телефоне.
+## 2026-07-05 вЂ” INFRA-001: whitelist-С„СЂРѕРЅС‚ РЅР° Workers Static Assets (Codex)
 
----
-## 2026-06-28 — BACK-019 fix swipe actions visibility (Codex)
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ app-СЂРµРїРѕ РїРѕРґРЅСЏС‚ РѕС‚РґРµР»СЊРЅС‹Р№ С„СЂРѕРЅС‚РѕРІС‹Р№ Worker `4-ai-app-worker`: `scripts/build-pages-whitelist.mjs` СЃРѕР±РёСЂР°РµС‚ `.pages-dist`, `wrangler.toml` РїСѓР±Р»РёРєСѓРµС‚ РµС‘ С‡РµСЂРµР· Static Assets РЅР° РјР°СЂС€СЂСѓС‚Рµ `app.4-ai.site/*`, Р° `worker-static.js` РѕР±СЃР»СѓР¶РёРІР°РµС‚ assets Рё СЃС‚СЂР°С…СѓРµС‚ VK-РІС…РѕРґ. Р”Р»СЏ VK РґРѕР±Р°РІР»РµРЅ РІРЅСѓС‚СЂРµРЅРЅРёР№ rewrite: Р·Р°РїСЂРѕСЃС‹ РЅР° `vk.html` Р±РѕР»СЊС€Рµ РЅРµ С‚СЂРµР±СѓСЋС‚ РІРЅРµС€РЅРµРіРѕ `307`, Р° РµСЃР»Рё VK РєРѕРЅС‚РµР№РЅРµСЂ РїСЂРёС…РѕРґРёС‚ РІ РєРѕСЂРµРЅСЊ `/` СЃ launch params (`vk_*`, `sign`), Worker СЃСЂР°Р·Сѓ РѕС‚РґР°С‘С‚ VK-РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ. Р­С‚Рѕ СЃРѕС…СЂР°РЅСЏРµС‚ whitelist-РјРѕРґРµР»СЊ, СѓР±РёСЂР°РµС‚ Р·Р°РІРёСЃРёРјРѕСЃС‚СЊ РѕС‚ Cloudflare Pages РІ Р Р¤ Рё РЅРµ Р·Р°С‚СЂР°РіРёРІР°РµС‚ API worker РЅР° `edge.4-ai.site`.
 
-**Что сделано:** Исправлен баг, из-за которого кнопки `Завершить`, `Отменить`, `Перенести` отображались статично над каждой карточкой задач. Причина: swipe CSS был завязан на родительский `.tasks-wrap`, которого нет у реального `#home-task-list`; селекторы перенесены на `.task-card-shell`, поэтому action-кнопки снова скрыты под карточкой по умолчанию и видны только при свайпе.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РќРµ С‚СЂРµР±РѕРІР°Р»Р°СЃСЊ вЂ” `index.html` Рё `vk.html` РІ СЌС‚РѕР№ Р·Р°РґР°С‡Рµ РЅРµ СЂРµРґР°РєС‚РёСЂРѕРІР°Р»РёСЃСЊ.
 
-**Проверка кодировки:** Файлы с кириллицей читались/писались через `[System.IO.File]::ReadAllText/WriteAllText` с UTF-8 без BOM.
+**РўРµСЃС‚:** `npm run build:worker-assets`; `npx wrangler deploy`; HTTP-РїСЂРѕРІРµСЂРєРё `https://app.4-ai.site/`, `/vk`, `/privacy` -> `200`; `https://app.4-ai.site/pm/backlog.md` Рё `/shared/ROADMAP.md` -> `404`; preflight `OPTIONS` СЃ origin `https://app.4-ai.site` РґРѕ `https://edge.4-ai.site/auth/login` -> `204`; live HTML РЅР° РґРѕРјРµРЅРµ СЃРѕРґРµСЂР¶РёС‚ `https://edge.4-ai.site` Рё РЅРµ СЃРѕРґРµСЂР¶РёС‚ `workers.dev`, staging URL РёР»Рё `mrktggod.github.io`.
 
-**Тест:** `npm run build:css`, `git diff --check`, синтаксическая проверка JS из `index.html` через Node.
+**РљРѕРјРјРёС‚:** N/A
 
-**Коммит:** этот коммит.
+## 2026-07-05 вЂ” SMART-006: user profile in AI chat context (Codex)
 
-**Статус:** Ready for QA — проверить свайп влево/вправо на телефоне.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` СЂР°СЃС€РёСЂРµРЅ system prompt AI-С‡Р°С‚Р°: РґРѕР±Р°РІР»РµРЅРѕ СЏРІРЅРѕРµ СѓРєР°Р·Р°РЅРёРµ СѓС‡РёС‚С‹РІР°С‚СЊ РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. Р СЏРґРѕРј СЃ `sendAsk()` РґРѕР±Р°РІР»РµРЅС‹ helper-С„СѓРЅРєС†РёРё, РєРѕС‚РѕСЂС‹Рµ СЃРѕР±РёСЂР°СЋС‚ РёР· `currentUser` Рё `allTasksCache` РїСЂРѕС„РёР»СЊРЅС‹Р№ Р±Р»РѕРє РґР»СЏ Claude: РёРјСЏ, Р»РѕРєР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ Рё timezone, С‚Р°СЂРёС„, РєРѕР»РёС‡РµСЃС‚РІРѕ Р°РєС‚РёРІРЅС‹С…/РіРѕСЂСЏС‰РёС…/РїСЂРѕСЃСЂРѕС‡РµРЅРЅС‹С… Р·Р°РґР°С‡, Р·Р°РІРµСЂС€С‘РЅРЅС‹Рµ Р·Р° 7 РґРЅРµР№ (РїРѕ РґРѕСЃС‚СѓРїРЅС‹Рј timestamp-РїРѕР»СЏРј), С‚РѕРї-3 Р»СЋРґРµР№ РёР· Р°РєС‚РёРІРЅС‹С… Р·Р°РґР°С‡. Р­С‚РѕС‚ Р±Р»РѕРє С‚РµРїРµСЂСЊ РёРЅР¶РµРєС‚РёС‚СЃСЏ РІ `system` РІРјРµСЃС‚Рµ СЃ РґР°С‚РѕР№ Рё summary Р°РєС‚РёРІРЅС‹С… Р·Р°РґР°С‡.
 
----
-## 2026-06-28 — BACK-019 улучшенные карточки задач (Codex)
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` вЂ” СЃРѕРІРїР°РґРµРЅРёР№ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ` РґРѕ: `61`, РїРѕСЃР»Рµ: `61`.
 
-**Что сделано:** В `index.html` добавлен единый `renderTaskCard()` для домашнего списка задач, фильтров и месячного списка. Карточка теперь показывает номер с цветным приоритетом, категорию, дедлайн, двухстрочное название и приглушённую красную подсветку просроченных задач. Добавлены swipe-действия: вправо — `Завершить`, влево — `Отменить` и `Перенести` с date picker и сохранением через `update-task`.
+**РўРµСЃС‚:** Р»РѕРєР°Р»СЊРЅС‹Р№ grep РїРѕРґС‚РІРµСЂРґРёР», С‡С‚Рѕ `index.html` РЅР° РІРµС‚РєРµ СЃРѕРґРµСЂР¶РёС‚ РїСЂРѕС„РёР»СЊРЅС‹Р№ Р±Р»РѕРє Рё РёРЅР¶РµРєС‚РёС‚ РµРіРѕ РІ `system`. РџРѕР»РЅС‹Р№ staging smoke РїРѕРєР° Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ: `npx wrangler secret list --env staging` РЅРµ РїРѕРєР°Р·С‹РІР°РµС‚ `ANTHROPIC_KEY`, РїРѕСЌС‚РѕРјСѓ `/anthropic` РЅР° staging РЅРµР»СЊР·СЏ РїСЂРѕРІРµСЂРёС‚СЊ С‡РµСЃС‚РЅРѕ.
 
-**Проверка кодировки:** Файлы с кириллицей читались/писались через `[System.IO.File]::ReadAllText/WriteAllText` с UTF-8 без BOM; PowerShell `-replace`, `Set-Content`, `Out-File` не использовались.
+**РљРѕРјРјРёС‚:** `СЌС‚РѕС‚ РєРѕРјРјРёС‚`
 
-**Тест:** `npm run build:css`, `git diff --check`, синтаксическая проверка JS из `index.html` через Node.
+## 2026-07-05 вЂ” BACK-034: staging contour bootstrap (Codex)
 
-**Коммит:** этот коммит.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р”Р»СЏ `<worker-repo-root>` staging-РєРѕРЅС„РёРі РїСЂРёРІРµРґС‘РЅ Рє С€С‚Р°С‚РЅРѕРјСѓ РІРёРґСѓ: РІ `wrangler.toml` РґРѕР±Р°РІР»РµРЅ `[env.staging]` СЃ РѕС‚РґРµР»СЊРЅС‹РјРё D1/KV bindings Рё `routes = []`, С‡С‚РѕР±С‹ staging РЅРµ РЅР°СЃР»РµРґРѕРІР°Р» prod-РґРѕРјРµРЅ `edge.4-ai.site`; `wrangler.staging.toml` СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅ. РџСЂРёРјРµРЅРµРЅР° РјРёРіСЂР°С†РёСЏ `postgres_app_state.sql` Рє D1 `4e-staging`, staging worker Р·Р°РґРµРїР»РѕРµРЅ РЅР° `https://restless-lab-d737-staging.shelckograff.workers.dev`. Р’ app-СЂРµРїРѕ СЃРѕР·РґР°РЅР° РІРµС‚РєР° `dev`: `index.html` РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ С…РѕРґРёС‚ РІ staging worker, username Р±РѕС‚Р° РјРѕР¶РЅРѕ РїСЂРѕРєРёРЅСѓС‚СЊ С‡РµСЂРµР· `?bot=<staging_bot_username>`, Р° РїСЂРё РЅРµРґРѕСЃС‚СѓРїРЅРѕСЃС‚Рё `startToken` dev-РІРµС‚РєР° РґРµР»Р°РµС‚ fallback-РѕС‚РєСЂС‹С‚РёРµ Telegram-Р±РѕС‚Р° Р±РµР· С‚СѓРїРёРєР°. РЎРѕР·РґР°РЅ Pages-РїСЂРѕРµРєС‚ `4-ai-staging`, Р·Р°РіСЂСѓР¶РµРЅР° dev-РІРµСЂСЃРёСЏ РїСЂРёР»РѕР¶РµРЅРёСЏ, РґРѕР±Р°РІР»РµРЅР° РёРЅСЃС‚СЂСѓРєС†РёСЏ `docs/staging-contour.md`.
 
-**Статус:** Ready for QA — нужен ручной smoke свайпов и date picker на телефоне.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` вЂ” СЃРѕРІРїР°РґРµРЅРёР№ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ` РґРѕ: `61`, РїРѕСЃР»Рµ: `61`.
 
----
-## 2026-06-28 — Ответственный за РКН: Юрий (Codex)
+**РўРµСЃС‚:** `node --check worker.js`; `npx wrangler d1 migrations apply DB --env staging --remote`; `npx wrangler deploy --env staging`; `curl https://restless-lab-d737-staging.shelckograff.workers.dev/` в†’ `OK`; `curl -X OPTIONS ...` в†’ `204`; `wrangler pages project create 4-ai-staging --production-branch dev`; `wrangler pages deploy . --project-name 4-ai-staging --branch dev`; `curl https://4-ai-staging.pages.dev/` СЃРѕРґРµСЂР¶РёС‚ `const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev';`.
 
-**Что сделано:** По решению Алексея BACK-007 "Уведомление РКН" передан Юрию. Обновлены `shared/ROADMAP.md`, `pm/backlog.md`, `pm/next-actions.md` и список открытых проблем в этом логе: РКН теперь manual task Юрия, а не Алексея.
+**РљРѕРјРјРёС‚:** `СЌС‚РѕС‚ РєРѕРјРјРёС‚`
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**Р‘Р»РѕРєРµСЂС‹:** `npx wrangler secret list --env staging` РїРѕРєР°Р·С‹РІР°РµС‚ С‚РѕР»СЊРєРѕ `BOT_API_TOKEN`; РґР»СЏ AI smoke РЅСѓР¶РЅС‹ РєР°Рє РјРёРЅРёРјСѓРј `ANTHROPIC_KEY` Рё, РІРµСЂРѕСЏС‚РЅРѕ, `OPENAI_KEY`/`RESEND_KEY`/`VK_SECRET_KEY`. РўР°РєР¶Рµ РЅСѓР¶РµРЅ username С‚РµСЃС‚РѕРІРѕРіРѕ Р±РѕС‚Р° РґР»СЏ РїРѕР»РЅРѕРіРѕ СЂСѓС‡РЅРѕРіРѕ Telegram smoke, РїРѕРєР° РѕРЅ РЅРµ Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅ РІ СЂРµРїРѕР·РёС‚РѕСЂРёРё Рё РїРµСЂРµРґР°С‘С‚СЃСЏ С‡РµСЂРµР· `?bot=...`.
 
-**Тест:** Документальная правка; проверка — `git diff --check` и `bash scripts/check-portable-paths.sh`.
+## 2026-07-05 вЂ” BACK-007: privacy/RKN links and wording (Codex)
 
-**Коммит:** N/A.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `privacy.html` СЃС‚СЂРѕРєР° РїСЂРѕ СЂРµРµСЃС‚СЂ Р РљРќ РїСЂРёРІРµРґРµРЅР° Рє С„РѕСЂРјСѓР»РёСЂРѕРІРєРµ Р·Р°РґР°С‡Рё: В«РЈРІРµРґРѕРјР»РµРЅРёРµ РѕР± РѕР±СЂР°Р±РѕС‚РєРµ РїРµСЂСЃРѕРЅР°Р»СЊРЅС‹С… РґР°РЅРЅС‹С… Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅРѕ Р РѕСЃРєРѕРјРЅР°РґР·РѕСЂРѕРј, СЂРµРі. в„– 102299/77 РѕС‚ 01.07.2026В». Р’ `index.html` РґРѕР±Р°РІР»РµРЅР° СЏРІРЅР°СЏ privacy-СЃСЃС‹Р»РєР° РІ onboarding Рё СЂР°СЃС€РёСЂРµРЅ legal-note РЅР° СЌРєСЂР°РЅРµ auth: С‚РµРїРµСЂСЊ РѕРЅ РїРѕРєСЂС‹РІР°РµС‚ Рё `Р’РѕР№С‚Рё`, Рё `РЎРѕР·РґР°С‚СЊ Р°РєРєР°СѓРЅС‚`.
 
-**Статус:** локально выполнено, без push/merge.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` вЂ” СЃРѕРІРїР°РґРµРЅРёР№ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ` РґРѕ: `61`, РїРѕСЃР»Рµ: `61`.
 
----
+**РўРµСЃС‚:** `Invoke-WebRequest https://mrktggod.github.io/4e-app/privacy.html` РІРµСЂРЅСѓР» `200`; live-СЃС‚СЂР°РЅРёС†Р° СЃРѕРґРµСЂР¶РёС‚ `102299/77`. Р›РѕРєР°Р»СЊРЅС‹Р№ grep РїРѕРґС‚РІРµСЂРґРёР» privacy-СЃСЃС‹Р»РєРё РІ onboarding, auth Рё biometric consent.
 
-## 2026-06-28 — Смягчение Git-процесса: GitHub Desktop не обязателен для Юры (Codex)
+**РљРѕРјРјРёС‚:** `СЌС‚РѕС‚ РєРѕРјРјРёС‚`
 
-**Что сделано:** По решению Алексея отменена жёсткая формулировка "работать только через GitHub Desktop". `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `shared/ROADMAP.md`, `pm/next-actions.md` и бриф в `pm/agent-inbox/` обновлены: GitHub Desktop оставлен как удобный вариант для Алексея, но не обязательное правило для Юры или опытных участников. `docs/github-desktop-team-rules.md` переименован в `docs/git-team-rules.md`; обязательным остаётся не конкретный инструмент, а согласование рискованных Git-действий: push, merge в `main`, force push, destructive reset/revert и `pull --rebase` при грязном дереве или непонятной ветке.
+## 2026-07-04 вЂ” PM docs sync v2.1 (Codex)
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РќР°Р№РґРµРЅ СЂРµР°Р»СЊРЅС‹Р№ target-СЂРµРїРѕР·РёС‚РѕСЂРёР№ `<repo-root>` РІРјРµСЃС‚Рѕ `Documents\4\4e-app`. РР· Desktop-РёСЃС‚РѕС‡РЅРёРєР° Р±Р°Р№С‚РѕРІС‹Рј `Copy-Item` СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅС‹ `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `docs/Р—РђР”РђР§Р_РЈРњРќР«Р™_РђРЎРЎРРЎРўР•РќРў.md` Рё `docs/Р—РђР”РђР§Р_Р‘Р•РўРђ_Р_Р’РР РђР›Р¬РќРћРЎРўР¬.md`. РџРѕ РґРѕРїРѕР»РЅРµРЅРёСЋ inbox v2.1 РїРµСЂРµРёРјРµРЅРѕРІР°РЅС‹ task-С„Р°Р№Р»С‹ `BACK-025-completed-tasks-week.md` в†’ `BACK-039-completed-tasks-week.md` Рё `BACK-027-admin-tariff-map.md` в†’ `BACK-040-admin-tariff-map.md`, РѕР±РЅРѕРІР»РµРЅС‹ РёС… РІРЅСѓС‚СЂРµРЅРЅРёРµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ Рё backlog-Р·Р°РјРµС‚РєР° РїСЂРѕ РєРѕР»Р»РёР·РёСЋ ID. Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ РїСЂРёРІРµРґРµРЅС‹ Рє portable-РІРёРґСѓ Р°Р±СЃРѕР»СЋС‚РЅС‹Рµ РїСѓС‚Рё РІ `CODEX_INSTRUCTIONS.md`, С‡С‚РѕР±С‹ РїСЂРѕС€Р»Р° repo-РїСЂРѕРІРµСЂРєР° РїСѓС‚РµР№.
 
-**Тест:** Документальная правка; проверка — `git diff --check` и `bash scripts/check-portable-paths.sh`.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РєРёСЂРёР»Р»РёС†Р° source/target СЃРѕРІРїР°Р»Р° РґР»СЏ РІСЃРµС… 5 РєРѕРїРёСЂСѓРµРјС‹С… С„Р°Р№Р»РѕРІ вЂ” `ROADMAP 6055/6055`, `backlog 6680/6680`, `bugs 5994/5994`, `Р—РђР”РђР§Р_РЈРњРќР«Р™_РђРЎРЎРРЎРўР•РќРў 4791/4791`, `Р—РђР”РђР§Р_Р‘Р•РўРђ_Р_Р’РР РђР›Р¬РќРћРЎРўР¬ 5264/5264`.
 
-**Коммит:** N/A.
+**РўРµСЃС‚:** `git diff --check`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; grep РїРѕ СЂРµРїРѕ РЅР° СЃС‚Р°СЂС‹Рµ СЃСЃС‹Р»РєРё `BACK-025-completed-tasks-week` / `BACK-027-admin-tariff-map` Рё Later-РґСѓР±Р»РёРєР°С‚С‹ вЂ” Р»РёС€РЅРёС… СѓРїРѕРјРёРЅР°РЅРёР№ РЅРµ РѕСЃС‚Р°Р»РѕСЃСЊ.
 
-**Статус:** локально выполнено, без push/merge.
+**РљРѕРјРјРёС‚:** `docs(pm): sync roadmap+backlog+bugs вЂ” SMART/VIRAL/PLAT Р·Р°РґР°С‡Рё, Р°СѓРґРёС‚ Р±Р°РіРѕРІ, СЂРµС€РµРЅРёСЏ 2026-07-04`
+
+## 2026-06-29 вЂ” BACK-025: AI planner glass dashboard PM setup (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РЎРѕР·РґР°РЅР° PM-РѕСЃРЅРѕРІР° РґР»СЏ РїРµСЂРµРґРµР»РєРё РіР»Р°РІРЅРѕРіРѕ СЌРєСЂР°РЅР° РІ СѓС‚СЂРµРЅРЅРёР№ AI-РїР»Р°РЅРµСЂ. Р’ `shared/ROADMAP.md` РґРѕР±Р°РІР»РµРЅРѕ РЅР°РїСЂР°РІР»РµРЅРёРµ "AI-РїР»Р°РЅРµСЂРЅС‹Р№ РґР°С€Р±РѕСЂРґ"; РІ `pm/backlog.md` РґРѕР±Р°РІР»РµРЅ `BACK-025 вЂ” РќР°СЃС‚СЂР°РёРІР°РµРјС‹Р№ СѓС‚СЂРµРЅРЅРёР№ AI-РґР°С€Р±РѕСЂРґ` РєР°Рє P1; `pm/next-actions.md` РѕР±РЅРѕРІР»С‘РЅ РЅРѕРІС‹Рј Р±Р»РёР¶Р°Р№С€РёРј С„РѕРєСѓСЃРѕРј; `pm/qa-checklist.md` РїРѕР»СѓС‡РёР» smoke-РїСЂРѕРІРµСЂРєРё РґР»СЏ "РџР»Р°РЅ РЅР° СЃРµРіРѕРґРЅСЏ", "РџСѓР»СЊСЃ РґРЅСЏ" Рё СЃРјС‹СЃР»РѕРІС‹С… СЃРµРєС†РёР№ Р·Р°РґР°С‡. РЎРѕР·РґР°РЅ `docs/tasks/BACK-025_ai_planner_glass_dashboard.md`.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
+
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `shared/ROADMAP.md` в†’ `pm/backlog.md` в†’ `pm/next-actions.md` в†’ `pm/qa-checklist.md` в†’ `docs/tasks/BACK-025_ai_planner_glass_dashboard.md`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**РљРѕРјРјРёС‚:** СЌС‚РѕС‚ РєРѕРјРјРёС‚.
+
+**РЎС‚Р°С‚СѓСЃ:** PM setup РІС‹РїРѕР»РЅРµРЅ. РЎР»РµРґСѓСЋС‰РёР№ С€Р°Рі вЂ” СЂРµР°Р»РёР·Р°С†РёСЏ UI РІ РІРµС‚РєРµ `feat/ai-planner-glass-dashboard`.
 
 ---
 
-## 2026-06-28 — Командный Git-процесс и план следующих действий (Codex)
+## 2026-06-29 вЂ” BUG-2026-06-29-002: voice microphone error triage (Codex)
 
-**Что сделано:** Обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` и `FILE_MAP.md`: старое правило автоматического `pull --rebase` заменено на ручной процесс через GitHub Desktop. Добавлено правило, что исключения из Git-процесса возможны только после явного согласования с Алексеем: какое правило нарушаем, зачем, какой риск и кто подтвердил. Создан `docs/github-desktop-team-rules.md` с понятными правилами для команды и `pm/next-actions.md` с ближайшим PM-планом: Git-процесс, QA, legal/infra blockers, premium positioning, закрытый тест и монетизация.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕ СЃРєСЂРёРЅСѓ РђР»РµРєСЃРµСЏ Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅ Р±Р°Рі РіРѕР»РѕСЃРѕРІРѕРіРѕ СЂРµР¶РёРјР°: СЌРєСЂР°РЅ РїРѕРєР°Р·С‹РІР°РµС‚ "РћС€РёР±РєР° РјРёРєСЂРѕС„РѕРЅР°" Рё РЅРµ РЅР°С‡РёРЅР°РµС‚ Р·Р°РїРёСЃСЊ. РўРѕС‡РµС‡РЅР°СЏ РїСЂРѕРІРµСЂРєР° `index.html` РїРѕРєР°Р·Р°Р»Р°, С‡С‚Рѕ С‚РµРєСѓС‰РёР№ `main` РёСЃРїРѕР»СЊР·СѓРµС‚ `SpeechRecognition` РІ `openVoice()`. Р’ РёСЃС‚РѕСЂРёРё РЅР°Р№РґРµРЅ MediaRecorder-flow РІ `70a051f` / `origin/feat/voice-mediarecorder`, РЅРѕ РѕРЅ Р±С‹Р» РѕС‚РєР°С‚Р°РЅ РєРѕРјРјРёС‚РѕРј `e970d33` РѕР±СЂР°С‚РЅРѕ Рє SpeechRecognition. Р”РѕР±Р°РІР»РµРЅС‹ `BUG-2026-06-29-002` РІ `pm/bugs.md`, P1-СЃС‚СЂРѕРєР° `BACK-021` РІ Now `pm/backlog.md`, voice-РїСЂРѕРІРµСЂРєРё РІ `pm/qa-checklist.md` Рё СѓС‚РѕС‡РЅРµРЅРёРµ РІ `docs/tasks/BACK-021-voice-mediarecorder.md`.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** Документальная правка; проверка — `git diff --check` и `bash scripts/check-portable-paths.sh`.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `pm/bugs.md` в†’ `pm/backlog.md` в†’ `pm/qa-checklist.md` в†’ `docs/tasks/BACK-021-voice-mediarecorder.md`; РєРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ.
 
-**Коммит:** N/A.
+**РљРѕРјРјРёС‚:** N/A
 
-**Статус:** локально выполнено, без push/merge. Следующий шаг — Алексей проверяет изменения в GitHub Desktop на ветке `docs/git-branch-protocol` и решает, коммитить ли их.
+**РЎС‚Р°С‚СѓСЃ:** Triaged вЂ” РїРµСЂРµРґ РєРѕРґРѕРІС‹Рј С„РёРєСЃРѕРј РЅСѓР¶РЅРѕ РїРѕРЅСЏС‚СЊ РїСЂРёС‡РёРЅСѓ РѕС‚РєР°С‚Р° `e970d33`, РїСЂРѕРІРµСЂРёС‚СЊ Worker `/transcribe` Рё `OPENAI_KEY`, Р·Р°С‚РµРј РґРµР»Р°С‚СЊ РѕС‚РґРµР»СЊРЅСѓСЋ РІРµС‚РєСѓ `fix/voice-mediarecorder`.
+
+---
+## 2026-06-29 вЂ” BUG-2026-06-29-001: Telegram login dead end triage (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕ СЃРєСЂРёРЅСѓ РђР»РµРєСЃРµСЏ Рё С‚РѕС‡РµС‡РЅРѕР№ РїСЂРѕРІРµСЂРєРµ `index.html` Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅ Р±Р°Рі РІС…РѕРґР° С‡РµСЂРµР· Telegram: РїСЂРё РѕС‚СЃСѓС‚СЃС‚РІРёРё `Telegram.WebApp.initData` С„СѓРЅРєС†РёСЏ `loginWithTelegram()` РїРѕРєР°Р·С‹РІР°РµС‚ toast "РћС‚РєСЂРѕР№ Р±РѕС‚Р° Рё РЅР°Р¶РјРё Start вЂ” РїРѕР»СѓС‡РёС€СЊ СЃСЃС‹Р»РєСѓ РґР»СЏ РІС…РѕРґР°", РЅРѕ UI РЅРµ РѕС‚РєСЂС‹РІР°РµС‚ Р±РѕС‚Р° Рё РЅРµ РґР°С‘С‚ СЏРІРЅС‹Р№ СЃР»РµРґСѓСЋС‰РёР№ С€Р°Рі. Р”РѕР±Р°РІР»РµРЅС‹ `BUG-2026-06-29-001` РІ `pm/bugs.md`, `BACK-024` РІ `pm/backlog.md`, СЃС‚СЂРѕРєР° СЂРёСЃРєР° РІ `shared/ROADMAP.md`, РїСЂРѕРІРµСЂРєРё РІ `pm/qa-checklist.md` Рё task-С„Р°Р№Р» `docs/tasks/BUG-2026-06-29-001_telegram_login_dead_end.md`.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
+
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `pm/bugs.md` в†’ `pm/backlog.md` в†’ `shared/ROADMAP.md` в†’ `pm/qa-checklist.md` в†’ `docs/tasks/`. РљРѕРґ Рё bot-СЂРµРїРѕР·РёС‚РѕСЂРёР№ РЅРµ РјРµРЅСЏР»РёСЃСЊ.
+
+**РљРѕРјРјРёС‚:** СЌС‚РѕС‚ РєРѕРјРјРёС‚
+
+**РЎС‚Р°С‚СѓСЃ:** Triaged вЂ” РЅСѓР¶РµРЅ live smoke `@Denzel89bot` Рё РёСЃРїСЂР°РІР»РµРЅРёРµ UX/app + bot handoff.
+
+---
+## 2026-06-29 вЂ” PM-Р·Р°РґР°С‡Рё РїРѕ РґРµС‚Р°Р»СЊРЅРѕР№ РєР°СЂС‚РѕС‡РєРµ Р·Р°РґР°С‡Рё (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `pm/backlog.md` РґРѕР±Р°РІР»РµРЅС‹ `BACK-022` вЂ” СЂСѓС‡РЅРѕР№ MVP РґРµС‚Р°Р»СЊРЅРѕР№ РєР°СЂС‚РѕС‡РєРё Р·Р°РґР°С‡Рё Рё `BACK-023` вЂ” СЂР°СЃС€РёСЂРµРЅРёРµ РєР°СЂС‚РѕС‡РєРё РїРѕСЃР»Рµ MVP. Р’ `shared/ROADMAP.md` РЅР°РїСЂР°РІР»РµРЅРёРµ "РљР°С‡РµСЃС‚РІРѕ Р·Р°РґР°С‡" РѕР±РЅРѕРІР»РµРЅРѕ: `BACK-019` РѕСЃС‚Р°С‘С‚СЃСЏ Р·Р°РґР°С‡РµР№ РїСЂРѕ РєР°СЂС‚РѕС‡РєРё РІ СЃРїРёСЃРєРµ, `BACK-022` РґРѕР±Р°РІР»РµРЅ РєР°Рє СЃР»РµРґСѓСЋС‰РёР№ P1-С„РѕРєСѓСЃ РїРѕ СЌРєСЂР°РЅСѓ `task-detail`. Р’ `pm/next-actions.md` РґРѕР±Р°РІР»РµРЅ PM-С€Р°Рі РїРѕРґРіРѕС‚РѕРІРєРё `BACK-022`. РЎРѕР·РґР°РЅС‹ `docs/tasks/BACK-022_task_detail_manual_mvp.md` Рё `docs/tasks/BACK-023_task_detail_future_expansion.md`.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
+
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° СЃРІСЏР·РєРё `pm/backlog.md` в†’ `shared/ROADMAP.md` в†’ `pm/next-actions.md` в†’ `docs/tasks/`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**РљРѕРјРјРёС‚:** N/A вЂ” РєРѕРјРјРёС‚/РїСѓС€ РІС‹РїРѕР»РЅСЏСЋС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ С‡РµР»РѕРІРµРєРѕРј.
+
+**РЎС‚Р°С‚СѓСЃ:** Р»РѕРєР°Р»СЊРЅРѕ РІС‹РїРѕР»РЅРµРЅРѕ.
+
+---
+## 2026-06-30 вЂ” BACK-019 mobile swipe actions + vibration (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РСЃРїСЂР°РІР»РµРЅС‹ РјРѕР±РёР»СЊРЅС‹Рµ РґРµР№СЃС‚РІРёСЏ РєР°СЂС‚РѕС‡РµРє Р·Р°РґР°С‡: РєРЅРѕРїРєРё `Р—Р°РІРµСЂС€РёС‚СЊ`, `РћС‚РјРµРЅРёС‚СЊ`, `РџРµСЂРµРЅРµСЃС‚Рё` С‚РµРїРµСЂСЊ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ РґРµР»РµРіРёСЂРѕРІР°РЅРЅРѕ С‡РµСЂРµР· `touchend` Рё `click`, Р±РµР· inline `onclick`, С‡С‚РѕР±С‹ swipe gesture РЅРµ РіР°СЃРёР» РЅР°Р¶Р°С‚РёРµ. Р”РѕР±Р°РІР»РµРЅР° С‚Р°РєС‚РёР»СЊРЅР°СЏ РѕС‚РґР°С‡Р° С‡РµСЂРµР· Vibration API: `10ms` РїСЂРё РґРѕСЃС‚РёР¶РµРЅРёРё РїРѕСЂРѕРіР° СЃРІР°Р№РїР° Рё `20ms` РїСЂРё РЅР°Р¶Р°С‚РёРё action-РєРЅРѕРїРєРё. РњРѕР±РёР»СЊРЅР°СЏ РіРµРѕРјРµС‚СЂРёСЏ РєР°СЂС‚РѕС‡РєРё СѓС‚РѕС‡РЅРµРЅР°: action-СЃР»РѕР№ РїРѕР»СѓС‡РёР» СЃС‚Р°Р±РёР»СЊРЅС‹Рµ `width/height`, РєРЅРѕРїРєРё С„РёРєСЃРёСЂРѕРІР°РЅС‹ РїРѕ 72px, Р»РµРІС‹Р№ СЃРґРІРёРі РєР°СЂС‚РѕС‡РєРё СЂР°РІРµРЅ С€РёСЂРёРЅРµ РґРІСѓС… РєРЅРѕРїРѕРє (`144px`).
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** Р¤Р°Р№Р»С‹ СЃ РєРёСЂРёР»Р»РёС†РµР№ С‡РёС‚Р°Р»РёСЃСЊ/РїРёСЃР°Р»РёСЃСЊ С‡РµСЂРµР· `[System.IO.File]::ReadAllText/WriteAllText` СЃ UTF-8 Р±РµР· BOM.
+
+**РўРµСЃС‚:** `npm run build:css`, `git diff --check`, СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° JS РёР· `index.html` С‡РµСЂРµР· Node.
+
+**РљРѕРјРјРёС‚:** СЌС‚РѕС‚ РєРѕРјРјРёС‚.
+
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РїСЂРѕРІРµСЂРёС‚СЊ РЅР° С‚РµР»РµС„РѕРЅРµ swipe left/right, РєРЅРѕРїРєРё РґРµР№СЃС‚РІРёР№ Рё РІРёР±СЂР°С†РёСЋ.
+
+---
+## 2026-06-28 вЂ” BACK-019 web swipe actions hidden (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РСЃРїСЂР°РІР»РµРЅ web Telegram/browser regression: РєРЅРѕРїРєРё `РћС‚РјРµРЅРёС‚СЊ`, `РџРµСЂРµРЅРµСЃС‚Рё`, `Р—Р°РІРµСЂС€РёС‚СЊ` С‚РµРїРµСЂСЊ СЃРєСЂС‹С‚С‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ С‡РµСЂРµР· `opacity:0`, `visibility:hidden` Рё `translateX(...)`. РќР° non-touch СѓСЃС‚СЂРѕР№СЃС‚РІР°С… (`@media (pointer:fine)`) swipe-actions РїРѕР»РЅРѕСЃС‚СЊСЋ РѕС‚РєР»СЋС‡РµРЅС‹ С‡РµСЂРµР· `display:none!important`, С‡С‚РѕР±С‹ РІ Р±СЂР°СѓР·РµСЂРµ РѕРЅРё РЅРµ РІРёСЃРµР»Рё СЃС‚Р°С‚РёС‡РЅРѕ РЅР°Рґ РєР°СЂС‚РѕС‡РєР°РјРё.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** Р¤Р°Р№Р»С‹ СЃ РєРёСЂРёР»Р»РёС†РµР№ С‡РёС‚Р°Р»РёСЃСЊ/РїРёСЃР°Р»РёСЃСЊ С‡РµСЂРµР· `[System.IO.File]::ReadAllText/WriteAllText` СЃ UTF-8 Р±РµР· BOM.
+
+**РўРµСЃС‚:** `npm run build:css`, `git diff --check`, СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° JS РёР· `index.html` С‡РµСЂРµР· Node.
+
+**РљРѕРјРјРёС‚:** СЌС‚РѕС‚ РєРѕРјРјРёС‚.
+
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РїСЂРѕРІРµСЂРёС‚СЊ web Telegram/browser Рё touch-СЃРІР°Р№РїС‹ РЅР° С‚РµР»РµС„РѕРЅРµ.
+
+---
+## 2026-06-28 вЂ” BACK-019 fix swipe actions visibility (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РСЃРїСЂР°РІР»РµРЅ Р±Р°Рі, РёР·-Р·Р° РєРѕС‚РѕСЂРѕРіРѕ РєРЅРѕРїРєРё `Р—Р°РІРµСЂС€РёС‚СЊ`, `РћС‚РјРµРЅРёС‚СЊ`, `РџРµСЂРµРЅРµСЃС‚Рё` РѕС‚РѕР±СЂР°Р¶Р°Р»РёСЃСЊ СЃС‚Р°С‚РёС‡РЅРѕ РЅР°Рґ РєР°Р¶РґРѕР№ РєР°СЂС‚РѕС‡РєРѕР№ Р·Р°РґР°С‡. РџСЂРёС‡РёРЅР°: swipe CSS Р±С‹Р» Р·Р°РІСЏР·Р°РЅ РЅР° СЂРѕРґРёС‚РµР»СЊСЃРєРёР№ `.tasks-wrap`, РєРѕС‚РѕСЂРѕРіРѕ РЅРµС‚ Сѓ СЂРµР°Р»СЊРЅРѕРіРѕ `#home-task-list`; СЃРµР»РµРєС‚РѕСЂС‹ РїРµСЂРµРЅРµСЃРµРЅС‹ РЅР° `.task-card-shell`, РїРѕСЌС‚РѕРјСѓ action-РєРЅРѕРїРєРё СЃРЅРѕРІР° СЃРєСЂС‹С‚С‹ РїРѕРґ РєР°СЂС‚РѕС‡РєРѕР№ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ Рё РІРёРґРЅС‹ С‚РѕР»СЊРєРѕ РїСЂРё СЃРІР°Р№РїРµ.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** Р¤Р°Р№Р»С‹ СЃ РєРёСЂРёР»Р»РёС†РµР№ С‡РёС‚Р°Р»РёСЃСЊ/РїРёСЃР°Р»РёСЃСЊ С‡РµСЂРµР· `[System.IO.File]::ReadAllText/WriteAllText` СЃ UTF-8 Р±РµР· BOM.
+
+**РўРµСЃС‚:** `npm run build:css`, `git diff --check`, СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° JS РёР· `index.html` С‡РµСЂРµР· Node.
+
+**РљРѕРјРјРёС‚:** СЌС‚РѕС‚ РєРѕРјРјРёС‚.
+
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РїСЂРѕРІРµСЂРёС‚СЊ СЃРІР°Р№Рї РІР»РµРІРѕ/РІРїСЂР°РІРѕ РЅР° С‚РµР»РµС„РѕРЅРµ.
+
+---
+## 2026-06-28 вЂ” BACK-019 СѓР»СѓС‡С€РµРЅРЅС‹Рµ РєР°СЂС‚РѕС‡РєРё Р·Р°РґР°С‡ (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` РґРѕР±Р°РІР»РµРЅ РµРґРёРЅС‹Р№ `renderTaskCard()` РґР»СЏ РґРѕРјР°С€РЅРµРіРѕ СЃРїРёСЃРєР° Р·Р°РґР°С‡, С„РёР»СЊС‚СЂРѕРІ Рё РјРµСЃСЏС‡РЅРѕРіРѕ СЃРїРёСЃРєР°. РљР°СЂС‚РѕС‡РєР° С‚РµРїРµСЂСЊ РїРѕРєР°Р·С‹РІР°РµС‚ РЅРѕРјРµСЂ СЃ С†РІРµС‚РЅС‹Рј РїСЂРёРѕСЂРёС‚РµС‚РѕРј, РєР°С‚РµРіРѕСЂРёСЋ, РґРµРґР»Р°Р№РЅ, РґРІСѓС…СЃС‚СЂРѕС‡РЅРѕРµ РЅР°Р·РІР°РЅРёРµ Рё РїСЂРёРіР»СѓС€С‘РЅРЅСѓСЋ РєСЂР°СЃРЅСѓСЋ РїРѕРґСЃРІРµС‚РєСѓ РїСЂРѕСЃСЂРѕС‡РµРЅРЅС‹С… Р·Р°РґР°С‡. Р”РѕР±Р°РІР»РµРЅС‹ swipe-РґРµР№СЃС‚РІРёСЏ: РІРїСЂР°РІРѕ вЂ” `Р—Р°РІРµСЂС€РёС‚СЊ`, РІР»РµРІРѕ вЂ” `РћС‚РјРµРЅРёС‚СЊ` Рё `РџРµСЂРµРЅРµСЃС‚Рё` СЃ date picker Рё СЃРѕС…СЂР°РЅРµРЅРёРµРј С‡РµСЂРµР· `update-task`.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** Р¤Р°Р№Р»С‹ СЃ РєРёСЂРёР»Р»РёС†РµР№ С‡РёС‚Р°Р»РёСЃСЊ/РїРёСЃР°Р»РёСЃСЊ С‡РµСЂРµР· `[System.IO.File]::ReadAllText/WriteAllText` СЃ UTF-8 Р±РµР· BOM; PowerShell `-replace`, `Set-Content`, `Out-File` РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°Р»РёСЃСЊ.
+
+**РўРµСЃС‚:** `npm run build:css`, `git diff --check`, СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° JS РёР· `index.html` С‡РµСЂРµР· Node.
+
+**РљРѕРјРјРёС‚:** СЌС‚РѕС‚ РєРѕРјРјРёС‚.
+
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РЅСѓР¶РµРЅ СЂСѓС‡РЅРѕР№ smoke СЃРІР°Р№РїРѕРІ Рё date picker РЅР° С‚РµР»РµС„РѕРЅРµ.
+
+---
+## 2026-06-28 вЂ” РћС‚РІРµС‚СЃС‚РІРµРЅРЅС‹Р№ Р·Р° Р РљРќ: Р®СЂРёР№ (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕ СЂРµС€РµРЅРёСЋ РђР»РµРєСЃРµСЏ BACK-007 "РЈРІРµРґРѕРјР»РµРЅРёРµ Р РљРќ" РїРµСЂРµРґР°РЅ Р®СЂРёСЋ. РћР±РЅРѕРІР»РµРЅС‹ `shared/ROADMAP.md`, `pm/backlog.md`, `pm/next-actions.md` Рё СЃРїРёСЃРѕРє РѕС‚РєСЂС‹С‚С‹С… РїСЂРѕР±Р»РµРј РІ СЌС‚РѕРј Р»РѕРіРµ: Р РљРќ С‚РµРїРµСЂСЊ manual task Р®СЂРёСЏ, Р° РЅРµ РђР»РµРєСЃРµСЏ.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
+
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂР°РІРєР°; РїСЂРѕРІРµСЂРєР° вЂ” `git diff --check` Рё `bash scripts/check-portable-paths.sh`.
+
+**РљРѕРјРјРёС‚:** N/A.
+
+**РЎС‚Р°С‚СѓСЃ:** Р»РѕРєР°Р»СЊРЅРѕ РІС‹РїРѕР»РЅРµРЅРѕ, Р±РµР· push/merge.
 
 ---
 
-## 2026-06-28 — Пожелание Алексея по Git-процессу в roadmap (Codex)
+## 2026-06-28 вЂ” РЎРјСЏРіС‡РµРЅРёРµ Git-РїСЂРѕС†РµСЃСЃР°: GitHub Desktop РЅРµ РѕР±СЏР·Р°С‚РµР»РµРЅ РґР»СЏ Р®СЂС‹ (Codex)
 
-**Что сделано:** В `shared/ROADMAP.md` добавлен блок "Пожелания / ожидают решения" и пункт по Git-процессу. Зафиксировано, что Алексей поддерживает вариант B: разбирать готовые ветки 1 раз в неделю + срочно для P0/P1. `push`, `merge` и `pull --rebase` не автоматизировать; работа должна идти через GitHub Desktop с явным подтверждением человека.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РџРѕ СЂРµС€РµРЅРёСЋ РђР»РµРєСЃРµСЏ РѕС‚РјРµРЅРµРЅР° Р¶С‘СЃС‚РєР°СЏ С„РѕСЂРјСѓР»РёСЂРѕРІРєР° "СЂР°Р±РѕС‚Р°С‚СЊ С‚РѕР»СЊРєРѕ С‡РµСЂРµР· GitHub Desktop". `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `shared/ROADMAP.md`, `pm/next-actions.md` Рё Р±СЂРёС„ РІ `pm/agent-inbox/` РѕР±РЅРѕРІР»РµРЅС‹: GitHub Desktop РѕСЃС‚Р°РІР»РµРЅ РєР°Рє СѓРґРѕР±РЅС‹Р№ РІР°СЂРёР°РЅС‚ РґР»СЏ РђР»РµРєСЃРµСЏ, РЅРѕ РЅРµ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕРµ РїСЂР°РІРёР»Рѕ РґР»СЏ Р®СЂС‹ РёР»Рё РѕРїС‹С‚РЅС‹С… СѓС‡Р°СЃС‚РЅРёРєРѕРІ. `docs/github-desktop-team-rules.md` РїРµСЂРµРёРјРµРЅРѕРІР°РЅ РІ `docs/git-team-rules.md`; РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рј РѕСЃС‚Р°С‘С‚СЃСЏ РЅРµ РєРѕРЅРєСЂРµС‚РЅС‹Р№ РёРЅСЃС‚СЂСѓРјРµРЅС‚, Р° СЃРѕРіР»Р°СЃРѕРІР°РЅРёРµ СЂРёСЃРєРѕРІР°РЅРЅС‹С… Git-РґРµР№СЃС‚РІРёР№: push, merge РІ `main`, force push, destructive reset/revert Рё `pull --rebase` РїСЂРё РіСЂСЏР·РЅРѕРј РґРµСЂРµРІРµ РёР»Рё РЅРµРїРѕРЅСЏС‚РЅРѕР№ РІРµС‚РєРµ.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** Документальная правка; проверка — `git diff --check`.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂР°РІРєР°; РїСЂРѕРІРµСЂРєР° вЂ” `git diff --check` Рё `bash scripts/check-portable-paths.sh`.
 
-**Коммит:** N/A.
+**РљРѕРјРјРёС‚:** N/A.
 
-**Статус:** выполнено как пожелание, а не финальное правило. Следующий шаг — получить мнение Юры / Claude и после решения Алексея оформить правило в командных инструкциях.
-
----
-
-## 2026-06-28 — Запрос к Claude Юры по правилу merge в main (Codex)
-
-**Что сделано:** Создан координационный бриф `pm/agent-inbox/codex-to-claude-2026-06-28-branch-main-rule.md` с вопросом о правильном ритме разбора веток и merge в `main`. Бриф фиксирует, что речь не об автоматическом merge по расписанию, а о ручном разборе готовых веток через GitHub Desktop.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** Проверен текущий checkout: рабочее дерево было чистым перед правкой, текущая ветка `docs/git-branch-protocol`. Правило не внесено в roadmap / AGENTS.md до ответа Claude Юры и решения Алексея.
-
-**Коммит:** N/A.
-
-**Статус:** выполнено как подготовка к обсуждению. Следующий шаг — Алексей передаёт бриф Юре/Claude и после ответа утверждает финальный вариант правила.
+**РЎС‚Р°С‚СѓСЃ:** Р»РѕРєР°Р»СЊРЅРѕ РІС‹РїРѕР»РЅРµРЅРѕ, Р±РµР· push/merge.
 
 ---
 
-## 2026-06-28 — BACK-021: MediaRecorder voice input + Whisper (Codex)
+## 2026-06-28 вЂ” РљРѕРјР°РЅРґРЅС‹Р№ Git-РїСЂРѕС†РµСЃСЃ Рё РїР»Р°РЅ СЃР»РµРґСѓСЋС‰РёС… РґРµР№СЃС‚РІРёР№ (Codex)
 
-**Что сделано:** В `index.html` голосовой ввод переведён на `MediaRecorder`: приложение запрашивает микрофон через `getUserMedia`, записывает до 10 секунд, отправляет audio blob на Worker `/transcribe` как multipart `audio`, получает текст и передаёт его в `ask-field` / `sendAsk()`. `SpeechRecognition` оставлен fallback, если MediaRecorder недоступен. В `4e-worker` commit `339b301` добавил endpoint `POST /transcribe`: проверка `x-token`, чтение multipart, вызов OpenAI Whisper `whisper-1` через `OPENAI_KEY`, ответ `{ text }`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РћР±РЅРѕРІР»РµРЅС‹ `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` Рё `FILE_MAP.md`: СЃС‚Р°СЂРѕРµ РїСЂР°РІРёР»Рѕ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРіРѕ `pull --rebase` Р·Р°РјРµРЅРµРЅРѕ РЅР° СЂСѓС‡РЅРѕР№ РїСЂРѕС†РµСЃСЃ С‡РµСЂРµР· GitHub Desktop. Р”РѕР±Р°РІР»РµРЅРѕ РїСЂР°РІРёР»Рѕ, С‡С‚Рѕ РёСЃРєР»СЋС‡РµРЅРёСЏ РёР· Git-РїСЂРѕС†РµСЃСЃР° РІРѕР·РјРѕР¶РЅС‹ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ СЏРІРЅРѕРіРѕ СЃРѕРіР»Р°СЃРѕРІР°РЅРёСЏ СЃ РђР»РµРєСЃРµРµРј: РєР°РєРѕРµ РїСЂР°РІРёР»Рѕ РЅР°СЂСѓС€Р°РµРј, Р·Р°С‡РµРј, РєР°РєРѕР№ СЂРёСЃРє Рё РєС‚Рѕ РїРѕРґС‚РІРµСЂРґРёР». РЎРѕР·РґР°РЅ `docs/github-desktop-team-rules.md` СЃ РїРѕРЅСЏС‚РЅС‹РјРё РїСЂР°РІРёР»Р°РјРё РґР»СЏ РєРѕРјР°РЅРґС‹ Рё `pm/next-actions.md` СЃ Р±Р»РёР¶Р°Р№С€РёРј PM-РїР»Р°РЅРѕРј: Git-РїСЂРѕС†РµСЃСЃ, QA, legal/infra blockers, premium positioning, Р·Р°РєСЂС‹С‚С‹Р№ С‚РµСЃС‚ Рё РјРѕРЅРµС‚РёР·Р°С†РёСЏ.
 
-**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=20210`. После правки: `index.html CYRILLIC_AFTER=20324`; рост ожидаемый из-за новых сообщений MediaRecorder/Whisper flow.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** inline JS syntax check для `index.html`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂР°РІРєР°; РїСЂРѕРІРµСЂРєР° вЂ” `git diff --check` Рё `bash scripts/check-portable-paths.sh`.
 
-**Коммит:** app `feat(voice): add MediaRecorder voice input`; worker `339b301 feat(voice): add Whisper transcription endpoint`
+**РљРѕРјРјРёС‚:** N/A.
 
-**Статус:** Ready for QA — перед live smoke нужно добавить Worker secret `OPENAI_KEY`, задеплоить Worker/app и проверить голосовой ввод на iPhone Telegram WKWebView и Android.
-
----
-
-## 2026-06-28 — BACK-020: email verification in profile (Codex)
-
-**Что сделано:** В `index.html` email в расширенном профиле теперь подтверждается через кнопку `Подтвердить`: app запрашивает письмо у Worker, обрабатывает `?verify_email=TOKEN`, вызывает `/auth/verify-email`, обновляет `currentUser.emailVerified` и показывает статус `Подтверждён ✅`. В `4e-worker` commit `e815266` добавил endpoints `/auth/request-email-verification` и `/auth/verify-email`, отправку Resend от `noreply@4-ai.site`, D1 таблицу `app_email_verifications` с KV fallback и проверку конфликта `Этот email уже используется`.
-
-**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19940`. После правки: `index.html CYRILLIC_AFTER=20194`; рост ожидаемый из-за новых русских сообщений email verification flow.
-
-**Тест:** inline JS syntax check для `index.html`; `npm run build:css`; `Portable path check passed`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml` собрал Worker и attached module `migrations/0004_email_verifications.sql`. Live smoke не выполнялся: нужен merge/deploy worker и применение D1 migration.
-
-**Коммит:** app `feat(auth): add profile email verification`; worker `e815266 feat(auth): add email verification flow`
-
-**Статус:** Ready for QA — после merge/deploy применить D1 migration `0004_email_verifications.sql`, запросить письмо из профиля, открыть ссылку `?verify_email=TOKEN` в залогиненном Telegram-аккаунте и проверить конфликт уже занятого email.
-
-## 2026-06-28 — BACK-017: live notification settings (Codex)
-
-**Что сделано:** В `index.html` экран `notif-settings` очищен от лишних типов (`Файлы и документы`, `Система и безопасность`, `Маркетинг и новости`) и оставляет рабочие каналы Push, Email, Telegram, задачи/напоминания. Добавлены `Утренний брифинг` с time picker default `09:00` и `Просроченные задачи`. Настройки сохраняются в localStorage и синхронизируются через `/notifications/settings`. В `4e-worker` commit `b3aa1d6` добавил D1 таблицу `app_notification_settings`, API GET/PUT, `/briefings/check`, фильтрацию просроченных задач по настройкам и bot scheduler `checkBriefings`.
-
-**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19953`. После правки: `index.html CYRILLIC_AFTER=19940`; снижение ожидаемое, потому что удалены три старых русских пункта уведомлений.
-
-**Тест:** app inline JS syntax check; `npm run build:css`; `git diff --check`; `Portable path check passed`; worker `node --check worker.js`; `node --check src/bot/reminders.js`; `node --check src/bot/index.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
-
-**Коммит:** app `feat(notifications): add live notification settings`; worker `b3aa1d6 feat(notifications): add live notification settings`
-
-**Статус:** Ready for QA — перед live smoke нужно применить D1 migration `0003_notification_settings.sql` и задеплоить worker/bot.
+**РЎС‚Р°С‚СѓСЃ:** Р»РѕРєР°Р»СЊРЅРѕ РІС‹РїРѕР»РЅРµРЅРѕ, Р±РµР· push/merge. РЎР»РµРґСѓСЋС‰РёР№ С€Р°Рі вЂ” РђР»РµРєСЃРµР№ РїСЂРѕРІРµСЂСЏРµС‚ РёР·РјРµРЅРµРЅРёСЏ РІ GitHub Desktop РЅР° РІРµС‚РєРµ `docs/git-branch-protocol` Рё СЂРµС€Р°РµС‚, РєРѕРјРјРёС‚РёС‚СЊ Р»Рё РёС….
 
 ---
 
-## 2026-06-28 — BACK-016: extended user profile (Codex)
+## 2026-06-28 вЂ” РџРѕР¶РµР»Р°РЅРёРµ РђР»РµРєСЃРµСЏ РїРѕ Git-РїСЂРѕС†РµСЃСЃСѓ РІ roadmap (Codex)
 
-**Что сделано:** В `index.html` экран профиля расширен карточкой `sub-card`: фото профиля с кнопкой `Изменить фото` и локальным preview/R2 placeholder, редактируемое имя, readonly ID, телефон и email с UI-статусом подтверждения, привязка Telegram, textarea `О себе` до 200 символов со счётчиком и date picker даты рождения. Стили добавлены в `styles/screens/profile.less`; данные формы сохраняются локально до появления backend/R2 profile API.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `shared/ROADMAP.md` РґРѕР±Р°РІР»РµРЅ Р±Р»РѕРє "РџРѕР¶РµР»Р°РЅРёСЏ / РѕР¶РёРґР°СЋС‚ СЂРµС€РµРЅРёСЏ" Рё РїСѓРЅРєС‚ РїРѕ Git-РїСЂРѕС†РµСЃСЃСѓ. Р—Р°С„РёРєСЃРёСЂРѕРІР°РЅРѕ, С‡С‚Рѕ РђР»РµРєСЃРµР№ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ РІР°СЂРёР°РЅС‚ B: СЂР°Р·Р±РёСЂР°С‚СЊ РіРѕС‚РѕРІС‹Рµ РІРµС‚РєРё 1 СЂР°Р· РІ РЅРµРґРµР»СЋ + СЃСЂРѕС‡РЅРѕ РґР»СЏ P0/P1. `push`, `merge` Рё `pull --rebase` РЅРµ Р°РІС‚РѕРјР°С‚РёР·РёСЂРѕРІР°С‚СЊ; СЂР°Р±РѕС‚Р° РґРѕР»Р¶РЅР° РёРґС‚Рё С‡РµСЂРµР· GitHub Desktop СЃ СЏРІРЅС‹Рј РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµРј С‡РµР»РѕРІРµРєР°.
 
-**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19707`. После правки: `index.html CYRILLIC_AFTER=19953`; рост ожидаемый из-за новых русских подписей профиля.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** inline JS syntax check для `index.html`; `npm run build:css`; `git diff --check`; `Portable path check passed`.
+**РўРµСЃС‚:** Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅР°СЏ РїСЂР°РІРєР°; РїСЂРѕРІРµСЂРєР° вЂ” `git diff --check`.
 
-**Коммит:** `feat(profile): add extended user profile fields`
+**РљРѕРјРјРёС‚:** N/A.
 
-**Статус:** Ready for QA — нужен визуальный smoke профиля и последующая backend-задача для R2/profile API.
-
----
-
-## 2026-06-28 — BACK-010: Telegram Stars subscription flow (Codex)
-
-**Что сделано:** В `index.html` payment flow теперь выбирает Telegram Stars внутри Telegram Mini App: кнопка оплаты показывает сумму в Stars, запрашивает invoice у Worker и открывает `Telegram.WebApp.openInvoice`. В `4e-worker` commit `d57771c` добавил endpoint `/payments/telegram-stars/invoice`, создание `createInvoiceLink` с валютой `XTR`, обработчик `/payments/telegram-stars/complete` и bot-side обработку `pre_checkout_query` / `successful_payment`, чтобы Premium активировался по реальному событию Telegram.
-
-**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19509`. После правки: `index.html CYRILLIC_AFTER=19707`; рост ожидаемый из-за новых русских сообщений Telegram Stars.
-
-**Тест:** `node --check worker.js`; `node --check src/bot/handler.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`; inline JS syntax check для `index.html`; `npm run build:css`; `git diff --check`. Live Telegram Stars smoke не выполнялся локально, потому что нужен запуск внутри Telegram Mini App с активным bot/Worker окружением.
-
-**Коммит:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c feat(payments): add Telegram Stars subscription flow`
-
-**Статус:** Ready for QA — нужен live smoke в Telegram после merge/deploy.
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ РєР°Рє РїРѕР¶РµР»Р°РЅРёРµ, Р° РЅРµ С„РёРЅР°Р»СЊРЅРѕРµ РїСЂР°РІРёР»Рѕ. РЎР»РµРґСѓСЋС‰РёР№ С€Р°Рі вЂ” РїРѕР»СѓС‡РёС‚СЊ РјРЅРµРЅРёРµ Р®СЂС‹ / Claude Рё РїРѕСЃР»Рµ СЂРµС€РµРЅРёСЏ РђР»РµРєСЃРµСЏ РѕС„РѕСЂРјРёС‚СЊ РїСЂР°РІРёР»Рѕ РІ РєРѕРјР°РЅРґРЅС‹С… РёРЅСЃС‚СЂСѓРєС†РёСЏС….
 
 ---
 
-## 2026-06-28 — Фаза 11: относительные даты в карточках задач (Codex)
+## 2026-06-28 вЂ” Р—Р°РїСЂРѕСЃ Рє Claude Р®СЂС‹ РїРѕ РїСЂР°РІРёР»Сѓ merge РІ main (Codex)
 
-**Что сделано:** В `index.html` добавлен общий formatter относительных дат для карточек задач. Дедлайны теперь показываются как `сегодня`, `завтра`, `через N дней` или `просрочено на N дней`; обычные даты задач показываются как `сегодня`, `вчера`, `N дней назад` или будущий относительный срок. Форматтер подключён к основному списку задач, месячному фильтру, раскрытию всех задач, home-фильтрам и спискам выполненных задач/обещаний.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РЎРѕР·РґР°РЅ РєРѕРѕСЂРґРёРЅР°С†РёРѕРЅРЅС‹Р№ Р±СЂРёС„ `pm/agent-inbox/codex-to-claude-2026-06-28-branch-main-rule.md` СЃ РІРѕРїСЂРѕСЃРѕРј Рѕ РїСЂР°РІРёР»СЊРЅРѕРј СЂРёС‚РјРµ СЂР°Р·Р±РѕСЂР° РІРµС‚РѕРє Рё merge РІ `main`. Р‘СЂРёС„ С„РёРєСЃРёСЂСѓРµС‚, С‡С‚Рѕ СЂРµС‡СЊ РЅРµ РѕР± Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРј merge РїРѕ СЂР°СЃРїРёСЃР°РЅРёСЋ, Р° Рѕ СЂСѓС‡РЅРѕРј СЂР°Р·Р±РѕСЂРµ РіРѕС‚РѕРІС‹С… РІРµС‚РѕРє С‡РµСЂРµР· GitHub Desktop.
 
-**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19355`. После правки: `index.html CYRILLIC_AFTER=19509`; рост ожидаемый из-за новых русских подписей относительных дат.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** inline JS syntax check, unit smoke formatter cases через Node, `npm run build:css`, `git diff --check`.
+**РўРµСЃС‚:** РџСЂРѕРІРµСЂРµРЅ С‚РµРєСѓС‰РёР№ checkout: СЂР°Р±РѕС‡РµРµ РґРµСЂРµРІРѕ Р±С‹Р»Рѕ С‡РёСЃС‚С‹Рј РїРµСЂРµРґ РїСЂР°РІРєРѕР№, С‚РµРєСѓС‰Р°СЏ РІРµС‚РєР° `docs/git-branch-protocol`. РџСЂР°РІРёР»Рѕ РЅРµ РІРЅРµСЃРµРЅРѕ РІ roadmap / AGENTS.md РґРѕ РѕС‚РІРµС‚Р° Claude Р®СЂС‹ Рё СЂРµС€РµРЅРёСЏ РђР»РµРєСЃРµСЏ.
 
-**Коммит:** `feat(tasks): show relative dates in task cards`
+**РљРѕРјРјРёС‚:** N/A.
 
-**Статус:** выполнено — Фаза 11 закрыта.
-
----
-
-## 2026-06-28 — BACK-009: VK Pay subscription flow (Codex)
-
-**Что сделано:** В `index.html` payment flow теперь выбирает VK Pay внутри VK Mini App: кнопка оплаты меняет подпись на `Оплатить через VK Pay`, скрывает card badges и вызывает `VKWebAppShowOrderBox`; вне VK сохраняется CloudPayments. В `vk.html` заглушка `Оплата скоро будет доступна` заменена на кнопку `Купить план`, которая открывает `VKWebAppShowOrderBox` и обновляет Premium UI после успешного bridge-ответа.
-
-**Проверка кодировки:** Шаг 0 до: `index.html CYRILLIC_BEFORE=19182`, `vk.html CYRILLIC_BEFORE=3273`. После правки: `index.html CYRILLIC_AFTER=19355`, `vk.html CYRILLIC_AFTER=3364`; рост ожидаемый из-за новых русских сообщений VK Pay.
-
-**Тест:** inline JS syntax check для `index.html`/`vk.html`; `npm run build:css`; `git diff --check`. Live VK Pay smoke не выполнялся локально, потому что нужен запуск внутри VK Mini App/payment окружения.
-
-**Коммит:** `feat(payments): add VK Pay subscription flow`
-
-**Статус:** готово к live QA в VK Mini App.
-
----
-## 2026-06-27 — BACK-014: PostgreSQL prep without production credentials (Codex)
-
-**Что сделано:** В `4e-worker/worker.js` добавлен подготовительный PostgreSQL storage adapter для `app_sessions` и `app_task_lists`. Adapter читает будущие env `POSTGRES_URL`/`POSTGRES_TOKEN`, но production-поведение не меняет: без `POSTGRES_URL` Worker продолжает использовать D1/KV. Добавлен будущий DDL `migrations/postgres_app_state.sql` для ручного применения в Yandex Cloud PostgreSQL во время BACK-008.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** `node --check worker.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`; `git diff --check`; после merge локальный `4e-worker/main` fast-forward до `a97d768`, worker содержит `POSTGRES_URL` и `migrations/postgres_app_state.sql`.
-
-**Коммит:** `37f9dda` (`feat(worker): prepare PostgreSQL storage adapter`), merged as `a97d768`.
-
-**Статус:** выполнено. Фактический перенос ПД остаётся в BACK-008 и ждёт Yandex Cloud credentials от Алексея.
-
----
-## 2026-06-27 — BACK-013: semantic HTML landmarks and aria labels (Codex)
-
-**Что сделано:** В `index.html` добавлены семантические landmark-теги без изменения классов и id: корневой app-контейнер стал `<main id="app">`, нижние навигации `bottom-nav-v2` и `global-nav` стали `<nav>` с `aria-label`, верхняя область главного экрана и шапка voice-экрана стали `<header>`. Для иконочной навигации и кликабельных `div` добавлены `aria-label`, `role="button"` и `tabindex="0"`; для back-кнопок добавлен `aria-label="Назад"`.
-
-**Проверка кодировки:** Шаг 0 до: `CYRILLIC_BEFORE=18793`. После правки: `CYRILLIC_AFTER=19182`; рост ожидаемый, потому что добавлены русские `aria-label`.
-
-**Тест:** `npm run build:css`; проверен баланс semantic-тегов (`main/nav/header` open=close); `git diff --check` без ошибок; вручную проверены критичные закрывающие теги home nav, task detail action bar и global nav.
-
-**Коммит:** `refactor(ui): add semantic HTML landmarks`
-
-**Статус:** выполнено.
-
----
-## 2026-06-27 — Статус от Юры синхронизирован с roadmap/backlog (Codex)
-
-**Что сделано:**
-- Зафиксировано, что закрыты BACK-001, BACK-002, BACK-003, BACK-004, BACK-005, BACK-006, BACK-012 и Resend-домен `4-ai.site`.
-- `shared/ROADMAP.md` оставлен единым стратегическим файлом; РКН и Yandex Cloud PostgreSQL отмечены как ручные действия Алексея.
-| 3 | Подготовка кода под PostgreSQL заранее — можно брать Codex без credentials | средний |
-- Конкретные цены убраны из roadmap и вынесены в отдельное решение по монетизации.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** ручная сверка `shared/ROADMAP.md` и `pm/backlog.md` со статусом от Юры; `git diff --check`; `bash scripts/check-portable-paths.sh`.
-
-**Коммит:** N/A — коммит/пуш выполняются отдельно.
-
-**Статус:** выполнено.
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ РєР°Рє РїРѕРґРіРѕС‚РѕРІРєР° Рє РѕР±СЃСѓР¶РґРµРЅРёСЋ. РЎР»РµРґСѓСЋС‰РёР№ С€Р°Рі вЂ” РђР»РµРєСЃРµР№ РїРµСЂРµРґР°С‘С‚ Р±СЂРёС„ Р®СЂРµ/Claude Рё РїРѕСЃР»Рµ РѕС‚РІРµС‚Р° СѓС‚РІРµСЂР¶РґР°РµС‚ С„РёРЅР°Р»СЊРЅС‹Р№ РІР°СЂРёР°РЅС‚ РїСЂР°РІРёР»Р°.
 
 ---
 
-## 2026-06-27 — Единый roadmap-файл (Codex)
+## 2026-06-28 вЂ” BACK-021: MediaRecorder voice input + Whisper (Codex)
 
-**Что сделано:**
-- `pm/roadmap.md` объединён с `shared/ROADMAP.md` и удалён, чтобы в проекте остался один источник дорожной карты.
-- В `shared/ROADMAP.md` перенесены рабочие PM-секции Now / Next / Later, стратегические горизонты 2/3, принципы развития, ценовые ориентиры и правило не создавать второй roadmap.
-- Обновлены ссылки и навигация в `pm/backlog.md`, `FILE_MAP.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `AGENTS.md`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` РіРѕР»РѕСЃРѕРІРѕР№ РІРІРѕРґ РїРµСЂРµРІРµРґС‘РЅ РЅР° `MediaRecorder`: РїСЂРёР»РѕР¶РµРЅРёРµ Р·Р°РїСЂР°С€РёРІР°РµС‚ РјРёРєСЂРѕС„РѕРЅ С‡РµСЂРµР· `getUserMedia`, Р·Р°РїРёСЃС‹РІР°РµС‚ РґРѕ 10 СЃРµРєСѓРЅРґ, РѕС‚РїСЂР°РІР»СЏРµС‚ audio blob РЅР° Worker `/transcribe` РєР°Рє multipart `audio`, РїРѕР»СѓС‡Р°РµС‚ С‚РµРєСЃС‚ Рё РїРµСЂРµРґР°С‘С‚ РµРіРѕ РІ `ask-field` / `sendAsk()`. `SpeechRecognition` РѕСЃС‚Р°РІР»РµРЅ fallback, РµСЃР»Рё MediaRecorder РЅРµРґРѕСЃС‚СѓРїРµРЅ. Р’ `4e-worker` commit `339b301` РґРѕР±Р°РІРёР» endpoint `POST /transcribe`: РїСЂРѕРІРµСЂРєР° `x-token`, С‡С‚РµРЅРёРµ multipart, РІС‹Р·РѕРІ OpenAI Whisper `whisper-1` С‡РµСЂРµР· `OPENAI_KEY`, РѕС‚РІРµС‚ `{ text }`.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `index.html CYRILLIC_BEFORE=20210`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `index.html CYRILLIC_AFTER=20324`; СЂРѕСЃС‚ РѕР¶РёРґР°РµРјС‹Р№ РёР·-Р·Р° РЅРѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№ MediaRecorder/Whisper flow.
 
-**Тест:** `rg -n "shared/ROADMAP|pm/roadmap|ROADMAP.md|roadmap.md|дорожн|roadmap"` для поиска ссылок; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+**РўРµСЃС‚:** inline JS syntax check РґР»СЏ `index.html`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
 
-**Коммит:** N/A — коммит/пуш не выполнялся.
+**РљРѕРјРјРёС‚:** app `feat(voice): add MediaRecorder voice input`; worker `339b301 feat(voice): add Whisper transcription endpoint`
 
-**Статус:** выполнено — единственный актуальный roadmap теперь `shared/ROADMAP.md`.
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РїРµСЂРµРґ live smoke РЅСѓР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ Worker secret `OPENAI_KEY`, Р·Р°РґРµРїР»РѕРёС‚СЊ Worker/app Рё РїСЂРѕРІРµСЂРёС‚СЊ РіРѕР»РѕСЃРѕРІРѕР№ РІРІРѕРґ РЅР° iPhone Telegram WKWebView Рё Android.
 
 ---
 
-## 2026-06-27 — BACK-012: CSS architecture LESS + BEM + minification (Codex)
+## 2026-06-28 вЂ” BACK-020: email verification in profile (Codex)
 
-**Что сделано:** Inline CSS из `index.html` вынесен в LESS-структуру: `styles/main.less`, `styles/variables.less`, `styles/layout.less`, `styles/screens/home.less`, `styles/screens/profile.less`, `styles/screens/tasks.less`, `styles/screens/voice.less`. В `package.json` добавлены скрипты `build:css` и `watch:css`, dev-зависимости `less` и `clean-css-cli`. `index.html` теперь подключает `styles.min.css` вместо inline `<style>`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` email РІ СЂР°СЃС€РёСЂРµРЅРЅРѕРј РїСЂРѕС„РёР»Рµ С‚РµРїРµСЂСЊ РїРѕРґС‚РІРµСЂР¶РґР°РµС‚СЃСЏ С‡РµСЂРµР· РєРЅРѕРїРєСѓ `РџРѕРґС‚РІРµСЂРґРёС‚СЊ`: app Р·Р°РїСЂР°С€РёРІР°РµС‚ РїРёСЃСЊРјРѕ Сѓ Worker, РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚ `?verify_email=TOKEN`, РІС‹Р·С‹РІР°РµС‚ `/auth/verify-email`, РѕР±РЅРѕРІР»СЏРµС‚ `currentUser.emailVerified` Рё РїРѕРєР°Р·С‹РІР°РµС‚ СЃС‚Р°С‚СѓСЃ `РџРѕРґС‚РІРµСЂР¶РґС‘РЅ вњ…`. Р’ `4e-worker` commit `e815266` РґРѕР±Р°РІРёР» endpoints `/auth/request-email-verification` Рё `/auth/verify-email`, РѕС‚РїСЂР°РІРєСѓ Resend РѕС‚ `noreply@4-ai.site`, D1 С‚Р°Р±Р»РёС†Сѓ `app_email_verifications` СЃ KV fallback Рё РїСЂРѕРІРµСЂРєСѓ РєРѕРЅС„Р»РёРєС‚Р° `Р­С‚РѕС‚ email СѓР¶Рµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ`.
 
-**Проверка кодировки:** `index.html` изменён через `[System.IO.File]::ReadAllText/WriteAllText` с UTF-8 без BOM; кириллица не редактировалась вручную через `Set-Content`/`Out-File`.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `index.html CYRILLIC_BEFORE=19940`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `index.html CYRILLIC_AFTER=20194`; СЂРѕСЃС‚ РѕР¶РёРґР°РµРјС‹Р№ РёР·-Р·Р° РЅРѕРІС‹С… СЂСѓСЃСЃРєРёС… СЃРѕРѕР±С‰РµРЅРёР№ email verification flow.
 
-**Тест:** `npm install --save-dev less clean-css-cli`; `npm run build:css`; `rg -n "<style|</style>|styles\.min\.css|styles\.css" index.html` подтвердил отсутствие inline CSS и подключение `styles.min.css`. CSS до/после сравнен через сборку и минификацию: отличия только форматные для custom properties (`rgba(...)` с пробелами), визуальные значения сохранены.
+**РўРµСЃС‚:** inline JS syntax check РґР»СЏ `index.html`; `npm run build:css`; `Portable path check passed`; app `git diff --check`; worker `node --check worker.js`; worker `git diff --check`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml` СЃРѕР±СЂР°Р» Worker Рё attached module `migrations/0004_email_verifications.sql`. Live smoke РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ: РЅСѓР¶РµРЅ merge/deploy worker Рё РїСЂРёРјРµРЅРµРЅРёРµ D1 migration.
 
-**Коммит:** `refactor(css): migrate to LESS + BEM architecture`
+**РљРѕРјРјРёС‚:** app `feat(auth): add profile email verification`; worker `e815266 feat(auth): add email verification flow`
 
-**Статус:** выполнено.
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РїРѕСЃР»Рµ merge/deploy РїСЂРёРјРµРЅРёС‚СЊ D1 migration `0004_email_verifications.sql`, Р·Р°РїСЂРѕСЃРёС‚СЊ РїРёСЃСЊРјРѕ РёР· РїСЂРѕС„РёР»СЏ, РѕС‚РєСЂС‹С‚СЊ СЃСЃС‹Р»РєСѓ `?verify_email=TOKEN` РІ Р·Р°Р»РѕРіРёРЅРµРЅРЅРѕРј Telegram-Р°РєРєР°СѓРЅС‚Рµ Рё РїСЂРѕРІРµСЂРёС‚СЊ РєРѕРЅС„Р»РёРєС‚ СѓР¶Рµ Р·Р°РЅСЏС‚РѕРіРѕ email.
 
----
-## 2026-06-27 — BACK-008: Yandex Cloud PostgreSQL migration blocked (Codex)
+## 2026-06-28 вЂ” BACK-017: live notification settings (Codex)
 
-**Что сделано:** Сессия остановлена до кодовых изменений. BACK-006 KV→D1 подтверждён как Done; BACK-008 не может быть начат, потому что Yandex Cloud PostgreSQL cluster ещё не создан, credentials и connection settings отсутствуют.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` СЌРєСЂР°РЅ `notif-settings` РѕС‡РёС‰РµРЅ РѕС‚ Р»РёС€РЅРёС… С‚РёРїРѕРІ (`Р¤Р°Р№Р»С‹ Рё РґРѕРєСѓРјРµРЅС‚С‹`, `РЎРёСЃС‚РµРјР° Рё Р±РµР·РѕРїР°СЃРЅРѕСЃС‚СЊ`, `РњР°СЂРєРµС‚РёРЅРі Рё РЅРѕРІРѕСЃС‚Рё`) Рё РѕСЃС‚Р°РІР»СЏРµС‚ СЂР°Р±РѕС‡РёРµ РєР°РЅР°Р»С‹ Push, Email, Telegram, Р·Р°РґР°С‡Рё/РЅР°РїРѕРјРёРЅР°РЅРёСЏ. Р”РѕР±Р°РІР»РµРЅС‹ `РЈС‚СЂРµРЅРЅРёР№ Р±СЂРёС„РёРЅРі` СЃ time picker default `09:00` Рё `РџСЂРѕСЃСЂРѕС‡РµРЅРЅС‹Рµ Р·Р°РґР°С‡Рё`. РќР°СЃС‚СЂРѕР№РєРё СЃРѕС…СЂР°РЅСЏСЋС‚СЃСЏ РІ localStorage Рё СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓСЋС‚СЃСЏ С‡РµСЂРµР· `/notifications/settings`. Р’ `4e-worker` commit `b3aa1d6` РґРѕР±Р°РІРёР» D1 С‚Р°Р±Р»РёС†Сѓ `app_notification_settings`, API GET/PUT, `/briefings/check`, С„РёР»СЊС‚СЂР°С†РёСЋ РїСЂРѕСЃСЂРѕС‡РµРЅРЅС‹С… Р·Р°РґР°С‡ РїРѕ РЅР°СЃС‚СЂРѕР№РєР°Рј Рё bot scheduler `checkBriefings`.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `index.html CYRILLIC_BEFORE=19953`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `index.html CYRILLIC_AFTER=19940`; СЃРЅРёР¶РµРЅРёРµ РѕР¶РёРґР°РµРјРѕРµ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ СѓРґР°Р»РµРЅС‹ С‚СЂРё СЃС‚Р°СЂС‹С… СЂСѓСЃСЃРєРёС… РїСѓРЅРєС‚Р° СѓРІРµРґРѕРјР»РµРЅРёР№.
 
-**Тест:** Код не менялся. Проверены `pm/backlog.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md`, `DEVELOPMENT_LOG.md`; статус BACK-008 переведён в Blocked.
+**РўРµСЃС‚:** app inline JS syntax check; `npm run build:css`; `git diff --check`; `Portable path check passed`; worker `node --check worker.js`; `node --check src/bot/reminders.js`; `node --check src/bot/index.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`.
 
-**Коммит:** `docs(process): close BACK-006, mark BACK-008 blocked`
+**РљРѕРјРјРёС‚:** app `feat(notifications): add live notification settings`; worker `b3aa1d6 feat(notifications): add live notification settings`
 
-**Статус:** заблокировано — ждёт ручной шаг Юрия: создать Yandex Cloud PostgreSQL cluster и передать credentials/connection settings.
-
----
-
-## 2026-06-27 — BACK-006: D1 storage for sessions and tasks (Codex)
-
-**Что сделано:** В `4e-worker/worker.js` добавлен D1 storage-layer для `session:*` и `tasks:*`: новые sessions сохраняются в `app_sessions`, task lists — в `app_task_lists`. Старые KV-значения для `session:*` и `tasks:*` остаются read fallback-ом и при первом чтении переносятся в D1. Worker переведён с legacy `addEventListener("fetch")` на ES module `export default { fetch(request, env) }`, потому что Cloudflare D1 binding требует module Worker. В `wrangler.toml` добавлен binding `DB` на `4e-production` (`6107948c-6c67-4c37-baa1-efea6c5c2860`). Добавлены D1 migrations: `0001_sessions_tasks.sql` как no-op note для уже занятой production schema `sessions/tasks`, и `0002_app_kv_state.sql` для `app_sessions`/`app_task_lists`.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** `node --check worker.js`; `git diff --check`; `wrangler d1 migrations apply 4e-production --local --config wrangler.toml`; `wrangler d1 migrations apply 4e-production --remote --config wrangler.toml`; `PRAGMA table_info(app_sessions)` и `PRAGMA table_info(app_task_lists)` подтвердили remote schema; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` → production version `0b66977a-0b23-4cdf-bd92-c5ec38e2ee1c`. Live smoke: временный email-аккаунт зарегистрирован, `/auth/me` по token прошёл, `x-action: save-task` сохранил задачу, `/tasks` вернул её; D1 показал `session_rows=1` и `task_rows=1`; KV get для новых `session:<token>` и `tasks:<chatId>` вернул 404; временные D1/KV записи удалены, cleanup count вернул `session_rows=0`, `task_rows=0`.
-
-**Коммит:** `0a035c9` (`feat(worker): store sessions and tasks in D1`) в `4e-worker`.
-
-**Статус:** выполнено — BACK-006 закрыт.
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РїРµСЂРµРґ live smoke РЅСѓР¶РЅРѕ РїСЂРёРјРµРЅРёС‚СЊ D1 migration `0003_notification_settings.sql` Рё Р·Р°РґРµРїР»РѕРёС‚СЊ worker/bot.
 
 ---
 
-## 2026-06-27 — BACK-005: unified user identities (Codex)
+## 2026-06-28 вЂ” BACK-016: extended user profile (Codex)
 
-**Что сделано:** В `4e-worker/worker.js` создана единая server-side модель идентичностей для Email + Telegram + VK. `link-telegram` теперь умеет брать Telegram ID из `initData` и сохраняет `telegramId` в canonical user. Добавлен `/auth/link-vk`, который привязывает VK ID к текущей email-сессии через `vk:<id>` и `vk_rev:<userId>`. `/auth/vk` теперь парсит `vk_user_id` из `launchParams`, использует общий `saveUser/getUser`, создаёт canonical `vk_<id>@vk.local` user только если VK ещё не привязан, и возвращает session с `email`. `publicUser()` возвращает `telegramId`, `telegramUsername`, `vkId`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` СЌРєСЂР°РЅ РїСЂРѕС„РёР»СЏ СЂР°СЃС€РёСЂРµРЅ РєР°СЂС‚РѕС‡РєРѕР№ `sub-card`: С„РѕС‚Рѕ РїСЂРѕС„РёР»СЏ СЃ РєРЅРѕРїРєРѕР№ `РР·РјРµРЅРёС‚СЊ С„РѕС‚Рѕ` Рё Р»РѕРєР°Р»СЊРЅС‹Рј preview/R2 placeholder, СЂРµРґР°РєС‚РёСЂСѓРµРјРѕРµ РёРјСЏ, readonly ID, С‚РµР»РµС„РѕРЅ Рё email СЃ UI-СЃС‚Р°С‚СѓСЃРѕРј РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ, РїСЂРёРІСЏР·РєР° Telegram, textarea `Рћ СЃРµР±Рµ` РґРѕ 200 СЃРёРјРІРѕР»РѕРІ СЃРѕ СЃС‡С‘С‚С‡РёРєРѕРј Рё date picker РґР°С‚С‹ СЂРѕР¶РґРµРЅРёСЏ. РЎС‚РёР»Рё РґРѕР±Р°РІР»РµРЅС‹ РІ `styles/screens/profile.less`; РґР°РЅРЅС‹Рµ С„РѕСЂРјС‹ СЃРѕС…СЂР°РЅСЏСЋС‚СЃСЏ Р»РѕРєР°Р»СЊРЅРѕ РґРѕ РїРѕСЏРІР»РµРЅРёСЏ backend/R2 profile API.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `index.html CYRILLIC_BEFORE=19707`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `index.html CYRILLIC_AFTER=19953`; СЂРѕСЃС‚ РѕР¶РёРґР°РµРјС‹Р№ РёР·-Р·Р° РЅРѕРІС‹С… СЂСѓСЃСЃРєРёС… РїРѕРґРїРёСЃРµР№ РїСЂРѕС„РёР»СЏ.
 
-**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` → production version `ff365be0-59d3-4307-9c15-54ab037e2917`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; smoke создал email-аккаунт, привязал Telegram через `initData`, привязал VK через `launchParams`, затем `/auth/vk` вернул тот же `user.id` и email; `/auth/me` по VK token также вернул тот же `user.id`. На shutdown `wrangler dev` показал временную bundle cleanup/build ошибку, но HTTP-smoke до shutdown прошёл успешно. После merge в `main` production live smoke подтвердил, что email-регистрация, Telegram link, VK link, `/auth/vk` и `/auth/me` возвращают один canonical `user.id`; временные KV-ключи `user:*`, `user_id:*`, `session:*`, `tg:*`, `tg_rev:*`, `vk:*`, `vk_rev:*`, `notifs:*` удалены.
+**РўРµСЃС‚:** inline JS syntax check РґР»СЏ `index.html`; `npm run build:css`; `git diff --check`; `Portable path check passed`.
 
-**Коммит:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`) в `4e-worker`.
+**РљРѕРјРјРёС‚:** `feat(profile): add extended user profile fields`
 
-**Статус:** выполнено — BACK-005 закрыт.
-
----
-
-## 2026-06-27 — BACK-004: payment webhook live smoke (Codex)
-
-**Что сделано:** Код не менялся. Production Worker `/payment/webhook` проверен end-to-end на временном тестовом пользователе `codex-payment-smoke-1782568866@example.com` и invoice `codex-smoke-1782568866`.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** Через production Worker создан временный аккаунт, до webhook `plan=trial`; отправлен form-urlencoded webhook `Status=Completed`, `AccountId=<test-user-id>`, `Amount=990`, `InvoiceId=codex-smoke-1782568866`, `Description=Smoke 1 month`; webhook вернул `code:0`; после `/auth/me` показал `plan=paid`, `trialEndsAt` увеличился примерно на 30 дней (`trialLeft=60`). После проверки удалены точные KV-ключи `user:codex-payment-smoke-1782568866@example.com`, `user_id:d1ce9837-42b0-4460-a17e-ef16856234b4`, `tx:codex-smoke-1782568866`, `notifs:d1ce9837-42b0-4460-a17e-ef16856234b4`.
-
-**Коммит:** N/A — код не менялся.
-
-**Статус:** выполнено — BACK-004 закрыт.
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РЅСѓР¶РµРЅ РІРёР·СѓР°Р»СЊРЅС‹Р№ smoke РїСЂРѕС„РёР»СЏ Рё РїРѕСЃР»РµРґСѓСЋС‰Р°СЏ backend-Р·Р°РґР°С‡Р° РґР»СЏ R2/profile API.
 
 ---
 
-## 2026-06-27 — BACK-002: password reset backend endpoints (Codex)
+## 2026-06-28 вЂ” BACK-010: Telegram Stars subscription flow (Codex)
 
-**Что сделано:** В `4e-worker/worker.js` на ветке `fix/password-reset-endpoints` добавлены новые совместимые endpoint aliases `/auth/reset-request` и `/auth/reset-confirm` поверх существующих `/auth/forgot-password` и `/auth/reset-password`. `handleResetPassword()` теперь принимает `newPassword` из контракта Фазы 12 и старое поле `password` для обратной совместимости. Ссылка в письме исправлена на `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` payment flow С‚РµРїРµСЂСЊ РІС‹Р±РёСЂР°РµС‚ Telegram Stars РІРЅСѓС‚СЂРё Telegram Mini App: РєРЅРѕРїРєР° РѕРїР»Р°С‚С‹ РїРѕРєР°Р·С‹РІР°РµС‚ СЃСѓРјРјСѓ РІ Stars, Р·Р°РїСЂР°С€РёРІР°РµС‚ invoice Сѓ Worker Рё РѕС‚РєСЂС‹РІР°РµС‚ `Telegram.WebApp.openInvoice`. Р’ `4e-worker` commit `d57771c` РґРѕР±Р°РІРёР» endpoint `/payments/telegram-stars/invoice`, СЃРѕР·РґР°РЅРёРµ `createInvoiceLink` СЃ РІР°Р»СЋС‚РѕР№ `XTR`, РѕР±СЂР°Р±РѕС‚С‡РёРє `/payments/telegram-stars/complete` Рё bot-side РѕР±СЂР°Р±РѕС‚РєСѓ `pre_checkout_query` / `successful_payment`, С‡С‚РѕР±С‹ Premium Р°РєС‚РёРІРёСЂРѕРІР°Р»СЃСЏ РїРѕ СЂРµР°Р»СЊРЅРѕРјСѓ СЃРѕР±С‹С‚РёСЋ Telegram.
 
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `index.html CYRILLIC_BEFORE=19509`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `index.html CYRILLIC_AFTER=19707`; СЂРѕСЃС‚ РѕР¶РёРґР°РµРјС‹Р№ РёР·-Р·Р° РЅРѕРІС‹С… СЂСѓСЃСЃРєРёС… СЃРѕРѕР±С‰РµРЅРёР№ Telegram Stars.
 
-**Тест:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; локальный `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; `POST /auth/reset-request` с несуществующим email вернул `200 {"ok":true}`; `POST /auth/reset-confirm` с невалидным token и `newPassword` вернул контролируемый `400 Bad Request`.
+**РўРµСЃС‚:** `node --check worker.js`; `node --check src/bot/handler.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`; inline JS syntax check РґР»СЏ `index.html`; `npm run build:css`; `git diff --check`. Live Telegram Stars smoke РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ Р»РѕРєР°Р»СЊРЅРѕ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅСѓР¶РµРЅ Р·Р°РїСѓСЃРє РІРЅСѓС‚СЂРё Telegram Mini App СЃ Р°РєС‚РёРІРЅС‹Рј bot/Worker РѕРєСЂСѓР¶РµРЅРёРµРј.
 
-**Коммит:** `a0965de` (`feat(auth): add password reset endpoints`) в `4e-worker`.
+**РљРѕРјРјРёС‚:** app `feat(payments): add Telegram Stars payment entrypoint`; worker `d57771c feat(payments): add Telegram Stars subscription flow`
 
-**Статус:** выполнено — PR смёржен в `a173ebf`, production deploy выполнен (`729a046c-5849-4a26-9ced-8ee5bc4b1e44`), live API smoke прошёл: `/auth/reset-request` вернул `200 {"ok":true}`, `/auth/reset-confirm` с invalid token вернул контролируемый `400`. Финальный ручной smoke подтверждён 2026-06-27: письмо пришло, кнопка сброса открыла форму, пароль сохранён. Пользователь ввёл тот же пароль, но reset token и backend confirm-flow отработали.
-
----
-
-## 2026-06-26 — BACK-001: Resend email secret для Worker (Codex)
-
-**Что сделано:** В отдельном worker-репозитории `4e-worker` создана ветка `fix/resend-email-secret` и коммит `086f19b`. Из `worker.js` удалён hardcoded `RESEND_KEY`; `sendEmail()` теперь читает runtime secret `RESEND_KEY`, не падает Worker 1101 при отсутствующем secret, логирует конфигурационную ошибку/ошибку Resend и возвращает `false`. `/auth/forgot-password` теперь не сообщает пользователю ложный успех для существующего аккаунта, если письмо не отправилось, а возвращает контролируемый `502`.
-
-**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
-
-**Тест:** `node --check worker.js`; `rg -n "re_[A-Za-z0-9_]+" worker.js` не нашёл hardcoded Resend key; `git diff --check` прошёл; `wrangler deploy --dry-run --config wrangler.toml` собрал Worker (`Total Upload: 55.77 KiB / gzip: 10.35 KiB`) и показал binding `env.KV`. Проверка `wrangler secret list` и production deploy заблокированы окружением: Wrangler требует `CLOUDFLARE_API_TOKEN` в non-interactive session. 2026-06-27: `git push -u origin fix/resend-email-secret` completed; PR creation is blocked because local `gh` is not logged in and GitHub connector returned API 404 for `mrktggod/4e-bot`; `wrangler whoami` later succeeded after OAuth login, `wrangler secret list --config wrangler.toml` confirmed `RESEND_KEY`, and production deploy succeeded: Worker `restless-lab-d737`, version `abe182e4-05b5-4c28-9934-9f972e662098`, URL `https://restless-lab-d737.shelckograff.workers.dev`. Safe smoke: `POST /auth/forgot-password` with a non-existing email returned `200 {"ok":true}`. 2026-06-27: live email smoke passed by user confirmation; reset email arrived and Resend marked it delivered. BACK-001 is Done; following the email link and changing the password are BACK-002 scope.
-
-**Коммит:** `086f19b` (`fix(worker): use Resend secret for email delivery`) в `4e-worker`; branch `origin/fix/resend-email-secret` pushed.
+**РЎС‚Р°С‚СѓСЃ:** Ready for QA вЂ” РЅСѓР¶РµРЅ live smoke РІ Telegram РїРѕСЃР»Рµ merge/deploy.
 
 ---
 
-## 2026-06-26 — PM-roadmap приведён к реальной стратегии продукта (Codex)
+## 2026-06-28 вЂ” Р¤Р°Р·Р° 11: РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РґР°С‚С‹ РІ РєР°СЂС‚РѕС‡РєР°С… Р·Р°РґР°С‡ (Codex)
 
-**Что сделано:**
-- `pm/roadmap.md` явно назначен оперативной версией стратегии из `shared/ROADMAP.md`.
-- Убрана неоднозначность с generic-roadmap: добавлено правило не подменять продукт 4 AI-секретарь инструментом управления проектом.
-- `pm/backlog.md` помечен как backlog из реальной продуктовой стратегии и связан с Linear `ALE-5` для первичного баг-баша.
-- Уточнён статус Фазы 9: Done / QA, потому что реализация есть, но live-сценарий микрофона нужно проверить.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` РґРѕР±Р°РІР»РµРЅ РѕР±С‰РёР№ formatter РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹С… РґР°С‚ РґР»СЏ РєР°СЂС‚РѕС‡РµРє Р·Р°РґР°С‡. Р”РµРґР»Р°Р№РЅС‹ С‚РµРїРµСЂСЊ РїРѕРєР°Р·С‹РІР°СЋС‚СЃСЏ РєР°Рє `СЃРµРіРѕРґРЅСЏ`, `Р·Р°РІС‚СЂР°`, `С‡РµСЂРµР· N РґРЅРµР№` РёР»Рё `РїСЂРѕСЃСЂРѕС‡РµРЅРѕ РЅР° N РґРЅРµР№`; РѕР±С‹С‡РЅС‹Рµ РґР°С‚С‹ Р·Р°РґР°С‡ РїРѕРєР°Р·С‹РІР°СЋС‚СЃСЏ РєР°Рє `СЃРµРіРѕРґРЅСЏ`, `РІС‡РµСЂР°`, `N РґРЅРµР№ РЅР°Р·Р°Рґ` РёР»Рё Р±СѓРґСѓС‰РёР№ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Р№ СЃСЂРѕРє. Р¤РѕСЂРјР°С‚С‚РµСЂ РїРѕРґРєР»СЋС‡С‘РЅ Рє РѕСЃРЅРѕРІРЅРѕРјСѓ СЃРїРёСЃРєСѓ Р·Р°РґР°С‡, РјРµСЃСЏС‡РЅРѕРјСѓ С„РёР»СЊС‚СЂСѓ, СЂР°СЃРєСЂС‹С‚РёСЋ РІСЃРµС… Р·Р°РґР°С‡, home-С„РёР»СЊС‚СЂР°Рј Рё СЃРїРёСЃРєР°Рј РІС‹РїРѕР»РЅРµРЅРЅС‹С… Р·Р°РґР°С‡/РѕР±РµС‰Р°РЅРёР№.
 
-**Проверка кодировки:** `index.html` не изменялся.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `index.html CYRILLIC_BEFORE=19355`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `index.html CYRILLIC_AFTER=19509`; СЂРѕСЃС‚ РѕР¶РёРґР°РµРјС‹Р№ РёР·-Р·Р° РЅРѕРІС‹С… СЂСѓСЃСЃРєРёС… РїРѕРґРїРёСЃРµР№ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹С… РґР°С‚.
 
-**Тест:** ручная сверка `pm/roadmap.md` и `pm/backlog.md` с `shared/ROADMAP.md`, `DEVELOPMENT_LOG.md`, `shared/WORK_LOG.md`.
+**РўРµСЃС‚:** inline JS syntax check, unit smoke formatter cases С‡РµСЂРµР· Node, `npm run build:css`, `git diff --check`.
 
-**Коммит:** N/A — изменения подготовлены локально, коммит/пуш не выполнялся.
+**РљРѕРјРјРёС‚:** `feat(tasks): show relative dates in task cards`
+
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ вЂ” Р¤Р°Р·Р° 11 Р·Р°РєСЂС‹С‚Р°.
 
 ---
 
-## 2026-06-25 — BACK-003: биометрическое согласие 152-ФЗ (Codex)
+## 2026-06-28 вЂ” BACK-009: VK Pay subscription flow (Codex)
 
-**Что сделано:** В `index.html` установлен патч `09_biometric_consent.html` перед закрывающим `</body>`. `openVoice()` теперь сначала вызывает `window.biometricConsentRequired()`, поэтому при первом нажатии на микрофон открывается экран согласия на обработку голоса. В форме входа добавлена ссылка на `privacy.html`, а в разделе безопасности добавлена строка отзыва согласия. Обновлены `FILE_MAP.md`, `FILE_MAP_UI.md`, `pm/backlog.md` и `pm/roadmap.md`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` payment flow С‚РµРїРµСЂСЊ РІС‹Р±РёСЂР°РµС‚ VK Pay РІРЅСѓС‚СЂРё VK Mini App: РєРЅРѕРїРєР° РѕРїР»Р°С‚С‹ РјРµРЅСЏРµС‚ РїРѕРґРїРёСЃСЊ РЅР° `РћРїР»Р°С‚РёС‚СЊ С‡РµСЂРµР· VK Pay`, СЃРєСЂС‹РІР°РµС‚ card badges Рё РІС‹Р·С‹РІР°РµС‚ `VKWebAppShowOrderBox`; РІРЅРµ VK СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ CloudPayments. Р’ `vk.html` Р·Р°РіР»СѓС€РєР° `РћРїР»Р°С‚Р° СЃРєРѕСЂРѕ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅР°` Р·Р°РјРµРЅРµРЅР° РЅР° РєРЅРѕРїРєСѓ `РљСѓРїРёС‚СЊ РїР»Р°РЅ`, РєРѕС‚РѕСЂР°СЏ РѕС‚РєСЂС‹РІР°РµС‚ `VKWebAppShowOrderBox` Рё РѕР±РЅРѕРІР»СЏРµС‚ Premium UI РїРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕРіРѕ bridge-РѕС‚РІРµС‚Р°.
 
-**Проверка кодировки:** до правки — 51 совпадение по `Войти|Задачи|Сегодня`; после правки — 52 совпадения. Увеличение ожидаемое: добавлена legal-note со словом «Войти».
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `index.html CYRILLIC_BEFORE=19182`, `vk.html CYRILLIC_BEFORE=3273`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `index.html CYRILLIC_AFTER=19355`, `vk.html CYRILLIC_AFTER=3364`; СЂРѕСЃС‚ РѕР¶РёРґР°РµРјС‹Р№ РёР·-Р·Р° РЅРѕРІС‹С… СЂСѓСЃСЃРєРёС… СЃРѕРѕР±С‰РµРЅРёР№ VK Pay.
 
-**Тест:** `node` проверил синтаксис 2 inline scripts в `index.html`; статическая проверка маркеров Фазы 9 прошла (`biometricConsentRequired`, `biometric_consent_v1`, disabled confirm button, legal-note, revoke row). `git diff --check` прошёл без whitespace errors; portable-path эквивалент через `rg` не нашёл локальных user-путей. `privacy.html` существует и содержит политику конфиденциальности/152-ФЗ. Playwright в локальном окружении не установлен, поэтому browser click-flow остаётся ручной проверкой после push.
+**РўРµСЃС‚:** inline JS syntax check РґР»СЏ `index.html`/`vk.html`; `npm run build:css`; `git diff --check`. Live VK Pay smoke РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ Р»РѕРєР°Р»СЊРЅРѕ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅСѓР¶РµРЅ Р·Р°РїСѓСЃРє РІРЅСѓС‚СЂРё VK Mini App/payment РѕРєСЂСѓР¶РµРЅРёСЏ.
 
-**Коммит:** `legal: biometric consent and privacy policy`
+**РљРѕРјРјРёС‚:** `feat(payments): add VK Pay subscription flow`
+
+**РЎС‚Р°С‚СѓСЃ:** РіРѕС‚РѕРІРѕ Рє live QA РІ VK Mini App.
+
+---
+## 2026-06-27 вЂ” BACK-014: PostgreSQL prep without production credentials (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `4e-worker/worker.js` РґРѕР±Р°РІР»РµРЅ РїРѕРґРіРѕС‚РѕРІРёС‚РµР»СЊРЅС‹Р№ PostgreSQL storage adapter РґР»СЏ `app_sessions` Рё `app_task_lists`. Adapter С‡РёС‚Р°РµС‚ Р±СѓРґСѓС‰РёРµ env `POSTGRES_URL`/`POSTGRES_TOKEN`, РЅРѕ production-РїРѕРІРµРґРµРЅРёРµ РЅРµ РјРµРЅСЏРµС‚: Р±РµР· `POSTGRES_URL` Worker РїСЂРѕРґРѕР»Р¶Р°РµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ D1/KV. Р”РѕР±Р°РІР»РµРЅ Р±СѓРґСѓС‰РёР№ DDL `migrations/postgres_app_state.sql` РґР»СЏ СЂСѓС‡РЅРѕРіРѕ РїСЂРёРјРµРЅРµРЅРёСЏ РІ Yandex Cloud PostgreSQL РІРѕ РІСЂРµРјСЏ BACK-008.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
+
+**РўРµСЃС‚:** `node --check worker.js`; `wrangler deploy --dry-run --no-bundle --config wrangler.toml`; `git diff --check`; РїРѕСЃР»Рµ merge Р»РѕРєР°Р»СЊРЅС‹Р№ `4e-worker/main` fast-forward РґРѕ `a97d768`, worker СЃРѕРґРµСЂР¶РёС‚ `POSTGRES_URL` Рё `migrations/postgres_app_state.sql`.
+
+**РљРѕРјРјРёС‚:** `37f9dda` (`feat(worker): prepare PostgreSQL storage adapter`), merged as `a97d768`.
+
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ. Р¤Р°РєС‚РёС‡РµСЃРєРёР№ РїРµСЂРµРЅРѕСЃ РџР” РѕСЃС‚Р°С‘С‚СЃСЏ РІ BACK-008 Рё Р¶РґС‘С‚ Yandex Cloud credentials РѕС‚ РђР»РµРєСЃРµСЏ.
+
+---
+## 2026-06-27 вЂ” BACK-013: semantic HTML landmarks and aria labels (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` РґРѕР±Р°РІР»РµРЅС‹ СЃРµРјР°РЅС‚РёС‡РµСЃРєРёРµ landmark-С‚РµРіРё Р±РµР· РёР·РјРµРЅРµРЅРёСЏ РєР»Р°СЃСЃРѕРІ Рё id: РєРѕСЂРЅРµРІРѕР№ app-РєРѕРЅС‚РµР№РЅРµСЂ СЃС‚Р°Р» `<main id="app">`, РЅРёР¶РЅРёРµ РЅР°РІРёРіР°С†РёРё `bottom-nav-v2` Рё `global-nav` СЃС‚Р°Р»Рё `<nav>` СЃ `aria-label`, РІРµСЂС…РЅСЏСЏ РѕР±Р»Р°СЃС‚СЊ РіР»Р°РІРЅРѕРіРѕ СЌРєСЂР°РЅР° Рё С€Р°РїРєР° voice-СЌРєСЂР°РЅР° СЃС‚Р°Р»Рё `<header>`. Р”Р»СЏ РёРєРѕРЅРѕС‡РЅРѕР№ РЅР°РІРёРіР°С†РёРё Рё РєР»РёРєР°Р±РµР»СЊРЅС‹С… `div` РґРѕР±Р°РІР»РµРЅС‹ `aria-label`, `role="button"` Рё `tabindex="0"`; РґР»СЏ back-РєРЅРѕРїРѕРє РґРѕР±Р°РІР»РµРЅ `aria-label="РќР°Р·Р°Рґ"`.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РЁР°Рі 0 РґРѕ: `CYRILLIC_BEFORE=18793`. РџРѕСЃР»Рµ РїСЂР°РІРєРё: `CYRILLIC_AFTER=19182`; СЂРѕСЃС‚ РѕР¶РёРґР°РµРјС‹Р№, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РґРѕР±Р°РІР»РµРЅС‹ СЂСѓСЃСЃРєРёРµ `aria-label`.
+
+**РўРµСЃС‚:** `npm run build:css`; РїСЂРѕРІРµСЂРµРЅ Р±Р°Р»Р°РЅСЃ semantic-С‚РµРіРѕРІ (`main/nav/header` open=close); `git diff --check` Р±РµР· РѕС€РёР±РѕРє; РІСЂСѓС‡РЅСѓСЋ РїСЂРѕРІРµСЂРµРЅС‹ РєСЂРёС‚РёС‡РЅС‹Рµ Р·Р°РєСЂС‹РІР°СЋС‰РёРµ С‚РµРіРё home nav, task detail action bar Рё global nav.
+
+**РљРѕРјРјРёС‚:** `refactor(ui): add semantic HTML landmarks`
+
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ.
+
+---
+## 2026-06-27 вЂ” РЎС‚Р°С‚СѓСЃ РѕС‚ Р®СЂС‹ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅ СЃ roadmap/backlog (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- Р—Р°С„РёРєСЃРёСЂРѕРІР°РЅРѕ, С‡С‚Рѕ Р·Р°РєСЂС‹С‚С‹ BACK-001, BACK-002, BACK-003, BACK-004, BACK-005, BACK-006, BACK-012 Рё Resend-РґРѕРјРµРЅ `4-ai.site`.
+- `shared/ROADMAP.md` РѕСЃС‚Р°РІР»РµРЅ РµРґРёРЅС‹Рј СЃС‚СЂР°С‚РµРіРёС‡РµСЃРєРёРј С„Р°Р№Р»РѕРј; Р РљРќ Рё Yandex Cloud PostgreSQL РѕС‚РјРµС‡РµРЅС‹ РєР°Рє СЂСѓС‡РЅС‹Рµ РґРµР№СЃС‚РІРёСЏ РђР»РµРєСЃРµСЏ.
+| 3 | РџРѕРґРіРѕС‚РѕРІРєР° РєРѕРґР° РїРѕРґ PostgreSQL Р·Р°СЂР°РЅРµРµ вЂ” РјРѕР¶РЅРѕ Р±СЂР°С‚СЊ Codex Р±РµР· credentials | СЃСЂРµРґРЅРёР№ |
+- РљРѕРЅРєСЂРµС‚РЅС‹Рµ С†РµРЅС‹ СѓР±СЂР°РЅС‹ РёР· roadmap Рё РІС‹РЅРµСЃРµРЅС‹ РІ РѕС‚РґРµР»СЊРЅРѕРµ СЂРµС€РµРЅРёРµ РїРѕ РјРѕРЅРµС‚РёР·Р°С†РёРё.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
+
+**РўРµСЃС‚:** СЂСѓС‡РЅР°СЏ СЃРІРµСЂРєР° `shared/ROADMAP.md` Рё `pm/backlog.md` СЃРѕ СЃС‚Р°С‚СѓСЃРѕРј РѕС‚ Р®СЂС‹; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**РљРѕРјРјРёС‚:** N/A вЂ” РєРѕРјРјРёС‚/РїСѓС€ РІС‹РїРѕР»РЅСЏСЋС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ.
+
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ.
 
 ---
 
-## 2026-06-25 — Исправление сброса пароля (Codex)
+## 2026-06-27 вЂ” Р•РґРёРЅС‹Р№ roadmap-С„Р°Р№Р» (Codex)
 
-**Что сделано:**
-- В `index.html` добавлена ошибка под email на экране "Сброс пароля".
-- `doForgotPassword()` теперь не отправляет пустой email и значения не в формате email, например `fff`.
-- Ответ `/auth/forgot-password` теперь обрабатывается явно: успех показывает блок "Письмо отправлено", серверная ошибка остаётся на форме с понятным сообщением.
-- `showScreen()` скрывает нижнюю навигацию на публичных auth/reset-flow экранах: `onboarding`, `login`, `forgot-password`, `reset-password`.
-- Обновлены `FILE_MAP.md`, `FILE_MAP_UI.md`, `pm/bugs.md` и `pm/qa-checklist.md`.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- `pm/roadmap.md` РѕР±СЉРµРґРёРЅС‘РЅ СЃ `shared/ROADMAP.md` Рё СѓРґР°Р»С‘РЅ, С‡С‚РѕР±С‹ РІ РїСЂРѕРµРєС‚Рµ РѕСЃС‚Р°Р»СЃСЏ РѕРґРёРЅ РёСЃС‚РѕС‡РЅРёРє РґРѕСЂРѕР¶РЅРѕР№ РєР°СЂС‚С‹.
+- Р’ `shared/ROADMAP.md` РїРµСЂРµРЅРµСЃРµРЅС‹ СЂР°Р±РѕС‡РёРµ PM-СЃРµРєС†РёРё Now / Next / Later, СЃС‚СЂР°С‚РµРіРёС‡РµСЃРєРёРµ РіРѕСЂРёР·РѕРЅС‚С‹ 2/3, РїСЂРёРЅС†РёРїС‹ СЂР°Р·РІРёС‚РёСЏ, С†РµРЅРѕРІС‹Рµ РѕСЂРёРµРЅС‚РёСЂС‹ Рё РїСЂР°РІРёР»Рѕ РЅРµ СЃРѕР·РґР°РІР°С‚СЊ РІС‚РѕСЂРѕР№ roadmap.
+- РћР±РЅРѕРІР»РµРЅС‹ СЃСЃС‹Р»РєРё Рё РЅР°РІРёРіР°С†РёСЏ РІ `pm/backlog.md`, `FILE_MAP.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `AGENTS.md`.
 
-**Проверка кодировки:** 22 / 22 совпадений по `Войти|Задачи|Сегодня`; перед правкой создан backup `index.backup_20260625_1821.html`.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** локальная раздача `python3 -m http.server 8000`; `curl -I http://127.0.0.1:8000/index.html` вернул `200 OK`. Точечный JS-smoke на функциях `doForgotPassword()` и `showScreen()` проверил пустой email, `fff`, успешный ответ, серверную ошибку, скрытие nav на `forgot-password` и `reset-password`. Встроенный browser-плагин в этой среде упал при открытии тяжёлого `index.html`, поэтому визуальный WebView-smoke нужен после деплоя/в Telegram.
+**РўРµСЃС‚:** `rg -n "shared/ROADMAP|pm/roadmap|ROADMAP.md|roadmap.md|РґРѕСЂРѕР¶РЅ|roadmap"` РґР»СЏ РїРѕРёСЃРєР° СЃСЃС‹Р»РѕРє; `git diff --check`; `bash scripts/check-portable-paths.sh`.
 
-**Коммит:** N/A — коммит/пуш не выполнялся.
+**РљРѕРјРјРёС‚:** N/A вЂ” РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
 
----
-
-## 2026-06-25 — Фиксация P1 бага восстановления пароля (Codex)
-
-**Что сделано:**
-- В `pm/bugs.md` добавлен активный баг `BUG-2026-06-25-002`: сброс пароля принимает некорректный email и переводит пользователя на пустой экран.
-- Баг отмечен как существенный для доступа: `High / P1`, метка `Auth / Access blocker risk`.
-- Создана задача для разработки `docs/tasks/BUG-2026-06-25-002_password_reset.md`.
-- В `pm/qa-checklist.md` добавлены регрессионные проверки восстановления пароля.
-
-**Проверка кодировки:** `index.html` не изменялся.
-
-**Тест:** проверена структура PM-документов; код приложения не менялся.
-
-**Коммит:** N/A — коммит/пуш не выполнялся.
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ вЂ” РµРґРёРЅСЃС‚РІРµРЅРЅС‹Р№ Р°РєС‚СѓР°Р»СЊРЅС‹Р№ roadmap С‚РµРїРµСЂСЊ `shared/ROADMAP.md`.
 
 ---
 
-## 2026-06-25 — Напоминание о синхронизации перед работой (Codex)
+## 2026-06-27 вЂ” BACK-012: CSS architecture LESS + BEM + minification (Codex)
 
-**Что сделано:**
-- В `AGENTS.md`, `CLAUDE.md`, `README.md` добавлено правило: перед началом работы напомнить пользователю и выполнить `git fetch origin` и `git pull --rebase`.
-- В `FILE_MAP.md` добавлена стартовая проверка синхронизации с GitHub.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Inline CSS РёР· `index.html` РІС‹РЅРµСЃРµРЅ РІ LESS-СЃС‚СЂСѓРєС‚СѓСЂСѓ: `styles/main.less`, `styles/variables.less`, `styles/layout.less`, `styles/screens/home.less`, `styles/screens/profile.less`, `styles/screens/tasks.less`, `styles/screens/voice.less`. Р’ `package.json` РґРѕР±Р°РІР»РµРЅС‹ СЃРєСЂРёРїС‚С‹ `build:css` Рё `watch:css`, dev-Р·Р°РІРёСЃРёРјРѕСЃС‚Рё `less` Рё `clean-css-cli`. `index.html` С‚РµРїРµСЂСЊ РїРѕРґРєР»СЋС‡Р°РµС‚ `styles.min.css` РІРјРµСЃС‚Рѕ inline `<style>`.
 
-**Проверка кодировки:** `index.html` не изменялся.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РёР·РјРµРЅС‘РЅ С‡РµСЂРµР· `[System.IO.File]::ReadAllText/WriteAllText` СЃ UTF-8 Р±РµР· BOM; РєРёСЂРёР»Р»РёС†Р° РЅРµ СЂРµРґР°РєС‚РёСЂРѕРІР°Р»Р°СЃСЊ РІСЂСѓС‡РЅСѓСЋ С‡РµСЂРµР· `Set-Content`/`Out-File`.
 
-**Тест:** перед правкой выполнены `git fetch origin` и `git pull --rebase`; локальная ветка синхронизирована с `origin/main`.
+**РўРµСЃС‚:** `npm install --save-dev less clean-css-cli`; `npm run build:css`; `rg -n "<style|</style>|styles\.min\.css|styles\.css" index.html` РїРѕРґС‚РІРµСЂРґРёР» РѕС‚СЃСѓС‚СЃС‚РІРёРµ inline CSS Рё РїРѕРґРєР»СЋС‡РµРЅРёРµ `styles.min.css`. CSS РґРѕ/РїРѕСЃР»Рµ СЃСЂР°РІРЅРµРЅ С‡РµСЂРµР· СЃР±РѕСЂРєСѓ Рё РјРёРЅРёС„РёРєР°С†РёСЋ: РѕС‚Р»РёС‡РёСЏ С‚РѕР»СЊРєРѕ С„РѕСЂРјР°С‚РЅС‹Рµ РґР»СЏ custom properties (`rgba(...)` СЃ РїСЂРѕР±РµР»Р°РјРё), РІРёР·СѓР°Р»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ СЃРѕС…СЂР°РЅРµРЅС‹.
 
-**Коммит:** N/A — изменения подготовлены локально, коммит/пуш не выполнялся.
+**РљРѕРјРјРёС‚:** `refactor(css): migrate to LESS + BEM architecture`
+
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ.
+
+---
+## 2026-06-27 вЂ” BACK-008: Yandex Cloud PostgreSQL migration blocked (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РЎРµСЃСЃРёСЏ РѕСЃС‚Р°РЅРѕРІР»РµРЅР° РґРѕ РєРѕРґРѕРІС‹С… РёР·РјРµРЅРµРЅРёР№. BACK-006 KVв†’D1 РїРѕРґС‚РІРµСЂР¶РґС‘РЅ РєР°Рє Done; BACK-008 РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅР°С‡Р°С‚, РїРѕС‚РѕРјСѓ С‡С‚Рѕ Yandex Cloud PostgreSQL cluster РµС‰С‘ РЅРµ СЃРѕР·РґР°РЅ, credentials Рё connection settings РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
+
+**РўРµСЃС‚:** РљРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ. РџСЂРѕРІРµСЂРµРЅС‹ `pm/backlog.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md`, `DEVELOPMENT_LOG.md`; СЃС‚Р°С‚СѓСЃ BACK-008 РїРµСЂРµРІРµРґС‘РЅ РІ Blocked.
+
+**РљРѕРјРјРёС‚:** `docs(process): close BACK-006, mark BACK-008 blocked`
+
+**РЎС‚Р°С‚СѓСЃ:** Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРѕ вЂ” Р¶РґС‘С‚ СЂСѓС‡РЅРѕР№ С€Р°Рі Р®СЂРёСЏ: СЃРѕР·РґР°С‚СЊ Yandex Cloud PostgreSQL cluster Рё РїРµСЂРµРґР°С‚СЊ credentials/connection settings.
 
 ---
 
-## 2026-06-25 — Правило понятных заголовков коммитов (Codex)
+## 2026-06-27 вЂ” BACK-006: D1 storage for sessions and tasks (Codex)
 
-**Что сделано:**
-- Добавлен `shared/COMMIT_CONVENTION.md` с форматом `type(scope): что изменилось`.
-- Правило подключено в `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `README.md`.
-- `FILE_MAP.md` обновлён, чтобы новый командный стандарт был виден агентам.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `4e-worker/worker.js` РґРѕР±Р°РІР»РµРЅ D1 storage-layer РґР»СЏ `session:*` Рё `tasks:*`: РЅРѕРІС‹Рµ sessions СЃРѕС…СЂР°РЅСЏСЋС‚СЃСЏ РІ `app_sessions`, task lists вЂ” РІ `app_task_lists`. РЎС‚Р°СЂС‹Рµ KV-Р·РЅР°С‡РµРЅРёСЏ РґР»СЏ `session:*` Рё `tasks:*` РѕСЃС‚Р°СЋС‚СЃСЏ read fallback-РѕРј Рё РїСЂРё РїРµСЂРІРѕРј С‡С‚РµРЅРёРё РїРµСЂРµРЅРѕСЃСЏС‚СЃСЏ РІ D1. Worker РїРµСЂРµРІРµРґС‘РЅ СЃ legacy `addEventListener("fetch")` РЅР° ES module `export default { fetch(request, env) }`, РїРѕС‚РѕРјСѓ С‡С‚Рѕ Cloudflare D1 binding С‚СЂРµР±СѓРµС‚ module Worker. Р’ `wrangler.toml` РґРѕР±Р°РІР»РµРЅ binding `DB` РЅР° `4e-production` (`6107948c-6c67-4c37-baa1-efea6c5c2860`). Р”РѕР±Р°РІР»РµРЅС‹ D1 migrations: `0001_sessions_tasks.sql` РєР°Рє no-op note РґР»СЏ СѓР¶Рµ Р·Р°РЅСЏС‚РѕР№ production schema `sessions/tasks`, Рё `0002_app_kv_state.sql` РґР»СЏ `app_sessions`/`app_task_lists`.
 
-**Проверка кодировки:** `index.html` не изменялся.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** `git diff --check` после правок.
+**РўРµСЃС‚:** `node --check worker.js`; `git diff --check`; `wrangler d1 migrations apply 4e-production --local --config wrangler.toml`; `wrangler d1 migrations apply 4e-production --remote --config wrangler.toml`; `PRAGMA table_info(app_sessions)` Рё `PRAGMA table_info(app_task_lists)` РїРѕРґС‚РІРµСЂРґРёР»Рё remote schema; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` в†’ production version `0b66977a-0b23-4cdf-bd92-c5ec38e2ee1c`. Live smoke: РІСЂРµРјРµРЅРЅС‹Р№ email-Р°РєРєР°СѓРЅС‚ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ, `/auth/me` РїРѕ token РїСЂРѕС€С‘Р», `x-action: save-task` СЃРѕС…СЂР°РЅРёР» Р·Р°РґР°С‡Сѓ, `/tasks` РІРµСЂРЅСѓР» РµС‘; D1 РїРѕРєР°Р·Р°Р» `session_rows=1` Рё `task_rows=1`; KV get РґР»СЏ РЅРѕРІС‹С… `session:<token>` Рё `tasks:<chatId>` РІРµСЂРЅСѓР» 404; РІСЂРµРјРµРЅРЅС‹Рµ D1/KV Р·Р°РїРёСЃРё СѓРґР°Р»РµРЅС‹, cleanup count РІРµСЂРЅСѓР» `session_rows=0`, `task_rows=0`.
 
-**Коммит:** N/A — изменения подготовлены локально, коммит/пуш не выполнялся.
+**РљРѕРјРјРёС‚:** `0a035c9` (`feat(worker): store sessions and tasks in D1`) РІ `4e-worker`.
 
----
-
-## 2026-06-25 — Убраны локальные пути и добавлен path guard (Codex)
-
-**Что сделано:**
-- В `COWORK_INSTRUCTIONS.md` абсолютный Mac-путь заменён на переносимый `<repo-root>` и универсальную команду перехода в локальную папку репозитория.
-- Старые Windows user-пути заменены на `<repo-root>`, `<worker-repo-root>` и относительные пути в `AGENTS.md`, `CLAUDE.md`, `docs/tasks/TASK_TEMPLATE.md`, `DEVELOPMENT_LOG.md`.
-- Добавлен `scripts/check-portable-paths.sh`, локальный `.githooks/pre-commit` и GitHub Actions workflow `.github/workflows/path-guard.yml`.
-- В локальном checkout включён `git config core.hooksPath .githooks`, чтобы проверка запускалась перед commit.
-
-**Проверка кодировки:** `index.html` не изменялся.
-
-**Тест:** `git fetch origin` перед правкой; локальная ветка не отставала от GitHub. `bash scripts/check-portable-paths.sh` проходит. Поиск по Mac/Windows user-путям не находит совпадений в репозитории.
-
-**Коммит:** `docs: remove local absolute paths from docs`
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ вЂ” BACK-006 Р·Р°РєСЂС‹С‚.
 
 ---
 
-## 2026-06-25 — Фикс пустого экрана, logout и active-состояния меню (Codex)
+## 2026-06-27 вЂ” BACK-005: unified user identities (Codex)
 
-**Что сделано:**
-- Исправлен пустой главный экран после обновления: `showScreen()` теперь сбрасывает вложенный scroll-контейнер `#home`.
-- Убраны дублирующиеся `id` у пунктов нижней навигации; active-состояние переведено на `data-nav`.
-- Добавлена подсветка активного пункта для обеих навигаций, включая микрофон.
-- Исправлен logout: выход больше не полагается на `window.location.reload()`, а явно чистит состояние и показывает экран входа.
-- Добавлен auth-guard в `showScreen()`: без токена приватные экраны больше не показывают дефолтного пользователя.
-- VK-адаптер в `index.html` теперь включается только при реальных VK launch-параметрах, чтобы не перехватывать `showScreen('login')` вне VK.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `4e-worker/worker.js` СЃРѕР·РґР°РЅР° РµРґРёРЅР°СЏ server-side РјРѕРґРµР»СЊ РёРґРµРЅС‚РёС‡РЅРѕСЃС‚РµР№ РґР»СЏ Email + Telegram + VK. `link-telegram` С‚РµРїРµСЂСЊ СѓРјРµРµС‚ Р±СЂР°С‚СЊ Telegram ID РёР· `initData` Рё СЃРѕС…СЂР°РЅСЏРµС‚ `telegramId` РІ canonical user. Р”РѕР±Р°РІР»РµРЅ `/auth/link-vk`, РєРѕС‚РѕСЂС‹Р№ РїСЂРёРІСЏР·С‹РІР°РµС‚ VK ID Рє С‚РµРєСѓС‰РµР№ email-СЃРµСЃСЃРёРё С‡РµСЂРµР· `vk:<id>` Рё `vk_rev:<userId>`. `/auth/vk` С‚РµРїРµСЂСЊ РїР°СЂСЃРёС‚ `vk_user_id` РёР· `launchParams`, РёСЃРїРѕР»СЊР·СѓРµС‚ РѕР±С‰РёР№ `saveUser/getUser`, СЃРѕР·РґР°С‘С‚ canonical `vk_<id>@vk.local` user С‚РѕР»СЊРєРѕ РµСЃР»Рё VK РµС‰С‘ РЅРµ РїСЂРёРІСЏР·Р°РЅ, Рё РІРѕР·РІСЂР°С‰Р°РµС‚ session СЃ `email`. `publicUser()` РІРѕР·РІСЂР°С‰Р°РµС‚ `telegramId`, `telegramUsername`, `vkId`.
 
-**Проверка кодировки:** 22 / 22 совпадений по `Войти|Задачи|Сегодня`.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** локальная раздача `python3 -m http.server 8000`; in-app browser mobile viewport 390x844. Проверено: home после принудительного scroll вниз возвращается на `scrollTop=0`, `voice` не виден поверх home, active stroke для tasks/calendar/chats/brain зелёный, logout переводит на `login`, скрывает нижнее меню и удаляет token, прямой `showScreen('profile')` без token переводит на `login`.
+**РўРµСЃС‚:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; `wrangler deploy --config wrangler.toml` в†’ production version `ff365be0-59d3-4307-9c15-54ab037e2917`; Р»РѕРєР°Р»СЊРЅС‹Р№ `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; smoke СЃРѕР·РґР°Р» email-Р°РєРєР°СѓРЅС‚, РїСЂРёРІСЏР·Р°Р» Telegram С‡РµСЂРµР· `initData`, РїСЂРёРІСЏР·Р°Р» VK С‡РµСЂРµР· `launchParams`, Р·Р°С‚РµРј `/auth/vk` РІРµСЂРЅСѓР» С‚РѕС‚ Р¶Рµ `user.id` Рё email; `/auth/me` РїРѕ VK token С‚Р°РєР¶Рµ РІРµСЂРЅСѓР» С‚РѕС‚ Р¶Рµ `user.id`. РќР° shutdown `wrangler dev` РїРѕРєР°Р·Р°Р» РІСЂРµРјРµРЅРЅСѓСЋ bundle cleanup/build РѕС€РёР±РєСѓ, РЅРѕ HTTP-smoke РґРѕ shutdown РїСЂРѕС€С‘Р» СѓСЃРїРµС€РЅРѕ. РџРѕСЃР»Рµ merge РІ `main` production live smoke РїРѕРґС‚РІРµСЂРґРёР», С‡С‚Рѕ email-СЂРµРіРёСЃС‚СЂР°С†РёСЏ, Telegram link, VK link, `/auth/vk` Рё `/auth/me` РІРѕР·РІСЂР°С‰Р°СЋС‚ РѕРґРёРЅ canonical `user.id`; РІСЂРµРјРµРЅРЅС‹Рµ KV-РєР»СЋС‡Рё `user:*`, `user_id:*`, `session:*`, `tg:*`, `tg_rev:*`, `vk:*`, `vk_rev:*`, `notifs:*` СѓРґР°Р»РµРЅС‹.
 
-**Коммит:** N/A — коммит/пуш не выполнялся.
+**РљРѕРјРјРёС‚:** `1a593fb` (`fix(auth): unify VK Telegram and email identities`) РІ `4e-worker`.
+
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ вЂ” BACK-005 Р·Р°РєСЂС‹С‚.
 
 ---
 
-## 2026-06-25 — Подготовка рабочей папки к разработке и тестированию (Codex)
+## 2026-06-27 вЂ” BACK-004: payment webhook live smoke (Codex)
 
-**Что сделано:**
-- Созданы `FILE_MAP.md`, `FILE_MAP_UI.md`, `FILE_MAP_WORKER.md`, `FILE_MAP_BOT.md`
-- Добавлен `.gitignore` для системных и локальных файлов
-- Обновлены `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` под текущий checkout репозитория
-- Обновлён `README.md` как быстрый старт для новых агентов
-- Уточнён PM/QA-контур через `pm/bugs.md` и `pm/roadmap.md`
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РљРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ. Production Worker `/payment/webhook` РїСЂРѕРІРµСЂРµРЅ end-to-end РЅР° РІСЂРµРјРµРЅРЅРѕРј С‚РµСЃС‚РѕРІРѕРј РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ `codex-payment-smoke-1782568866@example.com` Рё invoice `codex-smoke-1782568866`.
 
-**Проверка кодировки:** `index.html` не изменялся.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-**Тест:** локальная раздача через `python3 -m http.server 8000`; `index.html`, `vk.html`, `privacy.html` отвечают `200 OK`.
+**РўРµСЃС‚:** Р§РµСЂРµР· production Worker СЃРѕР·РґР°РЅ РІСЂРµРјРµРЅРЅС‹Р№ Р°РєРєР°СѓРЅС‚, РґРѕ webhook `plan=trial`; РѕС‚РїСЂР°РІР»РµРЅ form-urlencoded webhook `Status=Completed`, `AccountId=<test-user-id>`, `Amount=990`, `InvoiceId=codex-smoke-1782568866`, `Description=Smoke 1 month`; webhook РІРµСЂРЅСѓР» `code:0`; РїРѕСЃР»Рµ `/auth/me` РїРѕРєР°Р·Р°Р» `plan=paid`, `trialEndsAt` СѓРІРµР»РёС‡РёР»СЃСЏ РїСЂРёРјРµСЂРЅРѕ РЅР° 30 РґРЅРµР№ (`trialLeft=60`). РџРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё СѓРґР°Р»РµРЅС‹ С‚РѕС‡РЅС‹Рµ KV-РєР»СЋС‡Рё `user:codex-payment-smoke-1782568866@example.com`, `user_id:d1ce9837-42b0-4460-a17e-ef16856234b4`, `tx:codex-smoke-1782568866`, `notifs:d1ce9837-42b0-4460-a17e-ef16856234b4`.
 
-**Коммит:** N/A — изменения подготовлены локально, коммит/пуш не выполнялся.
+**РљРѕРјРјРёС‚:** N/A вЂ” РєРѕРґ РЅРµ РјРµРЅСЏР»СЃСЏ.
+
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ вЂ” BACK-004 Р·Р°РєСЂС‹С‚.
 
 ---
 
-### 2026-06-11 — Инициализация воркера
+## 2026-06-27 вЂ” BACK-002: password reset backend endpoints (Codex)
 
-**Что сделано:** init worker + CI/CD; настройка GitHub Actions; секреты через env.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `4e-worker/worker.js` РЅР° РІРµС‚РєРµ `fix/password-reset-endpoints` РґРѕР±Р°РІР»РµРЅС‹ РЅРѕРІС‹Рµ СЃРѕРІРјРµСЃС‚РёРјС‹Рµ endpoint aliases `/auth/reset-request` Рё `/auth/reset-confirm` РїРѕРІРµСЂС… СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС… `/auth/forgot-password` Рё `/auth/reset-password`. `handleResetPassword()` С‚РµРїРµСЂСЊ РїСЂРёРЅРёРјР°РµС‚ `newPassword` РёР· РєРѕРЅС‚СЂР°РєС‚Р° Р¤Р°Р·С‹ 12 Рё СЃС‚Р°СЂРѕРµ РїРѕР»Рµ `password` РґР»СЏ РѕР±СЂР°С‚РЅРѕР№ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё. РЎСЃС‹Р»РєР° РІ РїРёСЃСЊРјРµ РёСЃРїСЂР°РІР»РµРЅР° РЅР° `https://mrktggod.github.io/4e-app/?reset=TOKEN`.
 
-**Паттерн проблем в этот день:**
-- chatId fallback использовал global вместо telegramId → исправлено
-- KV binding не был прописан в wrangler.toml → исправлено
-- Попытка сохранять задачи по telegramUserId → 2 раза revert (нестабильное поведение)
-- Итог: передавать chatId явно при сохранении задачи
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
----
+**РўРµСЃС‚:** `node --check worker.js`; `git diff --check`; `wrangler deploy --dry-run --config wrangler.toml`; Р»РѕРєР°Р»СЊРЅС‹Р№ `wrangler dev --config wrangler.toml --ip 127.0.0.1 --port 8787`; `POST /auth/reset-request` СЃ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРј email РІРµСЂРЅСѓР» `200 {"ok":true}`; `POST /auth/reset-confirm` СЃ РЅРµРІР°Р»РёРґРЅС‹Рј token Рё `newPassword` РІРµСЂРЅСѓР» РєРѕРЅС‚СЂРѕР»РёСЂСѓРµРјС‹Р№ `400 Bad Request`.
 
-### 2026-06-11 — Рефакторинг bot.js
+**РљРѕРјРјРёС‚:** `a0965de` (`feat(auth): add password reset endpoints`) РІ `4e-worker`.
 
-**Что сделано:** `bot.js` разбит на модули `src/bot/` (config, analyzer, tasks, reminders, commands, handler, index).
-
-**Статус:** задеплоено, стабильно.
+**РЎС‚Р°С‚СѓСЃ:** РІС‹РїРѕР»РЅРµРЅРѕ вЂ” PR СЃРјС‘СЂР¶РµРЅ РІ `a173ebf`, production deploy РІС‹РїРѕР»РЅРµРЅ (`729a046c-5849-4a26-9ced-8ee5bc4b1e44`), live API smoke РїСЂРѕС€С‘Р»: `/auth/reset-request` РІРµСЂРЅСѓР» `200 {"ok":true}`, `/auth/reset-confirm` СЃ invalid token РІРµСЂРЅСѓР» РєРѕРЅС‚СЂРѕР»РёСЂСѓРµРјС‹Р№ `400`. Р¤РёРЅР°Р»СЊРЅС‹Р№ СЂСѓС‡РЅРѕР№ smoke РїРѕРґС‚РІРµСЂР¶РґС‘РЅ 2026-06-27: РїРёСЃСЊРјРѕ РїСЂРёС€Р»Рѕ, РєРЅРѕРїРєР° СЃР±СЂРѕСЃР° РѕС‚РєСЂС‹Р»Р° С„РѕСЂРјСѓ, РїР°СЂРѕР»СЊ СЃРѕС…СЂР°РЅС‘РЅ. РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРІС‘Р» С‚РѕС‚ Р¶Рµ РїР°СЂРѕР»СЊ, РЅРѕ reset token Рё backend confirm-flow РѕС‚СЂР°Р±РѕС‚Р°Р»Рё.
 
 ---
 
-### 2026-06-11 — Начало VK Mini Apps интеграции
+## 2026-06-26 вЂ” BACK-001: Resend email secret РґР»СЏ Worker (Codex)
 
-**Что сделано:** backup коммит → добавлен CORS `Access-Control-Allow-Credentials` → добавлен эндпоинт `/auth/vk` и `handleVKAuth` → добавлен `vk.html` frontend в worker.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ РѕС‚РґРµР»СЊРЅРѕРј worker-СЂРµРїРѕР·РёС‚РѕСЂРёРё `4e-worker` СЃРѕР·РґР°РЅР° РІРµС‚РєР° `fix/resend-email-secret` Рё РєРѕРјРјРёС‚ `086f19b`. РР· `worker.js` СѓРґР°Р»С‘РЅ hardcoded `RESEND_KEY`; `sendEmail()` С‚РµРїРµСЂСЊ С‡РёС‚Р°РµС‚ runtime secret `RESEND_KEY`, РЅРµ РїР°РґР°РµС‚ Worker 1101 РїСЂРё РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰РµРј secret, Р»РѕРіРёСЂСѓРµС‚ РєРѕРЅС„РёРіСѓСЂР°С†РёРѕРЅРЅСѓСЋ РѕС€РёР±РєСѓ/РѕС€РёР±РєСѓ Resend Рё РІРѕР·РІСЂР°С‰Р°РµС‚ `false`. `/auth/forgot-password` С‚РµРїРµСЂСЊ РЅРµ СЃРѕРѕР±С‰Р°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ Р»РѕР¶РЅС‹Р№ СѓСЃРїРµС… РґР»СЏ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ Р°РєРєР°СѓРЅС‚Р°, РµСЃР»Рё РїРёСЃСЊРјРѕ РЅРµ РѕС‚РїСЂР°РІРёР»РѕСЃСЊ, Р° РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕРЅС‚СЂРѕР»РёСЂСѓРµРјС‹Р№ `502`.
 
----
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РјРµРЅСЏР»СЃСЏ, РЁР°Рі 0 РЅРµ С‚СЂРµР±РѕРІР°Р»СЃСЏ.
 
-### 2026-06-11 — VK Mini App в 4e-app
+**РўРµСЃС‚:** `node --check worker.js`; `rg -n "re_[A-Za-z0-9_]+" worker.js` РЅРµ РЅР°С€С‘Р» hardcoded Resend key; `git diff --check` РїСЂРѕС€С‘Р»; `wrangler deploy --dry-run --config wrangler.toml` СЃРѕР±СЂР°Р» Worker (`Total Upload: 55.77 KiB / gzip: 10.35 KiB`) Рё РїРѕРєР°Р·Р°Р» binding `env.KV`. РџСЂРѕРІРµСЂРєР° `wrangler secret list` Рё production deploy Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅС‹ РѕРєСЂСѓР¶РµРЅРёРµРј: Wrangler С‚СЂРµР±СѓРµС‚ `CLOUDFLARE_API_TOKEN` РІ non-interactive session. 2026-06-27: `git push -u origin fix/resend-email-secret` completed; PR creation is blocked because local `gh` is not logged in and GitHub connector returned API 404 for `mrktggod/4e-bot`; `wrangler whoami` later succeeded after OAuth login, `wrangler secret list --config wrangler.toml` confirmed `RESEND_KEY`, and production deploy succeeded: Worker `restless-lab-d737`, version `abe182e4-05b5-4c28-9934-9f972e662098`, URL `https://restless-lab-d737.shelckograff.workers.dev`. Safe smoke: `POST /auth/forgot-password` with a non-existing email returned `200 {"ok":true}`. 2026-06-27: live email smoke passed by user confirmation; reset email arrived and Resend marked it delivered. BACK-001 is Done; following the email link and changing the password are BACK-002 scope.
 
-**Что сделано:** `vk.html` добавлен в 4e-app; загрузка задач из KV после VK auth; VK Bridge auto-login.
-
-**Паттерн проблем:**
-- Кодировка сломалась после VK правок → 2 restore коммита + reset
-- Шрифты: Google Fonts не грузятся в VK iframe → заменено на system font stack
-- URL AI чата был неверным → исправлено на `/anthropic`
+**РљРѕРјРјРёС‚:** `086f19b` (`fix(worker): use Resend secret for email delivery`) РІ `4e-worker`; branch `origin/fix/resend-email-secret` pushed.
 
 ---
 
-### 2026-06-16 — Стабилизация VK + AI чат
+## 2026-06-26 вЂ” PM-roadmap РїСЂРёРІРµРґС‘РЅ Рє СЂРµР°Р»СЊРЅРѕР№ СЃС‚СЂР°С‚РµРіРёРё РїСЂРѕРґСѓРєС‚Р° (Codex)
 
-**Что сделано:**
-- AI chat URL → `/anthropic`
-- AI chat prompt — убраны лишние вопросы
-- Chat history persistence + перезагрузка задач после ответа AI
-- Загрузка задач по токену без chatId
-- Передача задач в system prompt AI
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- `pm/roadmap.md` СЏРІРЅРѕ РЅР°Р·РЅР°С‡РµРЅ РѕРїРµСЂР°С‚РёРІРЅРѕР№ РІРµСЂСЃРёРµР№ СЃС‚СЂР°С‚РµРіРёРё РёР· `shared/ROADMAP.md`.
+- РЈР±СЂР°РЅР° РЅРµРѕРґРЅРѕР·РЅР°С‡РЅРѕСЃС‚СЊ СЃ generic-roadmap: РґРѕР±Р°РІР»РµРЅРѕ РїСЂР°РІРёР»Рѕ РЅРµ РїРѕРґРјРµРЅСЏС‚СЊ РїСЂРѕРґСѓРєС‚ 4 AI-СЃРµРєСЂРµС‚Р°СЂСЊ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРј СѓРїСЂР°РІР»РµРЅРёСЏ РїСЂРѕРµРєС‚РѕРј.
+- `pm/backlog.md` РїРѕРјРµС‡РµРЅ РєР°Рє backlog РёР· СЂРµР°Р»СЊРЅРѕР№ РїСЂРѕРґСѓРєС‚РѕРІРѕР№ СЃС‚СЂР°С‚РµРіРёРё Рё СЃРІСЏР·Р°РЅ СЃ Linear `ALE-5` РґР»СЏ РїРµСЂРІРёС‡РЅРѕРіРѕ Р±Р°Рі-Р±Р°С€Р°.
+- РЈС‚РѕС‡РЅС‘РЅ СЃС‚Р°С‚СѓСЃ Р¤Р°Р·С‹ 9: Done / QA, РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЂРµР°Р»РёР·Р°С†РёСЏ РµСЃС‚СЊ, РЅРѕ live-СЃС†РµРЅР°СЂРёР№ РјРёРєСЂРѕС„РѕРЅР° РЅСѓР¶РЅРѕ РїСЂРѕРІРµСЂРёС‚СЊ.
 
-**Статус:** задеплоено.
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РёР·РјРµРЅСЏР»СЃСЏ.
 
----
+**РўРµСЃС‚:** СЂСѓС‡РЅР°СЏ СЃРІРµСЂРєР° `pm/roadmap.md` Рё `pm/backlog.md` СЃ `shared/ROADMAP.md`, `DEVELOPMENT_LOG.md`, `shared/WORK_LOG.md`.
 
-### 2026-06-16 — Документация для агентов
-
-**Что сделано:** добавлены `COWORK_INSTRUCTIONS.md`, `docs/tasks/TASK_TEMPLATE.md`, `AGENTS.md`.
-
-**Статус:** репо содержит инструкции для Мимо и Codex.
+**РљРѕРјРјРёС‚:** N/A вЂ” РёР·РјРµРЅРµРЅРёСЏ РїРѕРґРіРѕС‚РѕРІР»РµРЅС‹ Р»РѕРєР°Р»СЊРЅРѕ, РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
 
 ---
 
-## 2026-06-20 — Юридическое соответствие 152-ФЗ (подготовка Claude)
+## 2026-06-25 вЂ” BACK-003: Р±РёРѕРјРµС‚СЂРёС‡РµСЃРєРѕРµ СЃРѕРіР»Р°СЃРёРµ 152-Р¤Р— (Codex)
 
-**Что сделано:**
-- Проведён анализ рисков по 152-ФЗ: локализация, биометрия, регистрация РКН
-- Создана `4e-app/privacy.html` — Политика конфиденциальности (готова к деплою)
-- Создан `redesign/patches/09_biometric_consent.html` — экран согласия на голос (ст. 11)
-- Создан `RKN_CHECKLIST.md` — чек-лист с данными для уведомления РКН
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р’ `index.html` СѓСЃС‚Р°РЅРѕРІР»РµРЅ РїР°С‚С‡ `09_biometric_consent.html` РїРµСЂРµРґ Р·Р°РєСЂС‹РІР°СЋС‰РёРј `</body>`. `openVoice()` С‚РµРїРµСЂСЊ СЃРЅР°С‡Р°Р»Р° РІС‹Р·С‹РІР°РµС‚ `window.biometricConsentRequired()`, РїРѕСЌС‚РѕРјСѓ РїСЂРё РїРµСЂРІРѕРј РЅР°Р¶Р°С‚РёРё РЅР° РјРёРєСЂРѕС„РѕРЅ РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ СЌРєСЂР°РЅ СЃРѕРіР»Р°СЃРёСЏ РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ РіРѕР»РѕСЃР°. Р’ С„РѕСЂРјРµ РІС…РѕРґР° РґРѕР±Р°РІР»РµРЅР° СЃСЃС‹Р»РєР° РЅР° `privacy.html`, Р° РІ СЂР°Р·РґРµР»Рµ Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё РґРѕР±Р°РІР»РµРЅР° СЃС‚СЂРѕРєР° РѕС‚Р·С‹РІР° СЃРѕРіР»Р°СЃРёСЏ. РћР±РЅРѕРІР»РµРЅС‹ `FILE_MAP.md`, `FILE_MAP_UI.md`, `pm/backlog.md` Рё `pm/roadmap.md`.
 
-**Критические риски (требуют действий):**
-1. Нет регистрации в РКН — штраф 100–300 тыс. → Юрий подаёт уведомление через pd.rkn.gov.ru
-2. Голос без письменного согласия — штраф до 500 тыс. → Codex устанавливает патч 09
-3. Данные вне РФ (Cloudflare) — штраф до 18 млн → решается миграцией на Yandex Cloud
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** РґРѕ РїСЂР°РІРєРё вЂ” 51 СЃРѕРІРїР°РґРµРЅРёРµ РїРѕ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`; РїРѕСЃР»Рµ РїСЂР°РІРєРё вЂ” 52 СЃРѕРІРїР°РґРµРЅРёСЏ. РЈРІРµР»РёС‡РµРЅРёРµ РѕР¶РёРґР°РµРјРѕРµ: РґРѕР±Р°РІР»РµРЅР° legal-note СЃРѕ СЃР»РѕРІРѕРј В«Р’РѕР№С‚РёВ».
 
-**Статус Codex:** Фаза 9 установлена 2026-06-25 в рамках BACK-003; инструкции из CODEX_INSTRUCTIONS.md выполнены локально.
+**РўРµСЃС‚:** `node` РїСЂРѕРІРµСЂРёР» СЃРёРЅС‚Р°РєСЃРёСЃ 2 inline scripts РІ `index.html`; СЃС‚Р°С‚РёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° РјР°СЂРєРµСЂРѕРІ Р¤Р°Р·С‹ 9 РїСЂРѕС€Р»Р° (`biometricConsentRequired`, `biometric_consent_v1`, disabled confirm button, legal-note, revoke row). `git diff --check` РїСЂРѕС€С‘Р» Р±РµР· whitespace errors; portable-path СЌРєРІРёРІР°Р»РµРЅС‚ С‡РµСЂРµР· `rg` РЅРµ РЅР°С€С‘Р» Р»РѕРєР°Р»СЊРЅС‹С… user-РїСѓС‚РµР№. `privacy.html` СЃСѓС‰РµСЃС‚РІСѓРµС‚ Рё СЃРѕРґРµСЂР¶РёС‚ РїРѕР»РёС‚РёРєСѓ РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё/152-Р¤Р—. Playwright РІ Р»РѕРєР°Р»СЊРЅРѕРј РѕРєСЂСѓР¶РµРЅРёРё РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ, РїРѕСЌС‚РѕРјСѓ browser click-flow РѕСЃС‚Р°С‘С‚СЃСЏ СЂСѓС‡РЅРѕР№ РїСЂРѕРІРµСЂРєРѕР№ РїРѕСЃР»Рµ push.
+
+**РљРѕРјРјРёС‚:** `legal: biometric consent and privacy policy`
 
 ---
 
-## 2026-06-20 — Подготовка к редизайну (сессия Codex)
+## 2026-06-25 вЂ” РСЃРїСЂР°РІР»РµРЅРёРµ СЃР±СЂРѕСЃР° РїР°СЂРѕР»СЏ (Codex)
 
-**Что сделано:**
-- Созданы бэкапы: `index_original.html` (копия index.html) и `vk_backup.html` (копия vk.html)
-- Сессия Codex завершилась исчерпанием токенов до установки патчей
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- Р’ `index.html` РґРѕР±Р°РІР»РµРЅР° РѕС€РёР±РєР° РїРѕРґ email РЅР° СЌРєСЂР°РЅРµ "РЎР±СЂРѕСЃ РїР°СЂРѕР»СЏ".
+- `doForgotPassword()` С‚РµРїРµСЂСЊ РЅРµ РѕС‚РїСЂР°РІР»СЏРµС‚ РїСѓСЃС‚РѕР№ email Рё Р·РЅР°С‡РµРЅРёСЏ РЅРµ РІ С„РѕСЂРјР°С‚Рµ email, РЅР°РїСЂРёРјРµСЂ `fff`.
+- РћС‚РІРµС‚ `/auth/forgot-password` С‚РµРїРµСЂСЊ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ СЏРІРЅРѕ: СѓСЃРїРµС… РїРѕРєР°Р·С‹РІР°РµС‚ Р±Р»РѕРє "РџРёСЃСЊРјРѕ РѕС‚РїСЂР°РІР»РµРЅРѕ", СЃРµСЂРІРµСЂРЅР°СЏ РѕС€РёР±РєР° РѕСЃС‚Р°С‘С‚СЃСЏ РЅР° С„РѕСЂРјРµ СЃ РїРѕРЅСЏС‚РЅС‹Рј СЃРѕРѕР±С‰РµРЅРёРµРј.
+- `showScreen()` СЃРєСЂС‹РІР°РµС‚ РЅРёР¶РЅСЋСЋ РЅР°РІРёРіР°С†РёСЋ РЅР° РїСѓР±Р»РёС‡РЅС‹С… auth/reset-flow СЌРєСЂР°РЅР°С…: `onboarding`, `login`, `forgot-password`, `reset-password`.
+- РћР±РЅРѕРІР»РµРЅС‹ `FILE_MAP.md`, `FILE_MAP_UI.md`, `pm/bugs.md` Рё `pm/qa-checklist.md`.
 
-**Что НЕ сделано:** ни одна из 8 фаз редизайна не установлена
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** 22 / 22 СЃРѕРІРїР°РґРµРЅРёР№ РїРѕ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`; РїРµСЂРµРґ РїСЂР°РІРєРѕР№ СЃРѕР·РґР°РЅ backup `index.backup_20260625_1821.html`.
 
-**Состояние:** index.html чистый, кириллица в порядке, бэкапы готовы
+**РўРµСЃС‚:** Р»РѕРєР°Р»СЊРЅР°СЏ СЂР°Р·РґР°С‡Р° `python3 -m http.server 8000`; `curl -I http://127.0.0.1:8000/index.html` РІРµСЂРЅСѓР» `200 OK`. РўРѕС‡РµС‡РЅС‹Р№ JS-smoke РЅР° С„СѓРЅРєС†РёСЏС… `doForgotPassword()` Рё `showScreen()` РїСЂРѕРІРµСЂРёР» РїСѓСЃС‚РѕР№ email, `fff`, СѓСЃРїРµС€РЅС‹Р№ РѕС‚РІРµС‚, СЃРµСЂРІРµСЂРЅСѓСЋ РѕС€РёР±РєСѓ, СЃРєСЂС‹С‚РёРµ nav РЅР° `forgot-password` Рё `reset-password`. Р’СЃС‚СЂРѕРµРЅРЅС‹Р№ browser-РїР»Р°РіРёРЅ РІ СЌС‚РѕР№ СЃСЂРµРґРµ СѓРїР°Р» РїСЂРё РѕС‚РєСЂС‹С‚РёРё С‚СЏР¶С‘Р»РѕРіРѕ `index.html`, РїРѕСЌС‚РѕРјСѓ РІРёР·СѓР°Р»СЊРЅС‹Р№ WebView-smoke РЅСѓР¶РµРЅ РїРѕСЃР»Рµ РґРµРїР»РѕСЏ/РІ Telegram.
 
-**Следующий сеанс:** начать с Фазы 1 — `redesign/patches/01_light_theme.css`  
-Патчи лежат в `redesign/patches/`, если эта папка есть в текущем checkout.
-
----
-
-## 2026-06-20 — Warmup-соединение VK (Claude + Юрий)
-
-**Что сделано:** добавлена `warmupConnection()` в `vk.html` — тихий GET на `edge.4-ai.site` при загрузке страницы до первого клика. Маркер: `vk-auth-warmup-20260620-7`. Commit `00c1a45`.
-
-**Проблема:** VK WebView холодный старт — DNS+TLS занимал ~15 сек. Recovery из CODEX-055 (900ms) не успевал, первый клик падал с ошибкой соединения.
-
-**Результат:** вход с первого клика без ошибки ✅. Небольшая задержка (~5–8 сек) после клика остаётся — приемлемо для внутреннего тестирования.
+**РљРѕРјРјРёС‚:** N/A вЂ” РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
 
 ---
 
-## 2026-06-20 — Редизайн index.html (фазы 1–8) (Claude + Юрий)
+## 2026-06-25 вЂ” Р¤РёРєСЃР°С†РёСЏ P1 Р±Р°РіР° РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РїР°СЂРѕР»СЏ (Codex)
 
-**Что сделано:** полный редизайн `index.html` — все 8 патчей установлены и задеплоены за одну сессию.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- Р’ `pm/bugs.md` РґРѕР±Р°РІР»РµРЅ Р°РєС‚РёРІРЅС‹Р№ Р±Р°Рі `BUG-2026-06-25-002`: СЃР±СЂРѕСЃ РїР°СЂРѕР»СЏ РїСЂРёРЅРёРјР°РµС‚ РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ email Рё РїРµСЂРµРІРѕРґРёС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ.
+- Р‘Р°Рі РѕС‚РјРµС‡РµРЅ РєР°Рє СЃСѓС‰РµСЃС‚РІРµРЅРЅС‹Р№ РґР»СЏ РґРѕСЃС‚СѓРїР°: `High / P1`, РјРµС‚РєР° `Auth / Access blocker risk`.
+- РЎРѕР·РґР°РЅР° Р·Р°РґР°С‡Р° РґР»СЏ СЂР°Р·СЂР°Р±РѕС‚РєРё `docs/tasks/BUG-2026-06-25-002_password_reset.md`.
+- Р’ `pm/qa-checklist.md` РґРѕР±Р°РІР»РµРЅС‹ СЂРµРіСЂРµСЃСЃРёРѕРЅРЅС‹Рµ РїСЂРѕРІРµСЂРєРё РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РїР°СЂРѕР»СЏ.
 
-| Фаза | Коммит | Содержание |
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РёР·РјРµРЅСЏР»СЃСЏ.
+
+**РўРµСЃС‚:** РїСЂРѕРІРµСЂРµРЅР° СЃС‚СЂСѓРєС‚СѓСЂР° PM-РґРѕРєСѓРјРµРЅС‚РѕРІ; РєРѕРґ РїСЂРёР»РѕР¶РµРЅРёСЏ РЅРµ РјРµРЅСЏР»СЃСЏ.
+
+**РљРѕРјРјРёС‚:** N/A вЂ” РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
+
+---
+
+## 2026-06-25 вЂ” РќР°РїРѕРјРёРЅР°РЅРёРµ Рѕ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё РїРµСЂРµРґ СЂР°Р±РѕС‚РѕР№ (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- Р’ `AGENTS.md`, `CLAUDE.md`, `README.md` РґРѕР±Р°РІР»РµРЅРѕ РїСЂР°РІРёР»Рѕ: РїРµСЂРµРґ РЅР°С‡Р°Р»РѕРј СЂР°Р±РѕС‚С‹ РЅР°РїРѕРјРЅРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ Рё РІС‹РїРѕР»РЅРёС‚СЊ `git fetch origin` Рё `git pull --rebase`.
+- Р’ `FILE_MAP.md` РґРѕР±Р°РІР»РµРЅР° СЃС‚Р°СЂС‚РѕРІР°СЏ РїСЂРѕРІРµСЂРєР° СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё СЃ GitHub.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РёР·РјРµРЅСЏР»СЃСЏ.
+
+**РўРµСЃС‚:** РїРµСЂРµРґ РїСЂР°РІРєРѕР№ РІС‹РїРѕР»РЅРµРЅС‹ `git fetch origin` Рё `git pull --rebase`; Р»РѕРєР°Р»СЊРЅР°СЏ РІРµС‚РєР° СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅР° СЃ `origin/main`.
+
+**РљРѕРјРјРёС‚:** N/A вЂ” РёР·РјРµРЅРµРЅРёСЏ РїРѕРґРіРѕС‚РѕРІР»РµРЅС‹ Р»РѕРєР°Р»СЊРЅРѕ, РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
+
+---
+
+## 2026-06-25 вЂ” РџСЂР°РІРёР»Рѕ РїРѕРЅСЏС‚РЅС‹С… Р·Р°РіРѕР»РѕРІРєРѕРІ РєРѕРјРјРёС‚РѕРІ (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- Р”РѕР±Р°РІР»РµРЅ `shared/COMMIT_CONVENTION.md` СЃ С„РѕСЂРјР°С‚РѕРј `type(scope): С‡С‚Рѕ РёР·РјРµРЅРёР»РѕСЃСЊ`.
+- РџСЂР°РІРёР»Рѕ РїРѕРґРєР»СЋС‡РµРЅРѕ РІ `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md`, `README.md`.
+- `FILE_MAP.md` РѕР±РЅРѕРІР»С‘РЅ, С‡С‚РѕР±С‹ РЅРѕРІС‹Р№ РєРѕРјР°РЅРґРЅС‹Р№ СЃС‚Р°РЅРґР°СЂС‚ Р±С‹Р» РІРёРґРµРЅ Р°РіРµРЅС‚Р°Рј.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РёР·РјРµРЅСЏР»СЃСЏ.
+
+**РўРµСЃС‚:** `git diff --check` РїРѕСЃР»Рµ РїСЂР°РІРѕРє.
+
+**РљРѕРјРјРёС‚:** N/A вЂ” РёР·РјРµРЅРµРЅРёСЏ РїРѕРґРіРѕС‚РѕРІР»РµРЅС‹ Р»РѕРєР°Р»СЊРЅРѕ, РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
+
+---
+
+## 2026-06-25 вЂ” РЈР±СЂР°РЅС‹ Р»РѕРєР°Р»СЊРЅС‹Рµ РїСѓС‚Рё Рё РґРѕР±Р°РІР»РµРЅ path guard (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- Р’ `COWORK_INSTRUCTIONS.md` Р°Р±СЃРѕР»СЋС‚РЅС‹Р№ Mac-РїСѓС‚СЊ Р·Р°РјРµРЅС‘РЅ РЅР° РїРµСЂРµРЅРѕСЃРёРјС‹Р№ `<repo-root>` Рё СѓРЅРёРІРµСЂСЃР°Р»СЊРЅСѓСЋ РєРѕРјР°РЅРґСѓ РїРµСЂРµС…РѕРґР° РІ Р»РѕРєР°Р»СЊРЅСѓСЋ РїР°РїРєСѓ СЂРµРїРѕР·РёС‚РѕСЂРёСЏ.
+- РЎС‚Р°СЂС‹Рµ Windows user-РїСѓС‚Рё Р·Р°РјРµРЅРµРЅС‹ РЅР° `<repo-root>`, `<worker-repo-root>` Рё РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РїСѓС‚Рё РІ `AGENTS.md`, `CLAUDE.md`, `docs/tasks/TASK_TEMPLATE.md`, `DEVELOPMENT_LOG.md`.
+- Р”РѕР±Р°РІР»РµРЅ `scripts/check-portable-paths.sh`, Р»РѕРєР°Р»СЊРЅС‹Р№ `.githooks/pre-commit` Рё GitHub Actions workflow `.github/workflows/path-guard.yml`.
+- Р’ Р»РѕРєР°Р»СЊРЅРѕРј checkout РІРєР»СЋС‡С‘РЅ `git config core.hooksPath .githooks`, С‡С‚РѕР±С‹ РїСЂРѕРІРµСЂРєР° Р·Р°РїСѓСЃРєР°Р»Р°СЃСЊ РїРµСЂРµРґ commit.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РёР·РјРµРЅСЏР»СЃСЏ.
+
+**РўРµСЃС‚:** `git fetch origin` РїРµСЂРµРґ РїСЂР°РІРєРѕР№; Р»РѕРєР°Р»СЊРЅР°СЏ РІРµС‚РєР° РЅРµ РѕС‚СЃС‚Р°РІР°Р»Р° РѕС‚ GitHub. `bash scripts/check-portable-paths.sh` РїСЂРѕС…РѕРґРёС‚. РџРѕРёСЃРє РїРѕ Mac/Windows user-РїСѓС‚СЏРј РЅРµ РЅР°С…РѕРґРёС‚ СЃРѕРІРїР°РґРµРЅРёР№ РІ СЂРµРїРѕР·РёС‚РѕСЂРёРё.
+
+**РљРѕРјРјРёС‚:** `docs: remove local absolute paths from docs`
+
+---
+
+## 2026-06-25 вЂ” Р¤РёРєСЃ РїСѓСЃС‚РѕРіРѕ СЌРєСЂР°РЅР°, logout Рё active-СЃРѕСЃС‚РѕСЏРЅРёСЏ РјРµРЅСЋ (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- РСЃРїСЂР°РІР»РµРЅ РїСѓСЃС‚РѕР№ РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ РїРѕСЃР»Рµ РѕР±РЅРѕРІР»РµРЅРёСЏ: `showScreen()` С‚РµРїРµСЂСЊ СЃР±СЂР°СЃС‹РІР°РµС‚ РІР»РѕР¶РµРЅРЅС‹Р№ scroll-РєРѕРЅС‚РµР№РЅРµСЂ `#home`.
+- РЈР±СЂР°РЅС‹ РґСѓР±Р»РёСЂСѓСЋС‰РёРµСЃСЏ `id` Сѓ РїСѓРЅРєС‚РѕРІ РЅРёР¶РЅРµР№ РЅР°РІРёРіР°С†РёРё; active-СЃРѕСЃС‚РѕСЏРЅРёРµ РїРµСЂРµРІРµРґРµРЅРѕ РЅР° `data-nav`.
+- Р”РѕР±Р°РІР»РµРЅР° РїРѕРґСЃРІРµС‚РєР° Р°РєС‚РёРІРЅРѕРіРѕ РїСѓРЅРєС‚Р° РґР»СЏ РѕР±РµРёС… РЅР°РІРёРіР°С†РёР№, РІРєР»СЋС‡Р°СЏ РјРёРєСЂРѕС„РѕРЅ.
+- РСЃРїСЂР°РІР»РµРЅ logout: РІС‹С…РѕРґ Р±РѕР»СЊС€Рµ РЅРµ РїРѕР»Р°РіР°РµС‚СЃСЏ РЅР° `window.location.reload()`, Р° СЏРІРЅРѕ С‡РёСЃС‚РёС‚ СЃРѕСЃС‚РѕСЏРЅРёРµ Рё РїРѕРєР°Р·С‹РІР°РµС‚ СЌРєСЂР°РЅ РІС…РѕРґР°.
+- Р”РѕР±Р°РІР»РµРЅ auth-guard РІ `showScreen()`: Р±РµР· С‚РѕРєРµРЅР° РїСЂРёРІР°С‚РЅС‹Рµ СЌРєСЂР°РЅС‹ Р±РѕР»СЊС€Рµ РЅРµ РїРѕРєР°Р·С‹РІР°СЋС‚ РґРµС„РѕР»С‚РЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+- VK-Р°РґР°РїС‚РµСЂ РІ `index.html` С‚РµРїРµСЂСЊ РІРєР»СЋС‡Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РїСЂРё СЂРµР°Р»СЊРЅС‹С… VK launch-РїР°СЂР°РјРµС‚СЂР°С…, С‡С‚РѕР±С‹ РЅРµ РїРµСЂРµС…РІР°С‚С‹РІР°С‚СЊ `showScreen('login')` РІРЅРµ VK.
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** 22 / 22 СЃРѕРІРїР°РґРµРЅРёР№ РїРѕ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё|РЎРµРіРѕРґРЅСЏ`.
+
+**РўРµСЃС‚:** Р»РѕРєР°Р»СЊРЅР°СЏ СЂР°Р·РґР°С‡Р° `python3 -m http.server 8000`; in-app browser mobile viewport 390x844. РџСЂРѕРІРµСЂРµРЅРѕ: home РїРѕСЃР»Рµ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕРіРѕ scroll РІРЅРёР· РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РЅР° `scrollTop=0`, `voice` РЅРµ РІРёРґРµРЅ РїРѕРІРµСЂС… home, active stroke РґР»СЏ tasks/calendar/chats/brain Р·РµР»С‘РЅС‹Р№, logout РїРµСЂРµРІРѕРґРёС‚ РЅР° `login`, СЃРєСЂС‹РІР°РµС‚ РЅРёР¶РЅРµРµ РјРµРЅСЋ Рё СѓРґР°Р»СЏРµС‚ token, РїСЂСЏРјРѕР№ `showScreen('profile')` Р±РµР· token РїРµСЂРµРІРѕРґРёС‚ РЅР° `login`.
+
+**РљРѕРјРјРёС‚:** N/A вЂ” РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
+
+---
+
+## 2026-06-25 вЂ” РџРѕРґРіРѕС‚РѕРІРєР° СЂР°Р±РѕС‡РµР№ РїР°РїРєРё Рє СЂР°Р·СЂР°Р±РѕС‚РєРµ Рё С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЋ (Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- РЎРѕР·РґР°РЅС‹ `FILE_MAP.md`, `FILE_MAP_UI.md`, `FILE_MAP_WORKER.md`, `FILE_MAP_BOT.md`
+- Р”РѕР±Р°РІР»РµРЅ `.gitignore` РґР»СЏ СЃРёСЃС‚РµРјРЅС‹С… Рё Р»РѕРєР°Р»СЊРЅС‹С… С„Р°Р№Р»РѕРІ
+- РћР±РЅРѕРІР»РµРЅС‹ `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` РїРѕРґ С‚РµРєСѓС‰РёР№ checkout СЂРµРїРѕР·РёС‚РѕСЂРёСЏ
+- РћР±РЅРѕРІР»С‘РЅ `README.md` РєР°Рє Р±С‹СЃС‚СЂС‹Р№ СЃС‚Р°СЂС‚ РґР»СЏ РЅРѕРІС‹С… Р°РіРµРЅС‚РѕРІ
+- РЈС‚РѕС‡РЅС‘РЅ PM/QA-РєРѕРЅС‚СѓСЂ С‡РµСЂРµР· `pm/bugs.md` Рё `pm/roadmap.md`
+
+**РџСЂРѕРІРµСЂРєР° РєРѕРґРёСЂРѕРІРєРё:** `index.html` РЅРµ РёР·РјРµРЅСЏР»СЃСЏ.
+
+**РўРµСЃС‚:** Р»РѕРєР°Р»СЊРЅР°СЏ СЂР°Р·РґР°С‡Р° С‡РµСЂРµР· `python3 -m http.server 8000`; `index.html`, `vk.html`, `privacy.html` РѕС‚РІРµС‡Р°СЋС‚ `200 OK`.
+
+**РљРѕРјРјРёС‚:** N/A вЂ” РёР·РјРµРЅРµРЅРёСЏ РїРѕРґРіРѕС‚РѕРІР»РµРЅС‹ Р»РѕРєР°Р»СЊРЅРѕ, РєРѕРјРјРёС‚/РїСѓС€ РЅРµ РІС‹РїРѕР»РЅСЏР»СЃСЏ.
+
+---
+
+### 2026-06-11 вЂ” РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІРѕСЂРєРµСЂР°
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** init worker + CI/CD; РЅР°СЃС‚СЂРѕР№РєР° GitHub Actions; СЃРµРєСЂРµС‚С‹ С‡РµСЂРµР· env.
+
+**РџР°С‚С‚РµСЂРЅ РїСЂРѕР±Р»РµРј РІ СЌС‚РѕС‚ РґРµРЅСЊ:**
+- chatId fallback РёСЃРїРѕР»СЊР·РѕРІР°Р» global РІРјРµСЃС‚Рѕ telegramId в†’ РёСЃРїСЂР°РІР»РµРЅРѕ
+- KV binding РЅРµ Р±С‹Р» РїСЂРѕРїРёСЃР°РЅ РІ wrangler.toml в†’ РёСЃРїСЂР°РІР»РµРЅРѕ
+- РџРѕРїС‹С‚РєР° СЃРѕС…СЂР°РЅСЏС‚СЊ Р·Р°РґР°С‡Рё РїРѕ telegramUserId в†’ 2 СЂР°Р·Р° revert (РЅРµСЃС‚Р°Р±РёР»СЊРЅРѕРµ РїРѕРІРµРґРµРЅРёРµ)
+- РС‚РѕРі: РїРµСЂРµРґР°РІР°С‚СЊ chatId СЏРІРЅРѕ РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё Р·Р°РґР°С‡Рё
+
+---
+
+### 2026-06-11 вЂ” Р РµС„Р°РєС‚РѕСЂРёРЅРі bot.js
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** `bot.js` СЂР°Р·Р±РёС‚ РЅР° РјРѕРґСѓР»Рё `src/bot/` (config, analyzer, tasks, reminders, commands, handler, index).
+
+**РЎС‚Р°С‚СѓСЃ:** Р·Р°РґРµРїР»РѕРµРЅРѕ, СЃС‚Р°Р±РёР»СЊРЅРѕ.
+
+---
+
+### 2026-06-11 вЂ” РќР°С‡Р°Р»Рѕ VK Mini Apps РёРЅС‚РµРіСЂР°С†РёРё
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** backup РєРѕРјРјРёС‚ в†’ РґРѕР±Р°РІР»РµРЅ CORS `Access-Control-Allow-Credentials` в†’ РґРѕР±Р°РІР»РµРЅ СЌРЅРґРїРѕРёРЅС‚ `/auth/vk` Рё `handleVKAuth` в†’ РґРѕР±Р°РІР»РµРЅ `vk.html` frontend РІ worker.
+
+---
+
+### 2026-06-11 вЂ” VK Mini App РІ 4e-app
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** `vk.html` РґРѕР±Р°РІР»РµРЅ РІ 4e-app; Р·Р°РіСЂСѓР·РєР° Р·Р°РґР°С‡ РёР· KV РїРѕСЃР»Рµ VK auth; VK Bridge auto-login.
+
+**РџР°С‚С‚РµСЂРЅ РїСЂРѕР±Р»РµРј:**
+- РљРѕРґРёСЂРѕРІРєР° СЃР»РѕРјР°Р»Р°СЃСЊ РїРѕСЃР»Рµ VK РїСЂР°РІРѕРє в†’ 2 restore РєРѕРјРјРёС‚Р° + reset
+- РЁСЂРёС„С‚С‹: Google Fonts РЅРµ РіСЂСѓР·СЏС‚СЃСЏ РІ VK iframe в†’ Р·Р°РјРµРЅРµРЅРѕ РЅР° system font stack
+- URL AI С‡Р°С‚Р° Р±С‹Р» РЅРµРІРµСЂРЅС‹Рј в†’ РёСЃРїСЂР°РІР»РµРЅРѕ РЅР° `/anthropic`
+
+---
+
+### 2026-06-16 вЂ” РЎС‚Р°Р±РёР»РёР·Р°С†РёСЏ VK + AI С‡Р°С‚
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- AI chat URL в†’ `/anthropic`
+- AI chat prompt вЂ” СѓР±СЂР°РЅС‹ Р»РёС€РЅРёРµ РІРѕРїСЂРѕСЃС‹
+- Chat history persistence + РїРµСЂРµР·Р°РіСЂСѓР·РєР° Р·Р°РґР°С‡ РїРѕСЃР»Рµ РѕС‚РІРµС‚Р° AI
+- Р—Р°РіСЂСѓР·РєР° Р·Р°РґР°С‡ РїРѕ С‚РѕРєРµРЅСѓ Р±РµР· chatId
+- РџРµСЂРµРґР°С‡Р° Р·Р°РґР°С‡ РІ system prompt AI
+
+**РЎС‚Р°С‚СѓСЃ:** Р·Р°РґРµРїР»РѕРµРЅРѕ.
+
+---
+
+### 2026-06-16 вЂ” Р”РѕРєСѓРјРµРЅС‚Р°С†РёСЏ РґР»СЏ Р°РіРµРЅС‚РѕРІ
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РґРѕР±Р°РІР»РµРЅС‹ `COWORK_INSTRUCTIONS.md`, `docs/tasks/TASK_TEMPLATE.md`, `AGENTS.md`.
+
+**РЎС‚Р°С‚СѓСЃ:** СЂРµРїРѕ СЃРѕРґРµСЂР¶РёС‚ РёРЅСЃС‚СЂСѓРєС†РёРё РґР»СЏ РњРёРјРѕ Рё Codex.
+
+---
+
+## 2026-06-20 вЂ” Р®СЂРёРґРёС‡РµСЃРєРѕРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ 152-Р¤Р— (РїРѕРґРіРѕС‚РѕРІРєР° Claude)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- РџСЂРѕРІРµРґС‘РЅ Р°РЅР°Р»РёР· СЂРёСЃРєРѕРІ РїРѕ 152-Р¤Р—: Р»РѕРєР°Р»РёР·Р°С†РёСЏ, Р±РёРѕРјРµС‚СЂРёСЏ, СЂРµРіРёСЃС‚СЂР°С†РёСЏ Р РљРќ
+- РЎРѕР·РґР°РЅР° `4e-app/privacy.html` вЂ” РџРѕР»РёС‚РёРєР° РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё (РіРѕС‚РѕРІР° Рє РґРµРїР»РѕСЋ)
+- РЎРѕР·РґР°РЅ `redesign/patches/09_biometric_consent.html` вЂ” СЌРєСЂР°РЅ СЃРѕРіР»Р°СЃРёСЏ РЅР° РіРѕР»РѕСЃ (СЃС‚. 11)
+- РЎРѕР·РґР°РЅ `RKN_CHECKLIST.md` вЂ” С‡РµРє-Р»РёСЃС‚ СЃ РґР°РЅРЅС‹РјРё РґР»СЏ СѓРІРµРґРѕРјР»РµРЅРёСЏ Р РљРќ
+
+**РљСЂРёС‚РёС‡РµСЃРєРёРµ СЂРёСЃРєРё (С‚СЂРµР±СѓСЋС‚ РґРµР№СЃС‚РІРёР№):**
+1. РќРµС‚ СЂРµРіРёСЃС‚СЂР°С†РёРё РІ Р РљРќ вЂ” С€С‚СЂР°С„ 100вЂ“300 С‚С‹СЃ. в†’ Р®СЂРёР№ РїРѕРґР°С‘С‚ СѓРІРµРґРѕРјР»РµРЅРёРµ С‡РµСЂРµР· pd.rkn.gov.ru
+2. Р“РѕР»РѕСЃ Р±РµР· РїРёСЃСЊРјРµРЅРЅРѕРіРѕ СЃРѕРіР»Р°СЃРёСЏ вЂ” С€С‚СЂР°С„ РґРѕ 500 С‚С‹СЃ. в†’ Codex СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїР°С‚С‡ 09
+3. Р”Р°РЅРЅС‹Рµ РІРЅРµ Р Р¤ (Cloudflare) вЂ” С€С‚СЂР°С„ РґРѕ 18 РјР»РЅ в†’ СЂРµС€Р°РµС‚СЃСЏ РјРёРіСЂР°С†РёРµР№ РЅР° Yandex Cloud
+
+**РЎС‚Р°С‚СѓСЃ Codex:** Р¤Р°Р·Р° 9 СѓСЃС‚Р°РЅРѕРІР»РµРЅР° 2026-06-25 РІ СЂР°РјРєР°С… BACK-003; РёРЅСЃС‚СЂСѓРєС†РёРё РёР· CODEX_INSTRUCTIONS.md РІС‹РїРѕР»РЅРµРЅС‹ Р»РѕРєР°Р»СЊРЅРѕ.
+
+---
+
+## 2026-06-20 вЂ” РџРѕРґРіРѕС‚РѕРІРєР° Рє СЂРµРґРёР·Р°Р№РЅСѓ (СЃРµСЃСЃРёСЏ Codex)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- РЎРѕР·РґР°РЅС‹ Р±СЌРєР°РїС‹: `index_original.html` (РєРѕРїРёСЏ index.html) Рё `vk_backup.html` (РєРѕРїРёСЏ vk.html)
+- РЎРµСЃСЃРёСЏ Codex Р·Р°РІРµСЂС€РёР»Р°СЃСЊ РёСЃС‡РµСЂРїР°РЅРёРµРј С‚РѕРєРµРЅРѕРІ РґРѕ СѓСЃС‚Р°РЅРѕРІРєРё РїР°С‚С‡РµР№
+
+**Р§С‚Рѕ РќР• СЃРґРµР»Р°РЅРѕ:** РЅРё РѕРґРЅР° РёР· 8 С„Р°Р· СЂРµРґРёР·Р°Р№РЅР° РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР°
+
+**РЎРѕСЃС‚РѕСЏРЅРёРµ:** index.html С‡РёСЃС‚С‹Р№, РєРёСЂРёР»Р»РёС†Р° РІ РїРѕСЂСЏРґРєРµ, Р±СЌРєР°РїС‹ РіРѕС‚РѕРІС‹
+
+**РЎР»РµРґСѓСЋС‰РёР№ СЃРµР°РЅСЃ:** РЅР°С‡Р°С‚СЊ СЃ Р¤Р°Р·С‹ 1 вЂ” `redesign/patches/01_light_theme.css`  
+РџР°С‚С‡Рё Р»РµР¶Р°С‚ РІ `redesign/patches/`, РµСЃР»Рё СЌС‚Р° РїР°РїРєР° РµСЃС‚СЊ РІ С‚РµРєСѓС‰РµРј checkout.
+
+---
+
+## 2026-06-20 вЂ” Warmup-СЃРѕРµРґРёРЅРµРЅРёРµ VK (Claude + Р®СЂРёР№)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РґРѕР±Р°РІР»РµРЅР° `warmupConnection()` РІ `vk.html` вЂ” С‚РёС…РёР№ GET РЅР° `edge.4-ai.site` РїСЂРё Р·Р°РіСЂСѓР·РєРµ СЃС‚СЂР°РЅРёС†С‹ РґРѕ РїРµСЂРІРѕРіРѕ РєР»РёРєР°. РњР°СЂРєРµСЂ: `vk-auth-warmup-20260620-7`. Commit `00c1a45`.
+
+**РџСЂРѕР±Р»РµРјР°:** VK WebView С…РѕР»РѕРґРЅС‹Р№ СЃС‚Р°СЂС‚ вЂ” DNS+TLS Р·Р°РЅРёРјР°Р» ~15 СЃРµРє. Recovery РёР· CODEX-055 (900ms) РЅРµ СѓСЃРїРµРІР°Р», РїРµСЂРІС‹Р№ РєР»РёРє РїР°РґР°Р» СЃ РѕС€РёР±РєРѕР№ СЃРѕРµРґРёРЅРµРЅРёСЏ.
+
+**Р РµР·СѓР»СЊС‚Р°С‚:** РІС…РѕРґ СЃ РїРµСЂРІРѕРіРѕ РєР»РёРєР° Р±РµР· РѕС€РёР±РєРё вњ…. РќРµР±РѕР»СЊС€Р°СЏ Р·Р°РґРµСЂР¶РєР° (~5вЂ“8 СЃРµРє) РїРѕСЃР»Рµ РєР»РёРєР° РѕСЃС‚Р°С‘С‚СЃСЏ вЂ” РїСЂРёРµРјР»РµРјРѕ РґР»СЏ РІРЅСѓС‚СЂРµРЅРЅРµРіРѕ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ.
+
+---
+
+## 2026-06-20 вЂ” Р РµРґРёР·Р°Р№РЅ index.html (С„Р°Р·С‹ 1вЂ“8) (Claude + Р®СЂРёР№)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** РїРѕР»РЅС‹Р№ СЂРµРґРёР·Р°Р№РЅ `index.html` вЂ” РІСЃРµ 8 РїР°С‚С‡РµР№ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ Рё Р·Р°РґРµРїР»РѕРµРЅС‹ Р·Р° РѕРґРЅСѓ СЃРµСЃСЃРёСЋ.
+
+| Р¤Р°Р·Р° | РљРѕРјРјРёС‚ | РЎРѕРґРµСЂР¶Р°РЅРёРµ |
 |------|--------|------------|
-| 1–3 | `90e23c6`, `2f02999`, `ffeb8d4` | Светлая тема, фильтры задач, 4 новых экрана |
-| 4 | `964cbb8` | Карточка задачи: поля-строки + табы + 3 кнопки действий |
-| 5 | `964cbb8` | Голосовой экран: полноэкранный `#voice` с пульсирующей кнопкой |
-| 6 | `964cbb8` | Чаты: круглые иконки мессенджеров; Календарь: секция дедлайнов |
-| 7 | `9dabe64` | Адаптивный CSS: hover-эффекты, tablet sidebar, desktop 3-колонка |
-| 8 | `9dabe64` | VK адаптер: тема, хаптики, safe area, swipe back, VK Storage |
+| 1вЂ“3 | `90e23c6`, `2f02999`, `ffeb8d4` | РЎРІРµС‚Р»Р°СЏ С‚РµРјР°, С„РёР»СЊС‚СЂС‹ Р·Р°РґР°С‡, 4 РЅРѕРІС‹С… СЌРєСЂР°РЅР° |
+| 4 | `964cbb8` | РљР°СЂС‚РѕС‡РєР° Р·Р°РґР°С‡Рё: РїРѕР»СЏ-СЃС‚СЂРѕРєРё + С‚Р°Р±С‹ + 3 РєРЅРѕРїРєРё РґРµР№СЃС‚РІРёР№ |
+| 5 | `964cbb8` | Р“РѕР»РѕСЃРѕРІРѕР№ СЌРєСЂР°РЅ: РїРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ `#voice` СЃ РїСѓР»СЊСЃРёСЂСѓСЋС‰РµР№ РєРЅРѕРїРєРѕР№ |
+| 6 | `964cbb8` | Р§Р°С‚С‹: РєСЂСѓРіР»С‹Рµ РёРєРѕРЅРєРё РјРµСЃСЃРµРЅРґР¶РµСЂРѕРІ; РљР°Р»РµРЅРґР°СЂСЊ: СЃРµРєС†РёСЏ РґРµРґР»Р°Р№РЅРѕРІ |
+| 7 | `9dabe64` | РђРґР°РїС‚РёРІРЅС‹Р№ CSS: hover-СЌС„С„РµРєС‚С‹, tablet sidebar, desktop 3-РєРѕР»РѕРЅРєР° |
+| 8 | `9dabe64` | VK Р°РґР°РїС‚РµСЂ: С‚РµРјР°, С…Р°РїС‚РёРєРё, safe area, swipe back, VK Storage |
 
-**Ключевые технические решения:**
-- `voice-overlay` → полноэкранный `screen#voice`, `openVoice()` теперь `showScreen('voice')`
-- `detail-title-v2`, `detail-person-v2` → новые ID `detail-title`, `detail-person`
-- `.msng-tabs` → `.msng-icons-row` (48px круглые иконки)
-- Добавлены функции: `completeTask`, `switchDetailTab`, `editDetailField`, `openTaskMove`, `enterEditMode`, `makeDetailEditable`, `toggleVoice`, `showVoiceInfo`
-- VK адаптер активируется только если `window.vkBridge !== undefined` (не затрагивает TG)
+**РљР»СЋС‡РµРІС‹Рµ С‚РµС…РЅРёС‡РµСЃРєРёРµ СЂРµС€РµРЅРёСЏ:**
+- `voice-overlay` в†’ РїРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ `screen#voice`, `openVoice()` С‚РµРїРµСЂСЊ `showScreen('voice')`
+- `detail-title-v2`, `detail-person-v2` в†’ РЅРѕРІС‹Рµ ID `detail-title`, `detail-person`
+- `.msng-tabs` в†’ `.msng-icons-row` (48px РєСЂСѓРіР»С‹Рµ РёРєРѕРЅРєРё)
+- Р”РѕР±Р°РІР»РµРЅС‹ С„СѓРЅРєС†РёРё: `completeTask`, `switchDetailTab`, `editDetailField`, `openTaskMove`, `enterEditMode`, `makeDetailEditable`, `toggleVoice`, `showVoiceInfo`
+- VK Р°РґР°РїС‚РµСЂ Р°РєС‚РёРІРёСЂСѓРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РµСЃР»Рё `window.vkBridge !== undefined` (РЅРµ Р·Р°С‚СЂР°РіРёРІР°РµС‚ TG)
 
-**Кириллица:** 27 совпадений — норма на протяжении всей сессии.
-
----
+**РљРёСЂРёР»Р»РёС†Р°:** 27 СЃРѕРІРїР°РґРµРЅРёР№ вЂ” РЅРѕСЂРјР° РЅР° РїСЂРѕС‚СЏР¶РµРЅРёРё РІСЃРµР№ СЃРµСЃСЃРёРё.
 
 ---
 
-## 2026-06-20 — Post-Codex: Патчи главного экрана (Claude + Юрий)
+---
 
-**Контекст:** Codex применил фазы 1–8 но патч 02 (главный экран) был применён частично — только фильтр-табы. Весь основной контент (`focus-day-card`, `stat-mini`, `home-task-list`) остался в старой верстке.
+## 2026-06-20 вЂ” Post-Codex: РџР°С‚С‡Рё РіР»Р°РІРЅРѕРіРѕ СЌРєСЂР°РЅР° (Claude + Р®СЂРёР№)
 
-**Что исправлено:**
-- Полная замена блока `#home` на целевой дизайн из патча 02
-- Исправлен баг CSS: `.task-row{flex-direction:column}` на строке 147 переопределял новый CSS → исправлено на `flex-direction:row`
-- Восстановлена кнопка аватара профиля (пропала при замене шапки)
-- Исправлено: тема dark→light не переключалась (toggle обновлял `<body>`, а CSS читал `<html>`)
+**РљРѕРЅС‚РµРєСЃС‚:** Codex РїСЂРёРјРµРЅРёР» С„Р°Р·С‹ 1вЂ“8 РЅРѕ РїР°С‚С‡ 02 (РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ) Р±С‹Р» РїСЂРёРјРµРЅС‘РЅ С‡Р°СЃС‚РёС‡РЅРѕ вЂ” С‚РѕР»СЊРєРѕ С„РёР»СЊС‚СЂ-С‚Р°Р±С‹. Р’РµСЃСЊ РѕСЃРЅРѕРІРЅРѕР№ РєРѕРЅС‚РµРЅС‚ (`focus-day-card`, `stat-mini`, `home-task-list`) РѕСЃС‚Р°Р»СЃСЏ РІ СЃС‚Р°СЂРѕР№ РІРµСЂСЃС‚РєРµ.
 
-**Ключевые новые ID в JS (были старые, стали новые):**
-- `focus-bar-text` → `focus-day-text`
-- `lime-card` → `home-task-list`
-- `dash-done-today` → `stat-done`, `dash-tasks-today` → `stat-tasks`, `dash-prom-today` → `stat-promises`
+**Р§С‚Рѕ РёСЃРїСЂР°РІР»РµРЅРѕ:**
+- РџРѕР»РЅР°СЏ Р·Р°РјРµРЅР° Р±Р»РѕРєР° `#home` РЅР° С†РµР»РµРІРѕР№ РґРёР·Р°Р№РЅ РёР· РїР°С‚С‡Р° 02
+- РСЃРїСЂР°РІР»РµРЅ Р±Р°Рі CSS: `.task-row{flex-direction:column}` РЅР° СЃС‚СЂРѕРєРµ 147 РїРµСЂРµРѕРїСЂРµРґРµР»СЏР» РЅРѕРІС‹Р№ CSS в†’ РёСЃРїСЂР°РІР»РµРЅРѕ РЅР° `flex-direction:row`
+- Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅР° РєРЅРѕРїРєР° Р°РІР°С‚Р°СЂР° РїСЂРѕС„РёР»СЏ (РїСЂРѕРїР°Р»Р° РїСЂРё Р·Р°РјРµРЅРµ С€Р°РїРєРё)
+- РСЃРїСЂР°РІР»РµРЅРѕ: С‚РµРјР° darkв†’light РЅРµ РїРµСЂРµРєР»СЋС‡Р°Р»Р°СЃСЊ (toggle РѕР±РЅРѕРІР»СЏР» `<body>`, Р° CSS С‡РёС‚Р°Р» `<html>`)
 
-**Коммиты:** `0b641ba`, `aa35941`
+**РљР»СЋС‡РµРІС‹Рµ РЅРѕРІС‹Рµ ID РІ JS (Р±С‹Р»Рё СЃС‚Р°СЂС‹Рµ, СЃС‚Р°Р»Рё РЅРѕРІС‹Рµ):**
+- `focus-bar-text` в†’ `focus-day-text`
+- `lime-card` в†’ `home-task-list`
+- `dash-done-today` в†’ `stat-done`, `dash-tasks-today` в†’ `stat-tasks`, `dash-prom-today` в†’ `stat-promises`
+
+**РљРѕРјРјРёС‚С‹:** `0b641ba`, `aa35941`
 
 ---
 
-## 2026-06-20 — Анимация планеты + редизайн карточек задач (Claude + Юрий)
+## 2026-06-20 вЂ” РђРЅРёРјР°С†РёСЏ РїР»Р°РЅРµС‚С‹ + СЂРµРґРёР·Р°Р№РЅ РєР°СЂС‚РѕС‡РµРє Р·Р°РґР°С‡ (Claude + Р®СЂРёР№)
 
-**Что сделано:**
-- Убран Lottie CDN (не работал в TG WebView) → inline SVG-анимация с `<animateMotion>` (спутники, орбиты, свечение) — работает без зависимостей
-- Добавлена sparkle-иконка в левую часть карточки «Фокус дня»
-- Карточки задач: новый порядок элементов `[№][бейдж][текст/дата][›]`, бейджи «Работа»/«Личное» вместо «горит»/«задача»/«должны»
-- Каждая карточка задачи теперь имеет собственный фон (`card2` + border-radius 14px + border) — не просто разделитель
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- РЈР±СЂР°РЅ Lottie CDN (РЅРµ СЂР°Р±РѕС‚Р°Р» РІ TG WebView) в†’ inline SVG-Р°РЅРёРјР°С†РёСЏ СЃ `<animateMotion>` (СЃРїСѓС‚РЅРёРєРё, РѕСЂР±РёС‚С‹, СЃРІРµС‡РµРЅРёРµ) вЂ” СЂР°Р±РѕС‚Р°РµС‚ Р±РµР· Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№
+- Р”РѕР±Р°РІР»РµРЅР° sparkle-РёРєРѕРЅРєР° РІ Р»РµРІСѓСЋ С‡Р°СЃС‚СЊ РєР°СЂС‚РѕС‡РєРё В«Р¤РѕРєСѓСЃ РґРЅСЏВ»
+- РљР°СЂС‚РѕС‡РєРё Р·Р°РґР°С‡: РЅРѕРІС‹Р№ РїРѕСЂСЏРґРѕРє СЌР»РµРјРµРЅС‚РѕРІ `[в„–][Р±РµР№РґР¶][С‚РµРєСЃС‚/РґР°С‚Р°][вЂє]`, Р±РµР№РґР¶Рё В«Р Р°Р±РѕС‚Р°В»/В«Р›РёС‡РЅРѕРµВ» РІРјРµСЃС‚Рѕ В«РіРѕСЂРёС‚В»/В«Р·Р°РґР°С‡Р°В»/В«РґРѕР»Р¶РЅС‹В»
+- РљР°Р¶РґР°СЏ РєР°СЂС‚РѕС‡РєР° Р·Р°РґР°С‡Рё С‚РµРїРµСЂСЊ РёРјРµРµС‚ СЃРѕР±СЃС‚РІРµРЅРЅС‹Р№ С„РѕРЅ (`card2` + border-radius 14px + border) вЂ” РЅРµ РїСЂРѕСЃС‚Рѕ СЂР°Р·РґРµР»РёС‚РµР»СЊ
 
-**Коммиты:** `29f25a7`
+**РљРѕРјРјРёС‚С‹:** `29f25a7`
 
 ---
 
-## 2026-06-20 — UI-полировка: светлая тема, nav, вкладка «Обсудить» (Claude + Юрий)
+## 2026-06-20 вЂ” UI-РїРѕР»РёСЂРѕРІРєР°: СЃРІРµС‚Р»Р°СЏ С‚РµРјР°, nav, РІРєР»Р°РґРєР° В«РћР±СЃСѓРґРёС‚СЊВ» (Claude + Р®СЂРёР№)
 
-**Что сделано:**
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
 
-| Правка | Описание |
+| РџСЂР°РІРєР° | РћРїРёСЃР°РЅРёРµ |
 |--------|----------|
-| Светлая тема | Усилен glow сверху (`home-glow`); белый фон `.bottom-nav` в light mode |
-| Планета | Уменьшена с 148px до 118px — не касается текста и краёв карточки |
-| Nav унификация | `global-nav` теперь: чаты \| stats \| mic \| tasks \| brain — как в home; удалён профиль |
-| Вкладка «Обсудить» | В детализации задачи: таб «Обсудить» → AI генерирует совет + вопрос, далее полноценный чат по задаче |
-| Убран «Совет от 4» | Блок `detail-ai-sec` удалён; функционал перенесён в вкладку «Обсудить» |
+| РЎРІРµС‚Р»Р°СЏ С‚РµРјР° | РЈСЃРёР»РµРЅ glow СЃРІРµСЂС…Сѓ (`home-glow`); Р±РµР»С‹Р№ С„РѕРЅ `.bottom-nav` РІ light mode |
+| РџР»Р°РЅРµС‚Р° | РЈРјРµРЅСЊС€РµРЅР° СЃ 148px РґРѕ 118px вЂ” РЅРµ РєР°СЃР°РµС‚СЃСЏ С‚РµРєСЃС‚Р° Рё РєСЂР°С‘РІ РєР°СЂС‚РѕС‡РєРё |
+| Nav СѓРЅРёС„РёРєР°С†РёСЏ | `global-nav` С‚РµРїРµСЂСЊ: С‡Р°С‚С‹ \| stats \| mic \| tasks \| brain вЂ” РєР°Рє РІ home; СѓРґР°Р»С‘РЅ РїСЂРѕС„РёР»СЊ |
+| Р’РєР»Р°РґРєР° В«РћР±СЃСѓРґРёС‚СЊВ» | Р’ РґРµС‚Р°Р»РёР·Р°С†РёРё Р·Р°РґР°С‡Рё: С‚Р°Р± В«РћР±СЃСѓРґРёС‚СЊВ» в†’ AI РіРµРЅРµСЂРёСЂСѓРµС‚ СЃРѕРІРµС‚ + РІРѕРїСЂРѕСЃ, РґР°Р»РµРµ РїРѕР»РЅРѕС†РµРЅРЅС‹Р№ С‡Р°С‚ РїРѕ Р·Р°РґР°С‡Рµ |
+| РЈР±СЂР°РЅ В«РЎРѕРІРµС‚ РѕС‚ 4В» | Р‘Р»РѕРє `detail-ai-sec` СѓРґР°Р»С‘РЅ; С„СѓРЅРєС†РёРѕРЅР°Р» РїРµСЂРµРЅРµСЃС‘РЅ РІ РІРєР»Р°РґРєСѓ В«РћР±СЃСѓРґРёС‚СЊВ» |
 
-**Новые JS-функции:** `startDiscussAdvice()`, `sendDiscussMessage()`, `addDiscussMsg()`, `updateDiscussLoading()`
+**РќРѕРІС‹Рµ JS-С„СѓРЅРєС†РёРё:** `startDiscussAdvice()`, `sendDiscussMessage()`, `addDiscussMsg()`, `updateDiscussLoading()`
 
-**Коммит:** задеплоено
+**РљРѕРјРјРёС‚:** Р·Р°РґРµРїР»РѕРµРЅРѕ
 
-**Открытые пункты из запросов Юрия, которые НЕ сделаны:**
-- Относительные даты в карточках задач («Сегодня», «Завтра» вместо ISO)  
-- Фаза 9 (согласие на биометрию) — закрыта 2026-06-25, см. BACK-003 выше
-- Backend: email-рассылка через Resend сломана
-
----
-
-## 2026-06-20 — Промо-стратегия: SEO-блог + ВКонтакте (Claude + Юрий)
-
-**Что сделано:**
-- Создан `4-ai-blog/` — статический HTML-блог для деплоя на 4-ai.site (GitHub Pages)
-- 3 SEO-статьи под низкоконкурентные запросы:
-  - «AI-секретарь в Telegram: как не держать задачи в голове»
-  - «Голосовое управление задачами: почему это быстрее любого приложения»
-  - «Как не забывать важные дела: метод умных напоминаний»
-- `sitemap.xml`, `robots.txt`, JSON-LD structured data в каждой странице
-- `VK_CONTENT_PLAN.md` — 10 готовых постов с текстами и хэштегами для ВКонтакте
-- `DEPLOY.md` — инструкция по подключению домена 4-ai.site через GitHub Pages
-
-**Статус:** файлы готовы, деплой требует ручных действий (настройка DNS, новый GitHub репо)
-
-**Следующие статьи для блога (темы):** GTD для начинающих, 5 TG-ботов для продуктивности, AI vs планировщик, утренняя рутина.
+**РћС‚РєСЂС‹С‚С‹Рµ РїСѓРЅРєС‚С‹ РёР· Р·Р°РїСЂРѕСЃРѕРІ Р®СЂРёСЏ, РєРѕС‚РѕСЂС‹Рµ РќР• СЃРґРµР»Р°РЅС‹:**
+- РћС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РґР°С‚С‹ РІ РєР°СЂС‚РѕС‡РєР°С… Р·Р°РґР°С‡ (В«РЎРµРіРѕРґРЅСЏВ», В«Р—Р°РІС‚СЂР°В» РІРјРµСЃС‚Рѕ ISO)  
+- Р¤Р°Р·Р° 9 (СЃРѕРіР»Р°СЃРёРµ РЅР° Р±РёРѕРјРµС‚СЂРёСЋ) вЂ” Р·Р°РєСЂС‹С‚Р° 2026-06-25, СЃРј. BACK-003 РІС‹С€Рµ
+- Backend: email-СЂР°СЃСЃС‹Р»РєР° С‡РµСЂРµР· Resend СЃР»РѕРјР°РЅР°
 
 ---
 
-## 2026-06-20 — Codex: Backend-инфраструктура (D1 схема + безопасность)
+## 2026-06-20 вЂ” РџСЂРѕРјРѕ-СЃС‚СЂР°С‚РµРіРёСЏ: SEO-Р±Р»РѕРі + Р’РљРѕРЅС‚Р°РєС‚Рµ (Claude + Р®СЂРёР№)
 
-**Что сделано Codex (текущая сессия):**
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
+- РЎРѕР·РґР°РЅ `4-ai-blog/` вЂ” СЃС‚Р°С‚РёС‡РµСЃРєРёР№ HTML-Р±Р»РѕРі РґР»СЏ РґРµРїР»РѕСЏ РЅР° 4-ai.site (GitHub Pages)
+- 3 SEO-СЃС‚Р°С‚СЊРё РїРѕРґ РЅРёР·РєРѕРєРѕРЅРєСѓСЂРµРЅС‚РЅС‹Рµ Р·Р°РїСЂРѕСЃС‹:
+  - В«AI-СЃРµРєСЂРµС‚Р°СЂСЊ РІ Telegram: РєР°Рє РЅРµ РґРµСЂР¶Р°С‚СЊ Р·Р°РґР°С‡Рё РІ РіРѕР»РѕРІРµВ»
+  - В«Р“РѕР»РѕСЃРѕРІРѕРµ СѓРїСЂР°РІР»РµРЅРёРµ Р·Р°РґР°С‡Р°РјРё: РїРѕС‡РµРјСѓ СЌС‚Рѕ Р±С‹СЃС‚СЂРµРµ Р»СЋР±РѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏВ»
+  - В«РљР°Рє РЅРµ Р·Р°Р±С‹РІР°С‚СЊ РІР°Р¶РЅС‹Рµ РґРµР»Р°: РјРµС‚РѕРґ СѓРјРЅС‹С… РЅР°РїРѕРјРёРЅР°РЅРёР№В»
+- `sitemap.xml`, `robots.txt`, JSON-LD structured data РІ РєР°Р¶РґРѕР№ СЃС‚СЂР°РЅРёС†Рµ
+- `VK_CONTENT_PLAN.md` вЂ” 10 РіРѕС‚РѕРІС‹С… РїРѕСЃС‚РѕРІ СЃ С‚РµРєСЃС‚Р°РјРё Рё С…СЌС€С‚РµРіР°РјРё РґР»СЏ Р’РљРѕРЅС‚Р°РєС‚Рµ
+- `DEPLOY.md` вЂ” РёРЅСЃС‚СЂСѓРєС†РёСЏ РїРѕ РїРѕРґРєР»СЋС‡РµРЅРёСЋ РґРѕРјРµРЅР° 4-ai.site С‡РµСЂРµР· GitHub Pages
 
-| Файл | Что |
+**РЎС‚Р°С‚СѓСЃ:** С„Р°Р№Р»С‹ РіРѕС‚РѕРІС‹, РґРµРїР»РѕР№ С‚СЂРµР±СѓРµС‚ СЂСѓС‡РЅС‹С… РґРµР№СЃС‚РІРёР№ (РЅР°СЃС‚СЂРѕР№РєР° DNS, РЅРѕРІС‹Р№ GitHub СЂРµРїРѕ)
+
+**РЎР»РµРґСѓСЋС‰РёРµ СЃС‚Р°С‚СЊРё РґР»СЏ Р±Р»РѕРіР° (С‚РµРјС‹):** GTD РґР»СЏ РЅР°С‡РёРЅР°СЋС‰РёС…, 5 TG-Р±РѕС‚РѕРІ РґР»СЏ РїСЂРѕРґСѓРєС‚РёРІРЅРѕСЃС‚Рё, AI vs РїР»Р°РЅРёСЂРѕРІС‰РёРє, СѓС‚СЂРµРЅРЅСЏСЏ СЂСѓС‚РёРЅР°.
+
+---
+
+## 2026-06-20 вЂ” Codex: Backend-РёРЅС„СЂР°СЃС‚СЂСѓРєС‚СѓСЂР° (D1 СЃС…РµРјР° + Р±РµР·РѕРїР°СЃРЅРѕСЃС‚СЊ)
+
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ Codex (С‚РµРєСѓС‰Р°СЏ СЃРµСЃСЃРёСЏ):**
+
+| Р¤Р°Р№Р» | Р§С‚Рѕ |
 |------|-----|
-| `4e-worker/migrations/0001_initial_schema.sql` | Полная D1/PostgreSQL схема — users, auth, sessions, tasks, reminders, AI threads/memories |
-| `src/bot/worker-client.js` | HMAC-подписанные запросы бот→воркер (безопасность) |
-| `src/bot/tasks.js` | Переход на `workerFetch` — подписанные запросы |
-| `src/bot/reminders.js` | Проверка напоминаний и дедлайнов через воркер-эндпоинты |
-| `src/bot/index.js` | `setInterval` для периодических проверок (15 мин / 1 час) |
+| `4e-worker/migrations/0001_initial_schema.sql` | РџРѕР»РЅР°СЏ D1/PostgreSQL СЃС…РµРјР° вЂ” users, auth, sessions, tasks, reminders, AI threads/memories |
+| `src/bot/worker-client.js` | HMAC-РїРѕРґРїРёСЃР°РЅРЅС‹Рµ Р·Р°РїСЂРѕСЃС‹ Р±РѕС‚в†’РІРѕСЂРєРµСЂ (Р±РµР·РѕРїР°СЃРЅРѕСЃС‚СЊ) |
+| `src/bot/tasks.js` | РџРµСЂРµС…РѕРґ РЅР° `workerFetch` вЂ” РїРѕРґРїРёСЃР°РЅРЅС‹Рµ Р·Р°РїСЂРѕСЃС‹ |
+| `src/bot/reminders.js` | РџСЂРѕРІРµСЂРєР° РЅР°РїРѕРјРёРЅР°РЅРёР№ Рё РґРµРґР»Р°Р№РЅРѕРІ С‡РµСЂРµР· РІРѕСЂРєРµСЂ-СЌРЅРґРїРѕРёРЅС‚С‹ |
+| `src/bot/index.js` | `setInterval` РґР»СЏ РїРµСЂРёРѕРґРёС‡РµСЃРєРёС… РїСЂРѕРІРµСЂРѕРє (15 РјРёРЅ / 1 С‡Р°СЃ) |
 
-**Оценка работы Codex:**
-- ✅ D1-схема — качественная, production-ready. Решает проблему #4 (единая модель TG+VK+Email), закладывает основу под фазу 13
-- ✅ HMAC-подпись запросов — правильное архитектурное решение, закрывает уязвимость
-- ✅ Reminders/Deadlines — реализована логика проверки через воркер
-- ⚠️ **Отклонение от плана:** Codex работал над фазой 13 (D1 миграция) вместо фаз 9/11/12 которые были в очереди
-- ✅ Фаза 9 (biometric consent) — закрыта 2026-06-25, см. BACK-003 выше
-- ✅ Фаза 11 (relative dates) — закрыта 2026-06-28, см. запись выше
-- ❌ Фаза 12 (email + сброс пароля) — не сделана
+**РћС†РµРЅРєР° СЂР°Р±РѕС‚С‹ Codex:**
+- вњ… D1-СЃС…РµРјР° вЂ” РєР°С‡РµСЃС‚РІРµРЅРЅР°СЏ, production-ready. Р РµС€Р°РµС‚ РїСЂРѕР±Р»РµРјСѓ #4 (РµРґРёРЅР°СЏ РјРѕРґРµР»СЊ TG+VK+Email), Р·Р°РєР»Р°РґС‹РІР°РµС‚ РѕСЃРЅРѕРІСѓ РїРѕРґ С„Р°Р·Сѓ 13
+- вњ… HMAC-РїРѕРґРїРёСЃСЊ Р·Р°РїСЂРѕСЃРѕРІ вЂ” РїСЂР°РІРёР»СЊРЅРѕРµ Р°СЂС…РёС‚РµРєС‚СѓСЂРЅРѕРµ СЂРµС€РµРЅРёРµ, Р·Р°РєСЂС‹РІР°РµС‚ СѓСЏР·РІРёРјРѕСЃС‚СЊ
+- вњ… Reminders/Deadlines вЂ” СЂРµР°Р»РёР·РѕРІР°РЅР° Р»РѕРіРёРєР° РїСЂРѕРІРµСЂРєРё С‡РµСЂРµР· РІРѕСЂРєРµСЂ
+- вљ пёЏ **РћС‚РєР»РѕРЅРµРЅРёРµ РѕС‚ РїР»Р°РЅР°:** Codex СЂР°Р±РѕС‚Р°Р» РЅР°Рґ С„Р°Р·РѕР№ 13 (D1 РјРёРіСЂР°С†РёСЏ) РІРјРµСЃС‚Рѕ С„Р°Р· 9/11/12 РєРѕС‚РѕСЂС‹Рµ Р±С‹Р»Рё РІ РѕС‡РµСЂРµРґРё
+- вњ… Р¤Р°Р·Р° 9 (biometric consent) вЂ” Р·Р°РєСЂС‹С‚Р° 2026-06-25, СЃРј. BACK-003 РІС‹С€Рµ
+- вњ… Р¤Р°Р·Р° 11 (relative dates) вЂ” Р·Р°РєСЂС‹С‚Р° 2026-06-28, СЃРј. Р·Р°РїРёСЃСЊ РІС‹С€Рµ
+- вќЊ Р¤Р°Р·Р° 12 (email + СЃР±СЂРѕСЃ РїР°СЂРѕР»СЏ) вЂ” РЅРµ СЃРґРµР»Р°РЅР°
 
-**Вывод:** работа ценная, но не по приоритету. Фаза 9 закрыта 2026-06-25; фазы 11 и 12 остаются в очереди.
+**Р’С‹РІРѕРґ:** СЂР°Р±РѕС‚Р° С†РµРЅРЅР°СЏ, РЅРѕ РЅРµ РїРѕ РїСЂРёРѕСЂРёС‚РµС‚Сѓ. Р¤Р°Р·Р° 9 Р·Р°РєСЂС‹С‚Р° 2026-06-25; С„Р°Р·С‹ 11 Рё 12 РѕСЃС‚Р°СЋС‚СЃСЏ РІ РѕС‡РµСЂРµРґРё.
 
 ---
 
-## 2026-06-23 — Фиксы после редизайна (Claude + Юрий)
+## 2026-06-23 вЂ” Р¤РёРєСЃС‹ РїРѕСЃР»Рµ СЂРµРґРёР·Р°Р№РЅР° (Claude + Р®СЂРёР№)
 
-**Контекст:** Codex применил редизайн, но сломал несколько функций. Параллельно бот упал.
+**РљРѕРЅС‚РµРєСЃС‚:** Codex РїСЂРёРјРµРЅРёР» СЂРµРґРёР·Р°Р№РЅ, РЅРѕ СЃР»РѕРјР°Р» РЅРµСЃРєРѕР»СЊРєРѕ С„СѓРЅРєС†РёР№. РџР°СЂР°Р»Р»РµР»СЊРЅРѕ Р±РѕС‚ СѓРїР°Р».
 
-**Что сделано:**
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
 
-| Правка | Файл | Описание |
+| РџСЂР°РІРєР° | Р¤Р°Р№Р» | РћРїРёСЃР°РЅРёРµ |
 |--------|------|----------|
-| Кнопка выхода | `index.html` | Добавлен `LOGOUT_K='chetam_logged_out'`; `doLogout()` → `window.location.reload()`; TG auto-login блокируется флагом |
-| Галочка ✓ на дашборде | `index.html` | Кнопка пропала после редизайна; восстановлена в 4 местах: `loadTasks()`, `toggleAllTasks()`, `setHomeFilter()`, `selectMonth` |
-| Конфликты git | `index.html` | 5+ конфликтов при `git pull --rebase` — Codex пушил параллельно; разрешены вручную |
-| SyntaxError зелёный фон | `index.html` | Пропущенный маркер `<<<<<<< HEAD` на строке ~3594 — вызывал падение всего JS |
-| Свободное место на диске | — | Осталось ~17 МБ; очищен TEMP → ~887 МБ |
-| ROADMAP обновлён | `ROADMAP.md` | Добавлен «Горизонт 0.8 — Технический фундамент»: LESS + BEM + минификация |
-| npm-скрипты | `package.json` | Добавлены `build:css` и `watch:css` для будущего LESS-pipeline |
-| Бот: устойчивость к падениям | `src/bot/config.js` | Добавлены `bot.on('polling_error')`, `process.on('unhandledRejection')`, `process.on('uncaughtException')` — бот больше не падает от сетевых сбоев Telegram |
+| РљРЅРѕРїРєР° РІС‹С…РѕРґР° | `index.html` | Р”РѕР±Р°РІР»РµРЅ `LOGOUT_K='chetam_logged_out'`; `doLogout()` в†’ `window.location.reload()`; TG auto-login Р±Р»РѕРєРёСЂСѓРµС‚СЃСЏ С„Р»Р°РіРѕРј |
+| Р“Р°Р»РѕС‡РєР° вњ“ РЅР° РґР°С€Р±РѕСЂРґРµ | `index.html` | РљРЅРѕРїРєР° РїСЂРѕРїР°Р»Р° РїРѕСЃР»Рµ СЂРµРґРёР·Р°Р№РЅР°; РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅР° РІ 4 РјРµСЃС‚Р°С…: `loadTasks()`, `toggleAllTasks()`, `setHomeFilter()`, `selectMonth` |
+| РљРѕРЅС„Р»РёРєС‚С‹ git | `index.html` | 5+ РєРѕРЅС„Р»РёРєС‚РѕРІ РїСЂРё `git pull --rebase` вЂ” Codex РїСѓС€РёР» РїР°СЂР°Р»Р»РµР»СЊРЅРѕ; СЂР°Р·СЂРµС€РµРЅС‹ РІСЂСѓС‡РЅСѓСЋ |
+| SyntaxError Р·РµР»С‘РЅС‹Р№ С„РѕРЅ | `index.html` | РџСЂРѕРїСѓС‰РµРЅРЅС‹Р№ РјР°СЂРєРµСЂ `<<<<<<< HEAD` РЅР° СЃС‚СЂРѕРєРµ ~3594 вЂ” РІС‹Р·С‹РІР°Р» РїР°РґРµРЅРёРµ РІСЃРµРіРѕ JS |
+| РЎРІРѕР±РѕРґРЅРѕРµ РјРµСЃС‚Рѕ РЅР° РґРёСЃРєРµ | вЂ” | РћСЃС‚Р°Р»РѕСЃСЊ ~17 РњР‘; РѕС‡РёС‰РµРЅ TEMP в†’ ~887 РњР‘ |
+| ROADMAP РѕР±РЅРѕРІР»С‘РЅ | `ROADMAP.md` | Р”РѕР±Р°РІР»РµРЅ В«Р“РѕСЂРёР·РѕРЅС‚ 0.8 вЂ” РўРµС…РЅРёС‡РµСЃРєРёР№ С„СѓРЅРґР°РјРµРЅС‚В»: LESS + BEM + РјРёРЅРёС„РёРєР°С†РёСЏ |
+| npm-СЃРєСЂРёРїС‚С‹ | `package.json` | Р”РѕР±Р°РІР»РµРЅС‹ `build:css` Рё `watch:css` РґР»СЏ Р±СѓРґСѓС‰РµРіРѕ LESS-pipeline |
+| Р‘РѕС‚: СѓСЃС‚РѕР№С‡РёРІРѕСЃС‚СЊ Рє РїР°РґРµРЅРёСЏРј | `src/bot/config.js` | Р”РѕР±Р°РІР»РµРЅС‹ `bot.on('polling_error')`, `process.on('unhandledRejection')`, `process.on('uncaughtException')` вЂ” Р±РѕС‚ Р±РѕР»СЊС€Рµ РЅРµ РїР°РґР°РµС‚ РѕС‚ СЃРµС‚РµРІС‹С… СЃР±РѕРµРІ Telegram |
 
-**Паттерн проблем:**
-- Codex пушит в тот же момент что и мы → конфликты при следующем pull; решение: `git pull --rebase` перед пушем
-- Vim открылся при `git rebase --continue` → закрыт через новый терминал + `git rebase --abort`; установлен `git config --global core.editor notepad`
+**РџР°С‚С‚РµСЂРЅ РїСЂРѕР±Р»РµРј:**
+- Codex РїСѓС€РёС‚ РІ С‚РѕС‚ Р¶Рµ РјРѕРјРµРЅС‚ С‡С‚Рѕ Рё РјС‹ в†’ РєРѕРЅС„Р»РёРєС‚С‹ РїСЂРё СЃР»РµРґСѓСЋС‰РµРј pull; СЂРµС€РµРЅРёРµ: `git pull --rebase` РїРµСЂРµРґ РїСѓС€РµРј
+- Vim РѕС‚РєСЂС‹Р»СЃСЏ РїСЂРё `git rebase --continue` в†’ Р·Р°РєСЂС‹С‚ С‡РµСЂРµР· РЅРѕРІС‹Р№ С‚РµСЂРјРёРЅР°Р» + `git rebase --abort`; СѓСЃС‚Р°РЅРѕРІР»РµРЅ `git config --global core.editor notepad`
 
 ---
 
-## 2026-06-24 — Авторизация TG + API-ключ + UX навигации (Claude + Юрий)
+## 2026-06-24 вЂ” РђРІС‚РѕСЂРёР·Р°С†РёСЏ TG + API-РєР»СЋС‡ + UX РЅР°РІРёРіР°С†РёРё (Claude + Р®СЂРёР№)
 
-**Что сделано:**
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
 
-| Правка | Файл | Описание |
+| РџСЂР°РІРєР° | Р¤Р°Р№Р» | РћРїРёСЃР°РЅРёРµ |
 |--------|------|----------|
-| Чёрный экран в TG Mini App | `index.html` | `loginWithTelegram()` теперь возвращает `true/false`; при неудаче показывает `showScreen('login')` вместо пустоты; `initApp()` не делает безусловный `return` после TG-логина |
-| `telegramId required` на мобиле | `index.html` | Воркер ждал `body.user.id`, приложение слало только `{initData}`; добавлен `user: tgUser` в тело запроса |
-| 4 | ANTHROPIC_KEY в worker.js должен быть только PLACEHOLDER — не коммитить реальный ключ | высокий |
-| AI-чат ошибка `invalid x-api-key` | — | Следствие предыдущего; после обновления секрета и ре-деплоя → работает |
-| Навигация: разные кнопки по экранам | `index.html` | `global-nav` (для всех экранов кроме home) имел 4 другие кнопки; унифицирован: те же 5 кнопок что в `bottom-nav-v2` (чаты, статистика, микрофон, задачи, AI) |
-| Клавиатура перекрывает поле ввода | `index.html` | При фокусе на `ask-field` → `global-nav` скрывается; при `blur` (с задержкой 150мс) → восстанавливается |
+| Р§С‘СЂРЅС‹Р№ СЌРєСЂР°РЅ РІ TG Mini App | `index.html` | `loginWithTelegram()` С‚РµРїРµСЂСЊ РІРѕР·РІСЂР°С‰Р°РµС‚ `true/false`; РїСЂРё РЅРµСѓРґР°С‡Рµ РїРѕРєР°Р·С‹РІР°РµС‚ `showScreen('login')` РІРјРµСЃС‚Рѕ РїСѓСЃС‚РѕС‚С‹; `initApp()` РЅРµ РґРµР»Р°РµС‚ Р±РµР·СѓСЃР»РѕРІРЅС‹Р№ `return` РїРѕСЃР»Рµ TG-Р»РѕРіРёРЅР° |
+| `telegramId required` РЅР° РјРѕР±РёР»Рµ | `index.html` | Р’РѕСЂРєРµСЂ Р¶РґР°Р» `body.user.id`, РїСЂРёР»РѕР¶РµРЅРёРµ СЃР»Р°Р»Рѕ С‚РѕР»СЊРєРѕ `{initData}`; РґРѕР±Р°РІР»РµРЅ `user: tgUser` РІ С‚РµР»Рѕ Р·Р°РїСЂРѕСЃР° |
+| 4 | ANTHROPIC_KEY РІ worker.js РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ PLACEHOLDER вЂ” РЅРµ РєРѕРјРјРёС‚РёС‚СЊ СЂРµР°Р»СЊРЅС‹Р№ РєР»СЋС‡ | РІС‹СЃРѕРєРёР№ |
+| AI-С‡Р°С‚ РѕС€РёР±РєР° `invalid x-api-key` | вЂ” | РЎР»РµРґСЃС‚РІРёРµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ; РїРѕСЃР»Рµ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРµРєСЂРµС‚Р° Рё СЂРµ-РґРµРїР»РѕСЏ в†’ СЂР°Р±РѕС‚Р°РµС‚ |
+| РќР°РІРёРіР°С†РёСЏ: СЂР°Р·РЅС‹Рµ РєРЅРѕРїРєРё РїРѕ СЌРєСЂР°РЅР°Рј | `index.html` | `global-nav` (РґР»СЏ РІСЃРµС… СЌРєСЂР°РЅРѕРІ РєСЂРѕРјРµ home) РёРјРµР» 4 РґСЂСѓРіРёРµ РєРЅРѕРїРєРё; СѓРЅРёС„РёС†РёСЂРѕРІР°РЅ: С‚Рµ Р¶Рµ 5 РєРЅРѕРїРѕРє С‡С‚Рѕ РІ `bottom-nav-v2` (С‡Р°С‚С‹, СЃС‚Р°С‚РёСЃС‚РёРєР°, РјРёРєСЂРѕС„РѕРЅ, Р·Р°РґР°С‡Рё, AI) |
+| РљР»Р°РІРёР°С‚СѓСЂР° РїРµСЂРµРєСЂС‹РІР°РµС‚ РїРѕР»Рµ РІРІРѕРґР° | `index.html` | РџСЂРё С„РѕРєСѓСЃРµ РЅР° `ask-field` в†’ `global-nav` СЃРєСЂС‹РІР°РµС‚СЃСЏ; РїСЂРё `blur` (СЃ Р·Р°РґРµСЂР¶РєРѕР№ 150РјСЃ) в†’ РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ |
 
-**Паттерн проблем:**
-- Два nav-компонента с разными кнопками (`bottom-nav-v2` внутри `#home` + `global-nav` фиксированный) — следить чтобы при будущих правках меню они оставались синхронизированными
-- Секреты никогда не должны попадать в `worker.js` напрямую — только через `PLACEHOLDER` + GitHub Actions
+**РџР°С‚С‚РµСЂРЅ РїСЂРѕР±Р»РµРј:**
+- Р”РІР° nav-РєРѕРјРїРѕРЅРµРЅС‚Р° СЃ СЂР°Р·РЅС‹РјРё РєРЅРѕРїРєР°РјРё (`bottom-nav-v2` РІРЅСѓС‚СЂРё `#home` + `global-nav` С„РёРєСЃРёСЂРѕРІР°РЅРЅС‹Р№) вЂ” СЃР»РµРґРёС‚СЊ С‡С‚РѕР±С‹ РїСЂРё Р±СѓРґСѓС‰РёС… РїСЂР°РІРєР°С… РјРµРЅСЋ РѕРЅРё РѕСЃС‚Р°РІР°Р»РёСЃСЊ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅРЅС‹РјРё
+- РЎРµРєСЂРµС‚С‹ РЅРёРєРѕРіРґР° РЅРµ РґРѕР»Р¶РЅС‹ РїРѕРїР°РґР°С‚СЊ РІ `worker.js` РЅР°РїСЂСЏРјСѓСЋ вЂ” С‚РѕР»СЊРєРѕ С‡РµСЂРµР· `PLACEHOLDER` + GitHub Actions
 
 ---
 
-## 2026-06-24 (2) — Навигация: права доступа, порядок кнопок, баг чатов (Claude + Юрий)
+## 2026-06-24 (2) вЂ” РќР°РІРёРіР°С†РёСЏ: РїСЂР°РІР° РґРѕСЃС‚СѓРїР°, РїРѕСЂСЏРґРѕРє РєРЅРѕРїРѕРє, Р±Р°Рі С‡Р°С‚РѕРІ (Claude + Р®СЂРёР№)
 
-**Что сделано:**
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:**
 
-| Правка | Файл | Описание |
+| РџСЂР°РІРєР° | Р¤Р°Р№Р» | РћРїРёСЃР°РЅРёРµ |
 |--------|------|----------|
-| Мессенджер скрыт для всех кроме admin | `index.html` | `isAdmin()` проверяет `tgUser.id` (267468814) + email; `applyUserInfo()` скрывает/показывает `nav-ask` и `nav-chats` |
-| Статистика убрана из навигации | `index.html` | Кнопка stats удалена из `bottom-nav-v2` и `global-nav`; доступ только через прогресс-карточки на дашборде |
-| Порядок кнопок меню переработан | `index.html` | Новый порядок: чаты (admin) → задачи → календарь → микрофон → мозг; активная кнопка выделяется зелёным через `setNavActive()` + CSS `.nav-item.active svg{stroke:var(--green)}` |
-| `goHome()` потерял активное состояние | `index.html` | Добавлен `setNavActive('tasks')` в `goHome()` |
-| Баг: кнопка чатов возвращала на дашборд | `index.html` | Добавлены `'chats'`, `'msng-settings'`, `'chat-conv'` в `noNav` — `showScreen('chats')` больше не показывает `global-nav` даже кратковременно; таймеры в `completeTask()` и `openTaskFromChat()` теперь проверяют активный экран перед редиректом |
+| РњРµСЃСЃРµРЅРґР¶РµСЂ СЃРєСЂС‹С‚ РґР»СЏ РІСЃРµС… РєСЂРѕРјРµ admin | `index.html` | `isAdmin()` РїСЂРѕРІРµСЂСЏРµС‚ `tgUser.id` (267468814) + email; `applyUserInfo()` СЃРєСЂС‹РІР°РµС‚/РїРѕРєР°Р·С‹РІР°РµС‚ `nav-ask` Рё `nav-chats` |
+| РЎС‚Р°С‚РёСЃС‚РёРєР° СѓР±СЂР°РЅР° РёР· РЅР°РІРёРіР°С†РёРё | `index.html` | РљРЅРѕРїРєР° stats СѓРґР°Р»РµРЅР° РёР· `bottom-nav-v2` Рё `global-nav`; РґРѕСЃС‚СѓРї С‚РѕР»СЊРєРѕ С‡РµСЂРµР· РїСЂРѕРіСЂРµСЃСЃ-РєР°СЂС‚РѕС‡РєРё РЅР° РґР°С€Р±РѕСЂРґРµ |
+| РџРѕСЂСЏРґРѕРє РєРЅРѕРїРѕРє РјРµРЅСЋ РїРµСЂРµСЂР°Р±РѕС‚Р°РЅ | `index.html` | РќРѕРІС‹Р№ РїРѕСЂСЏРґРѕРє: С‡Р°С‚С‹ (admin) в†’ Р·Р°РґР°С‡Рё в†’ РєР°Р»РµРЅРґР°СЂСЊ в†’ РјРёРєСЂРѕС„РѕРЅ в†’ РјРѕР·Рі; Р°РєС‚РёРІРЅР°СЏ РєРЅРѕРїРєР° РІС‹РґРµР»СЏРµС‚СЃСЏ Р·РµР»С‘РЅС‹Рј С‡РµСЂРµР· `setNavActive()` + CSS `.nav-item.active svg{stroke:var(--green)}` |
+| `goHome()` РїРѕС‚РµСЂСЏР» Р°РєС‚РёРІРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ | `index.html` | Р”РѕР±Р°РІР»РµРЅ `setNavActive('tasks')` РІ `goHome()` |
+| Р‘Р°Рі: РєРЅРѕРїРєР° С‡Р°С‚РѕРІ РІРѕР·РІСЂР°С‰Р°Р»Р° РЅР° РґР°С€Р±РѕСЂРґ | `index.html` | Р”РѕР±Р°РІР»РµРЅС‹ `'chats'`, `'msng-settings'`, `'chat-conv'` РІ `noNav` вЂ” `showScreen('chats')` Р±РѕР»СЊС€Рµ РЅРµ РїРѕРєР°Р·С‹РІР°РµС‚ `global-nav` РґР°Р¶Рµ РєСЂР°С‚РєРѕРІСЂРµРјРµРЅРЅРѕ; С‚Р°Р№РјРµСЂС‹ РІ `completeTask()` Рё `openTaskFromChat()` С‚РµРїРµСЂСЊ РїСЂРѕРІРµСЂСЏСЋС‚ Р°РєС‚РёРІРЅС‹Р№ СЌРєСЂР°РЅ РїРµСЂРµРґ СЂРµРґРёСЂРµРєС‚РѕРј |
 
-**Диагностика баги чатов:**
-- В `openChats()` добавлен `console.log('[openChats] called')` — при тестировании проверить консоль
-- Если функция вызывается но экран не показывается — сообщить
+**Р”РёР°РіРЅРѕСЃС‚РёРєР° Р±Р°РіРё С‡Р°С‚РѕРІ:**
+- Р’ `openChats()` РґРѕР±Р°РІР»РµРЅ `console.log('[openChats] called')` вЂ” РїСЂРё С‚РµСЃС‚РёСЂРѕРІР°РЅРёРё РїСЂРѕРІРµСЂРёС‚СЊ РєРѕРЅСЃРѕР»СЊ
+- Р•СЃР»Рё С„СѓРЅРєС†РёСЏ РІС‹Р·С‹РІР°РµС‚СЃСЏ РЅРѕ СЌРєСЂР°РЅ РЅРµ РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ вЂ” СЃРѕРѕР±С‰РёС‚СЊ
 
-**Известные проблемы:**
-- Баг чатов может быть ещё не полностью пофикшен — нуждается в тестировании
+**РР·РІРµСЃС‚РЅС‹Рµ РїСЂРѕР±Р»РµРјС‹:**
+- Р‘Р°Рі С‡Р°С‚РѕРІ РјРѕР¶РµС‚ Р±С‹С‚СЊ РµС‰С‘ РЅРµ РїРѕР»РЅРѕСЃС‚СЊСЋ РїРѕС„РёРєС€РµРЅ вЂ” РЅСѓР¶РґР°РµС‚СЃСЏ РІ С‚РµСЃС‚РёСЂРѕРІР°РЅРёРё
 
 ---
 
-## 2026-06-25 — Оптимизация структуры проекта (Claude + Юрий)
+## 2026-06-25 вЂ” РћРїС‚РёРјРёР·Р°С†РёСЏ СЃС‚СЂСѓРєС‚СѓСЂС‹ РїСЂРѕРµРєС‚Р° (Claude + Р®СЂРёР№)
 
-**Что сделано:** аудит папки `Версия/` — найдены и удалены дубли, мусор и устаревшие файлы.
+**Р§С‚Рѕ СЃРґРµР»Р°РЅРѕ:** Р°СѓРґРёС‚ РїР°РїРєРё `Р’РµСЂСЃРёСЏ/` вЂ” РЅР°Р№РґРµРЅС‹ Рё СѓРґР°Р»РµРЅС‹ РґСѓР±Р»Рё, РјСѓСЃРѕСЂ Рё СѓСЃС‚Р°СЂРµРІС€РёРµ С„Р°Р№Р»С‹.
 
-**Удалено (~1.22 MiB):**
+**РЈРґР°Р»РµРЅРѕ (~1.22 MiB):**
 
-| Файл / папка | Причина |
+| Р¤Р°Р№Р» / РїР°РїРєР° | РџСЂРёС‡РёРЅР° |
 |---|---|
-| `src/bot/` (корень) | Полный дубль `4e-worker/src/bot/`; версии в `4e-worker` новее и содержат расширенную обработку ошибок |
-| `package.json` (корень) | Устаревший пакет `telegram-bot-4`; ссылался на удалённый `src/bot/index.js`; нигде не использовался |
-| `package-lock.json` (корень) | Lock к устаревшему пакету выше |
-| `.wrangler/cache/` (корень) | Кэш Wrangler; регенерируется автоматически |
-| `Версия.rar` / `Версия.zip` | Ручные архивы всей папки; проект в git — архивы избыточны |
-| `index (55).html` | Случайно сохранённый файл браузером |
-| `README (1).md` | Дубль README с суффиксом браузера |
-| `4_vk_mini_app.html` | Устаревший VK-прототип; функционал перенесён в `4e-app/vk.html` + VK-адаптер |
-| `4e-app/index_original.html` | Backup перед редизайном; изменения закреплены в git |
-| `4e-app/vk_backup.html` | Backup VK-версии; в git |
+| `src/bot/` (РєРѕСЂРµРЅСЊ) | РџРѕР»РЅС‹Р№ РґСѓР±Р»СЊ `4e-worker/src/bot/`; РІРµСЂСЃРёРё РІ `4e-worker` РЅРѕРІРµРµ Рё СЃРѕРґРµСЂР¶Р°С‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РѕР±СЂР°Р±РѕС‚РєСѓ РѕС€РёР±РѕРє |
+| `package.json` (РєРѕСЂРµРЅСЊ) | РЈСЃС‚Р°СЂРµРІС€РёР№ РїР°РєРµС‚ `telegram-bot-4`; СЃСЃС‹Р»Р°Р»СЃСЏ РЅР° СѓРґР°Р»С‘РЅРЅС‹Р№ `src/bot/index.js`; РЅРёРіРґРµ РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°Р»СЃСЏ |
+| `package-lock.json` (РєРѕСЂРµРЅСЊ) | Lock Рє СѓСЃС‚Р°СЂРµРІС€РµРјСѓ РїР°РєРµС‚Сѓ РІС‹С€Рµ |
+| `.wrangler/cache/` (РєРѕСЂРµРЅСЊ) | РљСЌС€ Wrangler; СЂРµРіРµРЅРµСЂРёСЂСѓРµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё |
+| `Р’РµСЂСЃРёСЏ.rar` / `Р’РµСЂСЃРёСЏ.zip` | Р СѓС‡РЅС‹Рµ Р°СЂС…РёРІС‹ РІСЃРµР№ РїР°РїРєРё; РїСЂРѕРµРєС‚ РІ git вЂ” Р°СЂС…РёРІС‹ РёР·Р±С‹С‚РѕС‡РЅС‹ |
+| `index (55).html` | РЎР»СѓС‡Р°Р№РЅРѕ СЃРѕС…СЂР°РЅС‘РЅРЅС‹Р№ С„Р°Р№Р» Р±СЂР°СѓР·РµСЂРѕРј |
+| `README (1).md` | Р”СѓР±Р»СЊ README СЃ СЃСѓС„С„РёРєСЃРѕРј Р±СЂР°СѓР·РµСЂР° |
+| `4_vk_mini_app.html` | РЈСЃС‚Р°СЂРµРІС€РёР№ VK-РїСЂРѕС‚РѕС‚РёРї; С„СѓРЅРєС†РёРѕРЅР°Р» РїРµСЂРµРЅРµСЃС‘РЅ РІ `4e-app/vk.html` + VK-Р°РґР°РїС‚РµСЂ |
+| `4e-app/index_original.html` | Backup РїРµСЂРµРґ СЂРµРґРёР·Р°Р№РЅРѕРј; РёР·РјРµРЅРµРЅРёСЏ Р·Р°РєСЂРµРїР»РµРЅС‹ РІ git |
+| `4e-app/vk_backup.html` | Backup VK-РІРµСЂСЃРёРё; РІ git |
 
-**Не тронуто:**
-- `redesign/patches/` — Фаза 9 (`09_biometric_consent.html`) применена 2026-06-25; папка остаётся как источник патча/история редизайна
+**РќРµ С‚СЂРѕРЅСѓС‚Рѕ:**
+- `redesign/patches/` вЂ” Р¤Р°Р·Р° 9 (`09_biometric_consent.html`) РїСЂРёРјРµРЅРµРЅР° 2026-06-25; РїР°РїРєР° РѕСЃС‚Р°С‘С‚СЃСЏ РєР°Рє РёСЃС‚РѕС‡РЅРёРє РїР°С‚С‡Р°/РёСЃС‚РѕСЂРёСЏ СЂРµРґРёР·Р°Р№РЅР°
 
-**Проверка актуальных файлов после удаления:** все `True` (`4e-app/index.html`, `worker.js`, `4e-worker/src/bot/index.js`, `4e-worker/worker.js`).
-
----
-
-## 2026-07-01 — BACK-022 Task detail manual MVP (Codex)
-
-**Проблема:** экран `task-detail` оставался на старом prompt-редактировании и не сохранял ручные поля статуса, приоритета, времени, чек-листа и направления.
-
-**Решение:** в `index.html` добавлены ручные controls для статуса, приоритета, времени, быстрых дедлайнов, направления, напоминания и чек-листа; `saveTaskEdits()` отправляет `status`, `priority`, `time`, `checklist`, `directionLabel` и совместимый `deadline`; `styles/screens/tasks.less` и CSS-сборка обновлены.
-
-**Проверка:** `npm.cmd run build:css`, inline JS `node --check`, `git diff --check`, контроль кириллицы `Войти|Задачи`, raw GitHub содержит новый `index.html`; Pages на момент проверки ещё отдавал старый cache/build (`Last-Modified: Tue, 30 Jun 2026 22:10:38 GMT`).
-
-**Production:** frontend commit `b4fa48f`; Worker production deploy `0deb8806-0de6-4471-9350-af38a75595ef`; live Worker `GET /` вернул `200 OK`, CORS preflight для `https://mrktggod.github.io` вернул `204`.
+**РџСЂРѕРІРµСЂРєР° Р°РєС‚СѓР°Р»СЊРЅС‹С… С„Р°Р№Р»РѕРІ РїРѕСЃР»Рµ СѓРґР°Р»РµРЅРёСЏ:** РІСЃРµ `True` (`4e-app/index.html`, `worker.js`, `4e-worker/src/bot/index.js`, `4e-worker/worker.js`).
 
 ---
 
-## ПАТТЕРНЫ ОШИБОК (для обучения)
+## 2026-07-01 вЂ” BACK-022 Task detail manual MVP (Codex)
+
+**РџСЂРѕР±Р»РµРјР°:** СЌРєСЂР°РЅ `task-detail` РѕСЃС‚Р°РІР°Р»СЃСЏ РЅР° СЃС‚Р°СЂРѕРј prompt-СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё Рё РЅРµ СЃРѕС…СЂР°РЅСЏР» СЂСѓС‡РЅС‹Рµ РїРѕР»СЏ СЃС‚Р°С‚СѓСЃР°, РїСЂРёРѕСЂРёС‚РµС‚Р°, РІСЂРµРјРµРЅРё, С‡РµРє-Р»РёСЃС‚Р° Рё РЅР°РїСЂР°РІР»РµРЅРёСЏ.
+
+**Р РµС€РµРЅРёРµ:** РІ `index.html` РґРѕР±Р°РІР»РµРЅС‹ СЂСѓС‡РЅС‹Рµ controls РґР»СЏ СЃС‚Р°С‚СѓСЃР°, РїСЂРёРѕСЂРёС‚РµС‚Р°, РІСЂРµРјРµРЅРё, Р±С‹СЃС‚СЂС‹С… РґРµРґР»Р°Р№РЅРѕРІ, РЅР°РїСЂР°РІР»РµРЅРёСЏ, РЅР°РїРѕРјРёРЅР°РЅРёСЏ Рё С‡РµРє-Р»РёСЃС‚Р°; `saveTaskEdits()` РѕС‚РїСЂР°РІР»СЏРµС‚ `status`, `priority`, `time`, `checklist`, `directionLabel` Рё СЃРѕРІРјРµСЃС‚РёРјС‹Р№ `deadline`; `styles/screens/tasks.less` Рё CSS-СЃР±РѕСЂРєР° РѕР±РЅРѕРІР»РµРЅС‹.
+
+**РџСЂРѕРІРµСЂРєР°:** `npm.cmd run build:css`, inline JS `node --check`, `git diff --check`, РєРѕРЅС‚СЂРѕР»СЊ РєРёСЂРёР»Р»РёС†С‹ `Р’РѕР№С‚Рё|Р—Р°РґР°С‡Рё`, raw GitHub СЃРѕРґРµСЂР¶РёС‚ РЅРѕРІС‹Р№ `index.html`; Pages РЅР° РјРѕРјРµРЅС‚ РїСЂРѕРІРµСЂРєРё РµС‰С‘ РѕС‚РґР°РІР°Р» СЃС‚Р°СЂС‹Р№ cache/build (`Last-Modified: Tue, 30 Jun 2026 22:10:38 GMT`).
+
+**Production:** frontend commit `b4fa48f`; Worker production deploy `0deb8806-0de6-4471-9350-af38a75595ef`; live Worker `GET /` РІРµСЂРЅСѓР» `200 OK`, CORS preflight РґР»СЏ `https://mrktggod.github.io` РІРµСЂРЅСѓР» `204`.
+
+---
+
+## РџРђРўРўР•Р РќР« РћРЁРР‘РћРљ (РґР»СЏ РѕР±СѓС‡РµРЅРёСЏ)
 
 1. **Кодировка** — самая частая. Любой PowerShell-агент без явного UTF-8 ломает кириллицу.
 2. **KV + chatId** — путаница между `telegramId` и `chatId` при ключах в KV. Правило: передавать chatId явно.
 3. **Revert циклы** — 2 раза за один день делали fix → revert → fix. Причина: не тестировали перед коммитом.
 4. **VK iframe ограничения** — Google Fonts, внешние ресурсы, Telegram SDK недоступны в VK.
+
+---
+
+## 2026-07-05
+
+### BACK-040 — tariff-config и Admin API тарифов
+
+**Что сделано:** В `4e-worker/worker.js` добавлен единый `DEFAULT_TARIFF_CONFIG` с KV-ключом `tariff_config:current`, публичный `GET /tariff-config`, admin-роуты `GET /admin/users`, `GET /admin/users/:id`, `PUT /admin/users/:id/plan`, `GET/PUT /admin/tariff-config` и защита по `env.ADMIN_SECRET`. Telegram Stars invoice и card webhook теперь берут длительность плана из тарифа, а новые email/TG/VK trial-аккаунты читают `trialDays` из конфига. В `index.html` хардкод `PLANS` заменён на загрузку `/tariff-config`: paywall, карточки подписки, benefit-list, feature-list, `order-summary` и progress bar заполняются из worker-конфига.
+
+**Проверка кодировки:** совпадений до / после — `61 / 64` (`Войти|Задачи|Сегодня`)
+
+**Тест:** `node --check worker.js`; inline JS parse check для `index.html` вернул `inline-js-ok`; модульный smoke воркера через `node --input-type=module` с мок-KV подтвердил `GET /tariff-config`, `GET /admin/users`, `PUT /admin/tariff-config`, `PUT /admin/users/:id/plan`.
+
+**Коммит:** pending

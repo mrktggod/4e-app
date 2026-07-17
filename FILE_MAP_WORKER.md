@@ -25,6 +25,9 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 - `/v2/privacy/settings` / `/v2/privacy/consents` / `/v2/privacy/data-requests` — privacy API поверх D1 Bearer session.
 - `/payments/telegram-stars/invoice` — создаёт Telegram Stars invoice link для Mini App.
 - `/payments/telegram-stars/complete` — подтверждает `successful_payment` от Telegram bot и активирует Premium.
+- `/tariff-config` — публичный тарифный конфиг для paywall: trialDays, plans, feature-list, payment notes.
+- `/admin/users` / `/admin/users/:id` / `/admin/users/:id/plan` — admin API по `ADMIN_SECRET`: список пользователей, карточка пользователя, смена плана и дней.
+- `/admin/tariff-config` — admin API по `ADMIN_SECRET` для чтения/обновления `tariff_config:current`; источником для paywall служит тот же конфиг.
 - `/notifications/settings` — читает/сохраняет настройки уведомлений пользователя в D1 с KV fallback.
 - `/briefings/check` — выдаёт bot scheduler список утренних брифингов по времени пользователя.
 - `x-action: delete-task` — удаляет задачу по `taskId` из user/group KV-ключей; используется inline-кнопкой `✕` и перед пересохранением при `✏️`.
@@ -32,6 +35,7 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 - `migrations/0007_chat_members.sql` — создаёт D1-таблицу `chat_members` и индексы по `chat_id/last_seen` и `username`.
 - D1/privacy endpoints используются из `index.html` и `vk.html`.
 - Реальные секреты не должны попадать в код; использовать placeholders и Secrets.
+- В `worker.js` тарифы теперь собраны вокруг `DEFAULT_TARIFF_CONFIG` и KV-ключа `tariff_config:current`; card webhook и Telegram Stars используют durationDays из конфига вместо локального хардкода.
 
 ## Перед задачей по Worker
 

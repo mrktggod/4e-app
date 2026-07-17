@@ -5,8 +5,12 @@
         "build:css": "lessc styles/main.less styles.css && cleancss styles.css -o styles.min.css",
         "build:worker-assets": "node scripts/build-pages-whitelist.mjs",
         "build:vk-hosting": "npm run build:css && node scripts/build-vk-hosting.mjs",
+        "check:cp1251-mojibake": "node scripts/check-cp1251-mojibake.mjs",
+        "check:js-syntax": "node scripts/check-js-syntax.mjs",
+        "check:ui-architecture": "bash scripts/check-ui-architecture.sh",
         "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",
         "deploy:vk-hosting": "npm run build:vk-hosting && vk-miniapps-deploy",
+        "api-smoke": "node scripts/api-smoke.mjs",
         "watch:css": "lessc --watch styles/main.less styles.css"
     },
     "devDependencies": {

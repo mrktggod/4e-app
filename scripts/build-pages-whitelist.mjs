@@ -1,5 +1,5 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 
 const repoRoot = process.cwd();
 const outDir = resolve(repoRoot, ".pages-dist");
@@ -10,6 +10,9 @@ const requiredFiles = [
   "vk.html",
   "privacy.html",
   "styles.min.css",
+  "scripts/platform-adapter.js",
+  "scripts/task-ui-renderers.js",
+  "scripts/auth-handlers.js",
 ];
 
 const optionalPaths = [
@@ -18,6 +21,7 @@ const optionalPaths = [
   "favicon.svg",
   "manifest.webmanifest",
   "site.webmanifest",
+  "sw.js",
   "robots.txt",
   "sitemap.xml",
   "icons",
@@ -34,7 +38,9 @@ for (const relPath of requiredFiles) {
   if (!existsSync(srcPath)) {
     throw new Error(`Required Pages file is missing: ${relPath}`);
   }
-  cpSync(srcPath, resolve(outDir, relPath), { recursive: true });
+  const destPath = resolve(outDir, relPath);
+  mkdirSync(dirname(destPath), { recursive: true });
+  cpSync(srcPath, destPath, { recursive: true });
 }
 
 for (const relPath of optionalPaths) {
@@ -44,6 +50,15 @@ for (const relPath of optionalPaths) {
 }
 
 writeFileSync(resolve(outDir, ".nojekyll"), "");
+
+const indexPath = resolve(outDir, "index.html");
+const prodWorkerResolver = "const WORKER='https://edge.4-ai.site';";
+const workerResolverPattern = /const WORKER=\(\(\)=>\{const host=location\.hostname\.toLowerCase\(\);[\s\S]*?return 'https:\/\/edge\.4-ai\.site';\}\)\(\);/;
+const indexHtml = readFileSync(indexPath, "utf8");
+if (!workerResolverPattern.test(indexHtml)) {
+  throw new Error("Unable to find WORKER resolver in index.html");
+}
+writeFileSync(indexPath, indexHtml.replace(workerResolverPattern, prodWorkerResolver));
 
 const publishedEntries = readdirSync(outDir)
   .map((name) => {
