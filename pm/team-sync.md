@@ -510,3 +510,9 @@
 - `4e-worker` canonical repo already has `.gitattributes` and `core.autocrlf=false`; only allowed untracked `kv-backups/` remains.
 - `4e-worker-p0` is no longer an active repo; it is archived at `X:\4\4e-worker-p0_archived-2026-07-17` with `DO_NOT_WORK_HERE.txt`, so no git/config changes were made there.
 - Mojibake guard passed with `0 suspicious tokens`.
+
+## 2026-07-17 - Evidence audit and merge-readiness gate
+
+- Added `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`: classified audited P0/P1 `Done` / `Ready for QA` rows as `LIVE`, `SOURCE-ONLY`, `NEEDS-REAL`, or `PARTIAL`.
+- Added `docs/tasks/MERGE-READINESS-2026-07-17.md`: merge/prod remains blocked by production `ANTHROPIC_API_KEY` naming mismatch, failing worker `main` deploy CI, and tariff year-price decision (`9504` source vs `9950` expected).
+- No `main` merge, production deploy, price change, CAL/native change, or runtime code change was made.

@@ -9126,3 +9126,9 @@
 **Результат:** в активном app-репо `X:\4\.tmp-4e-app-publish` расширен `.gitattributes`: сохранён `* text=auto eol=lf`, добавлены binary-паттерны для `png/jpg/jpeg/gif/webp/ico/pdf/zip`. `core.autocrlf=false` подтверждён локально. `4e-worker` уже защищён; `4e-worker-p0` не трогался, потому что это архивный duplicate clone с `DO_NOT_WORK_HERE.txt`.
 
 **Проверка:** `node scripts/check-cp1251-mojibake.mjs` вернул `CP1251 mojibake check passed: 0 suspicious tokens`; массовой renormalize не выполнялось.
+
+## 2026-07-17 - Evidence audit and merge-readiness docs
+
+- Created `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md` with evidence classes for audited P0/P1 backlog and bug rows.
+- Created `docs/tasks/MERGE-READINESS-2026-07-17.md` with release blockers: missing production `ANTHROPIC_API_KEY` secret name, failing worker deploy CI requiring `CLOUDFLARE_API_TOKEN`, and unresolved tariff year-price mismatch.
+- Recorded that staging API/CORS/BUG-005 smoke evidence is healthy, but manual/provider/device rows remain `NEEDS-REAL` and must not be silently promoted.
