@@ -9047,3 +9047,8 @@
 - Added `docs/tasks/NEW-008-chat-keyboard-live-smoke.md` to define the remaining live mobile/TMA keyboard QA for AI chat input overlap.
 - Covered ask bar visibility, keyboard open/close, long text, send action, navigation offset reset, Telegram Mini App, mobile browser, and iOS/Android differences.
 - Updated `NEW-008` context while keeping it `Ready for QA`; no runtime changes were made.
+## 2026-07-17 — BACK-057 offline runtime scope audit
+
+- Added `docs/tasks/BACK-057-offline-runtime-scope-audit.md` to capture Yuri's question about whether the Offline Free Mode runtime MVP had an explicit brief after the 2026-07-14 no-touch guard.
+- Updated `BACK-057` context: no further offline runtime expansion should happen until the authorization/scope question is answered.
+- Worker CRLF audit before this docs update showed no tracked worker diff to revert; `X:\4\4e-worker` only had untracked `kv-backups/`, which was left untouched.

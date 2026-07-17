@@ -439,3 +439,8 @@
 
 - Chat keyboard live smoke checklist added: `docs/tasks/NEW-008-chat-keyboard-live-smoke.md`.
 - Do not mark `NEW-008` Done from local/headless evidence alone; it needs live mobile keyboard/TMA confirmation.
+## 2026-07-17 — BACK-057 scope question before further offline work
+
+- Before touching Offline Free Mode runtime again, resolve whether the existing `BACK-057` runtime MVP was explicitly briefed/approved after the 2026-07-14 no-touch guard.
+- Scope audit doc: `docs/tasks/BACK-057-offline-runtime-scope-audit.md`.
+- Until answered: no offline runtime expansion, no blind revert; only docs/QA planning is safe.
