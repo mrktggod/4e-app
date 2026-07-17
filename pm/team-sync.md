@@ -480,3 +480,10 @@
 - No new P0/P1 bug was found in the automated layer.
 - Manual-only gates remain open: real browser/mobile/TMA visual checks, Telegram fallback/history behavior, OAuth provider callback, payment purchase/support gates, Telegram group flows, and Russia/no-VPN checks.
 - No runtime code, price, main merge, CAL, native/store or production payment work was touched.
+
+## 2026-07-17 — beta invite ready checklist prepared
+
+- Prepared `pm/beta-invite-ready-checklist-2026-07-17.md` as the small human go/no-go sheet after automated staging QA.
+- It does not approve or send beta invites automatically: Yuri still needs the manual browser/mobile gate from the checklist.
+- The invite copy is ready, with explicit note that payment/tariffs are not being tested in this first closed beta batch.
+- Recommended first batch remains 3-5 testers, not 10.

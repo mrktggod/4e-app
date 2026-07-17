@@ -9096,3 +9096,11 @@
 **Ограничение:** manual/TMA/payment/provider/group/runtime gates не закрывались: их нельзя честно перевести в Done из API-only smoke. Новых P0/P1 в автоматизированном слое не найдено.
 
 **Документ:** `docs/tasks/STAGING-AUTOMATED-QA-2026-07-17.md`.
+
+## 2026-07-17 — beta invite ready checklist
+
+**Задача:** после зелёного automated staging slice подготовить следующий безопасный шаг из `next-cycle-matrix`: beta invite readiness без фактической рассылки.
+
+**Результат:** добавлен `pm/beta-invite-ready-checklist-2026-07-17.md`: что уже зелёное автоматически, какие 7 ручных go/no-go шагов нужно пройти перед отправкой приглашений, кого звать первым, короткий invite, follow-up через 2-4 часа, follow-up дня 2 и формат feedback intake.
+
+**Ограничение:** beta invite не отправлялся, статус `BETA-001` не переведён в Done. Цена, payment launch, CAL, native/platform и main merge не трогались.
