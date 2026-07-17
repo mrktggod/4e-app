@@ -9118,3 +9118,11 @@
 **Задача:** собрать короткий утренний handoff по автономному циклу после worker canonicalization, BACK-057 scope audit, automated staging QA, beta go/no-go checklist и Partial Done freeze audit.
 
 **Результат:** добавлен `pm/cycle-execution-report-2026-07-17.md` с коммитами цикла, текущим HEAD, QA evidence, списком manual gates и рекомендацией на утро. Runtime не менялся.
+
+## 2026-07-17 — app gitattributes binary guard
+
+**Задача:** выполнить stale guard-бриф по CRLF/mojibake без renormalize и без трогания архивного `4e-worker-p0`.
+
+**Результат:** в активном app-репо `X:\4\.tmp-4e-app-publish` расширен `.gitattributes`: сохранён `* text=auto eol=lf`, добавлены binary-паттерны для `png/jpg/jpeg/gif/webp/ico/pdf/zip`. `core.autocrlf=false` подтверждён локально. `4e-worker` уже защищён; `4e-worker-p0` не трогался, потому что это архивный duplicate clone с `DO_NOT_WORK_HERE.txt`.
+
+**Проверка:** `node scripts/check-cp1251-mojibake.mjs` вернул `CP1251 mojibake check passed: 0 suspicious tokens`; массовой renormalize не выполнялось.

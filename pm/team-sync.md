@@ -502,3 +502,11 @@
 - Latest pushed HEAD at the time of the report: `fe63484820e7c569a330a60c18d2c667adcfb981`.
 - The report lists the cycle commits, automated staging evidence, manual gates still open, and the morning recommendation.
 - No new runtime work was introduced by the report.
+
+## 2026-07-17 — app gitattributes binary guard
+
+- Reconciled stale `codex-2026-07-17-gitattributes-guard.md` with current workspace state.
+- Active app repo already had `.gitattributes` and `core.autocrlf=false`; guard was expanded with binary patterns for image/pdf/zip assets without `git add --renormalize`.
+- `4e-worker` canonical repo already has `.gitattributes` and `core.autocrlf=false`; only allowed untracked `kv-backups/` remains.
+- `4e-worker-p0` is no longer an active repo; it is archived at `X:\4\4e-worker-p0_archived-2026-07-17` with `DO_NOT_WORK_HERE.txt`, so no git/config changes were made there.
+- Mojibake guard passed with `0 suspicious tokens`.
