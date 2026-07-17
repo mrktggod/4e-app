@@ -495,3 +495,10 @@
 - Runtime remains frozen for `BACK-057`, `PLAT-002/003`, `BACK-012/011`, `SMART-012`, `VIRAL-*`, `OMNI-001`, `CAL-001` until the required manual/device/product gate exists.
 - Deferred items remain deferred: `PLAT-001`, `NATIVE-001..005`, `BACK-058`, `CAL-002/003`.
 - No code, deploy, price, main merge, beta sending or production payment work was performed.
+
+## 2026-07-17 — cycle execution report
+
+- Added `pm/cycle-execution-report-2026-07-17.md` as a one-page handoff for the autonomous cycle.
+- Latest pushed HEAD at the time of the report: `fe63484820e7c569a330a60c18d2c667adcfb981`.
+- The report lists the cycle commits, automated staging evidence, manual gates still open, and the morning recommendation.
+- No new runtime work was introduced by the report.
