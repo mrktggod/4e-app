@@ -444,3 +444,8 @@
 - Before touching Offline Free Mode runtime again, resolve whether the existing `BACK-057` runtime MVP was explicitly briefed/approved after the 2026-07-14 no-touch guard.
 - Scope audit doc: `docs/tasks/BACK-057-offline-runtime-scope-audit.md`.
 - Until answered: no offline runtime expansion, no blind revert; only docs/QA planning is safe.
+## 2026-07-17 — CRLF incident guardrail
+
+- Worker CRLF incident documented: `docs/tasks/INFRA-006-worker-line-ending-incident-2026-07-17.md`.
+- `X:\4\4e-worker` is fixed with `.gitattributes` and local `core.autocrlf=false`.
+- `X:\4\.tmp-4e-app-publish` and `X:\4\4e-worker-p0` still have the same line-ending risk (`core.autocrlf=true`, no `.gitattributes`), so avoid broad checkout/pull/renormalize there until a separate policy commit is made.

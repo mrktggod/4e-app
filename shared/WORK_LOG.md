@@ -9052,3 +9052,9 @@
 - Added `docs/tasks/BACK-057-offline-runtime-scope-audit.md` to capture Yuri's question about whether the Offline Free Mode runtime MVP had an explicit brief after the 2026-07-14 no-touch guard.
 - Updated `BACK-057` context: no further offline runtime expansion should happen until the authorization/scope question is answered.
 - Worker CRLF audit before this docs update showed no tracked worker diff to revert; `X:\4\4e-worker` only had untracked `kv-backups/`, which was left untouched.
+## 2026-07-17 — INFRA-006 worker line-ending incident recorded
+
+- Added `docs/tasks/INFRA-006-worker-line-ending-incident-2026-07-17.md` to document the `4e-worker` CRLF incident.
+- Root cause recorded: `core.autocrlf=true` plus missing `.gitattributes` made `git checkout -- .` unsafe and able to create massive CRLF-only diffs.
+- Worker fix recorded: local `core.autocrlf=false`, `.gitattributes` with `* text=auto eol=lf`, commit `6fd5a268532e3098fd9cc38e28c45d2b01274b7c`.
+- Follow-up risk audit: app and `4e-worker-p0` still have `core.autocrlf=true` and no `.gitattributes`; do not run broad checkout/renormalize there until policy is fixed deliberately.
