@@ -1,397 +1,397 @@
 # Bugs
 
-## Р‘С‹СЃС‚СЂС‹Р№ С„РѕСЂРјР°С‚ РґР»СЏ С‡Р°С‚Р°
+## Быстрый формат для чата
 
-РљРѕРіРґР° РЅР°С…РѕРґРёС€СЊ Р±Р°Рі, РЅРµ РЅСѓР¶РЅРѕ СЃСЂР°Р·Сѓ РѕС„РѕСЂРјР»СЏС‚СЊ С‚РµС…РЅРёС‡РµСЃРєСѓСЋ Р·Р°РґР°С‡Сѓ. Р”РѕСЃС‚Р°С‚РѕС‡РЅРѕ РЅР°РїРёСЃР°С‚СЊ РІ С‡Р°С‚ С‚Р°Рє:
+Когда находишь баг, не нужно сразу оформлять техническую задачу. Достаточно написать в чат так:
 
 ```text
-Р‘РђР“:
-Р“РґРµ: СЌРєСЂР°РЅ / СЃС‚СЂР°РЅРёС†Р° / РґРµР№СЃС‚РІРёРµ
-Р§С‚Рѕ СЃРґРµР»Р°Р»:
-Р§С‚Рѕ РїСЂРѕРёР·РѕС€Р»Рѕ:
-РљР°Рє РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ:
-РќР°СЃРєРѕР»СЊРєРѕ РјРµС€Р°РµС‚: Р±Р»РѕРєРёСЂСѓРµС‚ / СЃРёР»СЊРЅРѕ / С‚РµСЂРїРёРјРѕ / РєРѕСЃРјРµС‚РёРєР°
-РЎРєСЂРёРЅ/РІРёРґРµРѕ: РµСЃР»Рё РµСЃС‚СЊ
+БАГ:
+Где: экран / страница / действие
+Что сделал:
+Что произошло:
+Как должно быть:
+Насколько мешает: блокирует / сильно / терпимо / косметика
+Скрин/видео: если есть
 ```
 
-Р•СЃР»Рё РґРµС‚Р°Р»РµР№ РЅРµ С…РІР°С‚Р°РµС‚, Р°РіРµРЅС‚ Р·Р°РґР°С‘С‚ СѓС‚РѕС‡РЅСЏСЋС‰РёРµ РІРѕРїСЂРѕСЃС‹ Рё СЃР°Рј РґРѕРІРѕРґРёС‚ Р·Р°РїРёСЃСЊ РґРѕ РїРѕР»РЅРѕС†РµРЅРЅРѕРіРѕ С„РѕСЂРјР°С‚Р° РЅРёР¶Рµ.
+Если деталей не хватает, агент задаёт уточняющие вопросы и сам доводит запись до полноценного формата ниже.
 
-## РџСЂРѕС†РµСЃСЃ РѕР±СЂР°Р±РѕС‚РєРё
+## Процесс обработки
 
-1. РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°РЅРѕСЃРёС‚ РЅР°Р±Р»СЋРґРµРЅРёСЏ РІ С‡Р°С‚ РёР»Рё РІ СЂР°Р·РґРµР» "Р’С…РѕРґСЏС‰РёРµ".
-2. РђРіРµРЅС‚ РѕС‚РґРµР»СЏРµС‚ Р±Р°РіРё РѕС‚ СѓР»СѓС‡С€РµРЅРёР№, РІРѕРїСЂРѕСЃРѕРІ Рё РёРґРµР№.
-3. Р”Р»СЏ РєР°Р¶РґРѕРіРѕ Р±Р°РіР° Р°РіРµРЅС‚ РїСЂРёСЃРІР°РёРІР°РµС‚ ID, Severity, Priority Рё СЃС‚Р°С‚СѓСЃ `Triaged`.
-4. РљСЂРёС‚РёС‡РЅС‹Рµ Р±Р°РіРё РїРѕРїР°РґР°СЋС‚ РІ "РђРєС‚РёРІРЅС‹Рµ" Рё Р·Р°С‚РµРј РїСЂРµРІСЂР°С‰Р°СЋС‚СЃСЏ РІ Р·Р°РґР°С‡Рё РґР»СЏ СЂР°Р·СЂР°Р±РѕС‚РєРё.
-5. РџРѕСЃР»Рµ РёСЃРїСЂР°РІР»РµРЅРёСЏ Р±Р°Рі РїРµСЂРµРЅРѕСЃРёС‚СЃСЏ РІ "Р“РѕС‚РѕРІС‹ Рє РїСЂРѕРІРµСЂРєРµ".
-6. РџРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё Р±Р°Рі РїРµСЂРµРЅРѕСЃРёС‚СЃСЏ РІ "Р—Р°РєСЂС‹С‚С‹Рµ".
-7. Р—РЅР°С‡РёРјС‹Рµ Р±Р°РіРё Рё СЃРёСЃС‚РµРјРЅС‹Рµ РїСЂРѕР±Р»РµРјС‹ РґРѕР±Р°РІР»СЏСЋС‚СЃСЏ РІ roadmap РєР°Рє РѕС‚РґРµР»СЊРЅРѕРµ РЅР°РїСЂР°РІР»РµРЅРёРµ РёР»Рё СЂРёСЃРє.
+1. Пользователь заносит наблюдения в чат или в раздел "Входящие".
+2. Агент отделяет баги от улучшений, вопросов и идей.
+3. Для каждого бага агент присваивает ID, Severity, Priority и статус `Triaged`.
+4. Критичные баги попадают в "Активные" и затем превращаются в задачи для разработки.
+5. После исправления баг переносится в "Готовы к проверке".
+6. После проверки баг переносится в "Закрытые".
+7. Значимые баги и системные проблемы добавляются в roadmap как отдельное направление или риск.
 
-### РљРѕРіРґР° Р·Р°РІРѕРґРёРј Р±Р°Рі РІ Linear
+### Когда заводим баг в Linear
 
-Р—Р°РІРѕРґРёРј РѕС‚РґРµР»СЊРЅСѓСЋ Р·Р°РґР°С‡Сѓ РІ Linear, РµСЃР»Рё Р±Р°Рі РЅСѓР¶РЅРѕ Р±СЂР°С‚СЊ РІ СЂР°Р·СЂР°Р±РѕС‚РєСѓ, РїР»Р°РЅРёСЂРѕРІР°С‚СЊ РІ СЃРїСЂРёРЅС‚ РёР»Рё РѕС‚СЃР»РµР¶РёРІР°С‚СЊ РґРѕ СЂРµР»РёР·Р°:
+Заводим отдельную задачу в Linear, если баг нужно брать в разработку, планировать в спринт или отслеживать до релиза:
 
-- `P0/P1`, Р±Р»РѕРєРёСЂСѓРµС‚ РІС…РѕРґ, РѕРїР»Р°С‚Сѓ, Р·Р°РґР°С‡Рё, AI-С‡Р°С‚, СЃРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РёР»Рё РґСЂСѓРіРѕР№ РєР»СЋС‡РµРІРѕР№ СЃС†РµРЅР°СЂРёР№.
-- Р‘Р°Рі РїРѕРІС‚РѕСЂСЏРµС‚СЃСЏ, РІР»РёСЏРµС‚ РЅР° РЅРµСЃРєРѕР»СЊРєРёС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РёР»Рё СѓР¶Рµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ С‚РµСЃС‚РѕРј.
-- РСЃРїСЂР°РІР»РµРЅРёРµ С‚СЂРµР±СѓРµС‚ РєРѕРґР°, РґРµРїР»РѕСЏ, РѕС‚РґРµР»СЊРЅРѕР№ РІРµС‚РєРё РёР»Рё СЂР°Р±РѕС‚С‹ РЅРµСЃРєРѕР»СЊРєРёС… Р·РѕРЅ: app, worker, bot, Р±Р°Р·Р°, РїР»Р°С‚РµР¶Рё.
-- РќСѓР¶РЅРѕ РЅР°Р·РЅР°С‡РёС‚СЊ РІР»Р°РґРµР»СЊС†Р°, СЃСЂРѕРє, PR, QA-РїСЂРѕРІРµСЂРєСѓ РёР»Рё РїСЂРёРІСЏР·Р°С‚СЊ Р±Р°Рі Рє СЂРµР»РёР·Сѓ.
+- `P0/P1`, блокирует вход, оплату, задачи, AI-чат, сохранение данных или другой ключевой сценарий.
+- Баг повторяется, влияет на нескольких пользователей или уже подтверждён тестом.
+- Исправление требует кода, деплоя, отдельной ветки или работы нескольких зон: app, worker, bot, база, платежи.
+- Нужно назначить владельца, срок, PR, QA-проверку или привязать баг к релизу.
 
-РћСЃС‚Р°РІР»СЏРµРј С‚РѕР»СЊРєРѕ РІ `pm/bugs.md`, РµСЃР»Рё СЌС‚Рѕ РІС…РѕРґСЏС‰Р°СЏ Р·Р°РјРµС‚РєР°, РµРґРёРЅРёС‡РЅРѕРµ РЅР°Р±Р»СЋРґРµРЅРёРµ Р±РµР· РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ, РєРѕСЃРјРµС‚РёРєР° Р±РµР· РІР»РёСЏРЅРёСЏ РЅР° РєР»СЋС‡РµРІРѕР№ СЃС†РµРЅР°СЂРёР№, РґСѓР±Р»СЊ СѓР¶Рµ Р·Р°РІРµРґС‘РЅРЅРѕР№ Р·Р°РґР°С‡Рё РёР»Рё РІРѕРїСЂРѕСЃ, РєРѕС‚РѕСЂС‹Р№ СЃРЅР°С‡Р°Р»Р° РЅСѓР¶РЅРѕ СѓС‚РѕС‡РЅРёС‚СЊ. РџРѕСЃР»Рµ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ С‚Р°РєРѕР№ Р±Р°Рі РјРѕР¶РЅРѕ РїРѕРІС‹СЃРёС‚СЊ РґРѕ Linear.
+Оставляем только в `pm/bugs.md`, если это входящая заметка, единичное наблюдение без воспроизведения, косметика без влияния на ключевой сценарий, дубль уже заведённой задачи или вопрос, который сначала нужно уточнить. После подтверждения такой баг можно повысить до Linear.
 
-## Р’С…РѕРґСЏС‰РёРµ
+## Входящие
 
-РЎСЋРґР° РјРѕР¶РЅРѕ Р±С‹СЃС‚СЂРѕ СЃРєР»Р°РґС‹РІР°С‚СЊ СЃС‹СЂС‹Рµ Р·Р°РјРµС‚РєРё РґРѕ С‚СЂРёР°Р¶Р°.
+Сюда можно быстро складывать сырые заметки до триажа.
 
-| Р”Р°С‚Р° | РќР°Р±Р»СЋРґРµРЅРёРµ | Р“РґРµ | Р’Р»РѕР¶РµРЅРёСЏ | РЎС‚Р°С‚СѓСЃ |
+| Дата | Наблюдение | Где | Вложения | Статус |
 | --- | --- | --- | --- | --- |
 
-## РљР°Рє Р·Р°РЅРѕСЃРёС‚СЊ Р±Р°Рі
+## Как заносить баг
 
-РљРѕРїРёСЂСѓР№ Р±Р»РѕРє РЅРёР¶Рµ, Р·Р°РїРѕР»РЅСЏР№ С„Р°РєС‚Р°РјРё Рё РЅРµ СЃРјРµС€РёРІР°Р№ РЅРµСЃРєРѕР»СЊРєРѕ РїСЂРѕР±Р»РµРј РІ РѕРґРёРЅ Р±Р°Рі.
+Копируй блок ниже, заполняй фактами и не смешивай несколько проблем в один баг.
 
 ```text
 ID:
-Р—Р°РіРѕР»РѕРІРѕРє:
-Р”Р°С‚Р°:
-Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:
+Заголовок:
+Дата:
+Версия/окружение:
 Severity: Critical / High / Medium / Low
 Priority: P0 / P1 / P2 / P3
-РЎС‚Р°С‚СѓСЃ: New / Triaged / In Progress / Ready for QA / Done / Won't Fix
+Статус: New / Triaged / In Progress / Ready for QA / Done / Won't Fix
 
-РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:
+Шаги воспроизведения:
 1.
 2.
 3.
 
-Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:
+Фактический результат:
 
-РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:
+Ожидаемый результат:
 
-Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:
+Вложения/логи:
 
-Р РµС€РµРЅРёРµ:
+Решение:
 
-РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:
+Проверка после фикса:
 ```
 
-## РђРєС‚РёРІРЅС‹Рµ
+## Активные
 
-| ID | Р‘Р°Рі | Severity | Priority | РЎС‚Р°С‚СѓСЃ | Р’Р»Р°РґРµР»РµС† | BACK-xxx | РЎСЃС‹Р»РєР°/Р·Р°РјРµС‚РєР° |
+| ID | Баг | Severity | Priority | Статус | Владелец | BACK-xxx | Ссылка/заметка |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| BUG-2026-07-14-001 | Staging web auth РїРѕРєР°Р·С‹РІР°РµС‚ В«РќРµС‚ СЃРѕРµРґРёРЅРµРЅРёСЏВ» РїРѕСЃР»Рµ СѓСЃРїРµС€РЅС‹С… /auth/register Рё /auth/login | High | P1 | Done | Codex | N/A | 2026-07-14 РЅРѕС‡РЅРѕР№ staging-smoke РґРѕР±РёС‚ РґРѕ РєРѕРЅС†Р°: СЃРІРµР¶РёР№ browser-run РЅР° `https://4-ai-staging.pages.dev/` РїРѕСЃР»Рµ СѓР¶Рµ РІРЅРµСЃС‘РЅРЅС‹С… С„РёРєСЃРѕРІ (`getProfileReferralLink()` + РїРѕР»РЅС‹Р№ `window.*` export РІ `scripts/auth.js`) РїСЂРѕС…РѕРґРёС‚ РѕР±Р° СЂРµР°Р»СЊРЅС‹С… UI-СЃС†РµРЅР°СЂРёСЏ вЂ” `Р РµРіРёСЃС‚СЂР°С†РёСЏ` Рё `Р’РѕР№С‚Рё` вЂ” Р±РµР· `ReferenceError` Рё Р±РµР· toast `РќРµС‚ СЃРѕРµРґРёРЅРµРЅРёСЏ`. РџРѕСЃР»Рµ submit СЌРєСЂР°РЅ РїРµСЂРµС…РѕРґРёС‚ РЅР° home (`РЎРµРіРѕРґРЅСЏ`, avatar, РєР°Р»РµРЅРґР°СЂСЊ/РіРѕР»РѕСЃ/AI nav), Р° РІ console РѕСЃС‚Р°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ С€С‚Р°С‚РЅС‹Рµ Telegram warnings РїСЂРѕ `Changing swipes behavior`, Р±РµР· auth-runtime РѕС€РёР±РѕРє. РћС‚РґРµР»СЊРЅРѕ РїРѕРґС‚РІРµСЂР¶РґРµРЅРѕ, С‡С‚Рѕ СЂР°РЅРЅРёР№ СЃРёРіРЅР°Р» `typeof window.processOAuthCallback === 'undefined'` Р±С‹Р» Р°СЂС‚РµС„Р°РєС‚РѕРј browser-runtime Codex, Р° РЅРµ Р¶РёРІС‹Рј СЃРѕСЃС‚РѕСЏРЅРёРµРј staging. 2026-07-15 fresh Pages deploy https://44ccd355.4-ai-staging.pages.dev plus browser smoke confirmed auth shell green: /auth/me 200, currentUser/chatId set, screen is home, no ReferenceError and no failed requests. |
-| BUG-2026-07-14-002 | Staging worker /analytics/lite-event РѕС‚РІРµС‡Р°РµС‚ 404 | Medium | P1 | Done | Codex | ANALYTICS-001 | РќР° live staging 2026-07-14 Р±Р°Рі РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё РЅРµ РІРѕСЃРїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ: Pages `https://4-ai-staging.pages.dev/` СЃРµР№С‡Р°СЃ СѓРєР°Р·С‹РІР°РµС‚ РЅР° `const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev'`, РїСЂСЏРјРѕР№ API smoke `register -> login -> POST /analytics/lite-event` РІРѕР·РІСЂР°С‰Р°РµС‚ `200 {ok:true}`, Р° СЃРІРµР¶РёР№ home-browser run РЅРµ РїРѕРєР°Р·С‹РІР°РµС‚ console-РѕС€РёР±РѕРє РІРѕРєСЂСѓРі `trackLiteEvent('plan-view')`. Admin `/analytics/summary` Р±РµР· `x-admin-secret` РїРѕ-РїСЂРµР¶РЅРµРјСѓ РѕС‚РІРµС‡Р°РµС‚ `401 Unauthorized`, РїРѕСЌС‚РѕРјСѓ РґРѕСЃС‚Р°РІРєР° РІ summary РѕСЃС‚Р°С‘С‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕР№ QA/Р°РґРјРёРЅ-РїСЂРѕРІРµСЂРєРѕР№, РЅРѕ СЃР°Рј СЃС‚Р°СЂС‹Р№ `404` Р±РѕР»СЊС€Рµ РЅРµ РїРѕРґС‚РІРµСЂР¶РґР°РµС‚СЃСЏ. |
-| BUG-2026-07-14-004 | AI quick action В«РЎС‚Р°С‚РёСЃС‚РёРєР°В» РІ С‡Р°С‚Рµ 4 РІРѕР·РІСЂР°С‰Р°РµС‚ validation error РІРјРµСЃС‚Рѕ РѕС‚РІРµС‚Р°/СЌРєСЂР°РЅР° | Medium | P2 | Done | Codex | NEW-002 / HOME-001 | Root cause Р±С‹Р» РІРѕ С„СЂРѕРЅС‚Рµ: `sendAsk()` РѕС‚РїСЂР°РІР»СЏР» РІ Anthropic `messages` РїСЂСЏРјРѕ РёР· `askHistory`, РІРєР»СЋС‡Р°СЏ Р·Р°РїСЂРµС‰С‘РЅРЅРѕРµ РїРѕР»Рµ `id`. РќР° 2026-07-15 РІ `.tmp-4e-app-publish/index.html` РґРѕР±Р°РІР»РµРЅР° `sanitizeClaudeMessages()`, staging Pages РІСЂСѓС‡РЅСѓСЋ РѕР±РЅРѕРІР»С‘РЅ РЅР° `https://73d33de6.4-ai-staging.pages.dev`, Рё live smoke РїРѕРґС‚РІРµСЂРґРёР» Р·РµР»С‘РЅС‹Р№ path: РїСЂСЏРјРѕР№ `/anthropic` СЃ С‚РµРј Р¶Рµ prompt РґР°С‘С‚ `200`, РІ Р±СЂР°СѓР·РµСЂРµ Р±РѕР»СЊС€Рµ РЅРµС‚ `messages.0.id` / `validation_error`, Р° `РЎС‚Р°С‚РёСЃС‚РёРєР°` СЃРЅРѕРІР° РІРёРґРёС‚ СЂРµР°Р»СЊРЅС‹Рµ Р·Р°РґР°С‡Рё Р°РєРєР°СѓРЅС‚Р°. |
-| BUG-2026-07-14-005 | РљР°Р»РµРЅРґР°СЂСЊ РЅРµ РїРѕРєР°Р·С‹РІР°РµС‚ РґРµРґР»Р°Р№РЅ Р·Р°РґР°С‡Рё РґР°Р¶Рµ РїРѕСЃР»Рµ СЏРІРЅРѕРіРѕ РІС‹Р±РѕСЂР° РґРЅСЏ | Medium | P2 | Done | Codex | NEW-021 | РќРѕС‡РЅРѕР№ staging-smoke 2026-07-14 РІРѕСЃРїСЂРѕРёР·РІРѕРґРёР» Р±Р°Рі РЅР° Р·Р°РґР°С‡Рµ, РіРґРµ home СѓР¶Рµ РІРёРґРµР» РґРµРґР»Р°Р№РЅ, Р° РєР°Р»РµРЅРґР°СЂСЊ вЂ” РЅРµС‚. РќР° 2026-07-15 РїРѕРґС‚РІРµСЂР¶РґС‘РЅ root cause: calendar path РёСЃРїРѕР»СЊР·РѕРІР°Р» СЃРѕР±СЃС‚РІРµРЅРЅС‹Р№ parser Рё РЅРµ РїРѕРЅРёРјР°Р» РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ СЃСЂРѕРєРё РІСЂРѕРґРµ `СЃРµРіРѕРґРЅСЏ/Р·Р°РІС‚СЂР°`, С…РѕС‚СЏ РѕСЃС‚Р°Р»СЊРЅРѕР№ UI СѓР¶Рµ Р¶РёР» РЅР° `parseTaskDate()`. Р’ `parseCalendarTaskDeadline()` РґРѕР±Р°РІР»РµРЅ РѕР±С‰РёР№ parser, staging Pages РІСЂСѓС‡РЅСѓСЋ РѕР±РЅРѕРІР»С‘РЅ РЅР° `https://73d33de6.4-ai-staging.pages.dev`, Рё live smoke СЃ Р·Р°РґР°С‡РµР№ `Smoke calendar task` (`deadline: СЃРµРіРѕРґРЅСЏ`) С‚РµРїРµСЂСЊ РїРѕРєР°Р·С‹РІР°РµС‚ РµС‘ РІ `Р’СЃРµ РґРµРґР»Р°Р№РЅС‹` РєР°Рє `СЃРµРіРѕРґРЅСЏ / РЇ вЂ” Smoke calendar task`. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed calendar default 'Все дедлайны' contains seeded active deadlines without day click. |
-| BUG-2026-07-15-001 | AI-С‡Р°С‚ СѓС‚РѕС‡РЅСЏРµС‚ Р·Р°РґР°С‡Сѓ РґРѕ СЃРѕР·РґР°РЅРёСЏ РІРјРµСЃС‚Рѕ task-first СЃРѕС…СЂР°РЅРµРЅРёСЏ | High | P1 | Done | Codex | SMART-004 | Root cause Р±С‹Р» РІ СЃР°РјРѕРј С„СЂРѕРЅС‚РѕРІРѕРј flow: РІ `sendAsk()` task-intent fallback СЃРѕР·РґР°РІР°Р» Р·Р°РґР°С‡Сѓ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ РѕС‚РІРµС‚Р° РјРѕРґРµР»Рё Рё РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ Р±Р»РѕРєРёСЂРѕРІР°Р»СЃСЏ Р»РѕРєР°Р»СЊРЅС‹Рј clarify-С€Р°РіРѕРј, РєРѕС‚РѕСЂС‹Р№ Р·Р°РїСѓСЃРєР°Р»СЃСЏ РґРѕ `createTaskFromChat()`. РР·-Р·Р° СЌС‚РѕРіРѕ AI РјРѕРі СЃРЅР°С‡Р°Р»Р° Р·Р°РґР°РІР°С‚СЊ СѓС‚РѕС‡РЅРµРЅРёРµ Рё РЅРµ СЃРѕС…СЂР°РЅСЏС‚СЊ СЃР°Рј РёРЅС‚РµРЅС‚. РќР° 2026-07-15 task-intent path РїРµСЂРµРІРµРґС‘РЅ РІ СЂРµР¶РёРј create-first: `<create_task>` Рё `looksLikeTaskRequest()` С‚РµРїРµСЂСЊ СЃРѕР·РґР°СЋС‚ Р·Р°РґР°С‡Сѓ СЃСЂР°Р·Сѓ, Р° РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ prepend-РёС‚СЃСЏ РїРµСЂРµРґ AI-РѕС‚РІРµС‚РѕРј. Р”Р»СЏ С„СЂР°Р·С‹ `СЃРґРµР»Р°С‚СЊ С‚РµРєСЃС‚ Р·Р°РІС‚СЂР°` live smoke РЅР° `https://1103d926.4-ai-staging.pages.dev` РґР°Р» `вњ… Р—Р°РґР°С‡Р° В«РЎРґРµР»Р°С‚СЊ С‚РµРєСЃС‚В» РґРѕР±Р°РІР»РµРЅР°`, Р° С‚РѕС‚ Р¶Рµ Р°РєРєР°СѓРЅС‚ СЃСЂР°Р·Сѓ РІРёРґРёС‚ РІ `/tasks` Р·Р°РїРёСЃСЊ `РЎРґРµР»Р°С‚СЊ С‚РµРєСЃС‚` СЃ `deadline: Р·Р°РІС‚СЂР°`, `source: ai_chat`, `originalMsg: СЃРґРµР»Р°С‚СЊ С‚РµРєСЃС‚ Р·Р°РІС‚СЂР°`. |
-| BUG-2026-07-15-002 | Composer AI-С‡Р°С‚Р° СѓРµР·Р¶Р°РµС‚ РїРѕРґ РЅРёР¶РЅРµРµ РјРµРЅСЋ | Medium | P2 | Done | Codex | N/A | РќР° live mobile smoke root cause РїРѕРґС‚РІРµСЂР¶РґС‘РЅ РїРёРєСЃРµР»СЊРЅРѕ: РґРѕ РѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёСЏ `ask`-СЌРєСЂР°РЅ РґРµСЂР¶Р°Р» `global-nav` СЃРєСЂС‹С‚С‹Рј, Р° РїРѕСЃР»Рµ blur/send keyboard-close path СЃРЅРѕРІР° СЃРЅРёРјР°Р» `hidden`, С…РѕС‚СЏ СЌРєСЂР°РЅ РѕСЃС‚Р°РІР°Р»СЃСЏ `ask`; РІ РёС‚РѕРіРµ bottom-nav Р»РѕР¶РёР»СЃСЏ РїРѕРІРµСЂС… composer (`overlap=64px` РЅР° viewport 390x844). РќР° 2026-07-15 AI-С‡Р°С‚ РїРѕРјРµС‡РµРЅ РєР°Рє `screen--no-bottom-nav`, JS Р±РѕР»СЊС€Рµ РЅРµ СЂР°Р·РјРѕСЂР°Р¶РёРІР°РµС‚ nav РґР»СЏ `ask`, Р° `styles.css` / `styles.min.css` РїРѕР»СѓС‡РёР»Рё ask-specific padding Р±РµР· РЅРёР¶РЅРµРіРѕ nav reserve. РџРѕРІС‚РѕСЂРЅС‹Р№ live smoke РЅР° `https://1103d926.4-ai-staging.pages.dev` РїРѕРєР°Р·С‹РІР°РµС‚ `navHidden=true` Рё `overlap=0` Рё РґРѕ, Рё РїРѕСЃР»Рµ РѕС‚РїСЂР°РІРєРё. |
-| BUG-2026-07-15-003 | `/analytics/summary` РЅРµ РѕС‚СЂР°Р¶Р°РµС‚ lite-СЃРѕР±С‹С‚РёСЏ, С…РѕС‚СЏ `/analytics/lite-event` РѕС‚РІРµС‡Р°РµС‚ `200` | High | P1 | Done | Codex | ANALYTICS-001 / BACK-038 | Root cause РїРѕРґС‚РІРµСЂР¶РґС‘РЅ Рё РёСЃРїСЂР°РІР»РµРЅ РЅР° staging 2026-07-15: email-auth РїРѕР»СЊР·РѕРІР°С‚РµР»Рё СЃРѕС…СЂР°РЅСЏР»РёСЃСЊ С‚РѕР»СЊРєРѕ РІ KV (`saveUser()`), Р° analytics-summary / `audit_events` Р¶РёР»Рё РІ D1, РїРѕСЌС‚РѕРјСѓ `recordAuditEvent()` РЅРµ РјРѕРі С‡РµСЃС‚РЅРѕ СЃРѕР±РёСЂР°С‚СЊ e2e activation path. Р’ `4e-worker/worker.js` РґРѕР±Р°РІР»РµРЅ СѓР·РєРёР№ D1 shadow-sync РїСЂРѕС„РёР»СЏ РёР· `saveUser()`, staging worker Р·Р°РґРµРїР»РѕРµРЅ, Рё live smoke РЅР° `https://restless-lab-d737-staging.shelckograff.workers.dev` С‚РµРїРµСЂСЊ Р·РµР»С‘РЅС‹Р№: РґРѕ smoke `users.total=10`, `auditEvents.total=0`; РїРѕСЃР»Рµ fresh register + `plan-view` + `focus-open` + `statistics-open` summary РґР°С‘С‚ `users.total=11`, `auditEvents.total=4`, `activation.auth.register.d1=1`, `dailyValue.planView/focusOpen/statisticsOpen = 1/1/1`. РџСЂСЏРјРѕР№ `wrangler d1 execute --env staging` РїРѕРґС‚РІРµСЂРґРёР» `audit_events.total=5`, `register=2`, `lite-plan/focus/statistics = 1/1/1` РїРѕСЃР»Рµ СЂРµРїР»РёРєР°С†РёРё. |
-| BUG-2026-07-15-004 | РќР° staging РЅРµС‚ admin-fixture path РґР»СЏ expired-user, РёР·-Р·Р° С‡РµРіРѕ BACK-059 РЅРµР»СЊР·СЏ С‡РµСЃС‚РЅРѕ РїСЂРѕРіРЅР°С‚СЊ | Medium | P1 | Done | Codex | BACK-059 | РќР° staging 2026-07-15 РґРѕР±Р°РІР»РµРЅ СѓР·РєРёР№ reversible admin-only fixture path `PUT /admin/users/:id/fixture/expired`, РґРѕСЃС‚СѓРїРЅС‹Р№ С‚РѕР»СЊРєРѕ РїСЂРё staging `APP_BASE_URL`. Endpoint СЃРѕС…СЂР°РЅСЏРµС‚ backup user-state РІ KV, РїРµСЂРµРІРѕРґРёС‚ `trialEndsAt` Рё `entitlement.accessUntil` РІ РїСЂРѕС€Р»РѕРµ, Р° `mode=revert` РѕС‚РєР°С‚С‹РІР°РµС‚ РёСЃС…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ. Live smoke РїРѕРґС‚РІРµСЂР¶РґС‘РЅ СЂРµР°Р»СЊРЅС‹Рј gated path `POST /auth/link-telegram`: РґРѕ fixture `200`, РїРѕСЃР»Рµ `mode=apply` endpoint РІРѕР·РІСЂР°С‰Р°РµС‚ `403`, РїРѕСЃР»Рµ `mode=revert` СЃРЅРѕРІР° `200`. Gate-Р»РѕРіРёРєР° (`hasPremiumAccess` / entitlement decision) РЅРµ РјРµРЅСЏР»Р°СЃСЊ. |
-| BUG-2026-07-15-005 | Worker bot-path принимал `x-action=save-task` без `x-bot-signature` / `x-bot-timestamp` / `x-bot-nonce` | High | P1 | Done | Codex | BACK-060 | Original finding: unsigned sessionless bot-style `save-task` with `telegramUserId=7000002294` could create a task for a linked user. Final fix is tracked in `BACK-060`: `4e-worker/worker.js` now routes bot-only actions and bot-scoped shared task actions through `readVerifiedActionBody()`, `shouldRequireBotSignature()` and `verifyBotActionSignature()` using `BOT_TOKEN` HMAC matching `src/bot/worker-client.js`. Staging smoke recorded in backlog: unsigned `get-chat-members` returns `403 {"ok":false,"error":"bot signature invalid"}`, signed `get-chat-members` returns `200 {"ok":true,"members":[]}`. Scope reconciliation: `docs/tasks/BACK-060-bot-path-signature-reconciliation.md`. |
-| BUG-2026-07-14-003 | Staging /auth/telegram РїР°РґР°РµС‚ Worker exception 1101 | High | P1 | Done | Codex | N/A | 2026-07-14 staging tail РґР°Р» С‚РѕС‡РЅС‹Р№ stack: merge-РІРµС‚РєР° `/auth/telegram` РїР°РґР°Р»Р° РЅР° `ReferenceError: isPaidUser is not defined` РІ `betterAccountByPlanOrTrial()` -> `mergeAccounts()` -> `handleTelegramAuth()`. РСЃРїСЂР°РІР»РµРЅРѕ РІ `4e-worker/worker.js` СѓР·РєРёРј helper-РѕРј `isPaidUser(user) { return user.plan === "paid"; }`, staging worker Р·Р°РґРµРїР»РѕРµРЅ РєР°Рє version `d98c7ca9-1300-4e2a-81eb-1ad6a5ced167`. РџРѕРІС‚РѕСЂРЅС‹Р№ live smoke РїРѕСЃР»Рµ deploy: fresh web-account + `POST /auth/telegram` СЃ С‚РµРј Р¶Рµ Telegram ID С‚РµРїРµСЂСЊ РІРѕР·РІСЂР°С‰Р°РµС‚ `200`, `accountMerged: true`, Р° `wrangler tail` РїРѕРєР°Р·С‹РІР°РµС‚ `POST /auth/telegram - Ok` Р±РµР· exception. |
-| BUG-2026-07-05-002 | РџСЂРѕС„РёР»СЊ РЅР° РјРѕР±РёР»СЊРЅРѕР№ РІРµР±-РІРµСЂСЃРёРё РІС‹РіР»СЏРґРёС‚ РЅРµР°РєРєСѓСЂР°С‚РЅРѕ: СЃСЉРµС…Р°Р»Рё РѕС‚СЃС‚СѓРїС‹, Р±РµР№РґР¶Рё Рё СЃРµРєС†РёРё С„РѕСЂРјС‹ | Medium | P2 | Ready for QA | Р®СЂРёР№ | BACK-043 | Р’РµС‚РєР° `fix/profile-responsive-ui`, commit `33903b4`; Р¶РґС‘С‚ СЃРєСЂРёРЅС‹ Рё СЂСѓС‡РЅРѕР№ smoke РђР»РµРєСЃРµСЏ |
-| BUG-2026-07-05-001 | РќРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ СЂР°СЃС‚СЏРіРёРІР°РµС‚СЃСЏ РЅР° С€РёСЂРёРЅСѓ Р±СЂР°СѓР·РµСЂР°, Р° РЅРµ СЌРєСЂР°РЅР° РїСЂРёР»РѕР¶РµРЅРёСЏ | Medium | P2 | Done | Р®СЂРёР№ | BACK-046 | Р’РµС‚РєР° `fix/bottom-nav-app-width`, commit `748dcfd`; РїСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ СЌРєСЂР°РЅС‹ СЃ РЅРёР¶РЅРµР№ РїР°РЅРµР»СЊСЋ |
-| BUG-2026-07-05-003 | РќР° РїРµСЂРІРѕРј СЌРєСЂР°РЅРµ РїРѕСЃР»Рµ 22:00 РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ РІСЂРµРјСЏ РґРѕ РєРѕРЅС†Р° РґРЅСЏ | Medium | P2 | Done | Codex / Р®СЂРёР№ | BACK-056 | Р’ `.tmp-4e-app-publish/index.html` СЂР°СЃС‡С‘С‚ `22 - hr` Р·Р°РјРµРЅС‘РЅ РЅР° human-friendly tail: РїРѕСЃР»Рµ 22:00 home РїРѕРєР°Р·С‹РІР°РµС‚ `РІРµС‡РµСЂРЅРёР№ С„РѕРєСѓСЃ`, Р° РЅРµ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рµ С‡Р°СЃС‹ |
-| BUG-2026-07-04-003 | РќР° СЌРєСЂР°РЅРµ email-РІС…РѕРґР° Enter РЅРµ Р·Р°РїСѓСЃРєР°РµС‚ Р°РІС‚РѕСЂРёР·Р°С†РёСЋ | Medium | P2 | Done | Codex | N/A | Р›РѕРєР°Р»СЊРЅС‹Р№ С„РёРєСЃ РІ `index.html`; РїСЂРѕРІРµСЂРёС‚СЊ РЅР° РЅРѕСѓС‚Р±СѓРєРµ РІ email Рё password РїРѕР»СЏС… |
-| BUG-2026-07-04-002 | Р’ РІРµР±-РІРµСЂСЃРёРё РєРЅРѕРїРєР° "Р’РѕР№С‚Рё С‡РµСЂРµР· Telegram" РЅРµ РѕС‚РєСЂС‹РІР°РµС‚ Telegram РёР·-Р·Р° `tg://resolve` | High | P1 | Ready for QA | Codex | BACK-036 | Р›РѕРєР°Р»СЊРЅС‹Р№ С„РёРєСЃ РІ `fix/telegram-login-web-fallback`; РЅСѓР¶РµРЅ live smoke РїРѕСЃР»Рµ РїСѓР±Р»РёРєР°С†РёРё |
-| NEW-001 | РЈРІРµРґРѕРјР»РµРЅРёСЏ: СѓС‚СЂРµРЅРЅРёР№ Р±СЂРёС„РёРЅРі РЅРµ СЃСЂР°Р±РѕС‚Р°Р» | Medium | P2 | Triaged | Р®СЂРёР№ + Codex | N/A | Telegram Mini Apps: РїСЂРѕРІРµСЂРёС‚СЊ РІСЃРµ С‚СѓРјР±Р»РµСЂС‹ СѓРІРµРґРѕРјР»РµРЅРёР№ Рё СЃС†РµРЅР°СЂРёР№ morning-briefing |
-| NEW-002 | РЎС‚Р°С‚РёСЃС‚РёРєР°: РЅРµР°РєС‚СѓР°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ / РЅРµ РѕС‚РєСЂС‹РІР°СЋС‚СЃСЏ Р°РєС‚РёРІРЅС‹Рµ Р·Р°РґР°С‡Рё | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | Р‘Р°Р·РѕРІС‹Р№ stats-fix РѕСЃС‚Р°С‘С‚СЃСЏ С‚РµРј Р¶Рµ (`loadStats()` РЅР° СЂРµР°Р»СЊРЅС‹С… local РІС‹Р±РѕСЂРєР°С…, Р¶РёРІС‹Рµ `onclick` Сѓ active/promises), РЅРѕ РЅРѕС‡РЅРѕР№ regression 2026-07-14 С‡РµСЃС‚РЅРѕ РІС‹РЅРµСЃРµРЅ РІ `BUG-2026-07-14-004`. РџРѕСЃР»Рµ `sanitizeClaudeMessages()` Рё fresh staging deploy `https://73d33de6.4-ai-staging.pages.dev` live smoke 2026-07-15 Р±РѕР»СЊС€Рµ РЅРµ РІРѕСЃРїСЂРѕРёР·РІРѕРґРёС‚ validation error, Р° СЌРєСЂР°РЅ `РЎС‚Р°С‚РёСЃС‚РёРєР°` СЃРЅРѕРІР° РІРёРґРёС‚ СЃРІРµР¶РµСЃРѕР·РґР°РЅРЅСѓСЋ Р·Р°РґР°С‡Сѓ Р°РєРєР°СѓРЅС‚Р°. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed statistics data and active-list CTA with real seeded tasks. |
-| NEW-003 | РџСЂРѕС„РёР»СЊ: РґСѓР±Р»РёСЂСѓРµС‚СЃСЏ Р°РІР°С‚Р°СЂ | Low | P3 | Done | Р®СЂРёР№ + Codex | N/A | Р’ `.tmp-4e-app-publish/index.html` СѓРґР°Р»С‘РЅ РІС‚РѕСЂРѕР№ preview-avatar РёР· profile details card; РµРґРёРЅСЃС‚РІРµРЅРЅРѕР№ С‚РѕС‡РєРѕР№ С„РѕС‚Рѕ РѕСЃС‚Р°С‘С‚СЃСЏ РІРµСЂС…РЅРёР№ `#profile-avatar` Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: profile has one visible large avatar (#profile-avatar) and no duplicate #profile-photo-preview. |
-| NEW-004 | РџСЂРѕС„РёР»СЊ: Р»РёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ Р·Р°РЅРёРјР°СЋС‚ СЃР»РёС€РєРѕРј РјРЅРѕРіРѕ РјРµСЃС‚Р° | Low | P3 | Done | Р®СЂРёР№ + Codex | N/A | Р’ `.tmp-4e-app-publish/index.html` РїРѕР»Рµ РёРјРµРЅРё РїРµСЂРµРЅРµСЃРµРЅРѕ РІ collapsible section `Р›РёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ Р°РєРєР°СѓРЅС‚Р°`, РѕС‚РґРµР»СЊРЅР°СЏ card СЃРІРµСЂС…Сѓ СѓР±СЂР°РЅР°; РїСЂРѕС„РёР»СЊ СЃС‚Р°Р» РєРѕСЂРѕС‡Рµ Р±РµР· РїРѕС‚РµСЂРё РїРѕР»РµР№ Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: personal data section is collapsed by default and name field lives inside #profile-pii-section. |
-| NEW-005 | РљР°СЂС‚РѕС‡РєР° Р·Р°РґР°С‡Рё: Р·Р°РіРѕР»РѕРІРѕРє/СЃСЂРѕРє РѕР±СЂРµР·Р°СЋС‚СЃСЏ | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | Р’ `.tmp-4e-app-publish/scripts/task-ui-renderers.js` task-card СЂРµРЅРґРµСЂ РїРµСЂРµРІРµРґС‘РЅ РЅР° Р±РѕР»РµРµ СѓСЃС‚РѕР№С‡РёРІС‹Р№ head/title layout: deadline С‚РµРїРµСЂСЊ РјРѕР¶РµС‚ РїРµСЂРµРЅРѕСЃРёС‚СЊСЃСЏ, title РЅРµ Р·Р°Р¶Р°С‚ РІ РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ, tag СѓРєРѕСЂРѕС‡РµРЅ Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: long task title with long assignee and deadline renders in filtered active list without horizontal overflow. |
-| NEW-006 | Safe area: РїРµСЂРµРєСЂС‹С‚РёРµ РЅРёР¶РЅРёРј РјРµРЅСЋ | High | P1 | Triaged | Р®СЂРёР№ + Codex | N/A | РќРёР· РїСЂРёР»РѕР¶РµРЅРёСЏ РІ Telegram Mini App РЅРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїРµСЂРµРєСЂС‹С‚ РЅР°РІРёРіР°С†РёРµР№/РїР°РЅРµР»СЊСЋ |
-| NEW-007 | РљР°СЂС‚РѕС‡РєР° Р·Р°РґР°С‡Рё: Р±Р»РѕРєРё В«РћР±СЃСѓР¶РґРµРЅРёРµ/РЎРѕРІРµС‚/РСЃС‚РѕСЂРёСЏВ» С‚СЂРµР±СѓСЋС‚ РїРµСЂРµСЂР°Р±РѕС‚РєРё | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | Р’РєР»Р°РґРєР° `РСЃС‚РѕСЂРёСЏ` С‚РµРїРµСЂСЊ РїРѕРєР°Р·С‹РІР°РµС‚ РЅРµРїСЂРµСЂС‹РІРЅСѓСЋ С…СЂРѕРЅРѕР»РѕРіРёСЋ Р·Р°РґР°С‡Рё: СЃРёСЃС‚РµРјРЅС‹Рµ СЃРѕР±С‹С‚РёСЏ, СЃРѕРѕР±С‰РµРЅРёСЏ РѕР±СЃСѓР¶РґРµРЅРёСЏ Рё summary РґРµР№СЃС‚РІРёР№ 4 Р±РѕР»СЊС€Рµ РЅРµ СЂР°Р·РѕСЂРІР°РЅС‹ РїРѕ СЂР°Р·РЅС‹Рј Р±Р»РѕРєР°Рј. РќСѓР¶РµРЅ QA-smoke РЅР° РїРѕСЂСЏРґРѕРє СЃРѕР±С‹С‚РёР№ Рё РґР»РёРЅРЅС‹Рµ С‚СЂРµРґС‹. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: task detail opens for seeded task and shows detail/history/discussion surface without runtime errors. |
-| NEW-008 | AI-С‡Р°С‚: РїРѕР»Рµ РІРІРѕРґР° РїРµСЂРµРєСЂС‹РІР°РµС‚СЃСЏ РЅРёР¶РЅРёРј РјРµРЅСЋ | High | P1 | Triaged | Р®СЂРёР№ + Codex | N/A | РџРѕР»Рµ РІРІРѕРґР° РґРѕР»Р¶РЅРѕ РѕСЃС‚Р°РІР°С‚СЊСЃСЏ РґРѕСЃС‚СѓРїРЅС‹Рј СЃ РѕС‚РєСЂС‹С‚РѕР№ РєР»Р°РІРёР°С‚СѓСЂРѕР№ |
-| NEW-009 | AI-С‡Р°С‚: РЅРµС‚ Р±С‹СЃС‚СЂС‹С… РґРµР№СЃС‚РІРёР№ РіРѕР»РѕСЃ/РІР»РѕР¶РµРЅРёСЏ | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | Р’ `.tmp-4e-app-publish/index.html` РІРЅРёР·Сѓ AI-С‡Р°С‚Р° СЃРЅРѕРІР° РІРёРґРЅС‹ voice/attachment quick actions; voice РІРµРґС‘С‚ РІ `openVoice()`, attachment РґР°С‘С‚ С‡РµСЃС‚РЅС‹Р№ placeholder-toast 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed voice and attachment quick actions are visible and wired. |
-| NEW-010 | Р“Р»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ: РєРЅРѕРїРєР° В«Р—Р°РІРµСЂС€РёС‚СЊВ» РЅРµРїСЂРѕРїРѕСЂС†РёРѕРЅР°Р»СЊРЅР° | Low | P3 | Done | Р®СЂРёР№ + Codex | N/A | РџРѕРєСЂС‹С‚Рѕ `HOME-001`: РЅР° home-СЌРєСЂР°РЅРµ СЃС‚Р°СЂС‹Р№ РїР°С‚С‚РµСЂРЅ СЃ РЅРµРїСЂРѕРїРѕСЂС†РёРѕРЅР°Р»СЊРЅРѕР№ РєРЅРѕРїРєРѕР№ СѓР±СЂР°РЅ РІРјРµСЃС‚Рµ СЃ РїСЂРµР¶РЅРёРјРё РєР°СЂС‚РѕС‡РєР°РјРё, РІРјРµСЃС‚Рѕ РЅРµРіРѕ вЂ” top-3 РїСЂРёРѕСЂРёС‚РµС‚РѕРІ СЃ РѕС‚РєСЂС‹С‚РёРµРј РґРµС‚Р°Р»Рё Р·Р°РґР°С‡Рё. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: home has top-3 priority rows and no old 'Завершить' buttons on the main screen. |
-| NEW-011 | Р“Р»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ: Р·Р°РґР°С‡Рё РѕР±СЉРµРґРёРЅРµРЅС‹ РІ РѕР±С‰РёР№ РєРѕРЅС‚РµР№РЅРµСЂ | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | РџРѕРєСЂС‹С‚Рѕ `HOME-001`: home СЂР°Р·Р±РёС‚ РЅР° РѕС‚РґРµР»СЊРЅС‹Рµ С‡РёС‚Р°РµРјС‹Рµ Р±Р»РѕРєРё `Р¤РѕРєСѓСЃ РґРЅСЏ`, `РјРµС‚СЂРёРєРё`, `top-3 Р·Р°РґР°С‡`, Р±РµР· СЃР»РёС‚РѕРіРѕ РѕР±С‰РµРіРѕ РєРѕРЅС‚РµР№РЅРµСЂР°. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: home renders separate focus, 4 metric cards and 3 readable top-list rows (row width 324px), not one merged container. |
-| NEW-012 | РЎС‚Р°С‚РёСЃС‚РёРєР°: РЅРµ РѕС‚РѕР±СЂР°Р¶Р°СЋС‚СЃСЏ Р·Р°РІРµСЂС€РµРЅРЅС‹Рµ Р·Р°РґР°С‡Рё Рё РёСЃС‚РѕСЂРёСЏ | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | Р’ overview СЃС‚Р°С‚РёСЃС‚РёРєРё РґРѕР±Р°РІР»РµРЅ РѕС‚РґРµР»СЊРЅС‹Р№ Р±Р»РѕРє completed/history, РєРѕС‚РѕСЂС‹Р№ РїРѕРєР°Р·С‹РІР°РµС‚ РїРѕСЃР»РµРґРЅРёРµ Р·Р°РІРµСЂС€С‘РЅРЅС‹Рµ Р·Р°РґР°С‡Рё Рё СЃС‚СЂРѕРєСѓ РёСЃС‚РѕСЂРёРё РЅР° Р±Р°Р·Рµ `getTaskHistoryRows()` Рё done-timestamps Code fix 2026-07-15: loadTasks now keeps all tasks in allTasksCache instead of active-only, so openStatistics can render completed/history. Live smoke on https://88193776.4-ai-staging.pages.dev: done task appears in #stats-done-list and cache contains doneInCache=1. |
-| NEW-013 | Р“Р»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ: РїРµСЂРµРіСЂСѓР¶РµРЅ В«Р¤РѕРєСѓСЃ РґРЅСЏВ» | Low | P3 | Done | Р®СЂРёР№ + Codex | N/A | РџРѕРєСЂС‹С‚Рѕ `HOME-001`: Р±Р»РѕРє `Р¤РѕРєСѓСЃ РґРЅСЏ` СѓРїСЂРѕС‰С‘РЅ РґРѕ РєРѕСЂРѕС‚РєРѕРіРѕ РѕСЃРЅРѕРІРЅРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ Рё РѕРґРЅРѕР№ РїРѕРґРїРёСЃРё, Р±РµР· РїСЂРµР¶РЅРµР№ РІРёР·СѓР°Р»СЊРЅРѕР№ РїРµСЂРµРіСЂСѓР·РєРё copy. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: focus-card copy is compact ('3 задачи требуют внимания' + short subtitle) without old overloaded text. |
-| NEW-014 | РџР»Р°РЅ РґРЅСЏ: РЅРµС‚ РґРµС‚Р°Р»СЊРЅРѕР№ СЃРІРѕРґРєРё | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | РЎРІРѕРґРєР° РїР»Р°РЅР° РґРЅСЏ СѓР¶Рµ СЂРµР°Р»РёР·РѕРІР°РЅР°: `Р¤РѕРєСѓСЃ РґРЅСЏ` РѕС‚РєСЂС‹РІР°РµС‚ РѕС‚РґРµР»СЊРЅСѓСЋ overlay-РїР°РЅРµР»СЊ, Р° СЃРїРёСЃРєРё РїРѕ РєР°С‚РµРіРѕСЂРёСЏРј (`Р’С‹РїРѕР»РЅРµРЅРѕ`, `РђРєС‚РёРІРЅС‹Рµ`, `РћР±РµС‰Р°РЅРёСЏ`) РґРѕСЃС‚СѓРїРЅС‹ СЃ home-СЌРєСЂР°РЅР° Рё СЃРѕ СЃС‚Р°С‚РёСЃС‚РёРєРё. РќСѓР¶РµРЅ С‚РѕР»СЊРєРѕ QA-smoke РїРµСЂРµС…РѕРґРѕРІ. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed focus-day overlay opens and renders real tasks. |
-| NEW-015 | РџР»Р°РЅ РґРЅСЏ: РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РјРµС‚РєРё РЅР°РїСЂР°РІР»РµРЅРёСЏ/РґР°С‚С‹ РїРѕСЃС‚Р°РЅРѕРІРєРё/РґРµРґР»Р°Р№РЅР° | Medium | P2 | Done | Р®СЂРёР№ + Codex | N/A | РљР°СЂС‚РѕС‡РєРё РїР»Р°РЅ-РїРѕС‚РѕРєР° Рё СЃРІСЏР·Р°РЅРЅС‹Рµ СЃРїРёСЃРєРё С‚РµРїРµСЂСЊ РїРѕРєР°Р·С‹РІР°СЋС‚ 3 РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ РјРµС‚Р°РґР°РЅРЅС‹Рµ: РЅР°РїСЂР°РІР»РµРЅРёРµ, РґР°С‚Сѓ РїРѕСЃС‚Р°РЅРѕРІРєРё Рё РґРµРґР»Р°Р№РЅ. РќСѓР¶РµРЅ С‚РѕР»СЊРєРѕ QA-smoke РЅР° РјРѕР±РёР»СЊРЅРѕР№ С‡РёС‚Р°РµРјРѕСЃС‚Рё. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed unified direction/created/deadline meta in home and focus rows. |
-| NEW-016 | Р¤РѕРєСѓСЃ РґРЅСЏ: С‚РµРєСЃС‚ РЅР°РµР·Р¶Р°РµС‚ РЅР° РґРµРєРѕСЂР°С‚РёРІРЅСѓСЋ РїР»Р°РЅРµС‚Сѓ | Low | P3 | Done | Р®СЂРёР№ + Codex | N/A | Р’ `.tmp-4e-app-publish/index.html` СѓРІРµР»РёС‡РµРЅ РїСЂР°РІС‹Р№ reserve Сѓ text-block РІ focus-card Рё РЅРµРјРЅРѕРіРѕ СѓРјРµРЅСЊС€РµРЅ headline, С‡С‚РѕР±С‹ С‚РµРєСЃС‚ РЅРµ РЅР°РµР·Р¶Р°Р» РЅР° РїР»Р°РЅРµС‚Сѓ Code fix 2026-07-15: focus-card text layer z-index raised, decorative layer lowered and text safe padding increased to 144px. Live smoke on https://88193776.4-ai-staging.pages.dev: contentRight=209 before decorLeft=237. |
-| NEW-017 | РљР°Р»РµРЅРґР°СЂСЊ: РїСЂРё РїРµСЂРІРѕРј РѕС‚РєСЂС‹С‚РёРё РїРѕРєР°Р·С‹РІР°СЋС‚СЃСЏ РґРµРјРѕ-Р·Р°РґР°С‡Рё | Medium | P2 | Triaged | Р®СЂРёР№ + Codex | N/A | РџРµСЂРІС‹Р№ СЌРєСЂР°РЅ РєР°Р»РµРЅРґР°СЂСЏ РґРѕР»Р¶РµРЅ РїРѕРєР°Р·С‹РІР°С‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ Р·Р°РґР°С‡Рё |
+| BUG-2026-07-14-001 | Staging web auth показывает «Нет соединения» после успешных /auth/register и /auth/login | High | P1 | Done | Codex | N/A | 2026-07-14 ночной staging-smoke добит до конца: свежий browser-run на `https://4-ai-staging.pages.dev/` после уже внесённых фиксов (`getProfileReferralLink()` + полный `window.*` export в `scripts/auth.js`) проходит оба реальных UI-сценария — `Регистрация` и `Войти` — без `ReferenceError` и без toast `Нет соединения`. После submit экран переходит на home (`Сегодня`, avatar, календарь/голос/AI nav), а в console остаются только штатные Telegram warnings про `Changing swipes behavior`, без auth-runtime ошибок. Отдельно подтверждено, что ранний сигнал `typeof window.processOAuthCallback === 'undefined'` был артефактом browser-runtime Codex, а не живым состоянием staging. 2026-07-15 fresh Pages deploy https://44ccd355.4-ai-staging.pages.dev plus browser smoke confirmed auth shell green: /auth/me 200, currentUser/chatId set, screen is home, no ReferenceError and no failed requests. |
+| BUG-2026-07-14-002 | Staging worker /analytics/lite-event отвечает 404 | Medium | P1 | Done | Codex | ANALYTICS-001 | На live staging 2026-07-14 баг в текущем состоянии не воспроизводится: Pages `https://4-ai-staging.pages.dev/` сейчас указывает на `const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev'`, прямой API smoke `register -> login -> POST /analytics/lite-event` возвращает `200 {ok:true}`, а свежий home-browser run не показывает console-ошибок вокруг `trackLiteEvent('plan-view')`. Admin `/analytics/summary` без `x-admin-secret` по-прежнему отвечает `401 Unauthorized`, поэтому доставка в summary остаётся отдельной QA/админ-проверкой, но сам старый `404` больше не подтверждается. |
+| BUG-2026-07-14-004 | AI quick action «Статистика» в чате 4 возвращает validation error вместо ответа/экрана | Medium | P2 | Done | Codex | NEW-002 / HOME-001 | Root cause был во фронте: `sendAsk()` отправлял в Anthropic `messages` прямо из `askHistory`, включая запрещённое поле `id`. На 2026-07-15 в `.tmp-4e-app-publish/index.html` добавлена `sanitizeClaudeMessages()`, staging Pages вручную обновлён на `https://73d33de6.4-ai-staging.pages.dev`, и live smoke подтвердил зелёный path: прямой `/anthropic` с тем же prompt даёт `200`, в браузере больше нет `messages.0.id` / `validation_error`, а `Статистика` снова видит реальные задачи аккаунта. |
+| BUG-2026-07-14-005 | Календарь не показывает дедлайн задачи даже после явного выбора дня | Medium | P2 | Done | Codex | NEW-021 | Ночной staging-smoke 2026-07-14 воспроизводил баг на задаче, где home уже видел дедлайн, а календарь — нет. На 2026-07-15 подтверждён root cause: calendar path использовал собственный parser и не понимал относительные сроки вроде `сегодня/завтра`, хотя остальной UI уже жил на `parseTaskDate()`. В `parseCalendarTaskDeadline()` добавлен общий parser, staging Pages вручную обновлён на `https://73d33de6.4-ai-staging.pages.dev`, и live smoke с задачей `Smoke calendar task` (`deadline: сегодня`) теперь показывает её в `Все дедлайны` как `сегодня / Я — Smoke calendar task`. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed calendar default 'Все дедлайны' contains seeded active deadlines without day click. |
+| BUG-2026-07-15-001 | AI-чат уточняет задачу до создания вместо task-first сохранения | High | P1 | Done | Codex | SMART-004 | Root cause был в самом фронтовом flow: в `sendAsk()` task-intent fallback создавал задачу только после ответа модели и дополнительно блокировался локальным clarify-шагом, который запускался до `createTaskFromChat()`. Из-за этого AI мог сначала задавать уточнение и не сохранять сам интент. На 2026-07-15 task-intent path переведён в режим create-first: `<create_task>` и `looksLikeTaskRequest()` теперь создают задачу сразу, а подтверждение prepend-ится перед AI-ответом. Для фразы `сделать текст завтра` live smoke на `https://1103d926.4-ai-staging.pages.dev` дал `✅ Задача «Сделать текст» добавлена`, а тот же аккаунт сразу видит в `/tasks` запись `Сделать текст` с `deadline: завтра`, `source: ai_chat`, `originalMsg: сделать текст завтра`. |
+| BUG-2026-07-15-002 | Composer AI-чата уезжает под нижнее меню | Medium | P2 | Done | Codex | N/A | На live mobile smoke root cause подтверждён пиксельно: до отправки сообщения `ask`-экран держал `global-nav` скрытым, а после blur/send keyboard-close path снова снимал `hidden`, хотя экран оставался `ask`; в итоге bottom-nav ложился поверх composer (`overlap=64px` на viewport 390x844). На 2026-07-15 AI-чат помечен как `screen--no-bottom-nav`, JS больше не размораживает nav для `ask`, а `styles.css` / `styles.min.css` получили ask-specific padding без нижнего nav reserve. Повторный live smoke на `https://1103d926.4-ai-staging.pages.dev` показывает `navHidden=true` и `overlap=0` и до, и после отправки. |
+| BUG-2026-07-15-003 | `/analytics/summary` не отражает lite-события, хотя `/analytics/lite-event` отвечает `200` | High | P1 | Done | Codex | ANALYTICS-001 / BACK-038 | Root cause подтверждён и исправлен на staging 2026-07-15: email-auth пользователи сохранялись только в KV (`saveUser()`), а analytics-summary / `audit_events` жили в D1, поэтому `recordAuditEvent()` не мог честно собирать e2e activation path. В `4e-worker/worker.js` добавлен узкий D1 shadow-sync профиля из `saveUser()`, staging worker задеплоен, и live smoke на `https://restless-lab-d737-staging.shelckograff.workers.dev` теперь зелёный: до smoke `users.total=10`, `auditEvents.total=0`; после fresh register + `plan-view` + `focus-open` + `statistics-open` summary даёт `users.total=11`, `auditEvents.total=4`, `activation.auth.register.d1=1`, `dailyValue.planView/focusOpen/statisticsOpen = 1/1/1`. Прямой `wrangler d1 execute --env staging` подтвердил `audit_events.total=5`, `register=2`, `lite-plan/focus/statistics = 1/1/1` после репликации. |
+| BUG-2026-07-15-004 | На staging нет admin-fixture path для expired-user, из-за чего BACK-059 нельзя честно прогнать | Medium | P1 | Done | Codex | BACK-059 | На staging 2026-07-15 добавлен узкий reversible admin-only fixture path `PUT /admin/users/:id/fixture/expired`, доступный только при staging `APP_BASE_URL`. Endpoint сохраняет backup user-state в KV, переводит `trialEndsAt` и `entitlement.accessUntil` в прошлое, а `mode=revert` откатывает исходные данные. Live smoke подтверждён реальным gated path `POST /auth/link-telegram`: до fixture `200`, после `mode=apply` endpoint возвращает `403`, после `mode=revert` снова `200`. Gate-логика (`hasPremiumAccess` / entitlement decision) не менялась. |
+| BUG-2026-07-15-005 | Worker bot-path принимал `x-action=save-task` без `x-bot-signature` / `x-bot-timestamp` / `x-bot-nonce` | High | P1 | Done | Codex | BACK-060 | Original finding: unsigned sessionless bot-style `save-task` with `telegramUserId=7000002294` could create a task for a linked user. Final fix is tracked in `BACK-060`. Fresh staging re-smoke 2026-07-17 proved the exact exploit is closed: fresh linked user `telegramId=7910751623`, unsigned `save-task` with `telegramUserId` returned `403 {"ok":false,"error":"bot signature invalid"}`, and `/tasks` stayed `[]` before/after (`LINKED_UNSIGNED_SAVE_TASK_CREATED: False`). Additional unsigned `done-task` and `delete-task` with `telegramUserId` also returned `403 bot signature invalid`. Sibling unsigned checks for `update-task` and `set-reminder` returned `401 Не авторизован`, with no bot-style effect observed. Evidence doc: `docs/tasks/BUG-2026-07-15-005-staging-resmoke-2026-07-17.md`. |
+| BUG-2026-07-14-003 | Staging /auth/telegram падает Worker exception 1101 | High | P1 | Done | Codex | N/A | 2026-07-14 staging tail дал точный stack: merge-ветка `/auth/telegram` падала на `ReferenceError: isPaidUser is not defined` в `betterAccountByPlanOrTrial()` -> `mergeAccounts()` -> `handleTelegramAuth()`. Исправлено в `4e-worker/worker.js` узким helper-ом `isPaidUser(user) { return user.plan === "paid"; }`, staging worker задеплоен как version `d98c7ca9-1300-4e2a-81eb-1ad6a5ced167`. Повторный live smoke после deploy: fresh web-account + `POST /auth/telegram` с тем же Telegram ID теперь возвращает `200`, `accountMerged: true`, а `wrangler tail` показывает `POST /auth/telegram - Ok` без exception. |
+| BUG-2026-07-05-002 | Профиль на мобильной веб-версии выглядит неаккуратно: съехали отступы, бейджи и секции формы | Medium | P2 | Ready for QA | Юрий | BACK-043 | Ветка `fix/profile-responsive-ui`, commit `33903b4`; ждёт скрины и ручной smoke Алексея |
+| BUG-2026-07-05-001 | Нижняя панель растягивается на ширину браузера, а не экрана приложения | Medium | P2 | Done | Юрий | BACK-046 | Ветка `fix/bottom-nav-app-width`, commit `748dcfd`; проверить все экраны с нижней панелью |
+| BUG-2026-07-05-003 | На первом экране после 22:00 показывается отрицательное время до конца дня | Medium | P2 | Done | Codex / Юрий | BACK-056 | В `.tmp-4e-app-publish/index.html` расчёт `22 - hr` заменён на human-friendly tail: после 22:00 home показывает `вечерний фокус`, а не отрицательные часы |
+| BUG-2026-07-04-003 | На экране email-входа Enter не запускает авторизацию | Medium | P2 | Done | Codex | N/A | Локальный фикс в `index.html`; проверить на ноутбуке в email и password полях |
+| BUG-2026-07-04-002 | В веб-версии кнопка "Войти через Telegram" не открывает Telegram из-за `tg://resolve` | High | P1 | Ready for QA | Codex | BACK-036 | Локальный фикс в `fix/telegram-login-web-fallback`; нужен live smoke после публикации |
+| NEW-001 | Уведомления: утренний брифинг не сработал | Medium | P2 | Triaged | Юрий + Codex | N/A | Telegram Mini Apps: проверить все тумблеры уведомлений и сценарий morning-briefing |
+| NEW-002 | Статистика: неактуальные данные / не открываются активные задачи | Medium | P2 | Done | Юрий + Codex | N/A | Базовый stats-fix остаётся тем же (`loadStats()` на реальных local выборках, живые `onclick` у active/promises), но ночной regression 2026-07-14 честно вынесен в `BUG-2026-07-14-004`. После `sanitizeClaudeMessages()` и fresh staging deploy `https://73d33de6.4-ai-staging.pages.dev` live smoke 2026-07-15 больше не воспроизводит validation error, а экран `Статистика` снова видит свежесозданную задачу аккаунта. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed statistics data and active-list CTA with real seeded tasks. |
+| NEW-003 | Профиль: дублируется аватар | Low | P3 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/index.html` удалён второй preview-avatar из profile details card; единственной точкой фото остаётся верхний `#profile-avatar` Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: profile has one visible large avatar (#profile-avatar) and no duplicate #profile-photo-preview. |
+| NEW-004 | Профиль: личные данные занимают слишком много места | Low | P3 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/index.html` поле имени перенесено в collapsible section `Личные данные аккаунта`, отдельная card сверху убрана; профиль стал короче без потери полей Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: personal data section is collapsed by default and name field lives inside #profile-pii-section. |
+| NEW-005 | Карточка задачи: заголовок/срок обрезаются | Medium | P2 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/scripts/task-ui-renderers.js` task-card рендер переведён на более устойчивый head/title layout: deadline теперь может переноситься, title не зажат в одну строку, tag укорочен Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: long task title with long assignee and deadline renders in filtered active list without horizontal overflow. |
+| NEW-006 | Safe area: перекрытие нижним меню | High | P1 | Triaged | Юрий + Codex | N/A | Низ приложения в Telegram Mini App не должен быть перекрыт навигацией/панелью |
+| NEW-007 | Карточка задачи: блоки «Обсуждение/Совет/История» требуют переработки | Medium | P2 | Done | Юрий + Codex | N/A | Вкладка `История` теперь показывает непрерывную хронологию задачи: системные события, сообщения обсуждения и summary действий 4 больше не разорваны по разным блокам. Нужен QA-smoke на порядок событий и длинные треды. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: task detail opens for seeded task and shows detail/history/discussion surface without runtime errors. |
+| NEW-008 | AI-чат: поле ввода перекрывается нижним меню | High | P1 | Triaged | Юрий + Codex | N/A | Поле ввода должно оставаться доступным с открытой клавиатурой |
+| NEW-009 | AI-чат: нет быстрых действий голос/вложения | Medium | P2 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/index.html` внизу AI-чата снова видны voice/attachment quick actions; voice ведёт в `openVoice()`, attachment даёт честный placeholder-toast 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed voice and attachment quick actions are visible and wired. |
+| NEW-010 | Главный экран: кнопка «Завершить» непропорциональна | Low | P3 | Done | Юрий + Codex | N/A | Покрыто `HOME-001`: на home-экране старый паттерн с непропорциональной кнопкой убран вместе с прежними карточками, вместо него — top-3 приоритетов с открытием детали задачи. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: home has top-3 priority rows and no old 'Завершить' buttons on the main screen. |
+| NEW-011 | Главный экран: задачи объединены в общий контейнер | Medium | P2 | Done | Юрий + Codex | N/A | Покрыто `HOME-001`: home разбит на отдельные читаемые блоки `Фокус дня`, `метрики`, `top-3 задач`, без слитого общего контейнера. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: home renders separate focus, 4 metric cards and 3 readable top-list rows (row width 324px), not one merged container. |
+| NEW-012 | Статистика: не отображаются завершенные задачи и история | Medium | P2 | Done | Юрий + Codex | N/A | В overview статистики добавлен отдельный блок completed/history, который показывает последние завершённые задачи и строку истории на базе `getTaskHistoryRows()` и done-timestamps Code fix 2026-07-15: loadTasks now keeps all tasks in allTasksCache instead of active-only, so openStatistics can render completed/history. Live smoke on https://88193776.4-ai-staging.pages.dev: done task appears in #stats-done-list and cache contains doneInCache=1. |
+| NEW-013 | Главный экран: перегружен «Фокус дня» | Low | P3 | Done | Юрий + Codex | N/A | Покрыто `HOME-001`: блок `Фокус дня` упрощён до короткого основного сообщения и одной подписи, без прежней визуальной перегрузки copy. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: focus-card copy is compact ('3 задачи требуют внимания' + short subtitle) without old overloaded text. |
+| NEW-014 | План дня: нет детальной сводки | Medium | P2 | Done | Юрий + Codex | N/A | Сводка плана дня уже реализована: `Фокус дня` открывает отдельную overlay-панель, а списки по категориям (`Выполнено`, `Активные`, `Обещания`) доступны с home-экрана и со статистики. Нужен только QA-smoke переходов. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed focus-day overlay opens and renders real tasks. |
+| NEW-015 | План дня: отсутствуют метки направления/даты постановки/дедлайна | Medium | P2 | Done | Юрий + Codex | N/A | Карточки план-потока и связанные списки теперь показывают 3 обязательные метаданные: направление, дату постановки и дедлайн. Нужен только QA-smoke на мобильной читаемости. 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed unified direction/created/deadline meta in home and focus rows. |
+| NEW-016 | Фокус дня: текст наезжает на декоративную планету | Low | P3 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/index.html` увеличен правый reserve у text-block в focus-card и немного уменьшен headline, чтобы текст не наезжал на планету Code fix 2026-07-15: focus-card text layer z-index raised, decorative layer lowered and text safe padding increased to 144px. Live smoke on https://88193776.4-ai-staging.pages.dev: contentRight=209 before decorLeft=237. |
+| NEW-017 | Календарь: при первом открытии показываются демо-задачи | Medium | P2 | Triaged | Юрий + Codex | N/A | Первый экран календаря должен показывать пользовательские задачи |
 
-## Р”РµС‚Р°Р»Рё Р°РєС‚РёРІРЅС‹С… Р±Р°РіРѕРІ
+## Детали активных багов
 
-### BUG-2026-07-05-003 вЂ” РќР° РїРµСЂРІРѕРј СЌРєСЂР°РЅРµ РїРѕСЃР»Рµ 22:00 РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ РІСЂРµРјСЏ РґРѕ РєРѕРЅС†Р° РґРЅСЏ
+### BUG-2026-07-05-003 — На первом экране после 22:00 показывается отрицательное время до конца дня
 
-**Р”Р°С‚Р°:** 2026-07-05
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** Р»РѕРєР°Р»СЊРЅС‹Р№ `main`, mobile viewport `360x800`, `375x667`, `390x844`, Home / РїРµСЂРІС‹Р№ СЌРєСЂР°РЅ
+**Дата:** 2026-07-05
+**Версия/окружение:** локальный `main`, mobile viewport `360x800`, `375x667`, `390x844`, Home / первый экран
 **Severity:** Medium
 **Priority:** P2
-**РЎС‚Р°С‚СѓСЃ:** Ready for QA
-**РњРµС‚РєР°:** UI / Home / AI planner / Time copy
+**Статус:** Ready for QA
+**Метка:** UI / Home / AI planner / Time copy
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** Home вЂ” РїРµСЂРІС‹Р№ СЌРєСЂР°РЅ РїСЂРѕРґСѓРєС‚Р° Рё РіР»Р°РІРЅС‹Р№ СЃС†РµРЅР°СЂРёР№ "Р·Р° 30 СЃРµРєСѓРЅРґ РїРѕРЅСЏС‚СЊ, С‡С‚Рѕ РІР°Р¶РЅРѕ СЃРµРіРѕРґРЅСЏ". РћС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ РІСЂРµРјСЏ РІ С„РѕРєСѓСЃ-Р±Р»РѕРєРµ РІС‹РіР»СЏРґРёС‚ РєР°Рє СЃР»РѕРјР°РЅРЅР°СЏ Р»РѕРіРёРєР° Рё СЃРЅРёР¶Р°РµС‚ РґРѕРІРµСЂРёРµ Рє AI-РїР»Р°РЅРµСЂСѓ, РґР°Р¶Рµ РµСЃР»Рё Р·Р°РґР°С‡Рё Рё РЅР°РІРёРіР°С†РёСЏ СЂР°Р±РѕС‚Р°СЋС‚.
+**Почему существенно:** Home — первый экран продукта и главный сценарий "за 30 секунд понять, что важно сегодня". Отрицательное время в фокус-блоке выглядит как сломанная логика и снижает доверие к AI-планеру, даже если задачи и навигация работают.
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ РїСЂРёР»РѕР¶РµРЅРёРµ РїРѕСЃР»Рµ 22:00 Р»РѕРєР°Р»СЊРЅРѕРіРѕ РІСЂРµРјРµРЅРё.
-2. РђРІС‚РѕСЂРёР·РѕРІР°С‚СЊСЃСЏ РёР»Рё РѕС‚РєСЂС‹С‚СЊ Home РІ QA/mock-СЃРѕСЃС‚РѕСЏРЅРёРё СЃ Р°РєС‚РёРІРЅС‹РјРё Р·Р°РґР°С‡Р°РјРё.
-3. РџРѕСЃРјРѕС‚СЂРµС‚СЊ СЃС‚СЂРѕРєСѓ `Р¤РѕРєСѓСЃ РґРЅСЏ`.
+**Шаги воспроизведения:**
+1. Открыть приложение после 22:00 локального времени.
+2. Авторизоваться или открыть Home в QA/mock-состоянии с активными задачами.
+3. Посмотреть строку `Фокус дня`.
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** РІ С„РѕРєСѓСЃ-Р±Р»РѕРєРµ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ С‚РµРєСЃС‚ РІРёРґР° `2 Р·Р°РґР°С‡ РіРѕСЂСЏС‚ В· -1 С‡ РґРѕ РєРѕРЅС†Р° РґРЅСЏ`.
+**Фактический результат:** в фокус-блоке отображается текст вида `2 задач горят · -1 ч до конца дня`.
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** СЃС‚СЂРѕРєР° РЅРµ РґРѕР»Р¶РЅР° РїРѕРєР°Р·С‹РІР°С‚СЊ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ РІСЂРµРјСЏ. РџРѕСЃР»Рµ 22:00 РЅСѓР¶РµРЅ РЅРµР№С‚СЂР°Р»СЊРЅС‹Р№ С‚РµРєСЃС‚, РЅР°РїСЂРёРјРµСЂ `РґРѕ РєРѕРЅС†Р° РґРЅСЏ РѕСЃС‚Р°Р»РѕСЃСЊ РјР°Р»Рѕ РІСЂРµРјРµРЅРё`, `РІРµС‡РµСЂРЅРёР№ С„РѕРєСѓСЃ` РёР»Рё СЂР°СЃС‡С‘С‚ РґРѕ 23:59 Р±РµР· РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹С… Р·РЅР°С‡РµРЅРёР№.
+**Ожидаемый результат:** строка не должна показывать отрицательное время. После 22:00 нужен нейтральный текст, например `до конца дня осталось мало времени`, `вечерний фокус` или расчёт до 23:59 без отрицательных значений.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** Codex mobile QA 2026-07-05, viewport `360x800` Рё `390x844`.
+**Вложения/логи:** Codex mobile QA 2026-07-05, viewport `360x800` и `390x844`.
 
-**Р РµС€РµРЅРёРµ:** РІ `.tmp-4e-app-publish/index.html` СЂР°СЃС‡С‘С‚ РїРµСЂРµРІРµРґС‘РЅ РЅР° human-friendly copy: РґРѕ 22:00 РѕСЃС‚Р°С‘С‚СЃСЏ РѕР±С‹С‡РЅС‹Р№ С…РІРѕСЃС‚ РІРёРґР° `N С‡ РґРѕ РєРѕРЅС†Р° РґРЅСЏ`, РїРѕСЃР»Рµ 22:00 СЃС‚СЂРѕРєР° РїРµСЂРµРєР»СЋС‡Р°РµС‚СЃСЏ РЅР° РЅРµР№С‚СЂР°Р»СЊРЅС‹Р№ СЃС‚Р°С‚СѓСЃ `РІРµС‡РµСЂРЅРёР№ С„РѕРєСѓСЃ`. Р—Р°РѕРґРЅРѕ РёСЃРїСЂР°РІР»РµРЅР° СЂСѓСЃСЃРєР°СЏ С„РѕСЂРјР° `Р·Р°РґР°С‡Р°/Р·Р°РґР°С‡Рё/Р·Р°РґР°С‡`, С‡С‚РѕР±С‹ СЃС‚СЂРѕРєР° РЅРµ РІС‹РіР»СЏРґРµР»Р° РєР°Рє `2 Р·Р°РґР°С‡ РіРѕСЂСЏС‚`.
+**Решение:** в `.tmp-4e-app-publish/index.html` расчёт переведён на human-friendly copy: до 22:00 остаётся обычный хвост вида `N ч до конца дня`, после 22:00 строка переключается на нейтральный статус `вечерний фокус`. Заодно исправлена русская форма `задача/задачи/задач`, чтобы строка не выглядела как `2 задач горят`.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. Р”Рѕ 22:00 СЃС‚СЂРѕРєР° РїРѕРєР°Р·С‹РІР°РµС‚ РЅРѕСЂРјР°Р»СЊРЅРѕРµ РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕРµ РІСЂРµРјСЏ РёР»Рё РЅРµР№С‚СЂР°Р»СЊРЅС‹Р№ СЃС‚Р°С‚СѓСЃ.
-2. РџРѕСЃР»Рµ 22:00 СЃС‚СЂРѕРєР° РЅРµ СЃРѕРґРµСЂР¶РёС‚ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹С… С‡РёСЃРµР».
-3. РќР° `360x800`, `375x667`, `390x844` РїРµСЂРІС‹Р№ СЌРєСЂР°РЅ РѕСЃС‚Р°С‘С‚СЃСЏ Р±РµР· РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕРіРѕ СЃРєСЂРѕР»Р»Р°.
-4. Home СЃ РїСѓСЃС‚С‹Рј СЃРїРёСЃРєРѕРј Р·Р°РґР°С‡ РЅРµ РїРѕР»СѓС‡Р°РµС‚ СЂРµРіСЂРµСЃСЃРёСЋ.
+**Проверка после фикса:**
+1. До 22:00 строка показывает нормальное положительное время или нейтральный статус.
+2. После 22:00 строка не содержит отрицательных чисел.
+3. На `360x800`, `375x667`, `390x844` первый экран остаётся без горизонтального скролла.
+4. Home с пустым списком задач не получает регрессию.
 
-### BUG-2026-07-05-002 вЂ” РџСЂРѕС„РёР»СЊ РЅР° РјРѕР±РёР»СЊРЅРѕР№ РІРµР±-РІРµСЂСЃРёРё РІС‹РіР»СЏРґРёС‚ РЅРµР°РєРєСѓСЂР°С‚РЅРѕ
+### BUG-2026-07-05-002 — Профиль на мобильной веб-версии выглядит неаккуратно
 
-**Р”Р°С‚Р°:** 2026-07-05
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** РІРµР±-РІРµСЂСЃРёСЏ / РјРѕР±РёР»СЊРЅР°СЏ С€РёСЂРёРЅР° СЌРєСЂР°РЅР°, РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+**Дата:** 2026-07-05
+**Версия/окружение:** веб-версия / мобильная ширина экрана, профиль пользователя
 **Severity:** Medium
 **Priority:** P2
-**РЎС‚Р°С‚СѓСЃ:** Ready for QA
-**РњРµС‚РєР°:** UI / Profile / Mobile layout
+**Статус:** Ready for QA
+**Метка:** UI / Profile / Mobile layout
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** РїСЂРѕС„РёР»СЊ вЂ” СЌРєСЂР°РЅ РґРѕРІРµСЂРёСЏ Рё РЅР°СЃС‚СЂРѕР№РєРё Р°РєРєР°СѓРЅС‚Р°. РЎРµР№С‡Р°СЃ РЅР° РјРѕР±РёР»СЊРЅРѕР№ С€РёСЂРёРЅРµ С„РѕСЂРјР° РІС‹РіР»СЏРґРёС‚ СЃРѕР±СЂР°РЅРЅРѕР№ РЅРµР±СЂРµР¶РЅРѕ: СЃС‚Р°С‚СѓСЃРЅС‹Рµ Р±РµР№РґР¶Рё, РїРѕРґРїРёСЃРё РїРѕР»РµР№ Рё СЃРµРєС†РёРё РІРёР·СѓР°Р»СЊРЅРѕ СЃРїРѕСЂСЏС‚ РґСЂСѓРі СЃ РґСЂСѓРіРѕРј, С‡Р°СЃС‚СЊ СЌР»РµРјРµРЅС‚РѕРІ РїРѕС‡С‚Рё РїСЂРёР»РёРїР°РµС‚ Рє СЃРѕСЃРµРґРЅРёРј Р±Р»РѕРєР°Рј. Р­С‚Рѕ РЅРµ Р±Р»РѕРєРёСЂСѓРµС‚ СЃС†РµРЅР°СЂРёР№, РЅРѕ СЃРЅРёР¶Р°РµС‚ РѕС‰СѓС‰РµРЅРёРµ РєР°С‡РµСЃС‚РІР° РїСЂРѕРґСѓРєС‚Р° РїРµСЂРµРґ Р·Р°РєСЂС‹С‚С‹Рј С‚РµСЃС‚РѕРј.
+**Почему существенно:** профиль — экран доверия и настройки аккаунта. Сейчас на мобильной ширине форма выглядит собранной небрежно: статусные бейджи, подписи полей и секции визуально спорят друг с другом, часть элементов почти прилипает к соседним блокам. Это не блокирует сценарий, но снижает ощущение качества продукта перед закрытым тестом.
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ РІРµР±-РІРµСЂСЃРёСЋ РїСЂРёР»РѕР¶РµРЅРёСЏ РЅР° РјРѕР±РёР»СЊРЅРѕР№ С€РёСЂРёРЅРµ РёР»Рё РІ mobile viewport.
-2. РџРµСЂРµР№С‚Рё РЅР° СЌРєСЂР°РЅ "РџСЂРѕС„РёР»СЊ".
-3. РџСЂРѕСЃРєСЂРѕР»Р»РёС‚СЊ Р±Р»РѕРє СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ РїСЂРѕС„РёР»СЏ РґРѕ РїРѕР»РµР№ "РўРµР»РµС„РѕРЅ", "Email", "Telegram", "Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ" Рё "Рћ СЃРµР±Рµ".
+**Шаги воспроизведения:**
+1. Открыть веб-версию приложения на мобильной ширине или в mobile viewport.
+2. Перейти на экран "Профиль".
+3. Проскроллить блок редактирования профиля до полей "Телефон", "Email", "Telegram", "Дата рождения" и "О себе".
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** Сѓ СЃС‚СЂРѕРєРё Telegram Р±РµР№РґР¶ "РќРµ РїСЂРёРІСЏР·Р°РЅ" РІРёР·СѓР°Р»СЊРЅРѕ РїСЂРёР¶Р°С‚ Рє РїРѕР»СЋ Рё РІС‹РіР»СЏРґРёС‚ РєР°Рє СЃР»СѓС‡Р°Р№РЅРѕ РЅР°Р»РѕР¶РµРЅРЅС‹Р№ СЌР»РµРјРµРЅС‚; Р·Р°РіРѕР»РѕРІРєРё "Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ" Рё "Рћ СЃРµР±Рµ" СЃС‚РѕСЏС‚ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РїСЂРµРґС‹РґСѓС‰РёРј Р±Р»РѕРєР°Рј; РїРѕР»Рµ "Рћ СЃРµР±Рµ" Рё СЃС‡С‘С‚С‡РёРє `0 / 200` РЅРµ РѕР±СЂР°Р·СѓСЋС‚ Р°РєРєСѓСЂР°С‚РЅСѓСЋ РµРґРёРЅСѓСЋ СЃРµРєС†РёСЋ; РѕР±С‰РёР№ СЂРёС‚Рј РѕС‚СЃС‚СѓРїРѕРІ РІ С„РѕСЂРјРµ РЅРµСЂРѕРІРЅС‹Р№.
+**Фактический результат:** у строки Telegram бейдж "Не привязан" визуально прижат к полю и выглядит как случайно наложенный элемент; заголовки "Дата рождения" и "О себе" стоят слишком близко к предыдущим блокам; поле "О себе" и счётчик `0 / 200` не образуют аккуратную единую секцию; общий ритм отступов в форме неровный.
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** СЃС‚СЂРѕРєРё РїСЂРѕС„РёР»СЏ РІС‹РіР»СЏРґСЏС‚ РєР°Рє РµРґРёРЅР°СЏ Р°РєРєСѓСЂР°С‚РЅР°СЏ С„РѕСЂРјР°: РѕРґРёРЅР°РєРѕРІС‹Рµ РѕС‚СЃС‚СѓРїС‹ РјРµР¶РґСѓ СЃРµРєС†РёСЏРјРё, СЃС‚Р°С‚СѓСЃРЅС‹Рµ Р±РµР№РґР¶Рё РІС‹СЂРѕРІРЅРµРЅС‹ Рё РЅРµ РєРѕРЅС„Р»РёРєС‚СѓСЋС‚ СЃ input-РїРѕР»СЏРјРё, Р·Р°РіРѕР»РѕРІРєРё СЃРµРєС†РёР№ РЅРµ РїСЂРёР»РёРїР°СЋС‚ Рє СЃРѕСЃРµРґРЅРёРј РєР°СЂС‚РѕС‡РєР°Рј, textarea "Рћ СЃРµР±Рµ" Рё СЃС‡С‘С‚С‡РёРє С‡РёС‚Р°СЋС‚СЃСЏ РєР°Рє РѕРґРёРЅ Р±Р»РѕРє.
+**Ожидаемый результат:** строки профиля выглядят как единая аккуратная форма: одинаковые отступы между секциями, статусные бейджи выровнены и не конфликтуют с input-полями, заголовки секций не прилипают к соседним карточкам, textarea "О себе" и счётчик читаются как один блок.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** РґРІР° СЃРєСЂРёРЅР° РђР»РµРєСЃРµСЏ 2026-07-05 СЃ РєСЂР°СЃРЅС‹РјРё СЃС‚СЂРµР»РєР°РјРё РЅР° РїСЂРѕР±Р»РµРјРЅС‹Рµ РјРµСЃС‚Р° РІ РїСЂРѕС„РёР»Рµ.
+**Вложения/логи:** два скрина Алексея 2026-07-05 с красными стрелками на проблемные места в профиле.
 
-**Р РµС€РµРЅРёРµ:** Р·Р°РІРµСЃС‚Рё РѕС‚РґРµР»СЊРЅС‹Р№ UI-С„РёРєСЃ `BACK-043`. Р®СЂРµ РїСЂРѕРІРµСЂРёС‚СЊ CSS/HTML РїСЂРѕС„РёР»СЏ РЅР° РјРѕР±РёР»СЊРЅРѕР№ С€РёСЂРёРЅРµ, РѕСЃРѕР±РµРЅРЅРѕ СЃС‚СЂРѕРєРё phone/email/telegram, Р·Р°РіРѕР»РѕРІРєРё СЃРµРєС†РёР№, textarea "Рћ СЃРµР±Рµ", СЃС‡С‘С‚С‡РёРє СЃРёРјРІРѕР»РѕРІ Рё СЂР°СЃСЃС‚РѕСЏРЅРёРµ РґРѕ РєРЅРѕРїРєРё "РЎРѕС…СЂР°РЅРёС‚СЊ РїСЂРѕС„РёР»СЊ" / РЅРёР¶РЅРµР№ РЅР°РІРёРіР°С†РёРё.
+**Решение:** завести отдельный UI-фикс `BACK-043`. Юре проверить CSS/HTML профиля на мобильной ширине, особенно строки phone/email/telegram, заголовки секций, textarea "О себе", счётчик символов и расстояние до кнопки "Сохранить профиль" / нижней навигации.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. Mobile web 390px: СЃС‚СЂРѕРєРё phone/email/telegram РІС‹РіР»СЏРґСЏС‚ СЂРѕРІРЅРѕ, Р±РµР№РґР¶Рё СЃС‚Р°С‚СѓСЃР° РЅРµ РЅР°Р»РµР·Р°СЋС‚ РЅР° РїРѕР»СЏ Рё РЅРµ РІС‹РіР»СЏРґСЏС‚ СЃР»СѓС‡Р°Р№РЅРѕ РїСЂРёРєР»РµРµРЅРЅС‹РјРё.
-2. Р—Р°РіРѕР»РѕРІРєРё "Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ" Рё "Рћ СЃРµР±Рµ" РёРјРµСЋС‚ РЅРѕСЂРјР°Р»СЊРЅС‹Р№ РІРµСЂС…РЅРёР№ РѕС‚СЃС‚СѓРї Рё РЅРµ РїСЂРёР»РёРїР°СЋС‚ Рє РїСЂРµРґС‹РґСѓС‰РµР№ РєР°СЂС‚РѕС‡РєРµ.
-3. РџРѕР»Рµ "Рћ СЃРµР±Рµ" РЅРµ РїРµСЂРµРєСЂС‹РІР°РµС‚СЃСЏ РЅРёР¶РЅРµР№ РЅР°РІРёРіР°С†РёРµР№; СЃС‡С‘С‚С‡РёРє `0 / 200` СЃС‚РѕРёС‚ РІ РїРѕРЅСЏС‚РЅРѕРј РјРµСЃС‚Рµ Рё РЅРµ РІРёСЃРёС‚ РѕС‚РґРµР»СЊРЅРѕ.
-4. РљРЅРѕРїРєР° "РЎРѕС…СЂР°РЅРёС‚СЊ РїСЂРѕС„РёР»СЊ" РґРѕСЃС‚СѓРїРЅР° РїРѕСЃР»Рµ РїСЂРѕРєСЂСѓС‚РєРё Рё РЅРµ РєРѕРЅС„Р»РёРєС‚СѓРµС‚ СЃ РЅРёР¶РЅРµР№ РЅР°РІРёРіР°С†РёРµР№.
-5. Desktop/web Рё Telegram WebView РЅРµ РїРѕР»СѓС‡Р°СЋС‚ СЂРµРіСЂРµСЃСЃРёР№ РЅР° СЌРєСЂР°РЅРµ РїСЂРѕС„РёР»СЏ.
+**Проверка после фикса:**
+1. Mobile web 390px: строки phone/email/telegram выглядят ровно, бейджи статуса не налезают на поля и не выглядят случайно приклеенными.
+2. Заголовки "Дата рождения" и "О себе" имеют нормальный верхний отступ и не прилипают к предыдущей карточке.
+3. Поле "О себе" не перекрывается нижней навигацией; счётчик `0 / 200` стоит в понятном месте и не висит отдельно.
+4. Кнопка "Сохранить профиль" доступна после прокрутки и не конфликтует с нижней навигацией.
+5. Desktop/web и Telegram WebView не получают регрессий на экране профиля.
 
-### BUG-2026-07-05-001 вЂ” РќРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ СЂР°СЃС‚СЏРіРёРІР°РµС‚СЃСЏ РЅР° С€РёСЂРёРЅСѓ Р±СЂР°СѓР·РµСЂР°, Р° РЅРµ СЌРєСЂР°РЅР° РїСЂРёР»РѕР¶РµРЅРёСЏ
+### BUG-2026-07-05-001 — Нижняя панель растягивается на ширину браузера, а не экрана приложения
 
-**Р”Р°С‚Р°:** 2026-07-05
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** РІРµР±-РІРµСЂСЃРёСЏ / desktop browser, РїСЂРёР»РѕР¶РµРЅРёРµ РѕС‚РєСЂС‹С‚Рѕ РєР°Рє СѓР·РєРёР№ РјРѕР±РёР»СЊРЅС‹Р№ СЌРєСЂР°РЅ РїРѕ С†РµРЅС‚СЂСѓ
+**Дата:** 2026-07-05
+**Версия/окружение:** веб-версия / desktop browser, приложение открыто как узкий мобильный экран по центру
 **Severity:** Medium
 **Priority:** P2
-**РЎС‚Р°С‚СѓСЃ:** Ready for QA
-**РњРµС‚РєР°:** UI / Navigation / Responsive shell
+**Статус:** Ready for QA
+**Метка:** UI / Navigation / Responsive shell
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** РЅР° desktop/web-РїСЂРѕСЃРјРѕС‚СЂРµ РёРЅС‚РµСЂС„РµР№СЃ РІРёР·СѓР°Р»СЊРЅРѕ РїРѕРєР°Р·С‹РІР°РµС‚ РјРѕР±РёР»СЊРЅС‹Р№ СЌРєСЂР°РЅ РїСЂРёР»РѕР¶РµРЅРёСЏ РїРѕ С†РµРЅС‚СЂСѓ, РЅРѕ РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ СѓС…РѕРґРёС‚ РЅР° РІСЃСЋ С€РёСЂРёРЅСѓ Р±СЂР°СѓР·РµСЂР°. Р­С‚Рѕ Р»РѕРјР°РµС‚ РѕС‰СѓС‰РµРЅРёРµ С†РµР»СЊРЅРѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ Рё РјРѕР¶РµС‚ РјРµС€Р°С‚СЊ QA, РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЌР»РµРјРµРЅС‚С‹ РЅР°РІРёРіР°С†РёРё РѕРєР°Р·С‹РІР°СЋС‚СЃСЏ РґР°Р»РµРєРѕ Р·Р° РїСЂРµРґРµР»Р°РјРё СЂР°Р±РѕС‡РµРіРѕ СЌРєСЂР°РЅР°.
+**Почему существенно:** на desktop/web-просмотре интерфейс визуально показывает мобильный экран приложения по центру, но нижняя панель уходит на всю ширину браузера. Это ломает ощущение цельного приложения и может мешать QA, потому что элементы навигации оказываются далеко за пределами рабочего экрана.
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ РїСЂРёР»РѕР¶РµРЅРёРµ РІ desktop browser РёР»Рё С€РёСЂРѕРєРѕРј РѕРєРЅРµ.
-2. РџРѕРїР°СЃС‚СЊ РЅР° РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ РёР»Рё Р»СЋР±РѕР№ СЌРєСЂР°РЅ, РіРґРµ РІРёРґРЅР° РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ.
-3. РџРѕСЃРјРѕС‚СЂРµС‚СЊ РЅР° РЅРёР¶РЅСЋСЋ РЅР°РІРёРіР°С†РёСЋ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ С†РµРЅС‚СЂР°Р»СЊРЅРѕРіРѕ СЌРєСЂР°РЅР° РїСЂРёР»РѕР¶РµРЅРёСЏ.
+**Шаги воспроизведения:**
+1. Открыть приложение в desktop browser или широком окне.
+2. Попасть на главный экран или любой экран, где видна нижняя панель.
+3. Посмотреть на нижнюю навигацию относительно центрального экрана приложения.
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ Р·Р°РЅРёРјР°РµС‚ РїРѕС‡С‚Рё РІСЃСЋ С€РёСЂРёРЅСѓ РѕРєРЅР° Р±СЂР°СѓР·РµСЂР°, С…РѕС‚СЏ СЃР°Рј СЌРєСЂР°РЅ РїСЂРёР»РѕР¶РµРЅРёСЏ РѕСЃС‚Р°С‘С‚СЃСЏ СѓР·РєРёРј Рё С†РµРЅС‚СЂРёСЂРѕРІР°РЅРЅС‹Рј.
+**Фактический результат:** нижняя панель занимает почти всю ширину окна браузера, хотя сам экран приложения остаётся узким и центрированным.
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РѕРіСЂР°РЅРёС‡РµРЅР° С€РёСЂРёРЅРѕР№ СЌРєСЂР°РЅР° РїСЂРёР»РѕР¶РµРЅРёСЏ, С†РµРЅС‚СЂРёСЂРѕРІР°РЅР° РІРјРµСЃС‚Рµ СЃ РЅРёРј Рё РЅРµ РІС‹С…РѕРґРёС‚СЊ Р·Р° РїСЂРµРґРµР»С‹ app-РєРѕРЅС‚РµР№РЅРµСЂР°. Р­С‚Рѕ РґРѕР»Р¶РЅРѕ СЂР°Р±РѕС‚Р°С‚СЊ РЅР° РІСЃРµС… СЌРєСЂР°РЅР°С…, РіРґРµ РІРёРґРЅР° РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ.
+**Ожидаемый результат:** нижняя панель должна быть ограничена шириной экрана приложения, центрирована вместе с ним и не выходить за пределы app-контейнера. Это должно работать на всех экранах, где видна нижняя панель.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** СЃРєСЂРёРЅ РѕС‚ РђР»РµРєСЃРµСЏ 2026-07-05 СЃ РєСЂР°СЃРЅРѕР№ СЂР°РјРєРѕР№ РІРѕРєСЂСѓРі РЅРёР¶РЅРµР№ РїР°РЅРµР»Рё.
+**Вложения/логи:** скрин от Алексея 2026-07-05 с красной рамкой вокруг нижней панели.
 
-**Р РµС€РµРЅРёРµ:** РѕС‚РґРµР»СЊРЅС‹Р№ UI-С„РёРєСЃ `BACK-046` СѓР¶Рµ СЃРѕР±СЂР°РЅ РІ РІРµС‚РєРµ `fix/bottom-nav-app-width` (commit `748dcfd`). Р®СЂРµ РѕСЃС‚Р°РІР°Р»РѕСЃСЊ РїСЂРѕРІРµСЂРёС‚СЊ РѕР±Р° РєРѕРјРїРѕРЅРµРЅС‚Р° РЅР°РІРёРіР°С†РёРё РІ `index.html`: `bottom-nav-v2` РІРЅСѓС‚СЂРё `#home` Рё `global-nav` РґР»СЏ РѕСЃС‚Р°Р»СЊРЅС‹С… СЌРєСЂР°РЅРѕРІ. Р”Р°Р»СЊС€Рµ РЅСѓР¶РµРЅ СЂСѓС‡РЅРѕР№ smoke РђР»РµРєСЃРµСЏ: С€РёСЂРёРЅР° РїР°РЅРµР»Рё РґРѕР»Р¶РЅР° СЃРѕРІРїР°РґР°С‚СЊ СЃ app-РєРѕРЅС‚РµР№РЅРµСЂРѕРј, Р° РЅРµ viewport Р±СЂР°СѓР·РµСЂР°.
+**Решение:** отдельный UI-фикс `BACK-046` уже собран в ветке `fix/bottom-nav-app-width` (commit `748dcfd`). Юре оставалось проверить оба компонента навигации в `index.html`: `bottom-nav-v2` внутри `#home` и `global-nav` для остальных экранов. Дальше нужен ручной smoke Алексея: ширина панели должна совпадать с app-контейнером, а не viewport браузера.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. Desktop/web: РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ СЃРѕРІРїР°РґР°РµС‚ РїРѕ С€РёСЂРёРЅРµ СЃ С†РµРЅС‚СЂР°Р»СЊРЅС‹Рј СЌРєСЂР°РЅРѕРј РїСЂРёР»РѕР¶РµРЅРёСЏ.
-2. Home: `bottom-nav-v2` РЅРµ РІС‹С…РѕРґРёС‚ Р·Р° РіСЂР°РЅРёС†С‹ app-РєРѕРЅС‚РµР№РЅРµСЂР°.
-3. Calendar / AI-chat / task-detail / profile Рё РґСЂСѓРіРёРµ СЌРєСЂР°РЅС‹ СЃ nav: `global-nav` РЅРµ РІС‹С…РѕРґРёС‚ Р·Р° РіСЂР°РЅРёС†С‹ app-РєРѕРЅС‚РµР№РЅРµСЂР°.
-4. Mobile Telegram WebView: РЅРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ РѕСЃС‚Р°С‘С‚СЃСЏ РЅР° РІСЃСЋ С€РёСЂРёРЅСѓ РјРѕР±РёР»СЊРЅРѕРіРѕ СЌРєСЂР°РЅР° Рё РЅРµ Р»РѕРјР°РµС‚ safe-area.
-5. РџСЂРё РѕС‚РєСЂС‹С‚РёРё РєР»Р°РІРёР°С‚СѓСЂС‹ РІ AI-С‡Р°С‚Рµ РїСЂРµР¶РЅРµРµ СЃРєСЂС‹С‚РёРµ nav РЅРµ СЂРµРіСЂРµСЃСЃРёСЂСѓРµС‚.
+**Проверка после фикса:**
+1. Desktop/web: нижняя панель совпадает по ширине с центральным экраном приложения.
+2. Home: `bottom-nav-v2` не выходит за границы app-контейнера.
+3. Calendar / AI-chat / task-detail / profile и другие экраны с nav: `global-nav` не выходит за границы app-контейнера.
+4. Mobile Telegram WebView: нижняя панель остаётся на всю ширину мобильного экрана и не ломает safe-area.
+5. При открытии клавиатуры в AI-чате прежнее скрытие nav не регрессирует.
 
-### BUG-2026-07-04-003 вЂ” РќР° СЌРєСЂР°РЅРµ email-РІС…РѕРґР° Enter РЅРµ Р·Р°РїСѓСЃРєР°РµС‚ Р°РІС‚РѕСЂРёР·Р°С†РёСЋ
+### BUG-2026-07-04-003 — На экране email-входа Enter не запускает авторизацию
 
-**Р”Р°С‚Р°:** 2026-07-04
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** РІРµР±-РІРµСЂСЃРёСЏ / РЅРѕСѓС‚Р±СѓРє, СЌРєСЂР°РЅ РІС…РѕРґР°
+**Дата:** 2026-07-04
+**Версия/окружение:** веб-версия / ноутбук, экран входа
 **Severity:** Medium
 **Priority:** P2
-**РЎС‚Р°С‚СѓСЃ:** Ready for QA
-**РњРµС‚РєР°:** Auth / Keyboard UX
+**Статус:** Ready for QA
+**Метка:** Auth / Keyboard UX
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** РЅР° РЅРѕСѓС‚Р±СѓРєРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕР¶РёРґР°РµС‚ СЃС‚Р°РЅРґР°СЂС‚РЅРѕРµ РїРѕРІРµРґРµРЅРёРµ С„РѕСЂРјС‹: РїРѕСЃР»Рµ РІРІРѕРґР° email Рё РїР°СЂРѕР»СЏ Enter РѕС‚РїСЂР°РІР»СЏРµС‚ РІС…РѕРґ. Р•СЃР»Рё Enter РјРѕР»С‡РёС‚, СЃС†РµРЅР°СЂРёР№ РІС‹РіР»СЏРґРёС‚ СЃР»РѕРјР°РЅРЅС‹Рј, С…РѕС‚СЏ РµСЃС‚СЊ РѕР±С…РѕРґРЅРѕР№ РїСѓС‚СЊ С‡РµСЂРµР· РєРЅРѕРїРєСѓ "Р’РѕР№С‚Рё".
+**Почему существенно:** на ноутбуке пользователь ожидает стандартное поведение формы: после ввода email и пароля Enter отправляет вход. Если Enter молчит, сценарий выглядит сломанным, хотя есть обходной путь через кнопку "Войти".
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ СЌРєСЂР°РЅ РІС…РѕРґР°.
-2. Р’РІРµСЃС‚Рё email Рё РїР°СЂРѕР»СЊ.
-3. РќР°Р¶Р°С‚СЊ Enter РІ РїРѕР»Рµ email РёР»Рё РїР°СЂРѕР»СЏ.
+**Шаги воспроизведения:**
+1. Открыть экран входа.
+2. Ввести email и пароль.
+3. Нажать Enter в поле email или пароля.
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** Enter РЅРµ Р·Р°РїСѓСЃРєР°РµС‚ РІС…РѕРґ, РЅСѓР¶РЅРѕ РєР»РёРєР°С‚СЊ РєРЅРѕРїРєСѓ "Р’РѕР№С‚Рё".
+**Фактический результат:** Enter не запускает вход, нужно кликать кнопку "Войти".
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** Enter РІ РїРѕР»СЏС… email/РїР°СЂРѕР»СЏ Р·Р°РїСѓСЃРєР°РµС‚ С‚РѕС‚ Р¶Рµ `doLogin()`, С‡С‚Рѕ Рё РєРЅРѕРїРєР° "Р’РѕР№С‚Рё"; РїРѕРІС‚РѕСЂРЅС‹Р№ Р·Р°РїСѓСЃРє РЅРµ РїСЂРѕРёСЃС…РѕРґРёС‚, РµСЃР»Рё РєРЅРѕРїРєР° СѓР¶Рµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР°.
+**Ожидаемый результат:** Enter в полях email/пароля запускает тот же `doLogin()`, что и кнопка "Войти"; повторный запуск не происходит, если кнопка уже заблокирована.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** СЃРєСЂРёРЅ РѕС‚ РђР»РµРєСЃРµСЏ 2026-07-04, РїРѕР»Рµ РїР°СЂРѕР»СЏ РІ С„РѕРєСѓСЃРµ.
+**Вложения/логи:** скрин от Алексея 2026-07-04, поле пароля в фокусе.
 
-**Р РµС€РµРЅРёРµ:** РІ `index.html` РґРѕР±Р°РІР»РµРЅ РѕР±СЂР°Р±РѕС‚С‡РёРє `submitLoginOnEnter(event)` РґР»СЏ `login-email` Рё `login-pass`. РћРЅ РїРµСЂРµС…РІР°С‚С‹РІР°РµС‚ Enter, РѕС‚РјРµРЅСЏРµС‚ РґРµС„РѕР»С‚РЅРѕРµ РїРѕРІРµРґРµРЅРёРµ Рё РІС‹Р·С‹РІР°РµС‚ `doLogin()`, РµСЃР»Рё РєРЅРѕРїРєР° РІС…РѕРґР° РЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР°.
+**Решение:** в `index.html` добавлен обработчик `submitLoginOnEnter(event)` для `login-email` и `login-pass`. Он перехватывает Enter, отменяет дефолтное поведение и вызывает `doLogin()`, если кнопка входа не заблокирована.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. Enter РІ РїРѕР»Рµ РїР°СЂРѕР»СЏ Р·Р°РїСѓСЃРєР°РµС‚ РІС…РѕРґ.
-2. Enter РІ РїРѕР»Рµ email Р·Р°РїСѓСЃРєР°РµС‚ РІС…РѕРґ, РµСЃР»Рё РїР°СЂРѕР»СЊ СѓР¶Рµ Р·Р°РїРѕР»РЅРµРЅ.
-3. РџСЂРё РїСѓСЃС‚РѕРј email/РїР°СЂРѕР»Рµ РѕСЃС‚Р°С‘С‚СЃСЏ РїСЂРµР¶РЅРёР№ toast "Р’РІРµРґРё email Рё РїР°СЂРѕР»СЊ".
-4. РљР»РёРє РїРѕ РєРЅРѕРїРєРµ "Р’РѕР№С‚Рё" СЂР°Р±РѕС‚Р°РµС‚ РєР°Рє СЂР°РЅСЊС€Рµ.
+**Проверка после фикса:**
+1. Enter в поле пароля запускает вход.
+2. Enter в поле email запускает вход, если пароль уже заполнен.
+3. При пустом email/пароле остаётся прежний toast "Введи email и пароль".
+4. Клик по кнопке "Войти" работает как раньше.
 
-### BUG-2026-07-04-002 вЂ” Р’ РІРµР±-РІРµСЂСЃРёРё РєРЅРѕРїРєР° "Р’РѕР№С‚Рё С‡РµСЂРµР· Telegram" РЅРµ РѕС‚РєСЂС‹РІР°РµС‚ Telegram РёР·-Р·Р° `tg://resolve`
+### BUG-2026-07-04-002 — В веб-версии кнопка "Войти через Telegram" не открывает Telegram из-за `tg://resolve`
 
-**Р”Р°С‚Р°:** 2026-07-04
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** РІРµР±-РІРµСЂСЃРёСЏ / browser DevTools, СЌРєСЂР°РЅ РІС…РѕРґР°
+**Дата:** 2026-07-04
+**Версия/окружение:** веб-версия / browser DevTools, экран входа
 **Severity:** High
 **Priority:** P1
-**РЎС‚Р°С‚СѓСЃ:** Ready for QA
-**РњРµС‚РєР°:** Auth / Telegram / Web fallback regression
+**Статус:** Ready for QA
+**Метка:** Auth / Telegram / Web fallback regression
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅР°Р¶РёРјР°РµС‚ РєР»СЋС‡РµРІСѓСЋ РєРЅРѕРїРєСѓ РІС…РѕРґР° Рё РЅРµ РїРѕР»СѓС‡Р°РµС‚ РІРёРґРёРјРѕРіРѕ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ. Р”Р»СЏ РІРЅРµС€РЅРµРіРѕ С‚РµСЃС‚Р° СЌС‚Рѕ РІС‹РіР»СЏРґРёС‚ РєР°Рє РЅРµСЂР°Р±РѕС‚Р°СЋС‰РёР№ РІС…РѕРґ, РґР°Р¶Рµ РµСЃР»Рё email-РІС…РѕРґ РѕСЃС‚Р°С‘С‚СЃСЏ РґРѕСЃС‚СѓРїРµРЅ.
+**Почему существенно:** пользователь нажимает ключевую кнопку входа и не получает видимого продолжения. Для внешнего теста это выглядит как неработающий вход, даже если email-вход остаётся доступен.
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ РІРµР±-РІРµСЂСЃРёСЋ РїСЂРёР»РѕР¶РµРЅРёСЏ РЅР° СЌРєСЂР°РЅРµ РІС…РѕРґР°.
-2. РќР°Р¶Р°С‚СЊ "Р’РѕР№С‚Рё С‡РµСЂРµР· Telegram".
-3. РћС‚РєСЂС‹С‚СЊ РєРѕРЅСЃРѕР»СЊ Р±СЂР°СѓР·РµСЂР°.
+**Шаги воспроизведения:**
+1. Открыть веб-версию приложения на экране входа.
+2. Нажать "Войти через Telegram".
+3. Открыть консоль браузера.
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** РІРёРґРёРјРѕР№ СЂРµР°РєС†РёРё РЅРµС‚. Р’ РєРѕРЅСЃРѕР»Рё РѕС€РёР±РєР° Telegram WebApp SDK: `Url protocol is not supported tg://resolve?...` Рё `WebAppTgUrlInvalid`.
+**Фактический результат:** видимой реакции нет. В консоли ошибка Telegram WebApp SDK: `Url protocol is not supported tg://resolve?...` и `WebAppTgUrlInvalid`.
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** РІ РѕР±С‹С‡РЅРѕР№ РІРµР±-РІРµСЂСЃРёРё РєРЅРѕРїРєР° РґРѕР»Р¶РЅР° РѕС‚РєСЂС‹С‚СЊ HTTPS-СЃСЃС‹Р»РєСѓ `https://t.me/Denzel89bot?start=...` РёР»Рё С…РѕС‚СЏ Р±С‹ РїРѕРєР°Р·Р°С‚СЊ РїРѕРЅСЏС‚РЅРѕРµ РґРµР№СЃС‚РІРёРµ. Telegram SDK `openTelegramLink()` РЅРµ РґРѕР»Р¶РµРЅ РІС‹Р·С‹РІР°С‚СЊСЃСЏ РІРЅРµ СЂРµР°Р»СЊРЅРѕРіРѕ Mini App-РєРѕРЅС‚РµРєСЃС‚Р° СЃ `initData`. РџРѕСЃР»Рµ START РІ Р±РѕС‚Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РґРѕР»Р¶РµРЅ РїРѕР»СѓС‡РёС‚СЊ СЃСЃС‹Р»РєСѓ РЅР°Р·Р°Рґ РЅР° СЃР°Р№С‚, РЅР°РїСЂРёРјРµСЂ `https://app.4-ai.site/?telegram_start=<startToken>`.
+**Ожидаемый результат:** в обычной веб-версии кнопка должна открыть HTTPS-ссылку `https://t.me/Denzel89bot?start=...` или хотя бы показать понятное действие. Telegram SDK `openTelegramLink()` не должен вызываться вне реального Mini App-контекста с `initData`. После START в боте пользователь должен получить ссылку назад на сайт, например `https://app.4-ai.site/?telegram_start=<startToken>`.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** СЃРєСЂРёРЅ РєРѕРЅСЃРѕР»Рё РѕС‚ РђР»РµРєСЃРµСЏ 2026-07-04.
+**Вложения/логи:** скрин консоли от Алексея 2026-07-04.
 
-**Р РµС€РµРЅРёРµ:** РІ `index.html` web fallback РїРµСЂРµРІРµРґС‘РЅ СЃ `tg://resolve?...` РЅР° `https://t.me/Denzel89bot?start=...`. `Telegram.WebApp.openTelegramLink()` С‚РµРїРµСЂСЊ РІС‹Р·С‹РІР°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РїСЂРё РЅР°Р»РёС‡РёРё Telegram `initData`; РѕР±С‹С‡РЅР°СЏ РІРµР±-РІРµСЂСЃРёСЏ РґРµР»Р°РµС‚ HTTPS-РїРµСЂРµС…РѕРґ. Р¤СЂРѕРЅС‚ СЃРѕС…СЂР°РЅСЏРµС‚ pending `startToken`, РѕС‚РїСЂР°РІР»СЏРµС‚ `returnUrl` РІ Worker Рё СѓРјРµРµС‚ Р·Р°РІРµСЂС€РёС‚СЊ РІС…РѕРґ РїРѕСЃР»Рµ РІРѕР·РІСЂР°С‚Р° РЅР° СЃР°Р№С‚ СЃ `telegram_start`/`startToken`. Р‘РёС‚С‹Рµ СЂСѓСЃСЃРєРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ РІ Telegram auth-РІРµС‚РєРµ РёСЃРїСЂР°РІР»РµРЅС‹. РћСЃС‚Р°Р»Р°СЃСЊ РѕР±СЏР·Р°С‚РµР»СЊРЅР°СЏ bot-side С‡Р°СЃС‚СЊ: Р±РѕС‚ РґРѕР»Р¶РµРЅ РїСЂРёСЃР»Р°С‚СЊ СЃСЃС‹Р»РєСѓ/РєРЅРѕРїРєСѓ РЅР°Р·Р°Рґ РЅР° СЃР°Р№С‚.
+**Решение:** в `index.html` web fallback переведён с `tg://resolve?...` на `https://t.me/Denzel89bot?start=...`. `Telegram.WebApp.openTelegramLink()` теперь вызывается только при наличии Telegram `initData`; обычная веб-версия делает HTTPS-переход. Фронт сохраняет pending `startToken`, отправляет `returnUrl` в Worker и умеет завершить вход после возврата на сайт с `telegram_start`/`startToken`. Битые русские сообщения в Telegram auth-ветке исправлены. Осталась обязательная bot-side часть: бот должен прислать ссылку/кнопку назад на сайт.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. Р’ РІРµР±-РІРµСЂСЃРёРё РЅР°Р¶Р°С‚СЊ "Р’РѕР№С‚Рё С‡РµСЂРµР· Telegram" вЂ” РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ `https://t.me/Denzel89bot?...`, РѕС€РёР±РєРё `WebAppTgUrlInvalid` РЅРµС‚.
-2. РџРѕСЃР»Рµ START РІ Р±РѕС‚Рµ РїРѕСЏРІР»СЏРµС‚СЃСЏ СЃСЃС‹Р»РєР°/РєРЅРѕРїРєР° РЅР°Р·Р°Рґ РЅР° СЃР°Р№С‚.
-3. Р’РѕР·РІСЂР°С‚ РЅР° СЃР°Р№С‚ СЃ `?telegram_start=<startToken>` Р·Р°РІРµСЂС€Р°РµС‚ Р°РІС‚РѕСЂРёР·Р°С†РёСЋ.
-4. Р’ Telegram Mini App РІС…РѕРґ С‡РµСЂРµР· Telegram РЅРµ СЂРµРіСЂРµСЃСЃРёСЂСѓРµС‚.
-5. Р•СЃР»Рё Worker РЅРµ РІС‹РґР°С‘С‚ `startToken`, РєРЅРѕРїРєР° РѕС‚РєСЂС‹РІР°РµС‚ Р±Р°Р·РѕРІСѓСЋ СЃСЃС‹Р»РєСѓ `https://t.me/Denzel89bot`.
-6. Email-РІС…РѕРґ РѕСЃС‚Р°С‘С‚СЃСЏ РґРѕСЃС‚СѓРїРµРЅ.
+**Проверка после фикса:**
+1. В веб-версии нажать "Войти через Telegram" — открывается `https://t.me/Denzel89bot?...`, ошибки `WebAppTgUrlInvalid` нет.
+2. После START в боте появляется ссылка/кнопка назад на сайт.
+3. Возврат на сайт с `?telegram_start=<startToken>` завершает авторизацию.
+4. В Telegram Mini App вход через Telegram не регрессирует.
+5. Если Worker не выдаёт `startToken`, кнопка открывает базовую ссылку `https://t.me/Denzel89bot`.
+6. Email-вход остаётся доступен.
 
-### BUG-2026-06-29-002 вЂ” Р“РѕР»РѕСЃРѕРІРѕР№ СЂРµР¶РёРј РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ СЃ РѕС€РёР±РєРѕР№ РјРёРєСЂРѕС„РѕРЅР° Рё РЅРµ РЅР°С‡РёРЅР°РµС‚ Р·Р°РїРёСЃСЊ
+### BUG-2026-06-29-002 — Голосовой режим открывается с ошибкой микрофона и не начинает запись
 
-**Р”Р°С‚Р°:** 2026-06-29
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** Telegram Mini App / Telegram WebView, СѓСЃС‚СЂРѕР№СЃС‚РІРѕ РђР»РµРєСЃРµСЏ
+**Дата:** 2026-06-29
+**Версия/окружение:** Telegram Mini App / Telegram WebView, устройство Алексея
 **Severity:** High
 **Priority:** P1
-**РЎС‚Р°С‚СѓСЃ:** Triaged
-**РњРµС‚РєР°:** Voice / Core flow / Telegram WebView
+**Статус:** Triaged
+**Метка:** Voice / Core flow / Telegram WebView
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** РіРѕР»РѕСЃРѕРІРѕР№ РІРІРѕРґ СЏРІР»СЏРµС‚СЃСЏ Р·Р°РјРµС‚РЅС‹Рј РѕР±РµС‰Р°РЅРёРµРј РїСЂРѕРґСѓРєС‚Р° Рё С‡Р°СЃС‚СЊСЋ Р±С‹СЃС‚СЂРѕРіРѕ СЃРѕР·РґР°РЅРёСЏ Р·Р°РґР°С‡. Р•СЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅР°Р¶РёРјР°РµС‚ РјРёРєСЂРѕС„РѕРЅ Рё СЃСЂР°Р·Сѓ РІРёРґРёС‚ "РћС€РёР±РєР° РјРёРєСЂРѕС„РѕРЅР°", СЃС†РµРЅР°СЂРёР№ РЅРµ РёРјРµРµС‚ Р»РѕРіРёС‡РµСЃРєРѕРіРѕ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ Рё СЃРЅРёР¶Р°РµС‚ С†РµРЅРЅРѕСЃС‚СЊ Р·Р°РєСЂС‹С‚РѕРіРѕ С‚РµСЃС‚Р°.
+**Почему существенно:** голосовой ввод является заметным обещанием продукта и частью быстрого создания задач. Если пользователь нажимает микрофон и сразу видит "Ошибка микрофона", сценарий не имеет логического продолжения и снижает ценность закрытого теста.
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ Telegram Mini App.
-2. РќР°Р¶Р°С‚СЊ РєРЅРѕРїРєСѓ РјРёРєСЂРѕС„РѕРЅР° / РѕС‚РєСЂС‹С‚СЊ "Р“РѕР»РѕСЃРѕРІРѕР№ СЂРµР¶РёРј".
-3. Р”РѕР¶РґР°С‚СЊСЃСЏ СЃС‚Р°СЂС‚Р° Р·Р°РїРёСЃРё.
+**Шаги воспроизведения:**
+1. Открыть Telegram Mini App.
+2. Нажать кнопку микрофона / открыть "Голосовой режим".
+3. Дождаться старта записи.
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** СЌРєСЂР°РЅ РіРѕР»РѕСЃРѕРІРѕРіРѕ СЂРµР¶РёРјР° РїРѕРєР°Р·С‹РІР°РµС‚ "РћС€РёР±РєР° РјРёРєСЂРѕС„РѕРЅР°"; СЌС‚Р°Рї "Р Р°СЃРїРѕР·РЅР°СЋ СЂРµС‡СЊ" РЅРµ СЃС‚Р°СЂС‚СѓРµС‚, РіРѕР»РѕСЃРѕРІР°СЏ Р·Р°РґР°С‡Р° РЅРµ СЃРѕР·РґР°С‘С‚СЃСЏ.
+**Фактический результат:** экран голосового режима показывает "Ошибка микрофона"; этап "Распознаю речь" не стартует, голосовая задача не создаётся.
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** РїСЂРёР»РѕР¶РµРЅРёРµ Р·Р°РїСЂР°С€РёРІР°РµС‚ РґРѕСЃС‚СѓРї Рє РјРёРєСЂРѕС„РѕРЅСѓ, РЅР°С‡РёРЅР°РµС‚ Р·Р°РїРёСЃСЊ, СЂР°СЃРїРѕР·РЅР°С‘С‚ СЂРµС‡СЊ Рё РїРµСЂРµРґР°С‘С‚ С‚РµРєСЃС‚ РІ AI-С‡Р°С‚/СЃРѕР·РґР°РЅРёРµ Р·Р°РґР°С‡Рё. Р•СЃР»Рё РјРёРєСЂРѕС„РѕРЅ РЅРµРґРѕСЃС‚СѓРїРµРЅ, РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРёРґРёС‚ РїРѕРЅСЏС‚РЅСѓСЋ РїСЂРёС‡РёРЅСѓ Рё Р·Р°РїР°СЃРЅРѕР№ РїСѓС‚СЊ С‡РµСЂРµР· С‚РµРєСЃС‚РѕРІС‹Р№ РІРІРѕРґ.
+**Ожидаемый результат:** приложение запрашивает доступ к микрофону, начинает запись, распознаёт речь и передаёт текст в AI-чат/создание задачи. Если микрофон недоступен, пользователь видит понятную причину и запасной путь через текстовый ввод.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** СЃРєСЂРёРЅ РѕС‚ РђР»РµРєСЃРµСЏ РІ С‚РµРєСѓС‰РµРј С‡Р°С‚Рµ: СЌРєСЂР°РЅ "Р“РѕР»РѕСЃРѕРІРѕР№ СЂРµР¶РёРј" СЃ Р·Р°РіРѕР»РѕРІРєРѕРј "РћС€РёР±РєР° РјРёРєСЂРѕС„РѕРЅР°".
+**Вложения/логи:** скрин от Алексея в текущем чате: экран "Голосовой режим" с заголовком "Ошибка микрофона".
 
-**Р”РёР°РіРЅРѕСЃС‚РёРєР° 2026-06-29:** С‚РµРєСѓС‰РёР№ `main` РёСЃРїРѕР»СЊР·СѓРµС‚ `SpeechRecognition` РІ `openVoice()`. Р’ РёСЃС‚РѕСЂРёРё РµСЃС‚СЊ РІРµС‚РєР°/РєРѕРјРјРёС‚ `origin/feat/voice-mediarecorder` / `70a051f` СЃ MediaRecorder + `/transcribe`, РЅРѕ РІ `main` РїРѕСЃР»Рµ СЌС‚РѕРіРѕ Р±С‹Р» РѕС‚РєР°С‚ `e970d33` РѕР±СЂР°С‚РЅРѕ Рє SpeechRecognition. Р­С‚Рѕ РїРѕС…РѕР¶Рµ РЅРµ РЅР° РїРѕР»РѕРјРєСѓ РјРёРєСЂРѕС„РѕРЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, Р° РЅР° РёР·РІРµСЃС‚РЅСѓСЋ РЅРµСЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ SpeechRecognition РІ Telegram/iOS WebView.
+**Диагностика 2026-06-29:** текущий `main` использует `SpeechRecognition` в `openVoice()`. В истории есть ветка/коммит `origin/feat/voice-mediarecorder` / `70a051f` с MediaRecorder + `/transcribe`, но в `main` после этого был откат `e970d33` обратно к SpeechRecognition. Это похоже не на поломку микрофона пользователя, а на известную несовместимость SpeechRecognition в Telegram/iOS WebView.
 
-**Р РµС€РµРЅРёРµ:** РЅРµ С‡РёРЅРёС‚СЊ РёРјРїСѓР»СЊСЃРЅРѕ РІ `main`. Р’РµСЂРЅСѓС‚СЊ BACK-021 РІ Р±Р»РёР¶Р°Р№С€РёР№ РєРѕРЅС‚СѓСЂ: РїСЂРѕРІРµСЂРёС‚СЊ РіРѕС‚РѕРІРЅРѕСЃС‚СЊ Worker `/transcribe`, РЅР°Р»РёС‡РёРµ `OPENAI_KEY`, Р·Р°С‚РµРј РІ РѕС‚РґРµР»СЊРЅРѕР№ РІРµС‚РєРµ `fix/voice-mediarecorder` РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РёР»Рё Р°РєРєСѓСЂР°С‚РЅРѕ РїРѕРІС‚РѕСЂРёС‚СЊ MediaRecorder-flow СЃ fallback Рё Р·Р°РїР°СЃРЅС‹Рј С‚РµРєСЃС‚РѕРІС‹Рј РїСѓС‚С‘Рј.
+**Решение:** не чинить импульсно в `main`. Вернуть BACK-021 в ближайший контур: проверить готовность Worker `/transcribe`, наличие `OPENAI_KEY`, затем в отдельной ветке `fix/voice-mediarecorder` восстановить или аккуратно повторить MediaRecorder-flow с fallback и запасным текстовым путём.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. iPhone / Telegram WebView: РЅР°Р¶Р°С‚РёРµ РјРёРєСЂРѕС„РѕРЅР° РЅР°С‡РёРЅР°РµС‚ Р·Р°РїРёСЃСЊ Р±РµР· "РћС€РёР±РєР° РјРёРєСЂРѕС„РѕРЅР°".
-2. РџРѕСЃР»Рµ РѕСЃС‚Р°РЅРѕРІРєРё Р·Р°РїРёСЃРё С‚РµРєСЃС‚ РїРѕСЏРІР»СЏРµС‚СЃСЏ РІ AI-С‡Р°С‚Рµ РёР»Рё Р·Р°РґР°С‡Рµ.
-3. Android / Telegram WebView: РіРѕР»РѕСЃРѕРІРѕР№ РІРІРѕРґ СЂР°Р±РѕС‚Р°РµС‚.
-4. Р•СЃР»Рё РґРѕСЃС‚СѓРї Рє РјРёРєСЂРѕС„РѕРЅСѓ Р·Р°РїСЂРµС‰С‘РЅ, СЌРєСЂР°РЅ РїРѕРєР°Р·С‹РІР°РµС‚ РїРѕРЅСЏС‚РЅСѓСЋ РѕС€РёР±РєСѓ Рё РєРЅРѕРїРєСѓ/РїРµСЂРµС…РѕРґ Рє С‚РµРєСЃС‚РѕРІРѕРјСѓ РІРІРѕРґСѓ.
+**Проверка после фикса:**
+1. iPhone / Telegram WebView: нажатие микрофона начинает запись без "Ошибка микрофона".
+2. После остановки записи текст появляется в AI-чате или задаче.
+3. Android / Telegram WebView: голосовой ввод работает.
+4. Если доступ к микрофону запрещён, экран показывает понятную ошибку и кнопку/переход к текстовому вводу.
 
-### BUG-2026-06-29-001 вЂ” Р’С…РѕРґ С‡РµСЂРµР· Telegram РїРѕРєР°Р·С‹РІР°РµС‚ С‚СѓРїРёРєРѕРІСѓСЋ РїРѕРґСЃРєР°Р·РєСѓ, Р±РѕС‚ РЅРµ РїСЂРµРґР»Р°РіР°РµС‚ РґРµР№СЃС‚РІРёРµ
+### BUG-2026-06-29-001 — Вход через Telegram показывает тупиковую подсказку, бот не предлагает действие
 
-**Р”Р°С‚Р°:** 2026-06-29
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** Telegram Mini App / Telegram WebView
+**Дата:** 2026-06-29
+**Версия/окружение:** Telegram Mini App / Telegram WebView
 **Severity:** High
 **Priority:** P1
-**РЎС‚Р°С‚СѓСЃ:** Triaged
-**РњРµС‚РєР°:** Auth / Access blocker risk / Bot handoff
+**Статус:** Triaged
+**Метка:** Auth / Access blocker risk / Bot handoff
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** СЃС†РµРЅР°СЂРёР№ РІС…РѕРґР° С‡РµСЂРµР· Telegram РјРѕР¶РµС‚ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РґРѕ РїРѕРїР°РґР°РЅРёСЏ РІ РїСЂРѕРґСѓРєС‚. Р­С‚Рѕ РїСЂРѕС‚РёРІРѕСЂРµС‡РёС‚ РїСЂРёРЅС†РёРїСѓ "РЅСѓР»РµРІРѕР№ Р±Р°СЂСЊРµСЂ РІС…РѕРґР°" Рё РјРµС€Р°РµС‚ Р·Р°РєСЂС‹С‚РѕРјСѓ С‚РµСЃС‚Сѓ/РјРѕРЅРµС‚РёР·Р°С†РёРё, РµСЃР»Рё РЅРѕРІС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ РїРѕРЅРёРјР°РµС‚, РєР°Рє РїРѕР»СѓС‡РёС‚СЊ СЂР°Р±РѕС‡СѓСЋ СЃСЃС‹Р»РєСѓ РІС…РѕРґР°.
+**Почему существенно:** сценарий входа через Telegram может остановить пользователя до попадания в продукт. Это противоречит принципу "нулевой барьер входа" и мешает закрытому тесту/монетизации, если новый пользователь не понимает, как получить рабочую ссылку входа.
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ СЌРєСЂР°РЅ РІС…РѕРґР°.
-2. РќР°Р¶Р°С‚СЊ "Р’РѕР№С‚Рё С‡РµСЂРµР· Telegram".
-3. РџРѕР»СѓС‡РёС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ "РћС‚РєСЂРѕР№ Р±РѕС‚Р° Рё РЅР°Р¶РјРё Start вЂ” РїРѕР»СѓС‡РёС€СЊ СЃСЃС‹Р»РєСѓ РґР»СЏ РІС…РѕРґР°".
-4. РџРµСЂРµР№С‚Рё РІ Telegram/Р±РѕС‚Р°.
+**Шаги воспроизведения:**
+1. Открыть экран входа.
+2. Нажать "Войти через Telegram".
+3. Получить сообщение "Открой бота и нажми Start — получишь ссылку для входа".
+4. Перейти в Telegram/бота.
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** РїСЂРёР»РѕР¶РµРЅРёРµ РїРѕРєР°Р·С‹РІР°РµС‚ РїРѕРґСЃРєР°Р·РєСѓ, РЅРѕ РЅРµ РѕС‚РєСЂС‹РІР°РµС‚ Р±РѕС‚Р° Рё РЅРµ РґР°С‘С‚ СЏРІРЅСѓСЋ РєРЅРѕРїРєСѓ/СЃСЃС‹Р»РєСѓ. РџРѕ РЅР°Р±Р»СЋРґРµРЅРёСЋ РђР»РµРєСЃРµСЏ, РІ СЃР°РјРѕРј Telegram РґРµР№СЃС‚РІРёР№ РЅРµ РїСЂРµРґР»Р°РіР°РµС‚СЃСЏ.
+**Фактический результат:** приложение показывает подсказку, но не открывает бота и не даёт явную кнопку/ссылку. По наблюдению Алексея, в самом Telegram действий не предлагается.
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРѕР»СѓС‡Р°РµС‚ РїРѕРЅСЏС‚РЅРѕРµ РїСЂРѕРґРѕР»Р¶РµРЅРёРµ: РїСЂРёР»РѕР¶РµРЅРёРµ РѕС‚РєСЂС‹РІР°РµС‚ `@Denzel89bot` РёР»Рё РїРѕРєР°Р·С‹РІР°РµС‚ РєРЅРѕРїРєСѓ "РћС‚РєСЂС‹С‚СЊ Р±РѕС‚Р°", Р° Р±РѕС‚ РїРѕСЃР»Рµ `/start` РІС‹РґР°С‘С‚ СЃСЃС‹Р»РєСѓ Mini App/Р»РѕРіРёРЅР°. Р•СЃР»Рё Telegram-login РЅРµРґРѕСЃС‚СѓРїРµРЅ, СЌРєСЂР°РЅ РґРѕР»Р¶РµРЅ РїСЂСЏРјРѕ РїСЂРµРґР»РѕР¶РёС‚СЊ email-РІС…РѕРґ РєР°Рє Р·Р°РїР°СЃРЅРѕР№ РїСѓС‚СЊ.
+**Ожидаемый результат:** пользователь получает понятное продолжение: приложение открывает `@Denzel89bot` или показывает кнопку "Открыть бота", а бот после `/start` выдаёт ссылку Mini App/логина. Если Telegram-login недоступен, экран должен прямо предложить email-вход как запасной путь.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** СЃРєСЂРёРЅ РѕС‚ РђР»РµРєСЃРµСЏ РІ С‚РµРєСѓС‰РµРј С‡Р°С‚Рµ: login-СЌРєСЂР°РЅ СЃ toast-РїРѕРґСЃРєР°Р·РєРѕР№ РїСЂРѕ Start.
+**Вложения/логи:** скрин от Алексея в текущем чате: login-экран с toast-подсказкой про Start.
 
-**Р РµС€РµРЅРёРµ:** РїСЂРѕРІРµСЂРёС‚СЊ СЃРІСЏР·РєСѓ app + bot. Р’ `4e-app` РЅСѓР¶РЅР° UX-СЃС‚СЂР°С…РѕРІРєР° РЅР° СЃР»СѓС‡Р°Р№ РѕС‚СЃСѓС‚СЃС‚РІРёСЏ `Telegram.WebApp.initData`: СЏРІРЅР°СЏ РєРЅРѕРїРєР°/СЃСЃС‹Р»РєР° РЅР° `@Denzel89bot` Рё Р·Р°РїР°СЃРЅРѕР№ email-РІС…РѕРґ. Р’ `4e-bot` РїСЂРѕРІРµСЂРёС‚СЊ РѕР±СЂР°Р±РѕС‚С‡РёРє `/start`, РІС‹РґР°С‡Сѓ Mini App-СЃСЃС‹Р»РєРё Рё Railway-РґРµРїР»РѕР№.
+**Решение:** проверить связку app + bot. В `4e-app` нужна UX-страховка на случай отсутствия `Telegram.WebApp.initData`: явная кнопка/ссылка на `@Denzel89bot` и запасной email-вход. В `4e-bot` проверить обработчик `/start`, выдачу Mini App-ссылки и Railway-деплой.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. РќР°Р¶Р°С‚СЊ "Р’РѕР№С‚Рё С‡РµСЂРµР· Telegram" РІРЅРµ РІР°Р»РёРґРЅРѕР№ Mini App-СЃРµСЃСЃРёРё вЂ” РїРѕСЏРІР»СЏРµС‚СЃСЏ СЏРІРЅР°СЏ РєРЅРѕРїРєР°/СЃСЃС‹Р»РєР° "РћС‚РєСЂС‹С‚СЊ Р±РѕС‚Р°", Р±РµР· С‚СѓРїРёРєР°.
-2. РћС‚РєСЂС‹С‚СЊ `@Denzel89bot`, РЅР°Р¶Р°С‚СЊ Start РёР»Рё РѕС‚РїСЂР°РІРёС‚СЊ `/start` вЂ” Р±РѕС‚ РїСЂРёСЃС‹Р»Р°РµС‚ СЂР°Р±РѕС‡СѓСЋ СЃСЃС‹Р»РєСѓ РІС…РѕРґР°/Mini App.
-3. РћС‚РєСЂС‹С‚СЊ СЃСЃС‹Р»РєСѓ РёР· Р±РѕС‚Р° вЂ” РІС…РѕРґ РїСЂРѕС…РѕРґРёС‚ С‡РµСЂРµР· `/auth/telegram`, РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРѕРїР°РґР°РµС‚ РЅР° РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ.
-4. Р•СЃР»Рё bot/Telegram РЅРµРґРѕСЃС‚СѓРїРµРЅ вЂ” РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРёРґРёС‚ Р·Р°РїР°СЃРЅРѕР№ РїСѓС‚СЊ С‡РµСЂРµР· email.
+**Проверка после фикса:**
+1. Нажать "Войти через Telegram" вне валидной Mini App-сессии — появляется явная кнопка/ссылка "Открыть бота", без тупика.
+2. Открыть `@Denzel89bot`, нажать Start или отправить `/start` — бот присылает рабочую ссылку входа/Mini App.
+3. Открыть ссылку из бота — вход проходит через `/auth/telegram`, пользователь попадает на главный экран.
+4. Если bot/Telegram недоступен — пользователь видит запасной путь через email.
 
-### BUG-2026-06-25-002 вЂ” РЎР±СЂРѕСЃ РїР°СЂРѕР»СЏ РїСЂРёРЅРёРјР°РµС‚ РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ email Рё РїРµСЂРµРІРѕРґРёС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ
+### BUG-2026-06-25-002 — Сброс пароля принимает некорректный email и переводит пользователя на пустой экран
 
-**Р”Р°С‚Р°:** 2026-06-25
-**Р’РµСЂСЃРёСЏ/РѕРєСЂСѓР¶РµРЅРёРµ:** Telegram Mini App
+**Дата:** 2026-06-25
+**Версия/окружение:** Telegram Mini App
 **Severity:** High
 **Priority:** P1
-**РЎС‚Р°С‚СѓСЃ:** Done
-**РњРµС‚РєР°:** Auth / Access blocker risk
+**Статус:** Done
+**Метка:** Auth / Access blocker risk
 
-**РџРѕС‡РµРјСѓ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ:** РїСЂРѕР±Р»РµРјР° РЅР°С…РѕРґРёС‚СЃСЏ РІ СЃС†РµРЅР°СЂРёРё РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РґРѕСЃС‚СѓРїР°. Р•СЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ РјРѕР¶РµС‚ РєРѕСЂСЂРµРєС‚РЅРѕ СЃР±СЂРѕСЃРёС‚СЊ РїР°СЂРѕР»СЊ РёР»Рё РїРѕСЃР»Рµ РїРѕРїС‹С‚РєРё РїРѕРїР°РґР°РµС‚ РЅР° РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ, СЌС‚Рѕ РјРѕР¶РµС‚ РїРѕРјРµС€Р°С‚СЊ РµРјСѓ Р·Р°Р»РѕРіРёРЅРёС‚СЊСЃСЏ Рё РїРѕР»СѓС‡РёС‚СЊ РґРѕСЃС‚СѓРї Рє РїСЂРёР»РѕР¶РµРЅРёСЋ.
+**Почему существенно:** проблема находится в сценарии восстановления доступа. Если пользователь не может корректно сбросить пароль или после попытки попадает на пустой экран, это может помешать ему залогиниться и получить доступ к приложению.
 
-**РЁР°РіРё РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ:**
-1. РћС‚РєСЂС‹С‚СЊ СЌРєСЂР°РЅ РІС…РѕРґР°.
-2. РџРµСЂРµР№С‚Рё РЅР° СЌРєСЂР°РЅ "РЎР±СЂРѕСЃ РїР°СЂРѕР»СЏ".
-3. Р’РІРµСЃС‚Рё РІ РїРѕР»Рµ email РЅРµРІР°Р»РёРґРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ, РЅР°РїСЂРёРјРµСЂ `fff`.
-4. РќР°Р¶Р°С‚СЊ "РћС‚РїСЂР°РІРёС‚СЊ СЃСЃС‹Р»РєСѓ".
+**Шаги воспроизведения:**
+1. Открыть экран входа.
+2. Перейти на экран "Сброс пароля".
+3. Ввести в поле email невалидное значение, например `fff`.
+4. Нажать "Отправить ссылку".
 
-**Р¤Р°РєС‚РёС‡РµСЃРєРёР№ СЂРµР·СѓР»СЊС‚Р°С‚:** РїСЂРёР»РѕР¶РµРЅРёРµ РїСЂРёРЅРёРјР°РµС‚ РЅРµРІР°Р»РёРґРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ, РєР°Рє Р±СѓРґС‚Рѕ email РєРѕСЂСЂРµРєС‚РЅС‹Р№, Рё РїРµСЂРµС…РѕРґРёС‚ РЅР° СЃР»РµРґСѓСЋС‰РёР№ СЌРєСЂР°РЅ. РЎР»РµРґСѓСЋС‰РёР№ СЌРєСЂР°РЅ РѕРєР°Р·С‹РІР°РµС‚СЃСЏ РїСѓСЃС‚С‹Рј, РїСЂРё СЌС‚РѕРј РІРёРґРЅР° РЅРёР¶РЅСЏСЏ РЅР°РІРёРіР°С†РёСЏ.
+**Фактический результат:** приложение принимает невалидное значение, как будто email корректный, и переходит на следующий экран. Следующий экран оказывается пустым, при этом видна нижняя навигация.
 
-**РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:** РєРЅРѕРїРєР° РЅРµ РґРѕР»Р¶РЅР° РѕС‚РїСЂР°РІР»СЏС‚СЊ С„РѕСЂРјСѓ, РїРѕРєР° РЅРµ РІРІРµРґС‘РЅ РєРѕСЂСЂРµРєС‚РЅС‹Р№ email. РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РґРѕР»Р¶РµРЅ СѓРІРёРґРµС‚СЊ РїРѕРЅСЏС‚РЅСѓСЋ РѕС€РёР±РєСѓ СЂСЏРґРѕРј СЃ РїРѕР»РµРј, РЅР°РїСЂРёРјРµСЂ "Р’РІРµРґРёС‚Рµ РєРѕСЂСЂРµРєС‚РЅС‹Р№ email". РџРµСЂРµС…РѕРґР° РЅР° РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ Р±С‹С‚СЊ РЅРµ РґРѕР»Р¶РЅРѕ.
+**Ожидаемый результат:** кнопка не должна отправлять форму, пока не введён корректный email. Пользователь должен увидеть понятную ошибку рядом с полем, например "Введите корректный email". Перехода на пустой экран быть не должно.
 
-**Р’Р»РѕР¶РµРЅРёСЏ/Р»РѕРіРё:** СЃРєСЂРёРЅ 1 вЂ” РІРІРµРґРµРЅРѕ `fff` РЅР° СЌРєСЂР°РЅРµ СЃР±СЂРѕСЃР° РїР°СЂРѕР»СЏ; СЃРєСЂРёРЅ 2 вЂ” РїРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ СЃ РЅРёР¶РЅРµР№ РЅР°РІРёРіР°С†РёРµР№.
+**Вложения/логи:** скрин 1 — введено `fff` на экране сброса пароля; скрин 2 — после нажатия открывается пустой экран с нижней навигацией.
 
-**Р РµС€РµРЅРёРµ:** РІ `index.html` РґРѕР±Р°РІР»РµРЅР° РєР»РёРµРЅС‚СЃРєР°СЏ РІР°Р»РёРґР°С†РёСЏ email РґРѕ РѕС‚РїСЂР°РІРєРё С„РѕСЂРјС‹. РџСЂРё РїСѓСЃС‚РѕРј РёР»Рё РЅРµРІР°Р»РёРґРЅРѕРј email РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ РїРѕРЅСЏС‚РЅР°СЏ РѕС€РёР±РєР° Рё Р·Р°РїСЂРѕСЃ РЅРµ РѕС‚РїСЂР°РІР»СЏРµС‚СЃСЏ. Р”Р»СЏ РѕС‚РІРµС‚Р° СЃРµСЂРІРµСЂР° РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ СЃРѕСЃС‚РѕСЏРЅРёРµ СѓСЃРїРµС…Р° РёР»Рё РѕС€РёР±РєР° Р±РµР· РїРµСЂРµС…РѕРґР° РЅР° РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ. Auth/reset-СЌРєСЂР°РЅС‹ СЃРєСЂС‹РІР°СЋС‚ РЅРёР¶РЅСЋСЋ РЅР°РІРёРіР°С†РёСЋ, РµСЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ Р°РІС‚РѕСЂРёР·РѕРІР°РЅ.
+**Решение:** в `index.html` добавлена клиентская валидация email до отправки формы. При пустом или невалидном email показывается понятная ошибка и запрос не отправляется. Для ответа сервера показывается состояние успеха или ошибка без перехода на пустой экран. Auth/reset-экраны скрывают нижнюю навигацию, если пользователь не авторизован.
 
-**РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ С„РёРєСЃР°:**
-1. Р’РІРµСЃС‚Рё `fff` вЂ” С„РѕСЂРјР° РЅРµ РѕС‚РїСЂР°РІР»СЏРµС‚СЃСЏ, РїРѕСЏРІР»СЏРµС‚СЃСЏ РѕС€РёР±РєР°.
-2. РћСЃС‚Р°РІРёС‚СЊ РїРѕР»Рµ РїСѓСЃС‚С‹Рј вЂ” С„РѕСЂРјР° РЅРµ РѕС‚РїСЂР°РІР»СЏРµС‚СЃСЏ, РїРѕСЏРІР»СЏРµС‚СЃСЏ РѕС€РёР±РєР°.
-3. Р’РІРµСЃС‚Рё email РїСЂР°РІРёР»СЊРЅРѕРіРѕ С„РѕСЂРјР°С‚Р°, РЅРѕ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ вЂ” РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ РЅРµ РїРѕСЏРІР»СЏРµС‚СЃСЏ.
-4. Р’РІРµСЃС‚Рё email СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ вЂ” РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРёРґРёС‚ РїРѕРЅСЏС‚РЅС‹Р№ СЌРєСЂР°РЅ СѓСЃРїРµС…Р° РёР»Рё РѕС€РёР±РєСѓ СЃРµСЂРІРµСЂР°.
+**Проверка после фикса:**
+1. Ввести `fff` — форма не отправляется, появляется ошибка.
+2. Оставить поле пустым — форма не отправляется, появляется ошибка.
+3. Ввести email правильного формата, но несуществующего пользователя — пустой экран не появляется.
+4. Ввести email существующего пользователя — пользователь видит понятный экран успеха или ошибку сервера.
 
-## РћС‚С‡С‘С‚ РґР»СЏ СЂР°Р·СЂР°Р±РѕС‚РєРё
+## Отчёт для разработки
 
-РљРѕРіРґР° РЅР°Р±РёСЂР°РµС‚СЃСЏ РїР°С‡РєР° Р±Р°РіРѕРІ, Р°РіРµРЅС‚ С„РѕСЂРјРёСЂСѓРµС‚ РєРѕСЂРѕС‚РєРёР№ РѕС‚С‡С‘С‚:
+Когда набирается пачка багов, агент формирует короткий отчёт:
 
 ```text
-РџРµСЂРёРѕРґ:
-РџСЂРѕРІРµСЂСЏРµРјР°СЏ РІРµСЂСЃРёСЏ/СЃСЂРµРґР°:
-Р’СЃРµРіРѕ РЅР°Р№РґРµРЅРѕ:
+Период:
+Проверяемая версия/среда:
+Всего найдено:
 P0/P1:
-Р“Р»Р°РІРЅС‹Рµ СЂРёСЃРєРё:
+Главные риски:
 
-Р‘Р°РіРё Рє РёСЃРїСЂР°РІР»РµРЅРёСЋ:
-1. [ID] Р—Р°РіРѕР»РѕРІРѕРє вЂ” Priority вЂ” РєРѕСЂРѕС‚РєРѕ РїРѕС‡РµРјСѓ РІР°Р¶РЅРѕ
+Баги к исправлению:
+1. [ID] Заголовок — Priority — коротко почему важно
 
-Р§С‚Рѕ РґРѕР±Р°РІРёС‚СЊ РІ roadmap:
-- РќР°РїСЂР°РІР»РµРЅРёРµ / СЂРёСЃРє / Р·Р°РІРёСЃРёРјРѕСЃС‚СЊ
+Что добавить в roadmap:
+- Направление / риск / зависимость
 
-Р§С‚Рѕ РїСЂРѕРІРµСЂРёС‚СЊ РїРѕСЃР»Рµ С„РёРєСЃРѕРІ:
-- РЎС†РµРЅР°СЂРёРё СЂРµРіСЂРµСЃСЃРёРё
+Что проверить после фиксов:
+- Сценарии регрессии
 ```
 
-## Р“РѕС‚РѕРІС‹ Рє РїСЂРѕРІРµСЂРєРµ
+## Готовы к проверке
 
-| ID | Р‘Р°Рі | Р§С‚Рѕ РїСЂРѕРІРµСЂРёС‚СЊ | РџСЂРѕРІРµСЂСЏСЋС‰РёР№ | BACK-xxx | Р РµР·СѓР»СЊС‚Р°С‚ |
+| ID | Баг | Что проверить | Проверяющий | BACK-xxx | Результат |
 | --- | --- | --- | --- | --- | --- |
-| BUG-2026-06-25-002 | РЎР±СЂРѕСЃ РїР°СЂРѕР»СЏ РїСЂРёРЅРёРјР°РµС‚ РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ email Рё РїРµСЂРµРІРѕРґРёС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ | РџСѓСЃС‚РѕР№ email, `fff`, РєРѕСЂСЂРµРєС‚РЅС‹Р№ С„РѕСЂРјР°С‚ СЃ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРј/СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРј РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј; РѕС‚СЃСѓС‚СЃС‚РІРёРµ РїСѓСЃС‚РѕРіРѕ СЌРєСЂР°РЅР° Рё РЅРёР¶РЅРµР№ РЅР°РІРёРіР°С†РёРё РЅР° auth/reset-flow | Р®СЂРёР№ | BACK-002 | вњ… Pass 2026-06-25 |
+| BUG-2026-06-25-002 | Сброс пароля принимает некорректный email и переводит пользователя на пустой экран | Пустой email, `fff`, корректный формат с несуществующим/существующим пользователем; отсутствие пустого экрана и нижней навигации на auth/reset-flow | Юрий | BACK-002 | ✅ Pass 2026-06-25 |
 
-## Р—Р°РєСЂС‹С‚С‹Рµ
+## Закрытые
 
-| ID | Р‘Р°Рі | Р”Р°С‚Р° Р·Р°РєСЂС‹С‚РёСЏ | BACK-xxx | РљР°Рє РїСЂРѕРІРµСЂРёР»Рё |
+| ID | Баг | Дата закрытия | BACK-xxx | Как проверили |
 | --- | --- | --- | --- | --- |
-| BUG-2026-06-29-001 | Р’С…РѕРґ С‡РµСЂРµР· Telegram РїРѕРєР°Р·С‹РІР°Р» С‚СѓРїРёРєРѕРІСѓСЋ РїРѕРґСЃРєР°Р·РєСѓ, Р±РѕС‚ РЅРµ РїСЂРµРґР»Р°РіР°Р» РґРµР№СЃС‚РІРёРµ | 2026-07-04 (С„РёРєСЃ Рё smoke 2026-07-01) | BACK-024 | РџРѕ pm/backlog.md: РІС…РѕРґ С‡РµСЂРµР· Telegram РїСЂРѕС…РѕРґРёС‚ РІ РїСЂР°РІРёР»СЊРЅС‹Р№ Р°РєРєР°СѓРЅС‚, smoke passed 2026-07-01. Р”РµС‚Р°Р»Рё: `docs/tasks/BUG-2026-06-29-001_telegram_login_dead_end.md` |
-| BUG-2026-06-29-002 | Р“РѕР»РѕСЃРѕРІРѕР№ СЂРµР¶РёРј РѕС‚РєСЂС‹РІР°Р»СЃСЏ СЃ РѕС€РёР±РєРѕР№ РјРёРєСЂРѕС„РѕРЅР° Рё РЅРµ РЅР°С‡РёРЅР°Р» Р·Р°РїРёСЃСЊ | 2026-07-04 (С„РёРєСЃ Рё smoke 2026-07-01) | BACK-021 | РџРѕ pm/backlog.md: РіРѕР»РѕСЃ СЂР°Р±РѕС‚Р°РµС‚ РЅР° iPhone iOS РІ Telegram app, smoke passed 2026-07-01. Р”РµС‚Р°Р»Рё: `docs/tasks/BACK-021-voice-mediarecorder.md` |
-| BUG-2026-07-04-001 | AI-РґР°С€Р±РѕСЂРґ РјРѕРі РїРѕРєР°Р·С‹РІР°С‚СЊ `РџСѓР»СЊСЃ РґРЅСЏ` РІС‹С€Рµ 100%, РєРЅРѕРїРєР° compact-mode СЃРѕРґРµСЂР¶Р°Р»Р° `4`, Р° СЃРµРєС†РёСЏ `Р“РѕСЂРёС‚` РїСЂРѕРїСѓСЃРєР°Р»Р° Р·Р°РґР°С‡Рё `РїСЂРѕСЃСЂРѕС‡РµРЅРѕ РЅР° X РґРЅРµР№` | 2026-07-04 | BACK-027 | Р›РѕРєР°Р»СЊРЅС‹Р№ headless smoke РЅР° `index.html`: `РџСѓР»СЊСЃ РґРЅСЏ: 67%`, РєРЅРѕРїРєР° `РЎРІРµСЂРЅСѓС‚СЊ`, РІ `Р“РѕСЂРёС‚` РІРёРґРЅС‹ overdue-Р·Р°РґР°С‡Рё РЅР° 5 Рё 1 РґРµРЅСЊ, РїСѓСЃС‚РѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РЅРµ РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ |
-| BUG-2026-06-25-001 | РџРѕСЃР»Рµ reload/logout РїРѕСЏРІР»СЏР»СЃСЏ РїСѓСЃС‚РѕР№ СЌРєСЂР°РЅ, РїСѓРЅРєС‚С‹ РЅРёР¶РЅРµРіРѕ РјРµРЅСЋ РЅРµ РїРѕРґСЃРІРµС‡РёРІР°Р»РёСЃСЊ, profile РјРѕРі РїРѕРєР°Р·С‹РІР°С‚СЊ РґРµС„РѕР»С‚РЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р±РµР· token | 2026-06-25 | вЂ” | Р›РѕРєР°Р»СЊРЅС‹Р№ smoke РІ in-app browser: home `scrollTop=0`, `voice` СЃРєСЂС‹С‚, active menu Р·РµР»С‘РЅС‹Р№, logout Рё direct profile Р±РµР· token РїРѕРєР°Р·С‹РІР°СЋС‚ `login` |
+| BUG-2026-06-29-001 | Вход через Telegram показывал тупиковую подсказку, бот не предлагал действие | 2026-07-04 (фикс и smoke 2026-07-01) | BACK-024 | По pm/backlog.md: вход через Telegram проходит в правильный аккаунт, smoke passed 2026-07-01. Детали: `docs/tasks/BUG-2026-06-29-001_telegram_login_dead_end.md` |
+| BUG-2026-06-29-002 | Голосовой режим открывался с ошибкой микрофона и не начинал запись | 2026-07-04 (фикс и smoke 2026-07-01) | BACK-021 | По pm/backlog.md: голос работает на iPhone iOS в Telegram app, smoke passed 2026-07-01. Детали: `docs/tasks/BACK-021-voice-mediarecorder.md` |
+| BUG-2026-07-04-001 | AI-дашборд мог показывать `Пульс дня` выше 100%, кнопка compact-mode содержала `4`, а секция `Горит` пропускала задачи `просрочено на X дней` | 2026-07-04 | BACK-027 | Локальный headless smoke на `index.html`: `Пульс дня: 67%`, кнопка `Свернуть`, в `Горит` видны overdue-задачи на 5 и 1 день, пустое состояние не показывается |
+| BUG-2026-06-25-001 | После reload/logout появлялся пустой экран, пункты нижнего меню не подсвечивались, profile мог показывать дефолтного пользователя без token | 2026-06-25 | — | Локальный smoke в in-app browser: home `scrollTop=0`, `voice` скрыт, active menu зелёный, logout и direct profile без token показывают `login` |

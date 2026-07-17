@@ -9064,3 +9064,15 @@
 - No new worker code change was made: current `4e-worker/worker.js` already contains `verifyBotActionSignature()`, `shouldRequireBotSignature()` and `readVerifiedActionBody()`, and `BACK-060` records signed-vs-unsigned staging smoke.
 - Added `docs/tasks/BACK-060-bot-path-signature-reconciliation.md` with the current `x-action` signature scope and why the old fix brief is superseded.
 - Updated `pm/bugs.md` so `BUG-2026-07-15-005` no longer describes only the vulnerable state while marked Done; it now points to `BACK-060` and the final staging evidence.
+
+## 2026-07-17 — BUG-005 exact exploit proof and bugs.md mojibake repair
+
+**Задача:** выполнить бриф `codex-2026-07-17-bug005-prove-and-bugsmd-mojibake.md`: доказать, что исходный BUG-005 exploit больше не проходит на staging, проверить соседние unsigned bot-style actions и восстановить `pm/bugs.md` после mojibake.
+
+**Результат:** Fresh linked-user smoke на `https://restless-lab-d737-staging.shelckograff.workers.dev` подтвердил закрытие exploit-а: после регистрации и `/auth/link-telegram` для `telegramId=7910751623` unsigned `save-task` с `telegramUserId` вернул `403 {"ok":false,"error":"bot signature invalid"}`, а `/tasks` остался `[]` до и после. Unsigned `done-task` и `delete-task` с `telegramUserId` также вернули `403`. Sibling checks `update-task` и `set-reminder` с bot-style `telegramUserId` вернули `401 Не авторизован`, без наблюдаемого эффекта. Signed positive smoke не запускался из Codex-процесса, потому что в нём не был доступен локальный `BOT_TOKEN`; ранее подтверждённый Юрием signed `get-chat-members -> 200` остаётся positive evidence для `BACK-060`.
+
+**Кодировка:** `pm/bugs.md` восстановлен через `node scripts/check-cp1251-mojibake.mjs --fix`. После фикса `node scripts/check-cp1251-mojibake.mjs` вернул `CP1251 mojibake check passed: 0 suspicious tokens`. Дополнительный broad scan по `pm/*.md` и `shared/*.md` не нашёл оставшихся явных mojibake-маркеров.
+
+**Документ:** `docs/tasks/BUG-2026-07-15-005-staging-resmoke-2026-07-17.md`.
+
+**Статус:** `BUG-2026-07-15-005` и `BACK-060` остаются `Done`, теперь с точным 2026-07-17 exploit-proof в `pm/bugs.md` и `pm/backlog.md`.

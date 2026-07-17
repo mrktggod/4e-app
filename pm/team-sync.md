@@ -455,3 +455,12 @@
 - `BACK-060` is the current owner and is already Done with route-level bot signature guard plus staging signed/unsigned smoke evidence.
 - New reconciliation doc: `docs/tasks/BACK-060-bot-path-signature-reconciliation.md`.
 - No worker deploy, prod deploy, main merge, CAL, or price change was made in this reconciliation.
+
+## 2026-07-17 — BUG-005 exact exploit re-smoke
+
+- Fresh staging smoke against `restless-lab-d737-staging` proved the original unsigned `save-task` exploit is closed for a freshly linked Telegram user.
+- Exact result: unsigned `save-task` with `telegramUserId=7910751623` returned `403 {"ok":false,"error":"bot signature invalid"}`; `/tasks` stayed `[]` before and after.
+- Additional unsigned `done-task` / `delete-task` with `telegramUserId` also returned `403`.
+- Sibling checks `update-task` and `set-reminder` with bot-style `telegramUserId` returned `401 Не авторизован`, so no unsigned effect was observed there.
+- `pm/bugs.md` CP1251 mojibake was repaired and `scripts/check-cp1251-mojibake.mjs` now passes with `0 suspicious tokens`.
+- Signed positive path was not re-run from Codex because this process had no local `BOT_TOKEN`; earlier Юрий signed smoke remains the BACK-060 positive evidence.
