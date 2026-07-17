@@ -9143,3 +9143,10 @@
 - NEW-017: fixed the remaining calendar root cause in `index.html`. `renderCalendar()` / `selectCalDay()` no longer fetch `/tasks?chatId=` from the current global `chatId` (which starts as `global`); they render from `allTasksCache`, so a fresh account sees real user tasks or an honest empty state, not demo/global data.
 - NEW-001: fixed worker cron retry semantics. `runBriefingsCron()` now marks `briefing_sent:<user>:<date>` only after Telegram `sendMessage` succeeds; failed delivery no longer suppresses retries for the day. Full closure still needs Yuri's real Telegram delivery smoke.
 - NEW-006 / NEW-008: bugs table synchronized to `Ready for QA` instead of stale `Triaged`; both still require real Telegram Mini App/mobile keyboard smoke before Done.
+
+## 2026-07-17 - Staging tariff-config reseed for beta
+
+- Reseeded staging runtime tariff config from prod known-good public GET https://edge.4-ai.site/tariff-config using X:/4/4e-worker/scripts/reseed-staging-tariff-config.mjs; the script reads admin secret only from STAGING_ADMIN_SECRET / ADMIN_SECRET and logs it as <redacted>.
+- Before reseed staging returned year 9504/9504 stars and questionRuns=41 in paywall text.
+- After reseed staging returns month 990/990 stars, year 9950/9950 stars, questionRuns=0, title Продлить подписку, period / мес · 9 950 ₽/год.
+- Production config, source defaults, main, CAL, and price source code were not changed.

@@ -527,3 +527,9 @@
 - `NEW-017` calendar demo/global-task risk fixed in app source and bugs table moved to `Done`.
 - `NEW-001` morning briefing retry bug fixed in worker source; status is `Ready for QA` pending real Telegram delivery smoke.
 - `NEW-006` and `NEW-008` bugs table synchronized to `Ready for QA`; both remain manual TMA/device checks before `Done`.
+
+## 2026-07-17 - Staging tariff-config reseed
+
+- Beta blocker fixed in staging data: /tariff-config now matches prod known-good runtime config for paywall text and yearly price.
+- Verification after reseed: month=990/990 stars, year=9950/9950 stars, questionRuns=0.
+- Source defaults still remain mapped separately in docs/tasks/PRICE-MAP-2026-07-17.md; no production/main/source price change was made here.
