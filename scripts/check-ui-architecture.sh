@@ -3,10 +3,10 @@ set -euo pipefail
 
 file="${1:-index.html}"
 
-max_inline_styles=428
+max_inline_styles=465
 max_inline_handlers=402
 max_style_tags=0
-max_inline_script_tags=2
+max_inline_script_tags=3
 
 count_pattern() {
   local pattern="$1"

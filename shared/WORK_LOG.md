@@ -9013,8 +9013,8 @@
 - Updated `BACK-040` context while keeping it `Ready for QA`; no price, deploy, or runtime changes were made.
 ## 2026-07-16 — INFRA-006 X drive migration
 
-- Copied the local project workspace from `C:\Users\shelc\Documents\4` to `X:\4` using safe `robocopy /E /XJ` without deleting the source copy.
-- New canonical local paths are now `X:\4\.tmp-4e-app-publish` for app work and `X:\4\4e-worker` for worker work.
+- Copied the local project workspace from `<old-project-root>` to `<project-root>` using safe `robocopy /E /XJ` without deleting the source copy.
+- New canonical local paths are now `<app-repo-root>` for app work and `<worker-repo-root>` for worker work.
 - Added `pm/infra-006-x-drive-migration-2026-07-16.md` and updated active INFRA-006 process docs/backlog/team-sync.
 - Carried over known dirty state intentionally: app `.pages-dist/privacy.html` and worker `kv-backups/`; neither was cleaned up in this migration.
 ## 2026-07-16 — BACK-019 task card mobile smoke checklist
@@ -9051,7 +9051,7 @@
 
 - Added `docs/tasks/BACK-057-offline-runtime-scope-audit.md` to capture Yuri's question about whether the Offline Free Mode runtime MVP had an explicit brief after the 2026-07-14 no-touch guard.
 - Updated `BACK-057` context: no further offline runtime expansion should happen until the authorization/scope question is answered.
-- Worker CRLF audit before this docs update showed no tracked worker diff to revert; `X:\4\4e-worker` only had untracked `kv-backups/`, which was left untouched.
+- Worker CRLF audit before this docs update showed no tracked worker diff to revert; `<worker-repo-root>` only had untracked `kv-backups/`, which was left untouched.
 ## 2026-07-17 — INFRA-006 worker line-ending incident recorded
 
 - Added `docs/tasks/INFRA-006-worker-line-ending-incident-2026-07-17.md` to document the `4e-worker` CRLF incident.
@@ -9081,7 +9081,7 @@
 
 **Задача:** закрыть два хвоста из вечерней координации: выбрать канонический worker checkout и дать определённый ответ по `BACK-057` runtime authorization.
 
-**Результат:** `X:\4\4e-worker` закреплён как canonical worker repo. Дубль `X:\4\4e-worker-p0` не удалён, а архивирован в `X:\4\4e-worker-p0_archived-2026-07-17`; внутрь добавлен `DO_NOT_WORK_HERE.txt` с пояснением, что это duplicate clone `mrktggod/4e-worker`, а канон — `X:\4\4e-worker`.
+**Результат:** `<worker-repo-root>` закреплён как canonical worker repo. Дубль `<worker-p0-archive>` не удалён, а архивирован в `<worker-p0-archive>`; внутрь добавлен `DO_NOT_WORK_HERE.txt` с пояснением, что это duplicate clone `mrktggod/4e-worker`, а канон — `<worker-repo-root>`.
 
 **BACK-057:** по следам в `shared/WORK_LOG.md`, `pm/team-sync.md`, `docs/tasks/BACK-057-offline-mode-plan.md` и соседних `pm/`/`docs/` файлах не найден отдельный explicit brief, который разрешал бы runtime Offline Free Mode после no-touch guard 2026-07-14. Аудит обновлён определённым ответом: существующий runtime MVP считать unauthorized scope expansion до решения Юрия — оставить и QA-ить как `Partial Done`, либо карантинировать/откатить отдельной осознанной задачей.
 
@@ -9123,7 +9123,7 @@
 
 **Задача:** выполнить stale guard-бриф по CRLF/mojibake без renormalize и без трогания архивного `4e-worker-p0`.
 
-**Результат:** в активном app-репо `X:\4\.tmp-4e-app-publish` расширен `.gitattributes`: сохранён `* text=auto eol=lf`, добавлены binary-паттерны для `png/jpg/jpeg/gif/webp/ico/pdf/zip`. `core.autocrlf=false` подтверждён локально. `4e-worker` уже защищён; `4e-worker-p0` не трогался, потому что это архивный duplicate clone с `DO_NOT_WORK_HERE.txt`.
+**Результат:** в активном app-репо `<app-repo-root>` расширен `.gitattributes`: сохранён `* text=auto eol=lf`, добавлены binary-паттерны для `png/jpg/jpeg/gif/webp/ico/pdf/zip`. `core.autocrlf=false` подтверждён локально. `4e-worker` уже защищён; `4e-worker-p0` не трогался, потому что это архивный duplicate clone с `DO_NOT_WORK_HERE.txt`.
 
 **Проверка:** `node scripts/check-cp1251-mojibake.mjs` вернул `CP1251 mojibake check passed: 0 suspicious tokens`; массовой renormalize не выполнялось.
 

@@ -2,14 +2,14 @@
 
 Дата: 2026-07-16
 
-Цель: перенести локальные папки проекта с `C:\Users\shelc\Documents\4` на новый раздел `X:\4` и сделать `X:\4` текущей каноничной локальной рабочей зоной без удаления старой копии на `C:`.
+Цель: перенести локальные папки проекта с `<old-project-root>` на новый раздел `<project-root>` и сделать `<project-root>` текущей каноничной локальной рабочей зоной без удаления старой копии на `C:`.
 
 ## 1. Что сделано
 
 | Item | Result |
 | --- | --- |
-| Source | `C:\Users\shelc\Documents\4` |
-| Destination | `X:\4` |
+| Source | `<old-project-root>` |
+| Destination | `<project-root>` |
 | Method | Safe file copy via `robocopy /E /XJ`, without deleting source |
 | Copied dirs | 2331 |
 | Copied files | 17998 |
@@ -20,10 +20,10 @@
 
 | Surface | New canonical path |
 | --- | --- |
-| App / Pages UI | `X:\4\.tmp-4e-app-publish` |
-| Worker/API | `X:\4\4e-worker` |
-| Worker P0 archive/copy | `X:\4\4e-worker-p0` |
-| Project root/archive zone | `X:\4` |
+| App / Pages UI | `<app-repo-root>` |
+| Worker/API | `<worker-repo-root>` |
+| Worker P0 archive/copy | `<worker-p0-archive>` |
+| Project root/archive zone | `<project-root>` |
 
 ## 3. Known carried-over dirty state
 
@@ -36,8 +36,8 @@
 
 | Rule | Decision |
 | --- | --- |
-| New app work | Use `X:\4\.tmp-4e-app-publish` |
-| New worker work | Use `X:\4\4e-worker`, after confirming branch/scope |
+| New app work | Use `<app-repo-root>` |
+| New worker work | Use `<worker-repo-root>`, after confirming branch/scope |
 | Old `C:` folders | Do not edit unless explicitly doing rollback/recovery |
 | Cleanup/delete old copy | Manual decision later, not part of this migration |
 | Commit/push | From `X:` copy going forward |

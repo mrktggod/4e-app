@@ -410,10 +410,10 @@
 - Do not treat admin tariff API as paid-launch-ready until production `/tariff-config` is proven intentional and payment amount gates match it.
 ## 2026-07-16 — project workspace moved to X drive
 
-- New canonical project root: `X:\4`.
-- New app path: `X:\4\.tmp-4e-app-publish`.
-- New worker path: `X:\4\4e-worker`.
-- Old `C:\Users\shelc\Documents\4` copy is retained as rollback/archive and should not be edited for new work unless explicitly doing recovery.
+- New canonical project root: `<project-root>`.
+- New app path: `<app-repo-root>`.
+- New worker path: `<worker-repo-root>`.
+- Old `<old-project-root>` copy is retained as rollback/archive and should not be edited for new work unless explicitly doing recovery.
 - Migration handoff: `pm/infra-006-x-drive-migration-2026-07-16.md`.
 ## 2026-07-16 — BACK-019 mobile card QA
 
@@ -447,8 +447,8 @@
 ## 2026-07-17 — CRLF incident guardrail
 
 - Worker CRLF incident documented: `docs/tasks/INFRA-006-worker-line-ending-incident-2026-07-17.md`.
-- `X:\4\4e-worker` is fixed with `.gitattributes` and local `core.autocrlf=false`.
-- `X:\4\.tmp-4e-app-publish` and `X:\4\4e-worker-p0` still have the same line-ending risk (`core.autocrlf=true`, no `.gitattributes`), so avoid broad checkout/pull/renormalize there until a separate policy commit is made.
+- `<worker-repo-root>` is fixed with `.gitattributes` and local `core.autocrlf=false`.
+- `<app-repo-root>` and `<worker-p0-archive>` still have the same line-ending risk (`core.autocrlf=true`, no `.gitattributes`), so avoid broad checkout/pull/renormalize there until a separate policy commit is made.
 ## 2026-07-17 — BUG-005 old brief reconciled
 
 - Old BUG-005 brief reviewed against current worker/backlog state.
@@ -467,8 +467,8 @@
 
 ## 2026-07-17 — worker canonical path and BACK-057 scope answer
 
-- Canonical worker repo is now fixed: `X:\4\4e-worker`.
-- `X:\4\4e-worker-p0` was confirmed as a duplicate clone of `mrktggod/4e-worker` and archived to `X:\4\4e-worker-p0_archived-2026-07-17`.
+- Canonical worker repo is now fixed: `<worker-repo-root>`.
+- `<worker-p0-archive>` was confirmed as a duplicate clone of `mrktggod/4e-worker` and archived to `<worker-p0-archive>`.
 - The archive contains `DO_NOT_WORK_HERE.txt`; do not run git, edit, deploy or smoke from it except for explicit recovery.
 - BACK-057 scope audit answered from repo traces: no explicit authorization brief was found after the 2026-07-14 no-touch guard. Treat the existing Offline Free Mode runtime MVP as unauthorized scope expansion until Yuri decides keep vs quarantine/revert.
 - No runtime code was changed in this scope decision.
@@ -508,7 +508,7 @@
 - Reconciled stale `codex-2026-07-17-gitattributes-guard.md` with current workspace state.
 - Active app repo already had `.gitattributes` and `core.autocrlf=false`; guard was expanded with binary patterns for image/pdf/zip assets without `git add --renormalize`.
 - `4e-worker` canonical repo already has `.gitattributes` and `core.autocrlf=false`; only allowed untracked `kv-backups/` remains.
-- `4e-worker-p0` is no longer an active repo; it is archived at `X:\4\4e-worker-p0_archived-2026-07-17` with `DO_NOT_WORK_HERE.txt`, so no git/config changes were made there.
+- `4e-worker-p0` is no longer an active repo; it is archived at `<worker-p0-archive>` with `DO_NOT_WORK_HERE.txt`, so no git/config changes were made there.
 - Mojibake guard passed with `0 suspicious tokens`.
 
 ## 2026-07-17 - Evidence audit and merge-readiness gate
@@ -518,7 +518,7 @@
 - No `main` merge, production deploy, price change, CAL/native change, or runtime code change was made.
 ## 2026-07-17 - CI token env fix prepared, price map, evidence promotion
 
-- Worker branch fix prepared in `X:\4\4e-worker\.github\workflows\deploy.yml`: `CLOUDFLARE_API_TOKEN` is now exported from repo secret `CF_API_TOKEN` for the `cloudflare/wrangler-action@v3` step. No merge to `main` and no production deploy were run; final proof is a green run after Yuri merges later.
+- Worker branch fix prepared in `<worker-repo-root>\.github\workflows\deploy.yml`: `CLOUDFLARE_API_TOKEN` is now exported from repo secret `CF_API_TOKEN` for the `cloudflare/wrangler-action@v3` step. No merge to `main` and no production deploy were run; final proof is a green run after Yuri merges later.
 - Added `docs/tasks/PRICE-MAP-2026-07-17.md` as a read-only map of all known `990` / `9504` RUB and Stars locations. Price was not changed.
 - Extended `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`: fresh staging `telegram-merge-smoke` promotes `BACK-026` and `BUG-2026-07-14-003` to `LIVE`; UI/provider rows remain unpromoted.
 

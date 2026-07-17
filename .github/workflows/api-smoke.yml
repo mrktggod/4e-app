@@ -20,5 +20,11 @@ jobs:
 
       - name: Run API smoke
         env:
-          WORKER_BASE_URL: https://edge.4-ai.site
-        run: npm run api-smoke
+          PROD_WORKER_BASE_URL: https://edge.4-ai.site
+          STAGING_WORKER_BASE_URL: https://restless-lab-d737-staging.shelckograff.workers.dev
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            WORKER_BASE_URL="$STAGING_WORKER_BASE_URL" npm run api-smoke
+          else
+            WORKER_BASE_URL="$PROD_WORKER_BASE_URL" npm run api-smoke
+          fi
