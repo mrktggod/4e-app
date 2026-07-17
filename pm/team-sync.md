@@ -472,3 +472,11 @@
 - The archive contains `DO_NOT_WORK_HERE.txt`; do not run git, edit, deploy or smoke from it except for explicit recovery.
 - BACK-057 scope audit answered from repo traces: no explicit authorization brief was found after the 2026-07-14 no-touch guard. Treat the existing Offline Free Mode runtime MVP as unauthorized scope expansion until Yuri decides keep vs quarantine/revert.
 - No runtime code was changed in this scope decision.
+
+## 2026-07-17 — automated staging QA slice
+
+- Autonomous QA slice from `pm/next-cycle-matrix-2026-07-17.md` passed for staging app shell, worker wiring, CORS preflight and `scripts/api-smoke.mjs`.
+- Raw evidence: `docs/tasks/STAGING-AUTOMATED-QA-2026-07-17.md`.
+- No new P0/P1 bug was found in the automated layer.
+- Manual-only gates remain open: real browser/mobile/TMA visual checks, Telegram fallback/history behavior, OAuth provider callback, payment purchase/support gates, Telegram group flows, and Russia/no-VPN checks.
+- No runtime code, price, main merge, CAL, native/store or production payment work was touched.

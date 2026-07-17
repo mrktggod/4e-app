@@ -9086,3 +9086,13 @@
 **BACK-057:** по следам в `shared/WORK_LOG.md`, `pm/team-sync.md`, `docs/tasks/BACK-057-offline-mode-plan.md` и соседних `pm/`/`docs/` файлах не найден отдельный explicit brief, который разрешал бы runtime Offline Free Mode после no-touch guard 2026-07-14. Аудит обновлён определённым ответом: существующий runtime MVP считать unauthorized scope expansion до решения Юрия — оставить и QA-ить как `Partial Done`, либо карантинировать/откатить отдельной осознанной задачей.
 
 **Код:** runtime не менялся; только архивирование duplicate checkout и документация.
+
+## 2026-07-17 — automated staging QA slice
+
+**Задача:** пройти автономную часть `pm/next-cycle-matrix-2026-07-17.md` без ручных действий и без выхода за no-touch scope.
+
+**Результат:** Staging app shell и API core зелёные. `GET https://4-ai-staging.pages.dev/` вернул `200`, HTML содержит `restless-lab-d737-staging.shelckograff.workers.dev`. CORS preflight `OPTIONS /auth/login` с `Origin: https://4-ai-staging.pages.dev` вернул `204` и `Access-Control-Allow-Origin: https://4-ai-staging.pages.dev`. `scripts/api-smoke.mjs` против `https://restless-lab-d737-staging.shelckograff.workers.dev` прошёл полностью: forgot-password negative `400/400`, register/login/auth-me `200`, two-user Telegram-linked task flow `200`, task create/list/receiver/done/delete `200`, `/anthropic` `200`, `/transcribe` without file `400`.
+
+**Ограничение:** manual/TMA/payment/provider/group/runtime gates не закрывались: их нельзя честно перевести в Done из API-only smoke. Новых P0/P1 в автоматизированном слое не найдено.
+
+**Документ:** `docs/tasks/STAGING-AUTOMATED-QA-2026-07-17.md`.

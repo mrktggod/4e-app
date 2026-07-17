@@ -11,8 +11,8 @@
 | Branch | feat/admin-tariff-api |
 | App URL | https://4-ai-staging.pages.dev/ |
 | Worker URL | restless-lab-d737-staging.shelckograff.workers.dev |
-| Overall decision | Not run |
-| Beta invite allowed? | No decision yet |
+| Overall decision | Automated core staging API/shell pass; manual browser/TMA/payment/provider gates still not run |
+| Beta invite allowed? | No decision yet: automated layer green, but manual core/mobile gates remain |
 
 ## 2. Pass/fail matrix
 
@@ -71,3 +71,20 @@
 3. Fix P0/P1 in separate small commits.
 4. Add a `shared/WORK_LOG.md` entry for each fix.
 5. Do not reopen CAL/native/price/main-merge work from this QA file.
+
+## 7. Automated staging evidence — 2026-07-17
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| App shell | PASS | `GET https://4-ai-staging.pages.dev/ -> 200`, HTML length `442732` |
+| Worker wiring | PASS | staging HTML contains `restless-lab-d737-staging.shelckograff.workers.dev` |
+| CORS preflight | PASS | `OPTIONS /auth/login` with staging Origin returned `204`, ACAO is `https://4-ai-staging.pages.dev` |
+| API smoke | PASS | `scripts/api-smoke.mjs` against staging returned `api-smoke: OK` |
+| Auth/register/login/auth-me | PASS | register `200`, login `200`, auth/me `200` |
+| Tasks create/list/receiver/done/delete | PASS | all returned `200` in smoke; receiver saw copied assigned task |
+| AI endpoint | PASS | `/anthropic` returned `200` |
+| Transcribe negative | PASS | no-file returned `400` |
+
+Evidence doc: `docs/tasks/STAGING-AUTOMATED-QA-2026-07-17.md`.
+
+Manual rows above remain `Not run` unless Yuri/real browser/device confirms them.
