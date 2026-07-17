@@ -435,3 +435,7 @@
 
 - Telegram Mini App safe-area smoke checklist added: `docs/tasks/NEW-006-tma-safe-area-live-smoke.md`.
 - Do not mark `NEW-006` Done from browser/headless evidence alone; it needs real Telegram Mini App confirmation.
+## 2026-07-17 — NEW-008 chat keyboard QA
+
+- Chat keyboard live smoke checklist added: `docs/tasks/NEW-008-chat-keyboard-live-smoke.md`.
+- Do not mark `NEW-008` Done from local/headless evidence alone; it needs live mobile keyboard/TMA confirmation.

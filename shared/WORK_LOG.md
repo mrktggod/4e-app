@@ -9042,3 +9042,8 @@
 - Added `docs/tasks/NEW-006-tma-safe-area-live-smoke.md` to define the remaining live Telegram Mini App QA for safe-area/bottom-nav overlap.
 - Covered profile, notifications, task list, chat/input, keyboard, resize, and platform-specific checks.
 - Updated `NEW-006` context while keeping it `Ready for QA`; no runtime changes were made.
+## 2026-07-17 — NEW-008 chat keyboard live smoke checklist
+
+- Added `docs/tasks/NEW-008-chat-keyboard-live-smoke.md` to define the remaining live mobile/TMA keyboard QA for AI chat input overlap.
+- Covered ask bar visibility, keyboard open/close, long text, send action, navigation offset reset, Telegram Mini App, mobile browser, and iOS/Android differences.
+- Updated `NEW-008` context while keeping it `Ready for QA`; no runtime changes were made.
