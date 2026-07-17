@@ -9037,3 +9037,8 @@
 - Added `docs/tasks/BACK-050-accessibility-smoke-checklist.md` to define the remaining manual keyboard/mobile accessibility QA.
 - Covered auth forms, invalid field errors, quick-add/contact dialogs, focus trap/return, Escape behavior, toast live-regions, bottom navigation, and mobile focus visibility.
 - Updated `BACK-050` context while keeping it `Ready for QA`; no runtime changes were made.
+## 2026-07-17 — NEW-006 Telegram Mini App safe-area smoke checklist
+
+- Added `docs/tasks/NEW-006-tma-safe-area-live-smoke.md` to define the remaining live Telegram Mini App QA for safe-area/bottom-nav overlap.
+- Covered profile, notifications, task list, chat/input, keyboard, resize, and platform-specific checks.
+- Updated `NEW-006` context while keeping it `Ready for QA`; no runtime changes were made.

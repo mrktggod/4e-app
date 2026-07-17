@@ -431,3 +431,7 @@
 
 - Accessibility smoke checklist added: `docs/tasks/BACK-050-accessibility-smoke-checklist.md`.
 - Do not mark `BACK-050` Done until keyboard/focus/error/live-region behavior is checked manually.
+## 2026-07-17 — NEW-006 TMA safe-area QA
+
+- Telegram Mini App safe-area smoke checklist added: `docs/tasks/NEW-006-tma-safe-area-live-smoke.md`.
+- Do not mark `NEW-006` Done from browser/headless evidence alone; it needs real Telegram Mini App confirmation.
