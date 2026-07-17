@@ -516,3 +516,8 @@
 - Added `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`: classified audited P0/P1 `Done` / `Ready for QA` rows as `LIVE`, `SOURCE-ONLY`, `NEEDS-REAL`, or `PARTIAL`.
 - Added `docs/tasks/MERGE-READINESS-2026-07-17.md`: merge/prod remains blocked by production `ANTHROPIC_API_KEY` naming mismatch, failing worker `main` deploy CI, and tariff year-price decision (`9504` source vs `9950` expected).
 - No `main` merge, production deploy, price change, CAL/native change, or runtime code change was made.
+## 2026-07-17 - CI token env fix prepared, price map, evidence promotion
+
+- Worker branch fix prepared in `X:\4\4e-worker\.github\workflows\deploy.yml`: `CLOUDFLARE_API_TOKEN` is now exported from repo secret `CF_API_TOKEN` for the `cloudflare/wrangler-action@v3` step. No merge to `main` and no production deploy were run; final proof is a green run after Yuri merges later.
+- Added `docs/tasks/PRICE-MAP-2026-07-17.md` as a read-only map of all known `990` / `9504` RUB and Stars locations. Price was not changed.
+- Extended `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`: fresh staging `telegram-merge-smoke` promotes `BACK-026` and `BUG-2026-07-14-003` to `LIVE`; UI/provider rows remain unpromoted.

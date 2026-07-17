@@ -9132,3 +9132,9 @@
 - Created `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md` with evidence classes for audited P0/P1 backlog and bug rows.
 - Created `docs/tasks/MERGE-READINESS-2026-07-17.md` with release blockers: missing production `ANTHROPIC_API_KEY` secret name, failing worker deploy CI requiring `CLOUDFLARE_API_TOKEN`, and unresolved tariff year-price mismatch.
 - Recorded that staging API/CORS/BUG-005 smoke evidence is healthy, but manual/provider/device rows remain `NEEDS-REAL` and must not be silently promoted.
+## 2026-07-17 - Long session #2: CI fix, price map, evidence upgrade
+
+- Prepared worker CI fix for the `main` deploy blocker by exporting `CLOUDFLARE_API_TOKEN` from `CF_API_TOKEN` in the `wrangler-action` step. This does not trigger deploy on the feature branch.
+- Created `docs/tasks/PRICE-MAP-2026-07-17.md`; current staging `/tariff-config` reports month `990/990 stars` and year `9504/9504 stars`.
+- Ran fresh staging `telegram-merge-smoke`: creator/receiver register+login, `/auth/telegram` for both returned `200` with `accountMerged:true`, receiver `/auth/me` returned `200`; `BACK-026` and `BUG-2026-07-14-003` are now LIVE in the audit doc.
+- Broader `api-smoke` was partial and not counted as a full PASS because it ended with `fetch failed` after `tasks.list.after`.

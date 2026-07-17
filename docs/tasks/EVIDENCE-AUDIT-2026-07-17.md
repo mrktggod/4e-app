@@ -61,7 +61,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | ARCH-001 | Done | SOURCE-ONLY | Architecture item; source/docs only. |
 | BACK-009 | Ready for QA | NEEDS-REAL | Needs real UI/payment/provider QA before Done. |
 | BACK-010 | Ready for QA | NEEDS-REAL | Needs real UI/payment/provider QA before Done. |
-| BACK-026 | Done | SOURCE-ONLY | Source/docs support; no fresh live proof in this audit. |
+| BACK-026 | Done | LIVE | Fresh staging `telegram-merge-smoke` created two isolated accounts, linked each through `/auth/telegram`, received `accountMerged:true`, and confirmed `/auth/me` on the returned receiver token. |
 | BACK-030 | Ready for QA | LIVE/PARTIAL | Anthropic call works on staging, but any full UX acceptance remains QA. |
 | SMART-011 | Ready for QA | NEEDS-REAL | External/AI UX behavior still needs real acceptance. |
 | INFRA-001 | Ready for QA | NEEDS-REAL | Requires external deployment/infra confirmation. |
@@ -84,7 +84,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | BUG-2026-07-15-003 | Done | LIVE/PARTIAL | Source/smoke coverage exists where API-level; UI-specific behavior needs manual acceptance. |
 | BUG-2026-07-15-004 | Done | LIVE/PARTIAL | Source/smoke coverage exists where API-level; UI-specific behavior needs manual acceptance. |
 | BUG-2026-07-15-005 | Done | LIVE | Unsigned linked-user exploit was repro-tested closed on staging with 403 and empty `/tasks`. |
-| BUG-2026-07-14-003 | Done | SOURCE-ONLY | Source/docs support; no fresh live proof in this audit. |
+| BUG-2026-07-14-003 | Done | LIVE | Fresh staging `telegram-merge-smoke` proved `/auth/telegram` returns `200` without Worker 1101 and returns usable auth tokens. |
 | BUG-2026-07-04-002 | Ready for QA | NEEDS-REAL | Needs real bot/user verification before Done. |
 
 ## Items that must not be silently promoted
@@ -92,6 +92,62 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 - `HOME-001`, `ONBOARD-001`, `NEW-006`, `NEW-008`, `BACK-035`, `BACK-036`, `BACK-041`, `BACK-045`, `BACK-050`, `BACK-009`, `BACK-010`, `SMART-004`, `SMART-011`, `BUG-2026-07-04-002` need real manual/provider/device checks.
 - `BETA-001` remains partial because no invite wave has been sent.
 - `INFRA-006` is materially improved, but duplicate-checkout policy remains an operational risk unless the team keeps one canonical worker clone.
+
+## 2026-07-17 supplemental SOURCE-ONLY to LIVE pass
+
+Raw narrow smoke used fresh isolated staging accounts and did not touch Yuri's manual QA accounts:
+
+```text
+telegram-merge-smoke: worker=https://restless-lab-d737-staging.shelckograff.workers.dev
+register(creator): 200 1233ms
+login(creator): 200 552ms
+register(receiver): 200 689ms
+login(receiver): 200 531ms
+telegram link(creator): 200 2197ms body={"ok":true,...,"accountMerged":true,...}
+telegram link(receiver): 200 2374ms body={"ok":true,...,"accountMerged":true,...}
+auth/me(receiver after telegram): 200 258ms ok=true userId=b2a73164-1b44-471d-8cbf-aca3d52d6d51
+telegram-merge-smoke: OK
+```
+
+Promoted from `SOURCE-ONLY` to `LIVE` in this audit doc:
+
+| ID | New evidence class | Why |
+| --- | --- | --- |
+| BACK-026 | LIVE | Account merge/link path was exercised through staging `/auth/telegram` and returned `accountMerged:true`. |
+| BUG-2026-07-14-003 | LIVE | Same smoke proves `/auth/telegram` no longer throws Worker 1101 and returns valid auth. |
+
+Attempted broader `api-smoke` raw output before the narrow rerun:
+
+```text
+api-smoke: worker=https://restless-lab-d737-staging.shelckograff.workers.dev
+forgot-password(empty): 400 499ms
+forgot-password(invalid): 400 247ms
+register: 200 854ms
+login: 200 234ms
+auth/me: 200 213ms
+register(user2): 200 539ms
+login(user2): 200 262ms
+telegram link(creator): 200 1720ms
+telegram link(receiver): 200 1783ms
+tasks.list.before: 200 541ms
+tasks.create: 200 12304ms
+tasks.list.after: 200 10319ms
+api-smoke failed: fetch failed
+```
+
+This partial run was not counted as a full PASS. It only helped identify that a narrow Telegram merge smoke was the safer proof for this pass.
+
+Still not promoted:
+
+| ID | Kept as | Reason |
+| --- | --- | --- |
+| BACK-003 | SOURCE-ONLY / needs manual UI | First-microphone biometric consent is a browser/UI consent path, not a safe API-only proof. |
+| BACK-025 | SOURCE-ONLY / needs manual UI | Morning AI dashboard is product UI; requires visual/manual acceptance. |
+| BACK-055 | SOURCE-ONLY | Notification action-feed was source-QA'd; reliable LIVE proof needs UI/headless interaction on notifications screen. |
+| BACK-049 | SOURCE-ONLY | Architecture guard is process/tooling evidence, not staging runtime behavior. |
+| SMART-003 | SOURCE-ONLY / needs real chat context | "Write to assignee" requires Telegram/deep-link behavior validation. |
+| SMART-007 | SOURCE-ONLY | AI memory/facts needs a dedicated safe fixture and acceptance criteria; not promoted opportunistically. |
+| ARCH-001 | SOURCE-ONLY | Architecture refactor proof remains source/tooling based. |
 
 ## Conclusion
 

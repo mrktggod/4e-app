@@ -16,7 +16,7 @@ The staging API layer is healthy, but there are release blockers that should be 
 | Blocker | Severity | Evidence | Required action |
 | --- | --- | --- | --- |
 | Production Anthropic secret name mismatch | P0 | Worker source reads `env.ANTHROPIC_API_KEY`, while production `wrangler secret list` shows `ANTHROPIC_KEY` and does not show `ANTHROPIC_API_KEY`. | Add production secret `ANTHROPIC_API_KEY` with the same intended value, or explicitly change source to support `ANTHROPIC_KEY` fallback and test it. Do not expose the value in docs/logs. |
-| Worker `main` deploy CI failing | P0 | Latest `Deploy Worker` runs on `main` failed. Failed log for run `28739783905` says Wrangler in non-interactive mode needs `CLOUDFLARE_API_TOKEN`. Current workflow uses an action `apiToken` input mapped from repo secret `CF_API_TOKEN`, but the CLI log shows the environment variable was not available to Wrangler in that run. | Fix `.github/workflows/deploy.yml` before merge, likely by exporting `CLOUDFLARE_API_TOKEN` from the repo secret or updating the wrangler-action config according to current action docs. Then prove a green deploy run. |
+| Worker `main` deploy CI failing | P0 | Latest `Deploy Worker` runs on `main` failed. Failed log for run `28739783905` says Wrangler in non-interactive mode needs `CLOUDFLARE_API_TOKEN`. A branch fix now exports `CLOUDFLARE_API_TOKEN` from repo secret `CF_API_TOKEN` on the `wrangler-action` step, without changing deploy scope. | Final verification still requires Yuri's later merge/push to `main` and a green deploy run. |
 | Tariff year price mismatch | P1 | Worker default tariff config has month `990` and year `9504`; brief expected `990/9950`. Telegram Stars defaults mirror `9504`. | Yuri/Alexey product decision required. Do not change price autonomously inside this branch. |
 | Real provider/manual gates remain | P1 | Several `Ready for QA` rows require real browser/provider/bot/device checks. | Finish manual QA list before beta/prod claims. |
 
@@ -46,7 +46,7 @@ Checked by name only with `wrangler secret list`; no secret values were printed 
 | Check | Status | Evidence | Next step |
 | --- | --- | --- | --- |
 | Worker workflow exists | PASS | `.github/workflows/deploy.yml` deploys on pushes to `main`. | Keep. |
-| Recent `main` deploys green | FAIL | Four latest listed `Deploy Worker` runs on `main` were failures. | Fix workflow and rerun. |
+| Recent `main` deploys green | FAIL / fix prepared on branch | Four latest listed `Deploy Worker` runs on `main` were failures. Branch fix exports `CLOUDFLARE_API_TOKEN` to the deploy step. | Green run waits for Yuri's later merge/push to `main`. |
 | Failure root cause captured | PASS | Failed log says non-interactive Wrangler requires `CLOUDFLARE_API_TOKEN`. | Wire env var explicitly or update action usage. |
 | App branch readiness | PARTIAL | App branch is used for staging and docs, but manual UI QA remains. | Finish manual QA before merge. |
 
