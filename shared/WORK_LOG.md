@@ -9058,3 +9058,9 @@
 - Root cause recorded: `core.autocrlf=true` plus missing `.gitattributes` made `git checkout -- .` unsafe and able to create massive CRLF-only diffs.
 - Worker fix recorded: local `core.autocrlf=false`, `.gitattributes` with `* text=auto eol=lf`, commit `6fd5a268532e3098fd9cc38e28c45d2b01274b7c`.
 - Follow-up risk audit: app and `4e-worker-p0` still have `core.autocrlf=true` and no `.gitattributes`; do not run broad checkout/renormalize there until policy is fixed deliberately.
+## 2026-07-17 — BUG-2026-07-15-005 / BACK-060 reconciliation
+
+- Reconciled old `codex-2026-07-15-bug005-fix-and-sync-correction.md` against current state.
+- No new worker code change was made: current `4e-worker/worker.js` already contains `verifyBotActionSignature()`, `shouldRequireBotSignature()` and `readVerifiedActionBody()`, and `BACK-060` records signed-vs-unsigned staging smoke.
+- Added `docs/tasks/BACK-060-bot-path-signature-reconciliation.md` with the current `x-action` signature scope and why the old fix brief is superseded.
+- Updated `pm/bugs.md` so `BUG-2026-07-15-005` no longer describes only the vulnerable state while marked Done; it now points to `BACK-060` and the final staging evidence.

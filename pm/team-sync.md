@@ -449,3 +449,9 @@
 - Worker CRLF incident documented: `docs/tasks/INFRA-006-worker-line-ending-incident-2026-07-17.md`.
 - `X:\4\4e-worker` is fixed with `.gitattributes` and local `core.autocrlf=false`.
 - `X:\4\.tmp-4e-app-publish` and `X:\4\4e-worker-p0` still have the same line-ending risk (`core.autocrlf=true`, no `.gitattributes`), so avoid broad checkout/pull/renormalize there until a separate policy commit is made.
+## 2026-07-17 — BUG-005 old brief reconciled
+
+- Old BUG-005 brief reviewed against current worker/backlog state.
+- `BACK-060` is the current owner and is already Done with route-level bot signature guard plus staging signed/unsigned smoke evidence.
+- New reconciliation doc: `docs/tasks/BACK-060-bot-path-signature-reconciliation.md`.
+- No worker deploy, prod deploy, main merge, CAL, or price change was made in this reconciliation.
