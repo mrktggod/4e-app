@@ -6980,6 +6980,9 @@ function renderCalendarDeadlinesList(tasks){
       +'</div>';
   }).join('');
 }
+function getCalendarTasksSnapshot(){
+  return Array.isArray(allTasksCache) ? allTasksCache : [];
+}
 function renderCalendar(){
   const now=new Date(),y=calDate.getFullYear(),m=calDate.getMonth();
   document.getElementById('cal-month-title').textContent=MONTHS_RU[m]+' '+y;
@@ -6991,42 +6994,40 @@ function renderCalendar(){
   const total=startDay+daysInMonth,remaining=total%7===0?0:7-(total%7);
   for(let d=1;d<=remaining;d++)html+=`<div class="cal-day other-month">${d}</div>`;
   document.getElementById('cal-days').innerHTML=html;
-  fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
-    const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
-    const hot=(tasks||[]).filter(t=>!t.done&&parseCalendarTaskDeadline(t));
-    renderCalendarDeadlinesList(tasks);
-    if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
-    titEl.textContent='Дедлайны';
-    evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${e2(getTaskDeadlineValue(t)||'')}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
-  }).catch(()=>{});
+  const tasks=getCalendarTasksSnapshot();
+  const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
+  const hot=(tasks||[]).filter(t=>!t.done&&parseCalendarTaskDeadline(t));
+  renderCalendarDeadlinesList(tasks);
+  if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
+  titEl.textContent='Дедлайны';
+  evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${e2(getTaskDeadlineValue(t)||'')}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
 }
 function selectCalDay(d){
   document.querySelectorAll('.cal-day').forEach(el=>el.classList.remove('selected'));
   event.target.classList.add('selected');
   const y=calDate.getFullYear(),m=calDate.getMonth();
   const sel=new Date(y,m,d);
-  fetch(WORKER+'/tasks?chatId='+chatId,{headers:authHeaders()}).then(r=>r.json()).then(tasks=>{
-    const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
-    const dayTasks=(tasks||[]).filter(t=>{
-      if(t.done||!getTaskDeadlineValue(t))return false;
-      const td=parseCalendarTaskDeadline(t,sel.getFullYear());
-      if(!td) return false;
-      return td.getDate()===sel.getDate()&&td.getMonth()===sel.getMonth()&&td.getFullYear()===sel.getFullYear();
-    });
-    titEl.textContent='Дедлайны — '+d+' '+CAL_MONTHS_SHORT[m];
-    if(dayTasks.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет задач на этот день</div>';return;}
-    evEl.innerHTML=dayTasks.map(t=>{
-      const tid=t.id;
-      return '<div class="cal-event" onclick="openTaskById(\''+tid+'\',0)" style="cursor:pointer">'
-        +'<div class="cal-event-time">'+e2(getTaskDeadlineValue(t)||'')+'</div>'
-        +'<div class="cal-event-dot"></div>'
-        +'<div style="flex:1">'
-        +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
-        +'<div style="display:flex;gap:8px;margin-top:6px">'
-        +'<button onclick="event.stopPropagation();markDoneKV(this,\''+tid+'\')" style="font-size:11px;padding:3px 10px;border-radius:8px;background:var(--green3);border:1px solid var(--green-dark);color:var(--green);cursor:pointer;font-family:Inter,sans-serif">✓ Готово</button>'
-        +'</div></div></div>';
-    }).join('');
-  }).catch(()=>{});
+  const tasks=getCalendarTasksSnapshot();
+  const evEl=document.getElementById('cal-events'),titEl=document.getElementById('cal-events-title');
+  const dayTasks=(tasks||[]).filter(t=>{
+    if(t.done||!getTaskDeadlineValue(t))return false;
+    const td=parseCalendarTaskDeadline(t,sel.getFullYear());
+    if(!td) return false;
+    return td.getDate()===sel.getDate()&&td.getMonth()===sel.getMonth()&&td.getFullYear()===sel.getFullYear();
+  });
+  titEl.textContent='Дедлайны — '+d+' '+CAL_MONTHS_SHORT[m];
+  if(dayTasks.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет задач на этот день</div>';return;}
+  evEl.innerHTML=dayTasks.map(t=>{
+    const tid=t.id;
+    return '<div class="cal-event" onclick="openTaskById(\''+tid+'\',0)" style="cursor:pointer">'
+      +'<div class="cal-event-time">'+e2(getTaskDeadlineValue(t)||'')+'</div>'
+      +'<div class="cal-event-dot"></div>'
+      +'<div style="flex:1">'
+      +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
+      +'<div style="display:flex;gap:8px;margin-top:6px">'
+      +'<button onclick="event.stopPropagation();markDoneKV(this,\''+tid+'\')" style="font-size:11px;padding:3px 10px;border-radius:8px;background:var(--green3);border:1px solid var(--green-dark);color:var(--green);cursor:pointer;font-family:Inter,sans-serif">✓ Готово</button>'
+      +'</div></div></div>';
+  }).join('');
 }
 
 // VOICE

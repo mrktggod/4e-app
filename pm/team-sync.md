@@ -521,3 +521,9 @@
 - Worker branch fix prepared in `X:\4\4e-worker\.github\workflows\deploy.yml`: `CLOUDFLARE_API_TOKEN` is now exported from repo secret `CF_API_TOKEN` for the `cloudflare/wrangler-action@v3` step. No merge to `main` and no production deploy were run; final proof is a green run after Yuri merges later.
 - Added `docs/tasks/PRICE-MAP-2026-07-17.md` as a read-only map of all known `990` / `9504` RUB and Stars locations. Price was not changed.
 - Extended `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`: fresh staging `telegram-merge-smoke` promotes `BACK-026` and `BUG-2026-07-14-003` to `LIVE`; UI/provider rows remain unpromoted.
+
+## 2026-07-17 - Open bugs status sync
+
+- `NEW-017` calendar demo/global-task risk fixed in app source and bugs table moved to `Done`.
+- `NEW-001` morning briefing retry bug fixed in worker source; status is `Ready for QA` pending real Telegram delivery smoke.
+- `NEW-006` and `NEW-008` bugs table synchronized to `Ready for QA`; both remain manual TMA/device checks before `Done`.

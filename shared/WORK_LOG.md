@@ -9138,3 +9138,8 @@
 - Created `docs/tasks/PRICE-MAP-2026-07-17.md`; current staging `/tariff-config` reports month `990/990 stars` and year `9504/9504 stars`.
 - Ran fresh staging `telegram-merge-smoke`: creator/receiver register+login, `/auth/telegram` for both returned `200` with `accountMerged:true`, receiver `/auth/me` returned `200`; `BACK-026` and `BUG-2026-07-14-003` are now LIVE in the audit doc.
 - Broader `api-smoke` was partial and not counted as a full PASS because it ended with `fetch failed` after `tasks.list.after`.
+## 2026-07-17 - Open bugs pass: NEW-017 / NEW-001 / NEW-006 / NEW-008
+
+- NEW-017: fixed the remaining calendar root cause in `index.html`. `renderCalendar()` / `selectCalDay()` no longer fetch `/tasks?chatId=` from the current global `chatId` (which starts as `global`); they render from `allTasksCache`, so a fresh account sees real user tasks or an honest empty state, not demo/global data.
+- NEW-001: fixed worker cron retry semantics. `runBriefingsCron()` now marks `briefing_sent:<user>:<date>` only after Telegram `sendMessage` succeeds; failed delivery no longer suppresses retries for the day. Full closure still needs Yuri's real Telegram delivery smoke.
+- NEW-006 / NEW-008: bugs table synchronized to `Ready for QA` instead of stale `Triaged`; both still require real Telegram Mini App/mobile keyboard smoke before Done.
