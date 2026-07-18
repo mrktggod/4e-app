@@ -552,200 +552,72 @@ if('serviceWorker' in navigator){
 
 <!-- TASK DETAIL v2 -->
 <div class="screen" id="task-detail">
+  <div class="detail-redesign-shell">
+    <div class="detail-redesign-header">
+      <button class="detail-round-btn" type="button" data-detail-action="back-to-home" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="detail-header-actions">
+        <button class="detail-round-btn" type="button" data-detail-action="enter-edit-mode" aria-label="Редактировать"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z"/></svg></button>
+        <button class="detail-round-btn" type="button" data-detail-action="open-task-menu" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .32 1.76l.05.05a2 2 0 1 1-2.83 2.83l-.05-.05a1.6 1.6 0 0 0-1.76-.32 1.6 1.6 0 0 0-.97 1.46V21a2 2 0 1 1-4 0v-.09a1.6 1.6 0 0 0-.97-1.46 1.6 1.6 0 0 0-1.76.32l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.46-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.55 9a1.6 1.6 0 0 0-.32-1.76l-.05-.05a2 2 0 1 1 2.83-2.83l.05.05A1.6 1.6 0 0 0 8.82 4.7h.18A1.6 1.6 0 0 0 10 3.24V3a2 2 0 1 1 4 0v.09A1.6 1.6 0 0 0 15 4.55a1.6 1.6 0 0 0 1.76-.32l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.6 1.6 0 0 0 19.45 9v.18A1.6 1.6 0 0 0 20.91 10H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.51 1z"/></svg></button>
+        <button class="detail-round-btn" type="button" data-detail-action="open-task-menu" aria-label="Ещё"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></button>
+      </div>
+    </div>
 
-  <!-- Шапка -->
-  <div class="back-bar">
-    <button class="back-btn" data-detail-action="back-to-home" aria-label="Назад">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div style="flex:1"><div class="back-title">Задача</div></div>
-    <button class="detail-menu-btn" data-detail-action="open-task-menu">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-    </button>
+    <div class="detail-scroll detail-redesign-scroll">
+      <section class="detail-redesign-hero detail-glass-panel">
+        <div class="detail-redesign-tags">
+          <label class="detail-redesign-tag"><span class="detail-dot detail-dot--green"></span><input id="detail-direction" class="detail-direction-chip" placeholder="Работа" list="detail-direction-options" data-detail-field="direction"></label>
+          <datalist id="detail-direction-options"></datalist>
+          <span class="detail-redesign-tag"><span class="detail-dot detail-dot--purple"></span>Проект</span>
+          <span class="detail-redesign-bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 17H5a2 2 0 0 0 2-2v-4a5 5 0 0 1 10 0v4a2 2 0 0 0 2 2h-4"/><path d="M9 17a3 3 0 0 0 6 0"/></svg></span>
+        </div>
+        <div class="detail-status-row"><span class="detail-status-badge" id="detail-status-badge"><span class="detail-status-dot"></span>Активная</span></div>
+        <div id="detail-title" class="detail-title-main detail-redesign-title" contenteditable="false" data-detail-action="edit-title">Название задачи</div>
+        <textarea id="detail-description" class="detail-description-inline detail-redesign-desc" data-detail-field="origMsg" placeholder="Добавить описание..."></textarea>
+        <div class="detail-info-stack">
+          <label class="detail-info-card"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span><small>Срок</small><input id="detail-time-input" class="detail-control detail-info-input" type="datetime-local" data-detail-field="deadline"><b id="detail-date">—</b></span></label>
+          <label class="detail-info-card"><svg viewBox="0 0 24 24"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4H20l-4.5 5 4.5 5H5.5A1.5 1.5 0 0 0 4 15.5"/></svg><span><small>Приоритет</small><select id="detail-priority-select" class="detail-control detail-info-select" data-detail-field="priority"><option value="low">Низкий</option><option value="normal">Обычный</option><option value="high">Высокий</option><option value="urgent">Горит</option></select></span></label>
+        </div>
+      </section>
+
+      <div class="detail-redesign-status-grid">
+        <section class="detail-participants-card detail-glass-panel detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="Изменить исполнителя задачи" onclick="openDetailPersonPicker()" onkeydown="handleDetailPersonRowKeydown(event)">
+          <h3 class="detail-section-title">Участники</h3>
+          <div class="detail-person-actions"><span class="detail-avatar-pill" id="detail-person">—</span><span id="detail-person-meta" class="detail-person-meta detail-person-meta--hidden">пользователь 4</span><button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden" type="button" onclick="event.stopPropagation();openDetailContactPanel()">Написать</button></div>
+        </section>
+        <section class="detail-status-card detail-glass-panel">
+          <h3 class="detail-section-title">Статус</h3>
+          <div class="detail-native-status" aria-label="Статус задачи">
+            <span class="detail-status-track"></span>
+            <span class="detail-status-node"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><small>Ожидает</small></span>
+            <span class="detail-status-node detail-status-node--active"><span class="detail-node-core"><i></i><i></i><i></i><i></i></span><small>Активная</small></span>
+            <span class="detail-status-node"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M8.5 12.5l2.2 2.2 4.8-5"/></svg><small>Завершена</small></span>
+          </div>
+          <select id="detail-status-select" class="detail-control detail-status-select" data-detail-field="status"><option value="active">Активная</option><option value="waiting">Ожидает</option><option value="blocked">Заблокирована</option><option value="done">Готово</option></select>
+        </section>
+      </div>
+
+      <section class="detail-edit-card detail-glass-panel">
+        <div id="detail-quick-deadline" class="detail-quick-row"><button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button><button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button><button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button></div>
+        <label class="detail-edit-line"><span>Напоминание</span><select id="detail-reminder" class="detail-control" data-detail-field="reminder"><option value="none">Без</option><option value="15min">За 15 минут</option><option value="1hour">За 1 час</option><option value="1day">За день</option></select></label>
+        <div id="detail-reminder-grid" class="reminder-grid"><button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="15min">Через 15 мин</button><button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1hour">Через 1 час</button><button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1day">Через день</button></div>
+        <div class="detail-edit-line detail-tags-line"><span>Теги</span><div class="detail-tags-side"><div id="detail-tags-wrap" class="tags-wrap"></div><button id="detail-tag-toggle-btn" class="tag-add" data-detail-action="toggle-tag-input">+ Тег</button></div></div>
+        <div id="detail-tag-input-wrap" class="tag-input-wrap"><input id="detail-tag-input" class="tag-input" placeholder="Название тега" list="detail-tag-options"><datalist id="detail-tag-options"></datalist><button id="detail-tag-add-btn" class="detail-quick-btn" data-detail-action="add-tag-from-input">Добавить</button></div>
+        <div class="detail-check-head"><span>Чек-лист</span><button id="detail-split-btn" class="detail-quick-btn" data-detail-action="decompose-task">Разбить на этапы</button></div>
+        <div id="detail-checklist" class="detail-checklist"></div>
+        <div class="detail-check-add"><input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт"><button id="detail-checklist-add-btn" class="detail-quick-btn" data-detail-action="add-checklist-item">Добавить</button></div>
+      </section>
+
+      <section class="detail-chat-card detail-glass-panel">
+        <div id="task-detail-tabs" class="detail-tabs"><button class="detail-tab active" id="tab-comments" data-detail-tab="comments">Чат</button><button class="detail-tab" id="tab-history" data-detail-tab="history">История</button></div>
+        <div id="detail-tab-comments" class="detail-tab-panel"><div id="detail-comments-list" class="detail-comments-list">Обсуждения пока нет</div><div class="detail-comment-compose"><input id="detail-comment-input" class="detail-comment-input" placeholder="Напишите сообщение..."><button id="detail-comment-send-btn" class="detail-comment-send-btn" aria-label="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg></button></div></div>
+        <div id="detail-tab-history" class="detail-tab-panel detail-tab-panel--hidden"><div id="detail-history-list" class="detail-history-list">История изменений пуста</div></div>
+      </section>
+
+      <section id="detail-ai-sec" class="detail-ai-sec"><div class="detail-ai-head"><span class="detail-ai-label">Совет от 4</span><button id="detail-load-advice-btn" class="detail-ai-refresh">обновить</button></div><div id="detail-ai-advice" class="detail-ai-card detail-glass-panel">Нажми «обновить», чтобы получить совет по задаче.</div></section>
+    </div>
+
+    <div id="task-detail-actions"><button id="detail-open-move-btn" data-detail-action="open-task-move" class="detail-action-btn detail-action-btn--move">Перенести</button><button id="detail-edit-btn" data-detail-action="enter-edit-mode" class="detail-action-btn detail-action-btn--edit">Редактировать</button><button id="btn-task-complete" data-detail-action="complete" class="detail-action-btn detail-action-btn--complete">Готово</button></div>
   </div>
-  <!-- Скролл -->
-  <div class="detail-scroll">
-
-    <!-- Заголовок + статус -->
-    <div class="detail-hero-shell">
-      <div class="detail-status-row">
-        <span class="detail-status-badge" id="detail-status-badge">
-          <span class="detail-status-dot"></span>
-          Активная
-        </span>
-      </div>
-      <div id="detail-title" class="detail-title-main" contenteditable="false"
-        data-detail-action="edit-title">
-        Задача
-      </div>
-      <div class="detail-inline-desc">
-        <div class="detail-inline-label">Описание</div>
-        <textarea id="detail-description" class="detail-description-inline"
-          placeholder="Добавить описание..."></textarea>
-      </div>
-    </div>
-
-    <!-- Поля-строки -->
-    <div class="glass" style="border-radius:16px;overflow:hidden;margin-bottom:20px">
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Срок</span>
-        </div>
-        <input id="detail-time-input" class="detail-control" type="datetime-local" data-detail-field="deadline">
-      </div>
-      <div id="detail-quick-deadline" class="detail-quick-row">
-        <button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button>
-        <button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button>
-        <button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button>
-        <span id="detail-date" style="font-size:13px;color:var(--muted);font-weight:500;align-self:center">—</span>
-      </div>
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Статус</span>
-        </div>
-        <select id="detail-status-select" class="detail-control" data-detail-field="status">
-          <option value="active">Активная</option>
-          <option value="burning">Горит</option>
-          <option value="paused">Пауза</option>
-          <option value="done">Готово</option>
-        </select>
-      </div>
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="m12 2 2.6 6.8 7.2.4-5.6 4.6 1.8 7-6-3.9-6 3.9 1.8-7-5.6-4.6 7.2-.4L12 2z"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Приоритет</span>
-        </div>
-        <select id="detail-priority-select" class="detail-control" data-detail-field="priority">
-          <option value="normal">Обычный</option>
-          <option value="high">Высокий</option>
-          <option value="low">Низкий</option>
-        </select>
-      </div>
-
-      <div class="detail-field-row" style="border-bottom:none">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Напоминание</span>
-        </div>
-        <select id="detail-reminder" class="detail-control" data-detail-field="reminder">
-          <option value="none">Без</option>
-          <option value="15min">За 15 мин</option>
-          <option value="1hour">За час</option>
-          <option value="1day">За день</option>
-        </select>
-      </div>
-      <div id="detail-reminder-grid" class="reminder-grid" style="padding:0 16px 12px;border-bottom:1px solid var(--border)">
-        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="15min">Через 15 мин</button>
-        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1hour">Через 1 час</button>
-        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1day">Через день</button>
-      </div>
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Теги</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;width:100%">
-          <div id="detail-tags-wrap" class="tags-wrap"></div>
-          <button id="detail-tag-toggle-btn" class="tag-add" data-detail-action="toggle-tag-input">+ Тег</button>
-        </div>
-      </div>
-      <div id="detail-tag-input-wrap" class="tag-input-wrap" style="display:none;padding:0 16px 12px;border-bottom:1px solid var(--border)">
-        <input id="detail-tag-input" class="tag-input" placeholder="Название тега" list="detail-tag-options">
-        <datalist id="detail-tag-options"></datalist>
-        <button id="detail-tag-add-btn" class="detail-quick-btn" data-detail-action="add-tag-from-input">Добавить</button>
-      </div>
-      <input id="detail-direction" class="detail-control detail-field-row-hidden" placeholder="Направление" list="detail-direction-options" data-detail-field="direction">
-      <datalist id="detail-direction-options"></datalist>
-
-      <div class="detail-field-row detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="Изменить исполнителя задачи" onclick="openDetailPersonPicker()" onkeydown="handleDetailPersonRowKeydown(event)">
-        <div class="detail-field-row-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          <span class="detail-field-row-caption">Человек</span>
-        </div>
-        <div class="detail-person-actions">
-          <span id="detail-person" class="detail-person-name">—</span>
-          <span id="detail-person-meta" class="detail-person-meta detail-person-meta--hidden">пользователь 4</span>
-          <button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden" type="button" onclick="event.stopPropagation();openDetailContactPanel()">Написать</button>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="glass" style="border-radius:16px;padding:14px 16px;margin-bottom:20px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Чек-лист</span>
-        <button id="detail-split-btn" class="detail-quick-btn" data-detail-action="decompose-task">Разбить на этапы</button>
-      </div>
-      <div id="detail-checklist" class="detail-checklist"></div>
-      <div class="detail-check-add">
-        <input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт">
-        <button id="detail-checklist-add-btn" class="detail-quick-btn" data-detail-action="add-checklist-item">Добавить</button>
-      </div>
-    </div>
-
-    <!-- Табы -->
-    <div id="task-detail-tabs" class="detail-tabs">
-      <button class="detail-tab active" id="tab-comments" data-detail-tab="comments">Обсудить задачу</button>
-      <button class="detail-tab" id="tab-history" data-detail-tab="history">История</button>
-    </div>
-
-    <!-- Комментарии -->
-    <div id="detail-tab-comments">
-      <div id="detail-comments-list" class="detail-comments-list">Обсуждения пока нет</div>
-      <div class="detail-comment-compose">
-        <input id="detail-comment-input" class="detail-comment-input" placeholder="Написать по задаче...">
-        <button id="detail-comment-send-btn" class="detail-comment-send-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- История -->
-    <div id="detail-tab-history" style="display:none">
-      <div id="detail-history-list" style="font-size:13px;color:var(--muted);padding:8px 0">История изменений пуста</div>
-    </div>
-
-    <!-- Совет от 4 -->
-    <div id="detail-ai-sec" class="detail-ai-sec">
-      <div class="detail-ai-head">
-        <span class="detail-ai-label">Совет от 4</span>
-        <button id="detail-load-advice-btn" class="detail-ai-refresh">обновить ↻</button>
-      </div>
-      <div id="detail-ai-advice" class="detail-ai-card">
-        <span class="dots"><span></span><span></span><span></span></span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Кнопки действий -->
-    <div id="task-detail-actions">
-    <button id="detail-open-move-btn"
-      data-detail-action="open-task-move"
-      class="detail-action-btn detail-action-btn--move">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 9 2 12 5 15"/><path d="M2 12h15a6 6 0 0 1 6 6v1"/></svg>
-      Перенести
-    </button>
-    <button id="detail-edit-btn"
-      data-detail-action="enter-edit-mode"
-      class="detail-action-btn detail-action-btn--edit">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      Изменить
-    </button>
-    <button id="btn-task-complete"
-      data-detail-action="complete"
-      class="detail-action-btn detail-action-btn--complete">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-      Завершить
-    </button>
-  </div>
-
 </div>
 
 <!-- CALENDAR -->
