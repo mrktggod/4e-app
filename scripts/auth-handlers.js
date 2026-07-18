@@ -105,10 +105,10 @@ function renderDashboardSubscriptionPreviewDemo(){
   const list=document.getElementById('home-task-list');
   if(list){
     list.innerHTML=[
-      ['1','Сегодня · Работа · скоро','Юрий — Проверить кнопку после правок','Связана с текущим релизом'],
-      ['2','Сегодня, 19:00 · Бизнес · важно','Принять решение по ценам: расписать стратегию','Ожидают: Антон и команда'],
-      ['3','Завтра · Работа · позже','Продолжить разработку: дописать дорожную карту и основные баги','Длинная задача · 3 подзадачи']
-    ].map(item=>'<div class="home-ai-row glass" style="padding:16px;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center"><div style="width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--green);border:1px solid rgba(154,194,60,.35);font-weight:800">'+item[0]+'</div><div style="min-width:0"><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item[1]+'</div><div style="font-size:15px;color:var(--text);font-weight:650;line-height:1.25;margin-top:5px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere">'+item[2]+'</div><div style="font-size:12px;color:var(--text2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item[3]+'</div></div></div>').join('');
+      ['1','▣ Сегодня','▣ Работа','скоро','Юрий — Проверить кнопку после правок','Связана с текущим релизом','dash-orange'],
+      ['2','▣ Сегодня, 19:00','▣ Бизнес','важно','Принять решение по ценам: расписать стратегию','Ожидают: Антон и команда','dash-orange'],
+      ['3','▣ Завтра','▣ Работа','позже','Продолжить разработку: дописать дорожную карту и основные баги','Длинная задача · 3 подзадачи','']
+    ].map(item=>'<article class="dash-task dash-glass" data-home-action="open-focus-list"><div class="dash-task-index"><span>'+item[0]+'</span></div><div class="dash-task-content"><div class="dash-task-meta"><span>'+item[1]+'</span><span>•</span><span>'+item[2]+'</span><span>•</span><span><i class="dash-dot '+item[6]+'"></i>'+item[3]+'</span></div><h2>'+item[4]+'</h2><p>'+item[5]+'</p></div></article>').join('');
   }
 }
 
