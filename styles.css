@@ -3581,6 +3581,99 @@ body {
     grid-template-columns: 36px 76px minmax(0, 1fr) auto 12px;
   }
 }
+/* ===== PROFILE QA ITERATION 2: AIRIER, DARKER, LESS BUSY ===== */
+.profile-stage {
+  --profile-accent: #7fa52b;
+  --profile-accent-strong: #a6cf45;
+  --green: var(--profile-accent);
+  --green3: rgba(127, 165, 43, 0.13);
+}
+.profile-handoff-scroll {
+  gap: 13px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.profile-handoff-hero {
+  min-height: 126px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+.profile-premium-card {
+  min-height: 76px;
+  padding: 14px 16px;
+  align-items: center;
+}
+.premium-line {
+  font-size: 15px;
+  line-height: 1.28;
+  white-space: normal;
+}
+.premium-sub {
+  font-size: 12px;
+  line-height: 1.35;
+}
+.profile-card {
+  padding: 15px 13px 13px;
+}
+.profile-card-title {
+  margin-bottom: 12px;
+}
+.profile-data-row,
+.profile-menu-row {
+  min-height: 42px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.profile-row-list {
+  border-radius: 18px;
+}
+.profile-card-icon,
+.profile-row-icon {
+  color: var(--profile-accent-strong);
+  background: rgba(127, 165, 43, 0.1);
+  border-color: rgba(127, 165, 43, 0.24);
+}
+.profile-status-badge.verified {
+  background: radial-gradient(circle at 34% 24%, #b6dc55 0%, var(--profile-accent) 58%, #557517 100%);
+  box-shadow: 0 0 12px rgba(127, 165, 43, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+.profile-calendar-icon {
+  display: none;
+}
+.profile-data-row:has(#profile-field-birthdate) {
+  grid-template-columns: 39px minmax(82px, 0.62fr) minmax(0, 1fr) 14px;
+}
+.profile-data-row--about {
+  min-height: 128px;
+  align-items: start;
+  grid-template-columns: 39px minmax(82px, 0.62fr) minmax(0, 1fr) auto 14px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.profile-data-row--about .profile-row-icon,
+.profile-data-row--about .profile-row-label,
+.profile-data-row--about .profile-field-counter,
+.profile-data-row--about .profile-row-chevron {
+  margin-top: 4px;
+}
+.profile-row-about {
+  min-height: 96px;
+  white-space: normal;
+  line-height: 1.45;
+  padding: 4px 0;
+}
+.profile-save-btn,
+.profile-logout {
+  margin-top: 2px;
+}
+@media (max-width: 390px) {
+  .profile-handoff-scroll {
+    gap: 11px;
+  }
+  .profile-data-row--about {
+    min-height: 118px;
+  }
+}
 /* ===== VOICE SCREEN ===== */
 .voice-pulse-ring {
   position: absolute;
