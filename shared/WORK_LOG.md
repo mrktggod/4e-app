@@ -9150,3 +9150,12 @@
 - Before reseed staging returned year 9504/9504 stars and questionRuns=41 in paywall text.
 - After reseed staging returns month 990/990 stars, year 9950/9950 stars, questionRuns=0, title Продлить подписку, period / мес · 9 950 ₽/год.
 - Production config, source defaults, main, CAL, and price source code were not changed.
+## 2026-07-18 - redesign slice checkpoint
+
+- Completed the one-screen-at-a-time redesign sequence from `docs/tasks/REDESIGN-2026-07-18-plan.md` without merging to `main` and without production deploy.
+- Profile PR #42: `codex/redesign-profile-soft-glass`, SHA `e3a9f7c50eb6cd0e725e16007fac0b2dcb599167`, clean and CI green.
+- Chat PR #43: `codex/redesign-chat-soft-glass`, SHA `cf4c6ba0964dc54821b9d545af236eea2e69c787`, clean and CI green.
+- Task detail PR #44: `codex/redesign-task-detail-soft-glass`, SHA `25f605d187519a86a36d8c15b2c37e749e87f5f7`, clean and CI green; task-detail inline style count reduced from `465` to `444` by moving part of the old task-detail inline debt into LESS.
+- Added `docs/tasks/REDESIGN-2026-07-18-slice-handoff.md` on PR #45 as the review handoff/checkpoint for these slices.
+- Backlog now tracks the package as `REDESIGN-001` in `Ready for QA`; it must not be marked Done until Yuri reviews the visual direction and the PRs are merged/deployed one at a time with smoke after each deploy.
+- Non-scope preserved: payment, price, CAL, auth/TMA production fixes, beta invites, PR #33, `main` merge, and production deploy.
