@@ -4102,6 +4102,90 @@ body {
     margin-top: 78px;
   }
 }
+/* ===== TASK DETAIL QA ITERATION 3: FIT RIGHT STACK AND STATUS CORE ===== */
+.detail-redesign-hero {
+  padding-right: 150px;
+}
+.detail-info-stack {
+  right: 8px;
+  top: 70px;
+  width: 138px;
+  gap: 8px;
+}
+.detail-info-card {
+  min-height: 66px;
+  padding: 11px 10px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 9px;
+  border-radius: 16px;
+}
+.detail-info-card svg {
+  width: 22px;
+  height: 22px;
+}
+.detail-info-card small {
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+#detail-date,
+.detail-info-select {
+  font-size: 11px;
+  line-height: 1.18;
+}
+.detail-date-quick {
+  right: 0;
+  width: 138px;
+}
+.detail-info-card--priority {
+  margin-top: 40px;
+}
+.detail-status-node--active {
+  overflow: visible !important;
+}
+.detail-status-node--active .detail-node-core {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, 5px) !important;
+  grid-template-rows: repeat(2, 5px) !important;
+  place-content: center !important;
+  place-items: center !important;
+  gap: 4px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+.detail-status-node--active .detail-node-core i {
+  position: static !important;
+  display: block !important;
+  width: 5px !important;
+  height: 5px !important;
+  min-width: 5px !important;
+  min-height: 5px !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  background: #f4f8ec !important;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.28) !important;
+  transform: none !important;
+}
+@media (max-width: 390px) {
+  .detail-redesign-hero {
+    padding-right: 132px;
+  }
+  .detail-info-stack {
+    right: 6px;
+    width: 122px;
+  }
+  .detail-date-quick {
+    width: 122px;
+  }
+  .detail-info-card--priority {
+    margin-top: 74px;
+  }
+}
 /* ===== PROFILE ===== */
 .profile-scroll {
   flex: 1;
