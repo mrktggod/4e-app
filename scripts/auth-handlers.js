@@ -136,6 +136,21 @@ function showAccountMergeToast(data) {
   }
 }
 
+function shouldAutoOpenDashboardPreview(){
+  try{
+    var params=new URLSearchParams(location.search||'');
+    return isDashboardSubscriptionPreviewHost()&&params.get('previewDemo')==='dashboard';
+  }catch(_err){
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  if(!shouldAutoOpenDashboardPreview())return;
+  setTimeout(function(){
+    tryDashboardSubscriptionPreviewLogin('preview-dashboard-20260718@example.com','preview');
+  },0);
+});
 async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value.trim();
