@@ -85,7 +85,7 @@ function submitLoginOnEnter(event){
 
 function isDashboardSubscriptionPreviewHost(){
   const host=String(location.hostname||'').toLowerCase();
-  return host==='redesign-dashboard-subscript.4-ai-staging.pages.dev';
+  return host!=='4-ai-staging.pages.dev' && host.endsWith('.4-ai-staging.pages.dev');
 }
 
 function renderDashboardSubscriptionPreviewDemo(){
