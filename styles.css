@@ -2553,13 +2553,13 @@ body {
 #home .dash-center-button {
   position: absolute;
   left: 50%;
-  top: -10px;
+  top: 50%;
   overflow: hidden;
   font-size: 0;
   color: transparent;
-  transform: translateX(-50%);
-  width: 68px;
-  height: 68px;
+  transform: translate(-50%, -50%);
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   border: 1px solid rgba(155, 181, 126, 0.23);
   cursor: pointer;
@@ -2585,8 +2585,8 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 43px;
-  height: 43px;
+  width: 37px;
+  height: 37px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -2596,8 +2596,8 @@ body {
 #home .dash-brand-orb-grid i {
   position: relative;
   display: block;
-  width: 17px;
-  height: 17px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: radial-gradient(circle at 28% 21%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.44) 7%, transparent 16%), radial-gradient(circle at 38% 34%, #d5ef8d 0%, #a8d159 23%, #759f3e 51%, #314924 76%, #08100b 100%);
   border: 1px solid rgba(205, 231, 150, 0.48);
