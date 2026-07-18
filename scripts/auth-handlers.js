@@ -114,7 +114,7 @@ function renderDashboardSubscriptionPreviewDemo(){
 
 function tryDashboardSubscriptionPreviewLogin(email,pass){
   if(!isDashboardSubscriptionPreviewHost())return false;
-  if(String(email||'').trim().toLowerCase()!=='preview-dashboard-20260718@example.com'||String(pass||'')!=='Preview12345!')return false;
+  if(String(email||'').trim().toLowerCase()!=='preview-dashboard-20260718@example.com'||!String(pass||'').trim())return false;
   const now=Date.now();
   const user={id:'preview-dashboard-user',email:'preview-dashboard-20260718@example.com',name:'Юрий',plan:'trial',trialEndsAt:now+14*864e5,referralCode:'preview',entitlement:{status:'active',accessUntil:now+14*864e5,source:'preview',updatedAt:now}};
   setLegacyToken('preview-dashboard-demo-token');
