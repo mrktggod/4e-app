@@ -4563,6 +4563,93 @@ body:has(#task-detail.active) #global-nav,
   border: 0 !important;
   box-shadow: none !important;
 }
+/* ===== TASK DETAIL QA ITERATION 9: SIMPLIFY CONTROLS AND STYLE REMINDER POPUP ===== */
+.detail-header-actions {
+  display: none !important;
+}
+#detail-open-move-btn {
+  display: none !important;
+}
+#task-detail-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+.detail-redesign-hero {
+  padding-right: 172px !important;
+}
+.detail-info-stack {
+  top: 16px !important;
+  right: 14px !important;
+  width: 142px !important;
+  gap: 8px !important;
+  z-index: 22;
+}
+.detail-info-card--priority {
+  margin-top: 6px !important;
+}
+.detail-date-popover {
+  top: 72px !important;
+  right: 0 !important;
+}
+.detail-priority-popover {
+  top: 144px !important;
+  right: 0 !important;
+}
+.detail-redesign-bell {
+  appearance: none;
+  border: 1px solid rgba(180, 194, 179, 0.2);
+  cursor: pointer;
+}
+.detail-bell-select {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.detail-reminder-popover {
+  position: absolute;
+  top: 52px;
+  left: 12px;
+  z-index: 95;
+  width: 178px;
+  display: none;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 198, 182, 0.24);
+  background: linear-gradient(180deg, rgba(31, 43, 36, 0.98), rgba(7, 13, 10, 0.98));
+  box-shadow: 0 20px 34px rgba(0, 0, 0, 0.48), 0 0 18px rgba(105, 145, 67, 0.07), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+.detail-redesign-hero.detail-reminder-popover-open .detail-reminder-popover {
+  display: grid;
+}
+.detail-reminder-popover button {
+  min-height: 34px;
+  border-radius: 12px;
+  border: 1px solid rgba(166, 184, 164, 0.16);
+  background: linear-gradient(180deg, rgba(32, 43, 36, 0.84), rgba(12, 20, 16, 0.82));
+  color: #c2cac1;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: left;
+  padding: 0 11px;
+}
+.detail-reminder-popover button.active {
+  color: #071008;
+  border-color: rgba(159, 202, 84, 0.42);
+  background: linear-gradient(180deg, #b8dc62, #83aa49 72%, #6f963a);
+}
+@media (max-width: 390px) {
+  .detail-redesign-hero {
+    padding-right: 150px !important;
+  }
+  .detail-info-stack {
+    right: 10px !important;
+    width: 126px !important;
+  }
+  .detail-reminder-popover {
+    left: 8px;
+    width: 162px;
+  }
+}
 /* ===== PROFILE ===== */
 .profile-scroll {
   flex: 1;
