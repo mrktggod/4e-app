@@ -1895,3 +1895,88 @@ body:has(#task-detail.active) #global-nav,
   .detail-info-stack { right: 10px !important; width: 126px !important; }
   .detail-reminder-popover { left: 8px; width: 162px; }
 }
+
+
+/* ===== TASK DETAIL QA ITERATION 10: COMPACT RIGHT META CARDS ===== */
+.detail-redesign-hero {
+  padding-right: 144px !important;
+}
+
+.detail-info-stack {
+  top: 18px !important;
+  right: 12px !important;
+  width: 126px !important;
+  gap: 7px !important;
+}
+
+.detail-info-card {
+  min-height: 58px !important;
+  height: 58px !important;
+  padding: 9px 9px !important;
+  grid-template-columns: 22px minmax(0, 1fr) !important;
+  gap: 8px !important;
+  border-radius: 15px !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+.detail-info-card svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 20px !important;
+}
+
+.detail-info-card span {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.detail-info-card small {
+  display: block !important;
+  margin: 0 0 3px !important;
+  color: #89948d !important;
+  font-size: 9px !important;
+  line-height: 1.1 !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#detail-date,
+#detail-priority-display {
+  display: block !important;
+  max-width: 100% !important;
+  color: #9fca54 !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+  font-weight: 900 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  overflow: hidden !important;
+}
+
+#detail-date {
+  color: #c2cac1 !important;
+}
+
+.detail-date-popover,
+.detail-priority-popover {
+  right: 0 !important;
+  width: 168px !important;
+}
+
+.detail-info-card--priority {
+  margin-top: 4px !important;
+}
+
+@media (max-width: 390px) {
+  .detail-redesign-hero { padding-right: 132px !important; }
+  .detail-info-stack { width: 116px !important; right: 9px !important; }
+  .detail-info-card { grid-template-columns: 20px minmax(0,1fr) !important; padding: 8px !important; }
+  .detail-info-card svg { width: 18px !important; height: 18px !important; }
+  #detail-date, #detail-priority-display { font-size: 10px !important; }
+  .detail-date-popover, .detail-priority-popover { width: 154px !important; }
+}
