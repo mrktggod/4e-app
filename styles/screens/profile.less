@@ -842,3 +842,60 @@
   background: linear-gradient(180deg, #b8dc62, #83aa49 72%, #6f963a);
   box-shadow: 0 14px 28px rgba(105,145,67,.14), inset 0 1px 1px rgba(255,255,255,.28);
 }
+
+
+/* ===== PROFILE QA ITERATION 4: AVATAR EDIT BADGE AND CLEAN ROWS ===== */
+.profile-handoff-hero {
+  padding-right: 22px;
+}
+
+.profile-edit-btn {
+  left: 78px;
+  right: auto;
+  top: 76px;
+  width: 30px;
+  height: 30px;
+  z-index: 3;
+  color: #c8ddac;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 21%, rgba(255,255,255,.18), rgba(255,255,255,.035) 34%, transparent 60%), linear-gradient(150deg, rgba(42,55,47,.92), rgba(8,14,11,.96));
+  box-shadow: 0 8px 15px rgba(0,0,0,.42), 0 0 10px rgba(105,145,67,.08), inset 0 1px 1px rgba(255,255,255,.10);
+}
+
+.profile-edit-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.profile-row-chevron {
+  display: none !important;
+}
+
+.profile-data-row,
+.profile-menu-row {
+  grid-template-columns: 39px minmax(82px, .62fr) minmax(0, 1fr) auto;
+  padding-right: 12px;
+}
+
+.profile-menu-row {
+  grid-template-columns: 39px minmax(0, 1fr) auto;
+}
+
+.profile-data-row--about {
+  grid-template-columns: 39px minmax(82px, .62fr) minmax(0, 1fr) auto;
+}
+
+.profile-row-input,
+.profile-row-value,
+.profile-menu-row {
+  cursor: text;
+}
+
+.profile-menu-row {
+  cursor: pointer;
+}
+
+@media (max-width: 390px) {
+  .profile-edit-btn { left: 70px; top: 72px; }
+  .profile-data-row { grid-template-columns: 36px 76px minmax(0,1fr) auto; }
+}
