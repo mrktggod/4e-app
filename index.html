@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
@@ -2195,6 +2195,45 @@ function cleanTelegramAuthUrl(){
   if(PLATFORM.cleanTelegramAuthUrl) PLATFORM.cleanTelegramAuthUrl();
 }
 
+function callPlatformHelper(name,args=[],fallback=undefined){
+  try{
+    const fn=PLATFORM[name]||window[name];
+    if(typeof fn==='function') return fn(...args);
+  }catch(e){
+    window.FourTmaDiagnostics?.recordError?.('helper '+name,e);
+    console.warn('[init] helper skipped',name,e);
+  }
+  return fallback;
+}
+
+function capturePendingReferralCodeSafe(){
+  return callPlatformHelper('capturePendingReferralCode',[],undefined);
+}
+
+function getPendingReferralCodeSafe(){
+  return callPlatformHelper('getPendingReferralCode',[],'');
+}
+
+function clearPendingReferralCodeSafe(){
+  return callPlatformHelper('clearPendingReferralCode',[],undefined);
+}
+
+function getTelegramStartTokenFromLaunchSafe(){
+  return callPlatformHelper('getTelegramStartTokenFromLaunch',[],'');
+}
+
+function isVkMiniAppContextSafe(){
+  return !!callPlatformHelper('isVkMiniAppContext',[],false);
+}
+
+function isValidEmailSafe(value){
+  return !!callPlatformHelper('isValidEmail',[value],/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value||'')));
+}
+
+function focusFirstInvalidSafe(fieldIds){
+  return callPlatformHelper('focusFirstInvalid',[fieldIds],undefined);
+}
+
 function buildTelegramBotLoginUrl(startToken) {
   if(PLATFORM.buildTelegramBotLoginUrl) return PLATFORM.buildTelegramBotLoginUrl(startToken, TELEGRAM_BOT_USERNAME);
   const bot=String(TELEGRAM_BOT_USERNAME||'Denzel89bot').replace(/^@/,'').trim()||'Denzel89bot';
@@ -2218,7 +2257,7 @@ async function initApp(){
     if(PLATFORM.initTelegram){PLATFORM.initTelegram();}
     else if(tg){tg.ready?.();tg.expand?.();tg.disableVerticalSwipes?.();}
   }catch(e){console.warn('[telegram-webapp] initApp init skipped',e);}
-  capturePendingReferralCode();
+  capturePendingReferralCodeSafe();
   loadTariffConfig().catch(()=>{});
   showStartupFallback();
 
@@ -2239,7 +2278,7 @@ async function initApp(){
     }catch(e){}
   }
 
-  const telegramStartToken = getTelegramStartTokenFromLaunch() || getTelegramPendingStart();
+  const telegramStartToken = getTelegramStartTokenFromLaunchSafe() || getTelegramPendingStart();
   if (telegramStartToken) {
     const ok = await withTimeout(loginWithTelegram(telegramStartToken), 8000).catch(() => false);
     if (ok) return;
@@ -2252,18 +2291,18 @@ async function initApp(){
   }
 
   try{
-    if(isVkMiniAppContext()&&window.vkBridge){
+    if(isVkMiniAppContextSafe()&&window.vkBridge){
       await withTimeout(vkBridge.send("VKWebAppInit"),4000);
       const vkU=await withTimeout(vkBridge.send("VKWebAppGetUserInfo"),4000);
       const launchParams=await getVkLaunchParams();
-      const pendingRef=getPendingReferralCode();
+      const pendingRef=getPendingReferralCodeSafe();
       const vkResp=await withTimeout(fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||"",...(pendingRef?{ref:pendingRef}:{})})}),10000);
       const vkR=await readJsonSafe(vkResp);
       if(vkR.token){
         setLegacyToken(vkR.token);
         currentUser=vkR.user||{name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};
         chatId="user_"+currentUser.id;
-        clearPendingReferralCode();
+        clearPendingReferralCodeSafe();
         applyUserInfo();
         showScreen("home");
         showAccountMergeToast(vkR);
@@ -2345,7 +2384,7 @@ async function requestEmailVerification(){
   if(!currentUser||!getToken()){showToast('Сначала войдите в аккаунт');return;}
   const email=(document.getElementById('profile-field-email')?.value||'').trim();
   if(!email){showToast('Введите email');return;}
-  if(!isValidEmail(email)){showToast('Введите корректный email');return;}
+  if(!isValidEmailSafe(email)){showToast('Введите корректный email');return;}
   if(isCurrentProfileEmailVerified(email)){showToast('Email уже подтверждён');return;}
   const btn=document.getElementById('profile-email-status');
   if(btn){btn.disabled=true;btn.textContent='Отправляем...';}
@@ -2825,7 +2864,7 @@ function selectPlan(plan) {
 }
 
 function isVKPaymentContext() {
-  return typeof window.vkBridge !== 'undefined' && isVkMiniAppContext();
+  return typeof window.vkBridge !== 'undefined' && isVkMiniAppContextSafe();
 }
 
 function isTelegramPaymentContext() {
@@ -7929,7 +7968,7 @@ async function doForgotPassword(){
     showToast('Введите email');
     return;
   }
-  if(!isValidEmail(email)){
+  if(!isValidEmailSafe(email)){
     setForgotPasswordError('Введите корректный email');
     showToast('Введите корректный email');
     return;
@@ -8018,20 +8057,20 @@ async function doResetPassword(){
   if(!pass || pass.length < 6){
     setAuthFieldError('reset-pass','Пароль минимум 6 символов');
     showToast('Пароль минимум 6 символов');
-    focusFirstInvalid(fields);
+    focusFirstInvalidSafe(fields);
     return;
   }
   if(pass !== pass2){
     setAuthFieldError('reset-pass2','Пароли не совпадают');
     showToast('Пароли не совпадают');
-    focusFirstInvalid(fields);
+    focusFirstInvalidSafe(fields);
     return;
   }
   const token = window._resetToken;
   if(!token){
     setAuthFieldError('reset-pass','Токен не найден. Откройте ссылку из письма ещё раз.');
     showToast('Токен не найден');
-    focusFirstInvalid(fields);
+    focusFirstInvalidSafe(fields);
     return;
   }
 
