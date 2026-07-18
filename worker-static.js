@@ -1,4 +1,4 @@
-const WORKER_VERSION = "rootfix-4";
+const WORKER_VERSION = "tma-diag-2026-07-18-urgent2";
 const NOT_FOUND_STAMP = `404-stamp:${WORKER_VERSION}`;
 const SERVED_BY = `4-ai-app-worker ${NOT_FOUND_STAMP}`;
 
@@ -58,6 +58,33 @@ async function probeAsset(env, request, path) {
     status: response.status,
     contentType: response.headers.get('content-type') || '',
   };
+}
+
+function shouldBypassClientCache(path) {
+  return path === '/' ||
+    path === '/index.html' ||
+    path === '/sw.js' ||
+    path === '/scripts/tma-diagnostics.js' ||
+    path === '/scripts/platform-adapter.js' ||
+    path === '/scripts/auth.js' ||
+    path === '/scripts/auth-handlers.js' ||
+    path === '/scripts/task-ui-renderers.js';
+}
+
+function withAssetHeaders(response, path) {
+  const headers = new Headers(response.headers);
+  headers.set('X-Worker-Version', WORKER_VERSION);
+  headers.set('X-App-Asset-Version', WORKER_VERSION);
+  if (shouldBypassClientCache(path)) {
+    headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    headers.set('Pragma', 'no-cache');
+    headers.set('Expires', '0');
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
 
 function renderDiagnostic404(request, diagnostics) {
@@ -159,7 +186,7 @@ export default {
   async fetch(request, env) {
     const rewritten = rewriteAssetRequest(request);
     const response = await env.ASSETS.fetch(rewritten.assetRequest);
-    if (response.status !== 404) return response;
+    if (response.status !== 404) return withAssetHeaders(response, rewritten.targetPath);
 
     const indexProbe = await probeAsset(env, request, '/index.html');
     const vkProbe = await probeAsset(env, request, '/vk.html');

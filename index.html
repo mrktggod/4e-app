@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="favicon.ico" sizes="any">
+<script src="scripts/tma-diagnostics.js"></script>
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
 <script src="scripts/platform-adapter.js"></script>
@@ -23,7 +24,30 @@
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('/sw.js').catch(function(err){
+    let reloadedForNewSw=false;
+    navigator.serviceWorker.addEventListener('controllerchange',function(){
+      if(reloadedForNewSw)return;
+      reloadedForNewSw=true;
+      window.FourTmaDiagnostics?.mark?.('sw-controllerchange');
+    });
+    navigator.serviceWorker.register('/sw.js').then(function(registration){
+      window.FourTmaDiagnostics?.mark?.('sw-registered');
+      if(registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
+      registration.addEventListener('updatefound',function(){
+        const worker=registration.installing;
+        if(!worker)return;
+        worker.addEventListener('statechange',function(){
+          window.FourTmaDiagnostics?.mark?.('sw-'+worker.state);
+          if(worker.state==='installed'&&navigator.serviceWorker.controller){
+            worker.postMessage({type:'SKIP_WAITING'});
+          }
+        });
+      });
+      registration.update?.().catch(function(err){
+        window.FourTmaDiagnostics?.recordError?.('sw-update',err);
+      });
+    }).catch(function(err){
+      window.FourTmaDiagnostics?.recordError?.('sw-register',err);
       console.warn('PWA service worker registration failed',err);
     });
   });
@@ -2091,6 +2115,7 @@ if('serviceWorker' in navigator){
 </div>
 
 <script>
+window.FourTmaDiagnostics?.mark?.('main-inline-start');
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
 const PLATFORM=window.FourPlatform||{};
@@ -7168,6 +7193,7 @@ function _showSubScreenBase(id){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+  window.FourTmaDiagnostics?.mark?.('app-domcontentloaded-start');
   processOAuthCallback();
   const bindClick = PLATFORM.bindClick || ((id, handler) => {
     const el = document.getElementById(id);
@@ -7207,6 +7233,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if (typeof bindUi === 'function') {
     bindUi();
   }
+  window.FourTmaDiagnostics?.mark?.('app-domcontentloaded-end');
 });
 
 // ===== PRIVACY CENTER =====
@@ -8682,4 +8709,3 @@ var PLANET_ANIM_DATA_UNUSED ={"v":"5.12.2","fr":30,"ip":0,"op":180,"w":320,"h":2
 
 </body>
 </html>
-
