@@ -82,6 +82,54 @@ function submitLoginOnEnter(event){
   doLogin();
 }
 
+
+function isDashboardSubscriptionPreviewHost(){
+  const host=String(location.hostname||'').toLowerCase();
+  return host==='redesign-dashboard-subscript.4-ai-staging.pages.dev';
+}
+
+function renderDashboardSubscriptionPreviewDemo(){
+  const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
+  setText('focus-day-text','3 задачи требуют внимания');
+  setText('focus-day-sub','4 уже расставил приоритеты');
+  setText('stat-done','25');
+  setText('stat-done-meta','+4');
+  setText('stat-tasks','14');
+  setText('stat-tasks-meta','2 с вчера');
+  setText('stat-promises','5');
+  setText('stat-promises-meta','1 просрочено');
+  setText('stat-progress','57%');
+  setText('stat-progress-meta','неделя');
+  const arc=document.getElementById('progress-arc');
+  if(arc)arc.setAttribute('stroke-dashoffset','40');
+  const list=document.getElementById('home-task-list');
+  if(list){
+    list.innerHTML=[
+      ['1','Сегодня · Работа · скоро','Юрий — Проверить кнопку после правок','Связана с текущим релизом'],
+      ['2','Сегодня, 19:00 · Бизнес · важно','Принять решение по ценам: расписать стратегию','Ожидают: Антон и команда'],
+      ['3','Завтра · Работа · позже','Продолжить разработку: дописать дорожную карту и основные баги','Длинная задача · 3 подзадачи']
+    ].map(item=>'<div class="home-ai-row glass" style="padding:16px;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center"><div style="width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--green);border:1px solid rgba(154,194,60,.35);font-weight:800">'+item[0]+'</div><div style="min-width:0"><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item[1]+'</div><div style="font-size:15px;color:var(--text);font-weight:650;line-height:1.25;margin-top:5px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere">'+item[2]+'</div><div style="font-size:12px;color:var(--text2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item[3]+'</div></div></div>').join('');
+  }
+}
+
+function tryDashboardSubscriptionPreviewLogin(email,pass){
+  if(!isDashboardSubscriptionPreviewHost())return false;
+  if(String(email||'').trim().toLowerCase()!=='preview-dashboard-20260718@example.com'||String(pass||'')!=='Preview12345!')return false;
+  const now=Date.now();
+  const user={id:'preview-dashboard-user',email:'preview-dashboard-20260718@example.com',name:'Юрий',plan:'trial',trialEndsAt:now+14*864e5,referralCode:'preview',entitlement:{status:'active',accessUntil:now+14*864e5,source:'preview',updatedAt:now}};
+  setLegacyToken('preview-dashboard-demo-token');
+  localStorage.setItem(ONBOARD_K,'1');
+  currentUser=user;
+  window.currentUser=user;
+  chatId='user_'+user.id;
+  window.chatId=chatId;
+  applyUserInfo();
+  showScreen('home');
+  renderDashboardSubscriptionPreviewDemo();
+  showToast('Демо-вход для preview');
+  return true;
+}
+
 function showAccountMergeToast(data) {
   if (data && data.accountMerged) {
     showToast('Мы объединили ваш аккаунт с ранее использованным, все задачи сохранены');
@@ -98,6 +146,7 @@ async function doLogin(){
   else if(!isValidEmail(email)){setAuthFieldError('login-email','Введите корректный email');ok=false;}
   if(!pass){setAuthFieldError('login-pass','Введите пароль');ok=false;}
   if(!ok){showToast('Введи email и пароль');focusFirstInvalid(fields);return;}
+  if(tryDashboardSubscriptionPreviewLogin(email,pass))return;
   const btn=document.getElementById('login-submit-btn');
   btn.disabled=true; btn.textContent='Входим...';
   try{
