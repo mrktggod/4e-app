@@ -510,42 +510,31 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- ASK -->
-<div class="screen screen--no-bottom-nav" id="ask">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">4</div><div class="back-sub">спроси что угодно</div></div>
-  </div>
-  <div class="ask-inner">
-    <div class="ask-msgs" id="ask-msgs">
-      <!-- Welcome message -->
+<div class="screen screen--no-bottom-nav ask-soft-screen" id="ask">
+  <header class="ask-soft-header">
+    <button class="ask-soft-back" type="button" onclick="goHome()" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="ask-soft-brand"><div class="ask-soft-title">4</div><div class="ask-soft-sub">спроси что угодно</div></div>
+  </header>
+
+  <div class="ask-inner ask-soft-inner">
+    <div class="ask-msgs ask-conversation" id="ask-msgs">
       <div class="ask-welcome" id="ask-welcome">
-        <div class="ask-welcome-logo">
-          <div class="logo-4balls" style="width:44px;height:44px;margin:0 auto 12px">
-            <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
-            <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+        <article class="ask-plan-card ask-glass-card">
+          <div class="ask-plan-list">
+            <button class="ask-plan-row" type="button" onclick="askQuick('Какие у меня дела на сегодня?')"><span class="ask-plan-num">1.</span><span class="ask-plan-icon">📋</span><span class="ask-plan-text"><strong>Какие у меня дела?</strong> <em>— собрать план дня</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Что нужно сделать срочно?')"><span class="ask-plan-num">2.</span><span class="ask-plan-icon">⚡</span><span class="ask-plan-text"><strong>Что срочно?</strong> <em>— найти горящие задачи</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Помоги составить ответ на сообщение')"><span class="ask-plan-num">3.</span><span class="ask-plan-icon">✍️</span><span class="ask-plan-text"><strong>Составить ответ</strong> <em>— быстро и по делу</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Посоветуй как лучше поступить с задачей')"><span class="ask-plan-num">4.</span><span class="ask-plan-icon">💡</span><span class="ask-plan-text"><strong>Посоветуй</strong> <em>— выбрать следующий шаг</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Создай новую задачу')"><span class="ask-plan-num">5.</span><span class="ask-plan-icon">🎙️</span><span class="ask-plan-text"><strong>Голосовой ввод</strong> <em>— начать надиктовку</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Покажи статистику моих задач')"><span class="ask-plan-num">6.</span><span class="ask-plan-icon">📊</span><span class="ask-plan-text"><strong>Статистика</strong> <em>— понять динамику</em></span></button>
           </div>
-        </div>
-        <div class="ask-welcome-title">Привет! Я 4</div>
-        <div class="ask-welcome-sub">Твой AI‑секретарь. Вот что я умею:</div>
-        <div class="ask-chips">
-          <div class="ask-chip" onclick="askQuick('Какие у меня дела на сегодня?')">📋 Какие у меня дела?</div>
-          <div class="ask-chip" onclick="askQuick('Что нужно сделать срочно?')">⚡ Что срочно?</div>
-          <div class="ask-chip" onclick="askQuick('Помоги составить ответ на сообщение')">✍️ Составить ответ</div>
-          <div class="ask-chip" onclick="askQuick('Посоветуй как лучше поступить с задачей')">💡 Посоветуй</div>
-          <div class="ask-chip" onclick="askQuick('Создай новую задачу')">➕ Новая задача</div>
-          <div class="ask-chip" onclick="askQuick('Покажи статистику моих задач')">📊 Статистика</div>
-        </div>
+          <div class="ask-plan-question">Хочешь создать задачу, разобрать день или спросить совет?</div>
+        </article>
       </div>
     </div>
-    <div class="ask-bar">
-      <button class="ask-bar-icon" type="button" onclick="askAttachmentSoon()" aria-label="Добавить вложение">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 1 1-2.82-2.83l8.48-8.48"/></svg>
-      </button>
+    <div class="ask-bar ask-input-shell">
       <textarea class="ask-field" id="ask-field" placeholder="Напиши или выбери подсказку..." rows="1"></textarea>
-      <button class="ask-bar-icon" type="button" onclick="openVoice()" aria-label="Открыть голосовой ввод">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
-      </button>
-      <button class="ask-send" onclick="sendAsk()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      <button class="ask-send" type="button" onclick="sendAsk()" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
     </div>
   </div>
 </div>
