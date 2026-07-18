@@ -2094,8 +2094,11 @@ if('serviceWorker' in navigator){
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
 const PLATFORM=window.FourPlatform||{};
-const tg=PLATFORM.telegramApp||window.Telegram?.WebApp;
-if(PLATFORM.initTelegram){PLATFORM.initTelegram();}else{if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}}
+const tg=PLATFORM.telegramApp||null;
+try{
+  if(PLATFORM.initTelegram){PLATFORM.initTelegram();}
+  else if(tg){tg.ready?.();tg.expand?.();tg.disableVerticalSwipes?.();}
+}catch(e){console.warn('[telegram-webapp] startup init skipped',e);}
 const WORKER=(()=>{const host=location.hostname.toLowerCase();if(host==='4-ai-staging.pages.dev'||host.endsWith('.4-ai-staging.pages.dev')||host==='localhost'||host==='127.0.0.1'){return 'https://restless-lab-d737-staging.shelckograff.workers.dev';}return 'https://edge.4-ai.site';})();
 const TELEGRAM_BOT_USERNAME=PLATFORM.getTelegramBotUsername?PLATFORM.getTelegramBotUsername():(new URLSearchParams(location.search).get('bot')||'Denzel89bot');
 const TOKEN_K='chetam_token';
@@ -2112,8 +2115,8 @@ let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
 
-const tgUser=PLATFORM.getTelegramUser?PLATFORM.getTelegramUser():window.Telegram?.WebApp?.initDataUnsafe?.user;
-const tgInitData=PLATFORM.getTelegramInitData?PLATFORM.getTelegramInitData():(window.Telegram?.WebApp?.initData||'');
+const tgUser=(()=>{try{return PLATFORM.getTelegramUser?PLATFORM.getTelegramUser():window.Telegram?.WebApp?.initDataUnsafe?.user;}catch(e){console.warn('[telegram-webapp] user unavailable',e);return null;}})();
+const tgInitData=(()=>{try{return PLATFORM.getTelegramInitData?PLATFORM.getTelegramInitData():(window.Telegram?.WebApp?.initData||'');}catch(e){console.warn('[telegram-webapp] initData unavailable',e);return '';}})();
 
 // в”Ђв”Ђ helpers в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function getToken(){ return localStorage.getItem(TOKEN_K); }
@@ -2186,8 +2189,10 @@ async function getVkLaunchParams(){
 
 // в”Ђв”Ђ init в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 async function initApp(){
-  const tg=window.Telegram?.WebApp;
-  if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
+  try{
+    if(PLATFORM.initTelegram){PLATFORM.initTelegram();}
+    else if(tg){tg.ready?.();tg.expand?.();tg.disableVerticalSwipes?.();}
+  }catch(e){console.warn('[telegram-webapp] initApp init skipped',e);}
   capturePendingReferralCode();
   loadTariffConfig().catch(()=>{});
   showStartupFallback();

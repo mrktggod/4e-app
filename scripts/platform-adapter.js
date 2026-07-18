@@ -1,7 +1,30 @@
 (function initFourPlatform(window) {
   'use strict';
 
-  const telegramApp = window.Telegram?.WebApp || null;
+  const telegramStartupWarnings = [];
+
+  function warnTelegram(label, error) {
+    const message = error?.message || String(error || 'unknown error');
+    telegramStartupWarnings.push({ label, message });
+    try {
+      console.warn('[telegram-webapp]', label, error);
+    } catch (e) {}
+  }
+
+  function safeTelegram(label, fn, fallback = undefined) {
+    try {
+      return fn();
+    } catch (error) {
+      warnTelegram(label, error);
+      return fallback;
+    }
+  }
+
+  function readTelegramApp() {
+    return safeTelegram('read WebApp', () => window.Telegram?.WebApp || null, null);
+  }
+
+  const telegramApp = readTelegramApp();
   const vkBridge = window.vkBridge || null;
   const telegramStartKeys = ['startapp', 'tgWebAppStartParam', 'telegram_start', 'telegramStartToken', 'startToken', 'tgAuth'];
 
@@ -14,17 +37,18 @@
   }
 
   function getTelegramUser() {
-    return telegramApp?.initDataUnsafe?.user || null;
+    return safeTelegram('read initDataUnsafe.user', () => telegramApp?.initDataUnsafe?.user || null, null);
   }
 
   function getTelegramInitData() {
-    return telegramApp?.initData || '';
+    return safeTelegram('read initData', () => telegramApp?.initData || '', '');
   }
 
   function initTelegram() {
-    if (telegramApp?.ready) telegramApp.ready();
-    telegramApp?.expand?.();
-    telegramApp?.disableVerticalSwipes?.();
+    if (!telegramApp) return;
+    safeTelegram('ready', () => { telegramApp.ready?.(); });
+    safeTelegram('expand', () => { telegramApp.expand?.(); });
+    safeTelegram('disableVerticalSwipes', () => { telegramApp.disableVerticalSwipes?.(); });
   }
 
   function isVkMiniAppContext() {
@@ -776,7 +800,7 @@
   }
 
   function getTelegramStartTokenFromLaunch() {
-    const initStart = telegramApp?.initDataUnsafe?.start_param;
+    const initStart = safeTelegram('read initDataUnsafe.start_param', () => telegramApp?.initDataUnsafe?.start_param, '');
     if (initStart) return String(initStart).trim();
 
     const fromSearch = getSearchParams();
@@ -856,7 +880,7 @@
         }
         return true;
       } catch (error) {
-        console.warn('openTelegramLink failed, falling back to web link', error);
+        warnTelegram('openTelegramLink', error);
       }
     }
     window.location.href = url;
@@ -1071,6 +1095,7 @@
 
   window.FourPlatform = {
     telegramApp,
+    getTelegramStartupWarnings: () => telegramStartupWarnings.slice(),
     vkBridge,
     getTelegramBotUsername,
     getTelegramUser,
