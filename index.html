@@ -14,12 +14,12 @@
 <link rel="shortcut icon" href="favicon.ico" sizes="any">
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
-<script src="scripts/platform-adapter.js"></script>
-<script src="scripts/auth.js"></script>
-<script src="scripts/auth-handlers.js"></script>
-<script src="scripts/task-ui-renderers.js"></script>
+<script src="scripts/platform-adapter.js?v=dashboard-handoff-20260718-7"></script>
+<script src="scripts/auth.js?v=dashboard-handoff-20260718-7"></script>
+<script src="scripts/auth-handlers.js?v=dashboard-handoff-20260718-7"></script>
+<script src="scripts/task-ui-renderers.js?v=dashboard-handoff-20260718-7"></script>
 <script src="assets/vendor/marked.min.js"></script>
-<link rel="stylesheet" href="styles.min.css">
+<link rel="stylesheet" href="styles.min.css?v=dashboard-handoff-20260718-8">
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
@@ -303,151 +303,52 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- HOME v2 glassmorphism -->
-<div class="screen" id="home" style="flex-direction:column;overflow:hidden;position:relative">
-  <div class="home-glow"></div>
-
-  <!-- ШАПКА -->
-  <header style="flex-shrink:0;position:relative;z-index:2;padding:16px 20px 0" aria-label="Главный экран">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <!-- Аватар / профиль -->
-      <div data-home-action="open-profile" role="button" tabindex="0" aria-label="Открыть профиль" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
-      <!-- Заголовок периода -->
-      <div style="flex:1;min-width:0;padding:0 14px">
-        <div style="display:inline-flex;align-items:center;gap:6px;font-size:22px;font-weight:700;color:var(--text);line-height:1.1">
-          <span>Сегодня</span>
-          <span style="font-size:12px;color:var(--muted);transform:translateY(1px)">▼</span>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:3px">Текущий месяц</div>
-      </div>
-      <!-- Колокол -->
-      <div class="h-btn" data-home-action="open-notifications" role="button" tabindex="0" aria-label="Открыть уведомления" style="position:relative;cursor:pointer">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <div class="h-btn-dot" id="bell-dot" style="display:none"></div>
-      </div>
+<div class="screen" id="home">
+  <div class="dash-artboard" aria-label="Главный экран приложения 4, тёмная тема">
+    <div class="dash-statusbar" aria-hidden="true">
+      <span>9:41</span>
+      <div class="dash-status-icons"><span class="dash-cell"><i></i><i></i><i></i><i></i></span><span class="dash-wifi"></span><span class="dash-battery"></span></div>
     </div>
 
-  </header>
-
-  <!-- СКРОЛЛ -->
-  <div data-screen-scroll style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 100px">
-
-    <!-- КАРТОЧКА ФОКУС ДНЯ -->
-    <div class="focus-day-card glass" style="border-radius:20px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;min-height:106px;cursor:pointer" data-home-action="open-focus-list">
-      <!-- Sparkle icon -->
-      <div style="width:50px;height:50px;min-width:50px;border-radius:50%;border:1.5px solid rgba(154,194,60,0.45);background:rgba(154,194,60,0.08);display:flex;align-items:center;justify-content:center;z-index:1">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3L13.8 9.8L20.5 12L13.8 14.2L12 21L10.2 14.2L3.5 12L10.2 9.8L12 3Z" fill="rgba(154,194,60,0.9)"/><circle cx="12" cy="12" r="2" fill="rgba(154,194,60,0.4)"/></svg>
-      </div>
-      <!-- Text -->
-      <div style="flex:1;z-index:2;min-width:0;padding-right:144px">
-        <div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3" id="focus-day-text">загружаю...</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.4" id="focus-day-sub">4 рядом: держу фокус дня</div>
-      </div>
-      <!-- Planet SVG animation (no external deps) -->
-      <div style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:148px;height:116px;pointer-events:none;z-index:0">
-        <svg viewBox="0 0 148 116" width="148" height="116" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
-          <defs>
-            <radialGradient id="pgl" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.14"/><stop offset="100%" stop-color="#9AC23C" stop-opacity="0"/></radialGradient>
-            <radialGradient id="pgs" cx="30%" cy="28%" r="72%"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.45"/><stop offset="42%" stop-color="#1a2a10" stop-opacity="0.92"/><stop offset="100%" stop-color="#070e04" stop-opacity="1"/></radialGradient>
-            <filter id="pgf" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5"/></filter>
-            <path id="op1" d="M 14,58 A 60,20 -8 1,1 134,58 A 60,20 -8 1,1 14,58" fill="none"/>
-            <path id="op2" d="M 28,55 A 46,15 12 1,0 120,61 A 46,15 12 1,0 28,55" fill="none"/>
-            <path id="op3" d="M 18,64 A 56,18 -18 1,1 130,52 A 56,18 -18 1,1 18,64" fill="none"/>
-          </defs>
-          <!-- Glow halo -->
-          <circle cx="74" cy="58" r="54" fill="url(#pgl)"/>
-          <!-- Back orbit -->
-          <ellipse cx="74" cy="58" rx="60" ry="20" fill="none" stroke="#9AC23C" stroke-opacity="0.2" stroke-width="1" transform="rotate(-8 74 58)"/>
-          <!-- Planet sphere -->
-          <circle cx="74" cy="58" r="42" fill="url(#pgs)" stroke="#9AC23C" stroke-opacity="0.38" stroke-width="1.2"/>
-          <!-- Sphere highlight -->
-          <ellipse cx="60" cy="46" rx="14" ry="10" fill="#9AC23C" fill-opacity="0.07" transform="rotate(-20 60 46)"/>
-          <!-- Front orbit -->
-          <ellipse cx="74" cy="58" rx="60" ry="20" fill="none" stroke="#9AC23C" stroke-opacity="0.2" stroke-width="1" transform="rotate(-8 74 58)"/>
-          <!-- Satellite 1 glow -->
-          <circle r="8" fill="#9AC23C" fill-opacity="0.12" filter="url(#pgf)"><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath href="#op1"/></animateMotion></circle>
-          <!-- Satellite 1 dot -->
-          <circle r="3.5" fill="#9AC23C" fill-opacity="0.9"><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath href="#op1"/></animateMotion></circle>
-          <!-- Satellite 2 (reverse) -->
-          <circle r="2" fill="#9AC23C" fill-opacity="0.6"><animateMotion dur="4.2s" repeatCount="indefinite" rotate="auto" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#op2"/></animateMotion></circle>
-          <!-- Satellite 3 glow -->
-          <circle r="5" fill="#9AC23C" fill-opacity="0.1" filter="url(#pgf)"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" begin="-3s"><mpath href="#op3"/></animateMotion></circle>
-          <!-- Satellite 3 dot -->
-          <circle r="2.5" fill="#9AC23C" fill-opacity="0.55"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" begin="-3s"><mpath href="#op3"/></animateMotion></circle>
-        </svg>
-      </div>
-      <!-- Arrow -->
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(154,194,60,0.55)" stroke-width="2.5" style="position:absolute;right:14px;bottom:14px;z-index:2"><polyline points="9 18 15 12 9 6"/></svg>
+    <div class="dash-header">
+      <button class="dash-avatar" id="user-avatar-small" data-home-action="open-profile" type="button" aria-label="Открыть профиль"><img src="assets/design/dashboard-avatar.png?v=dashboard-handoff-20260718-7" alt=""></button>
+      <button class="dash-title" type="button" data-home-action="today" aria-label="Сегодня"><strong>Сегодня</strong><span class="dash-chevron"></span></button>
+      <button class="dash-notification" data-home-action="open-notifications" type="button" aria-label="Открыть уведомления"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="dash-notification-dot" id="bell-dot" style="display:none"></span></button>
     </div>
 
-    <section class="glass" style="border-radius:20px;padding:18px 16px 8px;overflow:hidden">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px">
-        <div>
-          <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Задачи · текущий месяц</div>
-          <div style="font-size:20px;font-weight:700;color:var(--text);line-height:1.2" id="home-section-title">3 главных приоритета</div>
-          <div style="font-size:13px;color:var(--text2);margin-top:4px" id="home-section-sub">4 уже расставил акценты на сегодня</div>
-        </div>
-        <div class="home-ai-planner__pulse" id="home-ai-pulse">Загрузка...</div>
+    <section class="dash-hero dash-glass" data-home-action="open-focus-list" role="button" tabindex="0" aria-label="Фокус дня">
+      <div class="dash-hero-content">
+        <div class="dash-eyebrow">ФОКУС ДНЯ</div>
+        <div class="dash-hero-line"><span class="dash-hero-number" id="focus-day-count">0</span><span class="dash-hero-noun" id="focus-day-noun">задач</span></div>
+        <h1 class="dash-hero-title" id="focus-day-text">Сегодня всё спокойно</h1>
+        <div class="dash-hero-subtitle" id="focus-day-sub">Добавь первую задачу, и я соберу фокус дня</div>
       </div>
-
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
-        <div class="stat-mini glass" data-home-action="open-done-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Выполнено</div>
-          <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-done">—</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-done-meta">—</div>
-          <div class="stat-mini-line" style="height:2px;background:var(--green);border-radius:1px;margin-top:6px;opacity:.4"></div>
-        </div>
-        <div class="stat-mini glass" data-home-action="open-active-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Задачи</div>
-          <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-tasks">—</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-tasks-meta">—</div>
-          <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
-        </div>
-        <div class="stat-mini glass" data-home-action="open-promise-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Обещания</div>
-          <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-promises">—</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-promises-meta">—</div>
-          <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
-        </div>
-        <div class="stat-mini glass-green" data-home-action="open-statistics" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--green);margin-bottom:4px">Прогресс</div>
-          <div style="position:relative;width:36px;height:36px;margin:0 auto">
-            <svg width="36" height="36" viewBox="0 0 36 36" style="transform:rotate(-90deg)">
-              <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="3"/>
-              <circle cx="18" cy="18" r="15" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="94" stroke-linecap="round" id="progress-arc"/>
-            </svg>
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)" id="stat-progress">0%</div>
-          </div>
-          <div style="font-size:10px;color:var(--green);margin-top:4px;line-height:1.3" id="stat-progress-meta">—</div>
-        </div>
-      </div>
-      <button type="button" onclick="shareDailyCard()" style="width:100%;margin:0 0 8px;padding:12px 14px;border-radius:14px;border:1px solid rgba(154,194,60,.24);background:var(--green3);color:var(--green);font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">Поделиться планом дня</button>
-      <button type="button" onclick="shareWeeklySummaryCard()" style="width:100%;margin:0 0 14px;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:rgba(242,245,233,.04);color:var(--text);font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">Итоги недели</button>
-
-      <div id="home-task-list">
-        <div class="home-ai-empty">Формирую список приоритетов...</div>
-      </div>
-      <div id="home-show-all-btn" data-home-action="open-active-list" style="display:none;align-items:center;justify-content:center;gap:6px;padding:14px;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2)">
-        <span id="home-show-all-label">Смотреть все задачи</span>
-        <svg id="home-show-all-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
+      <img class="dash-hero-orb" src="assets/design/dashboard-hero-orb.png?v=dashboard-handoff-20260718-7" alt="Фирменный AI Orb 4">
     </section>
 
+    <div class="dash-month-title" id="home-section-title">Задачи · текущий месяц</div>
+    <div id="home-section-sub" style="display:none">4 уже расставил акценты на сегодня</div>
+    <div class="home-ai-planner__pulse" id="home-ai-pulse" style="display:none">Готово</div>
 
+    <section class="dash-metrics" aria-label="Месячная сводка">
+      <article class="dash-metric dash-glass" data-home-action="open-done-list" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m8.7 12 2.1 2.1 4.7-5"/></svg></span><span>Выполнено</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-done">0</span><span class="dash-metric-note" id="stat-done-meta">нет данных</span></div><svg class="dash-sparkline" viewBox="0 0 72 18"><path d="M1 15 C10 11,14 10,20 13 S32 16,38 10 S50 7,56 10 S65 11,71 5"/></svg></article>
+      <article class="dash-metric dash-glass" data-home-action="open-active-list" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><path d="M9 6h10M9 12h10M9 18h10"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg></span><span>Задачи</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-tasks">0</span><span class="dash-metric-note" id="stat-tasks-meta">спокойный день</span></div></article>
+      <article class="dash-metric dash-glass" data-home-action="open-promise-list" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><path d="M15 19v-1.4c0-2-1.8-3.6-4-3.6H7c-2.2 0-4 1.6-4 3.6V19"/><circle cx="9" cy="8" r="3"/><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3M21 19v-1.4c0-1.8-1.4-3.2-3.2-3.5"/></svg></span><span>Обещания</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-promises">0</span><span class="dash-metric-note" id="stat-promises-meta">без просрочек</span></div></article>
+      <article class="dash-metric dash-metric-progress dash-glass" data-home-action="open-statistics" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5h4"/></svg></span><span>Прогресс</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-progress">0%</span></div><span class="dash-ring"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="14"/><circle id="progress-arc" cx="21" cy="21" r="14" style="stroke-dashoffset:88"/></svg></span><div id="stat-progress-meta" style="display:none">неделя</div></article>
+    </section>
+
+    <section class="dash-tasks dash-tasks--empty" id="home-task-list" aria-label="Приоритетные задачи">
+      <article class="dash-empty-card dash-glass"><h2>Первый AI-план за 60 секунд</h2><p>Добавь 3 задачи любым удобным способом, и 4 сразу соберёт понятный фокус дня без пустого экрана.</p></article>
+    </section>
+
+    <div id="home-show-all-btn" data-home-action="open-active-list" style="display:none"><span id="home-show-all-label">Смотреть все задачи</span><svg id="home-show-all-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+
+    <nav class="dash-bottom-nav dash-glass" aria-label="Нижняя навигация">
+      <button class="dash-nav-item active" id="home-nav-today" data-nav="today" data-home-nav-action="today" type="button" aria-label="Сегодня"><svg viewBox="0 0 24 24"><defs><linearGradient id="homeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#85aa50"/><stop offset="1" stop-color="#5f7f35"/></linearGradient></defs><path d="m3 10 9-7 9 7v10H14v-6h-4v6H3Z"/></svg><span>Сегодня</span></button>
+      <button class="dash-center-button" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" type="button" aria-label="Открыть чат с 4; удерживать для голосового ввода"><span class="dash-brand-orb-grid"><i></i><i></i><i></i><i></i></span></button>
+      <button class="dash-nav-item" id="home-nav-cal" data-nav="cal" data-home-nav-action="calendar" type="button" aria-label="Календарь"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Календарь</span></button>
+    </nav>
   </div>
-
-  <!-- НИЖНИЙ НАВ -->
-  <nav class="bottom-nav-v2 glass-nav" aria-label="Основная навигация" style="position:absolute;bottom:0;left:0;right:0">
-    <div class="nav-inner glass">
-      <div class="nav-item active" id="home-nav-today" data-nav="today" data-home-nav-action="today" role="button" tabindex="0" aria-label="Сегодня">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16"/><path d="M12 4v16"/><circle cx="12" cy="12" r="9"/></svg>
-      </div>
-      <div class="nav-mic-v2" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" role="button" tabindex="0" aria-label="4: открыть AI-чат, удержание — голос">4</div>
-      <div class="nav-item" id="home-nav-cal" data-nav="cal" data-home-nav-action="calendar" role="button" tabindex="0" aria-label="Календарь">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
-    </div>
-  </nav>
-
 </div>
 
 <!-- WRITE -->
@@ -2100,6 +2001,12 @@ const WORKER=(()=>{const host=location.hostname.toLowerCase();if(host==='4-ai-st
 const TELEGRAM_BOT_USERNAME=PLATFORM.getTelegramBotUsername?PLATFORM.getTelegramBotUsername():(new URLSearchParams(location.search).get('bot')||'Denzel89bot');
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
+// previewDemo dashboard pre-init: keep automated visual QA on the dashboard, not onboarding.
+try{
+  const previewParams=new URLSearchParams(location.search||'');
+  const previewHost=location.hostname&&location.hostname.endsWith('.4-ai-staging.pages.dev')&&location.hostname!=='4-ai-staging.pages.dev';
+  if(previewHost&&previewParams.get('previewDemo')==='dashboard')localStorage.setItem(ONBOARD_K,'1');
+}catch(_previewDemoErr){}
 const D1_TOKEN_K='chetam_d1_token';
 const LOGOUT_K='chetam_logged_out';
 const TG_PENDING_START_K='chetam_tg_pending_start';
@@ -3329,14 +3236,15 @@ async function loadTasks(){
 
     // Focus bar
     // Фокус дня
+    const focusCountEl = document.getElementById('focus-day-count');
+    const focusNounEl = document.getElementById('focus-day-noun');
     const focusEl = document.getElementById('focus-day-text');
     const focusSubEl = document.getElementById('focus-day-sub');
-    if(focusEl){
-      const attentionCount = hotCount || outgoing.length || incoming.length;
-      const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
-      if(attentionCount > 0) focusEl.textContent = attentionCount + ' ' + taskWord + ' требуют внимания';
-      else focusEl.textContent = 'Сегодня всё спокойно';
-    }
+    const attentionCount = hotCount || outgoing.length || incoming.length;
+    const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
+    if(focusCountEl) focusCountEl.textContent = String(attentionCount || 0);
+    if(focusNounEl) focusNounEl.textContent = taskWord;
+    if(focusEl) focusEl.textContent = attentionCount > 0 ? 'требуют внимания' : 'Сегодня всё спокойно';
     if(focusSubEl){
       if(hotCount > 0) focusSubEl.textContent = '4 рядом: сначала снимем горячее';
       else if(outgoing.length > 0 || incoming.length > 0) focusSubEl.textContent = '4 держит штаб: идём по первому приоритету';

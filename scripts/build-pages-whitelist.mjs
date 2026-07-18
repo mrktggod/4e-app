@@ -11,6 +11,7 @@ const requiredFiles = [
   "privacy.html",
   "styles.min.css",
   "scripts/platform-adapter.js",
+  "scripts/auth.js",
   "scripts/task-ui-renderers.js",
   "scripts/auth-handlers.js",
 ];
@@ -53,12 +54,25 @@ writeFileSync(resolve(outDir, ".nojekyll"), "");
 
 const indexPath = resolve(outDir, "index.html");
 const prodWorkerResolver = "const WORKER='https://edge.4-ai.site';";
+const stagingWorkerResolver = "const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev';";
 const workerResolverPattern = /const WORKER=\(\(\)=>\{const host=location\.hostname\.toLowerCase\(\);[\s\S]*?return 'https:\/\/edge\.4-ai\.site';\}\)\(\);/;
 const indexHtml = readFileSync(indexPath, "utf8");
 if (!workerResolverPattern.test(indexHtml)) {
   throw new Error("Unable to find WORKER resolver in index.html");
 }
-writeFileSync(indexPath, indexHtml.replace(workerResolverPattern, prodWorkerResolver));
+
+const workerTarget = (process.env.PAGES_WORKER_TARGET || "production").trim().toLowerCase();
+if (workerTarget === "auto") {
+  console.log("Pages worker target: auto resolver preserved");
+} else if (workerTarget === "staging") {
+  writeFileSync(indexPath, indexHtml.replace(workerResolverPattern, stagingWorkerResolver));
+  console.log("Pages worker target: staging");
+} else if (workerTarget === "production") {
+  writeFileSync(indexPath, indexHtml.replace(workerResolverPattern, prodWorkerResolver));
+  console.log("Pages worker target: production");
+} else {
+  throw new Error(`Unsupported PAGES_WORKER_TARGET: ${workerTarget}`);
+}
 
 const publishedEntries = readdirSync(outDir)
   .map((name) => {

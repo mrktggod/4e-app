@@ -82,12 +82,79 @@ function submitLoginOnEnter(event){
   doLogin();
 }
 
+
+function isDashboardSubscriptionPreviewHost(){
+  const host=String(location.hostname||'').toLowerCase();
+  return host!=='4-ai-staging.pages.dev' && host.endsWith('.4-ai-staging.pages.dev');
+}
+
+function renderDashboardSubscriptionPreviewDemo(){
+  const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
+  setText('focus-day-count','0');
+  setText('focus-day-noun','задач');
+  setText('focus-day-text','Сегодня всё спокойно');
+  setText('focus-day-sub','Добавь первую задачу, и я соберу фокус дня');
+  setText('stat-done','0');
+  setText('stat-done-meta','нет данных');
+  setText('stat-tasks','0');
+  setText('stat-tasks-meta','спокойный день');
+  setText('stat-promises','0');
+  setText('stat-promises-meta','без просрочек');
+  setText('stat-progress','0%');
+  setText('stat-progress-meta','нет данных');
+  const arc=document.getElementById('progress-arc');
+  if(arc)arc.setAttribute('stroke-dashoffset','88');
+  const list=document.getElementById('home-task-list');
+  if(list){
+    list.classList.add('dash-tasks--empty');
+    list.innerHTML='<article class="dash-empty-card dash-glass"><h2>Первый AI-план за 60 секунд</h2><p>Добавь 3 задачи любым удобным способом, и 4 сразу соберёт понятный фокус дня без пустого экрана.</p></article>';
+  }
+}
+
+function tryDashboardSubscriptionPreviewLogin(email,pass){
+  if(!isDashboardSubscriptionPreviewHost())return false;
+  if(String(email||'').trim().toLowerCase()!=='preview-dashboard-20260718@example.com'||!String(pass||'').trim())return false;
+  const now=Date.now();
+  const user={id:'preview-dashboard-user',email:'preview-dashboard-20260718@example.com',name:'Юрий',plan:'trial',trialEndsAt:now+14*864e5,referralCode:'preview',entitlement:{status:'active',accessUntil:now+14*864e5,source:'preview',updatedAt:now}};
+  setLegacyToken('preview-dashboard-demo-token');
+  localStorage.setItem(ONBOARD_K,'1');
+  currentUser=user;
+  window.currentUser=user;
+  chatId='user_'+user.id;
+  window.chatId=chatId;
+  applyUserInfo();
+  let previewScreen='home';
+  try{
+    const params=new URLSearchParams(location.search||'');
+    if(params.get('previewScreen')==='subscription')previewScreen='subscription';
+  }catch(_previewScreenErr){}
+  showScreen(previewScreen);
+  if(previewScreen==='home')renderDashboardSubscriptionPreviewDemo();
+  else setTimeout(function(){try{if(typeof updateSubscriptionScreen==='function')updateSubscriptionScreen();var params=new URLSearchParams(location.search||'');if(params.get('previewScroll')==='plans'){var scroller=document.querySelector('#subscription .sub-scroll');if(scroller)scroller.scrollTop=9999;}}catch(_err){}},120);
+  return true;
+}
+
 function showAccountMergeToast(data) {
   if (data && data.accountMerged) {
     showToast('Мы объединили ваш аккаунт с ранее использованным, все задачи сохранены');
   }
 }
 
+function shouldAutoOpenDashboardPreview(){
+  try{
+    var params=new URLSearchParams(location.search||'');
+    return isDashboardSubscriptionPreviewHost()&&params.get('previewDemo')==='dashboard';
+  }catch(_err){
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  if(!shouldAutoOpenDashboardPreview())return;
+  setTimeout(function(){
+    tryDashboardSubscriptionPreviewLogin('preview-dashboard-20260718@example.com','preview');
+  },0);
+});
 async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value.trim();
@@ -98,6 +165,7 @@ async function doLogin(){
   else if(!isValidEmail(email)){setAuthFieldError('login-email','Введите корректный email');ok=false;}
   if(!pass){setAuthFieldError('login-pass','Введите пароль');ok=false;}
   if(!ok){showToast('Введи email и пароль');focusFirstInvalid(fields);return;}
+  if(tryDashboardSubscriptionPreviewLogin(email,pass))return;
   const btn=document.getElementById('login-submit-btn');
   btn.disabled=true; btn.textContent='Входим...';
   try{
