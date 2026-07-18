@@ -9155,3 +9155,11 @@
 - Executed `pm/inbox/BRIEF-2026-07-18-selftest.md` through the protocol lifecycle.
 - Added this work-log line as the self-test payload.
 - Wrote `pm/outbox/REPORT-BRIEF-2026-07-18-selftest.md` as the matching completion report.
+
+## 2026-07-18 - Redesign cutover to staging
+
+**Task:** Transfer approved soft-glass redesign slices to `feat/admin-tariff-api` and publish staging.
+**Result:** Profile `328fdff`, chat `1b1ff0`, task-detail `e2d861c`, and dashboard/subscription `a5d40e3` slices were integrated into app runtime files, CSS was rebuilt, and Cloudflare Pages staging deployed to `https://263b279c.4-ai-staging.pages.dev/`.
+**Commit:** pending
+**Status:** NEED-YURI - production deploy waits for Yuri approval; staging API smoke currently fails at `register: 500`.
+**Next step:** Yuri reviews staging URL and decides prod cutover after API/register status is understood.

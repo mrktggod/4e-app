@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
@@ -14,10 +14,10 @@
 <link rel="shortcut icon" href="favicon.ico" sizes="any">
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
-<script src="scripts/platform-adapter.js"></script>
-<script src="scripts/auth.js"></script>
-<script src="scripts/auth-handlers.js"></script>
-<script src="scripts/task-ui-renderers.js"></script>
+<script src="scripts/platform-adapter.js?v=dashboard-handoff-20260718-7"></script>
+<script src="scripts/auth.js?v=dashboard-handoff-20260718-7"></script>
+<script src="scripts/auth-handlers.js?v=dashboard-handoff-20260718-7"></script>
+<script src="scripts/task-ui-renderers.js?v=dashboard-handoff-20260718-7"></script>
 <script src="assets/vendor/marked.min.js"></script>
 <link rel="stylesheet" href="styles.min.css">
 <script>
@@ -303,151 +303,52 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- HOME v2 glassmorphism -->
-<div class="screen" id="home" style="flex-direction:column;overflow:hidden;position:relative">
-  <div class="home-glow"></div>
-
-  <!-- ШАПКА -->
-  <header style="flex-shrink:0;position:relative;z-index:2;padding:16px 20px 0" aria-label="Главный экран">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <!-- Аватар / профиль -->
-      <div data-home-action="open-profile" role="button" tabindex="0" aria-label="Открыть профиль" style="width:34px;height:34px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--green)" id="user-avatar-small">?</div>
-      <!-- Заголовок периода -->
-      <div style="flex:1;min-width:0;padding:0 14px">
-        <div style="display:inline-flex;align-items:center;gap:6px;font-size:22px;font-weight:700;color:var(--text);line-height:1.1">
-          <span>Сегодня</span>
-          <span style="font-size:12px;color:var(--muted);transform:translateY(1px)">▼</span>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:3px">Текущий месяц</div>
-      </div>
-      <!-- Колокол -->
-      <div class="h-btn" data-home-action="open-notifications" role="button" tabindex="0" aria-label="Открыть уведомления" style="position:relative;cursor:pointer">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <div class="h-btn-dot" id="bell-dot" style="display:none"></div>
-      </div>
+<div class="screen" id="home">
+  <div class="dash-artboard" aria-label="Главный экран приложения 4, тёмная тема">
+    <div class="dash-statusbar" aria-hidden="true">
+      <span>9:41</span>
+      <div class="dash-status-icons"><span class="dash-cell"><i></i><i></i><i></i><i></i></span><span class="dash-wifi"></span><span class="dash-battery"></span></div>
     </div>
 
-  </header>
-
-  <!-- СКРОЛЛ -->
-  <div data-screen-scroll style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 100px">
-
-    <!-- КАРТОЧКА ФОКУС ДНЯ -->
-    <div class="focus-day-card glass" style="border-radius:20px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;min-height:106px;cursor:pointer" data-home-action="open-focus-list">
-      <!-- Sparkle icon -->
-      <div style="width:50px;height:50px;min-width:50px;border-radius:50%;border:1.5px solid rgba(154,194,60,0.45);background:rgba(154,194,60,0.08);display:flex;align-items:center;justify-content:center;z-index:1">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3L13.8 9.8L20.5 12L13.8 14.2L12 21L10.2 14.2L3.5 12L10.2 9.8L12 3Z" fill="rgba(154,194,60,0.9)"/><circle cx="12" cy="12" r="2" fill="rgba(154,194,60,0.4)"/></svg>
-      </div>
-      <!-- Text -->
-      <div style="flex:1;z-index:2;min-width:0;padding-right:144px">
-        <div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3" id="focus-day-text">загружаю...</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.4" id="focus-day-sub">4 рядом: держу фокус дня</div>
-      </div>
-      <!-- Planet SVG animation (no external deps) -->
-      <div style="position:absolute;right:-12px;top:50%;transform:translateY(-50%);width:148px;height:116px;pointer-events:none;z-index:0">
-        <svg viewBox="0 0 148 116" width="148" height="116" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
-          <defs>
-            <radialGradient id="pgl" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.14"/><stop offset="100%" stop-color="#9AC23C" stop-opacity="0"/></radialGradient>
-            <radialGradient id="pgs" cx="30%" cy="28%" r="72%"><stop offset="0%" stop-color="#9AC23C" stop-opacity="0.45"/><stop offset="42%" stop-color="#1a2a10" stop-opacity="0.92"/><stop offset="100%" stop-color="#070e04" stop-opacity="1"/></radialGradient>
-            <filter id="pgf" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5"/></filter>
-            <path id="op1" d="M 14,58 A 60,20 -8 1,1 134,58 A 60,20 -8 1,1 14,58" fill="none"/>
-            <path id="op2" d="M 28,55 A 46,15 12 1,0 120,61 A 46,15 12 1,0 28,55" fill="none"/>
-            <path id="op3" d="M 18,64 A 56,18 -18 1,1 130,52 A 56,18 -18 1,1 18,64" fill="none"/>
-          </defs>
-          <!-- Glow halo -->
-          <circle cx="74" cy="58" r="54" fill="url(#pgl)"/>
-          <!-- Back orbit -->
-          <ellipse cx="74" cy="58" rx="60" ry="20" fill="none" stroke="#9AC23C" stroke-opacity="0.2" stroke-width="1" transform="rotate(-8 74 58)"/>
-          <!-- Planet sphere -->
-          <circle cx="74" cy="58" r="42" fill="url(#pgs)" stroke="#9AC23C" stroke-opacity="0.38" stroke-width="1.2"/>
-          <!-- Sphere highlight -->
-          <ellipse cx="60" cy="46" rx="14" ry="10" fill="#9AC23C" fill-opacity="0.07" transform="rotate(-20 60 46)"/>
-          <!-- Front orbit -->
-          <ellipse cx="74" cy="58" rx="60" ry="20" fill="none" stroke="#9AC23C" stroke-opacity="0.2" stroke-width="1" transform="rotate(-8 74 58)"/>
-          <!-- Satellite 1 glow -->
-          <circle r="8" fill="#9AC23C" fill-opacity="0.12" filter="url(#pgf)"><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath href="#op1"/></animateMotion></circle>
-          <!-- Satellite 1 dot -->
-          <circle r="3.5" fill="#9AC23C" fill-opacity="0.9"><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath href="#op1"/></animateMotion></circle>
-          <!-- Satellite 2 (reverse) -->
-          <circle r="2" fill="#9AC23C" fill-opacity="0.6"><animateMotion dur="4.2s" repeatCount="indefinite" rotate="auto" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#op2"/></animateMotion></circle>
-          <!-- Satellite 3 glow -->
-          <circle r="5" fill="#9AC23C" fill-opacity="0.1" filter="url(#pgf)"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" begin="-3s"><mpath href="#op3"/></animateMotion></circle>
-          <!-- Satellite 3 dot -->
-          <circle r="2.5" fill="#9AC23C" fill-opacity="0.55"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" begin="-3s"><mpath href="#op3"/></animateMotion></circle>
-        </svg>
-      </div>
-      <!-- Arrow -->
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(154,194,60,0.55)" stroke-width="2.5" style="position:absolute;right:14px;bottom:14px;z-index:2"><polyline points="9 18 15 12 9 6"/></svg>
+    <div class="dash-header">
+      <button class="dash-avatar" id="user-avatar-small" data-home-action="open-profile" type="button" aria-label="Открыть профиль"><img src="assets/design/dashboard-avatar.png?v=dashboard-handoff-20260718-7" alt=""></button>
+      <button class="dash-title" type="button" data-home-action="today" aria-label="Сегодня"><strong>Сегодня</strong><span class="dash-chevron"></span></button>
+      <button class="dash-notification" data-home-action="open-notifications" type="button" aria-label="Открыть уведомления"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="dash-notification-dot" id="bell-dot" style="display:none"></span></button>
     </div>
 
-    <section class="glass" style="border-radius:20px;padding:18px 16px 8px;overflow:hidden">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px">
-        <div>
-          <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Задачи · текущий месяц</div>
-          <div style="font-size:20px;font-weight:700;color:var(--text);line-height:1.2" id="home-section-title">3 главных приоритета</div>
-          <div style="font-size:13px;color:var(--text2);margin-top:4px" id="home-section-sub">4 уже расставил акценты на сегодня</div>
-        </div>
-        <div class="home-ai-planner__pulse" id="home-ai-pulse">Загрузка...</div>
+    <section class="dash-hero dash-glass" data-home-action="open-focus-list" role="button" tabindex="0" aria-label="Фокус дня">
+      <div class="dash-hero-content">
+        <div class="dash-eyebrow">ФОКУС ДНЯ</div>
+        <div class="dash-hero-line"><span class="dash-hero-number" id="focus-day-count">0</span><span class="dash-hero-noun" id="focus-day-noun">задач</span></div>
+        <h1 class="dash-hero-title" id="focus-day-text">Сегодня всё спокойно</h1>
+        <div class="dash-hero-subtitle" id="focus-day-sub">Добавь первую задачу, и я соберу фокус дня</div>
       </div>
-
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
-        <div class="stat-mini glass" data-home-action="open-done-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Выполнено</div>
-          <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-done">—</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-done-meta">—</div>
-          <div class="stat-mini-line" style="height:2px;background:var(--green);border-radius:1px;margin-top:6px;opacity:.4"></div>
-        </div>
-        <div class="stat-mini glass" data-home-action="open-active-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Задачи</div>
-          <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-tasks">—</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-tasks-meta">—</div>
-          <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
-        </div>
-        <div class="stat-mini glass" data-home-action="open-promise-list" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Обещания</div>
-          <div style="font-size:22px;font-weight:700;color:var(--text)" id="stat-promises">—</div>
-          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3" id="stat-promises-meta">—</div>
-          <div style="height:2px;background:var(--border);border-radius:1px;margin-top:6px"></div>
-        </div>
-        <div class="stat-mini glass-green" data-home-action="open-statistics" style="cursor:pointer;border-radius:16px;padding:12px 10px;text-align:center">
-          <div style="font-size:11px;color:var(--green);margin-bottom:4px">Прогресс</div>
-          <div style="position:relative;width:36px;height:36px;margin:0 auto">
-            <svg width="36" height="36" viewBox="0 0 36 36" style="transform:rotate(-90deg)">
-              <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(154,194,60,0.15)" stroke-width="3"/>
-              <circle cx="18" cy="18" r="15" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="94" stroke-linecap="round" id="progress-arc"/>
-            </svg>
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)" id="stat-progress">0%</div>
-          </div>
-          <div style="font-size:10px;color:var(--green);margin-top:4px;line-height:1.3" id="stat-progress-meta">—</div>
-        </div>
-      </div>
-      <button type="button" onclick="shareDailyCard()" style="width:100%;margin:0 0 8px;padding:12px 14px;border-radius:14px;border:1px solid rgba(154,194,60,.24);background:var(--green3);color:var(--green);font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">Поделиться планом дня</button>
-      <button type="button" onclick="shareWeeklySummaryCard()" style="width:100%;margin:0 0 14px;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:rgba(242,245,233,.04);color:var(--text);font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer">Итоги недели</button>
-
-      <div id="home-task-list">
-        <div class="home-ai-empty">Формирую список приоритетов...</div>
-      </div>
-      <div id="home-show-all-btn" data-home-action="open-active-list" style="display:none;align-items:center;justify-content:center;gap:6px;padding:14px;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2)">
-        <span id="home-show-all-label">Смотреть все задачи</span>
-        <svg id="home-show-all-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
+      <img class="dash-hero-orb" src="assets/design/dashboard-hero-orb.png?v=dashboard-handoff-20260718-7" alt="Фирменный AI Orb 4">
     </section>
 
+    <div class="dash-month-title" id="home-section-title">Задачи · текущий месяц</div>
+    <div id="home-section-sub" style="display:none">4 уже расставил акценты на сегодня</div>
+    <div class="home-ai-planner__pulse" id="home-ai-pulse" style="display:none">Готово</div>
 
+    <section class="dash-metrics" aria-label="Месячная сводка">
+      <article class="dash-metric dash-glass" data-home-action="open-done-list" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m8.7 12 2.1 2.1 4.7-5"/></svg></span><span>Выполнено</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-done">0</span><span class="dash-metric-note" id="stat-done-meta">нет данных</span></div><svg class="dash-sparkline" viewBox="0 0 72 18"><path d="M1 15 C10 11,14 10,20 13 S32 16,38 10 S50 7,56 10 S65 11,71 5"/></svg></article>
+      <article class="dash-metric dash-glass" data-home-action="open-active-list" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><path d="M9 6h10M9 12h10M9 18h10"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg></span><span>Задачи</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-tasks">0</span><span class="dash-metric-note" id="stat-tasks-meta">спокойный день</span></div></article>
+      <article class="dash-metric dash-glass" data-home-action="open-promise-list" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><path d="M15 19v-1.4c0-2-1.8-3.6-4-3.6H7c-2.2 0-4 1.6-4 3.6V19"/><circle cx="9" cy="8" r="3"/><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3M21 19v-1.4c0-1.8-1.4-3.2-3.2-3.5"/></svg></span><span>Обещания</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-promises">0</span><span class="dash-metric-note" id="stat-promises-meta">без просрочек</span></div></article>
+      <article class="dash-metric dash-metric-progress dash-glass" data-home-action="open-statistics" role="button" tabindex="0"><div class="dash-metric-head"><span class="dash-metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5h4"/></svg></span><span>Прогресс</span></div><div class="dash-metric-row"><span class="dash-metric-value" id="stat-progress">0%</span></div><span class="dash-ring"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="14"/><circle id="progress-arc" cx="21" cy="21" r="14" style="stroke-dashoffset:88"/></svg></span><div id="stat-progress-meta" style="display:none">неделя</div></article>
+    </section>
+
+    <section class="dash-tasks dash-tasks--empty" id="home-task-list" aria-label="Приоритетные задачи">
+      <article class="dash-empty-card dash-glass"><h2>Первый AI-план за 60 секунд</h2><p>Добавь 3 задачи любым удобным способом, и 4 сразу соберёт понятный фокус дня без пустого экрана.</p></article>
+    </section>
+
+    <div id="home-show-all-btn" data-home-action="open-active-list" style="display:none"><span id="home-show-all-label">Смотреть все задачи</span><svg id="home-show-all-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+
+    <nav class="dash-bottom-nav dash-glass" aria-label="Нижняя навигация">
+      <button class="dash-nav-item active" id="home-nav-today" data-nav="today" data-home-nav-action="today" type="button" aria-label="Сегодня"><svg viewBox="0 0 24 24"><defs><linearGradient id="homeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#85aa50"/><stop offset="1" stop-color="#5f7f35"/></linearGradient></defs><path d="m3 10 9-7 9 7v10H14v-6h-4v6H3Z"/></svg><span>Сегодня</span></button>
+      <button class="dash-center-button" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" type="button" aria-label="Открыть чат с 4; удерживать для голосового ввода"><span class="dash-brand-orb-grid"><i></i><i></i><i></i><i></i></span></button>
+      <button class="dash-nav-item" id="home-nav-cal" data-nav="cal" data-home-nav-action="calendar" type="button" aria-label="Календарь"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Календарь</span></button>
+    </nav>
   </div>
-
-  <!-- НИЖНИЙ НАВ -->
-  <nav class="bottom-nav-v2 glass-nav" aria-label="Основная навигация" style="position:absolute;bottom:0;left:0;right:0">
-    <div class="nav-inner glass">
-      <div class="nav-item active" id="home-nav-today" data-nav="today" data-home-nav-action="today" role="button" tabindex="0" aria-label="Сегодня">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16"/><path d="M12 4v16"/><circle cx="12" cy="12" r="9"/></svg>
-      </div>
-      <div class="nav-mic-v2" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" role="button" tabindex="0" aria-label="4: открыть AI-чат, удержание — голос">4</div>
-      <div class="nav-item" id="home-nav-cal" data-nav="cal" data-home-nav-action="calendar" role="button" tabindex="0" aria-label="Календарь">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
-    </div>
-  </nav>
-
 </div>
 
 <!-- WRITE -->
@@ -486,244 +387,93 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- ASK -->
-<div class="screen screen--no-bottom-nav" id="ask">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">4</div><div class="back-sub">спроси что угодно</div></div>
-  </div>
-  <div class="ask-inner">
-    <div class="ask-msgs" id="ask-msgs">
-      <!-- Welcome message -->
+<div class="screen screen--no-bottom-nav ask-soft-screen" id="ask">
+  <header class="ask-soft-header">
+    <button class="ask-soft-back" type="button" onclick="goHome()" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="ask-soft-brand"><div class="ask-soft-title">4</div><div class="ask-soft-sub">спроси что угодно</div></div>
+  </header>
+
+  <div class="ask-inner ask-soft-inner">
+    <div class="ask-msgs ask-conversation" id="ask-msgs">
       <div class="ask-welcome" id="ask-welcome">
-        <div class="ask-welcome-logo">
-          <div class="logo-4balls" style="width:44px;height:44px;margin:0 auto 12px">
-            <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
-            <div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div><div class="logo-ball" style="background:radial-gradient(circle at 35% 35%,#c8e87a,#7A9A2E 50%,#3a5010 100%)"></div>
+        <article class="ask-plan-card ask-glass-card">
+          <div class="ask-plan-list">
+            <button class="ask-plan-row" type="button" onclick="askQuick('Какие у меня дела на сегодня?')"><span class="ask-plan-num">1.</span><span class="ask-plan-icon">📋</span><span class="ask-plan-text"><strong>Какие у меня дела?</strong> <em>— собрать план дня</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Что нужно сделать срочно?')"><span class="ask-plan-num">2.</span><span class="ask-plan-icon">⚡</span><span class="ask-plan-text"><strong>Что срочно?</strong> <em>— найти горящие задачи</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Помоги составить ответ на сообщение')"><span class="ask-plan-num">3.</span><span class="ask-plan-icon">✍️</span><span class="ask-plan-text"><strong>Составить ответ</strong> <em>— быстро и по делу</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Посоветуй как лучше поступить с задачей')"><span class="ask-plan-num">4.</span><span class="ask-plan-icon">💡</span><span class="ask-plan-text"><strong>Посоветуй</strong> <em>— выбрать следующий шаг</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Создай новую задачу')"><span class="ask-plan-num">5.</span><span class="ask-plan-icon">🎙️</span><span class="ask-plan-text"><strong>Голосовой ввод</strong> <em>— начать надиктовку</em></span></button>
+            <button class="ask-plan-row" type="button" onclick="askQuick('Покажи статистику моих задач')"><span class="ask-plan-num">6.</span><span class="ask-plan-icon">📊</span><span class="ask-plan-text"><strong>Статистика</strong> <em>— понять динамику</em></span></button>
           </div>
-        </div>
-        <div class="ask-welcome-title">Привет! Я 4</div>
-        <div class="ask-welcome-sub">Твой AI‑секретарь. Вот что я умею:</div>
-        <div class="ask-chips">
-          <div class="ask-chip" onclick="askQuick('Какие у меня дела на сегодня?')">📋 Какие у меня дела?</div>
-          <div class="ask-chip" onclick="askQuick('Что нужно сделать срочно?')">⚡ Что срочно?</div>
-          <div class="ask-chip" onclick="askQuick('Помоги составить ответ на сообщение')">✍️ Составить ответ</div>
-          <div class="ask-chip" onclick="askQuick('Посоветуй как лучше поступить с задачей')">💡 Посоветуй</div>
-          <div class="ask-chip" onclick="askQuick('Создай новую задачу')">➕ Новая задача</div>
-          <div class="ask-chip" onclick="askQuick('Покажи статистику моих задач')">📊 Статистика</div>
-        </div>
+          <div class="ask-plan-question">Хочешь создать задачу, разобрать день или спросить совет?</div>
+        </article>
       </div>
     </div>
-    <div class="ask-bar">
-      <button class="ask-bar-icon" type="button" onclick="askAttachmentSoon()" aria-label="Добавить вложение">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 1 1-2.82-2.83l8.48-8.48"/></svg>
-      </button>
+    <div class="ask-bar ask-input-shell">
       <textarea class="ask-field" id="ask-field" placeholder="Напиши или выбери подсказку..." rows="1"></textarea>
-      <button class="ask-bar-icon" type="button" onclick="openVoice()" aria-label="Открыть голосовой ввод">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
-      </button>
-      <button class="ask-send" onclick="sendAsk()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      <button class="ask-send" type="button" onclick="sendAsk()" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
     </div>
   </div>
 </div>
 
 <!-- TASK DETAIL v2 -->
 <div class="screen" id="task-detail">
+  <div class="detail-redesign-shell">
+    <div class="detail-redesign-header">
+      <button class="detail-round-btn" type="button" data-detail-action="back-to-home" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="detail-header-actions">
+        <button class="detail-round-btn" type="button" data-detail-action="enter-edit-mode" aria-label="Редактировать"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z"/></svg></button>
+        <button class="detail-round-btn" type="button" data-detail-action="open-task-menu" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .32 1.76l.05.05a2 2 0 1 1-2.83 2.83l-.05-.05a1.6 1.6 0 0 0-1.76-.32 1.6 1.6 0 0 0-.97 1.46V21a2 2 0 1 1-4 0v-.09a1.6 1.6 0 0 0-.97-1.46 1.6 1.6 0 0 0-1.76.32l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.46-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.55 9a1.6 1.6 0 0 0-.32-1.76l-.05-.05a2 2 0 1 1 2.83-2.83l.05.05A1.6 1.6 0 0 0 8.82 4.7h.18A1.6 1.6 0 0 0 10 3.24V3a2 2 0 1 1 4 0v.09A1.6 1.6 0 0 0 15 4.55a1.6 1.6 0 0 0 1.76-.32l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.6 1.6 0 0 0 19.45 9v.18A1.6 1.6 0 0 0 20.91 10H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.51 1z"/></svg></button>
+        <button class="detail-round-btn" type="button" data-detail-action="open-task-menu" aria-label="Ещё"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></button>
+      </div>
+    </div>
 
-  <!-- Шапка -->
-  <div class="back-bar">
-    <button class="back-btn" data-detail-action="back-to-home" aria-label="Назад">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div style="flex:1"><div class="back-title">Задача</div></div>
-    <button style="background:transparent;border:none;cursor:pointer;padding:4px 8px;color:var(--text2)" data-detail-action="open-task-menu">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-    </button>
+    <div class="detail-scroll detail-redesign-scroll">
+      <section class="detail-redesign-hero detail-glass-panel">
+        <div class="detail-redesign-tags">
+          <label class="detail-redesign-tag detail-redesign-tag--direction"><span class="detail-dot detail-dot--green"></span><input id="detail-direction" class="detail-direction-chip" placeholder="Работа" list="detail-direction-options" data-detail-field="direction"></label>
+          <datalist id="detail-direction-options"></datalist>
+          <div id="detail-tags-wrap" class="tags-wrap detail-top-tags"></div>
+          <button id="detail-tag-toggle-btn" class="detail-tag-plus" data-detail-action="toggle-tag-input" aria-label="Добавить тег">+</button>
+          <button class="detail-redesign-bell" type="button" onclick="toggleDetailReminderPopover(event)" aria-haspopup="dialog" aria-controls="detail-reminder-popover" aria-label="Настроить уведомление"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 17H5a2 2 0 0 0 2-2v-4a5 5 0 0 1 10 0v4a2 2 0 0 0 2 2h-4"/><path d="M9 17a3 3 0 0 0 6 0"/></svg><select id="detail-reminder" class="detail-control detail-bell-select" data-detail-field="reminder"><option value="none">Без</option><option value="15min">За 15 минут</option><option value="1hour">За 1 час</option><option value="1day">За день</option></select></button><div class="detail-reminder-popover" id="detail-reminder-popover" role="dialog" aria-label="Выбор уведомления" onclick="event.stopPropagation()"><button type="button" data-reminder="none" onclick="setDetailReminderFromBell('none')">Без</button><button type="button" data-reminder="15min" onclick="setDetailReminderFromBell('15min')">За 15 минут</button><button type="button" data-reminder="1hour" onclick="setDetailReminderFromBell('1hour')">За 1 час</button><button type="button" data-reminder="1day" onclick="setDetailReminderFromBell('1day')">За день</button></div>
+        </div>
+        <div id="detail-tag-input-wrap" class="tag-input-wrap detail-top-tag-input"><input id="detail-tag-input" class="tag-input" placeholder="Название тега" list="detail-tag-options"><datalist id="detail-tag-options"></datalist><button id="detail-tag-add-btn" class="detail-quick-btn" data-detail-action="add-tag-from-input">Добавить</button></div>
+        <div class="detail-status-row"><span class="detail-status-badge" id="detail-status-badge"><span class="detail-status-dot"></span>Активная</span></div>
+        <div id="detail-title" class="detail-title-main detail-redesign-title" contenteditable="false" data-detail-action="edit-title">Название задачи</div>
+        <textarea id="detail-description" class="detail-description-inline detail-redesign-desc" data-detail-field="origMsg" placeholder="Добавить описание..."></textarea>
+        <div class="detail-info-stack">
+          <button class="detail-info-card detail-info-card--date" type="button" onclick="toggleDetailDatePopover(event)" aria-haspopup="dialog" aria-controls="detail-date-popover"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span><small>Срок</small><b id="detail-date">—</b></span></button>
+          <div class="detail-date-popover" id="detail-date-popover" role="dialog" aria-label="Выбор срока" onclick="event.stopPropagation()">
+            <div id="detail-quick-deadline" class="detail-quick-row detail-date-quick"><button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button><button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button><button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button></div>
+            <label class="detail-date-calendar"><span>Дата и время</span><input id="detail-time-input" class="detail-control detail-info-input" type="datetime-local" data-detail-field="deadline"></label>
+          </div>
+          <button class="detail-info-card detail-info-card--priority" type="button" onclick="toggleDetailPriorityPopover(event)" aria-haspopup="dialog" aria-controls="detail-priority-popover"><svg viewBox="0 0 24 24"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4H20l-4.5 5 4.5 5H5.5A1.5 1.5 0 0 0 4 15.5"/></svg><span><small>Приоритет</small><b id="detail-priority-display">Обычный</b><select id="detail-priority-select" class="detail-control detail-info-select" data-detail-field="priority" onchange="syncDetailPriorityDisplay()"><option value="low">Низкий</option><option value="normal">Обычный</option><option value="high">Высокий</option><option value="urgent">Горит</option></select></span></button>
+          <div class="detail-priority-popover" id="detail-priority-popover" role="dialog" aria-label="Выбор приоритета" onclick="event.stopPropagation()"><button type="button" data-priority="low" onclick="setDetailPriorityFromCard('low')">Низкий</button><button type="button" data-priority="normal" onclick="setDetailPriorityFromCard('normal')">Обычный</button><button type="button" data-priority="high" onclick="setDetailPriorityFromCard('high')">Высокий</button><button type="button" data-priority="urgent" onclick="setDetailPriorityFromCard('urgent')">Горит</button></div>
+        </div>
+      </section>
+
+      <div class="detail-redesign-status-grid">
+        <section class="detail-participants-card detail-glass-panel detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="Изменить исполнителя задачи" onclick="openDetailPersonPicker()" onkeydown="handleDetailPersonRowKeydown(event)">
+          <h3 class="detail-section-title">Участники</h3>
+          <div class="detail-avatar-stack"><span class="detail-avatar-pill" id="detail-person">—</span><span class="detail-avatar-dot detail-avatar-dot--warm">Ю</span><span class="detail-avatar-dot detail-avatar-dot--cool">4</span><button class="detail-avatar-add" type="button" onclick="event.stopPropagation();openDetailPersonPicker()">+</button></div>
+          <div class="detail-person-actions"><span id="detail-person-meta" class="detail-person-meta detail-person-meta--hidden">пользователь 4</span><button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden" type="button" onclick="event.stopPropagation();openDetailContactPanel()">Написать</button></div>
+        </section>
+        <section class="detail-status-card detail-glass-panel">
+          <h3 class="detail-section-title">Статус</h3>
+          <div class="detail-native-status" aria-label="Статус задачи"><span class="detail-status-track"></span><button class="detail-status-node" type="button" onclick="setDetailStatusFromCard('waiting')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><small>Ожидает</small></button><button class="detail-status-node detail-status-node--active" type="button" onclick="setDetailStatusFromCard('active')"><span class="detail-node-core"><i></i><i></i><i></i><i></i></span><small>Активная</small></button><button class="detail-status-node" type="button" onclick="setDetailStatusFromCard('done')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M8.5 12.5l2.2 2.2 4.8-5"/></svg><small>Завершена</small></button><select id="detail-status-select" class="detail-control detail-status-select" data-detail-field="status"><option value="active">Активная</option><option value="waiting">Ожидает</option><option value="blocked">Заблокирована</option><option value="done">Готово</option></select></div>
+        </section>
+      </div>
+
+      <section class="detail-chat-card detail-glass-panel">
+        <div class="detail-chat-head"><div id="task-detail-tabs" class="detail-tabs"><button class="detail-tab active" id="tab-comments" data-detail-tab="comments">Чат</button></div><button id="detail-load-advice-btn" class="detail-ai-refresh detail-ai-refresh--chat" type="button">Совет 4</button><div class="detail-chat-tools"><button class="detail-chat-tool" type="button" onclick="toggleDetailChecklistPanel(event)" aria-label="Чек-лист"><svg viewBox="0 0 24 24"><path d="M9 11l2 2 4-4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></button><button class="detail-chat-tool" type="button" onclick="toggleDetailChecklistPanel(event)" aria-label="Открыть чек-лист"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div>
+        <div class="detail-checklist-panel"><div class="detail-check-head"><span>Чек-лист</span><button id="detail-split-btn" class="detail-quick-btn" data-detail-action="decompose-task">Разбить на этапы</button></div><div id="detail-checklist" class="detail-checklist"></div><div class="detail-check-add"><input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт"><button id="detail-checklist-add-btn" class="detail-quick-btn" data-detail-action="add-checklist-item">Добавить</button></div></div>
+        <div id="detail-tab-comments" class="detail-tab-panel"><div class="detail-advice-message"><div class="detail-advice-avatar">4</div><div id="detail-ai-advice" class="detail-ai-card detail-ai-card--chat">Нажми «Совет 4», чтобы получить первый совет по задаче.</div></div><div id="detail-comments-list" class="detail-comments-list">Обсуждения пока нет</div><div class="detail-comment-compose"><input id="detail-comment-input" class="detail-comment-input" placeholder="Напишите сообщение..."><button id="detail-comment-send-btn" class="detail-comment-send-btn" aria-label="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg></button></div></div>
+        <div id="detail-tab-history" class="detail-tab-panel detail-tab-panel--hidden"><div id="detail-history-list" class="detail-history-list">История изменений пуста</div></div>
+      </section>
+    </div>
+
+    <div id="task-detail-actions"><button id="detail-open-move-btn" data-detail-action="open-task-move" class="detail-action-btn detail-action-btn--move">Перенести</button><button id="detail-edit-btn" data-detail-action="enter-edit-mode" class="detail-action-btn detail-action-btn--edit">Редактировать</button><button id="btn-task-complete" data-detail-action="complete" class="detail-action-btn detail-action-btn--complete">Готово</button></div>
   </div>
-  <!-- Скролл -->
-  <div class="detail-scroll" style="flex:1;overflow-y:auto;padding:20px 16px 120px">
-
-    <!-- Заголовок + статус -->
-    <div style="margin-bottom:20px">
-      <div style="margin-bottom:10px">
-        <span class="detail-status-badge" id="detail-status-badge" style="display:inline-flex;align-items:center;gap:5px;background:var(--green3);border:1px solid rgba(154,194,60,0.25);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--green)">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span>
-          Активная
-        </span>
-      </div>
-      <div id="detail-title" contenteditable="false"
-        style="font-size:20px;font-weight:700;color:var(--text);line-height:1.3;padding:4px 0;word-break:break-word"
-        data-detail-action="edit-title">
-        Задача
-      </div>
-      <div class="detail-inline-desc">
-        <div class="detail-inline-label">Описание</div>
-        <textarea id="detail-description" class="detail-description-inline"
-          placeholder="Добавить описание..."></textarea>
-      </div>
-    </div>
-
-    <!-- Поля-строки -->
-    <div class="glass" style="border-radius:16px;overflow:hidden;margin-bottom:20px">
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Срок</span>
-        </div>
-        <input id="detail-time-input" class="detail-control" type="datetime-local" data-detail-field="deadline">
-      </div>
-      <div id="detail-quick-deadline" class="detail-quick-row">
-        <button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button>
-        <button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button>
-        <button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button>
-        <span id="detail-date" style="font-size:13px;color:var(--muted);font-weight:500;align-self:center">—</span>
-      </div>
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Статус</span>
-        </div>
-        <select id="detail-status-select" class="detail-control" data-detail-field="status">
-          <option value="active">Активная</option>
-          <option value="burning">Горит</option>
-          <option value="paused">Пауза</option>
-          <option value="done">Готово</option>
-        </select>
-      </div>
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="m12 2 2.6 6.8 7.2.4-5.6 4.6 1.8 7-6-3.9-6 3.9 1.8-7-5.6-4.6 7.2-.4L12 2z"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Приоритет</span>
-        </div>
-        <select id="detail-priority-select" class="detail-control" data-detail-field="priority">
-          <option value="normal">Обычный</option>
-          <option value="high">Высокий</option>
-          <option value="low">Низкий</option>
-        </select>
-      </div>
-
-      <div class="detail-field-row" style="border-bottom:none">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Напоминание</span>
-        </div>
-        <select id="detail-reminder" class="detail-control" data-detail-field="reminder">
-          <option value="none">Без</option>
-          <option value="15min">За 15 мин</option>
-          <option value="1hour">За час</option>
-          <option value="1day">За день</option>
-        </select>
-      </div>
-      <div id="detail-reminder-grid" class="reminder-grid" style="padding:0 16px 12px;border-bottom:1px solid var(--border)">
-        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="15min">Через 15 мин</button>
-        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1hour">Через 1 час</button>
-        <button class="reminder-opt" data-detail-action="set-reminder-quick" data-detail-reminder="1day">Через день</button>
-      </div>
-
-      <div class="detail-field-row">
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-          <span style="font-size:14px;color:var(--text2)">Теги</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;width:100%">
-          <div id="detail-tags-wrap" class="tags-wrap"></div>
-          <button id="detail-tag-toggle-btn" class="tag-add" data-detail-action="toggle-tag-input">+ Тег</button>
-        </div>
-      </div>
-      <div id="detail-tag-input-wrap" class="tag-input-wrap" style="display:none;padding:0 16px 12px;border-bottom:1px solid var(--border)">
-        <input id="detail-tag-input" class="tag-input" placeholder="Название тега" list="detail-tag-options">
-        <datalist id="detail-tag-options"></datalist>
-        <button id="detail-tag-add-btn" class="detail-quick-btn" data-detail-action="add-tag-from-input">Добавить</button>
-      </div>
-      <input id="detail-direction" class="detail-control detail-field-row-hidden" placeholder="Направление" list="detail-direction-options" data-detail-field="direction">
-      <datalist id="detail-direction-options"></datalist>
-
-      <div class="detail-field-row detail-person-row" id="detail-person-row" role="button" tabindex="0" aria-label="Изменить исполнителя задачи" onclick="openDetailPersonPicker()" onkeydown="handleDetailPersonRowKeydown(event)">
-        <div class="detail-field-row-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          <span class="detail-field-row-caption">Человек</span>
-        </div>
-        <div class="detail-person-actions">
-          <span id="detail-person" class="detail-person-name">—</span>
-          <span id="detail-person-meta" class="detail-person-meta detail-person-meta--hidden">пользователь 4</span>
-          <button id="detail-contact-btn" class="detail-quick-btn detail-contact-btn detail-contact-btn--hidden" type="button" onclick="event.stopPropagation();openDetailContactPanel()">Написать</button>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="glass" style="border-radius:16px;padding:14px 16px;margin-bottom:20px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Чек-лист</span>
-        <button id="detail-split-btn" class="detail-quick-btn" data-detail-action="decompose-task">Разбить на этапы</button>
-      </div>
-      <div id="detail-checklist" class="detail-checklist"></div>
-      <div class="detail-check-add">
-        <input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт">
-        <button id="detail-checklist-add-btn" class="detail-quick-btn" data-detail-action="add-checklist-item">Добавить</button>
-      </div>
-    </div>
-
-    <!-- Табы -->
-    <div id="task-detail-tabs" style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
-      <button class="detail-tab active" id="tab-comments" data-detail-tab="comments">Обсудить задачу</button>
-      <button class="detail-tab" id="tab-history" data-detail-tab="history">История</button>
-    </div>
-
-    <!-- Комментарии -->
-    <div id="detail-tab-comments">
-      <div id="detail-comments-list" style="font-size:13px;color:var(--muted);padding:8px 0">Обсуждения пока нет</div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="detail-comment-input" placeholder="Написать по задаче..."
-          style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--text);outline:none;font-family:'Inter',sans-serif">
-        <button id="detail-comment-send-btn" style="background:var(--green);border:none;border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--bg)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- История -->
-    <div id="detail-tab-history" style="display:none">
-      <div id="detail-history-list" style="font-size:13px;color:var(--muted);padding:8px 0">История изменений пуста</div>
-    </div>
-
-    <!-- Совет от 4 -->
-    <div id="detail-ai-sec" style="margin-top:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-weight:600">Совет от 4</span>
-        <button id="detail-load-advice-btn" style="font-size:11px;color:var(--green);background:transparent;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:0">обновить ↻</button>
-      </div>
-      <div id="detail-ai-advice" style="background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6;min-height:48px">
-        <span class="dots"><span></span><span></span><span></span></span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Кнопки действий -->
-    <div id="task-detail-actions" style="position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:8px">
-    <button id="detail-open-move-btn"
-      data-detail-action="open-task-move"
-      style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;padding:12px 8px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 9 2 12 5 15"/><path d="M2 12h15a6 6 0 0 1 6 6v1"/></svg>
-      Перенести
-    </button>
-    <button id="detail-edit-btn"
-      data-detail-action="enter-edit-mode"
-      style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;padding:12px 8px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      Изменить
-    </button>
-    <button id="btn-task-complete"
-      data-detail-action="complete"
-      style="flex:1;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:#ff6060;font-size:13px;font-weight:600;padding:12px 8px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-      Завершить
-    </button>
-  </div>
-
 </div>
 
 <!-- CALENDAR -->
@@ -857,73 +607,66 @@ if('serviceWorker' in navigator){
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">Профиль</div></div>
-  </div>
-  <div class="profile-scroll">
-    <div class="profile-user">
-      <div class="profile-avatar" id="profile-avatar" role="button" aria-label="Изменить фото" onclick="openProfilePhotoPicker()" style="cursor:pointer;">?</div>
-      <div class="profile-user-copy"><div class="profile-name" id="profile-name">Пользователь</div><div class="profile-status">Premium</div><div class="profile-user-id" id="profile-user-id">ID —</div></div>
+  <div class="profile-stage profile-handoff-shell">
+    <div class="profile-topbar">
+      <button class="back-btn profile-back-btn" type="button" onclick="showSubScreen('home')" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <h1>Профиль</h1>
     </div>
-    <!-- trial banner injected here by JS -->
-    <div id="trial-banner-wrap"></div>
 
-    <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhotoChange(event)">
-
-    <div class="sub-card profile-form-card">
-      <div class="profile-item" onclick="toggleProfilePersonalData()" style="padding:10px 14px; margin:0 -2px; border:0">
-        <div class="profile-item-left">
-          <div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
-          <span class="profile-item-text">Личные данные аккаунта</span>
+    <div class="profile-scroll profile-soft-shell profile-handoff-scroll">
+      <section class="profile-user profile-hero-card profile-handoff-hero">
+        <button class="profile-avatar profile-avatar--orb" id="profile-avatar" type="button" aria-label="Изменить фото" onclick="openProfilePhotoPicker()"></button>
+        <div class="profile-user-copy">
+          <div class="profile-name" id="profile-name">Пользователь</div>
+          <div class="profile-status">Premium</div>
+          <div class="profile-user-id" id="profile-user-id">ID —</div>
         </div>
-        <span class="profile-item-arrow" id="profile-pii-arrow">›</span>
-      </div>
-      <div id="profile-pii-section" style="display:none;padding:4px 12px 0">
-        <div class="profile-field-grid">
-          <label class="profile-field"><span>Имя</span><input id="profile-field-name" type="text" maxlength="80" autocomplete="name" onclick="event.stopPropagation()"></label>
-          <label class="profile-field"><span>Телефон</span><div class="profile-input-status"><input id="profile-field-phone" type="tel" autocomplete="tel" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.stopPropagation();toggleProfileVerified('phone')">Не подтверждён</button></div></label>
-          <label class="profile-field"><span>Email</span><div class="profile-input-status"><input id="profile-field-email" type="email" autocomplete="email" onclick="event.stopPropagation()"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="event.stopPropagation();requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button></div></label>
-          <div class="profile-field"><span>Telegram</span><div class="profile-telegram-line"><span id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span></div></div>
-          <label class="profile-field" style="padding-top:4px"><span>Дата рождения</span><input id="profile-field-birthdate" type="date" onclick="event.stopPropagation()"></label>
+        <button class="profile-edit-btn" type="button" aria-label="Редактировать профиль" onclick="openProfilePhotoPicker()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z"/></svg></button>
+      </section>
+      <input class="profile-photo-input" type="file" id="profile-photo-input" accept="image/*" onchange="handleProfilePhotoChange(event)">
+
+      <section class="premium-card profile-premium-card">
+        <div class="premium-icon profile-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 12h18M5 8h14"/><path d="M12 8C8 8 6 6 6 4c0-1.2.9-2 2.1-2C10.3 2 12 4.5 12 8Zm0 0c4 0 6-2 6-4 0-1.2-.9-2-2.1-2C13.7 2 12 4.5 12 8Z"/></svg></div>
+        <div><div class="premium-line">Premium активен&nbsp;&nbsp;·&nbsp;&nbsp;осталось 14 дней</div><div class="premium-sub">Все функции открыты бесплатно</div></div>
+      </section>
+
+      <section class="profile-card profile-card--personal">
+        <h2 class="profile-card-title">Личные данные</h2>
+        <div class="profile-row-list">
+          <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span class="profile-row-label">Имя</span><input class="profile-row-input" id="profile-field-name" type="text" maxlength="80" autocomplete="name"><span class="profile-row-chevron">›</span></label>
+          <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M6.5 3.5 9 8 6 10c1.3 3.7 4.3 6.7 8 8l2-3 4.5 2.5-1 3c-.4 1.1-1.5 1.8-2.7 1.5C9.6 20.2 3.8 14.4 2 7.2 1.7 6 2.4 4.9 3.5 4.5l3-1Z"/></svg></span><span class="profile-row-label">Телефон</span><input class="profile-row-input" id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.preventDefault();toggleProfileVerified('phone')">Не подтверждён</button><span class="profile-row-chevron">›</span></label>
+          <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span><span class="profile-row-label">Email</span><input class="profile-row-input" id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="event.preventDefault();requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button><span class="profile-row-chevron">›</span></label>
+          <div class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg></span><span class="profile-row-label">Telegram</span><span class="profile-row-value" id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span><span class="profile-row-chevron">›</span></div>
+          <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span class="profile-row-label">Дата рождения</span><input class="profile-row-input profile-row-date" id="profile-field-birthdate" type="date"><span class="profile-calendar-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span></label>
+          <label class="profile-data-row profile-data-row--about"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H8l-4 3V4Z"/><path d="M8 8h8M8 12h5"/></svg></span><span class="profile-row-label">О себе</span><textarea class="profile-row-input profile-row-about" id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()" placeholder="Расскажи немного о себе..."></textarea><small class="profile-field-counter" id="profile-about-counter">0 / 200</small><span class="profile-row-chevron">›</span></label>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="sub-card profile-form-card">
-      <label class="profile-field profile-field-full profile-about-field"><span>О себе</span><textarea id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()"></textarea><small class="profile-field-counter" id="profile-about-counter">0 / 200</small></label>
-    </div>
+      <section class="profile-card profile-card--settings">
+        <h2 class="profile-card-title">Настройки</h2>
+        <div class="profile-row-list">
+          <button class="profile-menu-row" type="button" onclick="openChats()"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H8l-4 3V4Z"/></svg></span><span>Чаты</span><span class="profile-row-chevron">›</span></button>
+          <button class="profile-menu-row" type="button"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 12h18M5 8h14"/><path d="M12 8C8 8 6 6 6 4c0-1.2.9-2 2.1-2C10.3 2 12 4.5 12 8Zm0 0c4 0 6-2 6-4 0-1.2-.9-2-2.1-2C13.7 2 12 4.5 12 8Z"/></svg></span><span>Подписка</span><span class="profile-row-chevron">›</span></button>
+          <button class="profile-menu-row" type="button" onclick="showSubScreen('notif-settings')"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M15 17H5a2 2 0 0 0 2-2v-4a5 5 0 0 1 10 0v4a2 2 0 0 0 2 2h-4"/><path d="M9 17a3 3 0 0 0 6 0"/></svg></span><span>Уведомления</span><span class="profile-row-chevron">›</span></button>
+          <button class="profile-menu-row" type="button" onclick="showSubScreen('language-settings')"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg></span><span>Язык</span><span class="profile-row-chevron">›</span></button>
+          <button class="profile-menu-row" type="button" onclick="showSubScreen('security-settings')"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span>Безопасность</span><span class="profile-row-chevron">›</span></button>
+          <button class="profile-menu-row" type="button" onclick="showSubScreen('ai-memory');loadAiMemoryScreen()"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><span>Данные и память</span><span class="profile-row-chevron">›</span></button>
+          <button class="profile-menu-row" type="button"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H8l-4 3V4Z"/></svg></span><span>Поддержка</span><span class="profile-row-chevron">›</span></button>
+          <button class="profile-menu-row" type="button" onclick="toggleTheme()"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.41M17.66 6.34l1.41-1.41"/></svg></span><span>Тема оформления</span><span class="profile-theme-value" id="theme-arrow">Темная</span><span class="profile-row-chevron">›</span></button>
+        </div>
+      </section>
 
-    <div class="sub-card profile-form-card">
-      <div class="profile-field-grid">
-        <label class="profile-field profile-field-full">
-          <span>Реферальная ссылка</span>
-          <input id="profile-ref-link" type="text" readonly>
-        </label>
-      </div>
-      <button class="profile-save-btn" type="button" onclick="copyReferralLink()">Скопировать ссылку</button>
-      <div class="profile-item-text" id="profile-ref-count">Приглашено: 0</div>
-    </div>
+      <section class="profile-card profile-ref-card">
+        <label class="profile-ref-field"><span>Реферальная ссылка</span><input id="profile-ref-link" type="text" readonly></label>
+        <button class="profile-save-btn profile-save-btn--secondary" type="button" onclick="copyReferralLink()">Скопировать ссылку</button>
+        <div class="profile-item-text" id="profile-ref-count">Приглашено: 0</div>
+      </section>
 
-    <button class="profile-save-btn" type="button" onclick="saveExtendedProfile()">Сохранить профиль</button>
-
-    <div class="profile-menu">
-            <div class="profile-item" onclick="openChats()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="profile-item-text">Чаты</span></div><span class="profile-item-arrow">&#8250;</span></div>
-      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div><span class="profile-item-text">Подписка</span></div><span class="profile-item-arrow">›</span></div>
-      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span class="profile-item-text">Уведомления</span></div><span class="profile-item-arrow">›</span></div>
-      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div><span class="profile-item-text">Язык</span></div><span class="profile-item-arrow">›</span></div>
-      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><span class="profile-item-text">Безопасность</span></div><span class="profile-item-arrow">›</span></div>
-      <div class="profile-item" onclick="showSubScreen('ai-memory');loadAiMemoryScreen()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M9 12h6"/><path d="M12 9v6"/><path d="M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7l-4-4H6a2 2 0 0 0-2 2z"/><path d="M14 3v4h4"/></svg></div><span class="profile-item-text">Что 4 знает обо мне</span></div><span class="profile-item-arrow">›</span></div>
-      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div><span class="profile-item-text">Данные и память</span></div><span class="profile-item-arrow">›</span></div>
-      <div class="profile-item"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="profile-item-text">Поддержка</span></div><span class="profile-item-arrow">›</span></div>
+      <button class="profile-save-btn profile-save-btn--primary" type="button" onclick="saveExtendedProfile()"><span class="profile-save-core"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>Сохранить профиль</button>
+      <button class="profile-logout" type="button" onclick="doLogout()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/></svg>Выйти</button>
     </div>
-    <div class="profile-menu">
-      <div class="profile-item" onclick="toggleTheme()"><div class="profile-item-left"><div class="profile-item-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div><span class="profile-item-text">Тема оформления</span></div><span class="profile-item-arrow" id="theme-arrow">🌙</span></div>
-    </div>
-    <button class="profile-logout" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Выйти</button>
   </div>
 </div>
-
 
 <!-- ========== SUBSCRIPTION ========== -->
 <div class="screen" id="subscription">
@@ -2100,6 +1843,12 @@ const WORKER=(()=>{const host=location.hostname.toLowerCase();if(host==='4-ai-st
 const TELEGRAM_BOT_USERNAME=PLATFORM.getTelegramBotUsername?PLATFORM.getTelegramBotUsername():(new URLSearchParams(location.search).get('bot')||'Denzel89bot');
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
+// previewDemo dashboard pre-init: keep automated visual QA on the dashboard, not onboarding.
+try{
+  const previewParams=new URLSearchParams(location.search||'');
+  const previewHost=location.hostname&&location.hostname.endsWith('.4-ai-staging.pages.dev')&&location.hostname!=='4-ai-staging.pages.dev';
+  if(previewHost&&previewParams.get('previewDemo')==='dashboard')localStorage.setItem(ONBOARD_K,'1');
+}catch(_previewDemoErr){}
 const D1_TOKEN_K='chetam_d1_token';
 const LOGOUT_K='chetam_logged_out';
 const TG_PENDING_START_K='chetam_tg_pending_start';
@@ -2276,7 +2025,7 @@ const EXT_PROFILE_K='extendedProfileDraft';
 function getExtendedProfileDraft(){try{return JSON.parse(localStorage.getItem(EXT_PROFILE_K)||'{}')||{};}catch(e){return{};}}
 function saveExtendedProfileDraft(draft){localStorage.setItem(EXT_PROFILE_K,JSON.stringify(draft));}
 function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'Пользователь').trim();}
-function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();if(draft.photoDataUrl){el.textContent='';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';el.textContent=initials;}}
+function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();if(draft.photoDataUrl){el.classList.remove('profile-avatar--orb');el.textContent='';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';if(el.id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent=initials;}}}
 function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
 function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
 function getProfileReferralLink(){return PLATFORM?.buildReferralLink?PLATFORM.buildReferralLink(currentUser?.referralCode||''):(window.buildReferralLink?window.buildReferralLink():'');}
@@ -3329,14 +3078,15 @@ async function loadTasks(){
 
     // Focus bar
     // Фокус дня
+    const focusCountEl = document.getElementById('focus-day-count');
+    const focusNounEl = document.getElementById('focus-day-noun');
     const focusEl = document.getElementById('focus-day-text');
     const focusSubEl = document.getElementById('focus-day-sub');
-    if(focusEl){
-      const attentionCount = hotCount || outgoing.length || incoming.length;
-      const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
-      if(attentionCount > 0) focusEl.textContent = attentionCount + ' ' + taskWord + ' требуют внимания';
-      else focusEl.textContent = 'Сегодня всё спокойно';
-    }
+    const attentionCount = hotCount || outgoing.length || incoming.length;
+    const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
+    if(focusCountEl) focusCountEl.textContent = String(attentionCount || 0);
+    if(focusNounEl) focusNounEl.textContent = taskWord;
+    if(focusEl) focusEl.textContent = attentionCount > 0 ? 'требуют внимания' : 'Сегодня всё спокойно';
     if(focusSubEl){
       if(hotCount > 0) focusSubEl.textContent = '4 рядом: сначала снимем горячее';
       else if(outgoing.length > 0 || incoming.length > 0) focusSubEl.textContent = '4 держит штаб: идём по первому приоритету';
@@ -8482,6 +8232,26 @@ async function quickDoneTask(taskId, btn){
     btn.style.background='transparent';
   }
 }
+function appendDetailHistoryMessage(text){const list=document.getElementById('detail-comments-list');if(!list)return;const msg=String(text||'').trim();if(!msg)return;if(list.textContent.trim()==='Обсуждения пока нет')list.textContent='';const row=document.createElement('div');row.className='detail-history-chat-row';row.textContent='• '+msg;list.prepend(row);}
+function syncDetailPriorityDisplay(){const sel=document.getElementById('detail-priority-select');const out=document.getElementById('detail-priority-display');if(sel&&out)out.textContent=sel.options[sel.selectedIndex]?.text||'Обычный';}
+function syncDetailPriorityButtons(){const sel=document.getElementById('detail-priority-select');const value=sel?.value||'normal';document.querySelectorAll('#detail-priority-popover [data-priority]').forEach(btn=>btn.classList.toggle('active',btn.dataset.priority===value));}
+function syncDetailReminderButtons(){const sel=document.getElementById('detail-reminder');const value=sel?.value||'none';document.querySelectorAll('#detail-reminder-popover [data-reminder]').forEach(btn=>btn.classList.toggle('active',btn.dataset.reminder===value));}
+function toggleDetailReminderPopover(event){if(event){event.preventDefault();event.stopPropagation();}const hero=document.querySelector('#task-detail .detail-redesign-hero');const stack=document.querySelector('#task-detail .detail-info-stack');if(stack){stack.classList.remove('detail-date-popover-open');stack.classList.remove('detail-priority-popover-open');}if(!hero)return;syncDetailReminderButtons();hero.classList.toggle('detail-reminder-popover-open');}
+function setDetailReminderFromBell(value){const labels={none:'Без', '15min':'За 15 минут', '1hour':'За 1 час', '1day':'За день'};const sel=document.getElementById('detail-reminder');if(sel)sel.value=value;currentDetailReminder=value;syncDetailReminderButtons();appendDetailHistoryMessage('Уведомление изменено: '+(labels[value]||value));const hero=document.querySelector('#task-detail .detail-redesign-hero');if(hero)hero.classList.remove('detail-reminder-popover-open');saveTaskEdits();}
+
+function toggleDetailPriorityPopover(event){if(event){event.preventDefault();event.stopPropagation();}const stack=document.querySelector('#task-detail .detail-info-stack');if(!stack)return;stack.classList.remove('detail-date-popover-open');syncDetailPriorityDisplay();syncDetailPriorityButtons();stack.classList.toggle('detail-priority-popover-open');}
+function setDetailPriorityFromCard(value){const labels={low:'Низкий',normal:'Обычный',high:'Высокий',urgent:'Горит'};const sel=document.getElementById('detail-priority-select');if(sel)sel.value=value;currentDetailPriority=value;syncDetailPriorityDisplay();syncDetailPriorityButtons();appendDetailHistoryMessage('Приоритет изменён: '+(labels[value]||value));const stack=document.querySelector('#task-detail .detail-info-stack');if(stack)stack.classList.remove('detail-priority-popover-open');saveTaskEdits();}
+function openDetailPrioritySelect(event){toggleDetailPriorityPopover(event);}
+function setDetailStatusFromCard(status){const labels={waiting:'Ожидает',active:'Активная',done:'Завершена',blocked:'Заблокирована'};const sel=document.getElementById('detail-status-select');if(sel)sel.value=status;currentDetailStatus=status;document.querySelectorAll('#task-detail .detail-status-node').forEach(node=>node.classList.remove('detail-status-node--active'));const nodes={waiting:0,active:1,done:2};const idx=nodes[status];const target=document.querySelectorAll('#task-detail .detail-status-node')[idx];if(target)target.classList.add('detail-status-node--active');appendDetailHistoryMessage('Статус изменён: '+(labels[status]||status));saveTaskEdits();}
+
+function toggleDetailDatePopover(event){if(event){event.preventDefault();event.stopPropagation();}const stack=document.querySelector('#task-detail .detail-info-stack');if(stack)stack.classList.toggle('detail-date-popover-open');}
+
+document.addEventListener('click',function(e){const stack=document.querySelector('#task-detail .detail-info-stack');if(!stack)return;if(!e.target.closest('#task-detail .detail-info-stack')){stack.classList.remove('detail-date-popover-open');stack.classList.remove('detail-priority-popover-open');}if(!e.target.closest('#task-detail .detail-redesign-hero')){const hero=document.querySelector('#task-detail .detail-redesign-hero');if(hero)hero.classList.remove('detail-reminder-popover-open');}});
+
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='detail-time-input'){const stack=document.querySelector('#task-detail .detail-info-stack');if(stack)stack.classList.remove('detail-date-popover-open');}});
+
+function toggleDetailChecklistPanel(event){if(event){event.preventDefault();event.stopPropagation();}const panel=document.querySelector('#task-detail .detail-checklist-panel');if(panel)panel.classList.toggle('detail-checklist-panel--open');}
+
 document.addEventListener('focusout',function(e){if(e.target.closest('#task-detail'))saveTaskEdits();});
 
 // ===== ПАТЧ 08 — VK MINI APPS АДАПТЕР =====

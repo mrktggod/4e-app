@@ -1347,3 +1347,21 @@
 **Тест:** `node --check worker.js`; inline JS parse check для `index.html` вернул `inline-js-ok`; модульный smoke воркера через `node --input-type=module` с мок-KV подтвердил `GET /tariff-config`, `GET /admin/users`, `PUT /admin/tariff-config`, `PUT /admin/users/:id/plan`.
 
 **Коммит:** pending
+
+## 2026-07-18
+
+### Redesign soft-glass cutover to staging
+
+**What changed:** Integrated the approved soft-glass redesign slices from origin heads into `feat/admin-tariff-api`: dashboard/home empty state, subscription/pricing UI shell, profile, ask/chat, and task-detail. Added required PNG assets, kept tariff values config-driven, rebuilt `styles.css` / `styles.min.css`, and updated `FILE_MAP.md` / `FILE_MAP_UI.md`.
+
+**Root entry points:** `index.html:306` home, `index.html:390` ask, `index.html:420` task-detail, `index.html:609` profile, `index.html:672` subscription, `scripts/auth-handlers.js:91` dashboard preview renderer.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Tests:** `npm run build:css`; `node scripts/check-js-syntax.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `PAGES_WORKER_TARGET=staging npm run build:worker-assets`; live staging marker checks on `https://263b279c.4-ai-staging.pages.dev/`.
+
+**Staging:** Cloudflare Pages project `4-ai-staging`, branch `dev`, deployment `https://263b279c.4-ai-staging.pages.dev/`. Live HTML contains staging worker resolver and markers `dash-artboard`, `ask-soft-screen`, `detail-redesign-shell`, `profile-handoff-shell`.
+
+**Known tails:** API smoke against staging worker fails at `register: 500`; full browser visual smoke was not run because Playwright is not installed locally; prod deploy is NEED-YURI and was not performed.
+
+**Commit:** pending
