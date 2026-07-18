@@ -4416,6 +4416,96 @@ body {
   font-size: 12px;
   line-height: 1.4;
 }
+/* ===== TASK DETAIL QA ITERATION 7: CUSTOM PRIORITY POPUP AND STABLE HERO ===== */
+.detail-redesign-hero {
+  height: 300px !important;
+  min-height: 300px !important;
+  max-height: 300px !important;
+  flex: 0 0 300px !important;
+}
+.detail-redesign-desc {
+  height: 54px !important;
+  min-height: 54px !important;
+  max-height: 54px !important;
+  overflow: hidden !important;
+}
+.detail-info-card--priority {
+  appearance: none;
+  text-align: left;
+  width: 100%;
+}
+.detail-info-card--priority .detail-info-select {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.detail-priority-popover {
+  position: absolute;
+  top: 144px;
+  right: 2px;
+  z-index: 92;
+  width: 190px;
+  display: none;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 198, 182, 0.24);
+  background: linear-gradient(180deg, rgba(31, 43, 36, 0.98), rgba(7, 13, 10, 0.98));
+  box-shadow: 0 20px 34px rgba(0, 0, 0, 0.48), 0 0 18px rgba(105, 145, 67, 0.07), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+.detail-info-stack.detail-priority-popover-open .detail-priority-popover {
+  display: grid;
+}
+.detail-priority-popover button {
+  min-height: 34px;
+  border-radius: 12px;
+  border: 1px solid rgba(166, 184, 164, 0.16);
+  background: linear-gradient(180deg, rgba(32, 43, 36, 0.84), rgba(12, 20, 16, 0.82));
+  color: #c2cac1;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: left;
+  padding: 0 11px;
+}
+.detail-priority-popover button.active {
+  color: #071008;
+  border-color: rgba(159, 202, 84, 0.42);
+  background: linear-gradient(180deg, #b8dc62, #83aa49 72%, #6f963a);
+}
+.detail-ai-refresh--chat {
+  display: none !important;
+}
+.detail-advice-message {
+  margin-top: 6px;
+}
+.detail-ai-card--chat {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 0 0 4px !important;
+}
+.detail-ai-card--chat .md-body,
+.detail-ai-card--chat .md-body p {
+  color: #e1e8dc;
+  line-height: 1.45;
+}
+.detail-comments-list {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+@media (max-width: 390px) {
+  .detail-redesign-hero {
+    height: 292px !important;
+    min-height: 292px !important;
+    max-height: 292px !important;
+    flex-basis: 292px !important;
+  }
+  .detail-priority-popover {
+    width: 164px;
+    top: 140px;
+  }
+}
 /* ===== PROFILE ===== */
 .profile-scroll {
   flex: 1;
