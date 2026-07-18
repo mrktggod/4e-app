@@ -130,7 +130,7 @@ function tryDashboardSubscriptionPreviewLogin(email,pass){
   }catch(_previewScreenErr){}
   showScreen(previewScreen);
   if(previewScreen==='home')renderDashboardSubscriptionPreviewDemo();
-  else setTimeout(function(){try{if(typeof updateSubscriptionScreen==='function')updateSubscriptionScreen();}catch(_err){}},0);
+  else setTimeout(function(){try{if(typeof updateSubscriptionScreen==='function')updateSubscriptionScreen();var params=new URLSearchParams(location.search||'');if(params.get('previewScroll')==='plans'){var scroller=document.querySelector('#subscription .sub-scroll');if(scroller)scroller.scrollTop=9999;}}catch(_err){}},120);
   return true;
 }
 
