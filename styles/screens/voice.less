@@ -1324,3 +1324,129 @@ body:has(#ask.active) #global-nav,
   content: '' !important;
   margin-top: 4px !important;
 }
+
+
+/* ===== CHAT QA ITERATION 4: STABLE TASK/ACTION FLOW ===== */
+#ask #ask-msgs {
+  contain: layout paint;
+}
+
+#ask .bubble-ai,
+#ask .bubble-user {
+  clear: both !important;
+  flex: 0 0 auto !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  height: auto !important;
+  min-height: unset !important;
+  max-height: none !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  text-decoration: none !important;
+}
+
+#ask .bubble-ai {
+  width: calc(100% - 42px) !important;
+  max-width: calc(100% - 42px) !important;
+  padding: 13px 16px !important;
+}
+
+#ask .bubble-user {
+  width: auto !important;
+  max-width: 76% !important;
+  margin-left: auto !important;
+  padding: 12px 16px !important;
+}
+
+#ask .bubble-ai .md-body,
+#ask .bubble-ai .md-body p,
+#ask .bubble-ai .md-body div,
+#ask .bubble-ai .md-body span,
+#ask .bubble-user {
+  position: relative !important;
+  display: block !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.45 !important;
+  text-decoration: none !important;
+}
+
+#ask .bubble-ai .md-body p {
+  margin: 0 0 8px !important;
+}
+
+#ask .bubble-ai .md-body p:last-child {
+  margin-bottom: 0 !important;
+}
+
+#ask .ask-action-preview,
+#ask .ask-action-list,
+#ask .ask-actions,
+#ask .ask-action-card {
+  clear: both !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: calc(100% - 42px) !important;
+  max-width: calc(100% - 42px) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 8px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+#ask .ask-action-row,
+#ask [class*='ask-action'],
+#ask [class*='task-action'] {
+  box-sizing: border-box !important;
+  height: auto !important;
+  min-height: 42px !important;
+  max-height: none !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+#ask .ask-action-row {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 10px 14px !important;
+  border-radius: 18px !important;
+  color: #b7beb6 !important;
+  background: linear-gradient(180deg, rgba(33,44,37,.88), rgba(13,21,17,.84)) !important;
+  border: 1px solid rgba(181,196,180,.14) !important;
+  box-shadow: 0 8px 14px rgba(0,0,0,.20), inset 0 1px 1px rgba(255,255,255,.07) !important;
+  line-height: 1.42 !important;
+}
+
+#ask .ask-action-row * {
+  display: inline !important;
+  position: static !important;
+  white-space: normal !important;
+  text-decoration: none !important;
+  line-height: inherit !important;
+}
+
+#ask .ask-action-row input,
+#ask .ask-action-row button,
+#ask .ask-action-row svg {
+  display: inline-flex !important;
+  vertical-align: middle !important;
+  margin-right: 6px !important;
+}
+
+#ask hr,
+#ask .ask-action-row hr {
+  display: none !important;
+}
