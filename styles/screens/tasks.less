@@ -1455,3 +1455,106 @@
   .detail-info-card--priority { margin-top: 46px !important; }
   .detail-top-tag-input { left: 12px; right: 12px; }
 }
+
+
+/* ===== TASK DETAIL QA ITERATION 5: DATE POPOVER ON CLICK ONLY ===== */
+.detail-info-card--date {
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.detail-info-card--date:hover,
+.detail-info-card--date:focus,
+.detail-info-card--date:active {
+  min-height: 66px !important;
+  transform: none !important;
+}
+
+.detail-info-card--date .detail-info-input,
+.detail-info-card--date:focus-within .detail-info-input,
+.detail-info-card--date:hover .detail-info-input {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.detail-date-popover {
+  position: absolute;
+  top: 72px;
+  right: 0;
+  z-index: 30;
+  width: 184px;
+  display: none;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(184,198,182,.24);
+  background: linear-gradient(180deg, rgba(31,43,36,.98), rgba(7,13,10,.98));
+  box-shadow: 0 20px 34px rgba(0,0,0,.48), 0 0 18px rgba(105,145,67,.07), inset 0 1px 1px rgba(255,255,255,.08);
+}
+
+.detail-info-stack.detail-date-popover-open .detail-date-popover {
+  display: grid;
+}
+
+.detail-date-popover .detail-date-quick,
+.detail-info-stack:focus-within .detail-date-quick,
+.detail-date-quick:hover {
+  position: static !important;
+  display: grid !important;
+  width: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.detail-date-popover .detail-date-quick {
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.detail-date-popover .detail-date-quick .detail-quick-btn:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.detail-date-calendar {
+  display: grid;
+  gap: 7px;
+  color: #89948d;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.detail-date-calendar .detail-info-input {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  border: 1px solid rgba(166,184,164,.18) !important;
+  border-radius: 12px !important;
+  background: rgba(5,12,8,.88) !important;
+  color: #c2cac1 !important;
+  font-size: 11px !important;
+  color-scheme: dark;
+}
+
+.detail-info-card--priority {
+  margin-top: 6px !important;
+}
+
+@media (max-width: 390px) {
+  .detail-date-popover { width: 164px; right: 0; }
+  .detail-info-card--priority { margin-top: 6px !important; }
+}

@@ -576,8 +576,11 @@ if('serviceWorker' in navigator){
         <div id="detail-title" class="detail-title-main detail-redesign-title" contenteditable="false" data-detail-action="edit-title">Название задачи</div>
         <textarea id="detail-description" class="detail-description-inline detail-redesign-desc" data-detail-field="origMsg" placeholder="Добавить описание..."></textarea>
         <div class="detail-info-stack">
-          <label class="detail-info-card detail-info-card--date"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span><small>Срок</small><b id="detail-date">—</b><input id="detail-time-input" class="detail-control detail-info-input" type="datetime-local" data-detail-field="deadline"></span></label>
-          <div id="detail-quick-deadline" class="detail-quick-row detail-date-quick"><button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button><button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button><button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button></div>
+          <button class="detail-info-card detail-info-card--date" type="button" onclick="toggleDetailDatePopover(event)" aria-haspopup="dialog" aria-controls="detail-date-popover"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span><small>Срок</small><b id="detail-date">—</b></span></button>
+          <div class="detail-date-popover" id="detail-date-popover" role="dialog" aria-label="Выбор срока" onclick="event.stopPropagation()">
+            <div id="detail-quick-deadline" class="detail-quick-row detail-date-quick"><button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button><button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button><button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button></div>
+            <label class="detail-date-calendar"><span>Дата и время</span><input id="detail-time-input" class="detail-control detail-info-input" type="datetime-local" data-detail-field="deadline"></label>
+          </div>
           <label class="detail-info-card detail-info-card--priority"><svg viewBox="0 0 24 24"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4H20l-4.5 5 4.5 5H5.5A1.5 1.5 0 0 0 4 15.5"/></svg><span><small>Приоритет</small><select id="detail-priority-select" class="detail-control detail-info-select" data-detail-field="priority"><option value="low">Низкий</option><option value="normal">Обычный</option><option value="high">Высокий</option><option value="urgent">Горит</option></select></span></label>
         </div>
       </section>
@@ -8452,6 +8455,12 @@ async function quickDoneTask(taskId, btn){
     btn.style.background='transparent';
   }
 }
+function toggleDetailDatePopover(event){if(event){event.preventDefault();event.stopPropagation();}const stack=document.querySelector('#task-detail .detail-info-stack');if(stack)stack.classList.toggle('detail-date-popover-open');}
+
+document.addEventListener('click',function(e){const stack=document.querySelector('#task-detail .detail-info-stack');if(!stack)return;if(!e.target.closest('#task-detail .detail-info-stack'))stack.classList.remove('detail-date-popover-open');});
+
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='detail-time-input'){const stack=document.querySelector('#task-detail .detail-info-stack');if(stack)stack.classList.remove('detail-date-popover-open');}});
+
 function toggleDetailChecklistPanel(event){if(event){event.preventDefault();event.stopPropagation();}const panel=document.querySelector('#task-detail .detail-checklist-panel');if(panel)panel.classList.toggle('detail-checklist-panel--open');}
 
 document.addEventListener('focusout',function(e){if(e.target.closest('#task-detail'))saveTaskEdits();});
