@@ -2512,6 +2512,20 @@ body {
   color: #858b87;
   cursor: pointer;
 }
+#home #home-nav-today {
+  grid-column: 1;
+  justify-self: start;
+  min-width: 72px;
+}
+#home #home-nav-voice {
+  grid-column: 2;
+  justify-self: center;
+}
+#home #home-nav-cal {
+  grid-column: 3;
+  justify-self: end;
+  min-width: 72px;
+}
 #home .dash-nav-item svg {
   width: 25px;
   height: 25px;

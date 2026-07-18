@@ -147,6 +147,10 @@ document.addEventListener('DOMContentLoaded',function(){
   if(!shouldAutoOpenDashboardPreview())return;
   setTimeout(function(){
     tryDashboardSubscriptionPreviewLogin('preview-dashboard-20260718@example.com','preview');
+    try{
+      var params=new URLSearchParams(location.search||'');
+      if(params.get('previewScreen')==='subscription')setTimeout(function(){showScreen('subscription');updateSubscriptionScreen?.();},80);
+    }catch(_previewScreenErr){}
   },0);
 });
 async function doLogin(){
