@@ -1980,3 +1980,93 @@ body:has(#task-detail.active) #global-nav,
   #detail-date, #detail-priority-display { font-size: 10px !important; }
   .detail-date-popover, .detail-priority-popover { width: 154px !important; }
 }
+
+
+/* ===== TASK DETAIL QA ITERATION 11: ABSOLUTE NO TEXT OVERFLOW IN HERO ===== */
+.detail-redesign-hero {
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  contain: layout paint !important;
+}
+
+.detail-redesign-hero > *:not(.detail-info-stack):not(.detail-date-popover):not(.detail-priority-popover):not(.detail-reminder-popover) {
+  max-width: calc(100% - 148px) !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.detail-redesign-tags,
+.detail-status-row,
+.detail-redesign-title,
+.detail-redesign-desc,
+.detail-top-tag-input {
+  width: calc(100% - 148px) !important;
+  max-width: calc(100% - 148px) !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.detail-redesign-title {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 4 !important;
+  max-height: 4.12em !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  hyphens: auto !important;
+  overflow: hidden !important;
+}
+
+.detail-redesign-desc {
+  display: block !important;
+  resize: none !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  hyphens: auto !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+}
+
+.detail-redesign-tags *,
+.detail-status-row *,
+.detail-info-card *,
+.detail-top-tags *,
+.detail-top-tag-input * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+.detail-redesign-tag,
+.detail-status-badge,
+.detail-top-tags .tag-chip,
+.detail-top-tags .tag {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.detail-info-card {
+  contain: layout paint !important;
+}
+
+@media (max-width: 390px) {
+  .detail-redesign-hero > *:not(.detail-info-stack):not(.detail-date-popover):not(.detail-priority-popover):not(.detail-reminder-popover),
+  .detail-redesign-tags,
+  .detail-status-row,
+  .detail-redesign-title,
+  .detail-redesign-desc,
+  .detail-top-tag-input {
+    width: calc(100% - 132px) !important;
+    max-width: calc(100% - 132px) !important;
+  }
+  .detail-redesign-title {
+    -webkit-line-clamp: 4 !important;
+    max-height: 4.12em !important;
+  }
+}
