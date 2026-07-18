@@ -559,23 +559,22 @@ if('serviceWorker' in navigator){
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <div style="flex:1"><div class="back-title">Задача</div></div>
-    <button style="background:transparent;border:none;cursor:pointer;padding:4px 8px;color:var(--text2)" data-detail-action="open-task-menu">
+    <button class="detail-menu-btn" data-detail-action="open-task-menu">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
     </button>
   </div>
   <!-- Скролл -->
-  <div class="detail-scroll" style="flex:1;overflow-y:auto;padding:20px 16px 120px">
+  <div class="detail-scroll">
 
     <!-- Заголовок + статус -->
-    <div style="margin-bottom:20px">
-      <div style="margin-bottom:10px">
-        <span class="detail-status-badge" id="detail-status-badge" style="display:inline-flex;align-items:center;gap:5px;background:var(--green3);border:1px solid rgba(154,194,60,0.25);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--green)">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span>
+    <div class="detail-hero-shell">
+      <div class="detail-status-row">
+        <span class="detail-status-badge" id="detail-status-badge">
+          <span class="detail-status-dot"></span>
           Активная
         </span>
       </div>
-      <div id="detail-title" contenteditable="false"
-        style="font-size:20px;font-weight:700;color:var(--text);line-height:1.3;padding:4px 0;word-break:break-word"
+      <div id="detail-title" class="detail-title-main" contenteditable="false"
         data-detail-action="edit-title">
         Задача
       </div>
@@ -691,18 +690,17 @@ if('serviceWorker' in navigator){
     </div>
 
     <!-- Табы -->
-    <div id="task-detail-tabs" style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
+    <div id="task-detail-tabs" class="detail-tabs">
       <button class="detail-tab active" id="tab-comments" data-detail-tab="comments">Обсудить задачу</button>
       <button class="detail-tab" id="tab-history" data-detail-tab="history">История</button>
     </div>
 
     <!-- Комментарии -->
     <div id="detail-tab-comments">
-      <div id="detail-comments-list" style="font-size:13px;color:var(--muted);padding:8px 0">Обсуждения пока нет</div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="detail-comment-input" placeholder="Написать по задаче..."
-          style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--text);outline:none;font-family:'Inter',sans-serif">
-        <button id="detail-comment-send-btn" style="background:var(--green);border:none;border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--bg)">
+      <div id="detail-comments-list" class="detail-comments-list">Обсуждения пока нет</div>
+      <div class="detail-comment-compose">
+        <input id="detail-comment-input" class="detail-comment-input" placeholder="Написать по задаче...">
+        <button id="detail-comment-send-btn" class="detail-comment-send-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
@@ -714,12 +712,12 @@ if('serviceWorker' in navigator){
     </div>
 
     <!-- Совет от 4 -->
-    <div id="detail-ai-sec" style="margin-top:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-weight:600">Совет от 4</span>
-        <button id="detail-load-advice-btn" style="font-size:11px;color:var(--green);background:transparent;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:0">обновить ↻</button>
+    <div id="detail-ai-sec" class="detail-ai-sec">
+      <div class="detail-ai-head">
+        <span class="detail-ai-label">Совет от 4</span>
+        <button id="detail-load-advice-btn" class="detail-ai-refresh">обновить ↻</button>
       </div>
-      <div id="detail-ai-advice" style="background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6;min-height:48px">
+      <div id="detail-ai-advice" class="detail-ai-card">
         <span class="dots"><span></span><span></span><span></span></span>
       </div>
     </div>
@@ -727,22 +725,22 @@ if('serviceWorker' in navigator){
   </div>
 
   <!-- Кнопки действий -->
-    <div id="task-detail-actions" style="position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:8px">
+    <div id="task-detail-actions">
     <button id="detail-open-move-btn"
       data-detail-action="open-task-move"
-      style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;padding:12px 8px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+      class="detail-action-btn detail-action-btn--move">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 9 2 12 5 15"/><path d="M2 12h15a6 6 0 0 1 6 6v1"/></svg>
       Перенести
     </button>
     <button id="detail-edit-btn"
       data-detail-action="enter-edit-mode"
-      style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;padding:12px 8px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+      class="detail-action-btn detail-action-btn--edit">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       Изменить
     </button>
     <button id="btn-task-complete"
       data-detail-action="complete"
-      style="flex:1;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);color:#ff6060;font-size:13px;font-weight:600;padding:12px 8px;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+      class="detail-action-btn detail-action-btn--complete">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
       Завершить
     </button>
