@@ -2506,6 +2506,9 @@ body {
   position: absolute;
   left: 50%;
   top: -9px;
+  overflow: hidden;
+  font-size: 0;
+  color: transparent;
   transform: translateX(-50%);
   width: 76px;
   height: 76px;
@@ -2529,6 +2532,8 @@ body {
 }
 #home .dash-brand-orb-grid {
   position: absolute;
+  font-size: 0;
+  color: transparent;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);

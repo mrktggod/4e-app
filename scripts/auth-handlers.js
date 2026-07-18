@@ -90,7 +90,9 @@ function isDashboardSubscriptionPreviewHost(){
 
 function renderDashboardSubscriptionPreviewDemo(){
   const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
-  setText('focus-day-text','3 задачи требуют внимания');
+  setText('focus-day-count','3');
+  setText('focus-day-noun','задачи');
+  setText('focus-day-text','требуют внимания');
   setText('focus-day-sub','4 уже расставил приоритеты');
   setText('stat-done','25');
   setText('stat-done-meta','+4');

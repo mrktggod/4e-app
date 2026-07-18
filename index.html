@@ -319,7 +319,7 @@ if('serviceWorker' in navigator){
     <section class="dash-hero dash-glass" data-home-action="open-focus-list" role="button" tabindex="0" aria-label="Фокус дня">
       <div class="dash-hero-content">
         <div class="dash-eyebrow">ФОКУС ДНЯ</div>
-        <div class="dash-hero-line"><span class="dash-hero-number" id="focus-day-count">3</span><span class="dash-hero-noun">задачи</span></div>
+        <div class="dash-hero-line"><span class="dash-hero-number" id="focus-day-count">3</span><span class="dash-hero-noun" id="focus-day-noun">задачи</span></div>
         <h1 class="dash-hero-title" id="focus-day-text">требуют внимания</h1>
         <div class="dash-hero-subtitle" id="focus-day-sub">4 уже расставил приоритеты</div>
       </div>
@@ -3238,14 +3238,15 @@ async function loadTasks(){
 
     // Focus bar
     // Фокус дня
+    const focusCountEl = document.getElementById('focus-day-count');
+    const focusNounEl = document.getElementById('focus-day-noun');
     const focusEl = document.getElementById('focus-day-text');
     const focusSubEl = document.getElementById('focus-day-sub');
-    if(focusEl){
-      const attentionCount = hotCount || outgoing.length || incoming.length;
-      const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
-      if(attentionCount > 0) focusEl.textContent = attentionCount + ' ' + taskWord + ' требуют внимания';
-      else focusEl.textContent = 'Сегодня всё спокойно';
-    }
+    const attentionCount = hotCount || outgoing.length || incoming.length;
+    const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
+    if(focusCountEl) focusCountEl.textContent = String(attentionCount || 0);
+    if(focusNounEl) focusNounEl.textContent = taskWord;
+    if(focusEl) focusEl.textContent = attentionCount > 0 ? 'требуют внимания' : 'Сегодня всё спокойно';
     if(focusSubEl){
       if(hotCount > 0) focusSubEl.textContent = '4 рядом: сначала снимем горячее';
       else if(outgoing.length > 0 || incoming.length > 0) focusSubEl.textContent = '4 держит штаб: идём по первому приоритету';
