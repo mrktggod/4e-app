@@ -1041,6 +1041,10 @@
 #home .dash-ring circle:first-child { fill:none; stroke:rgba(109,145,62,.14); stroke-width:8; }
 #home .dash-ring circle:last-child { fill:none; stroke:#6d913e; stroke-width:8; stroke-linecap:round; stroke-dasharray:88; stroke-dashoffset:38; }
 #home .dash-tasks { position:absolute; left:13px; right:13px; top:415px; bottom:72px; display:grid; grid-template-rows:90px 88px 88px; gap:10px; overflow:hidden; }
+#home .dash-tasks--empty { display:block; bottom:auto; height:90px; }
+#home .dash-empty-card { height:90px; border-radius:18px; padding:17px 16px 14px; overflow:hidden; }
+#home .dash-empty-card h2 { margin:0 0 7px; color:#e3e8df; font-size:18px; line-height:1.18; font-weight:760; letter-spacing:-.035em; }
+#home .dash-empty-card p { margin:0; color:#aeb7af; font-size:13px; line-height:1.42; font-weight:390; letter-spacing:-.02em; }
 #home .dash-task { border-radius:18px; overflow:hidden; display:grid; grid-template-columns:68px 1fr; align-items:center; padding:12px 14px 11px 9px; cursor:pointer; transition:transform .18s ease, filter .18s ease; }
 #home .dash-task:active { transform:scale(.988); filter:brightness(1.05); }
 #home .dash-task-index { height:100%; display:flex; align-items:center; justify-content:center; }
@@ -1056,10 +1060,10 @@
 #home .dash-nav-item span { font-size:10.7px; line-height:13px; font-weight:420; letter-spacing:-.02em; }
 #home .dash-nav-item.active { color:#729542; text-shadow:0 0 8px rgba(114,149,66,.17); }
 #home .dash-nav-item.active svg { fill:url(#homeFill); stroke:#739844; filter:drop-shadow(0 0 7px rgba(114,149,66,.25)); }
-#home .dash-center-button { position:absolute; left:50%; top:-9px; overflow:hidden; font-size:0; color:transparent; transform:translateX(-50%); width:76px; height:76px; border-radius:50%; border:1px solid rgba(155,181,126,.23); cursor:pointer; background:radial-gradient(circle at 35% 22%, rgba(255,255,255,.13), transparent 29%), radial-gradient(circle at 50% 54%, rgba(105,140,65,.15), transparent 58%), linear-gradient(160deg, rgba(21,29,25,.93), rgba(5,10,9,.98)); box-shadow:0 15px 24px rgba(0,0,0,.55),0 0 22px rgba(111,145,68,.18),inset 0 1px 1px rgba(255,255,255,.15),inset 0 -14px 20px rgba(0,0,0,.35); }
+#home .dash-center-button { position:absolute; left:50%; top:-10px; overflow:hidden; font-size:0; color:transparent; transform:translateX(-50%); width:68px; height:68px; border-radius:50%; border:1px solid rgba(155,181,126,.23); cursor:pointer; background:radial-gradient(circle at 35% 22%, rgba(255,255,255,.13), transparent 29%), radial-gradient(circle at 50% 54%, rgba(105,140,65,.15), transparent 58%), linear-gradient(160deg, rgba(21,29,25,.93), rgba(5,10,9,.98)); box-shadow:0 15px 24px rgba(0,0,0,.55),0 0 22px rgba(111,145,68,.18),inset 0 1px 1px rgba(255,255,255,.15),inset 0 -14px 20px rgba(0,0,0,.35); }
 #home .dash-center-button::before { content:''; position:absolute; inset:-1px; border-radius:50%; padding:1px; background:linear-gradient(145deg,rgba(255,255,255,.27),rgba(255,255,255,.03) 36%,rgba(111,145,68,.18) 72%,rgba(255,255,255,.12)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:.8; }
-#home .dash-brand-orb-grid { position:absolute; font-size:0; color:transparent; left:50%; top:50%; transform:translate(-50%,-50%); width:49px; height:49px; display:grid; grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(2,1fr); gap:5px; padding:2px; }
-#home .dash-brand-orb-grid i { position:relative; display:block; width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 28% 21%,rgba(255,255,255,.92) 0%,rgba(255,255,255,.44) 7%,transparent 16%), radial-gradient(circle at 38% 34%,#d5ef8d 0%,#a8d159 23%,#759f3e 51%,#314924 76%,#08100b 100%); border:1px solid rgba(205,231,150,.48); box-shadow:0 0 8px rgba(127,169,74,.32),inset 0 1px 1px rgba(255,255,255,.46),inset -3px -4px 7px rgba(0,0,0,.36),inset 3px 3px 6px rgba(191,225,123,.16); }
+#home .dash-brand-orb-grid { position:absolute; font-size:0; color:transparent; left:50%; top:50%; transform:translate(-50%,-50%); width:43px; height:43px; display:grid; grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(2,1fr); gap:5px; padding:2px; }
+#home .dash-brand-orb-grid i { position:relative; display:block; width:17px; height:17px; border-radius:50%; background:radial-gradient(circle at 28% 21%,rgba(255,255,255,.92) 0%,rgba(255,255,255,.44) 7%,transparent 16%), radial-gradient(circle at 38% 34%,#d5ef8d 0%,#a8d159 23%,#759f3e 51%,#314924 76%,#08100b 100%); border:1px solid rgba(205,231,150,.48); box-shadow:0 0 8px rgba(127,169,74,.32),inset 0 1px 1px rgba(255,255,255,.46),inset -3px -4px 7px rgba(0,0,0,.36),inset 3px 3px 6px rgba(191,225,123,.16); }
 #home .dash-brand-orb-grid i::after { content:''; position:absolute; left:3px; top:2px; width:8px; height:4px; border-radius:50%; background:linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,0)); transform:rotate(-24deg); opacity:.75; }
 @media (max-width: 390px) {
   #home .dash-artboard { transform: scale(calc(100vw / 430)); transform-origin: top center; width:430px; margin-left:50%; translate:-50% 0; }
@@ -1069,7 +1073,24 @@
 }
 
 /* hide legacy global nav on dashboard so the handoff bottom nav is the only menu */
+#home.active ~ #global-nav,
 body:has(#home.active .dash-artboard) #global-nav,
 body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
   display: none !important;
+}
+/* subscription pricing badge inside card */
+#subscription .pricing-badge-save {
+  top: 8px !important;
+  right: 16px !important;
+  z-index: 4 !important;
+  transform: none !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  padding: 4px 8px !important;
+  max-width: calc(100% - 32px) !important;
+}
+#subscription .pricing-card.yearly,
+#subscription .pricing-card[data-plan="year"],
+#subscription .pricing-card:has(#pricing-year-badge) {
+  padding-top: 22px !important;
 }

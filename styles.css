@@ -2378,6 +2378,33 @@ body {
   gap: 10px;
   overflow: hidden;
 }
+#home .dash-tasks--empty {
+  display: block;
+  bottom: auto;
+  height: 90px;
+}
+#home .dash-empty-card {
+  height: 90px;
+  border-radius: 18px;
+  padding: 17px 16px 14px;
+  overflow: hidden;
+}
+#home .dash-empty-card h2 {
+  margin: 0 0 7px;
+  color: #e3e8df;
+  font-size: 18px;
+  line-height: 1.18;
+  font-weight: 760;
+  letter-spacing: -0.035em;
+}
+#home .dash-empty-card p {
+  margin: 0;
+  color: #aeb7af;
+  font-size: 13px;
+  line-height: 1.42;
+  font-weight: 390;
+  letter-spacing: -0.02em;
+}
 #home .dash-task {
   border-radius: 18px;
   overflow: hidden;
@@ -2512,13 +2539,13 @@ body {
 #home .dash-center-button {
   position: absolute;
   left: 50%;
-  top: -9px;
+  top: -10px;
   overflow: hidden;
   font-size: 0;
   color: transparent;
   transform: translateX(-50%);
-  width: 76px;
-  height: 76px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   border: 1px solid rgba(155, 181, 126, 0.23);
   cursor: pointer;
@@ -2544,8 +2571,8 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 49px;
-  height: 49px;
+  width: 43px;
+  height: 43px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -2555,8 +2582,8 @@ body {
 #home .dash-brand-orb-grid i {
   position: relative;
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   background: radial-gradient(circle at 28% 21%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.44) 7%, transparent 16%), radial-gradient(circle at 38% 34%, #d5ef8d 0%, #a8d159 23%, #759f3e 51%, #314924 76%, #08100b 100%);
   border: 1px solid rgba(205, 231, 150, 0.48);
@@ -2589,9 +2616,26 @@ body {
   }
 }
 /* hide legacy global nav on dashboard so the handoff bottom nav is the only menu */
+#home.active ~ #global-nav,
 body:has(#home.active .dash-artboard) #global-nav,
 body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
   display: none !important;
+}
+/* subscription pricing badge inside card */
+#subscription .pricing-badge-save {
+  top: 8px !important;
+  right: 16px !important;
+  z-index: 4 !important;
+  transform: none !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  padding: 4px 8px !important;
+  max-width: calc(100% - 32px) !important;
+}
+#subscription .pricing-card.yearly,
+#subscription .pricing-card[data-plan="year"],
+#subscription .pricing-card:has(#pricing-year-badge) {
+  padding-top: 22px !important;
 }
 /* ===== BACK BAR ===== */
 .back-bar {

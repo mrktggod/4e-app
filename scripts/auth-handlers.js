@@ -90,27 +90,24 @@ function isDashboardSubscriptionPreviewHost(){
 
 function renderDashboardSubscriptionPreviewDemo(){
   const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
-  setText('focus-day-count','3');
-  setText('focus-day-noun','задачи');
-  setText('focus-day-text','требуют внимания');
-  setText('focus-day-sub','4 уже расставил приоритеты');
-  setText('stat-done','25');
-  setText('stat-done-meta','+4');
-  setText('stat-tasks','14');
-  setText('stat-tasks-meta','2 с вчера');
-  setText('stat-promises','5');
-  setText('stat-promises-meta','1 просрочено');
-  setText('stat-progress','57%');
-  setText('stat-progress-meta','неделя');
+  setText('focus-day-count','0');
+  setText('focus-day-noun','задач');
+  setText('focus-day-text','Сегодня всё спокойно');
+  setText('focus-day-sub','Добавь первую задачу, и я соберу фокус дня');
+  setText('stat-done','0');
+  setText('stat-done-meta','нет данных');
+  setText('stat-tasks','0');
+  setText('stat-tasks-meta','спокойный день');
+  setText('stat-promises','0');
+  setText('stat-promises-meta','без просрочек');
+  setText('stat-progress','0%');
+  setText('stat-progress-meta','нет данных');
   const arc=document.getElementById('progress-arc');
-  if(arc)arc.setAttribute('stroke-dashoffset','40');
+  if(arc)arc.setAttribute('stroke-dashoffset','88');
   const list=document.getElementById('home-task-list');
   if(list){
-    list.innerHTML=[
-      ['1','▣ Сегодня','▣ Работа','скоро','Юрий — Проверить кнопку после правок','Связана с текущим релизом','dash-orange'],
-      ['2','▣ Сегодня, 19:00','▣ Бизнес','важно','Принять решение по ценам: расписать стратегию','Ожидают: Антон и команда','dash-orange'],
-      ['3','▣ Завтра','▣ Работа','позже','Продолжить разработку: дописать дорожную карту и основные баги','Длинная задача · 3 подзадачи','']
-    ].map(item=>'<article class="dash-task dash-glass" data-home-action="open-focus-list"><div class="dash-task-index"><span>'+item[0]+'</span></div><div class="dash-task-content"><div class="dash-task-meta"><span>'+item[1]+'</span><span>•</span><span>'+item[2]+'</span><span>•</span><span><i class="dash-dot '+item[6]+'"></i>'+item[3]+'</span></div><h2>'+item[4]+'</h2><p>'+item[5]+'</p></div></article>').join('');
+    list.classList.add('dash-tasks--empty');
+    list.innerHTML='<article class="dash-empty-card dash-glass"><h2>Первый AI-план за 60 секунд</h2><p>Добавь 3 задачи любым удобным способом, и 4 сразу соберёт понятный фокус дня без пустого экрана.</p></article>';
   }
 }
 
