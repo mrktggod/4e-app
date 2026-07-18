@@ -14,10 +14,10 @@
 <link rel="shortcut icon" href="favicon.ico" sizes="any">
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
-<script src="scripts/platform-adapter.js?v=preview-dashboard-auth-20260718"></script>
-<script src="scripts/auth.js?v=preview-dashboard-auth-20260718"></script>
-<script src="scripts/auth-handlers.js?v=preview-dashboard-auth-20260718"></script>
-<script src="scripts/task-ui-renderers.js?v=preview-dashboard-auth-20260718"></script>
+<script src="scripts/platform-adapter.js?v=dashboard-handoff-20260718-4"></script>
+<script src="scripts/auth.js?v=dashboard-handoff-20260718-4"></script>
+<script src="scripts/auth-handlers.js?v=dashboard-handoff-20260718-4"></script>
+<script src="scripts/task-ui-renderers.js?v=dashboard-handoff-20260718-4"></script>
 <script src="assets/vendor/marked.min.js"></script>
 <link rel="stylesheet" href="styles.min.css?v=dashboard-handoff-20260718-3">
 <script>
@@ -2003,6 +2003,12 @@ const WORKER=(()=>{const host=location.hostname.toLowerCase();if(host==='4-ai-st
 const TELEGRAM_BOT_USERNAME=PLATFORM.getTelegramBotUsername?PLATFORM.getTelegramBotUsername():(new URLSearchParams(location.search).get('bot')||'Denzel89bot');
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';
+// previewDemo dashboard pre-init: keep automated visual QA on the dashboard, not onboarding.
+try{
+  const previewParams=new URLSearchParams(location.search||'');
+  const previewHost=location.hostname&&location.hostname.endsWith('.4-ai-staging.pages.dev')&&location.hostname!=='4-ai-staging.pages.dev';
+  if(previewHost&&previewParams.get('previewDemo')==='dashboard')localStorage.setItem(ONBOARD_K,'1');
+}catch(_previewDemoErr){}
 const D1_TOKEN_K='chetam_d1_token';
 const LOGOUT_K='chetam_logged_out';
 const TG_PENDING_START_K='chetam_tg_pending_start';
