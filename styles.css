@@ -7140,3 +7140,60 @@ body:has(#ask.active) #global-nav,
     margin-bottom: 74px;
   }
 }
+/* ===== CHAT QA ITERATION 2: KEEP TEXT INSIDE GLASS PILLS ===== */
+.ask-conversation {
+  align-items: stretch;
+}
+.bubble-ai,
+.bubble-user,
+.ask-action-preview,
+.ask-action-card,
+.ask-action-row,
+.ask-plan-card {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+.bubble-ai {
+  width: fit-content;
+  min-width: 0;
+  max-width: calc(100% - 44px);
+}
+.bubble-user {
+  width: fit-content;
+  min-width: 0;
+  max-width: calc(100% - 48px);
+}
+.bubble-ai .md-body,
+.bubble-ai .md-body *,
+.ask-action-preview *,
+.ask-action-card *,
+.ask-action-row * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.ask-action-preview,
+.ask-action-card {
+  width: 100%;
+}
+.ask-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 34px;
+  align-items: center;
+}
+.ask-action-row label,
+.ask-action-row span,
+.ask-action-row div {
+  min-width: 0;
+}
+.ask-plan-row {
+  grid-template-columns: 26px 24px minmax(0, 1fr);
+}
+.ask-plan-text {
+  min-width: 0;
+}
