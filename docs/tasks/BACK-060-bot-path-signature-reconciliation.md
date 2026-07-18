@@ -54,3 +54,21 @@ Source: `X:\4\4e-worker\worker.js` current `BOT_ONLY_SIGNED_ACTIONS`, `BOT_SHARE
 | Re-open payment security as fully unverified | Not applied blindly; later backlog currently contains newer payment smoke evidence than the old brief |
 | Change price / mark `BACK-015` Done | Not applied in this reconciliation; price/business status needs fresh explicit decision because other project guardrails said not to touch price |
 | Prod deploy / main merge | Not touched |
+
+## 6. 2026-07-18 sibling unsigned re-check
+
+Fresh staging target: `https://restless-lab-d737-staging.shelckograff.workers.dev` after worker deploy `6cf4e558-9681-46a7-ae60-20f51375d505`.
+
+RAW result:
+
+```text
+UNSIGNED update-task with foreign telegramUserId
+STATUS: 401
+BODY: {"ok":false,"error":"Не авторизован"}
+
+UNSIGNED set-reminder with foreign telegramUserId
+STATUS: 401
+BODY: {"ok":false,"error":"Не авторизован"}
+```
+
+Conclusion: no sibling bot-style unsigned mutation was observed. These actions are not in `BOT_SHARED_SIGNED_ACTIONS`, but both require a normal user session in their handlers before touching task/reminder data, so the sessionless foreign-`telegramUserId` path is rejected before mutation.

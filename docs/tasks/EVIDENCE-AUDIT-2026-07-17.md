@@ -152,3 +152,11 @@ Still not promoted:
 ## Conclusion
 
 The staging backend/auth/task/AI smoke layer is healthy. Several P0/P1 rows have credible live evidence, especially auth, tasks, BUG-005, CORS, and Anthropic smoke. However, merge/prod/beta readiness should not be inferred from those API checks alone: UI-heavy, provider-heavy, bot journey, payment/provider, and product-decision rows still need real manual acceptance or explicit owner decisions.
+
+## 2026-07-18 price/security/perf supplement
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Source year price alignment | LIVE/SOURCE | Worker and app source defaults changed from `9504` to `9950`; staging worker deploy `6cf4e558-9681-46a7-ae60-20f51375d505`; `GET /tariff-config` returned `plans.year.priceRub=9950` and `plans.year.stars=9950`. Details: `docs/tasks/PRICE-MAP-2026-07-17.md`. |
+| BACK-060 sibling unsigned re-check | LIVE | Fresh unsigned sessionless `update-task` and `set-reminder` with foreign `telegramUserId` both returned `401 {"ok":false,"error":"Не авторизован"}` on staging; no sibling bot-style mutation observed. Details: `docs/tasks/BACK-060-bot-path-signature-reconciliation.md`. |
+| Task create/list latency re-check | LIVE/PARTIAL | Fresh staging account showed `tasks.create` 283 ms, `tasks.list.before` 163 ms, `tasks.list.after` 148 ms. Prior 10-12s latency did not reproduce; no code fix applied. Details: `docs/tasks/PERF-2026-07-18-task-latency-recheck.md`. |

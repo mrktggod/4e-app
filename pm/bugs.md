@@ -395,3 +395,23 @@ P0/P1:
 | BUG-2026-06-29-002 | Голосовой режим открывался с ошибкой микрофона и не начинал запись | 2026-07-04 (фикс и smoke 2026-07-01) | BACK-021 | По pm/backlog.md: голос работает на iPhone iOS в Telegram app, smoke passed 2026-07-01. Детали: `docs/tasks/BACK-021-voice-mediarecorder.md` |
 | BUG-2026-07-04-001 | AI-дашборд мог показывать `Пульс дня` выше 100%, кнопка compact-mode содержала `4`, а секция `Горит` пропускала задачи `просрочено на X дней` | 2026-07-04 | BACK-027 | Локальный headless smoke на `index.html`: `Пульс дня: 67%`, кнопка `Свернуть`, в `Горит` видны overdue-задачи на 5 и 1 день, пустое состояние не показывается |
 | BUG-2026-06-25-001 | После reload/logout появлялся пустой экран, пункты нижнего меню не подсвечивались, profile мог показывать дефолтного пользователя без token | 2026-06-25 | — | Локальный smoke в in-app browser: home `scrollTop=0`, `voice` скрыт, active menu зелёный, logout и direct profile без token показывают `login` |
+## 2026-07-18 security re-check notes
+
+### BACK-060 / BUG-2026-07-15-005 sibling actions
+
+Fresh staging target: `https://restless-lab-d737-staging.shelckograff.workers.dev`
+Worker staging version: `6cf4e558-9681-46a7-ae60-20f51375d505`
+
+RAW:
+
+```text
+UNSIGNED update-task with foreign telegramUserId
+STATUS: 401
+BODY: {"ok":false,"error":"Не авторизован"}
+
+UNSIGNED set-reminder with foreign telegramUserId
+STATUS: 401
+BODY: {"ok":false,"error":"Не авторизован"}
+```
+
+Result: no new sibling P1 bug opened. Both paths rejected the sessionless foreign-`telegramUserId` request before mutation.
