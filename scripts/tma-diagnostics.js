@@ -42,9 +42,7 @@
   function shouldShow() {
     return safe('shouldShow', () => {
       const params = new URLSearchParams(window.location.search || '');
-      if (params.get('tma_diag') === '0') return false;
-      if (params.get('tma_diag') === '1') return true;
-      return !!window.Telegram?.WebApp || /Telegram/i.test(window.navigator?.userAgent || '');
+      return params.get('tma_diag') === '1';
     }, false);
   }
 
