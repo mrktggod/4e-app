@@ -1,0 +1,22 @@
+name: Mojibake Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  cp1251-mojibake:
+    name: CP1251 mojibake guard
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run mojibake check
+        run: node scripts/check-cp1251-mojibake.mjs

@@ -9150,3 +9150,8 @@
 - Before reseed staging returned year 9504/9504 stars and questionRuns=41 in paywall text.
 - After reseed staging returns month 990/990 stars, year 9950/9950 stars, questionRuns=0, title Продлить подписку, period / мес · 9 950 ₽/год.
 - Production config, source defaults, main, CAL, and price source code were not changed.
+# 2026-07-18 - Inbox/outbox protocol self-test
+
+- Executed `pm/inbox/BRIEF-2026-07-18-selftest.md` through the protocol lifecycle.
+- Added this work-log line as the self-test payload.
+- Wrote `pm/outbox/REPORT-BRIEF-2026-07-18-selftest.md` as the matching completion report.
