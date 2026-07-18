@@ -128,7 +128,6 @@ function tryDashboardSubscriptionPreviewLogin(email,pass){
   applyUserInfo();
   showScreen('home');
   renderDashboardSubscriptionPreviewDemo();
-  showToast('Демо-вход для preview');
   return true;
 }
 

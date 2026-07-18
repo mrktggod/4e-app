@@ -2165,7 +2165,8 @@ body {
   font-weight: 420;
   letter-spacing: -0.05em;
 }
-#home .dash-hero-title {
+#home .dash-hero-title,
+#home #focus-day-text.dash-hero-title {
   margin: 6px 0 0;
   color: #8e9390;
   font-size: 23.5px;
@@ -2177,6 +2178,7 @@ body {
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: anywhere;
+  text-shadow: none;
 }
 #home .dash-hero-subtitle {
   margin-top: 15px;
