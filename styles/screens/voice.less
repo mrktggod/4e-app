@@ -1086,3 +1086,75 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
   .ask-plan-text { font-size: 13px; }
   .bubble-ai, .bubble-user { font-size: 13px; }
 }
+
+
+/* ===== CHAT QA ITERATION: NAV SAFETY AND TEXT CLIPPING ===== */
+body:has(#ask.active) #global-nav,
+.app:has(#ask.active) #global-nav,
+#ask.active ~ #global-nav {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ask-soft-screen.active {
+  z-index: 20;
+}
+
+.ask-soft-inner {
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding-bottom: calc(13px + var(--safe-area-bottom));
+}
+
+.ask-conversation {
+  padding-bottom: 18px;
+  gap: 16px;
+}
+
+.bubble-ai {
+  overflow: visible;
+  min-height: 42px;
+  padding: 14px 17px 13px;
+  line-height: 1.62;
+}
+
+.bubble-ai .md-body,
+.bubble-ai .md-body p,
+.bubble-ai p,
+.bubble-user {
+  line-height: 1.62;
+  overflow: visible;
+}
+
+.bubble-ai .md-body * {
+  max-width: 100%;
+}
+
+.bubble-user {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.ask-plan-row {
+  min-height: 40px;
+}
+
+.ask-plan-text {
+  line-height: 1.48;
+}
+
+.ask-input-shell {
+  min-height: 58px;
+  align-items: end;
+}
+
+.ask-field {
+  min-height: 56px;
+  overflow-y: auto;
+}
+
+@supports not selector(body:has(#ask.active)) {
+  #ask.active .ask-input-shell {
+    margin-bottom: 74px;
+  }
+}
