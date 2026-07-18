@@ -1021,20 +1021,20 @@
 #home .dash-hero-title, #home #focus-day-text.dash-hero-title { margin:6px 0 0 !important; color:#8e9390 !important; font-size:23.5px !important; line-height:1.02 !important; font-weight:455 !important; letter-spacing:-.055em !important; max-width:100% !important; display:-webkit-box !important; -webkit-box-orient:vertical !important; -webkit-line-clamp:2 !important; overflow:hidden !important; overflow-wrap:anywhere; text-shadow:none !important; }
 #home .dash-hero-subtitle { margin-top:15px; color:#636a65; font-size:14.2px; line-height:1.1; font-weight:390; letter-spacing:-.025em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 #home .dash-hero-orb { position:absolute; z-index:2; right:4px; top:12px; width:176px; height:153px; object-fit:contain; opacity:.95; mix-blend-mode:screen; filter:drop-shadow(0 0 14px rgba(103,137,67,.13)); }
-#home .dash-month-title { position:absolute; z-index:2; left:19px; top:296px; color:#7d8580; font-size:16px; line-height:20px; font-weight:390; letter-spacing:-.035em; max-width:calc(100% - 38px); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+#home .dash-month-title { position:absolute; z-index:2; left:19px; top:288px; color:#7d8580; font-size:16px; line-height:20px; font-weight:390; letter-spacing:-.035em; max-width:calc(100% - 38px); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 #home .dash-metrics { position:absolute; left:13px; right:13px; top:314px; height:88px; display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
 #home .dash-metric { border-radius:17px; min-width:0; overflow:hidden; padding:11px 7px 8px; cursor:pointer; box-shadow:0 13px 22px rgba(0,0,0,.56),0 3px 6px rgba(0,0,0,.62),0 0 14px rgba(91,119,65,.05),inset 0 1px 1px rgba(255,255,255,.14),inset 0 -2px 2px rgba(0,0,0,.58),inset 0 0 0 .5px rgba(255,255,255,.05),0 1px 0 rgba(255,255,255,.04); }
 #home .dash-metric-head { height:20px; display:flex; align-items:center; gap:4px; white-space:nowrap; color:#7a817c; font-size:9.5px; font-weight:430; letter-spacing:-.025em; overflow:hidden; }
 #home .dash-metric-icon { width:19px; height:19px; border-radius:50%; display:grid; place-items:center; flex:none; color:#6f9440; background:radial-gradient(circle at 35% 25%,rgba(135,171,83,.12),rgba(42,58,35,.07)); border:1px solid rgba(117,151,73,.12); box-shadow:0 0 10px rgba(105,137,66,.07),inset 0 1px 1px rgba(255,255,255,.05); }
 #home .dash-metric-icon svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
-#home .dash-metric-row { position:absolute; left:8px; right:7px; bottom:13px; display:flex; align-items:baseline; gap:7px; min-width:0; }
+#home .dash-metric-row { position:absolute; left:8px; right:7px; bottom:18px; z-index:2; display:flex; align-items:baseline; gap:7px; min-width:0; }
 #home .dash-metric-value { color:#6d913e; font-size:21px; line-height:1; font-weight:540; letter-spacing:-.055em; white-space:nowrap; }
 #home .dash-metric:nth-child(2) .dash-metric-value,#home .dash-metric:nth-child(3) .dash-metric-value { color:#9a9f9b; }
 #home .dash-metric-note { color:#767d78; font-size:9.4px; line-height:1; font-weight:390; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 #home .dash-dot { display:inline-block; width:5px; height:5px; border-radius:50%; background:#789d46; vertical-align:middle; margin:0 2px; }
 #home .dash-orange { background:#c96c18; }
 #home .dash-triangle { display:inline-block; width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-bottom:7px solid #789d46; margin-right:3px; }
-#home .dash-sparkline { position:absolute; left:16px; right:13px; bottom:7px; width:54px; height:15px; overflow:visible; }
+#home .dash-sparkline { position:absolute; left:14px; right:auto; bottom:4px; width:50px; height:13px; overflow:visible; z-index:1; opacity:.9; pointer-events:none; }
 #home .dash-sparkline path { fill:none; stroke:#6d913e; stroke-width:1.6; stroke-linecap:round; opacity:.95; }
 #home .dash-ring { position:absolute; right:8px; bottom:9px; width:39px; height:39px; }
 #home .dash-ring svg { width:100%; height:100%; transform:rotate(-90deg); }
@@ -1066,4 +1066,10 @@
 }
 @media (min-height: 765px) and (min-width: 431px) {
   #home .dash-artboard { min-height:100%; }
+}
+
+/* hide legacy global nav on dashboard so the handoff bottom nav is the only menu */
+body:has(#home.active .dash-artboard) #global-nav,
+body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
+  display: none !important;
 }

@@ -2208,7 +2208,7 @@ body {
   position: absolute;
   z-index: 2;
   left: 19px;
-  top: 296px;
+  top: 288px;
   color: #7d8580;
   font-size: 16px;
   line-height: 20px;
@@ -2274,7 +2274,8 @@ body {
   position: absolute;
   left: 8px;
   right: 7px;
-  bottom: 13px;
+  bottom: 18px;
+  z-index: 2;
   display: flex;
   align-items: baseline;
   gap: 7px;
@@ -2324,12 +2325,15 @@ body {
 }
 #home .dash-sparkline {
   position: absolute;
-  left: 16px;
-  right: 13px;
-  bottom: 7px;
-  width: 54px;
-  height: 15px;
+  left: 14px;
+  right: auto;
+  bottom: 4px;
+  width: 50px;
+  height: 13px;
   overflow: visible;
+  z-index: 1;
+  opacity: 0.9;
+  pointer-events: none;
 }
 #home .dash-sparkline path {
   fill: none;
@@ -2583,6 +2587,11 @@ body {
   #home .dash-artboard {
     min-height: 100%;
   }
+}
+/* hide legacy global nav on dashboard so the handoff bottom nav is the only menu */
+body:has(#home.active .dash-artboard) #global-nav,
+body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
+  display: none !important;
 }
 /* ===== BACK BAR ===== */
 .back-bar {
