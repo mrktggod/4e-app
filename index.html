@@ -7233,7 +7233,23 @@ function _showSubScreenBase(id){
 
 document.addEventListener('DOMContentLoaded',()=>{
   window.FourTmaDiagnostics?.mark?.('app-domcontentloaded-start');
-  processOAuthCallback();
+  try{
+    const processOAuth=window.processOAuthCallback;
+    if(typeof processOAuth==='function'){
+      const result=processOAuth();
+      if(result&&typeof result.catch==='function'){
+        result.catch((err)=>{
+          window.FourTmaDiagnostics?.recordError?.('processOAuthCallback.async',err);
+          console.warn('processOAuthCallback failed',err);
+        });
+      }
+    }else{
+      window.FourTmaDiagnostics?.mark?.('processOAuthCallback-missing');
+    }
+  }catch(err){
+    window.FourTmaDiagnostics?.recordError?.('processOAuthCallback.sync',err);
+    console.warn('processOAuthCallback failed',err);
+  }
   const bindClick = PLATFORM.bindClick || ((id, handler) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('click', handler);
@@ -7253,9 +7269,23 @@ document.addEventListener('DOMContentLoaded',()=>{
     bindOAuth();
   } else {
     const vkIdBtn = document.getElementById('login-vk-id-btn');
-    if(vkIdBtn) vkIdBtn.addEventListener('click', () => startOAuthLogin('vk_id'));
+    if(vkIdBtn) vkIdBtn.addEventListener('click', () => {
+      const startOAuth=window.startOAuthLogin;
+      if(typeof startOAuth==='function') startOAuth('vk_id');
+      else{
+        window.FourTmaDiagnostics?.mark?.('startOAuthLogin-missing-vk_id');
+        window.showToast?.('Сервис входа временно недоступен');
+      }
+    });
     const yandexIdBtn = document.getElementById('login-yandex-id-btn');
-    if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => startOAuthLogin('yandex'));
+    if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => {
+      const startOAuth=window.startOAuthLogin;
+      if(typeof startOAuth==='function') startOAuth('yandex');
+      else{
+        window.FourTmaDiagnostics?.mark?.('startOAuthLogin-missing-yandex');
+        window.showToast?.('Сервис входа временно недоступен');
+      }
+    });
   }
   const bindProfileMenuItems = PLATFORM.bindProfileMenuItems;
   const bindProfileMenu = typeof bindProfileMenuItems === 'function'
