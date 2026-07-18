@@ -2551,15 +2551,17 @@ body {
   filter: drop-shadow(0 0 7px rgba(114, 149, 66, 0.25));
 }
 #home .dash-center-button {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  position: relative;
+  left: auto;
+  top: auto;
   overflow: hidden;
   font-size: 0;
   color: transparent;
-  transform: translate(-50%, -50%);
+  transform: none;
   width: 58px;
   height: 58px;
+  justify-self: center;
+  align-self: center;
   border-radius: 50%;
   border: 1px solid rgba(155, 181, 126, 0.23);
   cursor: pointer;
