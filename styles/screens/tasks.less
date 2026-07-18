@@ -1558,3 +1558,83 @@
   .detail-date-popover { width: 164px; right: 0; }
   .detail-info-card--priority { margin-top: 6px !important; }
 }
+
+
+/* ===== TASK DETAIL QA ITERATION 6: CLICKABLE CONTROLS AND TOP DATE POPUP ===== */
+.detail-redesign-hero,
+.detail-info-stack,
+.detail-date-popover {
+  overflow: visible !important;
+}
+
+.detail-redesign-hero {
+  z-index: 12;
+}
+
+.detail-redesign-status-grid,
+.detail-chat-card {
+  position: relative;
+  z-index: 1;
+}
+
+.detail-date-popover {
+  top: 68px;
+  right: 2px;
+  z-index: 90 !important;
+  width: 190px;
+}
+
+.detail-info-card--priority {
+  position: relative;
+  cursor: pointer;
+}
+
+#detail-priority-display {
+  display: block;
+  color: #9fca54;
+  font-size: 12px;
+  line-height: 1.18;
+  font-weight: 900;
+  max-width: 88px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-info-card--priority .detail-info-select {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.detail-native-status {
+  border: 0;
+  background: transparent;
+}
+
+.detail-status-node {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+}
+
+.detail-status-node.detail-status-node--active small {
+  color: #9fca54;
+}
+
+.detail-history-chat-row {
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  color: #aeb8b0;
+  background: linear-gradient(180deg, rgba(33,44,37,.82), rgba(13,21,17,.78));
+  border: 1px solid rgba(181,196,180,.13);
+  font-size: 12px;
+  line-height: 1.4;
+}
