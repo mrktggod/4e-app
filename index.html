@@ -4088,18 +4088,31 @@ function renderHomePriorityCard(task,index,options={}){
   const title=e2((task?.person?task.person+' — ':'')+(task?.text||'Без текста'));
   const meta=e2(getHomePriorityMeta(task));
   const badge=e2(String((index||0)+1));
-  const openAction=options.closePanelFirst
-    ? 'closeFocusPanel();openTaskById(\''+safeId+'\','+options.cacheIndex+')'
-    : 'openTaskById(\''+safeId+'\','+options.cacheIndex+')';
-  return '<div class="home-ai-row" data-task-id="'+safeId+'" role="button" tabindex="0">'
-    +'<div class="home-ai-row-main" onclick="'+openAction+'">'
+  const cacheIndex=Number.isInteger(options.cacheIndex)?options.cacheIndex:-1;
+  const closePanel=options.closePanelFirst?'1':'0';
+  return '<div class="task-card-shell home-ai-row-shell" data-task-id="'+safeId+'">'
+    +'<div class="task-swipe-actions task-swipe-actions-right"><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'
+    +'<div class="task-swipe-actions task-swipe-actions-left"><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'
+    +'<div class="home-ai-row task-card" data-task-id="'+safeId+'" role="button" tabindex="0" onclick="openHomePriorityTask(this,\''+safeId+'\','+cacheIndex+','+closePanel+')" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'
+    +'<div class="home-ai-row-main">'
     +'<span class="home-ai-row-avatar">'+badge+'</span>'
     +'<div class="home-ai-row-main-text">'
     +'<div class="home-ai-row-title">'+title+'</div>'
     +'<div class="home-ai-row-meta">'+meta+'</div>'
     +'</div>'
     +'</div>'
+    +'</div>'
     +'</div>';
+}
+
+function openHomePriorityTask(row,taskId,cacheIndex,closePanelFirst){
+  const shell=row?.closest?.('.task-card-shell');
+  if(shell&&shell.dataset.swiped==='1'){
+    shell.dataset.swiped='0';
+    return;
+  }
+  if(closePanelFirst) closeFocusPanel();
+  openTaskById(taskId,cacheIndex);
 }
 
 function renderFocusPanel(){

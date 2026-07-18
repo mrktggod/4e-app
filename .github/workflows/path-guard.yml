@@ -15,5 +15,7 @@ jobs:
         run: bash scripts/check-portable-paths.sh
       - name: Check markdown encoding for pm/ and shared/
         run: node scripts/check-doc-encoding.mjs
+      - name: Check Pages script assets
+        run: npm run check:pages-script-assets
       - name: Check UI architecture debt
         run: bash scripts/check-ui-architecture.sh
