@@ -1735,3 +1735,68 @@
   .detail-redesign-hero { height: 292px !important; min-height: 292px !important; max-height: 292px !important; flex-basis: 292px !important; }
   .detail-priority-popover { width: 164px; top: 140px; }
 }
+
+
+/* ===== TASK DETAIL QA ITERATION 8: NO ADVICE FRAME, NO GLOBAL MENU ===== */
+body:has(#task-detail.active) #global-nav,
+.app:has(#task-detail.active) #global-nav,
+#task-detail.active ~ #global-nav {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#task-detail.active {
+  z-index: 20;
+}
+
+.detail-redesign-scroll {
+  padding-bottom: 98px !important;
+}
+
+.detail-chat-card .detail-advice-message,
+.detail-chat-card .detail-advice-message::before,
+.detail-chat-card .detail-advice-message::after,
+.detail-chat-card #detail-ai-advice,
+.detail-chat-card #detail-ai-advice::before,
+.detail-chat-card #detail-ai-advice::after,
+.detail-chat-card .detail-ai-card,
+.detail-chat-card .detail-ai-card::before,
+.detail-chat-card .detail-ai-card::after,
+.detail-chat-card .detail-ai-card--chat,
+.detail-chat-card .detail-ai-card--chat::before,
+.detail-chat-card .detail-ai-card--chat::after {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.detail-chat-card .detail-advice-message {
+  padding: 0 !important;
+  margin: 8px 0 12px !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+
+.detail-chat-card #detail-ai-advice {
+  padding: 4px 0 0 0 !important;
+  min-height: 0 !important;
+  border-radius: 0 !important;
+  color: #e1e8dc !important;
+}
+
+.detail-chat-card #detail-ai-advice .md-body,
+.detail-chat-card #detail-ai-advice .md-body p,
+.detail-chat-card #detail-ai-advice p,
+.detail-chat-card #detail-ai-advice div {
+  color: #e1e8dc !important;
+  line-height: 1.46 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
