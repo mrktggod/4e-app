@@ -13182,3 +13182,102 @@ html[data-theme="light"] #focus-panel-overlay .quick-add-cancel {
   color: #17324a !important;
   border: 1px solid rgba(255, 255, 255, 0.92) !important;
 }
+/* 2026-07-19 light QA pass 6: precise dashboard/task/profile polish */
+html[data-theme="light"] #home .dash-month-title,
+html[data-theme="light"] #home #home-section-title {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 2px !important;
+}
+html[data-theme="light"] #home .dash-center-button {
+  top: -9px !important;
+  transform: translateY(-7px) !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  top: 150px !important;
+  left: 36px !important;
+  width: 226px !important;
+  max-width: 226px !important;
+  max-height: 96px !important;
+  font-size: clamp(28px, 7.15vw, 33px) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.035em !important;
+  -webkit-line-clamp: 3 !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  hyphens: auto !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  top: 260px !important;
+  left: 38px !important;
+  width: 238px !important;
+  max-width: 238px !important;
+  max-height: 58px !important;
+  color: #38506a !important;
+  font-size: 12.2px !important;
+  line-height: 1.22 !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar-stack {
+  gap: 0 !important;
+  padding-left: 1px !important;
+  overflow: visible !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar-pill,
+html[data-theme="light"] #task-detail .detail-avatar-dot,
+html[data-theme="light"] #task-detail .detail-avatar-add {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  font-size: 13px !important;
+  margin-left: -5px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar-pill:first-child,
+html[data-theme="light"] #task-detail .detail-avatar-dot:first-child,
+html[data-theme="light"] #task-detail .detail-avatar-add:first-child {
+  margin-left: 0 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tags {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  isolation: isolate !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-redesign-bell {
+  background: radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.98), rgba(232, 246, 199, 0.84) 40%, rgba(121, 174, 54, 0.18) 100%) !important;
+  box-shadow: 0 10px 20px rgba(118, 126, 95, 0.1), 0 0 20px rgba(133, 177, 70, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+  filter: none !important;
+  outline: 0 !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag *,
+html[data-theme="light"] #task-detail .detail-redesign-bell * {
+  filter: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+html[data-theme="light"] #task-detail .detail-direction-chip {
+  color: #4c8f24 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] #profile .profile-user-id,
+html[data-theme="light"] #profile #profile-user-id,
+html[data-theme="light"] #profile .profile-user-id *,
+html[data-theme="light"] #profile #profile-user-id * {
+  color: #111411 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-shadow: none !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  font-weight: 430 !important;
+}
