@@ -13281,3 +13281,142 @@ html[data-theme="light"] #profile #profile-user-id * {
   filter: none !important;
   font-weight: 430 !important;
 }
+/* 2026-07-19 QA pass 7: hard alignment, task clipping, clean circles, dark orb asset */
+html[data-theme="light"] #home .dash-bottom-nav {
+  grid-template-columns: 1fr 74px 1fr !important;
+  justify-items: stretch !important;
+  align-items: center !important;
+  padding-left: 25px !important;
+  padding-right: 25px !important;
+}
+html[data-theme="light"] #home .dash-bottom-nav .dash-nav-item {
+  min-width: 0 !important;
+  width: 100% !important;
+  justify-self: stretch !important;
+  align-self: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: none !important;
+}
+html[data-theme="light"] #home .dash-center-button {
+  grid-column: 2 !important;
+  justify-self: center !important;
+  align-self: center !important;
+  top: auto !important;
+  margin-top: -12px !important;
+  transform: translateY(-6px) !important;
+}
+html[data-theme="light"] #home .dash-month-title,
+html[data-theme="light"] #home #home-section-title {
+  left: 17px !important;
+  right: auto !important;
+  top: 288px !important;
+  width: calc(100% - 34px) !important;
+  max-width: calc(100% - 34px) !important;
+  text-align: left !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  justify-content: flex-start !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  top: 134px !important;
+  left: 38px !important;
+  width: 220px !important;
+  max-width: 220px !important;
+  max-height: 108px !important;
+  font-size: clamp(25px, 6.55vw, 30px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.032em !important;
+  -webkit-line-clamp: 3 !important;
+  overflow: hidden !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  hyphens: auto !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  top: 252px !important;
+  left: 38px !important;
+  width: 226px !important;
+  max-width: 226px !important;
+  max-height: 48px !important;
+  overflow: hidden !important;
+  color: #38506a !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] #task-detail .detail-info-stack,
+html[data-theme="light"] #task-detail .detail-info-card {
+  z-index: 8 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tags {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  overflow: visible !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-redesign-bell {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: radial-gradient(circle at 32% 24%, #ffffff 0%, #eef9d7 42%, #d5efab 78%, #b9de78 100%) !important;
+  border-color: rgba(132, 177, 70, 0.23) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.96), 0 7px 16px rgba(115, 126, 89, 0.1) !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag::before,
+html[data-theme="light"] #task-detail .detail-redesign-tag::after,
+html[data-theme="light"] #task-detail .detail-redesign-bell::before,
+html[data-theme="light"] #task-detail .detail-redesign-bell::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar-stack {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  overflow: visible !important;
+  padding: 0 4px 0 0 !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar-pill,
+html[data-theme="light"] #task-detail .detail-avatar-dot,
+html[data-theme="light"] #task-detail .detail-avatar-add {
+  width: 35px !important;
+  height: 35px !important;
+  min-width: 35px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  margin-left: -4px !important;
+  clip-path: circle(50% at 50% 50%) !important;
+  box-shadow: 0 10px 18px rgba(86, 98, 65, 0.14) !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar-pill:first-child,
+html[data-theme="light"] #task-detail .detail-avatar-dot:first-child,
+html[data-theme="light"] #task-detail .detail-avatar-add:first-child {
+  margin-left: 0 !important;
+}
+html:not([data-theme="light"]) #home .dash-center-button,
+html[data-theme="dark"] #home .dash-center-button {
+  width: 72px !important;
+  height: 72px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: url("../assets/design/dark-chat-button-orb.png?v=20260719") center / cover no-repeat !important;
+  box-shadow: 0 0 28px rgba(173, 235, 80, 0.28), 0 12px 28px rgba(0, 0, 0, 0.48) !important;
+  color: transparent !important;
+}
+html:not([data-theme="light"]) #home .dash-center-button::before,
+html:not([data-theme="light"]) #home .dash-center-button::after,
+html[data-theme="dark"] #home .dash-center-button::before,
+html[data-theme="dark"] #home .dash-center-button::after {
+  content: none !important;
+  display: none !important;
+}
+html:not([data-theme="light"]) #home .dash-center-button .dash-brand-orb-grid,
+html[data-theme="dark"] #home .dash-center-button .dash-brand-orb-grid {
+  display: none !important;
+}
