@@ -14007,3 +14007,39 @@ html[data-theme="dark"] #home .dash-bottom-nav {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+/* 2026-07-19 QA pass 14: hard black dark dashboard canvas */
+html:not([data-theme="light"]) body,
+html[data-theme="dark"] body,
+html:not([data-theme="light"]) #app,
+html[data-theme="dark"] #app,
+html:not([data-theme="light"]) #home,
+html[data-theme="dark"] #home,
+html:not([data-theme="light"]) #home .dash-screen,
+html[data-theme="dark"] #home .dash-screen,
+html:not([data-theme="light"]) #home .dash-redesign,
+html[data-theme="dark"] #home .dash-redesign,
+html:not([data-theme="light"]) #home .dashboard-redesign,
+html[data-theme="dark"] #home .dashboard-redesign,
+html:not([data-theme="light"]) #home .screen-content,
+html[data-theme="dark"] #home .screen-content {
+  background: #000 !important;
+  background-color: #000 !important;
+  background-image: none !important;
+}
+html:not([data-theme="light"]) body::before,
+html:not([data-theme="light"]) body::after,
+html:not([data-theme="light"]) #app::before,
+html:not([data-theme="light"]) #app::after,
+html:not([data-theme="light"]) #home::before,
+html:not([data-theme="light"]) #home::after,
+html[data-theme="dark"] body::before,
+html[data-theme="dark"] body::after,
+html[data-theme="dark"] #app::before,
+html[data-theme="dark"] #app::after,
+html[data-theme="dark"] #home::before,
+html[data-theme="dark"] #home::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+}
