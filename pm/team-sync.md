@@ -202,6 +202,7 @@
 ## BACK-055 notifications action-feed source QA — 2026-07-16
 
 - `BACK-055` закрыт по source QA: notifications action-feed покрывает filters, empty states, `К задаче`, `Готово`, `Отложить` с quick snooze, `Написать` для waiting-like payload и safe fallback без `taskId`.
+- Superseded 2026-07-20: evidence upgraded from source QA to LIVE headless proof through `npm run smoke:back055` at 390x844.
 
 ## BACK-016 extended profile source QA — 2026-07-16
 

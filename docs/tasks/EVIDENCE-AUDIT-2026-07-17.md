@@ -42,7 +42,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | BACK-036 | Ready for QA | NEEDS-REAL | `/start` fallback needs real bot/user journey verification. |
 | BACK-041 | Ready for QA | NEEDS-REAL | Needs real provider/UI path; do not promote from source alone. |
 | BACK-048 | Done | LIVE | Covered by current worker smoke and prior recorded proof. |
-| BACK-055 | Done | SOURCE-ONLY | Source/docs support; no fresh live proof in this audit. |
+| BACK-055 | Done | LIVE | 2026-07-20 headless Chrome/CDP smoke `npm run smoke:back055` verified notification action-card rendering and interactions at 390x844. |
 | HOME-001 | Ready for QA | NEEDS-REAL | Dashboard redesign is UI-heavy and needs Yuri/manual QA. |
 | BACK-049 | Done | SOURCE-ONLY | Needs explicit live proof if it becomes release-critical. |
 | BACK-050 | Ready for QA | NEEDS-REAL | Provider/manual path remains required. |
@@ -115,6 +115,7 @@ Promoted from `SOURCE-ONLY` to `LIVE` in this audit doc:
 | --- | --- | --- |
 | BACK-026 | LIVE | Account merge/link path was exercised through staging `/auth/telegram` and returned `accountMerged:true`. |
 | BUG-2026-07-14-003 | LIVE | Same smoke proves `/auth/telegram` no longer throws Worker 1101 and returns valid auth. |
+| BACK-055 | LIVE | 2026-07-20 `npm run smoke:back055` covers UI/headless interaction on the notifications screen: cards, unread badge, expand, snooze, go-to-task, done, write, filters and empty state. |
 
 Attempted broader `api-smoke` raw output before the narrow rerun:
 
@@ -143,7 +144,6 @@ Still not promoted:
 | --- | --- | --- |
 | BACK-003 | SOURCE-ONLY / needs manual UI | First-microphone biometric consent is a browser/UI consent path, not a safe API-only proof. |
 | BACK-025 | SOURCE-ONLY / needs manual UI | Morning AI dashboard is product UI; requires visual/manual acceptance. |
-| BACK-055 | SOURCE-ONLY | Notification action-feed was source-QA'd; reliable LIVE proof needs UI/headless interaction on notifications screen. |
 | BACK-049 | SOURCE-ONLY | Architecture guard is process/tooling evidence, not staging runtime behavior. |
 | SMART-003 | SOURCE-ONLY / needs real chat context | "Write to assignee" requires Telegram/deep-link behavior validation. |
 | SMART-007 | SOURCE-ONLY | AI memory/facts needs a dedicated safe fixture and acceptance criteria; not promoted opportunistically. |

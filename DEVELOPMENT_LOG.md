@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-20 - BACK-055 notification action-card smoke
+
+### Headless evidence for notification attention feed
+
+**What changed:** Added `scripts/back-055-notifications-smoke.mjs` and `npm run smoke:back055` to run an isolated Chrome/CDP smoke for the notification action-card renderer. The smoke verifies the 390x844 notifications surface without live Telegram/backend calls: four cards render without horizontal overflow, unread badge counts unread items, deadline card expands, top-level actions stay to `К задаче / Отложить / Готово`, snooze opens four options, task navigation uses the linked task id, reminder `Готово` calls the done path, waiting notification opens the write flow, filters work, and empty state renders. Updated `docs/tasks/BACK-055-notifications-headless-smoke.md`, `docs/tasks/BACK-055-notifications-action-cards.md`, `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`, `FILE_MAP.md`, `pm/team-sync.md`, and the outbox report to record `BACK-055` as LIVE evidence rather than SOURCE-ONLY.
+
+**Encoding check:** `index.html` was not changed; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:back055`; `node scripts/check-cp1251-mojibake.mjs`; Git Bash `scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.
+
+---
+
 ## 2026-07-20 - BACK-019 status sync
 
 ### Roadmap and logs aligned after task-card smoke

@@ -8,6 +8,16 @@
 
 ### 2026-07-20 - Codex
 
+**Task:** BACK-055 notification action-card headless smoke
+**Result:** Added `npm run smoke:back055` and recorded LIVE headless evidence for notification cards: empty state, filters, unread badge, expand, snooze, go-to-task, done and write actions all pass at 390x844 without live Telegram/backend calls.
+**Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.
+**Status:** Done
+**Next step:** Keep `npm run smoke:back055` as the regression check before changing notification action-card rendering.
+
+---
+
+### 2026-07-20 - Codex
+
 **Task:** BACK-019 roadmap/status sync
 **Result:** Aligned `shared/ROADMAP.md` with the already-closed `pm/backlog.md` state for `BACK-019` and replaced the top BACK-019 `pending` log references with implementation commit `6428386`.
 **Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.
