@@ -2120,3 +2120,410 @@ body:has(#task-detail.active) #global-nav,
     max-width: calc(100% - 128px) !important;
   }
 }
+
+/* ===== REDESIGN MERGE QA 2: restore readable task hero ===== */
+#task-detail .detail-redesign-hero {
+  min-height: 300px !important;
+  padding: 22px 132px 20px 18px !important;
+  overflow: hidden !important;
+}
+
+#task-detail .detail-info-stack {
+  top: 20px !important;
+  right: 12px !important;
+  width: 118px !important;
+  gap: 12px !important;
+}
+
+#task-detail .detail-info-card {
+  min-height: 74px !important;
+  padding: 11px 10px !important;
+  grid-template-columns: 22px minmax(0, 1fr) !important;
+  gap: 8px !important;
+}
+
+#task-detail .detail-info-card small,
+#task-detail #detail-date,
+#task-detail #detail-priority-display {
+  max-width: 100% !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+#task-detail .detail-redesign-hero > *:not(.detail-info-stack):not(.detail-date-popover):not(.detail-priority-popover):not(.detail-reminder-popover),
+#task-detail .detail-redesign-tags,
+#task-detail .detail-status-row,
+#task-detail .detail-redesign-title,
+#task-detail .detail-redesign-desc,
+#task-detail .detail-top-tag-input {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#task-detail .detail-redesign-title {
+  display: block !important;
+  margin-top: 14px !important;
+  max-height: 4.2em !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  font-size: clamp(29px, 8.4vw, 39px) !important;
+  line-height: 1.03 !important;
+  letter-spacing: -.055em !important;
+}
+
+#task-detail .detail-redesign-desc {
+  margin-top: 10px !important;
+  max-height: 4.4em !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+#task-detail #task-detail-actions,
+#task-detail .detail-actions,
+#task-detail .task-detail-actions,
+#task-detail .task-actions,
+#task-detail .edit-task-actions,
+#task-detail .detail-bottom-actions,
+#task-detail [data-redesign-hide-actions] {
+  display: none !important;
+}
+
+@media (max-width: 390px) {
+  #task-detail .detail-redesign-hero {
+    padding-right: 122px !important;
+  }
+
+  #task-detail .detail-info-stack {
+    right: 9px !important;
+    width: 108px !important;
+  }
+
+  #task-detail .detail-info-card {
+    grid-template-columns: 19px minmax(0, 1fr) !important;
+    padding: 9px 8px !important;
+  }
+
+  #task-detail .detail-redesign-title {
+    font-size: clamp(28px, 8.8vw, 35px) !important;
+  }
+}
+
+/* ===== REDESIGN MERGE QA 3: unprefixed preview-safe task detail fixes ===== */
+#task-detail-actions,
+.detail-actions,
+.task-detail-actions,
+.task-actions,
+.edit-task-actions,
+.detail-bottom-actions,
+.task-action-bar {
+  display: none !important;
+}
+
+.detail-redesign-hero {
+  min-height: 300px !important;
+  padding: 22px 132px 20px 18px !important;
+  overflow: hidden !important;
+}
+
+.detail-info-stack {
+  top: 20px !important;
+  right: 12px !important;
+  width: 118px !important;
+  gap: 12px !important;
+}
+
+.detail-info-card {
+  min-height: 74px !important;
+  padding: 11px 10px !important;
+  grid-template-columns: 22px minmax(0, 1fr) !important;
+  gap: 8px !important;
+}
+
+.detail-info-card small,
+#detail-date,
+#detail-priority-display {
+  max-width: 100% !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+.detail-redesign-hero > *:not(.detail-info-stack):not(.detail-date-popover):not(.detail-priority-popover):not(.detail-reminder-popover),
+.detail-redesign-tags,
+.detail-status-row,
+.detail-redesign-title,
+.detail-redesign-desc,
+.detail-top-tag-input {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.detail-redesign-title {
+  display: block !important;
+  margin-top: 14px !important;
+  max-height: 4.2em !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  font-size: clamp(29px, 8.4vw, 39px) !important;
+  line-height: 1.03 !important;
+  letter-spacing: -.055em !important;
+}
+
+.detail-redesign-desc {
+  margin-top: 10px !important;
+  max-height: 4.4em !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+@media (max-width: 390px) {
+  .detail-redesign-hero {
+    padding-right: 122px !important;
+  }
+
+  .detail-info-stack {
+    right: 9px !important;
+    width: 108px !important;
+  }
+
+  .detail-info-card {
+    grid-template-columns: 19px minmax(0, 1fr) !important;
+    padding: 9px 8px !important;
+  }
+
+  .detail-redesign-title {
+    font-size: clamp(28px, 8.8vw, 35px) !important;
+  }
+}
+
+/* ===== REDESIGN MERGE QA 4: avoid orphan title letters ===== */
+.detail-redesign-hero {
+  padding-right: 118px !important;
+}
+
+.detail-info-stack {
+  width: 104px !important;
+  right: 10px !important;
+}
+
+.detail-info-card {
+  min-height: 72px !important;
+  padding: 10px 8px !important;
+  grid-template-columns: 18px minmax(0, 1fr) !important;
+  gap: 7px !important;
+}
+
+.detail-info-card svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.detail-redesign-title {
+  font-size: clamp(28px, 7.8vw, 33px) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.045em !important;
+}
+
+#detail-date,
+#detail-priority-display {
+  font-size: 11px !important;
+  line-height: 1.18 !important;
+}
+
+.detail-info-card small {
+  font-size: 10px !important;
+}
+
+@media (max-width: 390px) {
+  .detail-redesign-hero {
+    padding-right: 110px !important;
+  }
+
+  .detail-info-stack {
+    width: 98px !important;
+    right: 8px !important;
+  }
+
+  .detail-redesign-title {
+    font-size: clamp(27px, 7.8vw, 31px) !important;
+  }
+}
+
+/* ===== REDESIGN MERGE QA 5: compact hero title for Russian words ===== */
+.detail-redesign-hero {
+  padding-right: 106px !important;
+}
+
+.detail-info-stack {
+  width: 94px !important;
+  right: 8px !important;
+}
+
+.detail-info-card {
+  min-height: 70px !important;
+  border-radius: 14px !important;
+  padding: 9px 7px !important;
+  grid-template-columns: 16px minmax(0, 1fr) !important;
+  gap: 6px !important;
+}
+
+.detail-info-card svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.detail-info-card small {
+  font-size: 9px !important;
+  line-height: 1.1 !important;
+}
+
+#detail-date,
+#detail-priority-display {
+  font-size: 10px !important;
+  line-height: 1.15 !important;
+}
+
+.detail-redesign-title {
+  font-size: clamp(26px, 6.9vw, 29px) !important;
+  line-height: 1.06 !important;
+  letter-spacing: -.035em !important;
+}
+
+@media (max-width: 390px) {
+  .detail-redesign-hero {
+    padding-right: 98px !important;
+  }
+
+  .detail-info-stack {
+    width: 88px !important;
+    right: 7px !important;
+  }
+
+  .detail-redesign-title {
+    font-size: clamp(25px, 6.9vw, 28px) !important;
+  }
+}
+
+/* ===== REDESIGN MERGE QA 6: final title fit guard ===== */
+.detail-redesign-title {
+  font-size: clamp(25px, 6.3vw, 27px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.055em !important;
+}
+
+/* ===== REDESIGN MERGE QA 7: title may use full hero width below side cards ===== */
+.detail-redesign-title,
+.detail-redesign-desc {
+  width: calc(100% + 98px) !important;
+  max-width: calc(100% + 98px) !important;
+}
+
+.detail-redesign-title {
+  font-size: clamp(28px, 7.6vw, 33px) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.045em !important;
+}
+
+@media (max-width: 390px) {
+  .detail-redesign-title,
+  .detail-redesign-desc {
+    width: calc(100% + 88px) !important;
+    max-width: calc(100% + 88px) !important;
+  }
+}
+
+/* ===== REDESIGN MERGE QA 8: lock readable title size after QA7 ===== */
+.detail-redesign-title,
+.detail-redesign-desc {
+  width: calc(100% + 120px) !important;
+  max-width: calc(100% + 120px) !important;
+}
+
+.detail-redesign-title {
+  font-size: 27px !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.045em !important;
+}
+
+/* ===== REDESIGN MERGE QA 9: title is full-width below side cards ===== */
+.detail-redesign-hero {
+  position: relative !important;
+  min-height: 300px !important;
+}
+
+.detail-redesign-title {
+  position: absolute !important;
+  left: 18px !important;
+  right: 18px !important;
+  top: 172px !important;
+  width: auto !important;
+  max-width: none !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  max-height: 3.3em !important;
+  overflow: hidden !important;
+  font-size: 30px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.045em !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+.detail-redesign-desc {
+  position: absolute !important;
+  left: 18px !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  width: auto !important;
+  max-width: none !important;
+  max-height: 3.1em !important;
+}
+
+/* ===== REDESIGN MERGE QA 10: keep hero description below title ===== */
+.detail-redesign-desc {
+  top: 242px !important;
+  bottom: auto !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  max-height: 2.9em !important;
+  overflow: hidden !important;
+}
+
+/* ===== REDESIGN MERGE QA 11: reserve vertical room in hero ===== */
+.detail-redesign-hero {
+  min-height: 330px !important;
+  height: 330px !important;
+  max-height: 330px !important;
+}
+
+.detail-redesign-desc {
+  top: 278px !important;
+  bottom: auto !important;
+  -webkit-line-clamp: 2 !important;
+  max-height: 2.7em !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+/* ===== REDESIGN MERGE QA 12: keep description readable, no clipping ===== */
+.detail-redesign-desc {
+  top: 260px !important;
+  -webkit-line-clamp: 1 !important;
+  max-height: 1.5em !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  text-overflow: ellipsis !important;
+}
