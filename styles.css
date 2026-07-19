@@ -11883,3 +11883,260 @@ html[data-theme="light"] .plan-card.is-active .plan-radio,
 html[data-theme="light"] .tariff-card.is-active .tariff-radio {
   background: linear-gradient(180deg, #dcf39d, #83b930);
 }
+/* ID-specific overrides: the imported dark handoff rules use #home/#profile/#task-detail/#subscription,
+   so the light theme needs matching specificity to win on the deployed bundle. */
+html[data-theme="light"] #home,
+html[data-theme="light"] #home .dash-artboard {
+  background: radial-gradient(circle at 82% 10%, rgba(132, 171, 57, 0.16), transparent 26%), linear-gradient(180deg, #efede6 0%, #f7f5ef 48%, #efede6 100%) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #home .dash-glass,
+html[data-theme="light"] #home .dash-hero,
+html[data-theme="light"] #home .dash-metric,
+html[data-theme="light"] #home .dash-task,
+html[data-theme="light"] #home .dash-empty-card,
+html[data-theme="light"] #home .dash-bottom-nav {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.18) 52%, rgba(234, 239, 226, 0.72)), rgba(246, 247, 239, 0.58) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: var(--soft-shadow) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #home .dash-eyebrow,
+html[data-theme="light"] #home .dash-hero-number,
+html[data-theme="light"] #home .dash-metric-value,
+html[data-theme="light"] #home .dash-nav-item.active,
+html[data-theme="light"] #home .dash-task-index span {
+  color: var(--soft-green-3) !important;
+}
+html[data-theme="light"] #home .dash-hero-noun,
+html[data-theme="light"] #home .dash-hero-title,
+html[data-theme="light"] #home #focus-day-text.dash-hero-title,
+html[data-theme="light"] #home .dash-empty-card h2,
+html[data-theme="light"] #home .dash-task h2 {
+  color: var(--soft-ink-2) !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] #home .dash-hero-subtitle,
+html[data-theme="light"] #home .dash-month-title,
+html[data-theme="light"] #home .dash-metric-head,
+html[data-theme="light"] #home .dash-metric-note,
+html[data-theme="light"] #home .dash-empty-card p,
+html[data-theme="light"] #home .dash-task-meta,
+html[data-theme="light"] #home .dash-task p,
+html[data-theme="light"] #home .dash-nav-item {
+  color: var(--soft-muted) !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] #home .dash-task {
+  grid-template-columns: 50px minmax(0, 1fr) !important;
+  padding-left: 18px !important;
+  padding-right: 16px !important;
+}
+html[data-theme="light"] #home #home-task-list .dash-task .dash-task-index {
+  justify-content: flex-start !important;
+  padding-left: 0 !important;
+}
+html[data-theme="light"] #home #home-task-list .dash-task .dash-task-index span {
+  margin-left: 7px !important;
+  transform: none !important;
+  background: radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.76), transparent 36%), rgba(138, 184, 58, 0.16) !important;
+  border-color: rgba(91, 130, 42, 0.28) !important;
+  box-shadow: 0 10px 18px rgba(98, 137, 51, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+html[data-theme="light"] #home .dash-center-button {
+  background: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.84), transparent 34%), linear-gradient(180deg, #e0f29b, #89bd35) !important;
+  border-color: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 18px 34px rgba(105, 145, 52, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+html[data-theme="light"] #profile,
+html[data-theme="light"] #profile .profile-stage,
+html[data-theme="light"] #profile .profile-handoff-scroll {
+  background: radial-gradient(circle at 84% 4%, rgba(132, 171, 57, 0.14), transparent 26%), linear-gradient(180deg, #efede6 0%, #f7f5ef 50%, #efede6 100%) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #profile .profile-card,
+html[data-theme="light"] #profile .profile-premium-card,
+html[data-theme="light"] #profile .profile-handoff-hero {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.16) 54%, rgba(235, 240, 227, 0.72)), rgba(246, 247, 239, 0.58) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: var(--soft-shadow) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #profile .profile-card-title,
+html[data-theme="light"] #profile .profile-name,
+html[data-theme="light"] #profile .premium-line,
+html[data-theme="light"] #profile .profile-menu-row span:nth-child(2),
+html[data-theme="light"] #profile .profile-row-input,
+html[data-theme="light"] #profile .profile-row-value {
+  color: var(--soft-ink) !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] #profile .profile-id,
+html[data-theme="light"] #profile .premium-sub,
+html[data-theme="light"] #profile .profile-row-label,
+html[data-theme="light"] #profile .profile-theme-value,
+html[data-theme="light"] #profile .profile-row-chevron,
+html[data-theme="light"] #profile .profile-field-counter,
+html[data-theme="light"] #profile .profile-about-counter {
+  color: var(--soft-muted) !important;
+}
+html[data-theme="light"] #profile .profile-row-list,
+html[data-theme="light"] #profile .profile-stage .profile-row-list {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] #profile .profile-row-list::before,
+html[data-theme="light"] #profile .profile-row-list::after {
+  display: none !important;
+}
+html[data-theme="light"] #profile .profile-data-row,
+html[data-theme="light"] #profile .profile-menu-row {
+  background: transparent !important;
+  border-color: rgba(104, 118, 99, 0.18) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #profile .profile-premium-card,
+html[data-theme="light"] #profile .profile-stage .profile-premium-card {
+  min-height: 82px !important;
+  padding-top: 17px !important;
+  padding-bottom: 17px !important;
+}
+html[data-theme="light"] #profile .profile-card-icon,
+html[data-theme="light"] #profile .profile-row-icon {
+  background: rgba(124, 169, 55, 0.14) !important;
+  border-color: rgba(91, 130, 42, 0.26) !important;
+  color: var(--soft-green-3) !important;
+}
+html[data-theme="light"] #profile .profile-save-btn--primary,
+html[data-theme="light"] #profile .profile-stage .profile-save-btn--primary {
+  background: linear-gradient(180deg, #dcf19b, #87ba34) !important;
+  color: #132610 !important;
+  border-color: rgba(255, 255, 255, 0.86) !important;
+}
+html[data-theme="light"] #subscription,
+html[data-theme="light"] #subscription .sub-scroll {
+  background: radial-gradient(circle at 80% 6%, rgba(132, 171, 57, 0.14), transparent 26%), linear-gradient(180deg, #efede6 0%, #f7f5ef 50%, #efede6 100%) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #subscription .back-bar {
+  background: rgba(239, 237, 230, 0.86) !important;
+  border-color: rgba(116, 126, 108, 0.18) !important;
+}
+html[data-theme="light"] #subscription .back-title,
+html[data-theme="light"] #subscription .sub-row-text,
+html[data-theme="light"] #subscription .plan-feat-title,
+html[data-theme="light"] #subscription .pricing-name,
+html[data-theme="light"] #subscription .price-main,
+html[data-theme="light"] #subscription #plan-status-name {
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #subscription .sub-section-title,
+html[data-theme="light"] #subscription .sub-row-sub,
+html[data-theme="light"] #subscription .sub-row-arrow,
+html[data-theme="light"] #subscription .plan-feat-sub,
+html[data-theme="light"] #subscription .pricing-desc,
+html[data-theme="light"] #subscription .price-sub,
+html[data-theme="light"] #subscription #plan-status-label,
+html[data-theme="light"] #subscription #plan-status-sub,
+html[data-theme="light"] #subscription #trial-days-label,
+html[data-theme="light"] #subscription #subscription-payment-note {
+  color: var(--soft-muted) !important;
+}
+html[data-theme="light"] #subscription .plan-status-card,
+html[data-theme="light"] #subscription .sub-card,
+html[data-theme="light"] #subscription .pricing-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.16) 54%, rgba(235, 240, 227, 0.72)), rgba(246, 247, 239, 0.58) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: var(--soft-shadow) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #subscription .sub-row {
+  border-color: rgba(104, 118, 99, 0.16) !important;
+}
+html[data-theme="light"] #subscription .sub-row-icon,
+html[data-theme="light"] #subscription .plan-feat-icon {
+  background: rgba(124, 169, 55, 0.14) !important;
+  border-color: rgba(91, 130, 42, 0.24) !important;
+  color: var(--soft-green-3) !important;
+}
+html[data-theme="light"] #subscription button,
+html[data-theme="light"] #subscription .pay-btn,
+html[data-theme="light"] #subscription .subscription-cta,
+html[data-theme="light"] #subscription .pay-primary-btn {
+  color: #132610 !important;
+}
+html[data-theme="light"] #task-detail,
+html[data-theme="light"] #task-detail .detail-redesign-shell,
+html[data-theme="light"] #task-detail .detail-redesign-scroll {
+  background: radial-gradient(circle at 82% 5%, rgba(132, 171, 57, 0.14), transparent 26%), linear-gradient(180deg, #efede6 0%, #f7f5ef 52%, #efede6 100%) !important;
+  color: #12314a !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-hero,
+html[data-theme="light"] #task-detail .detail-info-card,
+html[data-theme="light"] #task-detail .detail-participants-card,
+html[data-theme="light"] #task-detail .detail-status-card,
+html[data-theme="light"] #task-detail .detail-chat-card,
+html[data-theme="light"] #task-detail .detail-ai-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.15) 54%, rgba(235, 240, 227, 0.74)), rgba(246, 247, 239, 0.58) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: var(--soft-shadow) !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-title,
+html[data-theme="light"] #task-detail .detail-card-title,
+html[data-theme="light"] #task-detail .detail-tab,
+html[data-theme="light"] #task-detail .detail-ai-card,
+html[data-theme="light"] #task-detail .detail-ai-card--chat,
+html[data-theme="light"] #task-detail .detail-ai-card--chat .md-body,
+html[data-theme="light"] #task-detail .detail-ai-card--chat .md-body p,
+html[data-theme="light"] #task-detail .detail-ai-card--chat p,
+html[data-theme="light"] #task-detail .detail-ai-card--chat div,
+html[data-theme="light"] #task-detail .detail-comments-list,
+html[data-theme="light"] #task-detail .detail-history-chat-row {
+  color: #12314a !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc,
+html[data-theme="light"] #task-detail .detail-redesign-desc::placeholder,
+html[data-theme="light"] #task-detail .detail-info-card small,
+html[data-theme="light"] #task-detail .detail-card-sub,
+html[data-theme="light"] #task-detail .detail-status-label,
+html[data-theme="light"] #task-detail .detail-date-calendar span,
+html[data-theme="light"] #task-detail #detail-date {
+  color: #657389 !important;
+}
+html[data-theme="light"] #task-detail #detail-priority-display,
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-direction-chip {
+  color: var(--soft-green-3) !important;
+}
+html[data-theme="light"] #task-detail .detail-info-card,
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-redesign-bell,
+html[data-theme="light"] #task-detail .detail-chat-tool {
+  color: var(--soft-green-3) !important;
+}
+html[data-theme="light"] #task-detail .detail-date-popover,
+html[data-theme="light"] #task-detail .detail-priority-popover,
+html[data-theme="light"] #task-detail .detail-reminder-popover,
+html[data-theme="light"] #task-detail .detail-tag-popover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(241, 244, 234, 0.96)) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 22px 54px rgba(68, 76, 58, 0.24) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #task-detail .detail-date-popover button,
+html[data-theme="light"] #task-detail .detail-priority-popover button,
+html[data-theme="light"] #task-detail .detail-reminder-popover button,
+html[data-theme="light"] #task-detail .detail-tag-popover button {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border-color: rgba(110, 155, 53, 0.22) !important;
+  color: var(--soft-ink) !important;
+}
+html[data-theme="light"] #task-detail .detail-date-popover button.active,
+html[data-theme="light"] #task-detail .detail-priority-popover button.active,
+html[data-theme="light"] #task-detail .detail-reminder-popover button.active,
+html[data-theme="light"] #task-detail .detail-tag-popover button.active {
+  background: linear-gradient(180deg, #dcf39d, #86bb36) !important;
+  color: #143010 !important;
+}
