@@ -492,3 +492,362 @@ html[data-theme="light"] #subscription .subscription-card,
 html[data-theme="light"] #task-detail .detail-chat-card {
   text-shadow: none !important;
 }
+/* 2026-07-19 part2 handoff exact lift: dashboard/subscription light sources */
+html[data-theme="light"] #home .dash-artboard {
+  background:
+    radial-gradient(250px 190px at 72% 17%, rgba(189,208,126,.13), transparent 72%),
+    radial-gradient(250px 190px at 16% 84%, rgba(190,204,148,.08), transparent 72%),
+    linear-gradient(180deg,#efede6 0%,#f7f5ef 52%,#f0eee7 100%) !important;
+}
+
+html[data-theme="light"] #home .dash-header {
+  left: 17px !important;
+  right: 17px !important;
+  top: 37px !important;
+  height: 52px !important;
+  grid-template-columns: 52px 1fr 47px !important;
+  column-gap: 11px !important;
+}
+
+html[data-theme="light"] #home .dash-avatar {
+  width: 52px !important;
+  height: 52px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 12px 17px rgba(116,112,91,.16)) drop-shadow(0 0 9px rgba(152,185,82,.10)) !important;
+  overflow: visible !important;
+}
+
+html[data-theme="light"] #home .dash-avatar img {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+}
+
+html[data-theme="light"] #home .dash-title {
+  padding-left: 1px !important;
+  gap: 8px !important;
+}
+
+html[data-theme="light"] #home .dash-title strong {
+  color: #11130f !important;
+  font-size: 23px !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+  letter-spacing: -.052em !important;
+}
+
+html[data-theme="light"] #home .dash-chevron {
+  width: 9px !important;
+  height: 9px !important;
+  border-right: 1.8px solid #161814 !important;
+  border-bottom: 1.8px solid #161814 !important;
+  transform: rotate(45deg) translateY(-2px) !important;
+}
+
+html[data-theme="light"] #home .dash-notification {
+  width: 47px !important;
+  height: 47px !important;
+  border: 0 !important;
+  background: url("assets/design/dashboard-light-notification.png?v=20260719-part2") center/cover no-repeat !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 12px 17px rgba(116,112,91,.14)) drop-shadow(0 0 9px rgba(152,185,82,.10)) !important;
+}
+
+html[data-theme="light"] #home .dash-notification svg { display: none !important; }
+html[data-theme="light"] #home .dash-notification-dot { right: 9px !important; top: 6px !important; }
+
+html[data-theme="light"] #home .dash-hero {
+  left: 16px !important;
+  top: 98px !important;
+  width: 398px !important;
+  height: 180px !important;
+  border-radius: 22px !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(110% 70% at 20% -10%, rgba(255,255,255,.78), transparent 36%),
+    radial-gradient(90% 75% at 88% 105%, rgba(160,190,91,.12), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(250,250,246,.58) 48%, rgba(244,244,238,.62) 100%) !important;
+  border: 1px solid rgba(255,255,255,.93) !important;
+  box-shadow:
+    0 17px 28px rgba(116,112,92,.075),
+    0 5px 10px rgba(115,111,91,.047),
+    0 0 22px rgba(147,180,86,.075),
+    inset 0 1.4px 1px rgba(255,255,255,.96),
+    inset 0 -2px 2px rgba(176,177,162,.18),
+    inset 0 -15px 26px rgba(177,179,163,.055),
+    inset 0 0 0 .65px rgba(200,203,192,.22),
+    0 1px 0 rgba(255,255,255,.96) !important;
+}
+
+html[data-theme="light"] #home .dash-hero-content {
+  left: 22px !important;
+  top: 21px !important;
+  width: 245px !important;
+}
+
+html[data-theme="light"] #home .dash-eyebrow {
+  color: #6f973b !important;
+  font-size: 9.4px !important;
+  line-height: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: .31em !important;
+}
+
+html[data-theme="light"] #home .dash-hero-line {
+  margin-top: 12px !important;
+  gap: 8px !important;
+}
+
+html[data-theme="light"] #home .dash-hero-number {
+  color: #6e9b35 !important;
+  font-size: 45px !important;
+  line-height: .82 !important;
+  font-weight: 575 !important;
+  letter-spacing: -.075em !important;
+}
+
+html[data-theme="light"] #home .dash-hero-noun {
+  color: #11130f !important;
+  font-size: 23px !important;
+  line-height: 1 !important;
+  font-weight: 430 !important;
+  letter-spacing: -.05em !important;
+}
+
+html[data-theme="light"] #home .dash-hero-title {
+  margin: 6px 0 0 !important;
+  color: #11130f !important;
+  font-size: 23.7px !important;
+  line-height: 1.02 !important;
+  font-weight: 430 !important;
+  letter-spacing: -.055em !important;
+}
+
+html[data-theme="light"] #home .dash-hero-subtitle {
+  margin-top: 16px !important;
+  color: #696c68 !important;
+  font-size: 13.2px !important;
+  line-height: 1.12 !important;
+  font-weight: 390 !important;
+}
+
+html[data-theme="light"] #home .dash-hero-orb {
+  content: url("assets/design/dashboard-light-hero-orb.png?v=20260719-part2") !important;
+  right: 1px !important;
+  top: 11px !important;
+  width: 160px !important;
+  height: 160px !important;
+  object-fit: cover !important;
+  opacity: .90 !important;
+  mix-blend-mode: multiply !important;
+  filter: drop-shadow(0 0 12px rgba(133,169,68,.13)) !important;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 48%, rgba(0,0,0,.96) 63%, transparent 79%) !important;
+  mask-image: radial-gradient(circle at 50% 50%, #000 48%, rgba(0,0,0,.96) 63%, transparent 79%) !important;
+}
+
+html[data-theme="light"] #home .dash-month-title {
+  left: 21px !important;
+  top: 292px !important;
+  color: #666966 !important;
+  font-size: 15.4px !important;
+  line-height: 19px !important;
+  font-weight: 405 !important;
+}
+
+html[data-theme="light"] #home .dash-metrics {
+  left: 17px !important;
+  right: 17px !important;
+  top: 317px !important;
+  height: 87px !important;
+  gap: 6px !important;
+}
+
+html[data-theme="light"] #home .dash-metric {
+  border-radius: 17px !important;
+  padding: 10px 7px 7px !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(110% 70% at 20% -10%, rgba(255,255,255,.78), transparent 36%),
+    radial-gradient(90% 75% at 88% 105%, rgba(160,190,91,.12), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(250,250,246,.58) 48%, rgba(244,244,238,.62) 100%) !important;
+  border: 1px solid rgba(255,255,255,.93) !important;
+  box-shadow:
+    0 13px 22px rgba(116,112,92,.072),
+    0 4px 8px rgba(115,111,91,.044),
+    0 0 15px rgba(147,180,86,.06),
+    inset 0 1.2px 1px rgba(255,255,255,.95),
+    inset 0 -2px 2px rgba(176,177,162,.15),
+    inset 0 0 0 .6px rgba(200,203,192,.20),
+    0 1px 0 rgba(255,255,255,.92) !important;
+}
+
+html[data-theme="light"] #home .dash-metric-head {
+  height: 20px !important;
+  gap: 4px !important;
+  color: #676a66 !important;
+  font-size: 8.9px !important;
+  font-weight: 430 !important;
+}
+
+html[data-theme="light"] #home .dash-metric-icon {
+  width: 19px !important;
+  height: 19px !important;
+  color: #659134 !important;
+  background: radial-gradient(circle at 35% 25%,rgba(255,255,255,.98),rgba(236,242,221,.58)) !important;
+  border: 1px solid rgba(150,178,98,.21) !important;
+  box-shadow: 0 5px 10px rgba(120,129,98,.10),0 0 8px rgba(137,174,69,.08),inset 0 1px 1px rgba(255,255,255,.95) !important;
+}
+
+html[data-theme="light"] #home .dash-metric-row {
+  left: 8px !important;
+  right: 7px !important;
+  bottom: 13px !important;
+  gap: 7px !important;
+}
+
+html[data-theme="light"] #home .dash-metric-value {
+  color: #6e9b35 !important;
+  font-size: 20.2px !important;
+  font-weight: 530 !important;
+  letter-spacing: -.055em !important;
+}
+
+html[data-theme="light"] #home .dash-metric:nth-child(2) .dash-metric-value,
+html[data-theme="light"] #home .dash-metric:nth-child(3) .dash-metric-value { color: #11130f !important; }
+html[data-theme="light"] #home .dash-metric-note { color: #70736f !important; font-size: 8.9px !important; }
+
+html[data-theme="light"] #home .dash-tasks {
+  left: 16px !important;
+  right: 16px !important;
+  top: 421px !important;
+  bottom: 59px !important;
+  grid-template-rows: 87px 88px 88px !important;
+  gap: 10px !important;
+}
+
+html[data-theme="light"] #home .dash-tasks--empty {
+  height: 87px !important;
+  bottom: auto !important;
+}
+
+html[data-theme="light"] #home .dash-empty-card,
+html[data-theme="light"] #home #home-task-list .dash-task,
+html[data-theme="light"] #home #home-task-list .dash-task.dash-glass {
+  border-radius: 18px !important;
+  min-height: 87px !important;
+  background:
+    radial-gradient(110% 70% at 20% -10%, rgba(255,255,255,.78), transparent 36%),
+    radial-gradient(90% 75% at 88% 105%, rgba(160,190,91,.12), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(250,250,246,.58) 48%, rgba(244,244,238,.62) 100%) !important;
+  border: 1px solid rgba(255,255,255,.93) !important;
+  box-shadow:
+    0 13px 22px rgba(116,112,92,.072),
+    0 4px 8px rgba(115,111,91,.044),
+    0 0 15px rgba(147,180,86,.06),
+    inset 0 1.2px 1px rgba(255,255,255,.95),
+    inset 0 -2px 2px rgba(176,177,162,.15),
+    inset 0 0 0 .6px rgba(200,203,192,.20),
+    0 1px 0 rgba(255,255,255,.92) !important;
+  color: #11130f !important;
+}
+
+html[data-theme="light"] #home .dash-empty-card h2,
+html[data-theme="light"] #home .dash-empty-card p { color: #11130f !important; text-shadow: none !important; }
+html[data-theme="light"] #home .dash-empty-card p { color: #696c68 !important; }
+
+html[data-theme="light"] #home #home-task-list .dash-task {
+  grid-template-columns: 65px minmax(0,1fr) !important;
+  padding: 11px 14px 10px 9px !important;
+}
+
+html[data-theme="light"] #home #home-task-list .dash-task-index { justify-content: center !important; width: auto !important; }
+html[data-theme="light"] #home #home-task-list .dash-task-index span {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 22px !important;
+  color: #668f35 !important;
+  background: radial-gradient(circle at 34% 24%,rgba(255,255,255,.98),rgba(247,247,240,.64) 55%,rgba(233,236,224,.58)) !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+  box-shadow: 0 9px 16px rgba(116,112,92,.13),0 0 11px rgba(139,175,72,.055),inset 0 1px 1px rgba(255,255,255,.98),inset 0 -6px 10px rgba(179,181,164,.08),inset 0 0 0 1px rgba(201,204,193,.16) !important;
+}
+
+html[data-theme="light"] #home #home-task-list .dash-task-meta { color: #666a66 !important; font-size: 9.4px !important; margin-bottom: 7px !important; }
+html[data-theme="light"] #home #home-task-list .dash-task h2 { color: #11130f !important; font-size: 12.8px !important; font-weight: 445 !important; line-height: 1.14 !important; }
+html[data-theme="light"] #home #home-task-list .dash-task p { color: #6e716d !important; font-size: 9.6px !important; }
+
+html[data-theme="light"] #home .dash-bottom-nav {
+  left: 16px !important;
+  right: 16px !important;
+  bottom: -1px !important;
+  height: 59px !important;
+  border-radius: 22px !important;
+  grid-template-columns: 1fr 92px 1fr !important;
+  padding: 0 22px !important;
+  overflow: visible !important;
+}
+
+html[data-theme="light"] #home .dash-center-button {
+  position: absolute !important;
+  left: 50% !important;
+  top: -7px !important;
+  transform: translateX(-50%) !important;
+  width: 66px !important;
+  height: 66px !important;
+  border: 0 !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  overflow: visible !important;
+  background: url("assets/design/dashboard-light-center.png?v=20260719-part2") center/70px 70px no-repeat !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 12px 14px rgba(117,111,91,.16)) drop-shadow(0 0 12px rgba(141,177,70,.11)) !important;
+}
+
+html[data-theme="light"] #home .dash-center-button .dash-brand-orb-grid { display: none !important; }
+
+html[data-theme="light"] #subscription {
+  background: #f4f2eb !important;
+  color: #f2f3ef !important;
+}
+
+html[data-theme="light"] #subscription .sub-scroll,
+html[data-theme="light"] #subscription .subscription-stage,
+html[data-theme="light"] #subscription .subscription-screen {
+  background:
+    radial-gradient(280px 220px at 74% 10%, rgba(71,111,34,.09), transparent 70%),
+    radial-gradient(260px 200px at 20% 84%, rgba(56,89,28,.06), transparent 72%),
+    linear-gradient(180deg,#f1efe8 0%,#f8f6ef 52%,#efede6 100%) !important;
+}
+
+html[data-theme="light"] #subscription .plan-status-card,
+html[data-theme="light"] #subscription .sub-card,
+html[data-theme="light"] #subscription .pricing-card {
+  background:
+    radial-gradient(110% 70% at 18% -8%,rgba(255,255,255,.07),transparent 36%),
+    radial-gradient(110% 75% at 90% 115%,rgba(132,177,57,.045),transparent 58%),
+    linear-gradient(180deg,rgba(19,33,23,.72),rgba(5,16,9,.82)) !important;
+  border: 1px solid rgba(202,225,184,.34) !important;
+  box-shadow:
+    0 18px 34px rgba(0,0,0,.42),
+    0 0 22px rgba(120,169,53,.06),
+    inset 0 1px 1px rgba(255,255,255,.18),
+    inset 0 -2px 3px rgba(0,0,0,.44),
+    inset 0 0 0 1px rgba(123,154,98,.12) !important;
+  color: #f2f3ef !important;
+}
+
+html[data-theme="light"] #subscription .back-title,
+html[data-theme="light"] #subscription .pricing-name,
+html[data-theme="light"] #subscription .pricing-price,
+html[data-theme="light"] #subscription .plan-feat-title { color: #f2f3ef !important; }
+html[data-theme="light"] #subscription #plan-status-name { color: #95cf35 !important; }
+html[data-theme="light"] #subscription #plan-status-label,
+html[data-theme="light"] #subscription .sub-section-title { color: #7f8d80 !important; }
+html[data-theme="light"] #subscription #plan-status-sub,
+html[data-theme="light"] #subscription #trial-days-label,
+html[data-theme="light"] #subscription .plan-feat-sub,
+html[data-theme="light"] #subscription .pricing-desc,
+html[data-theme="light"] #subscription .pricing-per,
+html[data-theme="light"] #subscription #subscription-payment-note { color: #8d968f !important; }
