@@ -1733,3 +1733,146 @@ html[data-theme="light"] #ask .md-body *,
 html[data-theme="light"] #ask .task-history-row {
   color: #17324a !important;
 }
+
+/* 2026-07-19 light QA pass 5: bottom nav lift, task readability, focus modal, notification nav */
+html[data-theme="light"] #home .dash-bottom-nav {
+  bottom: 18px !important;
+  height: 60px !important;
+  padding: 0 22px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+}
+html[data-theme="light"] #home .dash-center-button {
+  top: -1px !important;
+  transform: translateY(-2px) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  top: 178px !important;
+  left: 36px !important;
+  width: 246px !important;
+  max-width: 246px !important;
+  max-height: 86px !important;
+  -webkit-line-clamp: 2 !important;
+  font-size: clamp(32px, 8.3vw, 37px) !important;
+  line-height: .97 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  top: 270px !important;
+  left: 38px !important;
+  width: 242px !important;
+  max-width: 242px !important;
+  max-height: 52px !important;
+  color: #38506a !important;
+  font-size: 12.4px !important;
+  line-height: 1.22 !important;
+  overflow: hidden !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-redesign-bell {
+  isolation: isolate !important;
+  box-shadow:
+    0 13px 24px rgba(116,112,92,.10),
+    0 0 22px rgba(134,177,66,.12),
+    inset 0 1px 0 rgba(255,255,255,.95) !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag::before,
+html[data-theme="light"] #task-detail .detail-redesign-tag::after,
+html[data-theme="light"] #task-detail .detail-redesign-bell::before,
+html[data-theme="light"] #task-detail .detail-redesign-bell::after,
+html[data-theme="light"] #task-detail .detail-redesign-tags::before,
+html[data-theme="light"] #task-detail .detail-redesign-tags::after {
+  content: none !important;
+  display: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-bell svg {
+  width: 19px !important;
+  height: 19px !important;
+  stroke-width: 2.1 !important;
+}
+
+html[data-theme="light"] #ask .ask-input-shell,
+html[data-theme="light"] #ask .ask-bar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  padding: 0 !important;
+  gap: 10px !important;
+  overflow: visible !important;
+}
+html[data-theme="light"] #ask .ask-field {
+  border-radius: 22px !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 24px rgba(116,112,92,.09), inset 0 1px 0 rgba(255,255,255,.96) !important;
+}
+html[data-theme="light"] #ask .ask-send {
+  flex: 0 0 58px !important;
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  color: #17324a !important;
+}
+html[data-theme="light"] #ask .ask-send::before,
+html[data-theme="light"] #ask .ask-send::after,
+html[data-theme="light"] #ask .ask-field::before,
+html[data-theme="light"] #ask .ask-field::after {
+  content: none !important;
+  display: none !important;
+}
+
+html[data-theme="light"] body:has(#notifications.active) .bottom-nav,
+html[data-theme="light"] body:has(#notifications.active) .bottom-nav-v2,
+html[data-theme="light"] body:has(#notifications.active) .dash-bottom-nav,
+html[data-theme="light"] body:has(#notif-settings.active) .bottom-nav,
+html[data-theme="light"] body:has(#notif-settings.active) .bottom-nav-v2,
+html[data-theme="light"] body:has(#notif-settings.active) .dash-bottom-nav {
+  display: none !important;
+}
+
+html[data-theme="light"] #focus-panel-overlay.quick-add-overlay {
+  background: rgba(20, 24, 18, .34) !important;
+  backdrop-filter: blur(7px) !important;
+}
+html[data-theme="light"] #focus-panel-overlay .quick-add-sheet {
+  background:
+    radial-gradient(120% 82% at 18% 0%, rgba(255,255,255,.90), transparent 46%),
+    linear-gradient(180deg, rgba(255,255,255,.84), rgba(247,249,240,.76) 58%, rgba(233,241,215,.70) 100%) !important;
+  border: 1px solid rgba(255,255,255,.94) !important;
+  box-shadow: 0 24px 44px rgba(116,112,92,.18), inset 0 1px 0 rgba(255,255,255,.96) !important;
+  color: #17324a !important;
+}
+html[data-theme="light"] #focus-panel-overlay .quick-add-title,
+html[data-theme="light"] #focus-panel-overlay .home-ai-summary-line,
+html[data-theme="light"] #focus-panel-overlay .home-ai-row-title,
+html[data-theme="light"] #focus-panel-overlay .home-ai-row-meta,
+html[data-theme="light"] #focus-panel-overlay .home-ai-empty {
+  color: #17324a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] #focus-panel-overlay .home-ai-row,
+html[data-theme="light"] #focus-panel-overlay .home-ai-row-main {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #17324a !important;
+}
+html[data-theme="light"] #focus-panel-overlay .home-ai-row-avatar {
+  background: radial-gradient(circle at 32% 24%, #fff, #c9ef7b 42%, #6fa52e 100%) !important;
+  color: #17324a !important;
+  box-shadow: 0 10px 18px rgba(116,112,92,.12) !important;
+}
+html[data-theme="light"] #focus-panel-overlay .quick-add-submit {
+  background: linear-gradient(180deg,#bce776,#5ba512) !important;
+  color: #111411 !important;
+  box-shadow: 0 12px 24px rgba(111,165,46,.22) !important;
+}
+html[data-theme="light"] #focus-panel-overlay .quick-add-cancel {
+  background: rgba(255,255,255,.76) !important;
+  color: #17324a !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+}
