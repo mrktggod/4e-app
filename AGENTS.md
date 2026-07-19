@@ -259,3 +259,42 @@ PM file protocol:
 - Reports include root cause as `file:line`, changed files, app/worker commit SHA when applicable, raw staging proof, and honest tails marked `NEEDS-REAL`.
 
 If a brief conflicts with `AGENTS.md`, set the brief to `BLOCKED`, explain the conflict in the report, and ask for a decision.
+
+## Autonomous Night Backlog - Selection Rules
+
+At the 23:00 autonomous run, use this order of work:
+
+1. First process `pm/inbox/BRIEF-*.md` files whose first line is `status: NEW`, oldest filename first. Do not treat `BRIEF-TEMPLATE.md` or `README.md` as tasks.
+2. When the inbox has no `NEW` briefs, choose tasks from `pm/backlog.md` and `shared/ROADMAP.md` only when they are explicitly inside the whitelist below.
+3. One task equals one commit on `feat/admin-tariff-api` plus one matching `pm/outbox/REPORT-*.md`.
+4. Continue while there are eligible tasks and local limits allow it, then finish with a final report.
+
+Use exactly these task outcomes:
+
+- `DONE`: completed autonomously with proof; only for whitelist tasks.
+- `NEED-CLAUDE`: gray-zone task. Do not touch code. Write a report with the task, location (`file:line` or area), why it is gray, proposed next step, and risks. Cowork can turn it into a tighter safe brief.
+- `NEED-YURI`: requires Yuri specifically. Do not do it at night or in the morning automation. Report what decision or manual action Yuri must provide.
+
+Whitelist for autonomous `DONE` work:
+
+- P1/P2 bugs with clear reproduction, outside payment, entitlement, and auth-security areas.
+- Frontend/UI fixes in HTML/LESS/BEM, excluding redesign architecture work and new inline styles.
+- Tech debt, narrow refactors, tests, documentation, FILE_MAP/WORK_LOG/bugs updates.
+- Evidence upgrades for SOURCE-ONLY items using safe staging tests, without real money or live Telegram actions.
+- Current-horizon roadmap tasks.
+
+Gray zone for `NEED-CLAUDE`:
+
+- Sensitive code where exact scope is critical, including auth/security-adjacent work such as bot-signature siblings by analogy with BACK-060, or diagnostics near payments without changing payment logic.
+- Medium refactors touching several modules.
+- Tasks with a known root cause but a risky or non-obvious fix that needs plan review.
+
+Yuri-only `NEED-YURI` work:
+
+- Real payments with live money, including VK Pay and Telegram Stars; live Telegram/TMA/device QA; VK ID or Yandex ID on live accounts.
+- Product decisions: prices, scope, priorities.
+- Production deploy, merge into `main`, secret rotation, removal, or disclosure.
+- Payment or entitlement refactors that change payment or access logic.
+- CAL tasks, major architecture work such as ARCH-001, integration of a new redesign, or next-horizon roadmap work before P0/P1 closure.
+
+When in doubt, do not guess. If a task is not clearly whitelisted, classify it at least as `NEED-CLAUDE`; if it involves money, access, product decisions, production, `main`, secrets, or CAL, classify it as `NEED-YURI`.
