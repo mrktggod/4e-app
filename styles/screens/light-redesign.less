@@ -709,3 +709,271 @@ html[data-theme="light"] #task-detail .detail-tag-popover button.active {
   background: linear-gradient(180deg, #dcf39d, #86bb36) !important;
   color: #143010 !important;
 }
+
+/* Final light-mode correction pass from live screenshots, 2026-07-19.
+   Goal: remove mixed dark shell, restore readable contrast, and keep the handoff glass feel. */
+
+html[data-theme="light"] {
+  --bg: #f2f0e8;
+  --card: rgba(255, 255, 255, 0.64);
+  --card2: rgba(242, 246, 234, 0.72);
+  --text: #111811;
+  --text2: #2e3a31;
+  --muted: #687267;
+  --border: rgba(112, 128, 106, 0.22);
+  --green: #6f9f32;
+  --green2: #86b83a;
+  --green3: rgba(111, 159, 50, 0.16);
+}
+
+html[data-theme="light"] #app,
+html[data-theme="light"] .screen.active {
+  background:
+    radial-gradient(circle at 78% 0%, rgba(139, 177, 65, 0.14), transparent 28%),
+    linear-gradient(180deg, #efede6 0%, #f8f6ef 48%, #efede6 100%) !important;
+}
+
+html[data-theme="light"] #home::before,
+html[data-theme="light"] #home::after,
+html[data-theme="light"] #home .dash-artboard::before,
+html[data-theme="light"] #home .dash-artboard::after {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(139, 177, 65, 0.16), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.44), transparent 46%) !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
+
+html[data-theme="light"] #home .dash-artboard,
+html[data-theme="light"] #home .dash-statusbar {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(139, 177, 65, 0.15), transparent 28%),
+    linear-gradient(180deg, #efede6 0%, #f7f5ef 48%, #efede6 100%) !important;
+  color: #111811 !important;
+}
+
+html[data-theme="light"] #home .dash-glass,
+html[data-theme="light"] #home .dash-hero,
+html[data-theme="light"] #home .dash-metric,
+html[data-theme="light"] #home .dash-task,
+html[data-theme="light"] #home .dash-empty-card,
+html[data-theme="light"] #home .dash-bottom-nav {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.24) 48%, rgba(233, 239, 226, 0.76)),
+    rgba(246, 247, 239, 0.64) !important;
+  border: 1px solid rgba(255, 255, 255, 0.94) !important;
+  box-shadow:
+    0 22px 50px rgba(84, 89, 70, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 -18px 36px rgba(119, 147, 82, 0.05) !important;
+  color: #111811 !important;
+}
+
+html[data-theme="light"] #home .dash-task {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(245, 248, 239, 0.72)) !important;
+  grid-template-columns: 56px minmax(0, 1fr) !important;
+  padding: 13px 16px 12px 16px !important;
+}
+
+html[data-theme="light"] #home .dash-task-index {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 6px !important;
+}
+
+html[data-theme="light"] #home .dash-task-index span {
+  margin-left: 0 !important;
+  color: #527d25 !important;
+}
+
+html[data-theme="light"] #home .dash-task h2,
+html[data-theme="light"] #home .dash-task-title {
+  color: #182217 !important;
+  font-weight: 650 !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] #home .dash-task p,
+html[data-theme="light"] #home .dash-task-meta {
+  color: #657064 !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] #home .dash-hero-orb {
+  mix-blend-mode: multiply !important;
+  opacity: 0.82 !important;
+  filter: drop-shadow(0 12px 22px rgba(105, 137, 65, 0.14)) !important;
+}
+
+html[data-theme="light"] #home .dash-notification,
+html[data-theme="light"] #home .dash-avatar {
+  background:
+    radial-gradient(circle at 35% 24%, rgba(255, 255, 255, 0.74), transparent 34%),
+    linear-gradient(180deg, rgba(225, 239, 183, 0.96), rgba(131, 181, 54, 0.92)) !important;
+  color: #173012 !important;
+  border-color: rgba(255, 255, 255, 0.86) !important;
+}
+
+html[data-theme="light"] #profile .profile-stage::before,
+html[data-theme="light"] #profile .profile-stage::after,
+html[data-theme="light"] #profile .profile-card::before,
+html[data-theme="light"] #profile .profile-card::after,
+html[data-theme="light"] #profile .profile-premium-card::before,
+html[data-theme="light"] #profile .profile-premium-card::after,
+html[data-theme="light"] #profile .profile-handoff-hero::before,
+html[data-theme="light"] #profile .profile-handoff-hero::after {
+  opacity: 0.28 !important;
+  mix-blend-mode: normal !important;
+}
+
+html[data-theme="light"] #profile .back-title,
+html[data-theme="light"] #profile .profile-card-title,
+html[data-theme="light"] #profile .profile-row-label,
+html[data-theme="light"] #profile .profile-menu-row,
+html[data-theme="light"] #profile .profile-menu-row span,
+html[data-theme="light"] #profile .profile-row-input,
+html[data-theme="light"] #profile .profile-row-value,
+html[data-theme="light"] #profile .profile-theme-value,
+html[data-theme="light"] #profile .premium-line,
+html[data-theme="light"] #profile .premium-sub,
+html[data-theme="light"] #profile .profile-id,
+html[data-theme="light"] #profile .profile-field-counter,
+html[data-theme="light"] #profile .profile-row-about::placeholder {
+  opacity: 1 !important;
+  text-shadow: none !important;
+  mix-blend-mode: normal !important;
+}
+
+html[data-theme="light"] #profile .back-title,
+html[data-theme="light"] #profile .profile-card-title {
+  color: #263326 !important;
+}
+
+html[data-theme="light"] #profile .profile-row-label,
+html[data-theme="light"] #profile .profile-menu-row,
+html[data-theme="light"] #profile .profile-menu-row span:nth-child(2) {
+  color: #3f493f !important;
+}
+
+html[data-theme="light"] #profile .profile-row-input,
+html[data-theme="light"] #profile .profile-row-value {
+  color: #111811 !important;
+  background: transparent !important;
+}
+
+html[data-theme="light"] #profile .premium-sub,
+html[data-theme="light"] #profile .profile-id,
+html[data-theme="light"] #profile .profile-theme-value,
+html[data-theme="light"] #profile .profile-field-counter {
+  color: #6a746a !important;
+}
+
+html[data-theme="light"] #profile .profile-status-badge,
+html[data-theme="light"] #profile .profile-status-badge.verified {
+  background: linear-gradient(180deg, #dff1a4, #8ab93b) !important;
+  color: #163011 !important;
+  border-color: rgba(91, 130, 42, 0.24) !important;
+}
+
+html[data-theme="light"] #profile .profile-row-about {
+  background: rgba(255, 255, 255, 0.44) !important;
+  color: #111811 !important;
+  border: 1px solid rgba(104, 118, 99, 0.2) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-shell::before,
+html[data-theme="light"] #task-detail .detail-redesign-shell::after,
+html[data-theme="light"] #task-detail .detail-redesign-hero::before,
+html[data-theme="light"] #task-detail .detail-redesign-hero::after,
+html[data-theme="light"] #task-detail .detail-chat-card::before,
+html[data-theme="light"] #task-detail .detail-chat-card::after {
+  opacity: 0.24 !important;
+  mix-blend-mode: normal !important;
+}
+
+html[data-theme="light"] #task-detail .detail-ai-card,
+html[data-theme="light"] #task-detail .detail-ai-card--chat,
+html[data-theme="light"] #task-detail #detail-ai-advice,
+html[data-theme="light"] #task-detail #detail-ai-advice *,
+html[data-theme="light"] #task-detail .detail-comments-list,
+html[data-theme="light"] #task-detail .detail-comments-list *,
+html[data-theme="light"] #task-detail .detail-advice-message {
+  color: #17324a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  mix-blend-mode: normal !important;
+}
+
+html[data-theme="light"] #task-detail .detail-ai-card--chat {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #task-detail .detail-comment-input {
+  color: #17324a !important;
+  background: rgba(255, 255, 255, 0.46) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-comment-input::placeholder {
+  color: #7a8794 !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-bell,
+html[data-theme="light"] #task-detail .detail-redesign-tags button,
+html[data-theme="light"] #task-detail .detail-chat-tool {
+  transform: none !important;
+  box-shadow: 0 10px 22px rgba(76, 87, 66, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.74) !important;
+}
+
+html[data-theme="light"] #subscription::before,
+html[data-theme="light"] #subscription::after {
+  background:
+    radial-gradient(circle at 72% 0%, rgba(139, 177, 65, 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.32), transparent 48%) !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] #subscription,
+html[data-theme="light"] #subscription .sub-scroll,
+html[data-theme="light"] #subscription .back-bar {
+  background:
+    radial-gradient(circle at 78% 4%, rgba(139, 177, 65, 0.15), transparent 28%),
+    linear-gradient(180deg, #efede6 0%, #f8f6ef 52%, #efede6 100%) !important;
+  color: #111811 !important;
+}
+
+html[data-theme="light"] #subscription .plan-status-card,
+html[data-theme="light"] #subscription .sub-card,
+html[data-theme="light"] #subscription .pricing-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.24) 52%, rgba(233, 239, 226, 0.76)),
+    rgba(246, 247, 239, 0.64) !important;
+  border-color: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 22px 50px rgba(84, 89, 70, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+}
+
+html[data-theme="light"] #subscription .back-title,
+html[data-theme="light"] #subscription #plan-status-name,
+html[data-theme="light"] #subscription .plan-feat-title,
+html[data-theme="light"] #subscription .pricing-name,
+html[data-theme="light"] #subscription .price-main,
+html[data-theme="light"] #subscription .sub-row-text {
+  color: #111811 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="light"] #subscription #plan-status-label,
+html[data-theme="light"] #subscription #plan-status-sub,
+html[data-theme="light"] #subscription #trial-days-label,
+html[data-theme="light"] #subscription .plan-feat-sub,
+html[data-theme="light"] #subscription .pricing-desc,
+html[data-theme="light"] #subscription .price-sub,
+html[data-theme="light"] #subscription .sub-section-title,
+html[data-theme="light"] #subscription .sub-row-sub {
+  color: #687267 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
