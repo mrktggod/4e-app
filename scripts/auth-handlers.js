@@ -111,6 +111,65 @@ function renderDashboardSubscriptionPreviewDemo(){
   }
 }
 
+
+function openDashboardSubscriptionPreviewScreen(previewScreen){
+  if(previewScreen==='subscription'){
+    showScreen('subscription');
+    setTimeout(function(){
+      try{
+        if(typeof updateSubscriptionScreen==='function')updateSubscriptionScreen();
+        var params=new URLSearchParams(location.search||'');
+        if(params.get('previewScroll')==='plans'){
+          var scroller=document.querySelector('#subscription .sub-scroll');
+          if(scroller)scroller.scrollTop=9999;
+        }
+      }catch(_err){}
+    },120);
+    return;
+  }
+  if(previewScreen==='profile'){
+    showScreen('profile');
+    try{if(typeof renderExtendedProfile==='function')renderExtendedProfile();}catch(_err){}
+    return;
+  }
+  if(previewScreen==='chats'){
+    showScreen('chats');
+    try{if(typeof renderMockChatsList==='function')renderMockChatsList();}catch(_err){}
+    return;
+  }
+  if(previewScreen==='chat-conv'){
+    try{openConv('Команда Маркетинг','8 участников','#1a8a52','КМ','mkt','tg');}catch(_err){showScreen('chat-conv');}
+    return;
+  }
+  if(previewScreen==='task-detail'){
+    var task={
+      id:'preview-task-redesign',
+      text:'Подготовить презентацию',
+      originalMsg:'Подготовить финальную версию презентации дашборда для инвестора.',
+      person:'Юрий',
+      direction:'Работа',
+      directionLabel:'Работа',
+      tags:['проект','дашборд'],
+      priority:'high',
+      status:'active',
+      deadline:'2026-07-20T18:00',
+      time:'2026-07-20T18:00',
+      reminder:'1hour',
+      checklist:[{text:'Собрать слайды',done:true},{text:'Проверить цифры',done:false},{text:'Отправить команде',done:false}]
+    };
+    try{if(Array.isArray(allTasksCache))allTasksCache=[task];}catch(_err){}
+    try{openTask(task,0);}catch(_err){showScreen('task-detail');}
+    setTimeout(function(){
+      var advice=document.getElementById('detail-ai-advice');
+      if(advice)advice.textContent='Юрий, начни с финальной структуры: проблема, решение, прогресс и следующий шаг. Я помогу разложить презентацию на короткие этапы.';
+      var comments=document.getElementById('detail-comments-list');
+      if(comments)comments.innerHTML='<div class="detail-comment detail-comment--assistant"><b>4</b><span>Чек-лист уже собран, можно пройтись по пунктам и закрыть готовое.</span></div>';
+    },300);
+    return;
+  }
+  showScreen('home');
+  renderDashboardSubscriptionPreviewDemo();
+}
 function tryDashboardSubscriptionPreviewLogin(email,pass){
   if(!isDashboardSubscriptionPreviewHost())return false;
   if(String(email||'').trim().toLowerCase()!=='preview-dashboard-20260718@example.com'||!String(pass||'').trim())return false;
@@ -126,11 +185,9 @@ function tryDashboardSubscriptionPreviewLogin(email,pass){
   let previewScreen='home';
   try{
     const params=new URLSearchParams(location.search||'');
-    if(params.get('previewScreen')==='subscription')previewScreen='subscription';
+    previewScreen=params.get('previewScreen')||'home';
   }catch(_previewScreenErr){}
-  showScreen(previewScreen);
-  if(previewScreen==='home')renderDashboardSubscriptionPreviewDemo();
-  else setTimeout(function(){try{if(typeof updateSubscriptionScreen==='function')updateSubscriptionScreen();var params=new URLSearchParams(location.search||'');if(params.get('previewScroll')==='plans'){var scroller=document.querySelector('#subscription .sub-scroll');if(scroller)scroller.scrollTop=9999;}}catch(_err){}},120);
+  openDashboardSubscriptionPreviewScreen(previewScreen);
   return true;
 }
 
