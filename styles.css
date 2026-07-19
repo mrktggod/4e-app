@@ -12761,3 +12761,125 @@ html[data-theme="light"] #subscription .pricing-radio.selected {
   color: #6fa52e !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 12px rgba(116, 112, 92, 0.08) !important;
 }
+/* 2026-07-19 light QA pass 3: final geometry and contrast corrections */
+html[data-theme="light"] #home .dash-metric-progress .dash-ring::after {
+  inset: 5.5px !important;
+}
+html[data-theme="light"] #home #home-task-list .home-ai-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+html[data-theme="light"] #home #home-task-list .home-ai-row::before,
+html[data-theme="light"] #home #home-task-list .home-ai-row::after {
+  content: none !important;
+  display: none !important;
+}
+html[data-theme="light"] #home #home-task-list .home-ai-row-main {
+  box-shadow: 0 12px 24px rgba(116, 112, 92, 0.055), inset 0 1px 1px rgba(255, 255, 255, 0.96) !important;
+}
+html[data-theme="light"] #profile .profile-id,
+html[data-theme="light"] #profile .profile-id span,
+html[data-theme="light"] #profile [id*="profile-id"],
+html[data-theme="light"] #profile .profile-handoff-hero .profile-id {
+  color: #111411 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  position: absolute !important;
+  left: 36px !important;
+  top: 236px !important;
+  width: 248px !important;
+  max-width: 248px !important;
+  margin: 0 !important;
+  color: #11314a !important;
+  line-height: 0.98 !important;
+  z-index: 4 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  position: absolute !important;
+  left: 38px !important;
+  top: 322px !important;
+  width: 238px !important;
+  max-width: 238px !important;
+  margin: 0 !important;
+  color: #38506a !important;
+  line-height: 1.18 !important;
+  z-index: 4 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] #task-detail .detail-info-card {
+  display: grid !important;
+  grid-template-columns: 24px minmax(0, 1fr) !important;
+  align-items: start !important;
+  column-gap: 10px !important;
+  padding: 15px 12px !important;
+}
+html[data-theme="light"] #task-detail .detail-info-card svg {
+  width: 18px !important;
+  height: 18px !important;
+  margin-top: 1px !important;
+  align-self: start !important;
+  justify-self: center !important;
+}
+html[data-theme="light"] #task-detail .detail-info-card span {
+  display: block !important;
+  min-width: 0 !important;
+}
+html[data-theme="light"] #task-detail .detail-info-card small {
+  display: block !important;
+  margin: 0 0 4px !important;
+  line-height: 1 !important;
+}
+html[data-theme="light"] #task-detail #detail-date,
+html[data-theme="light"] #task-detail #detail-priority-display {
+  display: block !important;
+  width: 100% !important;
+  line-height: 1.08 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: keep-all !important;
+}
+html[data-theme="light"] #task-detail .detail-avatars,
+html[data-theme="light"] #task-detail .detail-participants-list {
+  gap: 0 !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar,
+html[data-theme="light"] #task-detail .detail-avatar-add {
+  margin-left: -6px !important;
+  overflow: visible !important;
+  box-shadow: 0 14px 26px rgba(69, 74, 56, 0.16), 0 0 16px rgba(126, 166, 59, 0.1) !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar:first-child,
+html[data-theme="light"] #task-detail .detail-avatar-add:first-child {
+  margin-left: 0 !important;
+}
+html[data-theme="light"] #task-detail .detail-status-node,
+html[data-theme="light"] #task-detail .detail-status-node:not(.detail-status-node--active) {
+  filter: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+html[data-theme="light"] #task-detail .detail-status-node svg {
+  box-shadow: 0 12px 22px rgba(69, 74, 56, 0.12), 0 0 16px rgba(126, 166, 59, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+html[data-theme="light"] #subscription .back-btn,
+html[data-theme="light"] #subscription .subscription-back,
+html[data-theme="light"] #subscription .back {
+  background: radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.96), rgba(231, 244, 198, 0.76) 38%, rgba(102, 150, 46, 0.22) 100%) !important;
+  border: 1px solid rgba(123, 165, 76, 0.26) !important;
+  color: #4c8f24 !important;
+  box-shadow: 0 12px 22px rgba(116, 112, 92, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  filter: none !important;
+}
+html[data-theme="light"] #subscription .back-btn svg,
+html[data-theme="light"] #subscription .subscription-back svg,
+html[data-theme="light"] #subscription .back svg {
+  stroke: #4c8f24 !important;
+}
