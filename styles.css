@@ -13932,3 +13932,78 @@ html[data-theme="light"] #task-detail .detail-redesign-desc {
   color: #14324a !important;
   opacity: 0.9 !important;
 }
+/* 2026-07-19 QA pass 13: black dark shell, centered light nav, safer detail title lane */
+html:not([data-theme="light"]),
+html:not([data-theme="light"]) body,
+html:not([data-theme="light"]) #app,
+html:not([data-theme="light"]) .app,
+html:not([data-theme="light"]) .screen,
+html:not([data-theme="light"]) .view,
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #app,
+html[data-theme="dark"] .app,
+html[data-theme="dark"] .screen,
+html[data-theme="dark"] .view {
+  background-color: #000 !important;
+  background-image: none !important;
+}
+html[data-theme="light"] #home .dash-bottom-nav {
+  position: fixed !important;
+  left: 18px !important;
+  right: 18px !important;
+  bottom: 10px !important;
+  height: 66px !important;
+  display: block !important;
+  overflow: visible !important;
+}
+html[data-theme="light"] #home .dash-bottom-nav > .dash-nav-item {
+  position: absolute !important;
+  top: 50% !important;
+  width: 96px !important;
+  min-width: 96px !important;
+  height: 52px !important;
+  transform: translateY(-50%) !important;
+}
+html[data-theme="light"] #home .dash-bottom-nav > .dash-nav-item:first-child {
+  left: 28px !important;
+}
+html[data-theme="light"] #home .dash-bottom-nav > .dash-nav-item:last-child {
+  right: 28px !important;
+}
+html[data-theme="light"] #home .dash-center-button {
+  position: absolute !important;
+  left: 50% !important;
+  right: auto !important;
+  top: 50% !important;
+  bottom: auto !important;
+  width: 68px !important;
+  height: 68px !important;
+  margin: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 5 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  top: 132px !important;
+  left: 52px !important;
+  width: 198px !important;
+  max-width: 198px !important;
+  max-height: 92px !important;
+  font-size: clamp(21px, 5.35vw, 24px) !important;
+  line-height: 1.07 !important;
+  -webkit-line-clamp: 3 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  top: 224px !important;
+  left: 52px !important;
+  width: 220px !important;
+  max-width: 220px !important;
+  max-height: 64px !important;
+}
+html:not([data-theme="light"]) #home .dash-bottom-nav,
+html[data-theme="dark"] #home .dash-bottom-nav {
+  bottom: 8px !important;
+  height: 112px !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

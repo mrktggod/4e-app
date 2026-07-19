@@ -1,4 +1,4 @@
-const PWA_CACHE = "4-pwa-shell-v20260719-light-qa-polish-11";
+const PWA_CACHE = "4-pwa-shell-v20260719-light-qa-polish-12";
 
 const SHELL_ASSETS = [
   "/",
