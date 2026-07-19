@@ -899,3 +899,25 @@
   .profile-edit-btn { left: 70px; top: 72px; }
   .profile-data-row { grid-template-columns: 36px 76px minmax(0,1fr) auto; }
 }
+
+/* ===== REDESIGN MERGE QA: profile nav reserve and honest status checks ===== */
+.profile-stage .profile-handoff-scroll,
+.profile-stage .profile-body,
+.profile-stage .profile-content {
+  padding-bottom: max(132px, calc(var(--safe-area-bottom, 0px) + 132px)) !important;
+}
+
+.profile-stage .profile-status-badge:not(.verified) {
+  opacity: .36 !important;
+  background: linear-gradient(180deg, rgba(32,43,36,.62), rgba(12,20,16,.70)) !important;
+  border-color: rgba(180,194,179,.16) !important;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.06) !important;
+}
+
+.profile-stage .profile-status-badge:not(.verified)::before {
+  color: rgba(207,219,201,.34) !important;
+}
+
+.profile-stage .profile-status-badge.verified {
+  opacity: 1 !important;
+}

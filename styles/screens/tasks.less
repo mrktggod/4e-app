@@ -2070,3 +2070,53 @@ body:has(#task-detail.active) #global-nav,
     max-height: 4.12em !important;
   }
 }
+
+/* ===== REDESIGN MERGE QA: task-detail title/action cleanup ===== */
+#task-detail #task-detail-actions {
+  display: none !important;
+}
+
+#task-detail .detail-redesign-hero {
+  padding-right: 150px !important;
+}
+
+#task-detail .detail-info-stack {
+  right: 10px !important;
+  width: 126px !important;
+}
+
+#task-detail .detail-redesign-title {
+  width: calc(100% - 150px) !important;
+  max-width: calc(100% - 150px) !important;
+  min-width: 0 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  -webkit-line-clamp: 4 !important;
+  line-height: 1.04 !important;
+}
+
+#task-detail .detail-redesign-desc {
+  width: calc(100% - 150px) !important;
+  max-width: calc(100% - 150px) !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+@media (max-width: 390px) {
+  #task-detail .detail-redesign-hero {
+    padding-right: 128px !important;
+  }
+
+  #task-detail .detail-info-stack {
+    right: 8px !important;
+    width: 112px !important;
+  }
+
+  #task-detail .detail-redesign-title,
+  #task-detail .detail-redesign-desc {
+    width: calc(100% - 128px) !important;
+    max-width: calc(100% - 128px) !important;
+  }
+}

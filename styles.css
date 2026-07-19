@@ -6089,6 +6089,48 @@ body:has(#task-detail.active) #global-nav,
     max-height: 4.12em !important;
   }
 }
+/* ===== REDESIGN MERGE QA: task-detail title/action cleanup ===== */
+#task-detail #task-detail-actions {
+  display: none !important;
+}
+#task-detail .detail-redesign-hero {
+  padding-right: 150px !important;
+}
+#task-detail .detail-info-stack {
+  right: 10px !important;
+  width: 126px !important;
+}
+#task-detail .detail-redesign-title {
+  width: calc(100% - 150px) !important;
+  max-width: calc(100% - 150px) !important;
+  min-width: 0 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  -webkit-line-clamp: 4 !important;
+  line-height: 1.04 !important;
+}
+#task-detail .detail-redesign-desc {
+  width: calc(100% - 150px) !important;
+  max-width: calc(100% - 150px) !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+@media (max-width: 390px) {
+  #task-detail .detail-redesign-hero {
+    padding-right: 128px !important;
+  }
+  #task-detail .detail-info-stack {
+    right: 8px !important;
+    width: 112px !important;
+  }
+  #task-detail .detail-redesign-title,
+  #task-detail .detail-redesign-desc {
+    width: calc(100% - 128px) !important;
+    max-width: calc(100% - 128px) !important;
+  }
+}
 .profile-stage {
   min-height: 100%;
   background: radial-gradient(circle at 50% -6%, rgba(171, 220, 72, 0.15), transparent 30%), linear-gradient(180deg, rgba(16, 30, 16, 0.95), rgba(3, 15, 8, 0.98) 58%, #020a05);
@@ -6886,6 +6928,24 @@ body:has(#task-detail.active) #global-nav,
   .profile-data-row {
     grid-template-columns: 36px 76px minmax(0, 1fr) auto;
   }
+}
+/* ===== REDESIGN MERGE QA: profile nav reserve and honest status checks ===== */
+.profile-stage .profile-handoff-scroll,
+.profile-stage .profile-body,
+.profile-stage .profile-content {
+  padding-bottom: max(132px, calc(var(--safe-area-bottom, 0px) + 132px)) !important;
+}
+.profile-stage .profile-status-badge:not(.verified) {
+  opacity: 0.36 !important;
+  background: linear-gradient(180deg, rgba(32, 43, 36, 0.62), rgba(12, 20, 16, 0.7)) !important;
+  border-color: rgba(180, 194, 179, 0.16) !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06) !important;
+}
+.profile-stage .profile-status-badge:not(.verified)::before {
+  color: rgba(207, 219, 201, 0.34) !important;
+}
+.profile-stage .profile-status-badge.verified {
+  opacity: 1 !important;
 }
 /* ===== VOICE SCREEN ===== */
 .voice-pulse-ring {
