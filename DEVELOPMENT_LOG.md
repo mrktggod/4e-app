@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-20 - BACK-019 status sync
+
+### Roadmap and logs aligned after task-card smoke
+
+**What changed:** `shared/ROADMAP.md` now matches `pm/backlog.md` and `pm/team-sync.md`: `BACK-019` is `Done` after the 2026-07-19 headless mobile smoke. The earlier BACK-019 log entries now point at implementation commit `6428386` instead of `pending`.
+
+**Encoding check:** `index.html` was not changed; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; Git Bash `scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.
+
+---
+
 ## 2026-07-19 - BACK-019 task card mobile smoke
 
 ### Task-card clamp and headless mobile QA
@@ -15,7 +29,7 @@
 
 **Test:** `npm run smoke:back019` passed with `viewportWidth=390`, `documentScrollWidth=390`, `lineClamp=2`, `lastCardBottom=428`, `navTop=764`; `node scripts/check-js-syntax.mjs`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
 
-**Commit:** pending
+**Commit:** `6428386`
 
 ---
 

@@ -418,7 +418,7 @@
 ## 2026-07-16 — BACK-019 mobile card QA
 
 - Task-card mobile smoke checklist added: `docs/tasks/BACK-019-task-card-mobile-smoke.md`.
-- Do not mark `BACK-019` Done until tap/swipe actions and mobile overflow are checked manually.
+- Superseded 2026-07-19: `BACK-019` is Done after the 390x844 headless mobile smoke verified tap, swipe actions, overflow, title clamp, and bottom-nav clearance.
 ## 2026-07-16 — SMART-011 group reminder QA
 
 - Waiting-on-people live smoke checklist added: `docs/tasks/SMART-011-waiting-on-people-smoke.md`.

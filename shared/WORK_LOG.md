@@ -6,11 +6,21 @@
 
 ---
 
+### 2026-07-20 - Codex
+
+**Task:** BACK-019 roadmap/status sync
+**Result:** Aligned `shared/ROADMAP.md` with the already-closed `pm/backlog.md` state for `BACK-019` and replaced the top BACK-019 `pending` log references with implementation commit `6428386`.
+**Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.
+**Status:** Done
+**Next step:** Continue autonomous whitelist scan for remaining safe backlog/documentation work.
+
+---
+
 ### 2026-07-19 - Codex
 
 **Task:** BACK-019 task-card mobile smoke
 **Result:** Removed the renderer inline override that prevented the two-line title clamp and added `npm run smoke:back019` for 390x844 Chrome/CDP task-card QA. Smoke passed for overflow, long title, long contact, overdue state, swipe left/right, tap, done/move actions, and bottom-nav clearance.
-**Commit:** pending
+**Commit:** `6428386`
 **Status:** Done
 **Next step:** Keep `npm run smoke:back019` as the regression check before changing task-card rendering.
 
