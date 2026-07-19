@@ -2618,6 +2618,20 @@ body {
   transform: rotate(-24deg);
   opacity: 0.75;
 }
+/* ===== DASHBOARD QA: task index spacing ===== */
+#home .dash-task {
+  grid-template-columns: 76px minmax(0, 1fr);
+  padding-left: 13px;
+}
+#home .dash-task-index {
+  justify-content: center;
+}
+#home .dash-task-index span {
+  width: 38px;
+  height: 38px;
+  font-size: 21px;
+  letter-spacing: -0.035em;
+}
 @media (max-width: 390px) {
   #home .dash-artboard {
     transform: scale(calc(100vw / 430));
@@ -6482,6 +6496,36 @@ body:has(#task-detail.active) #global-nav,
   line-height: 1.35 !important;
   text-overflow: ellipsis !important;
 }
+/* ===== TASK DETAIL QA: softer controls and calmer title ===== */
+.detail-redesign-title {
+  font-size: 28px !important;
+  line-height: 1.07 !important;
+}
+.detail-redesign-bell,
+.detail-redesign-tags button,
+.detail-top-tag-add,
+.detail-avatar-add {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  border-radius: 50% !important;
+}
+.detail-redesign-bell svg,
+.detail-redesign-tags button svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+.detail-dot--green,
+.detail-status-dot {
+  background: #83aa49 !important;
+  box-shadow: 0 0 8px rgba(131, 170, 73, 0.28) !important;
+}
+.detail-status-badge,
+.detail-tab,
+.detail-quick-btn {
+  color: #9fbd6d !important;
+  border-color: rgba(131, 170, 73, 0.26) !important;
+}
 .profile-stage {
   min-height: 100%;
   background: radial-gradient(circle at 50% -6%, rgba(171, 220, 72, 0.15), transparent 30%), linear-gradient(180deg, rgba(16, 30, 16, 0.95), rgba(3, 15, 8, 0.98) 58%, #020a05);
@@ -7297,6 +7341,68 @@ body:has(#task-detail.active) #global-nav,
 }
 .profile-stage .profile-status-badge.verified {
   opacity: 1 !important;
+}
+/* ===== PROFILE QA: reduce visual noise and calm accent ===== */
+.profile-stage {
+  --profile-accent: #789f45;
+  --profile-accent-strong: #96b965;
+  --green: var(--profile-accent);
+}
+.profile-stage .profile-card,
+.profile-stage .profile-premium-card,
+.profile-stage .profile-handoff-hero {
+  border-color: rgba(184, 198, 182, 0.18) !important;
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.34), inset 0 1px 1px rgba(255, 255, 255, 0.06) !important;
+}
+.profile-stage .profile-row-list {
+  background: transparent !important;
+  border-color: rgba(180, 194, 179, 0.07) !important;
+  box-shadow: none !important;
+}
+.profile-stage .profile-data-row,
+.profile-stage .profile-menu-row {
+  min-height: 39px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  border-bottom-color: rgba(180, 194, 179, 0.07) !important;
+}
+.profile-stage .profile-row-icon {
+  width: 30px !important;
+  height: 30px !important;
+  border-color: rgba(127, 165, 43, 0.16) !important;
+  background: rgba(127, 165, 43, 0.07) !important;
+  color: #8fb260 !important;
+}
+.profile-stage .profile-row-icon svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+.profile-stage .profile-card-title {
+  font-size: 18px !important;
+  margin-bottom: 8px !important;
+}
+.profile-stage .profile-row-label,
+.profile-stage .profile-row-value,
+.profile-stage .profile-row-input,
+.profile-stage .profile-menu-row span:nth-child(2) {
+  font-size: 12px !important;
+}
+.profile-stage .profile-status,
+.profile-stage .profile-theme-value,
+.profile-stage .premium-line,
+.profile-stage .profile-save-btn--secondary {
+  color: var(--profile-accent-strong) !important;
+}
+.profile-stage .profile-status-badge.verified {
+  background: radial-gradient(circle at 34% 24%, #adc971 0%, #789f45 58%, #4f7425 100%) !important;
+  border-color: rgba(150, 185, 101, 0.36) !important;
+  box-shadow: 0 0 8px rgba(105, 145, 67, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.18) !important;
+}
+.profile-stage .profile-data-row--about {
+  min-height: 112px !important;
+}
+.profile-stage .profile-row-about {
+  min-height: 84px !important;
 }
 /* ===== VOICE SCREEN ===== */
 .voice-pulse-ring {

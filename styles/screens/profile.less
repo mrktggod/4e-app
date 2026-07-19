@@ -921,3 +921,77 @@
 .profile-stage .profile-status-badge.verified {
   opacity: 1 !important;
 }
+
+/* ===== PROFILE QA: reduce visual noise and calm accent ===== */
+.profile-stage {
+  --profile-accent: #789f45;
+  --profile-accent-strong: #96b965;
+  --green: var(--profile-accent);
+}
+
+.profile-stage .profile-card,
+.profile-stage .profile-premium-card,
+.profile-stage .profile-handoff-hero {
+  border-color: rgba(184,198,182,.18) !important;
+  box-shadow: 0 14px 24px rgba(0,0,0,.34), inset 0 1px 1px rgba(255,255,255,.06) !important;
+}
+
+.profile-stage .profile-row-list {
+  background: transparent !important;
+  border-color: rgba(180,194,179,.07) !important;
+  box-shadow: none !important;
+}
+
+.profile-stage .profile-data-row,
+.profile-stage .profile-menu-row {
+  min-height: 39px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  border-bottom-color: rgba(180,194,179,.07) !important;
+}
+
+.profile-stage .profile-row-icon {
+  width: 30px !important;
+  height: 30px !important;
+  border-color: rgba(127,165,43,.16) !important;
+  background: rgba(127,165,43,.07) !important;
+  color: #8fb260 !important;
+}
+
+.profile-stage .profile-row-icon svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.profile-stage .profile-card-title {
+  font-size: 18px !important;
+  margin-bottom: 8px !important;
+}
+
+.profile-stage .profile-row-label,
+.profile-stage .profile-row-value,
+.profile-stage .profile-row-input,
+.profile-stage .profile-menu-row span:nth-child(2) {
+  font-size: 12px !important;
+}
+
+.profile-stage .profile-status,
+.profile-stage .profile-theme-value,
+.profile-stage .premium-line,
+.profile-stage .profile-save-btn--secondary {
+  color: var(--profile-accent-strong) !important;
+}
+
+.profile-stage .profile-status-badge.verified {
+  background: radial-gradient(circle at 34% 24%, #adc971 0%, #789f45 58%, #4f7425 100%) !important;
+  border-color: rgba(150,185,101,.36) !important;
+  box-shadow: 0 0 8px rgba(105,145,67,.14), inset 0 1px 1px rgba(255,255,255,.18) !important;
+}
+
+.profile-stage .profile-data-row--about {
+  min-height: 112px !important;
+}
+
+.profile-stage .profile-row-about {
+  min-height: 84px !important;
+}

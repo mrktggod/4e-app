@@ -1068,6 +1068,23 @@
 #home .dash-brand-orb-grid { position:absolute; font-size:0; color:transparent; left:50%; top:50%; transform:translate(-50%,-50%); width:34px; height:34px; display:grid; grid-template-columns:repeat(2,15px); grid-template-rows:repeat(2,15px); gap:4px; padding:0; place-items:center; }
 #home .dash-brand-orb-grid i { position:relative; display:block; width:15px; height:15px; border-radius:50%; background:radial-gradient(circle at 28% 21%,rgba(255,255,255,.92) 0%,rgba(255,255,255,.44) 7%,transparent 16%), radial-gradient(circle at 38% 34%,#d5ef8d 0%,#a8d159 23%,#759f3e 51%,#314924 76%,#08100b 100%); border:1px solid rgba(205,231,150,.48); box-shadow:0 0 8px rgba(127,169,74,.32),inset 0 1px 1px rgba(255,255,255,.46),inset -3px -4px 7px rgba(0,0,0,.36),inset 3px 3px 6px rgba(191,225,123,.16); }
 #home .dash-brand-orb-grid i::after { content:''; position:absolute; left:3px; top:2px; width:8px; height:4px; border-radius:50%; background:linear-gradient(180deg,rgba(255,255,255,.64),rgba(255,255,255,0)); transform:rotate(-24deg); opacity:.75; }
+
+/* ===== DASHBOARD QA: task index spacing ===== */
+#home .dash-task {
+  grid-template-columns: 76px minmax(0, 1fr);
+  padding-left: 13px;
+}
+
+#home .dash-task-index {
+  justify-content: center;
+}
+
+#home .dash-task-index span {
+  width: 38px;
+  height: 38px;
+  font-size: 21px;
+  letter-spacing: -.035em;
+}
 @media (max-width: 390px) {
   #home .dash-artboard { transform: scale(calc(100vw / 430)); transform-origin: top center; width:430px; margin-left:50%; translate:-50% 0; }
 }
