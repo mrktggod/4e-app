@@ -32,6 +32,7 @@
 | `docs/ui-architecture-rules.md` | 44 | UI-правило: HTML=структура, LESS=стили, JS=поведение, BEM и legacy policy | Читать перед UI-правками |
 | `scripts/check-portable-paths.sh` | 21 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
 | `scripts/check-ui-architecture.sh` | 78 | Guard против роста inline UI-долга в `index.html` | Запускать перед UI-коммитом |
+| `scripts/back-019-task-card-smoke.mjs` | 330 | Headless Chrome/CDP smoke for BACK-019 task cards on 390x844 viewport: overflow, 2-line title clamp, tap and swipe actions | Run with `npm run smoke:back019` before changing task-card renderer |
 | `.githooks/pre-commit` | 5 | Локальный hook для запуска path guard и UI architecture guard перед commit | Активировать через `git config core.hooksPath .githooks` |
 | `.github/workflows/path-guard.yml` | 15 | GitHub Actions quality guard: переносимые пути + UI architecture debt | Срабатывает на push и PR |
 

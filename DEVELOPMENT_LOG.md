@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-19 - BACK-019 task card mobile smoke
+
+### Task-card clamp and headless mobile QA
+
+**What changed:** `scripts/task-ui-renderers.js:39` no longer writes an inline style on `.task-card-title`, so the existing CSS clamp in `styles.css` can enforce the two-line title rule. Added `scripts/back-019-task-card-smoke.mjs` and `npm run smoke:back019` to run the BACK-019 tap/swipe/overflow smoke in installed Chrome through CDP at 390x844.
+
+**Encoding check:** `index.html` was not changed; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:back019` passed with `viewportWidth=390`, `documentScrollWidth=390`, `lineClamp=2`, `lastCardBottom=428`, `navTop=764`; `node scripts/check-js-syntax.mjs`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** pending
+
+---
+
 ## 2026-07-06 — merge `origin/main` into `feat/admin-tariff-api`
 
 ### Разрешение конфликтов перед PR

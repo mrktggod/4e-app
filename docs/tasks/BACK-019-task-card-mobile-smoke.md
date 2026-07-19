@@ -1,45 +1,61 @@
-# BACK-019 — task card mobile smoke
+# BACK-019 - task card mobile smoke
 
-Цель: закрывать улучшенные карточки задач только после ручного мобильного smoke, а не по факту наличия renderer-кода. Карточка — core UI, поэтому особенно важны читаемость, swipe-действия и отсутствие горизонтального overflow.
+Goal: close improved task cards only after a narrow mobile viewport smoke, not only by source reading. Task cards are core UI, so readability, swipe behavior, and no horizontal overflow are the acceptance surface.
 
-## 1. Что уже реализовано
+## Implemented Surface
 
 | Layer | Evidence |
 | --- | --- |
-| Card renderer | Новая карточка показывает номер/приоритет, тег, дедлайн, название в 2 строки и состояние просрочки |
-| Swipe actions | Есть действия `Завершить`, `Отменить`, `Перенести` |
-| Visual hierarchy | Задача, исполнитель/направление, дедлайн и статус разведены визуально |
+| Card renderer | Cards show number/priority, tag, deadline, two-line title clamp, and overdue state. |
+| Swipe actions | `Done`, `Cancel`, and `Move` actions are rendered by `renderTaskCard`. |
+| Visual hierarchy | Task title, contact/direction, deadline, and state are visually separated. |
+| Regression smoke | `npm run smoke:back019` opens a 390x844 Chrome/CDP harness and tests layout plus tap/swipe behavior. |
 
-## 2. Mobile smoke checklist
+## Mobile Smoke Checklist
 
 | ID | Scenario | Expected | Result |
 | --- | --- | --- | --- |
-| BACK-019-QA-001 | Открыть список активных задач на 390px width | Нет горизонтального скролла, карточки не обрезаются | Not run |
-| BACK-019-QA-002 | Длинное название задачи 80+ символов | Название максимум 2 строки, layout не ломается | Not run |
-| BACK-019-QA-003 | Длинное имя исполнителя/контакта | Имя не выталкивает дедлайн и действия | Not run |
-| BACK-019-QA-004 | Просроченная задача | Просрочка заметна, но не выглядит как критическая ошибка приложения | Not run |
-| BACK-019-QA-005 | Swipe left/right на карточке | Действия появляются предсказуемо, без случайного открытия detail | Not run |
-| BACK-019-QA-006 | Tap по карточке | Открывается detail нужной задачи | Not run |
-| BACK-019-QA-007 | Tap `Завершить` | Задача завершается или появляется ожидаемое подтверждение | Not run |
-| BACK-019-QA-008 | Tap `Перенести` | Открывается move/deadline flow | Not run |
-| BACK-019-QA-009 | Несколько карточек подряд | Вертикальный ритм читаемый, bottom nav не перекрывает последнюю карточку | Not run |
+| BACK-019-QA-001 | Open active task list at 390px width | No horizontal scroll; cards are not clipped | PASS 2026-07-19: `viewportWidth=390`, `documentScrollWidth=390` |
+| BACK-019-QA-002 | Long task title, 80+ characters | Title is clamped to max 2 lines and layout stays stable | PASS 2026-07-19: renderer inline override removed; `lineClamp=2`, `longTitleHeight=38` |
+| BACK-019-QA-003 | Long contact/person name | Name does not push deadline/actions outside the card | PASS 2026-07-19: long person fixture rendered without card overflow |
+| BACK-019-QA-004 | Overdue task | Overdue state is visible but not presented as app failure | PASS 2026-07-19: overdue fixture rendered as `.is-overdue` without failures |
+| BACK-019-QA-005 | Swipe left/right on a card | Actions appear predictably and do not accidentally open detail | PASS 2026-07-19: pointer smoke opened left/right swipe states |
+| BACK-019-QA-006 | Tap card | Opens detail for the expected task | PASS 2026-07-19: tap opened task id `plain` |
+| BACK-019-QA-007 | Tap `Done` | Task completion path receives the expected task id | PASS 2026-07-19: done action received task id `overdue` |
+| BACK-019-QA-008 | Tap `Move` | Move/deadline path receives the expected task id | PASS 2026-07-19: move action received task id `long-title` |
+| BACK-019-QA-009 | Several cards in a row | Vertical rhythm is readable; bottom nav does not cover last card | PASS 2026-07-19: `lastCardBottom=428`, `navTop=764` |
 
-## 3. Failure handling
+## Raw Proof
+
+```text
+npm run smoke:back019
+ok: true
+viewportWidth: 390
+documentScrollWidth: 390
+longTitleHeight: 38
+longTitleMaxTwoLines: 37.8
+longTitleLineClamp: 2
+lastCardBottom: 428
+navTop: 764
+swipeRightTransform: translateX(96px)
+```
+
+## Failure Handling
 
 | Failure | Severity | Action |
 | --- | --- | --- |
-| Нельзя открыть/завершить задачу | P0/P1 | Fix before beta invite |
-| Swipe вызывает не то действие | P1 | Fix before wider beta |
-| Layout overflow на обычном мобильном viewport | P1 | Fix before wider beta |
-| Длинный текст некрасиво переносится, но действие доступно | P2 | Can enter beta backlog |
-| Цвет/иконка непонятны | P3 | Polish backlog |
+| Cannot open or complete a task | P0/P1 | Fix before beta invite |
+| Swipe triggers wrong action | P1 | Fix before wider beta |
+| Layout overflow on normal mobile viewport | P1 | Fix before wider beta |
+| Long text wraps poorly but action remains available | P2 | Can enter beta backlog |
+| Color/icon is unclear | P3 | Polish backlog |
 
-## 4. Done rule
+## Done Rule
 
-`BACK-019` можно переводить в `Done`, только если:
+`BACK-019` can remain `Done` because:
 
-- mobile smoke пройден хотя бы на одном узком viewport/device;
-- tap и swipe не конфликтуют;
-- завершение/перенос не ломают задачу;
-- последний элемент списка не перекрывается нижней навигацией;
-- все найденные P0/P1 заведены в `pm/bugs.md` или исправлены.
+- mobile smoke passed on a narrow 390x844 viewport;
+- tap and swipe do not conflict;
+- done/move actions receive the expected task id;
+- the last card is not covered by bottom navigation;
+- no P0/P1 findings were produced by the smoke.

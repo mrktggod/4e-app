@@ -533,3 +533,9 @@
 - Beta blocker fixed in staging data: /tariff-config now matches prod known-good runtime config for paywall text and yearly price.
 - Verification after reseed: month=990/990 stars, year=9950/9950 stars, questionRuns=0.
 - Source defaults still remain mapped separately in docs/tasks/PRICE-MAP-2026-07-17.md; no production/main/source price change was made here.
+
+## 2026-07-19 - BACK-019 task cards Done
+
+- `BACK-019` moved to `Done` after local headless Chrome mobile smoke at 390x844.
+- Fixed the task-card title clamp by removing the renderer inline style that overrode `.task-card-title` CSS.
+- Added `npm run smoke:back019` for repeatable checks of overflow, two-line title clamp, tap, swipe left/right, done/move actions, and bottom-nav clearance.

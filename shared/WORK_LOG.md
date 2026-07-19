@@ -6,6 +6,16 @@
 
 ---
 
+### 2026-07-19 - Codex
+
+**Task:** BACK-019 task-card mobile smoke
+**Result:** Removed the renderer inline override that prevented the two-line title clamp and added `npm run smoke:back019` for 390x844 Chrome/CDP task-card QA. Smoke passed for overflow, long title, long contact, overdue state, swipe left/right, tap, done/move actions, and bottom-nav clearance.
+**Commit:** pending
+**Status:** Done
+**Next step:** Keep `npm run smoke:back019` as the regression check before changing task-card rendering.
+
+---
+
 ### 2026-07-14 — Codex
 
 **Задача:** Staging auth fix + `/auth/telegram` 1101 на staging
