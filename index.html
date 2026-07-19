@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
@@ -3847,7 +3847,7 @@ function updateHomeDashboardList({outgoing=[],incoming=[]}){
   const homeList=document.getElementById('home-task-list');
   const dashboardTasks=getHomeDashboardTasks();
   if(titleEl){
-    titleEl.textContent=dashboardTasks.length?('Топ-' + dashboardTasks.length + ' задач'):'Задачи месяца';
+    titleEl.textContent='Задачи · текущий месяц';
   }
   if(subEl){
     if(dashboardTasks.length){

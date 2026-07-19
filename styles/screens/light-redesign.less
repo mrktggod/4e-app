@@ -851,3 +851,277 @@ html[data-theme="light"] #subscription .plan-feat-sub,
 html[data-theme="light"] #subscription .pricing-desc,
 html[data-theme="light"] #subscription .pricing-per,
 html[data-theme="light"] #subscription #subscription-payment-note { color: #8d968f !important; }
+
+/* 2026-07-19 light handoff leak fixes: live elements that differ from standalone HTML */
+html[data-theme="light"] #home .dash-avatar {
+  background: url("assets/design/dashboard-light-avatar.png?v=20260719-part2") center/52px 52px no-repeat !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+html[data-theme="light"] #home .dash-avatar img { opacity: 0 !important; }
+
+html[data-theme="light"] #home #home-section-title {
+  color: #666966 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] #home .dash-hero-title,
+html[data-theme="light"] #home .dash-hero-noun {
+  color: #11130f !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] #home .dash-hero-number { color: #6e9b35 !important; }
+
+html[data-theme="light"] #home #home-task-list .home-ai-row {
+  min-height: 87px !important;
+  border-radius: 18px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(110% 70% at 20% -10%, rgba(255,255,255,.78), transparent 36%),
+    radial-gradient(90% 75% at 88% 105%, rgba(160,190,91,.12), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(250,250,246,.58) 48%, rgba(244,244,238,.62) 100%) !important;
+  border: 1px solid rgba(255,255,255,.93) !important;
+  box-shadow:
+    0 13px 22px rgba(116,112,92,.072),
+    0 4px 8px rgba(115,111,91,.044),
+    0 0 15px rgba(147,180,86,.06),
+    inset 0 1.2px 1px rgba(255,255,255,.95),
+    inset 0 -2px 2px rgba(176,177,162,.15),
+    inset 0 0 0 .6px rgba(200,203,192,.20),
+    0 1px 0 rgba(255,255,255,.92) !important;
+}
+
+html[data-theme="light"] #home #home-task-list .home-ai-row-main {
+  min-height: 87px !important;
+  display: grid !important;
+  grid-template-columns: 65px minmax(0,1fr) !important;
+  align-items: center !important;
+  padding: 11px 14px 10px 9px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #home #home-task-list .home-ai-row-avatar {
+  justify-self: center !important;
+  align-self: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  color: #668f35 !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  letter-spacing: -.055em !important;
+  background: radial-gradient(circle at 34% 24%,rgba(255,255,255,.98),rgba(247,247,240,.64) 55%,rgba(233,236,224,.58)) !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+  box-shadow: 0 9px 16px rgba(116,112,92,.13),0 0 11px rgba(139,175,72,.055),inset 0 1px 1px rgba(255,255,255,.98),inset 0 -6px 10px rgba(179,181,164,.08),inset 0 0 0 1px rgba(201,204,193,.16) !important;
+}
+
+html[data-theme="light"] #home #home-task-list .home-ai-row-title {
+  color: #11130f !important;
+  font-size: 12.8px !important;
+  line-height: 1.14 !important;
+  font-weight: 445 !important;
+  letter-spacing: -.04em !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="light"] #home #home-task-list .home-ai-row-meta {
+  color: #666a66 !important;
+  font-size: 9.4px !important;
+  line-height: 12px !important;
+  margin-top: 7px !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  margin-top: -8px !important;
+  color: #11314a !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #38506a !important;
+  padding: 0 !important;
+  margin-top: 4px !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-redesign-bell {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 999px !important;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255,255,255,.96), rgba(231,244,198,.72) 38%, rgba(102,150,46,.24) 100%) !important;
+  border: 1px solid rgba(123,165,76,.28) !important;
+  box-shadow: 0 10px 20px rgba(69,74,56,.13), inset 0 1px 0 rgba(255,255,255,.85) !important;
+  color: #699e24 !important;
+  overflow: hidden !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-tag--direction {
+  width: auto !important;
+  min-width: 42px !important;
+  padding: 0 12px !important;
+}
+
+html[data-theme="light"] #task-detail .detail-bell-select,
+html[data-theme="light"] #task-detail .detail-info-select,
+html[data-theme="light"] #task-detail .detail-status-select {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html[data-theme="light"] #task-detail .detail-info-card {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(250,250,246,.58) 48%, rgba(244,244,238,.62) 100%) !important;
+  border: 1px solid rgba(255,255,255,.93) !important;
+  color: #17324a !important;
+}
+
+html[data-theme="light"] #task-detail .detail-info-card svg {
+  color: #7cac2e !important;
+  stroke: currentColor !important;
+  flex: none !important;
+}
+
+html[data-theme="light"] #task-detail .detail-info-card small {
+  color: #677589 !important;
+  display: block !important;
+}
+
+html[data-theme="light"] #task-detail #detail-date,
+html[data-theme="light"] #task-detail #detail-priority-display {
+  color: #17324a !important;
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+}
+
+html[data-theme="light"] #task-detail .detail-date-popover,
+html[data-theme="light"] #task-detail .detail-priority-popover,
+html[data-theme="light"] #task-detail .detail-reminder-popover,
+html[data-theme="light"] #task-detail .detail-tag-popover,
+html[data-theme="light"] #task-detail .detail-status-popover {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,249,240,.84) 58%, rgba(232,241,211,.72) 100%) !important;
+  border: 1px solid rgba(255,255,255,.95) !important;
+  box-shadow: 0 18px 36px rgba(69,74,56,.18), inset 0 1px 0 rgba(255,255,255,.95) !important;
+  color: #17324a !important;
+}
+
+html[data-theme="light"] #task-detail .detail-date-popover button,
+html[data-theme="light"] #task-detail .detail-priority-popover button,
+html[data-theme="light"] #task-detail .detail-reminder-popover button,
+html[data-theme="light"] #task-detail .detail-tag-popover button,
+html[data-theme="light"] #task-detail .detail-status-popover button,
+html[data-theme="light"] #task-detail .detail-date-popover input {
+  background: rgba(255,255,255,.58) !important;
+  border: 1px solid rgba(123,165,76,.22) !important;
+  color: #17324a !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #task-detail .detail-date-popover button.active,
+html[data-theme="light"] #task-detail .detail-priority-popover button.active,
+html[data-theme="light"] #task-detail .detail-reminder-popover button.active {
+  background: linear-gradient(180deg,#bfe877,#77ad2f) !important;
+  color: #111411 !important;
+}
+
+html[data-theme="light"] #task-detail .detail-avatar,
+html[data-theme="light"] #task-detail .detail-avatar-add {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 22px rgba(69,74,56,.16) !important;
+}
+html[data-theme="light"] #task-detail .detail-avatar::before,
+html[data-theme="light"] #task-detail .detail-avatar::after,
+html[data-theme="light"] #task-detail .detail-avatar-add::before,
+html[data-theme="light"] #task-detail .detail-avatar-add::after { content: none !important; display: none !important; }
+
+html[data-theme="light"] #task-detail .detail-status-node,
+html[data-theme="light"] #task-detail .detail-status-node:not(.detail-status-node--active) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #17324a !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-node svg {
+  background: rgba(255,255,255,.38) !important;
+  border-radius: 50% !important;
+  color: #17324a !important;
+  stroke: currentColor !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-node small { color: #17324a !important; }
+html[data-theme="light"] #task-detail .detail-status-node--active small { color: #7cac2e !important; }
+
+html[data-theme="light"] #task-detail .detail-advice-message,
+html[data-theme="light"] #task-detail .detail-ai-card,
+html[data-theme="light"] #task-detail .detail-ai-card--chat,
+html[data-theme="light"] #task-detail .detail-ai-card--chat .md-body,
+html[data-theme="light"] #task-detail .detail-ai-card--chat .md-body p {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #17324a !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] #task-detail .detail-checklist-panel,
+html[data-theme="light"] #task-detail .detail-checklist,
+html[data-theme="light"] #task-detail .detail-checklist li,
+html[data-theme="light"] #task-detail .detail-check-add,
+html[data-theme="light"] #task-detail #detail-checklist-input {
+  background: rgba(255,255,255,.56) !important;
+  border-color: rgba(123,165,76,.22) !important;
+  color: #17324a !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #task-detail .detail-quick-btn,
+html[data-theme="light"] #task-detail #detail-checklist-add-btn,
+html[data-theme="light"] #task-detail #detail-split-btn {
+  background: linear-gradient(180deg,#bfe877,#77ad2f) !important;
+  color: #111411 !important;
+  border: 1px solid rgba(255,255,255,.72) !important;
+}
+
+html[data-theme="light"] #profile .profile-card-title,
+html[data-theme="light"] #profile .profile-row-label,
+html[data-theme="light"] #profile .profile-row-value,
+html[data-theme="light"] #profile .profile-row-input,
+html[data-theme="light"] #profile .profile-menu-row,
+html[data-theme="light"] #profile .profile-item-text,
+html[data-theme="light"] #profile .profile-ref-field span {
+  color: #111411 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="light"] #profile .profile-ref-field input {
+  background: rgba(255,255,255,.62) !important;
+  border: 1px solid rgba(141,146,137,.28) !important;
+  color: #111411 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #profile .profile-ref-card .profile-save-btn,
+html[data-theme="light"] #profile .profile-ref-card button {
+  background: linear-gradient(180deg,#bfe877,#77ad2f) !important;
+  color: #111411 !important;
+  border: 1px solid rgba(255,255,255,.72) !important;
+}
