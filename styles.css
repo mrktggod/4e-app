@@ -14007,6 +14007,40 @@ html[data-theme="dark"] #home .dash-bottom-nav {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+/* 2026-07-19 QA pass 15: task detail title must stay clear of right cards */
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  top: 136px !important;
+  left: 54px !important;
+  right: auto !important;
+  width: 184px !important;
+  min-width: 0 !important;
+  max-width: 184px !important;
+  max-height: 88px !important;
+  box-sizing: border-box !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  font-size: clamp(20px, 5.15vw, 23px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.028em !important;
+  contain: paint !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  top: 238px !important;
+  left: 54px !important;
+  right: auto !important;
+  width: 218px !important;
+  min-width: 0 !important;
+  max-width: 218px !important;
+  max-height: 58px !important;
+  color: #14324a !important;
+  opacity: 0.92 !important;
+}
 /* 2026-07-19 QA pass 14: hard black dark dashboard canvas */
 html:not([data-theme="light"]) body,
 html[data-theme="dark"] body,
