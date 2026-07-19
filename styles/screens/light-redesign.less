@@ -1555,3 +1555,181 @@ html[data-theme="light"] #subscription .subscription-back svg,
 html[data-theme="light"] #subscription .back svg {
   stroke: #4c8f24 !important;
 }
+
+/* 2026-07-19 light QA pass 4: dashboard nav, task hero, profile id, ask screen */
+html[data-theme="light"] #home .dash-bottom-nav {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) 74px minmax(0,1fr) !important;
+  align-items: center !important;
+  justify-items: center !important;
+}
+html[data-theme="light"] #home .dash-bottom-nav .dash-nav-item {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  justify-self: center !important;
+  width: auto !important;
+  min-width: 92px !important;
+  transform: none !important;
+}
+html[data-theme="light"] #home .dash-center-button {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: 9px !important;
+  bottom: auto !important;
+  grid-column: 2 !important;
+  justify-self: center !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+html[data-theme="light"] #home .dash-center-button .dash-brand-orb-grid {
+  position: absolute !important;
+  inset: 50% auto auto 50% !important;
+  transform: translate(-50%,-50%) !important;
+}
+
+html[data-theme="light"] #profile .profile-id,
+html[data-theme="light"] #profile .profile-id *,
+html[data-theme="light"] #profile [id*="profile-id"],
+html[data-theme="light"] #profile [id*="profile-id"] *,
+html[data-theme="light"] #profile .profile-handoff-hero .profile-id {
+  color: #111411 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  top: 202px !important;
+  left: 36px !important;
+  width: 244px !important;
+  max-width: 244px !important;
+  max-height: 108px !important;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  font-size: clamp(33px, 8.8vw, 39px) !important;
+  line-height: .96 !important;
+  letter-spacing: -.04em !important;
+  color: #11314a !important;
+  z-index: 6 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  top: 318px !important;
+  left: 38px !important;
+  width: 238px !important;
+  max-width: 238px !important;
+  max-height: 34px !important;
+  overflow: hidden !important;
+  display: block !important;
+  color: #38506a !important;
+  font-size: 12px !important;
+  line-height: 1.18 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  z-index: 7 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-redesign-bell,
+html[data-theme="light"] #task-detail .detail-redesign-tags button,
+html[data-theme="light"] #task-detail .detail-tag-add,
+html[data-theme="light"] #task-detail [data-detail-action="add-tag"],
+html[data-theme="light"] #task-detail [data-detail-action="open-tag-popover"] {
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255,255,255,.98), rgba(231,244,198,.78) 38%, rgba(102,150,46,.18) 100%) !important;
+  border: 1px solid rgba(123,165,76,.24) !important;
+  color: #4c8f24 !important;
+  filter: none !important;
+  box-shadow: 0 13px 24px rgba(116,112,92,.10), 0 0 18px rgba(134,177,66,.10), inset 0 1px 0 rgba(255,255,255,.94) !important;
+  clip-path: none !important;
+  overflow: visible !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-tag::before,
+html[data-theme="light"] #task-detail .detail-redesign-tag::after,
+html[data-theme="light"] #task-detail .detail-redesign-bell::before,
+html[data-theme="light"] #task-detail .detail-redesign-bell::after {
+  content: none !important;
+  display: none !important;
+}
+html[data-theme="light"] #task-detail .detail-info-card {
+  overflow: hidden !important;
+}
+
+html[data-theme="light"] #ask,
+html[data-theme="light"] .ask-soft-screen {
+  background:
+    radial-gradient(270px 220px at 76% 14%, rgba(188,206,125,.18), transparent 68%),
+    radial-gradient(260px 210px at 12% 82%, rgba(214,224,190,.20), transparent 70%),
+    linear-gradient(180deg,#f2f1e8 0%,#ebeade 100%) !important;
+  color: #17324a !important;
+}
+html[data-theme="light"] #ask .ask-soft-title,
+html[data-theme="light"] #ask .ask-soft-sub,
+html[data-theme="light"] #ask .ask-plan-question,
+html[data-theme="light"] #ask .ask-plan-text,
+html[data-theme="light"] #ask .ask-plan-text strong,
+html[data-theme="light"] #ask .ask-plan-text em,
+html[data-theme="light"] #ask .ask-msgs,
+html[data-theme="light"] #ask .ask-conversation {
+  color: #17324a !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] #ask .ask-soft-sub,
+html[data-theme="light"] #ask .ask-plan-text em {
+  color: #65716a !important;
+}
+html[data-theme="light"] #ask .ask-soft-back,
+html[data-theme="light"] #ask .ask-send,
+html[data-theme="light"] #ask .ask-plan-row,
+html[data-theme="light"] #ask .ask-glass-card,
+html[data-theme="light"] #ask .ask-input-shell,
+html[data-theme="light"] #ask .ask-bar,
+html[data-theme="light"] #ask .ask-field {
+  background:
+    radial-gradient(120% 82% at 18% 0%, rgba(255,255,255,.88), transparent 46%),
+    linear-gradient(180deg, rgba(255,255,255,.76), rgba(247,249,240,.66) 58%, rgba(233,241,215,.56) 100%) !important;
+  border-color: rgba(255,255,255,.92) !important;
+  color: #17324a !important;
+  box-shadow: 0 15px 28px rgba(116,112,92,.10), inset 0 1px 0 rgba(255,255,255,.95) !important;
+  filter: none !important;
+}
+html[data-theme="light"] #ask .ask-plan-row::before,
+html[data-theme="light"] #ask .ask-plan-row::after,
+html[data-theme="light"] #ask .ask-glass-card::before,
+html[data-theme="light"] #ask .ask-glass-card::after,
+html[data-theme="light"] #ask .ask-input-shell::before,
+html[data-theme="light"] #ask .ask-input-shell::after {
+  content: none !important;
+  display: none !important;
+}
+html[data-theme="light"] #ask .ask-field::placeholder {
+  color: #7a837c !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] #ask .bubble-ai,
+html[data-theme="light"] #ask .bubble-user,
+html[data-theme="light"] #ask .ask-msgs .bubble-ai,
+html[data-theme="light"] #ask .ask-msgs .bubble-user {
+  background:
+    radial-gradient(120% 78% at 18% 0%, rgba(255,255,255,.86), transparent 45%),
+    linear-gradient(180deg, rgba(255,255,255,.74), rgba(246,249,239,.64) 58%, rgba(232,241,211,.54) 100%) !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+  color: #17324a !important;
+  box-shadow: 0 15px 28px rgba(116,112,92,.10), inset 0 1px 0 rgba(255,255,255,.95) !important;
+  filter: none !important;
+}
+html[data-theme="light"] #ask .bubble-user {
+  background: linear-gradient(180deg, rgba(205,235,142,.86), rgba(126,172,59,.72)) !important;
+  color: #17324a !important;
+}
+html[data-theme="light"] #ask .md-body,
+html[data-theme="light"] #ask .md-body *,
+html[data-theme="light"] #ask .task-history-row {
+  color: #17324a !important;
+}
