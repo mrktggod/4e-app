@@ -1056,3 +1056,69 @@
   margin-bottom: 6px !important;
   color: rgba(226,235,221,.82) !important;
 }
+
+/* ===== PROFILE QA 3: remove nested list frame, enlarge premium banner ===== */
+.profile-premium-card,
+.profile-stage .profile-premium-card {
+  margin-left: -4px !important;
+  margin-right: -4px !important;
+  min-height: 88px !important;
+  padding: 18px 20px !important;
+  grid-template-columns: 44px minmax(0, 1fr) !important;
+  gap: 14px !important;
+}
+
+.profile-premium-card .profile-card-icon,
+.profile-stage .profile-premium-card .profile-card-icon,
+.premium-icon.profile-card-icon {
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.profile-premium-card .premium-line,
+.profile-stage .profile-premium-card .premium-line {
+  font-size: 15px !important;
+  line-height: 1.28 !important;
+  letter-spacing: -.02em !important;
+}
+
+.profile-premium-card .premium-sub,
+.profile-stage .profile-premium-card .premium-sub {
+  margin-top: 4px !important;
+  font-size: 12.2px !important;
+}
+
+.profile-row-list,
+.profile-stage .profile-row-list {
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.profile-row-list::before,
+.profile-row-list::after,
+.profile-stage .profile-row-list::before,
+.profile-stage .profile-row-list::after {
+  display: none !important;
+  content: none !important;
+}
+
+.profile-data-row,
+.profile-menu-row,
+.profile-stage .profile-data-row,
+.profile-stage .profile-menu-row {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.profile-data-row:first-child,
+.profile-menu-row:first-child,
+.profile-stage .profile-data-row:first-child,
+.profile-stage .profile-menu-row:first-child {
+  border-top: 0 !important;
+}
