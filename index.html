@@ -1875,6 +1875,14 @@ function authHeaders(){
   return h;
 }
 
+function getAcquisitionAttribution(){
+  try{
+    return PLATFORM?.getAcquisitionAttribution ? PLATFORM.getAcquisitionAttribution() : {};
+  }catch(_attributionErr){
+    return {};
+  }
+}
+
 function privacyAuthHeaders(){
   return {'Content-Type':'application/json','Authorization':'Bearer '+d1Token};
 }
@@ -1976,7 +1984,7 @@ async function initApp(){
       const vkU=await withTimeout(vkBridge.send("VKWebAppGetUserInfo"),4000);
       const launchParams=await getVkLaunchParams();
       const pendingRef=getPendingReferralCode();
-      const vkResp=await withTimeout(fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||"",...(pendingRef?{ref:pendingRef}:{})})}),10000);
+      const vkResp=await withTimeout(fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||"",attribution:getAcquisitionAttribution(),...(pendingRef?{ref:pendingRef}:{})})}),10000);
       const vkR=await readJsonSafe(vkResp);
       if(vkR.token){
         setLegacyToken(vkR.token);

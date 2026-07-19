@@ -96,6 +96,44 @@
     return String(value || '').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '').slice(0, 32);
   }
 
+  function normalizeAttributionValue(value) {
+    return String(value || '').trim().toLowerCase().slice(0, 120);
+  }
+
+  function getAttributionChannel(referralCode) {
+    if (referralCode) return 'referral';
+    if (getTelegramInitData()) return 'telegram_miniapp';
+    if (vkBridge && isVkMiniAppContext()) return 'vk_miniapp';
+    const params = getSearchParams();
+    const source = normalizeAttributionValue(params.get('source') || params.get('utm_source'));
+    if (source === 'telegram_bot' || source === 'tg_bot' || source === 'bot') return 'telegram_bot';
+    if (source === 'telegram_miniapp' || source === 'tg_miniapp' || source === 'telegram') return 'telegram_miniapp';
+    if (source === 'vk_miniapp' || source === 'vk') return 'vk_miniapp';
+    return 'web_direct';
+  }
+
+  function getAcquisitionAttribution() {
+    const search = getSearchParams();
+    const hash = getHashParams();
+    const referralCode = getReferralCodeFromLaunch() || '';
+    const readParam = key => search.get(key) || hash.get(key) || '';
+    const attribution = {
+      acquisition_channel: getAttributionChannel(referralCode),
+      acquisition_source: normalizeAttributionValue(readParam('utm_source') || readParam('source')),
+      acquisition_campaign: normalizeAttributionValue(readParam('utm_campaign')),
+      acquisition_content: normalizeAttributionValue(readParam('utm_content')),
+      acquisition_referral_code: referralCode,
+    };
+    const medium = normalizeAttributionValue(readParam('utm_medium'));
+    const term = normalizeAttributionValue(readParam('utm_term'));
+    if (medium) attribution.acquisition_medium = medium;
+    if (term) attribution.acquisition_term = term;
+    Object.keys(attribution).forEach(key => {
+      if (!attribution[key]) delete attribution[key];
+    });
+    return attribution;
+  }
+
   function getReferralCodeFromLaunch() {
     const fromSearch = getSearchParams();
     const fromHash = getHashParams();
@@ -1083,6 +1121,7 @@
     rememberOAuthState,
     consumeOAuthState,
     normalizeReferralCode,
+    getAcquisitionAttribution,
     getReferralCodeFromLaunch,
     savePendingReferralCode,
     getPendingReferralCode,

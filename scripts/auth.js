@@ -73,7 +73,7 @@
     try{
       showScreen('login');
       const pendingRef=getPendingReferralCode();
-      const r=await withTimeout(fetch(window.WORKER+path,{method:'POST',headers:authHeaders(),body:JSON.stringify({code,redirectUri:pending.redirectUri||getOAuthRedirectUri(),codeVerifier:pending.codeVerifier||'',...(pendingRef?{ref:pendingRef}:{})})}),15000);
+      const r=await withTimeout(fetch(window.WORKER+path,{method:'POST',headers:authHeaders(),body:JSON.stringify({code,redirectUri:pending.redirectUri||getOAuthRedirectUri(),codeVerifier:pending.codeVerifier||'',attribution:getAcquisitionAttribution(),...(pendingRef?{ref:pendingRef}:{})})}),15000);
       const d=await readJsonSafe(r);
       if(d.ok&&d.token){
         setLegacyToken(d.token);
@@ -112,6 +112,14 @@
 
   function getReferralCodeFromLaunch(){
     return window.PLATFORM?.getReferralCodeFromLaunch ? window.PLATFORM.getReferralCodeFromLaunch() : '';
+  }
+
+  function getAcquisitionAttribution(){
+    try {
+      return window.PLATFORM?.getAcquisitionAttribution ? window.PLATFORM.getAcquisitionAttribution() : {};
+    } catch (error) {
+      return {};
+    }
   }
 
   function savePendingReferralCode(code){
@@ -259,4 +267,3 @@
   window.clearPendingReferralCode = clearPendingReferralCode;
   window.capturePendingReferralCode = capturePendingReferralCode;
 })(window);
-

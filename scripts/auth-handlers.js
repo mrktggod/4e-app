@@ -51,7 +51,7 @@ async function doRegister(){
   btn.disabled=true; btn.textContent='Создаём аккаунт...';
   try{
     const pendingRef=getPendingReferralCode();
-    const r=await fetch(WORKER+'/auth/register',{method:'POST',headers:authHeaders(),body:JSON.stringify({name,email,password:pass,...(pendingRef?{ref:pendingRef}:{})})});
+    const r=await fetch(WORKER+'/auth/register',{method:'POST',headers:authHeaders(),body:JSON.stringify({name,email,password:pass,attribution:getAcquisitionAttribution(),...(pendingRef?{ref:pendingRef}:{})})});
     const d=await r.json();
     if(d.ok){
       setLegacyToken(d.token);
@@ -201,7 +201,7 @@ async function loginWithTelegramLegacy(){
     const r=await withTimeout(fetch(WORKER+'/auth/telegram',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({initData:tgInitData, user:tgUser, ...(getPendingReferralCode()?{ref:getPendingReferralCode()}: {})})
+      body:JSON.stringify({initData:tgInitData, user:tgUser, attribution:getAcquisitionAttribution(), ...(getPendingReferralCode()?{ref:getPendingReferralCode()}: {})})
     }),8000);
     const d=await readJsonSafe(r);
     if(d.ok&&d.token){
@@ -307,6 +307,7 @@ async function loginWithTelegram(startToken=''){
   if(startToken){
     showTelegramManualStartFallback(startToken);
     const body = { startToken };
+    body.attribution = getAcquisitionAttribution();
     const pendingRef = getPendingReferralCode();
     if (pendingRef)
       body.ref = pendingRef;
@@ -359,6 +360,7 @@ async function loginWithTelegram(startToken=''){
       body: JSON.stringify({
         generateStartToken: true,
         returnUrl: getTelegramReturnUrl(),
+        attribution: getAcquisitionAttribution(),
         ...(tgInitData ? { initData: tgInitData } : {}),
         ...(tgUser ? { user: tgUser } : {})
       })
@@ -469,5 +471,4 @@ function bindChangePasswordHandlers(){
 }
 
 document.addEventListener('DOMContentLoaded',bindChangePasswordHandlers);
-
 
