@@ -9249,6 +9249,14 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri re-checks task detail, profile support, and dark dashboard background.
+
+## 2026-07-20 - Task detail text alignment
+
+**Task:** Align light task-detail title and description closer to the left edge of the hero card.
+**Result:** Moved the final light-theme title/description bounds left while preserving the reserved right column for deadline and priority cards.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri checks the task-detail hero alignment.
 ### 2026-07-20 — Codex
 
 **Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen

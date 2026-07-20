@@ -1448,6 +1448,16 @@
 
 **Commit:** pending
 
+### Task detail title and description left alignment
+
+**What changed:** Adjusted the final light-theme task-detail bounds so `.detail-redesign-title` and `.detail-redesign-desc` start closer to the left edge of the hero card while keeping enough right-side reserve for the deadline and priority controls.
+
+**Encoding check:** `index.html` was not edited in this task.
+
+**Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending
+
 ### Staging visual QA follow-up
 
 **What changed:** Added `onclick="showSubScreen('support')"` to the profile support menu row. Added final scoped light-theme task-detail bounds for `.detail-redesign-title` / `.detail-redesign-desc` so long task titles do not overlap the deadline/priority cards. Added dark-theme dashboard artboard override to remove the remaining green page gradient and keep the canvas black.
