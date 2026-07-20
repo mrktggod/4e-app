@@ -57,7 +57,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | SMART-001 | Done | LIVE | AI endpoint covered by current Anthropic smoke. |
 | SMART-002 | Done | LIVE | Same AI integration path covered by current smoke/source continuity. |
 | SMART-003 | Done | SOURCE-ONLY | Source indicates completion; no fresh scenario proof in this audit. |
-| SMART-007 | Done | SOURCE-ONLY | Source/docs support; no fresh live proof in this audit. |
+| SMART-007 | Done | LIVE | 2026-07-20 safe staging fixture `npm run smoke:smart007` created a fresh synthetic account, extracted 4 AI-memory facts, rendered them in `#ai-memory-list`, deleted one fact, then cleared all facts. |
 | ARCH-001 | Done | SOURCE-ONLY | Architecture item; source/docs only. |
 | BACK-009 | Ready for QA | NEEDS-REAL | Needs real UI/payment/provider QA before Done. |
 | BACK-010 | Ready for QA | NEEDS-REAL | Needs real UI/payment/provider QA before Done. |
@@ -189,7 +189,7 @@ ARCH-001 remains `SOURCE-ONLY` because it is an architecture extraction item, no
 
 ## 2026-07-20 SMART-007 source evidence and fixture plan supplement
 
-SMART-007 remains `SOURCE-ONLY`. The code path is present, but promotion to `LIVE` still requires the dedicated safe fixture run described in `docs/tasks/SMART-007-memory-evidence-fixture-plan.md`.
+SMART-007 was promoted from `SOURCE-ONLY` to `LIVE` on 2026-07-20 after the dedicated safe fixture run described in `docs/tasks/SMART-007-memory-evidence-fixture-plan.md`.
 
 | Area | Source evidence |
 | --- | --- |
@@ -202,3 +202,23 @@ SMART-007 remains `SOURCE-ONLY`. The code path is present, but promotion to `LIV
 | App screen | `index.html:1129-1140` defines the "Что 4 знает обо мне" screen, list, and forget-all button. |
 | App API/UI behavior | `index.html:2129-2270` fetches facts, renders list rows, deletes one fact, and clears all facts. |
 | Prompt usage | `index.html:6536-6542` loads fact summary into the AI system prompt. |
+
+## 2026-07-20 SMART-007 safe fixture result
+
+Command:
+
+```text
+npm run smoke:smart007
+```
+
+Raw evidence:
+
+- Fixture account: `smart007-fixture-202607202006-1784577991198@example.org`.
+- Worker: `https://restless-lab-d737-staging.shelckograff.workers.dev`.
+- `GET /ai/facts?limit=15`: `200`, `enabled=true`, 4 facts.
+- Extracted facts included `Тестовый пользователь SMART-007 fixture`, `Предпочитает короткие утренние планы`, `Учебный проект 'Северный маяк'`, and `Предпочитает получать задачи списком из трёх пунктов`.
+- DOM proof: local `index.html` on 390x844 rendered `#ai-memory` with 4 `.ai-memory-row` entries, delete buttons present, and `scrollWidth=390`.
+- Delete proof: `DELETE /ai/facts/:id` returned `200`, follow-up list count was 3.
+- Clear proof: `DELETE /ai/facts` returned `200`, follow-up list count was 0.
+
+No production deploy, `main` merge, CAL, price, payment, entitlement, secret, live Telegram/device, real user account, or Yuri personal data was used.

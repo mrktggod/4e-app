@@ -12,6 +12,7 @@
         "smoke:back019": "node scripts/back-019-task-card-smoke.mjs",
         "smoke:back055": "node scripts/back-055-notifications-smoke.mjs",
         "smoke:back050": "node scripts/back-050-accessibility-smoke.mjs",
+        "smoke:smart007": "node scripts/smart-007-memory-fixture-smoke.mjs",
         "smoke:auth-avatar": "node scripts/auth-avatar-login-diagnose.mjs",
         "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",
         "deploy:vk-hosting": "npm run build:vk-hosting && vk-miniapps-deploy",

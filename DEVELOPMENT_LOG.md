@@ -1536,3 +1536,13 @@
 **Тест:** `WORKER_BASE_URL=https://restless-lab-d737-staging.shelckograff.workers.dev npm run api-smoke` passed: forgot-password negative `400/400`, register/login/auth-me `200`, two-user Telegram-linked task flow `200`, task create/list/receiver/done/delete `200`, `/anthropic` `200`, `/transcribe` without file `400`. `GET https://4-ai-staging.pages.dev/` returned `200`, HTML length `459855`, staging worker marker found. CORS preflight `OPTIONS /auth/login` with staging Origin returned `204`, ACAO `https://4-ai-staging.pages.dev/`, methods `GET, POST, PUT, OPTIONS`.
 
 **Коммит:** `test(api): refresh staging smoke evidence`
+
+### SMART-007 AI-memory safe fixture smoke
+
+**Что сделано:** Added `scripts/smart-007-memory-fixture-smoke.mjs` and `npm run smoke:smart007`. The smoke creates a fresh staging-only synthetic account, enables AI processing/memory through the privacy API, saves safe fixture AI messages, verifies `/ai/facts`, renders local `#ai-memory-list` at 390x844, deletes one fact, then clears all facts. SMART-007 evidence was promoted from `SOURCE-ONLY` to `LIVE` in the evidence audit.
+
+**Проверка кодировки:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Тест:** `npm run smoke:smart007` passed on staging worker: `register/login/legacy-session/privacy.settings/ai.messages/anthropic` returned `200`; `GET /ai/facts` returned 4 fixture facts; local DOM rendered 4 rows with delete buttons and `scrollWidth=390`; delete-one left 3 facts; clear-all left 0 facts. Also run before commit: `node --check scripts/smart-007-memory-fixture-smoke.mjs`, `node scripts/check-cp1251-mojibake.mjs`, `node scripts/check-js-syntax.mjs`, `bash scripts/check-portable-paths.sh`, `git diff --check`.
+
+**Коммит:** `test(ai): add smart 007 memory fixture smoke`

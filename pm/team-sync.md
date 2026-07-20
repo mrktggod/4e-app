@@ -568,3 +568,9 @@
 - Added `npm run smoke:back050` for repeatable local Chrome/CDP checks of auth labels/errors, toast status/alert live-region behavior, and quick-add/contact/focus dialog ARIA/focus at 390x844.
 - Fixed critical toast detection for Cyrillic phrases: `Нет соединения` now becomes `role=alert` with `aria-live=assertive`.
 - `BACK-050` stays `Ready for QA`; manual keyboard/mobile smoke remains the Done gate.
+
+## 2026-07-20 - SMART-007 memory fixture smoke
+
+- `SMART-007` evidence upgraded from `SOURCE-ONLY` to `LIVE` using safe staging fixture `npm run smoke:smart007`.
+- Fresh synthetic account produced 4 AI-memory facts, local `#ai-memory-list` rendered them at 390x844, delete-one left 3, clear-all left 0.
+- No prod, `main`, CAL, price, payment, entitlement, secrets, live Telegram/device, or real user data was touched.

@@ -1,6 +1,6 @@
 # SMART-007 - AI memory evidence fixture plan
 
-Status: fixture plan only, no live run in this brief.
+Status: fixture plan created 2026-07-20; safe staging fixture passed 2026-07-20.
 
 ## Purpose
 
@@ -80,3 +80,23 @@ These are stable enough for the extractor, but not personal data and not useful 
 - Do not query or mutate Yuri's account.
 - Do not broaden AI memory extraction logic during the fixture run.
 - Do not promote to `LIVE` unless the fixture is actually executed and raw evidence is attached.
+
+## 2026-07-20 Fixture Result
+
+Command:
+
+```text
+npm run smoke:smart007
+```
+
+Fixture account: `smart007-fixture-202607202006-1784577991198@example.org`.
+
+Raw result:
+
+- `GET /ai/facts?limit=15` returned `200`, `enabled=true`, and 4 safe synthetic facts.
+- Rendered local app screen `#ai-memory` at 390x844 with 4 rows in `#ai-memory-list`, delete buttons present, and `documentElement.scrollWidth=390`.
+- `DELETE /ai/facts/:id` removed one fixture fact; follow-up list had 3 facts.
+- `DELETE /ai/facts` cleared the fixture account; follow-up list had 0 facts.
+- Tokens were not logged except as `<redacted>`.
+
+This run used staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev`, a fresh synthetic account, and no production, live Telegram, payment, entitlement, price, secret, CAL, or main-merge action.

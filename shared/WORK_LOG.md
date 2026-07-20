@@ -9312,3 +9312,11 @@
 **Коммит:** `test(api): refresh staging smoke evidence`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Manual/device/provider beta gates remain separate.
+
+### 2026-07-20 — Codex
+
+**Задача:** SMART-007 AI-memory safe fixture evidence
+**Результат:** Added `npm run smoke:smart007`; staging fixture extracted 4 synthetic facts, rendered `#ai-memory-list`, deleted one fact, and cleared all facts.
+**Коммит:** `test(ai): add smart 007 memory fixture smoke`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Continue only with remaining whitelist tasks; real-user/prod/device gates stay manual.
