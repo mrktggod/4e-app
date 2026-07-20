@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-20 - BACK-050 accessibility smoke
+
+### Repeatable auth/toast/dialog accessibility guard
+
+**What changed:** Added `scripts/back-050-accessibility-smoke.mjs` and `npm run smoke:back050`. The smoke opens local `index.html` in headless Chrome/CDP at 390x844 and verifies auth/reset labels, `aria-describedby`, field errors, `aria-invalid`, toast `status`/`alert` live-region behavior, and quick-add/contact/focus dialog ARIA plus focus-in/focus-return. Fixed `isCriticalToastMessage()` so Cyrillic critical phrases such as `Нет соединения` switch the toast to `role="alert"` / `aria-live="assertive"`; the old regex used word boundaries that did not reliably match Cyrillic.
+
+**Encoding check:** `index.html` markers before edit: 106; after edit: 106.
+
+**Test:** `npm run smoke:back050`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; Git Bash `scripts/check-ui-architecture.sh`; Git Bash `scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** N/A for pre-commit log entry; final commit SHA is reported in the automation summary.
+
+---
+
 ## 2026-07-20 - BACK-055 notification action-card smoke
 
 ### Headless evidence for notification attention feed

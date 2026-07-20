@@ -8,6 +8,16 @@
 
 ### 2026-07-20 - Codex
 
+**Task:** BACK-050 accessibility smoke
+**Result:** Added `npm run smoke:back050` for auth field ARIA, toast live-region critical/status behavior, and quick-add/contact/focus dialog focus management. Fixed Cyrillic critical toast detection so `Нет соединения` becomes `role="alert"` with assertive live-region.
+**Commit:** N/A for pre-commit log entry; final commit SHA is reported in the automation summary.
+**Status:** Done
+**Next step:** Keep manual keyboard/mobile smoke as the remaining `BACK-050` gate before `Done`.
+
+---
+
+### 2026-07-20 - Codex
+
 **Task:** BACK-055 notification action-card headless smoke
 **Result:** Added `npm run smoke:back055` and recorded LIVE headless evidence for notification cards: empty state, filters, unread badge, expand, snooze, go-to-task, done and write actions all pass at 390x844 without live Telegram/backend calls.
 **Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.

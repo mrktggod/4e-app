@@ -6656,7 +6656,7 @@ function isCriticalToastMessage(message,type){
   if(type==='error'||type==='alert') return true;
   if(type==='success'||type==='status') return false;
   const text=String(message||'').toLowerCase();
-  return /\b(ошибка|не удалось|нет соединения|не могу|не найден|истек|истёк|недоступ|слишком короткий|не совпадают|введите|введи|выберите|проверьте|нужен вход|сначала войдите|пробный период истёк)\b/i.test(text);
+  return /(ошибка|не удалось|нет соединения|не могу|не найден|истек|истёк|недоступ|слишком короткий|не совпадают|введите|введи|выберите|проверьте|нужен вход|сначала войдите|пробный период истёк)/i.test(text);
 }
 function showToast(msg,type){
   const t=document.getElementById('toast');

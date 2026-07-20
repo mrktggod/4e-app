@@ -45,7 +45,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | BACK-055 | Done | LIVE | 2026-07-20 headless Chrome/CDP smoke `npm run smoke:back055` verified notification action-card rendering and interactions at 390x844. |
 | HOME-001 | Done | LIVE/PARTIAL | 2026-07-20 local headless Chrome/CDP smoke `npm run smoke:home001` verified dashboard structure, routes, dark/light render and screenshot artifacts at 390x844. |
 | BACK-049 | Done | SOURCE-ONLY | Needs explicit live proof if it becomes release-critical. |
-| BACK-050 | Ready for QA | NEEDS-REAL | Provider/manual path remains required. |
+| BACK-050 | Ready for QA | LIVE/PARTIAL | 2026-07-20 local headless Chrome/CDP smoke `npm run smoke:back050` verified auth labels/errors, toast status/alert live-region behavior, and quick-add/contact/focus dialog ARIA/focus at 390x844. Manual keyboard/mobile smoke remains required before Done. |
 | NEW-006 | Ready for QA | NEEDS-REAL | Staging chain needs manual UI confirmation. |
 | NEW-008 | Ready for QA | NEEDS-REAL | Staging chain needs manual UI confirmation. |
 | BACK-005 | Done | LIVE | Task API paths covered by smoke. |
@@ -160,3 +160,11 @@ The staging backend/auth/task/AI smoke layer is healthy. Several P0/P1 rows have
 | Source year price alignment | LIVE/SOURCE | Worker and app source defaults changed from `9504` to `9950`; staging worker deploy `6cf4e558-9681-46a7-ae60-20f51375d505`; `GET /tariff-config` returned `plans.year.priceRub=9950` and `plans.year.stars=9950`. Details: `docs/tasks/PRICE-MAP-2026-07-17.md`. |
 | BACK-060 sibling unsigned re-check | LIVE | Fresh unsigned sessionless `update-task` and `set-reminder` with foreign `telegramUserId` both returned `401 {"ok":false,"error":"Не авторизован"}` on staging; no sibling bot-style mutation observed. Details: `docs/tasks/BACK-060-bot-path-signature-reconciliation.md`. |
 | Task create/list latency re-check | LIVE/PARTIAL | Fresh staging account showed `tasks.create` 283 ms, `tasks.list.before` 163 ms, `tasks.list.after` 148 ms. Prior 10-12s latency did not reproduce; no code fix applied. Details: `docs/tasks/PERF-2026-07-18-task-latency-recheck.md`. |
+
+## 2026-07-20 BACK-050 accessibility smoke supplement
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Auth field accessibility baseline | LIVE/PARTIAL | `npm run smoke:back050` verified `login-email`, `login-pass`, `reg-name`, `reg-email`, `reg-pass`, `forgot-email`, `reset-pass`, and `reset-pass2` have labels, `aria-describedby`, field error targets, and `aria-invalid=false`. |
+| Toast live-region behavior | LIVE/PARTIAL | Same smoke verified default `#toast` is `role=status` / `aria-live=polite`, critical `Нет соединения` switches to `role=alert` / `aria-live=assertive`, and success/status text switches back to polite status. |
+| Dialog focus baseline | LIVE/PARTIAL | Same smoke verified quick-add, contact panel, and focus panel dialogs expose `role=dialog`, `aria-modal=true`, `aria-labelledby`, `aria-hidden` state changes, focus-in, and focus-return on close/Escape. |

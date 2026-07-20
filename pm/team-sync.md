@@ -554,3 +554,9 @@
 - Raw proof: `WORKER_BASE_URL=https://restless-lab-d737-staging.shelckograff.workers.dev npm run api-smoke` passed through register/login/auth-me, two-user linked task flow, task create/list/done/delete, `/anthropic`, and `/transcribe` negative.
 - App shell proof: `GET https://4-ai-staging.pages.dev/ -> 200`, staging worker marker found, CORS preflight `/auth/login` from staging origin returned `204`.
 - No deploy, `main` merge, prod, secrets, prices, payment, entitlement or CAL work was touched.
+
+## 2026-07-20 - BACK-050 accessibility smoke
+
+- Added `npm run smoke:back050` for repeatable local Chrome/CDP checks of auth labels/errors, toast status/alert live-region behavior, and quick-add/contact/focus dialog ARIA/focus at 390x844.
+- Fixed critical toast detection for Cyrillic phrases: `Нет соединения` now becomes `role=alert` with `aria-live=assertive`.
+- `BACK-050` stays `Ready for QA`; manual keyboard/mobile smoke remains the Done gate.
