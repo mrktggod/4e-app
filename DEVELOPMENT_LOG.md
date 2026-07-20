@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-20 — SMART-014 voice multi-task planning
+
+### Техническое задание: голосовой разбор нескольких задач и план дня
+
+**Что сделано:** Создано полное ТЗ `docs/tasks/SMART-014-voice-multi-task-day-plan.md`. Зафиксированы границы между сегментацией нескольких задач, `SMART-009`, дедупликацией `SMART-010`, декомпозицией `SMART-013` и календарём `CAL-002`; эталонный UX, политика только существенных уточнений, валидируемый `<task_plan>` JSON, frontend/Worker integration plan, идемпотентный batch save, privacy, analytics, usability test, acceptance criteria и QA-кейсы. В `pm/backlog.md` и `shared/ROADMAP.md` задача записана как стратегический P1 с реализацией после beta gate; эталон добавлен в `pm/assistant-evaluation.md`.
+
+**Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
+
+**Тест:** Сверены актуальные `origin/main`, занятые SMART-ID, runtime `sendVoiceMessage()` / `SMART-008` / `SMART-009` / `SMART-010`, продуктовые решения beta/CAL; выполнены `git diff --check` и эквивалент portable-path проверки с исключением служебного файла `.git` отдельного worktree.
+
+**Коммит:** `docs(ai): add smart 014 voice planning spec`
+
+**Статус:** ТЗ и приоритет оформлены; runtime-разработка не начиналась.
+
 ## 2026-07-06 — merge `origin/main` into `feat/admin-tariff-api`
 
 ### Разрешение конфликтов перед PR
