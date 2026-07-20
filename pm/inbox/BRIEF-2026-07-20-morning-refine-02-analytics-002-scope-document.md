@@ -1,4 +1,8 @@
-status: NEW
+status: DONE
+
+Completed by `pm/outbox/REPORT-BRIEF-2026-07-19-16-analytics-002-scope-pause-and-document.md`.
+Retro report: `pm/outbox/REPORT-analytics-002-step1-2-retro.md`
+Done report: `pm/outbox/REPORT-BRIEF-2026-07-20-morning-refine-02-analytics-002-scope-document.md`
 
 # BRIEF-2026-07-20-morning-refine-02-analytics-002-scope-document
 
