@@ -1,4 +1,6 @@
-status: NEW
+status: DONE
+
+Done report: `pm/outbox/REPORT-BRIEF-2026-07-19-14-agents-stale-priorities.md`
 
 # BRIEF-2026-07-19-14-agents-stale-priorities
 
