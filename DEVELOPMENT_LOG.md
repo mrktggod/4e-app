@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-07-20 — Live QA: calendar navigation regression
+
+### Результаты `NEW-006` / `NEW-008` и handoff Юрию
+
+**Что сделано:** Сохранён ручной smoke Алексея в Telegram Mini App на iPhone. Safe area и keyboard-overlap не воспроизвелись в проверенных сценариях. Отдельно заведены `BUG-2026-07-20-001`: после перехода в календарь центральная кнопка становится микрофоном и по короткому нажатию открывает voice вместо текстового AI-чата; и `BUG-2026-07-20-002`: календарь показывает сырую строку `2026-07-11T04:00`. Добавлены screenshot evidence, обновлённые QA-чеклисты и handoff `pm/agent-inbox/codex-to-yuri-2026-07-20-calendar-nav-regression.md`.
+
+**Проверка кодировки:** `index.html` не менялся; проверка Шага 0 не требовалась.
+
+**Тест:** сверка QA-отчёта пользователя со скриншотом; `git diff --check`; `bash scripts/check-portable-paths.sh`; `node scripts/check-doc-encoding.mjs`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Коммит:** `docs(qa): record calendar navigation regression`
+
 ## 2026-07-06 — merge `origin/main` into `feat/admin-tariff-api`
 
 ### Разрешение конфликтов перед PR
