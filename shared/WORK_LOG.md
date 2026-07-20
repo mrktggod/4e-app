@@ -6,6 +6,26 @@
 
 ---
 
+### 2026-07-19 - Codex
+
+**Task:** ANALYTICS-002 Step 1 app attribution capture
+**Result:** App commit `54cbddc` added the ANALYTICS-002 plan and first-touch attribution plumbing in `scripts/platform-adapter.js`, auth helpers/handlers, and `index.html`. Retro status: implemented ahead of the plan's approval gate and paused pending Yuri decision; no further ANALYTICS-002 code should be added until approved.
+**Commit:** `54cbddc`
+**Status:** Step 1-2 implemented (unreviewed) - paused
+**Next step:** Yuri/Cowork review whether to keep, quarantine, or continue ANALYTICS-002 before Steps 3-6.
+
+---
+
+### 2026-07-19 - Codex
+
+**Task:** ANALYTICS-002 Step 2 worker attribution persistence
+**Result:** Worker commit `64bc0477` added `migrations/0009_user_acquisition_attribution.sql` and updated `worker.js` to persist acquisition attribution and expose channel breakdown through analytics summary. Retro status: implemented ahead of the plan's approval gate and paused pending Yuri decision; no further ANALYTICS-002 code should be added until approved.
+**Commit:** `64bc0477`
+**Status:** Step 1-2 implemented (unreviewed) - paused
+**Next step:** Yuri/Cowork review whether to keep, quarantine, or continue ANALYTICS-002 before Steps 3-6.
+
+---
+
 ### 2026-07-20 - Codex
 
 **Task:** Auth/avatar staging diagnosis from morning refine brief
