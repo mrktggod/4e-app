@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-20 - Codex - auth/avatar diagnose
+
+- Branch: `feat/admin-tariff-api`.
+- Scope: diagnosed the requested morning-refine auth/avatar bugs on live staging fresh accounts; did not change auth/password/merge logic.
+- Result: added `npm run smoke:auth-avatar`; report status is `NEED-CLAUDE`.
+- Root causes: password inline error target misses `#login-pass-error`; profile avatar draft uses global `extendedProfileDraft`; photo save is local-only and not restored in a fresh browser.
+- Next: Claude should review and implement a narrow fix plan before app/runtime changes.
+
 Обновлено: 2026-07-15
 
 Источник правды: GitHub + этот файл. Подробности живут в `shared/ROADMAP.md`, `pm/backlog.md`, `pm/bugs.md`, `shared/WORK_LOG.md` и `DEVELOPMENT_LOG.md`.
