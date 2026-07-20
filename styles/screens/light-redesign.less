@@ -2862,11 +2862,11 @@ html[data-theme="dark"] #home .dash-artboard::after {
 html[data-theme="light"] #task-detail .detail-redesign-title {
   position: absolute !important;
   top: 128px !important;
-  left: 36px !important;
+  left: 24px !important;
   right: auto !important;
-  width: 216px !important;
+  width: 228px !important;
   min-width: 0 !important;
-  max-width: 216px !important;
+  max-width: 228px !important;
   max-height: 100px !important;
   box-sizing: border-box !important;
   display: -webkit-box !important;
@@ -2887,11 +2887,11 @@ html[data-theme="light"] #task-detail .detail-redesign-title {
 html[data-theme="light"] #task-detail .detail-redesign-desc {
   position: absolute !important;
   top: 238px !important;
-  left: 36px !important;
+  left: 24px !important;
   right: auto !important;
-  width: 238px !important;
+  width: 248px !important;
   min-width: 0 !important;
-  max-width: 238px !important;
+  max-width: 248px !important;
   max-height: 64px !important;
   display: -webkit-box !important;
   -webkit-box-orient: vertical !important;
@@ -2899,4 +2899,18 @@ html[data-theme="light"] #task-detail .detail-redesign-desc {
   overflow: hidden !important;
   color: #14324a !important;
   opacity: .94 !important;
+}
+
+html:not([data-theme="light"]) #task-detail .detail-redesign-title,
+html[data-theme="dark"] #task-detail .detail-redesign-title {
+  font-size: clamp(25px, 6.4vw, 28px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.038em !important;
+}
+
+html:not([data-theme="light"]) #task-detail .detail-redesign-desc,
+html[data-theme="dark"] #task-detail .detail-redesign-desc {
+  top: 284px !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
 }

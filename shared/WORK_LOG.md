@@ -9257,6 +9257,14 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri checks the task-detail hero alignment.
+
+## 2026-07-20 - Task detail title balance
+
+**Task:** Tune task-detail hero title on light and dark themes after manual QA screenshots.
+**Result:** Light title/description bounds moved closer to the left edge; dark title reduced slightly and description moved lower for more breathing room.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri re-checks task-detail hero on both themes.
 ### 2026-07-20 — Codex
 
 **Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen
