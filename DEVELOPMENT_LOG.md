@@ -9,7 +9,7 @@
 
 ### Техническое задание: голосовой разбор нескольких задач и план дня
 
-**Что сделано:** Создано полное ТЗ `docs/tasks/SMART-014-voice-multi-task-day-plan.md`. Зафиксированы границы между сегментацией нескольких задач, `SMART-009`, дедупликацией `SMART-010`, декомпозицией `SMART-013` и календарём `CAL-002`; эталонный UX, политика только существенных уточнений, валидируемый `<task_plan>` JSON, frontend/Worker integration plan, идемпотентный batch save, privacy, analytics, usability test, acceptance criteria и QA-кейсы. В `pm/backlog.md` и `shared/ROADMAP.md` задача записана как стратегический P1 с реализацией после beta gate; эталон добавлен в `pm/assistant-evaluation.md`.
+**Что сделано:** Создано полное ТЗ `docs/tasks/SMART-014-voice-multi-task-day-plan.md`. Зафиксированы границы между сегментацией нескольких задач, `SMART-009`, дедупликацией `SMART-010`, декомпозицией `SMART-013` и календарём `CAL-002`; эталонный UX, политика только существенных уточнений, валидируемый `<task_plan>` JSON, frontend/Worker integration plan, идемпотентный batch save, privacy, analytics, usability test, acceptance criteria и QA-кейсы. В `pm/backlog.md` и `shared/ROADMAP.md` задача записана как стратегический P1 с реализацией после beta gate; эталон добавлен в `pm/assistant-evaluation.md`. Для Юрия подготовлен ограниченный запрос на короткий review `pm/agent-inbox/codex-to-yuri-2026-07-20-smart-014-review.md`; реализация и merge явно исключены до решения Алексея.
 
 **Проверка кодировки:** `index.html` не менялся, Шаг 0 не требовался.
 
