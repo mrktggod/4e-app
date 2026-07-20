@@ -1,4 +1,6 @@
-status: NEW
+status: NEED-YURI
+
+Need Yuri report: `pm/outbox/REPORT-BRIEF-2026-07-19-12-voice-perf-new-020.md`
 
 # BRIEF-2026-07-19-12-voice-perf-new-020
 
