@@ -9281,6 +9281,14 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri opens Profile -> Notifications and checks that the Part 3 handoff screen is visible.
+
+## 2026-07-20 - Part 3 handoff publish fix
+
+**Task:** Fix Part 3 handoff screens not appearing on staging.
+**Result:** Root cause found: `scripts/design-part3-handoff.js` was referenced by `index.html` but omitted from the Pages whitelist artifact, so staging returned `404` for the script. Added it to `scripts/build-pages-whitelist.mjs`.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri re-checks Profile -> Notifications/Security/Memory/Language/Support on staging.
 ### 2026-07-20 — Codex
 
 **Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen

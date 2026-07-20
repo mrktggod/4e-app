@@ -1458,6 +1458,16 @@
 
 **Commit:** pending
 
+### Part 3 handoff publish fix
+
+**What changed:** Added `scripts/design-part3-handoff.js` to the Pages whitelist builder. The staging HTML referenced the script, but `.pages-dist/scripts` did not contain it, so `GET /scripts/design-part3-handoff.js?v=20260720-part3-2` returned `404` and no Part 3 iframe layers mounted.
+
+**Encoding check:** `index.html` was not edited in this task.
+
+**Tests:** `node --check scripts/build-pages-whitelist.mjs`; `node --check scripts/design-part3-handoff.js`; `PAGES_WORKER_TARGET=staging npm run build:worker-assets`; `Test-Path .pages-dist/scripts/design-part3-handoff.js`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending
+
 ### Task detail long input guard
 
 **What changed:** Added final guard CSS for task-detail title and description fields so long unbroken input wraps/clips inside the hero card instead of pushing into the deadline/priority controls or overflowing the panel. The guard applies to both light and dark themes with explicit width reserves.

@@ -14,6 +14,7 @@ const requiredFiles = [
   "scripts/auth.js",
   "scripts/task-ui-renderers.js",
   "scripts/auth-handlers.js",
+  "scripts/design-part3-handoff.js",
 ];
 
 const optionalPaths = [
