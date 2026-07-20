@@ -1365,3 +1365,15 @@
 **Known tails:** API smoke against staging worker fails at `register: 500`; full browser visual smoke was not run because Playwright is not installed locally; prod deploy is NEED-YURI and was not performed.
 
 **Commit:** pending
+
+## 2026-07-20
+
+### Dashboard empty CTA contrast on light redesign
+
+**What changed:** Added a scoped LESS override for `html[data-theme="light"] #home .dash-tasks--empty .dash-empty-card` so the empty dashboard CTA remains a dark-glass card with readable light title and body copy. Updated `sw.js` cache version to force the refreshed CSS shell.
+
+**Encoding check:** `index.html` was not edited in this task.
+
+**Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending

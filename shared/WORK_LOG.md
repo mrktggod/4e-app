@@ -9163,3 +9163,11 @@
 **Commit:** pending
 **Status:** NEED-YURI - production deploy waits for Yuri approval; staging API smoke currently fails at `register: 500`.
 **Next step:** Yuri reviews staging URL and decides prod cutover after API/register status is understood.
+
+## 2026-07-20 - Dashboard empty CTA contrast
+
+**Task:** Fix unreadable `Первый AI-план за 60 секунд` card on the light dashboard preview.
+**Result:** Added a light-theme override that keeps the empty CTA card dark-glass but restores readable light title/body text; updated PWA cache version so staging refreshes CSS.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri checks the preview card visually.
