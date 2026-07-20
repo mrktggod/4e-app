@@ -1447,6 +1447,16 @@
 **Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
 
 **Commit:** pending
+
+### Staging visual QA follow-up
+
+**What changed:** Added `onclick="showSubScreen('support')"` to the profile support menu row. Added final scoped light-theme task-detail bounds for `.detail-redesign-title` / `.detail-redesign-desc` so long task titles do not overlap the deadline/priority cards. Added dark-theme dashboard artboard override to remove the remaining green page gradient and keep the canvas black.
+
+**Encoding check:** `index.html` marker count before edit: 106; after edit: 106.
+
+**Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending
 ### HOME-001 dashboard headless smoke evidence
 
 **Что сделано:** Added `scripts/home-001-dashboard-smoke.mjs` and `npm run smoke:home001`. The smoke opens the real local `index.html` in headless Chrome/CDP at 390x844, mocks only safe read responses, verifies top-3 dashboard rows, 4 metric cards, 3 bottom nav buttons, focus overlay, profile/notifications/statistics/ask/calendar click routes, hero image loading, and dark/light theme rendering. Saved PNG evidence in `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png` and `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`. `HOME-001` was moved to `Done` in PM docs.

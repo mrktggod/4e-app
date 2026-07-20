@@ -14091,3 +14091,59 @@ html[data-theme="dark"] #home::after {
   background: transparent !important;
   background-image: none !important;
 }
+/* 2026-07-20 QA pass: task hero bounds, support follow-up and hard black dashboard */
+html:not([data-theme="light"]) #home .dash-artboard,
+html[data-theme="dark"] #home .dash-artboard {
+  background: #000 !important;
+  background-color: #000 !important;
+  background-image: none !important;
+}
+html:not([data-theme="light"]) #home .dash-artboard::before,
+html:not([data-theme="light"]) #home .dash-artboard::after,
+html[data-theme="dark"] #home .dash-artboard::before,
+html[data-theme="dark"] #home .dash-artboard::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  position: absolute !important;
+  top: 128px !important;
+  left: 54px !important;
+  right: auto !important;
+  width: 184px !important;
+  min-width: 0 !important;
+  max-width: 184px !important;
+  max-height: 100px !important;
+  box-sizing: border-box !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 4 !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  text-overflow: clip !important;
+  clip-path: inset(0) !important;
+  contain: layout paint !important;
+  font-size: clamp(19px, 4.9vw, 22px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.026em !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  position: absolute !important;
+  top: 238px !important;
+  left: 54px !important;
+  right: auto !important;
+  width: 232px !important;
+  min-width: 0 !important;
+  max-width: 232px !important;
+  max-height: 64px !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  overflow: hidden !important;
+  color: #14324a !important;
+  opacity: 0.94 !important;
+}

@@ -1,4 +1,4 @@
-const PWA_CACHE = "4-pwa-shell-v20260720-dashboard-empty-1";
+const PWA_CACHE = "4-pwa-shell-v20260720-task-support-bg-1";
 
 const SHELL_ASSETS = [
   "/",

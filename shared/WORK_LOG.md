@@ -9241,6 +9241,14 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri checks the preview card visually.
+
+## 2026-07-20 - Staging visual QA follow-up
+
+**Task:** Fix three manual QA findings on staging: task-detail title bounds, profile support navigation, and dark dashboard canvas.
+**Result:** Support menu row now opens the support screen; light task-detail title is clipped to the left content area with visible description below; dark dashboard artboard background is forced to black.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri re-checks task detail, profile support, and dark dashboard background.
 ### 2026-07-20 — Codex
 
 **Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen
