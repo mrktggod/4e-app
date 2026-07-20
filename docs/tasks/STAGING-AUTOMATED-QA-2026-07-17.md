@@ -88,3 +88,49 @@ ACAM: GET, POST, PUT, OPTIONS
 Automated core staging layer is green. No new P0/P1 bug was found in this autonomous run.
 
 Beta invite is still not automatically approved because the matrix explicitly requires manual core/mobile checks before the invite decision.
+
+## 2026-07-20 resmoke
+
+Purpose: refresh `BACK-034` staging evidence after the 2026-07-18 redesign cutover note that staging API smoke had failed at `register: 500`.
+
+Raw command:
+
+```text
+WORKER_BASE_URL=https://restless-lab-d737-staging.shelckograff.workers.dev npm run api-smoke
+```
+
+Result:
+
+```text
+forgot-password(empty): 400
+forgot-password(invalid): 400
+register: 200
+login: 200
+auth/me: 200
+register(user2): 200
+login(user2): 200
+telegram link(creator): 200
+telegram link(receiver): 200
+tasks.list.before: 200
+tasks.create: 200
+tasks.list.after: 200
+tasks.list.receiver: 200
+tasks.done: 200
+tasks.delete: 200
+anthropic(smoke): 200
+transcribe(no-file): 400
+api-smoke: OK
+```
+
+App shell and browser-origin CORS also passed:
+
+```text
+GET https://4-ai-staging.pages.dev/ -> 200
+HTML length -> 459855
+staging worker marker -> found
+OPTIONS /auth/login with Origin https://4-ai-staging.pages.dev/ -> 204
+Access-Control-Allow-Origin -> https://4-ai-staging.pages.dev/
+Access-Control-Allow-Methods -> GET, POST, PUT, OPTIONS
+```
+
+Decision: `BACK-034` automated staging contour is green again. Manual/provider/device/beta gates remain separate.

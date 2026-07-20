@@ -47,7 +47,7 @@
 | Доступ и авторизация | BACK-024 — Telegram вход не должен упираться в тупиковую подсказку между Mini App и ботом; BACK-036 — web fallback Telegram-входа без `tg://resolve`; BACK-041 — bot-side возврат на сайт из `/start auth_*` | P1 | BACK-024 Done; BACK-036 Ready for QA; BACK-041 Ready for QA |
 | Голосовой ввод | BACK-021 — MediaRecorder + Whisper вместо SpeechRecognition (фикс BUG-2026-06-29-002, iOS) | P1 | Triaged |
 | 152-ФЗ | BACK-007 — номер уведомления РКН вшит в privacy.html, ссылка видна на login/register/онбординге, live staging `privacy.html` отдаёт `200` и содержит `102299/77` | P1 | Done |
-| Staging-контур | BACK-034 — Staging D1/KV + `wrangler --env staging`, тестовый бот, dev-версия Pages подняты; staging AI smoke пройден | P1 | Ready for QA |
+| Staging-контур | BACK-034 — Staging D1/KV + `wrangler --env staging`, тестовый бот, dev-версия Pages подняты; staging AI smoke пройден | P1 | Done — 2026-07-20 resmoke: staging app shell, worker marker, CORS, auth/register/login, tasks, `/anthropic` and `/transcribe` negative all green |
 | Хостинг фронта | INFRA-001 — whitelist-фронт на Workers Static Assets + маршрут `app.4-ai.site/*` через Worker | P0 | Done — решение 2026-07-14: РФ-без-VPN сознательно отложен до PLAT-002, Telegram/VK уже закрывают RU-доступ без VPN |
 | VK-хостинг | INFRA-004 — VK-поверхность переехала на хостинг VK Mini Apps; API остаётся на `edge.4-ai.site`, потому что Workers доступны из РФ | P1 | Done |
 | VK на мобильном интернете РФ | INFRA-005 — промежуточный RU API proxy в Yandex Cloud для VK Mini App; шаг 1 = gateway-прокси на `edge.4-ai.site` + VK-сборка с новым API base, без полного переноса backend | P0 | Done — живой phone-smoke без VPN подтверждён |

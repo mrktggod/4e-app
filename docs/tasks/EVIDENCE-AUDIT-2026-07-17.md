@@ -37,7 +37,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | BACK-022 | Done | LIVE | Related auth/task flow remains covered by smoke. |
 | BACK-024 | Done | LIVE | Covered by source plus staging smoke path. |
 | BACK-025 | Done | SOURCE-ONLY | No fresh live proof in this audit. |
-| BACK-034 | Done | LIVE | Covered by task lifecycle smoke and source continuity. |
+| BACK-034 | Done | LIVE | 2026-07-20 staging resmoke passed app shell, worker marker, CORS preflight, auth/register/login, two-user task flow, `/anthropic`, and `/transcribe` negative. |
 | BACK-035 | Ready for QA | NEEDS-REAL | Requires manual UI/provider validation before Done. |
 | BACK-036 | Ready for QA | NEEDS-REAL | `/start` fallback needs real bot/user journey verification. |
 | BACK-041 | Ready for QA | NEEDS-REAL | Needs real provider/UI path; do not promote from source alone. |

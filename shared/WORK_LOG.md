@@ -9201,3 +9201,11 @@
 **Коммит:** `test(ui): add home dashboard smoke evidence`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Continue only with remaining whitelist tasks; TMA/device/provider gates stay manual.
+
+### 2026-07-20 — Codex
+
+**Задача:** BACK-034 staging API resmoke after redesign cutover
+**Результат:** Staging app shell, worker marker, CORS preflight and full `api-smoke` are green again; roadmap synced to `Done`.
+**Коммит:** `test(api): refresh staging smoke evidence`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Manual/device/provider beta gates remain separate.

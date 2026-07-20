@@ -547,3 +547,10 @@
 - Added `npm run smoke:home001` for dashboard/home regressions: top-3 rows, 4 metrics, 3 bottom nav buttons, focus overlay, profile/notifications/statistics/ask/calendar routes, dark/light screenshots.
 - Evidence: `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png`, `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`, report `pm/outbox/REPORT-HOME-001-dashboard-smoke-2026-07-20.md`.
 - Separate manual gates remain open for TMA/device/provider/payment/auth flows; this task did not deploy, merge to `main`, touch prices, secrets, CAL, payment, or entitlement.
+
+## 2026-07-20 - BACK-034 staging resmoke Done
+
+- `BACK-034` automated staging contour is green again after the redesign cutover tail.
+- Raw proof: `WORKER_BASE_URL=https://restless-lab-d737-staging.shelckograff.workers.dev npm run api-smoke` passed through register/login/auth-me, two-user linked task flow, task create/list/done/delete, `/anthropic`, and `/transcribe` negative.
+- App shell proof: `GET https://4-ai-staging.pages.dev/ -> 200`, staging worker marker found, CORS preflight `/auth/login` from staging origin returned `204`.
+- No deploy, `main` merge, prod, secrets, prices, payment, entitlement or CAL work was touched.

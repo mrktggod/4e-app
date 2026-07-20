@@ -1419,3 +1419,13 @@
 **Тест:** `npm run smoke:home001` passed with `documentScrollWidth=390`, `homeRows=3`, `metricCards=4`, `bottomNavButtons=3`, `focusPanelRows=3`, dark/light `scrollWidth=390`; `node --check scripts/home-001-dashboard-smoke.mjs`; `npm run check:js-syntax`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`.
 
 **Коммит:** `test(ui): add home dashboard smoke evidence`
+
+### BACK-034 staging API resmoke
+
+**Что сделано:** Refreshed automated staging evidence after the 2026-07-18 redesign cutover note that staging API smoke failed at `register: 500`. No runtime code, deploy, production, payment, entitlement, CAL, price, or secret changes were made.
+
+**Проверка кодировки:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Тест:** `WORKER_BASE_URL=https://restless-lab-d737-staging.shelckograff.workers.dev npm run api-smoke` passed: forgot-password negative `400/400`, register/login/auth-me `200`, two-user Telegram-linked task flow `200`, task create/list/receiver/done/delete `200`, `/anthropic` `200`, `/transcribe` without file `400`. `GET https://4-ai-staging.pages.dev/` returned `200`, HTML length `459855`, staging worker marker found. CORS preflight `OPTIONS /auth/login` with staging Origin returned `204`, ACAO `https://4-ai-staging.pages.dev/`, methods `GET, POST, PUT, OPTIONS`.
+
+**Коммит:** `test(api): refresh staging smoke evidence`
