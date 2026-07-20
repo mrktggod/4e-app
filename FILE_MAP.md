@@ -32,6 +32,10 @@
 | `docs/ui-architecture-rules.md` | 44 | UI-правило: HTML=структура, LESS=стили, JS=поведение, BEM и legacy policy | Читать перед UI-правками |
 | `scripts/check-portable-paths.sh` | 21 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
 | `scripts/check-ui-architecture.sh` | 78 | Guard против роста inline UI-долга в `index.html` | Запускать перед UI-коммитом |
+| `scripts/back-019-task-card-smoke.mjs` | 330 | Headless Chrome/CDP smoke for BACK-019 task cards on 390x844 viewport: overflow, 2-line title clamp, tap and swipe actions | Run with `npm run smoke:back019` before changing task-card renderer |
+| `scripts/back-055-notifications-smoke.mjs` | 340 | Headless Chrome/CDP smoke for BACK-055 notification action cards on 390x844 viewport: empty state, filters, unread badge, expand, snooze, go-to-task, done and write actions | Run with `npm run smoke:back055` before changing notification action-card renderer |
+| `scripts/home-001-dashboard-smoke.mjs` | 496 | Headless Chrome/CDP smoke for HOME-001 dashboard at 390x844: top-3 rows, metrics, nav routes, dark/light screenshots | Run with `npm run smoke:home001` before changing dashboard/home routing or visual shell |
+| `scripts/back-050-accessibility-smoke.mjs` | 349 | Headless Chrome/CDP smoke for BACK-050 accessibility baseline: auth labels/errors, toast status/alert live-region, dialog ARIA/focus/restore on 390x844 viewport | Run with `npm run smoke:back050` before changing auth accessibility, toast behavior, or quick-add/contact/focus dialogs |
 | `.githooks/pre-commit` | 5 | Локальный hook для запуска path guard и UI architecture guard перед commit | Активировать через `git config core.hooksPath .githooks` |
 | `.github/workflows/path-guard.yml` | 15 | GitHub Actions quality guard: переносимые пути + UI architecture debt | Срабатывает на push и PR |
 

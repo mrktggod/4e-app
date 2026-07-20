@@ -4,7 +4,7 @@
 **Владелец:** Юрий
 **Тип:** Product/UI
 **Приоритет:** P1
-**Статус:** Ready for QA
+**Статус:** Done
 **Рекомендуемая ветка:** `feat/notifications-action-cards`
 
 ## Контекст

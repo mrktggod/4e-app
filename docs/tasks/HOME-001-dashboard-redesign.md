@@ -4,7 +4,7 @@
 **Владелец:** Юрий (концепция) / Codex (реализация)
 **Тип:** Product/UI
 **Приоритет:** P1
-**Статус:** Todo
+**Статус:** Done
 **Рекомендуемая ветка:** `feat/home-dashboard-v2`
 
 ## Контекст
@@ -75,6 +75,22 @@
 4. Долгое нажатие на центр нав-панели не срабатывает случайно при обычном тапе (нет двойного открытия чата+голоса).
 5. `NEW-006`/`NEW-008` фиксы не регрессируют на упрощённой навигации.
 6. Пройти `check-ui-architecture.sh`, `check-cp1251-mojibake.mjs`, `check-js-syntax.mjs`.
+
+## QA 2026-07-20
+
+`npm run smoke:home001` passed in local headless Chrome/CDP at 390x844.
+
+Raw evidence:
+
+- `homeRows=3`, `metricCards=4`, `bottomNavButtons=3`, `focusPanelRows=3`.
+- `documentScrollWidth=390`, `viewportWidth=390` in both dark and light themes.
+- Click routes passed: avatar -> profile, bell -> notifications, focus card -> focus overlay, done/active/promise/progress metrics -> statistics, center nav -> ask, calendar nav -> calendar.
+- Hero image loaded with `naturalWidth > 0`.
+
+Screenshots:
+
+- `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png`
+- `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`
 
 ## Git
 

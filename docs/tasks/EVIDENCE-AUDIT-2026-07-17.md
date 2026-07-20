@@ -37,15 +37,15 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | BACK-022 | Done | LIVE | Related auth/task flow remains covered by smoke. |
 | BACK-024 | Done | LIVE | Covered by source plus staging smoke path. |
 | BACK-025 | Done | SOURCE-ONLY | No fresh live proof in this audit. |
-| BACK-034 | Done | LIVE | Covered by task lifecycle smoke and source continuity. |
+| BACK-034 | Done | LIVE | 2026-07-20 staging resmoke passed app shell, worker marker, CORS preflight, auth/register/login, two-user task flow, `/anthropic`, and `/transcribe` negative. |
 | BACK-035 | Ready for QA | NEEDS-REAL | Requires manual UI/provider validation before Done. |
 | BACK-036 | Ready for QA | NEEDS-REAL | `/start` fallback needs real bot/user journey verification. |
 | BACK-041 | Ready for QA | NEEDS-REAL | Needs real provider/UI path; do not promote from source alone. |
 | BACK-048 | Done | LIVE | Covered by current worker smoke and prior recorded proof. |
-| BACK-055 | Done | SOURCE-ONLY | Source/docs support; no fresh live proof in this audit. |
-| HOME-001 | Ready for QA | NEEDS-REAL | Dashboard redesign is UI-heavy and needs Yuri/manual QA. |
+| BACK-055 | Done | LIVE | 2026-07-20 headless Chrome/CDP smoke `npm run smoke:back055` verified notification action-card rendering and interactions at 390x844. |
+| HOME-001 | Done | LIVE/PARTIAL | 2026-07-20 local headless Chrome/CDP smoke `npm run smoke:home001` verified dashboard structure, routes, dark/light render and screenshot artifacts at 390x844. |
 | BACK-049 | Done | SOURCE-ONLY | Needs explicit live proof if it becomes release-critical. |
-| BACK-050 | Ready for QA | NEEDS-REAL | Provider/manual path remains required. |
+| BACK-050 | Ready for QA | LIVE/PARTIAL | 2026-07-20 local headless Chrome/CDP smoke `npm run smoke:back050` verified auth labels/errors, toast status/alert live-region behavior, and quick-add/contact/focus dialog ARIA/focus at 390x844. Manual keyboard/mobile smoke remains required before Done. |
 | NEW-006 | Ready for QA | NEEDS-REAL | Staging chain needs manual UI confirmation. |
 | NEW-008 | Ready for QA | NEEDS-REAL | Staging chain needs manual UI confirmation. |
 | BACK-005 | Done | LIVE | Task API paths covered by smoke. |
@@ -89,7 +89,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 
 ## Items that must not be silently promoted
 
-- `HOME-001`, `ONBOARD-001`, `NEW-006`, `NEW-008`, `BACK-035`, `BACK-036`, `BACK-041`, `BACK-045`, `BACK-050`, `BACK-009`, `BACK-010`, `SMART-004`, `SMART-011`, `BUG-2026-07-04-002` need real manual/provider/device checks.
+- `ONBOARD-001`, `NEW-006`, `NEW-008`, `BACK-035`, `BACK-036`, `BACK-041`, `BACK-045`, `BACK-050`, `BACK-009`, `BACK-010`, `SMART-004`, `SMART-011`, `BUG-2026-07-04-002` need real manual/provider/device checks.
 - `BETA-001` remains partial because no invite wave has been sent.
 - `INFRA-006` is materially improved, but duplicate-checkout policy remains an operational risk unless the team keeps one canonical worker clone.
 
@@ -115,6 +115,7 @@ Promoted from `SOURCE-ONLY` to `LIVE` in this audit doc:
 | --- | --- | --- |
 | BACK-026 | LIVE | Account merge/link path was exercised through staging `/auth/telegram` and returned `accountMerged:true`. |
 | BUG-2026-07-14-003 | LIVE | Same smoke proves `/auth/telegram` no longer throws Worker 1101 and returns valid auth. |
+| BACK-055 | LIVE | 2026-07-20 `npm run smoke:back055` covers UI/headless interaction on the notifications screen: cards, unread badge, expand, snooze, go-to-task, done, write, filters and empty state. |
 
 Attempted broader `api-smoke` raw output before the narrow rerun:
 
@@ -143,7 +144,6 @@ Still not promoted:
 | --- | --- | --- |
 | BACK-003 | SOURCE-ONLY / needs manual UI | First-microphone biometric consent is a browser/UI consent path, not a safe API-only proof. |
 | BACK-025 | SOURCE-ONLY / needs manual UI | Morning AI dashboard is product UI; requires visual/manual acceptance. |
-| BACK-055 | SOURCE-ONLY | Notification action-feed was source-QA'd; reliable LIVE proof needs UI/headless interaction on notifications screen. |
 | BACK-049 | SOURCE-ONLY | Architecture guard is process/tooling evidence, not staging runtime behavior. |
 | SMART-003 | SOURCE-ONLY / needs real chat context | "Write to assignee" requires Telegram/deep-link behavior validation. |
 | SMART-007 | SOURCE-ONLY | AI memory/facts needs a dedicated safe fixture and acceptance criteria; not promoted opportunistically. |
@@ -160,3 +160,11 @@ The staging backend/auth/task/AI smoke layer is healthy. Several P0/P1 rows have
 | Source year price alignment | LIVE/SOURCE | Worker and app source defaults changed from `9504` to `9950`; staging worker deploy `6cf4e558-9681-46a7-ae60-20f51375d505`; `GET /tariff-config` returned `plans.year.priceRub=9950` and `plans.year.stars=9950`. Details: `docs/tasks/PRICE-MAP-2026-07-17.md`. |
 | BACK-060 sibling unsigned re-check | LIVE | Fresh unsigned sessionless `update-task` and `set-reminder` with foreign `telegramUserId` both returned `401 {"ok":false,"error":"Не авторизован"}` on staging; no sibling bot-style mutation observed. Details: `docs/tasks/BACK-060-bot-path-signature-reconciliation.md`. |
 | Task create/list latency re-check | LIVE/PARTIAL | Fresh staging account showed `tasks.create` 283 ms, `tasks.list.before` 163 ms, `tasks.list.after` 148 ms. Prior 10-12s latency did not reproduce; no code fix applied. Details: `docs/tasks/PERF-2026-07-18-task-latency-recheck.md`. |
+
+## 2026-07-20 BACK-050 accessibility smoke supplement
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Auth field accessibility baseline | LIVE/PARTIAL | `npm run smoke:back050` verified `login-email`, `login-pass`, `reg-name`, `reg-email`, `reg-pass`, `forgot-email`, `reset-pass`, and `reset-pass2` have labels, `aria-describedby`, field error targets, and `aria-invalid=false`. |
+| Toast live-region behavior | LIVE/PARTIAL | Same smoke verified default `#toast` is `role=status` / `aria-live=polite`, critical `Нет соединения` switches to `role=alert` / `aria-live=assertive`, and success/status text switches back to polite status. |
+| Dialog focus baseline | LIVE/PARTIAL | Same smoke verified quick-add, contact panel, and focus panel dialogs expose `role=dialog`, `aria-modal=true`, `aria-labelledby`, `aria-hidden` state changes, focus-in, and focus-return on close/Escape. |

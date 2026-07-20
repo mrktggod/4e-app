@@ -202,6 +202,7 @@
 ## BACK-055 notifications action-feed source QA — 2026-07-16
 
 - `BACK-055` закрыт по source QA: notifications action-feed покрывает filters, empty states, `К задаче`, `Готово`, `Отложить` с quick snooze, `Написать` для waiting-like payload и safe fallback без `taskId`.
+- Superseded 2026-07-20: evidence upgraded from source QA to LIVE headless proof through `npm run smoke:back055` at 390x844.
 
 ## BACK-016 extended profile source QA — 2026-07-16
 
@@ -418,7 +419,7 @@
 ## 2026-07-16 — BACK-019 mobile card QA
 
 - Task-card mobile smoke checklist added: `docs/tasks/BACK-019-task-card-mobile-smoke.md`.
-- Do not mark `BACK-019` Done until tap/swipe actions and mobile overflow are checked manually.
+- Superseded 2026-07-19: `BACK-019` is Done after the 390x844 headless mobile smoke verified tap, swipe actions, overflow, title clamp, and bottom-nav clearance.
 ## 2026-07-16 — SMART-011 group reminder QA
 
 - Waiting-on-people live smoke checklist added: `docs/tasks/SMART-011-waiting-on-people-smoke.md`.
@@ -533,3 +534,29 @@
 - Beta blocker fixed in staging data: /tariff-config now matches prod known-good runtime config for paywall text and yearly price.
 - Verification after reseed: month=990/990 stars, year=9950/9950 stars, questionRuns=0.
 - Source defaults still remain mapped separately in docs/tasks/PRICE-MAP-2026-07-17.md; no production/main/source price change was made here.
+
+## 2026-07-19 - BACK-019 task cards Done
+
+- `BACK-019` moved to `Done` after local headless Chrome mobile smoke at 390x844.
+- Fixed the task-card title clamp by removing the renderer inline style that overrode `.task-card-title` CSS.
+- Added `npm run smoke:back019` for repeatable checks of overflow, two-line title clamp, tap, swipe left/right, done/move actions, and bottom-nav clearance.
+
+## 2026-07-20 - HOME-001 dashboard smoke Done
+
+- `HOME-001` moved to `Done` after repeatable local headless Chrome/CDP smoke at 390x844.
+- Added `npm run smoke:home001` for dashboard/home regressions: top-3 rows, 4 metrics, 3 bottom nav buttons, focus overlay, profile/notifications/statistics/ask/calendar routes, dark/light screenshots.
+- Evidence: `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png`, `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`, report `pm/outbox/REPORT-HOME-001-dashboard-smoke-2026-07-20.md`.
+- Separate manual gates remain open for TMA/device/provider/payment/auth flows; this task did not deploy, merge to `main`, touch prices, secrets, CAL, payment, or entitlement.
+
+## 2026-07-20 - BACK-034 staging resmoke Done
+
+- `BACK-034` automated staging contour is green again after the redesign cutover tail.
+- Raw proof: `WORKER_BASE_URL=https://restless-lab-d737-staging.shelckograff.workers.dev npm run api-smoke` passed through register/login/auth-me, two-user linked task flow, task create/list/done/delete, `/anthropic`, and `/transcribe` negative.
+- App shell proof: `GET https://4-ai-staging.pages.dev/ -> 200`, staging worker marker found, CORS preflight `/auth/login` from staging origin returned `204`.
+- No deploy, `main` merge, prod, secrets, prices, payment, entitlement or CAL work was touched.
+
+## 2026-07-20 - BACK-050 accessibility smoke
+
+- Added `npm run smoke:back050` for repeatable local Chrome/CDP checks of auth labels/errors, toast status/alert live-region behavior, and quick-add/contact/focus dialog ARIA/focus at 390x844.
+- Fixed critical toast detection for Cyrillic phrases: `Нет соединения` now becomes `role=alert` with `aria-live=assertive`.
+- `BACK-050` stays `Ready for QA`; manual keyboard/mobile smoke remains the Done gate.

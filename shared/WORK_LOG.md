@@ -6,6 +6,46 @@
 
 ---
 
+### 2026-07-20 - Codex
+
+**Task:** BACK-050 accessibility smoke
+**Result:** Added `npm run smoke:back050` for auth field ARIA, toast live-region critical/status behavior, and quick-add/contact/focus dialog focus management. Fixed Cyrillic critical toast detection so `Нет соединения` becomes `role="alert"` with assertive live-region.
+**Commit:** N/A for pre-commit log entry; final commit SHA is reported in the automation summary.
+**Status:** Done
+**Next step:** Keep manual keyboard/mobile smoke as the remaining `BACK-050` gate before `Done`.
+
+---
+
+### 2026-07-20 - Codex
+
+**Task:** BACK-055 notification action-card headless smoke
+**Result:** Added `npm run smoke:back055` and recorded LIVE headless evidence for notification cards: empty state, filters, unread badge, expand, snooze, go-to-task, done and write actions all pass at 390x844 without live Telegram/backend calls.
+**Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.
+**Status:** Done
+**Next step:** Keep `npm run smoke:back055` as the regression check before changing notification action-card rendering.
+
+---
+
+### 2026-07-20 - Codex
+
+**Task:** BACK-019 roadmap/status sync
+**Result:** Aligned `shared/ROADMAP.md` with the already-closed `pm/backlog.md` state for `BACK-019` and replaced the top BACK-019 `pending` log references with implementation commit `6428386`.
+**Commit:** N/A for self-referential status-sync entry; final commit SHA is reported in the automation summary.
+**Status:** Done
+**Next step:** Continue autonomous whitelist scan for remaining safe backlog/documentation work.
+
+---
+
+### 2026-07-19 - Codex
+
+**Task:** BACK-019 task-card mobile smoke
+**Result:** Removed the renderer inline override that prevented the two-line title clamp and added `npm run smoke:back019` for 390x844 Chrome/CDP task-card QA. Smoke passed for overflow, long title, long contact, overdue state, swipe left/right, tap, done/move actions, and bottom-nav clearance.
+**Commit:** `6428386`
+**Status:** Done
+**Next step:** Keep `npm run smoke:back019` as the regression check before changing task-card rendering.
+
+---
+
 ### 2026-07-14 — Codex
 
 **Задача:** Staging auth fix + `/auth/telegram` 1101 на staging
@@ -9171,3 +9211,18 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri checks the preview card visually.
+### 2026-07-20 — Codex
+
+**Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen
+**Результат:** Added `npm run smoke:home001`, saved dark/light PNG evidence, and moved `HOME-001` to `Done`.
+**Коммит:** `test(ui): add home dashboard smoke evidence`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Continue only with remaining whitelist tasks; TMA/device/provider gates stay manual.
+
+### 2026-07-20 — Codex
+
+**Задача:** BACK-034 staging API resmoke after redesign cutover
+**Результат:** Staging app shell, worker marker, CORS preflight and full `api-smoke` are green again; roadmap synced to `Done`.
+**Коммит:** `test(api): refresh staging smoke evidence`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Manual/device/provider beta gates remain separate.
