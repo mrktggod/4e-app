@@ -9265,6 +9265,14 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri re-checks task-detail hero on both themes.
+
+## 2026-07-20 - Task detail long input guard
+
+**Task:** Prevent long unbroken task titles/descriptions from breaking the task-detail hero layout.
+**Result:** Added final task-detail title/description guards: clipping, line clamps, long-token wrapping, and theme-specific width reserves so text stays inside the hero card.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri stress-tests long title/description input again.
 ### 2026-07-20 — Codex
 
 **Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen

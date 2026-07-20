@@ -1448,6 +1448,16 @@
 
 **Commit:** pending
 
+### Task detail long input guard
+
+**What changed:** Added final guard CSS for task-detail title and description fields so long unbroken input wraps/clips inside the hero card instead of pushing into the deadline/priority controls or overflowing the panel. The guard applies to both light and dark themes with explicit width reserves.
+
+**Encoding check:** `index.html` was not edited in this task.
+
+**Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending
+
 ### Task detail title balance on light and dark themes
 
 **What changed:** Moved the final light-theme task-detail title and description bounds closer to the hero card left edge. Added dark-theme task-detail title sizing override and moved the description down slightly to create more space below the title.

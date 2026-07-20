@@ -2914,3 +2914,56 @@ html[data-theme="dark"] #task-detail .detail-redesign-desc {
   font-size: 12px !important;
   line-height: 1.35 !important;
 }
+
+/* 2026-07-20 QA pass: protect task hero from unbroken long input */
+#task-detail .detail-redesign-title,
+#task-detail .detail-redesign-desc {
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  contain: layout paint !important;
+  clip-path: inset(0) !important;
+}
+
+#task-detail .detail-redesign-title {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+}
+
+#task-detail .detail-redesign-desc {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+}
+
+html:not([data-theme="light"]) #task-detail .detail-redesign-title,
+html[data-theme="dark"] #task-detail .detail-redesign-title {
+  left: 24px !important;
+  right: auto !important;
+  width: calc(100% - 176px) !important;
+  max-width: calc(100% - 176px) !important;
+  max-height: 92px !important;
+}
+
+html:not([data-theme="light"]) #task-detail .detail-redesign-desc,
+html[data-theme="dark"] #task-detail .detail-redesign-desc {
+  left: 24px !important;
+  right: auto !important;
+  width: calc(100% - 48px) !important;
+  max-width: calc(100% - 48px) !important;
+  max-height: 50px !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  max-height: 84px !important;
+  -webkit-line-clamp: 3 !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  max-height: 58px !important;
+  -webkit-line-clamp: 3 !important;
+}
