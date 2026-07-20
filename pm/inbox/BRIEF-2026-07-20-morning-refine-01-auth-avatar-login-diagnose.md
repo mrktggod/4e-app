@@ -1,4 +1,7 @@
-status: NEW
+status: NEED-CLAUDE
+
+Existing report: `pm/outbox/REPORT-BRIEF-2026-07-20-morning-refine-01-auth-avatar-login-diagnose.md`
+Existing commit: `3829712`
 
 # BRIEF-2026-07-20-morning-refine-01-auth-avatar-login-diagnose
 
