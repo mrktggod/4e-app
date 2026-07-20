@@ -1407,3 +1407,15 @@
 **Known tails:** API smoke against staging worker fails at `register: 500`; full browser visual smoke was not run because Playwright is not installed locally; prod deploy is NEED-YURI and was not performed.
 
 **Commit:** pending
+
+## 2026-07-20
+
+### HOME-001 dashboard headless smoke evidence
+
+**Что сделано:** Added `scripts/home-001-dashboard-smoke.mjs` and `npm run smoke:home001`. The smoke opens the real local `index.html` in headless Chrome/CDP at 390x844, mocks only safe read responses, verifies top-3 dashboard rows, 4 metric cards, 3 bottom nav buttons, focus overlay, profile/notifications/statistics/ask/calendar click routes, hero image loading, and dark/light theme rendering. Saved PNG evidence in `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png` and `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`. `HOME-001` was moved to `Done` in PM docs.
+
+**Проверка кодировки:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Тест:** `npm run smoke:home001` passed with `documentScrollWidth=390`, `homeRows=3`, `metricCards=4`, `bottomNavButtons=3`, `focusPanelRows=3`, dark/light `scrollWidth=390`; `node --check scripts/home-001-dashboard-smoke.mjs`; `npm run check:js-syntax`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`.
+
+**Коммит:** `test(ui): add home dashboard smoke evidence`

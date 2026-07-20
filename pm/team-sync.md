@@ -540,3 +540,10 @@
 - `BACK-019` moved to `Done` after local headless Chrome mobile smoke at 390x844.
 - Fixed the task-card title clamp by removing the renderer inline style that overrode `.task-card-title` CSS.
 - Added `npm run smoke:back019` for repeatable checks of overflow, two-line title clamp, tap, swipe left/right, done/move actions, and bottom-nav clearance.
+
+## 2026-07-20 - HOME-001 dashboard smoke Done
+
+- `HOME-001` moved to `Done` after repeatable local headless Chrome/CDP smoke at 390x844.
+- Added `npm run smoke:home001` for dashboard/home regressions: top-3 rows, 4 metrics, 3 bottom nav buttons, focus overlay, profile/notifications/statistics/ask/calendar routes, dark/light screenshots.
+- Evidence: `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png`, `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`, report `pm/outbox/REPORT-HOME-001-dashboard-smoke-2026-07-20.md`.
+- Separate manual gates remain open for TMA/device/provider/payment/auth flows; this task did not deploy, merge to `main`, touch prices, secrets, CAL, payment, or entitlement.

@@ -8,6 +8,7 @@
         "check:cp1251-mojibake": "node scripts/check-cp1251-mojibake.mjs",
         "check:js-syntax": "node scripts/check-js-syntax.mjs",
         "check:ui-architecture": "bash scripts/check-ui-architecture.sh",
+        "smoke:home001": "node scripts/home-001-dashboard-smoke.mjs",
         "smoke:back019": "node scripts/back-019-task-card-smoke.mjs",
         "smoke:back055": "node scripts/back-055-notifications-smoke.mjs",
         "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",

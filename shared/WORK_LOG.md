@@ -9193,3 +9193,11 @@
 **Commit:** pending
 **Status:** NEED-YURI - production deploy waits for Yuri approval; staging API smoke currently fails at `register: 500`.
 **Next step:** Yuri reviews staging URL and decides prod cutover after API/register status is understood.
+
+### 2026-07-20 — Codex
+
+**Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen
+**Результат:** Added `npm run smoke:home001`, saved dark/light PNG evidence, and moved `HOME-001` to `Done`.
+**Коммит:** `test(ui): add home dashboard smoke evidence`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Continue only with remaining whitelist tasks; TMA/device/provider gates stay manual.

@@ -43,7 +43,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | BACK-041 | Ready for QA | NEEDS-REAL | Needs real provider/UI path; do not promote from source alone. |
 | BACK-048 | Done | LIVE | Covered by current worker smoke and prior recorded proof. |
 | BACK-055 | Done | LIVE | 2026-07-20 headless Chrome/CDP smoke `npm run smoke:back055` verified notification action-card rendering and interactions at 390x844. |
-| HOME-001 | Ready for QA | NEEDS-REAL | Dashboard redesign is UI-heavy and needs Yuri/manual QA. |
+| HOME-001 | Done | LIVE/PARTIAL | 2026-07-20 local headless Chrome/CDP smoke `npm run smoke:home001` verified dashboard structure, routes, dark/light render and screenshot artifacts at 390x844. |
 | BACK-049 | Done | SOURCE-ONLY | Needs explicit live proof if it becomes release-critical. |
 | BACK-050 | Ready for QA | NEEDS-REAL | Provider/manual path remains required. |
 | NEW-006 | Ready for QA | NEEDS-REAL | Staging chain needs manual UI confirmation. |
@@ -89,7 +89,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 
 ## Items that must not be silently promoted
 
-- `HOME-001`, `ONBOARD-001`, `NEW-006`, `NEW-008`, `BACK-035`, `BACK-036`, `BACK-041`, `BACK-045`, `BACK-050`, `BACK-009`, `BACK-010`, `SMART-004`, `SMART-011`, `BUG-2026-07-04-002` need real manual/provider/device checks.
+- `ONBOARD-001`, `NEW-006`, `NEW-008`, `BACK-035`, `BACK-036`, `BACK-041`, `BACK-045`, `BACK-050`, `BACK-009`, `BACK-010`, `SMART-004`, `SMART-011`, `BUG-2026-07-04-002` need real manual/provider/device checks.
 - `BETA-001` remains partial because no invite wave has been sent.
 - `INFRA-006` is materially improved, but duplicate-checkout policy remains an operational risk unless the team keeps one canonical worker clone.
 
