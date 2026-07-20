@@ -9273,6 +9273,14 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri stress-tests long title/description input again.
+
+## 2026-07-20 - Part 3 notification settings route
+
+**Task:** Make the Part 3 handoff notification design visible from the profile settings menu.
+**Result:** Mounted `notifications-light/dark` on both `notifications` and `notif-settings`; bumped the handoff script/cache versions so staging loads the refreshed mapping.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri opens Profile -> Notifications and checks that the Part 3 handoff screen is visible.
 ### 2026-07-20 — Codex
 
 **Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen

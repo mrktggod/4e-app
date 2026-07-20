@@ -1448,6 +1448,16 @@
 
 **Commit:** pending
 
+### Part 3 handoff route for notification settings
+
+**What changed:** The Part 3 `notifications-light/dark` handoff was previously mounted only on the `notifications` screen, while Profile -> Notifications opens `notif-settings`. Added a second mount for `notif-settings` with back navigation to Profile and bumped `scripts/design-part3-handoff.js` plus `sw.js` cache versions.
+
+**Encoding check:** `index.html` marker count before edit: 106; after edit: 106.
+
+**Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`; `node --check scripts/design-part3-handoff.js`.
+
+**Commit:** pending
+
 ### Task detail long input guard
 
 **What changed:** Added final guard CSS for task-detail title and description fields so long unbroken input wraps/clips inside the hero card instead of pushing into the deadline/priority controls or overflowing the panel. The guard applies to both light and dark themes with explicit width reserves.

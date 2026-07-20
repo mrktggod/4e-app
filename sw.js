@@ -1,4 +1,4 @@
-const PWA_CACHE = "4-pwa-shell-v20260720-task-long-input-1";
+const PWA_CACHE = "4-pwa-shell-v20260720-part3-settings-1";
 
 const SHELL_ASSETS = [
   "/",

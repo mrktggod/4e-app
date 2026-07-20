@@ -1,7 +1,8 @@
 (function () {
-  const VERSION = '20260719-part3-1';
+  const VERSION = '20260720-part3-2';
   const SCREENS = {
     notifications: { light: 'notifications-light', dark: 'notifications-dark', back: () => window.showScreen ? window.showScreen('home') : window.showSubScreen?.('home') },
+    'notif-settings': { light: 'notifications-light', dark: 'notifications-dark', back: () => window.showSubScreen?.('profile') },
     security: { light: 'security-light', dark: 'security-dark', back: () => window.showSubScreen?.('profile') },
     'ai-memory': { light: 'memory-light', dark: 'memory-dark', back: () => window.showSubScreen?.('profile') },
     'language-settings': { light: 'language-light', dark: 'language-dark', back: () => window.showSubScreen?.('profile') },
