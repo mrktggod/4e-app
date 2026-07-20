@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-20 - Auth/avatar login diagnosis
+
+### BRIEF-2026-07-20-morning-refine-01 auth/avatar root cause
+
+**What changed:** Added `scripts/auth-avatar-login-diagnose.mjs` and `npm run smoke:auth-avatar` to reproduce the requested staging auth/avatar issues on fresh accounts without changing auth, password, merge, payment, entitlement, production, or `main`. Wrote a NEED-CLAUDE report with root-cause candidates for wrong-password inline error, avatar leak between accounts in one browser, and avatar not persisting in web/fresh browser.
+
+**Encoding check:** `index.html` was not changed in this run; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:auth-avatar`; `node --check scripts/auth-avatar-login-diagnose.mjs`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; Git Bash `scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** N/A for pre-commit log entry; final commit SHA is reported in the task summary.
+
+---
+
 ## 2026-07-20 - BACK-050 accessibility smoke
 
 ### Repeatable auth/toast/dialog accessibility guard

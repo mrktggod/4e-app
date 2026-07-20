@@ -8,6 +8,16 @@
 
 ### 2026-07-20 - Codex
 
+**Task:** Auth/avatar staging diagnosis from morning refine brief
+**Result:** Added `npm run smoke:auth-avatar` and reproduced three staging issues on fresh accounts: wrong-password UI loses inline password-field error while API/toast are correct, profile avatar leaks to the next account through global localStorage draft, and web avatar does not persist in a fresh browser because it is saved only locally. Auth/password/merge logic was not changed; report is marked NEED-CLAUDE.
+**Commit:** N/A for pre-commit log entry; final commit SHA is reported in the task summary.
+**Status:** NEED-CLAUDE
+**Next step:** Claude should patch auth field error targeting and design scoped/server-backed profile avatar persistence.
+
+---
+
+### 2026-07-20 - Codex
+
 **Task:** BACK-050 accessibility smoke
 **Result:** Added `npm run smoke:back050` for auth field ARIA, toast live-region critical/status behavior, and quick-add/contact/focus dialog focus management. Fixed Cyrillic critical toast detection so `Нет соединения` becomes `role="alert"` with assertive live-region.
 **Commit:** N/A for pre-commit log entry; final commit SHA is reported in the automation summary.
