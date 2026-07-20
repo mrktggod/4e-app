@@ -77,6 +77,8 @@ Priority: P0 / P1 / P2 / P3
 
 | ID | Баг | Severity | Priority | Статус | Владелец | BACK-xxx | Ссылка/заметка |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| BUG-2026-07-20-001 | После перехода в календарь центральная кнопка открывает голос вместо текстового AI-чата | High | P1 | Triaged | Юрий / app | N/A | Подтверждено Алексеем в Telegram Mini App на iPhone: после `AI-чат → Календарь` нижняя навигация меняет пиктограммы, центральная кнопка становится микрофоном и по короткому нажатию открывает voice. Handoff: `pm/agent-inbox/codex-to-yuri-2026-07-20-calendar-nav-regression.md`; скрин: `docs/tasks/assets/BUG-2026-07-20-calendar-nav-regression.png`. |
+| BUG-2026-07-20-002 | Календарь показывает сырую ISO-дату дедлайна | Medium | P2 | Triaged | Юрий / app | N/A | На live-скрине в Telegram Mini App отображается `2026-07-11T04:00` вместо локализованного срока. Проверять и исправлять отдельно от навигационного P1. |
 | BUG-2026-07-14-001 | Staging web auth показывает «Нет соединения» после успешных /auth/register и /auth/login | High | P1 | Done | Codex | N/A | 2026-07-14 ночной staging-smoke добит до конца: свежий browser-run на `https://4-ai-staging.pages.dev/` после уже внесённых фиксов (`getProfileReferralLink()` + полный `window.*` export в `scripts/auth.js`) проходит оба реальных UI-сценария — `Регистрация` и `Войти` — без `ReferenceError` и без toast `Нет соединения`. После submit экран переходит на home (`Сегодня`, avatar, календарь/голос/AI nav), а в console остаются только штатные Telegram warnings про `Changing swipes behavior`, без auth-runtime ошибок. Отдельно подтверждено, что ранний сигнал `typeof window.processOAuthCallback === 'undefined'` был артефактом browser-runtime Codex, а не живым состоянием staging. 2026-07-15 fresh Pages deploy https://44ccd355.4-ai-staging.pages.dev plus browser smoke confirmed auth shell green: /auth/me 200, currentUser/chatId set, screen is home, no ReferenceError and no failed requests. |
 | BUG-2026-07-14-002 | Staging worker /analytics/lite-event отвечает 404 | Medium | P1 | Done | Codex | ANALYTICS-001 | На live staging 2026-07-14 баг в текущем состоянии не воспроизводится: Pages `https://4-ai-staging.pages.dev/` сейчас указывает на `const WORKER='https://restless-lab-d737-staging.shelckograff.workers.dev'`, прямой API smoke `register -> login -> POST /analytics/lite-event` возвращает `200 {ok:true}`, а свежий home-browser run не показывает console-ошибок вокруг `trackLiteEvent('plan-view')`. Admin `/analytics/summary` без `x-admin-secret` по-прежнему отвечает `401 Unauthorized`, поэтому доставка в summary остаётся отдельной QA/админ-проверкой, но сам старый `404` больше не подтверждается. |
 | BUG-2026-07-14-004 | AI quick action «Статистика» в чате 4 возвращает validation error вместо ответа/экрана | Medium | P2 | Done | Codex | NEW-002 / HOME-001 | Root cause был во фронте: `sendAsk()` отправлял в Anthropic `messages` прямо из `askHistory`, включая запрещённое поле `id`. На 2026-07-15 в `.tmp-4e-app-publish/index.html` добавлена `sanitizeClaudeMessages()`, staging Pages вручную обновлён на `https://73d33de6.4-ai-staging.pages.dev`, и live smoke подтвердил зелёный path: прямой `/anthropic` с тем же prompt даёт `200`, в браузере больше нет `messages.0.id` / `validation_error`, а `Статистика` снова видит реальные задачи аккаунта. |
@@ -97,9 +99,9 @@ Priority: P0 / P1 / P2 / P3
 | NEW-003 | Профиль: дублируется аватар | Low | P3 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/index.html` удалён второй preview-avatar из profile details card; единственной точкой фото остаётся верхний `#profile-avatar` Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: profile has one visible large avatar (#profile-avatar) and no duplicate #profile-photo-preview. |
 | NEW-004 | Профиль: личные данные занимают слишком много места | Low | P3 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/index.html` поле имени перенесено в collapsible section `Личные данные аккаунта`, отдельная card сверху убрана; профиль стал короче без потери полей Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: personal data section is collapsed by default and name field lives inside #profile-pii-section. |
 | NEW-005 | Карточка задачи: заголовок/срок обрезаются | Medium | P2 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/scripts/task-ui-renderers.js` task-card рендер переведён на более устойчивый head/title layout: deadline теперь может переноситься, title не зажат в одну строку, tag укорочен Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: long task title with long assignee and deadline renders in filtered active list without horizontal overflow. |
-| NEW-006 | Safe area: перекрытие нижним меню | High | P1 | Ready for QA | Юрий + Codex | N/A | Code evidence already exists in backlog: safe-area variables and bottom-nav reserve are implemented, plus headless 390x844 smoke passed. Live TMA checklist: `docs/tasks/NEW-006-tma-safe-area-live-smoke.md`. Needs Yuri real Telegram Mini App smoke before Done. |
+| NEW-006 | Safe area: перекрытие нижним меню | High | P1 | Ready for QA | Юрий + Codex | N/A | Live smoke Алексея 2026-07-20 в Telegram Mini App на iPhone: последняя карточка, низ профиля и AI-composer не перекрываются. Partial pass; notifications/rotation/Android не проверены. Отдельная навигационная находка заведена как `BUG-2026-07-20-001`. Чек-лист: `docs/tasks/NEW-006-tma-safe-area-live-smoke.md`. |
 | NEW-007 | Карточка задачи: блоки «Обсуждение/Совет/История» требуют переработки | Medium | P2 | Done | Юрий + Codex | N/A | Вкладка `История` теперь показывает непрерывную хронологию задачи: системные события, сообщения обсуждения и summary действий 4 больше не разорваны по разным блокам. Нужен QA-smoke на порядок событий и длинные треды. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: task detail opens for seeded task and shows detail/history/discussion surface without runtime errors. |
-| NEW-008 | AI-чат: поле ввода перекрывается нижним меню | High | P1 | Ready for QA | Юрий + Codex | N/A | Code evidence already exists in backlog: `--app-keyboard-offset` and `.ask-bar--keyboard-open` are implemented, and local keyboard smoke passed. Live checklist: `docs/tasks/NEW-008-chat-keyboard-live-smoke.md`. Needs Yuri real Telegram Mini App/mobile keyboard smoke before Done. |
+| NEW-008 | AI-чат: поле ввода перекрывается нижним меню | High | P1 | Ready for QA | Юрий + Codex | N/A | Live smoke Алексея 2026-07-20 в Telegram Mini App на iPhone: input/send остаются видимыми, длинный текст и отправка работают, keyboard offset не залипает. Полный переход через календарь требует повторного smoke после `BUG-2026-07-20-001`; Android не проверен. Чек-лист: `docs/tasks/NEW-008-chat-keyboard-live-smoke.md`. |
 | NEW-009 | AI-чат: нет быстрых действий голос/вложения | Medium | P2 | Done | Юрий + Codex | N/A | В `.tmp-4e-app-publish/index.html` внизу AI-чата снова видны voice/attachment quick actions; voice ведёт в `openVoice()`, attachment даёт честный placeholder-toast 2026-07-15 smoke on https://44ccd355.4-ai-staging.pages.dev confirmed voice and attachment quick actions are visible and wired. |
 | NEW-010 | Главный экран: кнопка «Завершить» непропорциональна | Low | P3 | Done | Юрий + Codex | N/A | Покрыто `HOME-001`: на home-экране старый паттерн с непропорциональной кнопкой убран вместе с прежними карточками, вместо него — top-3 приоритетов с открытием детали задачи. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: home has top-3 priority rows and no old 'Завершить' buttons on the main screen. |
 | NEW-011 | Главный экран: задачи объединены в общий контейнер | Medium | P2 | Done | Юрий + Codex | N/A | Покрыто `HOME-001`: home разбит на отдельные читаемые блоки `Фокус дня`, `метрики`, `top-3 задач`, без слитого общего контейнера. Live headless smoke 2026-07-15 on https://88193776.4-ai-staging.pages.dev: home renders separate focus, 4 metric cards and 3 readable top-list rows (row width 324px), not one merged container. |
@@ -111,6 +113,54 @@ Priority: P0 / P1 / P2 / P3
 | NEW-017 | Календарь: при первом открытии показываются демо-задачи | Medium | P2 | Done | Юрий + Codex | N/A | Root cause/code fix 2026-07-17: calendar first render used `fetch(WORKER + '/tasks?chatId=' + chatId)`, while global `chatId` starts as `global`; opening calendar before user-scope cache could read a non-user bucket. Calendar now renders from `allTasksCache` only; empty user cache shows honest empty state, and user deadlines appear after `loadTasks()`/task creation. Previous staging smokes already did not reproduce demo tasks; this closes the lingering bugs-table Triaged mismatch. |
 
 ## Детали активных багов
+
+### BUG-2026-07-20-001 — После календаря центральная кнопка открывает голос вместо текстового AI-чата
+
+**Дата:** 2026-07-20
+**Версия/окружение:** production `main` (`ebb8dd1`), Telegram Mini App, iPhone; точные модель iPhone и версия iOS не зафиксированы
+**Severity:** High
+**Priority:** P1
+**Статус:** Triaged
+**Метка:** UI / Navigation / AI chat / Telegram Mini App
+
+**Шаги воспроизведения:**
+
+1. Открыть текстовый AI-чат.
+2. Перейти в календарь.
+3. Посмотреть на нижнее меню.
+4. Нажать центральную кнопку.
+
+**Фактический результат:** после открытия календаря пиктограммы нижнего меню меняются. Центральная кнопка становится микрофоном и по короткому нажатию открывает голосовой режим.
+
+**Ожидаемый результат:** короткое нажатие на центральную кнопку на любом основном экране открывает текстовый AI-чат; голос запускается только долгим нажатием или отдельной явной кнопкой; переход в календарь не меняет карту действий навигации.
+
+**Влияние:** нарушается предсказуемость основного сценария AI-помощи. Пользователь ожидает вернуться в текстовый чат, но попадает в другой режим ввода.
+
+**Вложения/логи:** `docs/tasks/assets/BUG-2026-07-20-calendar-nav-regression.png`.
+
+**Проверка после фикса:**
+
+1. `AI-чат → Календарь → центральная кнопка` открывает текстовый AI-чат.
+2. `Home → Календарь → центральная кнопка` открывает текстовый AI-чат.
+3. Иконки и назначения нижнего меню согласованы на основных экранах.
+4. `NEW-006` и `NEW-008` повторно проходят на iPhone в Telegram Mini App.
+
+### BUG-2026-07-20-002 — Календарь показывает сырую ISO-дату дедлайна
+
+**Дата:** 2026-07-20
+**Версия/окружение:** production `main` (`ebb8dd1`), Telegram Mini App, iPhone
+**Severity:** Medium
+**Priority:** P2
+**Статус:** Triaged
+**Метка:** UI / Calendar / Date formatting
+
+**Фактический результат:** в секциях дедлайнов отображается строка `2026-07-11T04:00`.
+
+**Ожидаемый результат:** календарь показывает локализованную человекочитаемую дату и время, например `11 июля, 04:00`, либо понятный относительный статус просрочки.
+
+**Вложения/логи:** `docs/tasks/assets/BUG-2026-07-20-calendar-nav-regression.png`.
+
+**Проверка после фикса:** абсолютные, относительные и просроченные дедлайны отображаются без ISO-строк во всех блоках календаря.
 
 ### BUG-2026-07-05-003 — На первом экране после 22:00 показывается отрицательное время до конца дня
 
