@@ -44,7 +44,7 @@ git diff --check
 
 ## Commits
 
-- App commit: `d2f465b0795f9e1f0784f85a4ccae3913a38a893`
+- App commit: `518757bf10fc4ea5d1cea17bc50c394480d08556`
 - Worker commit: `faa95dcd58794365ec54ea68002d534589b27cdb`
 
 ## Honest Tails
