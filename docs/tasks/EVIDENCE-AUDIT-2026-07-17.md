@@ -186,3 +186,19 @@ ARCH-001 remains `SOURCE-ONLY` because it is an architecture extraction item, no
 | Email validator | `scripts/platform-adapter.js:240` defines `isValidEmail(email)`. | `scripts/auth.js:166-167` delegates to the adapter; `scripts/auth-handlers.js:46`, `222` and `index.html:2075`, `7658` use `isValidEmail`. |
 | Password toggle helpers | `scripts/platform-adapter.js:244` defines `togglePasswordVisibility(fieldId)`. | `scripts/auth-handlers.js:480`, `488` call `PLATFORM.togglePasswordVisibility(...)`. |
 | Enter-submit helper | `scripts/platform-adapter.js:251` defines `shouldHandleEnterSubmit(event)`; `scripts/platform-adapter.js:752-806` binds auth enter-submit handlers. | `scripts/auth-handlers.js:78` and `scripts/platform-adapter.js:782`, `786`, `793`, `800` use the shared helper. |
+
+## 2026-07-20 SMART-007 source evidence and fixture plan supplement
+
+SMART-007 remains `SOURCE-ONLY`. The code path is present, but promotion to `LIVE` still requires the dedicated safe fixture run described in `docs/tasks/SMART-007-memory-evidence-fixture-plan.md`.
+
+| Area | Source evidence |
+| --- | --- |
+| D1 schema | Worker migration `migrations/0008_user_facts.sql` creates `user_facts` and `idx_user_facts_user_rank`. |
+| Extraction trigger | Worker `worker.js:3652-3655` calls `extractUserFactsFromAiHistory(...)` after assistant messages are saved. |
+| Privacy gate | Worker `worker.js:3666-3680` reads AI memory/processing preferences. |
+| List/store/delete | Worker `worker.js:3697-3708` lists facts; `worker.js:3768-3808` upserts and trims facts; `worker.js:3855-3886` serves `GET /ai/facts`, `DELETE /ai/facts/:id`, and `DELETE /ai/facts`. |
+| Haiku extraction | Worker `worker.js:3812-3851` calls Haiku with durable-fact extraction instructions and stores sanitized results. |
+| Route wiring | Worker `worker.js:4924-4928` routes `/ai/facts` endpoints. |
+| App screen | `index.html:1129-1140` defines the "Что 4 знает обо мне" screen, list, and forget-all button. |
+| App API/UI behavior | `index.html:2129-2270` fetches facts, renders list rows, deletes one fact, and clears all facts. |
+| Prompt usage | `index.html:6536-6542` loads fact summary into the AI system prompt. |
