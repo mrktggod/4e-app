@@ -1468,6 +1468,16 @@
 
 **Commit:** pending
 
+### Part 3 iframe handoff rollback
+
+**What changed:** Removed the Part 3 iframe handoff from the staging app after manual QA found the screens visually unsuitable and non-interactive. Removed the script tag from `index.html`, removed `scripts/design-part3-handoff.js` from the Pages whitelist, deleted the handoff script, and removed `assets/design/part3`.
+
+**Encoding check:** `index.html` marker count before edit: 106; after edit: 106.
+
+**Tests:** `node --check scripts/build-pages-whitelist.mjs`; `PAGES_WORKER_TARGET=staging npm run build:worker-assets`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending
+
 ### Task detail long input guard
 
 **What changed:** Added final guard CSS for task-detail title and description fields so long unbroken input wraps/clips inside the hero card instead of pushing into the deadline/priority controls or overflowing the panel. The guard applies to both light and dark themes with explicit width reserves.

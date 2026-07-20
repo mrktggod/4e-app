@@ -9289,6 +9289,14 @@
 **Commit:** pending
 **Status:** done on staging branch, awaiting deploy URL.
 **Next step:** Yuri re-checks Profile -> Notifications/Security/Memory/Language/Support on staging.
+
+## 2026-07-20 - Part 3 handoff rollback
+
+**Task:** Roll back the Part 3 iframe handoff redesign after manual QA.
+**Result:** Removed the Part 3 handoff script from `index.html` and Pages whitelist, removed the script file, and scheduled the Part 3 design assets for deletion so settings/support screens return to native app UI.
+**Commit:** pending
+**Status:** done on staging branch, awaiting deploy URL.
+**Next step:** Yuri verifies that Profile -> Notifications/Security/Memory/Language/Support use native screens again.
 ### 2026-07-20 — Codex
 
 **Задача:** HOME-001 dashboard smoke evidence for the redesigned Today screen
