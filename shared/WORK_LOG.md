@@ -9320,3 +9320,10 @@
 **Коммит:** `test(ai): add smart 007 memory fixture smoke`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Continue only with remaining whitelist tasks; real-user/prod/device gates stay manual.
+### 2026-07-21 — Codex
+
+**Задача:** Night inbox and whitelist backlog runner roadmap status sync
+**Результат:** Inbox had no NEW briefs; synced stale `BACK-021` and `SMART-011` roadmap statuses to current backlog evidence and wrote the runner report.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** Remaining open items need manual/device/provider/auth/payment/CAL/product gates or Claude/Yuri decisions.

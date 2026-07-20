@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - night inbox/backlog runner
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: no `status: NEW` non-template `BRIEF-*.md` files.
+- Result: completed 1 safe docs/PM whitelist task; synced stale `BACK-021` and `SMART-011` roadmap statuses with current backlog evidence.
+- Report: `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-21.md`.
+- Next: remaining open rows are manual/device/provider/auth-review/payment/CAL/product/prod/main gated or already assigned to Claude/Yuri decisions.
+
 ## 2026-07-20 - Codex - auth/avatar diagnose
 
 - Branch: `feat/admin-tariff-api`.

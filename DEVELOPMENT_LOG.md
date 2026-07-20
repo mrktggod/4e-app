@@ -1546,3 +1546,12 @@
 **Тест:** `npm run smoke:smart007` passed on staging worker: `register/login/legacy-session/privacy.settings/ai.messages/anthropic` returned `200`; `GET /ai/facts` returned 4 fixture facts; local DOM rendered 4 rows with delete buttons and `scrollWidth=390`; delete-one left 3 facts; clear-all left 0 facts. Also run before commit: `node --check scripts/smart-007-memory-fixture-smoke.mjs`, `node scripts/check-cp1251-mojibake.mjs`, `node scripts/check-js-syntax.mjs`, `bash scripts/check-portable-paths.sh`, `git diff --check`.
 
 **Коммит:** `test(ai): add smart 007 memory fixture smoke`
+### Night inbox and whitelist backlog runner roadmap status sync
+
+**What changed:** Scanned `pm/inbox` and found no `status: NEW` briefs. Updated `shared/ROADMAP.md` so the voice row no longer shows stale `BACK-021 Triaged` and the proactive bot row no longer shows stale `SMART-011 In Progress`. Added the matching outbox report for the automation run.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** pending
