@@ -1,4 +1,7 @@
-status: NEW
+status: DONE
+
+Already completed by `pm/outbox/REPORT-BACK-055-notifications-headless-smoke.md` and commit `aaded44`.
+Done report: `pm/outbox/REPORT-BRIEF-2026-07-19-13-back-055-notifications-evidence.md`
 
 # BRIEF-2026-07-19-13-back-055-notifications-evidence
 
