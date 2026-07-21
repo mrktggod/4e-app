@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>4 — Безопасность — Soft Glass Light</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f3f0e8}
+body{font-family:Inter,"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.viewport{
+ position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;
+ background:
+ radial-gradient(70% 44% at 70% 10%,rgba(188,206,121,.12),transparent 72%),
+ linear-gradient(180deg,#f5f3ee 0%,#efede7 100%);
+}
+.artboard{
+ position:relative;width:430px;height:764px;overflow:hidden;isolation:isolate;
+ transform-origin:center center;
+ background:
+ radial-gradient(285px 190px at 72% 10%,rgba(188,206,121,.10),transparent 72%),
+ radial-gradient(245px 180px at 18% 88%,rgba(184,198,140,.07),transparent 72%),
+ linear-gradient(180deg,#f5f3ee 0%,#efede7 100%);
+}
+.artboard::before{
+ content:"";position:absolute;inset:0;pointer-events:none;opacity:.022;
+ background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+ mix-blend-mode:multiply;
+}
+.asset{position:absolute;display:block;object-fit:fill;pointer-events:none;user-select:none;image-rendering:auto;backface-visibility:hidden;transform:translateZ(0)}
+.asset-back{left:15.994px;top:38.842px;width:47.524px;height:47.981px;}
+.asset-title{left:79.968px;top:42.497px;width:153.082px;height:36.557px;}
+.asset-twofa_card{left:17.821px;top:96.876px;width:393.9px;height:90.478px;}
+.asset-main_card{left:17.821px;top:204.718px;width:393.9px;height:237.163px;}
+.asset-lock_label{left:21.477px;top:465.186px;width:194.208px;height:21.477px;}
+.asset-lock_card{left:17.821px;top:487.12px;width:393.9px;height:65.802px;}
+.asset-extra_label{left:21.477px;top:572.115px;width:163.592px;height:21.934px;}
+.asset-extra_card{left:17.821px;top:594.506px;width:393.9px;height:134.346px;}
+.hotspot{position:absolute;z-index:10;border:0;padding:0;margin:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hotspot:focus-visible{outline:1.5px solid rgba(120,162,55,.55);outline-offset:-3px;border-radius:20px}
+.hotspot:active{background:rgba(120,162,55,.03)}
+.toast{
+ position:absolute;z-index:30;left:50%;bottom:16px;transform:translate(-50%,16px);
+ opacity:0;pointer-events:none;color:#58742f;font-size:12px;font-weight:600;white-space:nowrap;
+ padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.95);
+ background:rgba(255,255,255,.76);
+ box-shadow:0 10px 24px rgba(109,104,84,.14),inset 0 1px 1px rgba(255,255,255,.98);
+ backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:.18s ease;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="viewport">
+<main class="artboard" id="artboard" aria-label="Экран безопасности приложения 4, светлая тема">
+<img class="asset asset-back" src="4_security_light_assets_v1/back.png" alt="" draggable="false">
+<img class="asset asset-title" src="4_security_light_assets_v1/title.png" alt="" draggable="false">
+<img class="asset asset-twofa_card" src="4_security_light_assets_v1/twofa_card.png" alt="" draggable="false">
+<img class="asset asset-main_card" src="4_security_light_assets_v1/main_card.png" alt="" draggable="false">
+<img class="asset asset-lock_label" src="4_security_light_assets_v1/lock_label.png" alt="" draggable="false">
+<img class="asset asset-lock_card" src="4_security_light_assets_v1/lock_card.png" alt="" draggable="false">
+<img class="asset asset-extra_label" src="4_security_light_assets_v1/extra_label.png" alt="" draggable="false">
+<img class="asset asset-extra_card" src="4_security_light_assets_v1/extra_card.png" alt="" draggable="false">
+<button class="hotspot" data-action="back" aria-label="Назад" style="left:15.994px;top:38.842px;width:47.524px;height:47.981px"></button>
+<button class="hotspot" data-action="twofa" aria-label="Двухфакторная аутентификация" style="left:17.821px;top:96.876px;width:393.9px;height:90.478px"></button>
+<button class="hotspot" data-action="password" aria-label="Изменить пароль" style="left:17.821px;top:204.718px;width:393.9px;height:62.147px"></button>
+<button class="hotspot" data-action="sessions" aria-label="Активные сессии" style="left:17.821px;top:266.865px;width:393.9px;height:58.034px"></button>
+<button class="hotspot" data-action="devices" aria-label="Устройства" style="left:17.821px;top:324.899px;width:393.9px;height:58.034px"></button>
+<button class="hotspot" data-action="history" aria-label="История входов" style="left:17.821px;top:382.933px;width:393.9px;height:58.948px"></button>
+<button class="hotspot" data-action="lock" aria-label="Блокировка приложения" style="left:17.821px;top:487.12px;width:393.9px;height:65.802px"></button>
+<button class="hotspot" data-action="voice_consent" aria-label="Отозвать согласие на обработку голоса" style="left:17.821px;top:594.506px;width:393.9px;height:64.888px"></button>
+<button class="hotspot" data-action="logout_all" aria-label="Выйти со всех устройств" style="left:17.821px;top:659.394px;width:393.9px;height:69.458px"></button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+</div>
+<script>
+const artboard=document.getElementById('artboard');
+function fit(){const k=Math.min(innerWidth/430,innerHeight/764);artboard.style.transform=`scale(${k})`;}
+addEventListener('resize',fit,{passive:true});fit();
+const labels={
+ back:'Назад',
+ twofa:'Двухфакторная аутентификация',
+ password:'Изменить пароль',
+ sessions:'Активные сессии',
+ devices:'Устройства',
+ history:'История входов',
+ lock:'Блокировка приложения',
+ voice_consent:'Отозвать согласие на обработку голоса',
+ logout_all:'Выйти со всех устройств'
+};
+const toast=document.getElementById('toast');let timer;
+document.querySelectorAll('.hotspot').forEach(btn=>btn.addEventListener('click',()=>{
+ toast.textContent=labels[btn.dataset.action]||'';
+ toast.classList.add('show');clearTimeout(timer);
+ timer=setTimeout(()=>toast.classList.remove('show'),1200);
+}));
+</script>
+</body>
+</html>

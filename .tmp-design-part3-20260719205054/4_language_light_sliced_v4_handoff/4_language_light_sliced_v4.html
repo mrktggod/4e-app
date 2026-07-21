@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>4 — Язык — Light Sliced</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; width: 100%; height: 100%; overflow: hidden;
+    background: linear-gradient(180deg, #f5f3ee 0%, #efede7 100%);
+    font-family: Inter, Arial, sans-serif;
+  }
+  .viewport {
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 45% at 72% 8%, rgba(188,206,121,.12), transparent 72%),
+      linear-gradient(180deg, #f5f3ee 0%, #efede7 100%);
+  }
+  .screen {
+    position: relative;
+    width: 941px; height: 1672px;
+    overflow: hidden;
+    transform-origin: center center;
+    background:
+      radial-gradient(circle at 18% 8%, rgba(255,255,255,.86), rgba(255,255,255,0) 20%),
+      radial-gradient(circle at 84% 88%, rgba(205,220,150,.08), rgba(205,220,150,0) 18%),
+      linear-gradient(180deg, #f5f3ee 0%, #efede7 100%);
+  }
+  .slice {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .slice img {
+    display: block; width: 100%; height: 100%;
+  }
+  .hotspot {
+    position: absolute; z-index: 10;
+    border: 0; background: transparent; padding: 0; margin: 0;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .hotspot:focus-visible {
+    outline: 2px solid rgba(111,155,56,.45);
+    outline-offset: -3px; border-radius: 24px;
+  }
+  .toast {
+    position: absolute; left: 50%; bottom: 20px;
+    transform: translate(-50%, 16px);
+    opacity: 0; pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    padding: 10px 14px; border-radius: 999px;
+    background: rgba(255,255,255,.82);
+    border: 1px solid rgba(255,255,255,.98);
+    box-shadow: 0 12px 28px rgba(110, 104, 86, .16);
+    color: #567532; font-size: 14px; font-weight: 600;
+    white-space: nowrap;
+    backdrop-filter: blur(16px);
+  }
+  .toast.show {
+    opacity: 1; transform: translate(-50%, 0);
+  }
+</style>
+</head>
+<body>
+<div class="viewport">
+  <main class="screen" id="screen" aria-label="Экран выбора языка, светлая тема">
+    <div class="slice" style="left:20px;top:56px;width:107px;height:107px">
+      <img src="4_language_light_sliced_assets_v4/back.png" alt="">
+    </div>
+    <div class="slice" style="left:164px;top:66px;width:178px;height:85px">
+      <img src="4_language_light_sliced_assets_v4/title.png" alt="">
+    </div>
+    <div class="slice" style="left:65px;top:240px;width:357px;height:58px">
+      <img src="4_language_light_sliced_assets_v4/interface_label.png" alt="">
+    </div>
+    <div class="slice" style="left:48px;top:292px;width:846px;height:144px">
+      <img src="4_language_light_sliced_assets_v4/current_lang_card.png" alt="">
+    </div>
+    <div class="slice" style="left:63px;top:459px;width:400px;height:56px">
+      <img src="4_language_light_sliced_assets_v4/available_label.png" alt="">
+    </div>
+    <div class="slice" style="left:47px;top:515px;width:847px;height:973px">
+      <img src="4_language_light_sliced_assets_v4/languages_card.png" alt="">
+    </div>
+    <div class="slice" style="left:58px;top:1503px;width:782px;height:83px">
+      <img src="4_language_light_sliced_assets_v4/footer_info.png" alt="">
+    </div>
+
+    <button class="hotspot" style="left:20px;top:56px;width:107px;height:107px" data-toast="Назад"></button>
+    <button class="hotspot" style="left:48px;top:292px;width:846px;height:144px" data-toast="Текущий язык"></button>
+    <button class="hotspot" style="left:47px;top:515px;width:847px;height:973px" data-toast="Список языков"></button>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+</div>
+
+<script>
+const screen = document.getElementById('screen');
+function fit() {
+  const s = Math.min(window.innerWidth / 941, window.innerHeight / 1672);
+  screen.style.transform = `scale(${s})`;
+}
+window.addEventListener('resize', fit, { passive: true });
+fit();
+
+const toast = document.getElementById('toast');
+let timer;
+document.querySelectorAll('.hotspot').forEach(el => {
+  el.addEventListener('click', () => {
+    toast.textContent = el.dataset.toast || '';
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(() => toast.classList.remove('show'), 1200);
+  });
+});
+</script>
+</body>
+</html>
