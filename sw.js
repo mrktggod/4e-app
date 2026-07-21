@@ -1,4 +1,5 @@
-const PWA_CACHE = "4-pwa-shell-v20260720-part3-rollback-1";
+const PWA_VERSION = "prod-redesign-2026-07-21";
+const PWA_CACHE = `4-pwa-shell-${PWA_VERSION}`;
 
 const SHELL_ASSETS = [
   "/",
@@ -7,6 +8,7 @@ const SHELL_ASSETS = [
   "/favicon.svg",
   "/favicon.ico",
   "/manifest.webmanifest",
+  "/scripts/tma-diagnostics.js",
   "/scripts/platform-adapter.js",
   "/scripts/auth.js",
   "/scripts/auth-handlers.js",
@@ -16,12 +18,26 @@ const SHELL_ASSETS = [
   "/assets/vendor/marked.min.js"
 ];
 
+function cacheBustUrl(request) {
+  const url = new URL(request.url);
+  url.searchParams.set("__sw_version", PWA_VERSION);
+  return url.toString();
+}
+
+async function putFresh(cacheKey, response) {
+  if (!response || !response.ok) return response;
+  const cache = await caches.open(PWA_CACHE);
+  await cache.put(cacheKey, response.clone());
+  return response;
+}
+
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(PWA_CACHE).then((cache) =>
       Promise.allSettled(
         SHELL_ASSETS.map((asset) =>
-          fetch(asset, { cache: "reload" }).then((response) => {
+          fetch(`${asset}?__sw_install=${PWA_VERSION}`, { cache: "reload" }).then((response) => {
             if (response && response.ok) return cache.put(asset, response);
             return null;
           })
@@ -33,14 +49,22 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key.startsWith("4-pwa-shell-") && key !== PWA_CACHE)
-          .map((key) => caches.delete(key))
+    caches.keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key.startsWith("4-pwa-shell-") && key !== PWA_CACHE)
+            .map((key) => caches.delete(key))
+        )
       )
-    )
+      .then(() => self.clients.claim())
   );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("fetch", (event) => {
@@ -52,13 +76,25 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(PWA_CACHE).then((cache) => cache.put("/index.html", copy));
-          return response;
-        })
+      fetch(cacheBustUrl(request), { cache: "reload", credentials: "include" })
+        .then((response) => putFresh("/index.html", response))
         .catch(() => caches.match("/index.html"))
+    );
+    return;
+  }
+
+  const networkFirst = url.pathname === "/" ||
+    url.pathname === "/index.html" ||
+    url.pathname === "/sw.js" ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".css") ||
+    url.pathname.endsWith(".webmanifest");
+
+  if (networkFirst) {
+    event.respondWith(
+      fetch(cacheBustUrl(request), { cache: "reload", credentials: "include" })
+        .then((response) => putFresh(request, response))
+        .catch(() => caches.match(request))
     );
     return;
   }
@@ -66,13 +102,7 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(request).then((cached) => {
       const network = fetch(request)
-        .then((response) => {
-          if (response && response.ok) {
-            const copy = response.clone();
-            caches.open(PWA_CACHE).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        })
+        .then((response) => putFresh(request, response))
         .catch(() => cached);
       return cached || network;
     })

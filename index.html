@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="favicon.ico" sizes="any">
+<script src="scripts/tma-diagnostics.js"></script>
 <script src="assets/vendor/telegram-web-app.js"></script>
 <script src="assets/vendor/vk-bridge.min.js"></script>
 <script src="scripts/platform-adapter.js?v=dashboard-handoff-20260718-7"></script>
@@ -23,7 +24,30 @@
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('/sw.js').catch(function(err){
+    let reloadedForNewSw=false;
+    navigator.serviceWorker.addEventListener('controllerchange',function(){
+      if(reloadedForNewSw)return;
+      reloadedForNewSw=true;
+      window.FourTmaDiagnostics?.mark?.('sw-controllerchange');
+    });
+    navigator.serviceWorker.register('/sw.js').then(function(registration){
+      window.FourTmaDiagnostics?.mark?.('sw-registered');
+      if(registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
+      registration.addEventListener('updatefound',function(){
+        const worker=registration.installing;
+        if(!worker)return;
+        worker.addEventListener('statechange',function(){
+          window.FourTmaDiagnostics?.mark?.('sw-'+worker.state);
+          if(worker.state==='installed'&&navigator.serviceWorker.controller){
+            worker.postMessage({type:'SKIP_WAITING'});
+          }
+        });
+      });
+      registration.update?.().catch(function(err){
+        window.FourTmaDiagnostics?.recordError?.('sw-update',err);
+      });
+    }).catch(function(err){
+      window.FourTmaDiagnostics?.recordError?.('sw-register',err);
       console.warn('PWA service worker registration failed',err);
     });
   });
@@ -1834,11 +1858,15 @@ if('serviceWorker' in navigator){
 </div>
 
 <script>
+window.FourTmaDiagnostics?.mark?.('main-inline-start');
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
 const PLATFORM=window.FourPlatform||{};
-const tg=PLATFORM.telegramApp||window.Telegram?.WebApp;
-if(PLATFORM.initTelegram){PLATFORM.initTelegram();}else{if(window.Telegram?.WebApp?.ready){window.Telegram.WebApp.ready();}if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}}
+const tg=PLATFORM.telegramApp||null;
+try{
+  if(PLATFORM.initTelegram){PLATFORM.initTelegram();}
+  else if(tg){tg.ready?.();tg.expand?.();tg.disableVerticalSwipes?.();}
+}catch(e){console.warn('[telegram-webapp] startup init skipped',e);}
 const WORKER=(()=>{const host=location.hostname.toLowerCase();if(host==='4-ai-staging.pages.dev'||host.endsWith('.4-ai-staging.pages.dev')||host==='localhost'||host==='127.0.0.1'){return 'https://restless-lab-d737-staging.shelckograff.workers.dev';}return 'https://edge.4-ai.site';})();
 const TELEGRAM_BOT_USERNAME=PLATFORM.getTelegramBotUsername?PLATFORM.getTelegramBotUsername():(new URLSearchParams(location.search).get('bot')||'Denzel89bot');
 const TOKEN_K='chetam_token';
@@ -1861,8 +1889,8 @@ let d1Token=localStorage.getItem(D1_TOKEN_K)||'';
 let privacySaving=false;
 let newTaskDraft={text:'',deadline:'',deadlineLabel:'Сегодня',directionLabel:'Работа',direction:'outgoing',person:'',comment:'',assigneeUsername:'',assigneeTgId:''};
 
-const tgUser=PLATFORM.getTelegramUser?PLATFORM.getTelegramUser():window.Telegram?.WebApp?.initDataUnsafe?.user;
-const tgInitData=PLATFORM.getTelegramInitData?PLATFORM.getTelegramInitData():(window.Telegram?.WebApp?.initData||'');
+const tgUser=(()=>{try{return PLATFORM.getTelegramUser?PLATFORM.getTelegramUser():window.Telegram?.WebApp?.initDataUnsafe?.user;}catch(e){console.warn('[telegram-webapp] user unavailable',e);return null;}})();
+const tgInitData=(()=>{try{return PLATFORM.getTelegramInitData?PLATFORM.getTelegramInitData():(window.Telegram?.WebApp?.initData||'');}catch(e){console.warn('[telegram-webapp] initData unavailable',e);return '';}})();
 
 // в”Ђв”Ђ helpers в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function getToken(){ return localStorage.getItem(TOKEN_K); }
@@ -1924,6 +1952,45 @@ function cleanTelegramAuthUrl(){
   if(PLATFORM.cleanTelegramAuthUrl) PLATFORM.cleanTelegramAuthUrl();
 }
 
+function callPlatformHelper(name,args=[],fallback=undefined){
+  try{
+    const fn=PLATFORM[name]||window[name];
+    if(typeof fn==='function') return fn(...args);
+  }catch(e){
+    window.FourTmaDiagnostics?.recordError?.('helper '+name,e);
+    console.warn('[init] helper skipped',name,e);
+  }
+  return fallback;
+}
+
+function capturePendingReferralCodeSafe(){
+  return callPlatformHelper('capturePendingReferralCode',[],undefined);
+}
+
+function getPendingReferralCodeSafe(){
+  return callPlatformHelper('getPendingReferralCode',[],'');
+}
+
+function clearPendingReferralCodeSafe(){
+  return callPlatformHelper('clearPendingReferralCode',[],undefined);
+}
+
+function getTelegramStartTokenFromLaunchSafe(){
+  return callPlatformHelper('getTelegramStartTokenFromLaunch',[],'');
+}
+
+function isVkMiniAppContextSafe(){
+  return !!callPlatformHelper('isVkMiniAppContext',[],false);
+}
+
+function isValidEmailSafe(value){
+  return !!callPlatformHelper('isValidEmail',[value],/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value||'')));
+}
+
+function focusFirstInvalidSafe(fieldIds){
+  return callPlatformHelper('focusFirstInvalid',[fieldIds],undefined);
+}
+
 function buildTelegramBotLoginUrl(startToken) {
   if(PLATFORM.buildTelegramBotLoginUrl) return PLATFORM.buildTelegramBotLoginUrl(startToken, TELEGRAM_BOT_USERNAME);
   const bot=String(TELEGRAM_BOT_USERNAME||'Denzel89bot').replace(/^@/,'').trim()||'Denzel89bot';
@@ -1943,9 +2010,11 @@ async function getVkLaunchParams(){
 
 // в”Ђв”Ђ init в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 async function initApp(){
-  const tg=window.Telegram?.WebApp;
-  if(tg){tg.ready();tg.expand();tg.disableVerticalSwipes?.();}
-  capturePendingReferralCode();
+  try{
+    if(PLATFORM.initTelegram){PLATFORM.initTelegram();}
+    else if(tg){tg.ready?.();tg.expand?.();tg.disableVerticalSwipes?.();}
+  }catch(e){console.warn('[telegram-webapp] initApp init skipped',e);}
+  capturePendingReferralCodeSafe();
   loadTariffConfig().catch(()=>{});
   showStartupFallback();
 
@@ -1966,7 +2035,7 @@ async function initApp(){
     }catch(e){}
   }
 
-  const telegramStartToken = getTelegramStartTokenFromLaunch() || getTelegramPendingStart();
+  const telegramStartToken = getTelegramStartTokenFromLaunchSafe() || getTelegramPendingStart();
   if (telegramStartToken) {
     const ok = await withTimeout(loginWithTelegram(telegramStartToken), 8000).catch(() => false);
     if (ok) return;
@@ -1979,18 +2048,18 @@ async function initApp(){
   }
 
   try{
-    if(isVkMiniAppContext()&&window.vkBridge){
+    if(isVkMiniAppContextSafe()&&window.vkBridge){
       await withTimeout(vkBridge.send("VKWebAppInit"),4000);
       const vkU=await withTimeout(vkBridge.send("VKWebAppGetUserInfo"),4000);
       const launchParams=await getVkLaunchParams();
-      const pendingRef=getPendingReferralCode();
+      const pendingRef=getPendingReferralCodeSafe();
       const vkResp=await withTimeout(fetch(WORKER+'/auth/vk',{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({launchParams,first_name:vkU.first_name,last_name:vkU.last_name||"",attribution:getAcquisitionAttribution(),...(pendingRef?{ref:pendingRef}:{})})}),10000);
       const vkR=await readJsonSafe(vkResp);
       if(vkR.token){
         setLegacyToken(vkR.token);
         currentUser=vkR.user||{name:vkU.first_name+" "+(vkU.last_name||""),email:"",trialActive:true,trialLeft:30};
         chatId="user_"+currentUser.id;
-        clearPendingReferralCode();
+        clearPendingReferralCodeSafe();
         applyUserInfo();
         showScreen("home");
         showAccountMergeToast(vkR);
@@ -2072,7 +2141,7 @@ async function requestEmailVerification(){
   if(!currentUser||!getToken()){showToast('Сначала войдите в аккаунт');return;}
   const email=(document.getElementById('profile-field-email')?.value||'').trim();
   if(!email){showToast('Введите email');return;}
-  if(!isValidEmail(email)){showToast('Введите корректный email');return;}
+  if(!isValidEmailSafe(email)){showToast('Введите корректный email');return;}
   if(isCurrentProfileEmailVerified(email)){showToast('Email уже подтверждён');return;}
   const btn=document.getElementById('profile-email-status');
   if(btn){btn.disabled=true;btn.textContent='Отправляем...';}
@@ -2552,7 +2621,7 @@ function selectPlan(plan) {
 }
 
 function isVKPaymentContext() {
-  return typeof window.vkBridge !== 'undefined' && isVkMiniAppContext();
+  return typeof window.vkBridge !== 'undefined' && isVkMiniAppContextSafe();
 }
 
 function isTelegramPaymentContext() {
@@ -3777,18 +3846,31 @@ function renderHomePriorityCard(task,index,options={}){
   const title=e2((task?.person?task.person+' — ':'')+(task?.text||'Без текста'));
   const meta=e2(getHomePriorityMeta(task));
   const badge=e2(String((index||0)+1));
-  const openAction=options.closePanelFirst
-    ? 'closeFocusPanel();openTaskById(\''+safeId+'\','+options.cacheIndex+')'
-    : 'openTaskById(\''+safeId+'\','+options.cacheIndex+')';
-  return '<div class="home-ai-row" data-task-id="'+safeId+'" role="button" tabindex="0">'
-    +'<div class="home-ai-row-main" onclick="'+openAction+'">'
+  const cacheIndex=Number.isInteger(options.cacheIndex)?options.cacheIndex:-1;
+  const closePanel=options.closePanelFirst?'1':'0';
+  return '<div class="task-card-shell home-ai-row-shell" data-task-id="'+safeId+'">'
+    +'<div class="task-swipe-actions task-swipe-actions-right"><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'
+    +'<div class="task-swipe-actions task-swipe-actions-left"><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'
+    +'<div class="home-ai-row task-card" data-task-id="'+safeId+'" role="button" tabindex="0" onclick="openHomePriorityTask(this,\''+safeId+'\','+cacheIndex+','+closePanel+')" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'
+    +'<div class="home-ai-row-main">'
     +'<span class="home-ai-row-avatar">'+badge+'</span>'
     +'<div class="home-ai-row-main-text">'
     +'<div class="home-ai-row-title">'+title+'</div>'
     +'<div class="home-ai-row-meta">'+meta+'</div>'
     +'</div>'
     +'</div>'
+    +'</div>'
     +'</div>';
+}
+
+function openHomePriorityTask(row,taskId,cacheIndex,closePanelFirst){
+  const shell=row?.closest?.('.task-card-shell');
+  if(shell&&shell.dataset.swiped==='1'){
+    shell.dataset.swiped='0';
+    return;
+  }
+  if(closePanelFirst) closeFocusPanel();
+  openTaskById(taskId,cacheIndex);
 }
 
 function renderFocusPanel(){
@@ -6921,7 +7003,24 @@ function _showSubScreenBase(id){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  processOAuthCallback();
+  window.FourTmaDiagnostics?.mark?.('app-domcontentloaded-start');
+  try{
+    const processOAuth=window.processOAuthCallback;
+    if(typeof processOAuth==='function'){
+      const result=processOAuth();
+      if(result&&typeof result.catch==='function'){
+        result.catch((err)=>{
+          window.FourTmaDiagnostics?.recordError?.('processOAuthCallback.async',err);
+          console.warn('processOAuthCallback failed',err);
+        });
+      }
+    }else{
+      window.FourTmaDiagnostics?.mark?.('processOAuthCallback-missing');
+    }
+  }catch(err){
+    window.FourTmaDiagnostics?.recordError?.('processOAuthCallback.sync',err);
+    console.warn('processOAuthCallback failed',err);
+  }
   const bindClick = PLATFORM.bindClick || ((id, handler) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('click', handler);
@@ -6941,9 +7040,23 @@ document.addEventListener('DOMContentLoaded',()=>{
     bindOAuth();
   } else {
     const vkIdBtn = document.getElementById('login-vk-id-btn');
-    if(vkIdBtn) vkIdBtn.addEventListener('click', () => startOAuthLogin('vk_id'));
+    if(vkIdBtn) vkIdBtn.addEventListener('click', () => {
+      const startOAuth=window.startOAuthLogin;
+      if(typeof startOAuth==='function') startOAuth('vk_id');
+      else{
+        window.FourTmaDiagnostics?.mark?.('startOAuthLogin-missing-vk_id');
+        window.showToast?.('Сервис входа временно недоступен');
+      }
+    });
     const yandexIdBtn = document.getElementById('login-yandex-id-btn');
-    if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => startOAuthLogin('yandex'));
+    if(yandexIdBtn) yandexIdBtn.addEventListener('click', () => {
+      const startOAuth=window.startOAuthLogin;
+      if(typeof startOAuth==='function') startOAuth('yandex');
+      else{
+        window.FourTmaDiagnostics?.mark?.('startOAuthLogin-missing-yandex');
+        window.showToast?.('Сервис входа временно недоступен');
+      }
+    });
   }
   const bindProfileMenuItems = PLATFORM.bindProfileMenuItems;
   const bindProfileMenu = typeof bindProfileMenuItems === 'function'
@@ -6960,6 +7073,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if (typeof bindUi === 'function') {
     bindUi();
   }
+  window.FourTmaDiagnostics?.mark?.('app-domcontentloaded-end');
 });
 
 // ===== PRIVACY CENTER =====
@@ -7655,7 +7769,7 @@ async function doForgotPassword(){
     showToast('Введите email');
     return;
   }
-  if(!isValidEmail(email)){
+  if(!isValidEmailSafe(email)){
     setForgotPasswordError('Введите корректный email');
     showToast('Введите корректный email');
     return;
@@ -7744,20 +7858,20 @@ async function doResetPassword(){
   if(!pass || pass.length < 6){
     setAuthFieldError('reset-pass','Пароль минимум 6 символов');
     showToast('Пароль минимум 6 символов');
-    focusFirstInvalid(fields);
+    focusFirstInvalidSafe(fields);
     return;
   }
   if(pass !== pass2){
     setAuthFieldError('reset-pass2','Пароли не совпадают');
     showToast('Пароли не совпадают');
-    focusFirstInvalid(fields);
+    focusFirstInvalidSafe(fields);
     return;
   }
   const token = window._resetToken;
   if(!token){
     setAuthFieldError('reset-pass','Токен не найден. Откройте ссылку из письма ещё раз.');
     showToast('Токен не найден');
-    focusFirstInvalid(fields);
+    focusFirstInvalidSafe(fields);
     return;
   }
 

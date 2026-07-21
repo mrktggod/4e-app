@@ -10,6 +10,7 @@ const requiredFiles = [
   "vk.html",
   "privacy.html",
   "styles.min.css",
+  "scripts/tma-diagnostics.js",
   "scripts/platform-adapter.js",
   "scripts/auth.js",
   "scripts/task-ui-renderers.js",
