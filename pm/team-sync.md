@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - GPT-QA layout overlaps
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-20-26-layout-overlaps-from-gpt-qa` marked `DONE`.
+- Result: CSS-only safe-area/nav fixes for subscription CTA reserve, chat conversation bottom controls, and auth/public nav visibility; CSS artifacts rebuilt.
+- Report: `pm/outbox/REPORT-BRIEF-2026-07-20-26-layout-overlaps-from-gpt-qa.md`.
+- Next: visual re-check on the next direct staging/preview deployment; no production deploy was performed.
+
 ## 2026-07-21 - Codex - preview state flags
 
 - Branch: `feat/admin-tariff-api`.

@@ -1,5 +1,19 @@
 ## 2026-07-21
 
+### GPT-QA layout overlap fixes
+
+**What changed:** For `BRIEF-2026-07-20-26-layout-overlaps-from-gpt-qa`, made CSS-only layout fixes: subscription scroll reserve now leaves more room below payment CTA, chat conversation chips/input reserve bottom safe area and suppress global nav while active, and auth/public screens have a CSS fallback that hides global/bottom navigation. Rebuilt `styles.css` and `styles.min.css`.
+
+**Encoding check:** `index.html` was not edited in this task; cp1251/mojibake guard passed with `0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `npm run smoke:back050` returned `"ok": true`; `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-ui-architecture.sh` (inline handlers `397 / 402`, inline scripts `3 / 3`); staged `node scripts/check-js-syntax.mjs` passed with `no staged JS or HTML files`; `git diff --cached --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-21
+
 ### Dashboard preview state flags
 
 **What changed:** For `BRIEF-2026-07-20-23-preview-state-flags-for-qa`, added preview-only query flags in `scripts/auth-handlers.js`: `previewUser=trial|paid|expired|free`, `previewTasks=empty|mixed|done-failed`, `previewApi=ok|error`, and `previewTheme=light|dark`. The flags only work with `previewDemo=dashboard` on localhost or direct `*.4-ai-staging.pages.dev` preview hosts. They only alter mock user/task/API/theme visuals.

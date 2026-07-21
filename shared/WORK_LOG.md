@@ -1,5 +1,15 @@
 ### 2026-07-21 - Codex
 
+**Task:** BRIEF-2026-07-20-26 - fix GPT-QA layout overlaps.
+**Result:** Added CSS-only safe-area/nav reserves for subscription CTA, chat conversation chips/input, and auth/public screens; rebuilt `styles.css` and `styles.min.css`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Visually re-check subscription CTA and chat quick-actions on the next direct staging/preview deployment.
+
+---
+
+### 2026-07-21 - Codex
+
 **Task:** BRIEF-2026-07-20-23 - add preview-only state flags for GPT visual QA.
 **Result:** Added gated `previewUser`, `previewTasks`, `previewApi`, and `previewTheme` handling inside the existing dashboard preview layer; real runtime/payment/entitlement/auth-security paths are untouched.
 **Commit:** this commit

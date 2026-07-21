@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-20-26-layout-overlaps-from-gpt-qa
 

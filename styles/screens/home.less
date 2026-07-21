@@ -654,7 +654,8 @@
 }
 
 #subscription .sub-scroll {
-  padding-bottom: 104px !important;
+  padding-bottom: max(152px, calc(128px + var(--safe-area-bottom))) !important;
+  scroll-padding-bottom: max(152px, calc(128px + var(--safe-area-bottom))) !important;
 }
 
 #subscription .plan-status-card,
@@ -847,6 +848,7 @@
 #subscription .subscription-cta,
 #subscription .pay-primary-btn {
   min-height: 54px !important;
+  margin-bottom: 18px !important;
   border-radius: 18px !important;
   background: linear-gradient(180deg, #bfe56b, #8ebc31) !important;
   color: #061107 !important;
