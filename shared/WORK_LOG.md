@@ -1,5 +1,15 @@
 ### 2026-07-21 - Codex
 
+**Task:** BRIEF-2026-07-21-night - classify liquid-glass system implementation.
+**Result:** Marked `NEED-CLAUDE`; the requested cross-screen liquid-glass layer is broad redesign architecture work and the source lacks an explicit click-state rule.
+**Commit:** this commit
+**Status:** NEED-CLAUDE
+**Next step:** Claude/Yuri should approve a pilot surface and token/class plan before implementation.
+
+---
+
+### 2026-07-21 - Codex
+
 **Task:** BRIEF-2026-07-20-28 - sync FILE_MAP UI line numbers.
 **Result:** Updated `FILE_MAP_UI.md` screen anchors and top-level index ranges against current `index.html`; left external-script semantic cleanup as an explicit follow-up tail.
 **Commit:** this commit

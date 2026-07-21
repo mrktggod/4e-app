@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - liquid-glass system needs review
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-21-night-liquid-glass-system` marked `NEED-CLAUDE`.
+- Result: no runtime code changed; cross-screen liquid-glass implementation is broad redesign architecture work and needs a reviewed pilot plan.
+- Report: `pm/outbox/REPORT-BRIEF-2026-07-21-night-liquid-glass-system.md`.
+- Next: Claude/Yuri should choose the first target surface and approve token/SVG/click-state handling.
+
 ## 2026-07-21 - Codex - FILE_MAP UI sync
 
 - Branch: `feat/admin-tariff-api`.
