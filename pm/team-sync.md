@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - FILE_MAP UI sync
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-20-28-file-map-sync-audit` marked `DONE`.
+- Result: `FILE_MAP_UI.md` screen anchors and top-level `index.html` ranges synced to current committed file; product code untouched.
+- Report: `pm/outbox/REPORT-BRIEF-2026-07-20-28-file-map-sync-audit.md`.
+- Next: optional future cleanup can split external script maps for `auth-handlers` and `platform-adapter` semantics.
+
 ## 2026-07-21 - Codex - BACK-049 guard evidence
 
 - Branch: `feat/admin-tariff-api`.

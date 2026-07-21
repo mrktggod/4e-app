@@ -1,5 +1,19 @@
 ## 2026-07-21
 
+### FILE_MAP UI line sync
+
+**What changed:** For `BRIEF-2026-07-20-28-file-map-sync-audit`, updated `FILE_MAP_UI.md` line numbers for current `index.html` screen anchors, top-level head/HTML/JS ranges, and biometric patch range. Product code was not changed.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `Select-String` anchor checks for `home`, `dash-bottom-nav`, `task-detail`, `calendar`, `notifications`, `profile`, `subscription`, `chat-conv`, `global-nav`, key JS functions, and `biometric-consent`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `git diff --cached --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-21
+
 ### BACK-049 UI guard evidence upgrade
 
 **What changed:** For `BRIEF-2026-07-20-27-back049-ui-guard-evidence-upgrade`, documented exact guard patterns and raw current-HEAD output in `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`; added a negative scratch test outside the git tree with 403 deliberate `onclick` handlers, proving the guard fails on inline handler growth. Product runtime files were not changed.

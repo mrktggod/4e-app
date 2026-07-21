@@ -1,5 +1,15 @@
 ### 2026-07-21 - Codex
 
+**Task:** BRIEF-2026-07-20-28 - sync FILE_MAP UI line numbers.
+**Result:** Updated `FILE_MAP_UI.md` screen anchors and top-level index ranges against current `index.html`; left external-script semantic cleanup as an explicit follow-up tail.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Future map cleanup can split `scripts/auth-handlers.js` / `scripts/platform-adapter.js` ranges more precisely.
+
+---
+
+### 2026-07-21 - Codex
+
 **Task:** BRIEF-2026-07-20-27 - upgrade BACK-049 UI guard evidence.
 **Result:** Added current-HEAD guard output and a negative `%TEMP%` scratch test proving inline handler growth fails the guard; updated `EVIDENCE-AUDIT-2026-07-17.md`.
 **Commit:** this commit
