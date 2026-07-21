@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - PM inbox runner closed
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: no `status: NEW` briefs remain after this run.
+- Result: 6 inbox tasks handled after pre-sync (`5 DONE`, `1 NEED-CLAUDE`); backlog/roadmap pass found no remaining safe autonomous whitelist task.
+- Report: `pm/outbox/REPORT-4e-pm-inbox-daily-runner-2026-07-21-final.md`.
+- Next: Claude/Yuri review liquid-glass design-system scope and manual/live QA tails.
+
 ## 2026-07-21 - Codex - liquid-glass system needs review
 
 - Branch: `feat/admin-tariff-api`.

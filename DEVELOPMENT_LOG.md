@@ -1,5 +1,19 @@
 ## 2026-07-21
 
+### PM inbox daily runner final summary
+
+**What changed:** Added the final automation report for the 2026-07-21 PM inbox daily runner. Inbox ended with no `NEW` briefs; backlog/roadmap pass found no remaining autonomous whitelist task.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `git diff --cached --check`; `node scripts/check-js-syntax.mjs`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-21
+
 ### Liquid-glass system classified for review
 
 **What changed:** For `BRIEF-2026-07-21-night-liquid-glass-system`, classified the requested cross-screen liquid-glass design-language implementation as `NEED-CLAUDE` under the autonomous guardrails. Runtime code was not changed.
