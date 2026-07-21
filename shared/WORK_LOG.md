@@ -1,5 +1,15 @@
 ### 2026-07-21 - Codex
 
+**Task:** BRIEF-2026-07-20-27 - upgrade BACK-049 UI guard evidence.
+**Result:** Added current-HEAD guard output and a negative `%TEMP%` scratch test proving inline handler growth fails the guard; updated `EVIDENCE-AUDIT-2026-07-17.md`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Keep BACK-049 as process/tooling proof; do not treat it as staging runtime behavior.
+
+---
+
+### 2026-07-21 - Codex
+
 **Task:** BRIEF-2026-07-20-26 - fix GPT-QA layout overlaps.
 **Result:** Added CSS-only safe-area/nav reserves for subscription CTA, chat conversation chips/input, and auth/public screens; rebuilt `styles.css` and `styles.min.css`.
 **Commit:** this commit

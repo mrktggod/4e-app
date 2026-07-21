@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-20-27-back049-ui-guard-evidence-upgrade
 

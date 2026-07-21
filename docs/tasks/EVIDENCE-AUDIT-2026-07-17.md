@@ -44,7 +44,7 @@ Mode: staging/source evidence only. No production deploy, no main merge, no dest
 | BACK-048 | Done | LIVE | Covered by current worker smoke and prior recorded proof. |
 | BACK-055 | Done | LIVE | 2026-07-20 headless Chrome/CDP smoke `npm run smoke:back055` verified notification action-card rendering and interactions at 390x844. |
 | HOME-001 | Done | LIVE/PARTIAL | 2026-07-20 local headless Chrome/CDP smoke `npm run smoke:home001` verified dashboard structure, routes, dark/light render and screenshot artifacts at 390x844. |
-| BACK-049 | Done | SOURCE-ONLY | Needs explicit live proof if it becomes release-critical. |
+| BACK-049 | Done | LIVE/PARTIAL | 2026-07-21 current-HEAD guard run and negative scratch test prove the UI architecture guard executes and detects inline-handler growth. This is process/tooling evidence, not staging runtime behavior. |
 | BACK-050 | Ready for QA | LIVE/PARTIAL | 2026-07-20 local headless Chrome/CDP smoke `npm run smoke:back050` verified auth labels/errors, toast status/alert live-region behavior, and quick-add/contact/focus dialog ARIA/focus at 390x844. Manual keyboard/mobile smoke remains required before Done. |
 | NEW-006 | Ready for QA | NEEDS-REAL | Staging chain needs manual UI confirmation. |
 | NEW-008 | Ready for QA | NEEDS-REAL | Staging chain needs manual UI confirmation. |
@@ -144,7 +144,7 @@ Still not promoted:
 | --- | --- | --- |
 | BACK-003 | SOURCE-ONLY / needs manual UI | First-microphone biometric consent is a browser/UI consent path, not a safe API-only proof. |
 | BACK-025 | SOURCE-ONLY / needs manual UI | Morning AI dashboard is product UI; requires visual/manual acceptance. |
-| BACK-049 | SOURCE-ONLY | Architecture guard is process/tooling evidence, not staging runtime behavior. |
+| BACK-049 | LIVE/PARTIAL process evidence | 2026-07-21 guard run proved current baseline and negative inline-handler detection. It is still not a staging runtime feature check. |
 | SMART-003 | SOURCE-ONLY / needs real chat context | "Write to assignee" requires Telegram/deep-link behavior validation. |
 | SMART-007 | SOURCE-ONLY | AI memory/facts needs a dedicated safe fixture and acceptance criteria; not promoted opportunistically. |
 | ARCH-001 | SOURCE-ONLY | Architecture refactor proof remains source/tooling based. |
@@ -168,6 +168,50 @@ The staging backend/auth/task/AI smoke layer is healthy. Several P0/P1 rows have
 | Auth field accessibility baseline | LIVE/PARTIAL | `npm run smoke:back050` verified `login-email`, `login-pass`, `reg-name`, `reg-email`, `reg-pass`, `forgot-email`, `reset-pass`, and `reset-pass2` have labels, `aria-describedby`, field error targets, and `aria-invalid=false`. |
 | Toast live-region behavior | LIVE/PARTIAL | Same smoke verified default `#toast` is `role=status` / `aria-live=polite`, critical `Нет соединения` switches to `role=alert` / `aria-live=assertive`, and success/status text switches back to polite status. |
 | Dialog focus baseline | LIVE/PARTIAL | Same smoke verified quick-add, contact panel, and focus panel dialogs expose `role=dialog`, `aria-modal=true`, `aria-labelledby`, `aria-hidden` state changes, focus-in, and focus-return on close/Escape. |
+
+## 2026-07-21 BACK-049 UI architecture guard evidence supplement
+
+BACK-049 remains `Done`, with evidence upgraded from generic `SOURCE-ONLY` to `LIVE/PARTIAL` process/tooling proof. This does not claim staging runtime behavior; it proves the guard runs on current HEAD and detects inline debt growth.
+
+Guard pattern references:
+
+| Pattern | Evidence |
+| --- | --- |
+| Baselines | `scripts/check-ui-architecture.sh:6-9` sets max inline styles `465`, inline handlers `402`, style tags `0`, inline script tags `3`. |
+| Pattern counter | `scripts/check-ui-architecture.sh:11-20` counts regex matches with `rg -o`. |
+| Inline script counter | `scripts/check-ui-architecture.sh:22-30` counts `<script>` tags except external `src=` scripts. |
+| Counted patterns | `scripts/check-ui-architecture.sh:34-37` counts `style=`, `on[a-z]+=`, `<style`, and inline script tags. |
+| Required CSS artifact | `scripts/check-ui-architecture.sh:65-68` requires a `styles.min.css` link. |
+| Fail condition | `scripts/check-ui-architecture.sh:39-49` and `scripts/check-ui-architecture.sh:72-75` fail when a count exceeds its baseline. |
+| Developer rule | `docs/ui-architecture-rules.md:28-31` bans new inline `style`, inline handlers, inline `<style>`, inline `<script>`, and requires `styles.min.css`. |
+
+Current-HEAD guard run:
+
+```text
+UI architecture guard: inline style attributes = 356 / 465
+UI architecture guard: inline event handlers = 397 / 402
+UI architecture guard: style tags = 0 / 0
+UI architecture guard: inline script tags = 3 / 3
+```
+
+Negative scratch test outside the git tree:
+
+```text
+Scratch: %TEMP%\back049-ui-guard-negative.html
+UI architecture guard: inline style attributes = 0 / 465
+UI architecture guard: style tags = 0 / 0
+UI architecture guard: inline script tags = 0 / 3
+Exit code: 1
+UI architecture guard failed: inline event handlers = 403, allowed max = 402
+
+New UI code must not increase legacy inline debt.
+Use:
+- styles/**/*.less for visual styles;
+- BEM-like class names for UI blocks and elements;
+- addEventListener or delegated JS handlers instead of onclick/oninput/onchange in HTML.
+```
+
+The scratch file was created under `%TEMP%`, contained a valid `styles.min.css` link and 403 deliberate `onclick` handlers, then was removed. The local absolute temp path is intentionally normalized here for portability. No `index.html`, `vk.html`, `styles/**`, production, payment, entitlement, auth-security, CAL, secret, or deploy behavior was changed.
 
 ## 2026-07-20 ARCH-001 source evidence supplement
 

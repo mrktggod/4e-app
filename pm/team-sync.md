@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - BACK-049 guard evidence
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-20-27-back049-ui-guard-evidence-upgrade` marked `DONE`.
+- Result: evidence upgraded with exact guard pattern references, current-HEAD guard output, and a negative scratch test that fails on inline-handler growth.
+- Report: `pm/outbox/REPORT-BRIEF-2026-07-20-27-back049-ui-guard-evidence-upgrade.md`.
+- Next: treat BACK-049 as proven process/tooling guard, not staging runtime behavior.
+
 ## 2026-07-21 - Codex - GPT-QA layout overlaps
 
 - Branch: `feat/admin-tariff-api`.

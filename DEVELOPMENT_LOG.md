@@ -1,5 +1,19 @@
 ## 2026-07-21
 
+### BACK-049 UI guard evidence upgrade
+
+**What changed:** For `BRIEF-2026-07-20-27-back049-ui-guard-evidence-upgrade`, documented exact guard patterns and raw current-HEAD output in `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`; added a negative scratch test outside the git tree with 403 deliberate `onclick` handlers, proving the guard fails on inline handler growth. Product runtime files were not changed.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `bash scripts/check-ui-architecture.sh`; negative `%TEMP%` scratch test failed as expected with exit code `1`; staged `node scripts/check-js-syntax.mjs` passed with `no staged JS or HTML files`; `git diff --cached --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-21
+
 ### GPT-QA layout overlap fixes
 
 **What changed:** For `BRIEF-2026-07-20-26-layout-overlaps-from-gpt-qa`, made CSS-only layout fixes: subscription scroll reserve now leaves more room below payment CTA, chat conversation chips/input reserve bottom safe area and suppress global nav while active, and auth/public screens have a CSS fallback that hides global/bottom navigation. Rebuilt `styles.css` and `styles.min.css`.
