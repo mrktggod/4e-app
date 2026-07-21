@@ -3465,7 +3465,8 @@ function closeQuickAdd(){
   document.getElementById('quick-add-person').value='';
 }
 async function submitQuickAdd(){
-  const text = (document.getElementById('quick-add-text')?.value||'').trim();
+  const rawText = (document.getElementById('quick-add-text')?.value||'').trim();
+  const text = normalizeTaskTitle(rawText);
   const person = (document.getElementById('quick-add-person')?.value||'').trim() || (currentUser?.name||'Я');
   if(!text){ showToast('Введи текст задачи'); return; }
   const assignee = parseAssigneeFromPerson(person);
@@ -3475,6 +3476,7 @@ async function submitQuickAdd(){
     type: 'task', direction: 'outgoing',
     date: new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'}),
     done: false,
+    originalMsg: rawText && rawText!==text ? rawText : '',
     assigneeUsername: assignee.assigneeUsername || '',
     assigneeTgId: assignee.assigneeTgId || ''
   };
@@ -6170,32 +6172,80 @@ function buildAskUserProfileSummary(){
 function looksLikeTaskRequest(text){
   const v = (text || '').toLowerCase().trim();
   if(v.length < 4) return false;
-  if(/\b(поставь|добавь|создай|запиши|запомни|напомни|задач[ауи]?|надо|нужно|сделать|проверить|позвонить|написать|отправить|подготовить|протестировать)\b/i.test(v)) return true;
+  if(/(^|\s)(поставь|добавь|создай|запиши|запомни|напомни|задач[ауи]?|надо|нужно|сделать|проверить|придумать|позвонить|написать|отправить|подготовить|протестировать)(?=\s|$)/i.test(v)) return true;
   return false;
 }
 
+const TASK_TITLE_DEADLINE_WORDS='сегодня|завтра|послезавтра|в понедельник|во вторник|в среду|в четверг|в пятницу|в субботу|в воскресенье|к понедельнику|ко вторнику|к среде|к четвергу|к пятнице|к субботе|к воскресенью|до понедельника|до вторника|до среды|до четверга|до пятницы|до субботы|до воскресенья|вечером|утром|днем|днём';
+function getTaskTitleDeadlineRegex(flags){
+  return new RegExp('(^|\\s)('+TASK_TITLE_DEADLINE_WORDS+')(?=\\s|$)',flags||'i');
+}
+
 function formatTaskIntentTitle(value){
-  const clean=String(value||'').replace(/\s+/g,' ').replace(/[.,;:!?]+$/,'').trim();
+  return normalizeTaskTitle(value);
+}
+
+function normalizeTaskTitle(rawText, context){
+  const opts=context||{};
+  const source=String(rawText||'').replace(/\s+/g,' ').replace(/[.,;:!?]+$/,'').trim();
+  let clean=source;
   if(!clean) return '';
+  for(let i=0;i<3;i++){
+    const next=clean
+      .replace(/^[\s,.;:!?-]*(так|слушай|смотри|короче|пожалуйста|ассистент|четыре|4)[\s,.;:!?-]+/i,'')
+      .replace(/^(поставь|добавь|создай|запиши|запомни)\s+(мне\s+|нам\s+)?(новую\s+)?задач[ауи]?\s*/i,'')
+      .replace(/^напомни\s+(мне\s+|нам\s+)?/i,'')
+      .replace(/^(мне|нам|тебе|ему|ей)\s+(надо|нужно|нужна|нужен|нужны)\s+/i,'')
+      .replace(/^(надо|нужно|нужна|нужен|нужны)\s+(мне|нам|тебе|ему|ей)\s+/i,'')
+      .replace(/^(надо|нужно|нужна|нужен|нужны|давай|я)\s+/i,'')
+      .trim();
+    if(next===clean) break;
+    clean=next;
+  }
+  clean=clean
+    .replace(/(^|\s)на платформе\s+как вести\s+разработку(?=\s|$)/ig,'$1управление разработкой')
+    .replace(/(^|\s)как вести\s+разработку(?=\s|$)/ig,'$1управление разработкой')
+    .replace(/(^|\s)на платформе\s+/ig,'$1')
+    .replace(/(^|\s)проверить\s+почему\s+пропадает\s+часть\s+чата(?=\s|$)/ig,'$1проверить пропажу части чата')
+    .replace(/\s+/g,' ')
+    .trim();
+  if(opts.stripDeadline){
+    clean=clean.replace(getTaskTitleDeadlineRegex('ig'),' ').replace(/\s+/g,' ').trim();
+  }
+  if(!clean) return '';
+  const words=clean.split(' ').filter(Boolean);
+  clean=(words.length>9?words.slice(0,9):words).join(' ');
   return clean.charAt(0).toUpperCase()+clean.slice(1);
 }
 
 function fallbackTaskFromText(text){
+  const original=String(text||'').trim();
   let clean = (text || '').trim();
   clean = clean.replace(/^(поставь|добавь|создай|запиши|запомни)\s+(мне\s+)?(новую\s+)?задач[ауи]?\s*/i,'');
   clean = clean.replace(/^напомни\s+(мне\s+)?/i,'');
   clean = clean.replace(/^надо\s+/i,'');
   clean = clean.replace(/^нужно\s+/i,'');
-  const deadlineMatch = clean.match(/\b(сегодня|завтра|послезавтра|в понедельник|во вторник|в среду|в четверг|в пятницу|в субботу|в воскресенье|вечером|утром|днем|днём)\b/i);
-  const deadline = deadlineMatch ? deadlineMatch[0] : null;
+  const deadlineMatch = clean.match(getTaskTitleDeadlineRegex('i'));
+  const deadline = deadlineMatch ? deadlineMatch[2] : null;
   if(deadlineMatch){
-    const before=clean.slice(0,deadlineMatch.index).trim();
-    const after=clean.slice(deadlineMatch.index+deadlineMatch[0].length).trim();
+    const deadlineIndex=deadlineMatch.index + deadlineMatch[0].indexOf(deadlineMatch[2]);
+    const before=clean.slice(0,deadlineIndex).trim();
+    const after=clean.slice(deadlineIndex+deadlineMatch[2].length).trim();
     clean=(before+' '+after).trim();
   }
+  let person='';
+  const directedTaskMatch=clean.match(/^(поставь|добавь|создай|запиши)\s+([А-ЯЁA-Z][A-ZА-ЯЁа-яёa-z-]{1,30})\s+задач[ауи]?\s+(.+)$/i);
+  const personTaskMatch=directedTaskMatch||clean.match(/^([А-ЯЁA-Z][A-ZА-ЯЁа-яёa-z-]{1,30})\s+задач[ауи]?\s+(.+)$/);
+  if(directedTaskMatch){
+    person=directedTaskMatch[2];
+    clean=directedTaskMatch[3];
+  }else if(personTaskMatch){
+    person=personTaskMatch[1];
+    clean=personTaskMatch[2];
+  }
   clean=clean.replace(/\s+/g,' ').trim();
-  const normalizedText=formatTaskIntentTitle(clean);
-  return { text: normalizedText, person: '', deadline };
+  const normalizedText=normalizeTaskTitle(clean,{stripDeadline:!!deadline});
+  return { text: normalizedText, person, deadline, originalMsg: original };
 }
 
 function normalizeTaskDupText(value){
@@ -6307,7 +6357,9 @@ async function saveTaskWithDedup(task){
 
 async function createTaskFromChat(taskData) {
   const safe = taskData || {};
-  const text = (safe.text || '').trim();
+  const rawText = (safe.text || '').trim();
+  const original = (safe.originalMsg || safe.description || rawText).trim();
+  const text = normalizeTaskTitle(rawText || original,{stripDeadline:!!safe.deadline});
   if(!text) return false;
   const person = (safe.person || currentUser?.name || 'Я').trim() || 'Я';
   const assignee = parseAssigneeFromPerson(person);
@@ -6321,7 +6373,7 @@ async function createTaskFromChat(taskData) {
     date: new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long'}),
     done: false,
     source: 'ai_chat',
-    originalMsg: safe.originalMsg || text,
+    originalMsg: original || text,
     assigneeUsername: safe.assigneeUsername || assignee.assigneeUsername || '',
     assigneeTgId: safe.assigneeTgId || assignee.assigneeTgId || ''
   };
@@ -6640,6 +6692,7 @@ async function sendAsk(){
     if(factsSummary) systemParts.push(factsSummary);
     systemParts.push(taskSummary);
     systemParts.push('Если пользователь просит изменить или открыть существующие задачи, добавь в конец ответа тег <task_actions>[...]</task_actions> без markdown. Формат action: {"type":"complete|reschedule|edit|remind|show","taskId":"id задачи","deadline":"2026-07-08T10:00","field":"text|person|priority|originalMsg|status","value":"...","reminderType":"15m|1h|1d"}. Если действий нет, тег не добавляй.');
+    systemParts.push('Если пользователь просит создать задачу через <create_task>, поле text должно быть коротким самостоятельным заголовком 3-9 слов без вводных вроде "я", "мне надо", "тебе надо"; originalMsg сохраняет полную исходную фразу. Не теряй исполнителя и срок.');
     const r=await fetch(WORKER + '/anthropic',{
       method:'POST',
       headers:authHeaders(),

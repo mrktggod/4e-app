@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-065 title normalization ready for QA
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-065` moved to `Ready for QA`.
+- Result: added shared title normalization for AI-chat, voice task creation, and quick-add; full raw input stays in `originalMsg`.
+- Report: `pm/outbox/REPORT-BACK-065-task-title-normalization.md`.
+- Next: QA should create tasks through AI-chat, voice, and quick-add on staging and verify title plus edit/original text.
+
 ## 2026-07-22 - Codex - BACK-064 needs Yuri device smoke
 
 - Branch: `feat/admin-tariff-api`.

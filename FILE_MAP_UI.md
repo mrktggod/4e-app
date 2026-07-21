@@ -8,8 +8,8 @@
 | --- | --- | --- |
 | 1-55 | Head scripts and stylesheet | Telegram SDK, VK bridge, marked, `styles.min.css` |
 | 56-1858 | HTML screens and overlays | Все экраны приложения и overlays |
-| 1860-8432 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
-| 8436-8585 | Biometric consent patch | Screen `biometric-consent`, CSS, localStorage consent gate for voice input |
+| 1860-8485 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
+| 8486-8660 | Biometric consent patch | Screen `biometric-consent`, CSS, localStorage consent gate for voice input |
 
 ### HTML screens
 
@@ -52,7 +52,7 @@
 | 1664 | `task-move` | Перенос задачи |
 | 1681 | `task-done` | Завершение задачи |
 | 1695 | `voice` | Голосовой режим |
-| 8443 | `biometric-consent` | Согласие на обработку голоса по 152-ФЗ |
+| 8496 | `biometric-consent` | Согласие на обработку голоса по 152-ФЗ |
 
 ### JavaScript ranges
 
@@ -61,17 +61,14 @@
 | 1860-2011 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, Telegram/VK launch helpers |
 | 2012-2358 | App init, auth, profile | `initApp`, `doRegister`, `submitLoginOnEnter`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
 | 2359-3019 | Payments and subscription | `DEFAULT_TARIFF_CONFIG`, `loadTariffConfig`, `getPlanConfig`, `renderSubscriptionFeatures`, `renderPricingCards`, `openPayment`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
-| 3020-5487 | Tasks, home, cards, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `renderTaskCard`, `markDoneKV` |
-| 5488-5850 | Task detail and editing | `loadTaskAdvice`, `openTask`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
-| 5851-6492 | Message generation, navigation, notifications | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg`, `showScreen`, `openNotifications` |
-| 6493-6735 | AI chat and task creation | `loadAskHistoryRemote`, `createTaskFromChat`, `sendAsk`, `showToast` |
-| 6736-6896 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `sendVoiceMessage`; voice uses biometric consent gate |
-| 5431-5678 | Subscreens, privacy API, notification prefs | `_showSubScreenBase`, `loadPrivacyCenter`, `loadNotificationSettings`, `saveNotifPref` |
-| 5678-5822 | Settings | `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
-| 5842-6193 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
-| 6897-8376 | Subscreens, settings, app lock, password reset, chats and messages | `_showSubScreenBase`, `openPrivacyPolicy`, `bindPrivacyPolicyLinks`, `savePassword`, `showLockScreen`, `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
-| 8377-8432 | Task detail soft-glass helpers | `appendDetailHistoryMessage`, detail popover/status/checklist helpers |
-| 8436-8585 | Biometric consent JS | `biometricConsentRequired`, `revokeBiometricConsent`, checkbox enablement |
+| 3020-5489 | Tasks, home, cards, calendar stats | `loadTasks`, `submitQuickAdd`, `renderTasksForMonth`, `loadStats`, `renderTaskCard`, `markDoneKV` |
+| 5490-5852 | Task detail and editing | `loadTaskAdvice`, `openTask`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
+| 5853-6048 | Message generation, navigation, notifications | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg`, `showScreen`, `openNotifications` |
+| 6049-6869 | AI chat and task creation | `loadAskHistoryRemote`, `normalizeTaskTitle`, `fallbackTaskFromText`, `createTaskFromChat`, `sendAsk`, `showToast` |
+| 6870-7056 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `sendVoiceMessage`; voice uses biometric consent gate |
+| 7057-8446 | Subscreens, settings, app lock, password reset, chats and messages | `_showSubScreenBase`, `openPrivacyPolicy`, `bindPrivacyPolicyLinks`, `loadPrivacyCenter`, `loadNotificationSettings`, `savePassword`, `showLockScreen`, `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
+| 8447-8485 | Task detail soft-glass helpers | `appendDetailHistoryMessage`, detail popover/status/checklist helpers |
+| 8486-8660 | Biometric consent JS | `biometricConsentRequired`, `revokeBiometricConsent`, checkbox enablement |
 
 ## `vk.html` — VK Mini App
 

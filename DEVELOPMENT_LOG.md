@@ -1,5 +1,19 @@
 ## 2026-07-22
 
+### BACK-065 task title normalization
+
+**What changed:** Added `normalizeTaskTitle()` and connected it to fallback AI-chat task creation, voice task creation, model-created task payloads, and quick-add. The full raw user phrase remains in `originalMsg` when normalization changes the title. Added `scripts/back-065-task-title-normalization-smoke.mjs` and `npm run smoke:back065`; updated `FILE_MAP.md` and `FILE_MAP_UI.md`.
+
+**Encoding check:** before editing `index.html`, marker check returned `106`; after editing, marker check returned `106`.
+
+**Test:** `npm run smoke:back065`; `node scripts/check-cp1251-mojibake.mjs`; `node --check scripts/back-065-task-title-normalization-smoke.mjs`; `git diff --check`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-22
+
 ### BACK-064 classified as Yuri-only notification smoke
 
 **What changed:** Marked `BACK-064` and `BUG-2026-07-21-006` as `NEED-YURI` and added the outbox report. Runtime code was not changed because the task's acceptance criteria require real Telegram/device delivery, correct-recipient proof, sound/vibration, and visible badge/card evidence.

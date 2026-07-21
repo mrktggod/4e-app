@@ -4,7 +4,7 @@
 **Владелец:** Codex / Yuri
 **Тип:** Product/AI/UX
 **Приоритет:** P2
-**Статус:** Triaged
+**Статус:** Ready for QA
 
 ## Контекст
 
@@ -89,3 +89,11 @@
 - Не удалять `originalMsg`.
 - Не делать длинную анкету перед созданием задачи.
 - Не ломать уже существующий edit-title flow в task-detail.
+
+## Implementation 2026-07-22
+
+- Добавлен `normalizeTaskTitle(rawText, context)` для короткого заголовка без вводных вроде `я`, `мне надо`, `тебе надо`, `поставь Маше задачу`.
+- `fallbackTaskFromText()` теперь сохраняет `originalMsg`, извлекает deadline-фразы на кириллических пробельных границах и не держит срок в `task.text`.
+- `createTaskFromChat()`, voice task creation и quick-add используют один helper; quick-add сохраняет сырой ввод в `originalMsg`, если заголовок был нормализован.
+- AI-chat system prompt теперь просит `<create_task>` возвращать короткий `text` и полный `originalMsg`.
+- Добавлен `npm run smoke:back065`, который проверяет примеры из этого task-дока.

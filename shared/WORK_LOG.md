@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** BACK-065 task title normalization from dictated/AI intent.
+**Result:** Added shared task-title normalization for AI-chat, voice task creation, and quick-add; full raw input is preserved in `originalMsg`; `npm run smoke:back065` covers the task examples.
+**Commit:** this commit
+**Status:** DONE / Ready for QA
+**Next step:** QA on staging should create tasks through AI-chat, voice, and quick-add and inspect title plus original text/edit flow.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-064 notification salience and delivery audit classification.
 **Result:** Marked `BACK-064` / `BUG-2026-07-21-006` as `NEED-YURI`; runtime code was not changed because the DoD requires real Telegram/device delivery, correct-recipient proof, sound/vibration, and visible badge/card evidence.
 **Commit:** this commit
