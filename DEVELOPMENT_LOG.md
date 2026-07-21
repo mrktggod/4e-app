@@ -1,5 +1,17 @@
 ## 2026-07-21
 
+### BACK-012 auth CSS/BEM cleanup island
+
+**Что сделано:** один безопасный auth-island inline→LESS: forgot/reset center panel, auth icon card, password relative wrapper и small auth action wrappers перенесены из inline `style="..."` в `styles/layout.less` как `.auth-center-panel`, `.auth-icon-card`, `.auth-password-field`, `.auth-inline-action*`. Разметка и поведение не менялись; `styles.css`/`styles.min.css` пересобраны через `npm run build:css`. Brief `BRIEF-2026-07-20-20-back012-css-bem-cleanup.md` закрыт, report добавлен в `pm/outbox`.
+
+**Проверка кодировки:** до правки 106 совпадений по `Войти|Задачи|Сегодня`; после правки 106 совпадений.
+
+**Тест:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-ui-architecture.sh` показал inline style attrs `366 -> 356`; `bash scripts/check-portable-paths.sh`; `npm run smoke:back050` вернул `ok: true`.
+
+**Коммит:** `this commit`
+
+## 2026-07-21
+
 ### BACK-062 auth legal contrast and touch targets
 
 **Что сделано:** в `index.html` legal-note на onboarding/login/register поднят с 11px/muted до 13px/`var(--text2)` и ссылка privacy получила класс `.auth-legal-link`. В `styles/layout.less` добавлены доступные размеры: privacy link min-height 44px, login/register tabs min-height 44px, password-eye 44x44, forgot-link min-height 44px; фокус `:focus-visible` расширен на `.auth-legal-link`. `styles.css` и `styles.min.css` пересобраны через `npm run build:css`. PM-контур обновлён: `BACK-062`, `BUG-2026-07-21-002` и `BUG-2026-07-21-003` переведены в `Ready for QA`.

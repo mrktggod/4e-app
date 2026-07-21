@@ -1,5 +1,15 @@
 ### 2026-07-21 — Codex
 
+**Задача:** выполнить первый маленький `BACK-012` CSS/BEM cleanup island.
+**Результат:** layout-only inline styles на auth forgot/reset/password/action wrappers вынесены из `index.html` в `styles/layout.less`; CSS пересобран. UI guard снизился с `366` до `356` inline style attrs без роста inline handlers/scripts. `pm/inbox/BRIEF-2026-07-20-20-back012-css-bem-cleanup.md` переведён в `DONE`, report создан в `pm/outbox`.
+**Коммит:** `this commit`
+**Статус:** ✅ выполнено
+**Следующий шаг:** следующий CSS-cleanup island брать отдельным brief/коммитом, без массового переписывания redesign.
+
+---
+
+### 2026-07-21 — Codex
+
 **Задача:** закрыть `BACK-062` — auth legal copy contrast и маленькие touch targets.
 **Результат:** legal-note на onboarding/login/register поднят до 13px и `var(--text2)`, ссылка privacy получила `.auth-legal-link` с 44px hit area, auth tabs получили `min-height:44px`, password-eye — 44x44, forgot-link — 44px min-height. CSS пересобран из `styles/main.less` в `styles.css`/`styles.min.css`; `pm/backlog.md` и `pm/bugs.md` переведены в `Ready for QA`.
 **Коммит:** `this commit`

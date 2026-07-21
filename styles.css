@@ -206,6 +206,38 @@ body {
   gap: 12px;
   margin-bottom: 20px;
 }
+.auth-center-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  gap: 0;
+  flex: 1;
+}
+.auth-icon-card {
+  width: 56px;
+  height: 56px;
+  border-radius: 20px;
+  background: var(--green3);
+  border: 1px solid rgba(154, 194, 60, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.auth-password-field {
+  position: relative;
+}
+.auth-inline-action {
+  text-align: center;
+}
+.auth-inline-action--tight {
+  margin-top: 4px;
+}
+.auth-inline-action--spaced {
+  margin-top: 8px;
+}
 .form-label {
   position: absolute;
   width: 1px;
