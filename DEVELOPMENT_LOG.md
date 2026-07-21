@@ -1693,3 +1693,15 @@
 **Test:** `npm run smoke:auth-avatar` against local checkout + staging worker showed `wrongPasswordUi.passError="Неверный email или пароль"`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
 
 **Commit:** pending
+
+## 2026-07-21
+
+### Mobile soft-glass production polish
+
+**Что сделано:** добавлен финальный LESS override для home/task-detail: скрыт декоративный statusbar телефона, тёмный dashboard закреплён на `#000`, home-композиция переведена на явные координаты header/hero/section title/metrics/task list, сохранён вывод 3 задач, очищены квадратные shadow artifacts у metric icons/progress/orb, заголовок и описание task detail ограничены по ширине и переносятся без заезда под срок/приоритет.
+
+**Проверка кодировки:** index.html не изменялся; `node scripts/check-cp1251-mojibake.mjs` → 0 suspicious tokens.
+
+**Тест:** `npm run build:css`; `npm run smoke:home001` → ok=true, homeRows=3, metricCards=4, bottomNavButtons=3, documentScrollWidth=390; визуально проверены light/dark smoke screenshots.
+
+**Коммит:** pending
