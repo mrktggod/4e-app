@@ -2,9 +2,9 @@
 
 **Задача:** выкатить согласованный redesign-срез в production.
 **Результат:** `feat/admin-tariff-api` объединена с актуальным `origin/main`; добавлен production build guard fix, чтобы artifact не содержал staging-host marker `4-ai-staging.pages.dev`.
-**Коммит:** pending
-**Статус:** ⚠️ в процессе
-**Следующий шаг:** повторный push в `main` и проверка production deploy.
+**Коммит:** `5bab618`
+**Статус:** ✅ выполнено
+**Следующий шаг:** проверить production deploy на боевом домене.
 # WORK LOG — Командный журнал задач
 
 > Сюда пишут все участники команды после завершения задачи.  
@@ -100,7 +100,7 @@
 
 По `/auth/telegram` staging tail дал точный stack trace: проблема сидела не в самом simple Telegram signup, а в merge-ветке «существующий web-account + существующий Telegram-account». `POST /auth/telegram` падал Cloudflare `1101` из-за `ReferenceError: isPaidUser is not defined` в `betterAccountByPlanOrTrial()` -> `mergeAccounts()` -> `handleTelegramAuth()`. В `4e-worker/worker.js` добавлен узкий helper `isPaidUser(user) { return user.plan === "paid"; }`, после чего staging worker задеплоен как version `d98c7ca9-1300-4e2a-81eb-1ad6a5ced167`. Повторный live smoke после deploy подтвердил исправление напрямую: fresh web-user + `POST /auth/telegram` с уже существующим Telegram ID теперь возвращает `200`, `accountMerged: true`, а `wrangler tail --env staging` показывает `POST /auth/telegram - Ok` без exception.
 
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ⚠️ mixed — worker bug закрыт до Ready for QA, staging app auth-код и alias обновлены, но для `BUG-2026-07-14-001` нужен ручной fresh-browser smoke после cache propagation
 **Следующий шаг:** закоммитить оба репо, запушить, затем Юрию проверить в обычном чистом браузере `https://4-ai-staging.pages.dev/`: открывается ли login/register без `ReferenceError` и уходит ли web-auth на home после успешного ответа
 
@@ -110,7 +110,7 @@
 
 **Задача:** BACK-034 staging contour closeout
 **Результат:** Проверен live staging contour без production/main: direct Pages `https://88193776.4-ai-staging.pages.dev` отдаёт 200 и содержит `restless-lab-d737-staging.shelckograff.workers.dev`, alias `https://4-ai-staging.pages.dev/` сейчас тоже смотрит в staging worker, staging worker root возвращает `200 OK`. Это закрывает техническую часть staging Pages + staging worker + alias/current deploy routing.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** BACK-034 Done
 **Следующий шаг:** для будущих QA по-прежнему предпочтителен прямой fresh deploy URL, потому что alias исторически мог отставать.
 
@@ -120,7 +120,7 @@
 
 **Задача:** Close HOME-covered legacy NEW issues
 **Результат:** На `https://88193776.4-ai-staging.pages.dev` fresh staging user с 3 задачами подтвердил, что старые home-проблемы, покрытые `HOME-001`, больше не воспроизводятся: `NEW-010` — на главном экране нет старых кнопок `Завершить`, вместо них top-3 priority rows; `NEW-011` — home разбит на focus, 4 metric cards и отдельные readable rows шириной 324px; `NEW-013` — focus copy короткий: `3 задачи требуют внимания` + короткая подпись.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** Done для `NEW-010/011/013`
 **Следующий шаг:** `HOME-001` как общий редизайн всё ещё можно оставить Ready for QA до ручного visual pass в обеих темах.
 
@@ -130,7 +130,7 @@
 
 **Задача:** Remaining NEW UI smoke + fixes for completed stats and focus overlap
 **Результат:** На fresh staging user прогнан пакет `NEW-003/004/005/007/012/016` против `https://44ccd355.4-ai-staging.pages.dev`. `NEW-003`, `NEW-004`, `NEW-005` и `NEW-007` прошли без кодовых изменений. Два хвоста оказались реальными: completed task не появлялась в statistics/history, потому что `loadTasks()` сохранял в `allTasksCache` только active-задачи; focus-card всё ещё геометрически пересекался с декоративным блоком. В `index.html` исправлено: `allTasksCache=tasks||[]`, текстовый слой focus-card поднят на `z-index:2`, декоративный слой опущен на `z-index:0`, padding-right увеличен до `144px`. Fresh Pages deploy `https://88193776.4-ai-staging.pages.dev` подтвердил оба фикса: done task видна в `#stats-done-list`, `doneInCache=1`, focus contentRight=209 до decorLeft=237.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** Done для `NEW-003/004/005/007/012/016`
 **Следующий шаг:** продолжать по оставшимся Ready for QA/Todo без ручных действий; `HOME-001` и `BACK-056` всё ещё требуют отдельного ручного/визуального или time-mocked QA.
 
@@ -140,7 +140,7 @@
 
 **Задача:** Fresh staging deploy + headless smoke по Ready for QA UI-пунктам
 **Результат:** Найдено, что текущий код уже содержит auth-fix для `buildReferralLink`, но прежний direct Pages deployment `https://c4b8195f.4-ai-staging.pages.dev` всё ещё отдавал старый runtime и падал после успешного `/auth/me`. Выполнен fresh deploy Cloudflare Pages project `4-ai-staging` на `https://44ccd355.4-ai-staging.pages.dev`. После deploy headless browser smoke с новым staging user и seeded real tasks подтвердил: auth shell открывает `home`, `HOME-001` базово рендерит top-3/focus, `NEW-014` focus overlay открывается, `NEW-015` meta строка содержит направление/дату/дедлайн, `NEW-002` statistics и active CTA работают, `NEW-009` ask quick actions видимы и wired, `NEW-021` calendar default `Все дедлайны` заполнен без выбора дня. Для `BACK-056` подтверждён только обычный smoke без harsh copy; after-22 сценарий оставлен Ready for QA.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** Done для `NEW-002/009/014/015/021`; `HOME-001` и `BACK-056` остаются Ready for QA с уточнённым остатком
 **Следующий шаг:** ручной визуальный QA `HOME-001` в светлой/тёмной теме и after-22/time-mocked QA для `BACK-056`.
 
@@ -152,7 +152,7 @@
 
 **Задача:** Automated QA smoke по Ready for QA против staging
 **Результат:** Бриф `codex-session-2026-07-14-automated-qa-and-bot-live.md` начат с headless/API smoke по staging. Подтверждено, что staging-страница `https://4-ai-staging.pages.dev/` реально смотрит в `https://restless-lab-d737-staging.shelckograff.workers.dev`. Красный главный blocker: web auth-shell на staging после intro показывает `Нет соединения` и на регистрации, и на входе, хотя прямой API для тех же credentials отвечает `200` и отдаёт token. Поэтому UI smoke для `ONBOARD-001`, `HOME-001`, `NEW-002/003/004/005/007/014/015/016` честно не закрыт. При этом backend-path staging частично зелёный: fresh account проходит `/auth/register`, `/auth/login`, `/auth/me` и получает `entitlement.status=active`; create/update/done task проходят; `/anthropic` отвечает `200`; `/transcribe` без файла даёт ожидаемый `400`; paid dev-account `dev1.4e@example.com` логинится и отдаёт активный paid entitlement + seed tasks. Отдельные реальные находки заведены в `pm/bugs.md`: `BUG-2026-07-14-001` (staging auth-shell), `BUG-2026-07-14-002` (`/analytics/lite-event` -> `404`), `BUG-2026-07-14-003` (`/auth/telegram` -> Cloudflare 1101).
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ⚠️ partial / smoke дал смешанный результат, staging не зелёный
 **Следующий шаг:** отдельно завершить bot-live часть, затем зафиксировать pass/fail таблицу и blockers без ретуши
 
@@ -162,7 +162,7 @@
 
 **Задача:** Живой bot/runtime smoke после установки `BOT_TOKEN` в Cloudflare
 **Результат:** Production/staging Cloudflare secret сам по себе не разблокировал локальный bot runtime: `npm run start` в `4e-worker` по-прежнему сразу падает с `❌ BOT_TOKEN не задан`, потому что локальному Node-процессу токен не передан через env. Отдельно staging telegram-link path тоже не зелёный: `POST /auth/telegram` после успешного login воспроизводимо возвращает Cloudflare `1101 Worker threw exception`. Из-за этой пары факторов реальную доставку сообщения через живого бота в эту сессию честно не удалось подтвердить.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ⚠️ fail / blocked реальным env-gap + worker exception
 **Следующий шаг:** для локального runtime нужен отдельный local env с `BOT_TOKEN`; для staging bot/auth smoke сначала починить `BUG-2026-07-14-003`
 
@@ -172,7 +172,7 @@
 
 **Задача:** Карантин CAL-001/CAL-002 из платежной ветки
 **Результат:** По решению Юрия CAL-коммиты `38b4d77` и `602fab9` вынесены в отдельную ветку `feat/cal-002-slice` без потери кода. На `feat/admin-tariff-api` выполнены revert-коммиты `99d1bd6` и `bb6a9e2`, строки `CAL-001` и `CAL-002` в `pm/backlog.md` и `shared/ROADMAP.md` возвращены к состоянию `Todo`, чтобы платежная/security-ветка снова соответствовала своему скоупу.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ выполнено
 **Следующий шаг:** выполнить исходный бриф `codex-session-2026-07-14-automated-qa-and-bot-live.md` без выхода за скоуп
 
@@ -244,7 +244,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -350,7 +350,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -432,7 +432,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -514,7 +514,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -596,7 +596,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -678,7 +678,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -795,7 +795,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -877,7 +877,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -959,7 +959,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1041,7 +1041,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1123,7 +1123,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1205,7 +1205,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1287,7 +1287,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1369,7 +1369,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1451,7 +1451,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1533,7 +1533,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1615,7 +1615,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1697,7 +1697,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1779,7 +1779,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1861,7 +1861,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -1943,7 +1943,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2025,7 +2025,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2107,7 +2107,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2189,7 +2189,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2271,7 +2271,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2353,7 +2353,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2435,7 +2435,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2517,7 +2517,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2599,7 +2599,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2681,7 +2681,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2763,7 +2763,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2845,7 +2845,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -2958,7 +2958,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3040,7 +3040,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3122,7 +3122,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3204,7 +3204,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3286,7 +3286,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3368,7 +3368,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3450,7 +3450,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3532,7 +3532,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3614,7 +3614,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3696,7 +3696,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3778,7 +3778,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3858,7 +3858,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -3940,7 +3940,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4022,7 +4022,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4108,7 +4108,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4200,7 +4200,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4306,7 +4306,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4388,7 +4388,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4470,7 +4470,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4552,7 +4552,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4634,7 +4634,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4715,7 +4715,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4796,7 +4796,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4877,7 +4877,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -4965,7 +4965,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5047,7 +5047,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5129,7 +5129,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5211,7 +5211,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5293,7 +5293,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5375,7 +5375,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5457,7 +5457,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5539,7 +5539,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5621,7 +5621,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5703,7 +5703,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5785,7 +5785,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5867,7 +5867,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -5949,7 +5949,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6030,7 +6030,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6111,7 +6111,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6193,7 +6193,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6275,7 +6275,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6357,7 +6357,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6439,7 +6439,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6521,7 +6521,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6603,7 +6603,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6685,7 +6685,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6767,7 +6767,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6849,7 +6849,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -6931,7 +6931,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7013,7 +7013,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7095,7 +7095,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7177,7 +7177,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7259,7 +7259,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7341,7 +7341,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7423,7 +7423,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7505,7 +7505,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7587,7 +7587,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7669,7 +7669,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7751,7 +7751,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7832,7 +7832,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7841,7 +7841,7 @@
 
 **Задача:** BACK-040 — вынести тарифы в worker `tariff-config` и подключить paywall к конфигу
 **Результат:** В `4e-worker/worker.js` добавлены публичный `/tariff-config` и admin API `/admin/users`, `/admin/users/:id`, `/admin/users/:id/plan`, `/admin/tariff-config` с защитой по `ADMIN_SECRET`; Telegram Stars и card webhook читают длительность плана из конфига. В `index.html` paywall и экран подписки больше не используют хардкоженный `PLANS`: цены, тексты, benefits, feature-list и trial-progress загружаются из worker-конфига.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ выполнено
 **Следующий шаг:** залить `ADMIN_SECRET` в staging/prod secrets, проверить `/admin/tariff-config` curl-ом и отдать BACK-040 в QA
 **Следующий шаг:** Проверить https://mrktggod.github.io/4e-app в десктопном браузере
@@ -7915,7 +7915,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -7932,7 +7932,7 @@
 
 **Задача:** NEW-008 — убрать конфликт поля ввода `ask` с мобильной клавиатурой во VK WebView
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено для этой итерации
 **Комментарий:** В `platform-adapter.js` замена `body.paddingBottom` на CSS-переменную `--app-keyboard-offset`, в стилях `ask-bar` добавлен режим `ask-bar--keyboard-open`. Smoke на локальном `http://127.0.0.1:4173/`: экран `ask`, оффсет клавиатуры `260px`, `input.bottom=568`, панель ввода поднята (`padding-bottom=276px`), нижняя навигация не перекрывает поле.
 
@@ -8005,7 +8005,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8013,7 +8013,7 @@
 
 **Задача:** NEW-001 — staging smoke по утреннему брифингу и account-scoped notification prefs
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено
 **Комментарий:** Прогнан живой smoke локальной ветки против staging worker `https://restless-lab-d737-staging.shelckograff.workers.dev` через fetch-rewrite. На двух свежих staging-аккаунтах подтверждено: ключи `notif_prefs:<userId>` разные, bare `notif_prefs` не создаётся, `morningBriefing=true` + `briefingTime=08:45` сохраняются у первого пользователя локально и на сервере, второй пользователь эти настройки не наследует, повторный вход первого восстанавливает его собственные значения. Это закрывает исходный баг про «плавающий» утренний брифинг между профилями.
 
@@ -8086,7 +8086,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8094,7 +8094,7 @@
 
 **Задача:** NEW-017 — проверить календарь на показ реальных задач вместо демо-набора
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено
 **Комментарий:** Перепроверено на двух поверхностях. (1) Локальная ветка `.tmp-4e-app-publish` против staging worker через fetch-rewrite: после регистрации свежего аккаунта и seed-а задач `Smoke calendar alpha/beta` календарь показывает именно их, без демо-сигналов. (2) Реальная staging-страница `https://4-ai-staging.pages.dev/`: после регистрации свежего аккаунта и seed-а задачи `Stage calendar task` календарь показывает реальную задачу `13 июля — Мария — Stage calendar task`; демо-набор не воспроизводится. Исходный баг про демо-задачи считаем закрытым как неподтверждённый на текущем коде/деплое. Отдельно замечено: нижний блок «Все дедлайны» по умолчанию остаётся в состоянии «Выберите дату», но это уже другой UX-вопрос, не демо-данные.
 
@@ -8167,7 +8167,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8175,7 +8175,7 @@
 
 **Задача:** BACK-030 — staging smoke по structured assignee и доставке задачи другому пользователю 4
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено
 **Комментарий:** Прогнан `api-smoke` против `https://restless-lab-d737-staging.shelckograff.workers.dev`. RAW-результат по BACK-030 цепочке: `register/login/auth-me 200`, второй пользователь `register/login 200`, привязка Telegram для creator/receiver `200`, `tasks.create 200`, после создания у задачи сохранены normalized `assigneeUsername` и `assigneeTgId`, в `tasks.list.receiver` задача видна у получателя, затем `done-task 200` и `delete-task 200`. Это закрывает живой smoke для share-flow.
 
@@ -8248,7 +8248,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8257,7 +8257,7 @@
 
 **Задача:** SMART-013 — починить AI-декомпозицию задачи на этапы и перепроверить сохранение checklist
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Кодовый фикс готов, branch smoke зелёный
 **Комментарий:** Найден и исправлен реальный дефект в `index.html`: общий `aiCall()` бил в корень worker вместо `/anthropic`, из-за чего `Разбить на этапы` сохранял мусорный пункт `Ошибка: "Not found"`; дополнительно очищен parser step-list от fenced JSON / служебных строк. После фикса fresh-target smoke локальной ветки `http://127.0.0.1:4173/?fresh=...` с fetch-rewrite на staging worker создаёт задачу, вызывает `decomposeCurrentTask()` и сохраняет 8 нормальных шагов и в UI, и в persisted `checklist`. Отдельно зафиксировано расхождение поверхности: реальная `https://4-ai-staging.pages.dev/` пока на старом деплое и ещё не содержит `decomposeCurrentTask`, так что live deploy smoke возможен только после публикации ветки.
 
@@ -8330,7 +8330,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8338,7 +8338,7 @@
 
 **Задача:** SMART-013 — live staging deploy smoke после фикса AI-декомпозиции
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено
 **Комментарий:** Для безопасного smoke собран временный staging-артефакт из `HEAD` с подменой `const WORKER` на `https://restless-lab-d737-staging.shelckograff.workers.dev`, затем выполнен `wrangler pages deploy ... --project-name 4-ai-staging --branch dev`. Wrangler вернул deployment URL `https://c4b8195f.4-ai-staging.pages.dev`. На этом live deployment headless smoke подтвердил, что `decomposeCurrentTask` существует, страница смотрит в staging worker, и сценарий `создать задачу -> Разбить на этапы` сохраняет 8 нормальных шагов как в UI, так и в persisted `checklist`. Отдельно замечено, что алиас `https://4-ai-staging.pages.dev/` некоторое время оставался на старом деплое, поэтому для проверки использовался прямой deployment URL.
 
@@ -8411,7 +8411,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8492,7 +8492,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8500,7 +8500,7 @@
 
 **Задача:** NEW-020 — замерить субъективную медлительность голосового ввода без слепого фикса
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Кодовый measurement-контур готов, нужен один живой smoke
 **Комментарий:** В `index.html` вокруг текущего voice-flow (`openVoice` → `SpeechRecognition` → `sendVoiceMessage` → `createTaskFromChat`/`sendAsk`) добавлена живая телеметрия: после каждого запуска приложение пишет breakdown в `window.__voicePerfLast`, копит последние 10 сэмплов в `window.__voicePerfHistory` и логирует `[voice-perf]` в console. Метрики раскладывают путь на `recognitionMs`, `preDispatchUiMs`, `branchMs`, `totalMs`, а также сохраняют branch (`task`/`ask`), статус и ошибку. Параллельно статический аудит уже показал вероятную главную причину ощущения "медленно": после `SpeechRecognition.onresult` код ещё примерно 3.6 секунды удерживает пользователя на анимационных шагах через каскад `setTimeout`, и только потом реально вызывает `sendVoiceMessage()`. Следующий шаг — снять один живой sample на staging и решить, оптимизируем ли сначала искусственную UI-паузу или backend-ветку.
 
@@ -8582,7 +8582,7 @@
 
 **Задача:** Payment security P0 — задача 1, честная сверка backlog перед фиксом
 **Результат:** В pm/backlog.md уточнены monetization-статусы без переписывания несвязанных итогов: BACK-004 явно ограничен functional webhook smoke и больше не выглядит как закрытый security-proof; BACK-009 и BACK-010 теперь честно говорят, что текущая Ready for QA покрывает UI/bot entrypoint, но не backend verification/durable entitlement для реальных денег; BACK-040 дополнен примечанием, что production /tariff-config может отвечать default-конфигом с updatedAt: 0, а не подтверждённой admin-записью. Отдельно заведён новый P0 BACK-059 на unified entitlement model (hasPremiumAccess) как базовый блокер для всех платных capability.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ backlog приведён к честному описанию payment-risk до кодовых фиксов
 **Следующий шаг:** перейти к BACK-059/задаче 2 — собрать единый entitlement gate в 4e-worker, а затем уже переносить на него CloudPayments, Stars, voice, AI и premium-capabilities
 
@@ -8590,7 +8590,7 @@
 
 **Задача:** CI / team-sync handoff — починить guard workflow на GitHub Actions runner
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено
 **Комментарий:** По живым GitHub Actions logs для `Quality guard` на PR #27 и PR #34 подтверждена одна и та же причина падения: на `ubuntu-latest` отсутствует `rg`, из-за чего `check-portable-paths.sh` и `check-ui-architecture.sh` падают на `command not found`, а UI guard потом ещё и даёт ложный `index.html must link styles.min.css`. Фикс сделан в одном месте: в `.github/workflows/path-guard.yml` добавлен шаг установки `ripgrep` перед guard-скриптами, чтобы обе проверки работали на runner так же, как локально, без переписывания самих shell-скриптов.
 
@@ -8599,7 +8599,7 @@
 
 **Задача:** CI / staging handoff — обновить `pm/team-sync.md` для Алексея
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено частично / staging handoff готов, production всё ещё заблокирован
 **Комментарий:** В `pm/team-sync.md` обновлён payment-P0 блок до реального состояния после сегодняшних прогонов: добавлен прямой staging URL `https://c4b8195f.4-ai-staging.pages.dev/`, список UI smoke (`HOME-001`, `NEW-006`, `NEW-008`, `NEW-021`) и честный payment smoke status. Зафиксировано, что positive CloudPayments (`200` / `{"code":0}`) и fake HMAC (`403` / `{"code":13}`) уже подтверждены live, а production по-прежнему блокируется на трёх хвостах: `badAmount` body, replay/idempotency и Telegram Stars после восстановления `BOT_TOKEN`/secret env.
 
@@ -8608,7 +8608,7 @@
 
 **Задача:** Payment security P0 — verify push, production deploy и живой prod smoke
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено
 **Комментарий:** Сначала закрыто критичное расхождение по push: подтверждено буквально, что `HEAD == origin/feat/admin-tariff-api == f90a8392e0b72b4e4ad3d611e76c0367738802cb`, а `pm/team-sync.md` на remote уже содержит team-sync и staging handoff. После этого Codex независимо прогнал staging webhook smoke из своего shell: для CloudPayments подтвердились `positive` (`200` / `{"code":0}` + рост `accessUntil`), `fake HMAC` (`403` / `{"code":13}`), `badAmount` (`400` / `{"code":11}`) и idempotency; для Telegram Stars — `positive`, `fake-signature` (`403`) и `replay` (`duplicate: true`). Затем выполнен production deploy `npx wrangler deploy` в `4e-worker-p0`: опубликована версия `fa422fd3-3531-4cb2-9bfb-97f0cf6100e0`, custom domain `https://edge.4-ai.site`. На production тем же независимым shell-smoke повторно подтверждены CloudPayments `positive/fake/badAmount/idempotency` и Telegram Stars `positive/fake/replay`. Важная находка по ходу проверки: `/payment/webhook` принимает CloudPayments callback как `application/x-www-form-urlencoded`, а не JSON; именно это сначала дало ложный `200 {"code":0}` без изменения `accessUntil`, после чего smoke был повторён в правильном wire-format и стал зелёным.
 
@@ -8617,7 +8617,7 @@
 
 **Задача:** INFRA-005 — довести VK production deploy через Yandex RU proxy до живого smoke
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено
 **Комментарий:** В `.tmp-4e-app-publish` повторно запущен `npm run deploy:vk-hosting` с `VK_API_BASE_URL=https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`. Сборка `.vk-hosting-dist` прошла, `vk-miniapps-deploy` загрузил version `1783968473`, обновил dev URLs и дошёл до ручного production-confirm слоя VK. В живой интерактивный deploy-сеанс были переданы коды из VK Administration, после чего Юрий подтвердил практический runtime-smoke: приложение открывается и работает в самом VK-приложении. Этого достаточно, чтобы закрыть хвост `INFRA-005` как выполненный, даже несмотря на неидеальный финальный вывод CLI.
 
@@ -8637,7 +8637,7 @@
 
 **Задача:** Процессный долг после долгой сессии (зелёная блокировка): закрытие Задачи 0, обновление AGENTS и check-ui-architecture, подготовка team-sync.
 **Делал:** Codex
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Состояние:** ✅ Выполнено для этой итерации
 **Комментарий:** Внесены: запись в WORK_LOG, новый pm/team-sync.md, обновление AGENTS.md, расширение guard-а кодировки.
 
@@ -9341,7 +9341,7 @@
 
 **Задача:** Night inbox and whitelist backlog runner roadmap status sync
 **Результат:** Inbox had no NEW briefs; synced stale `BACK-021` and `SMART-011` roadmap statuses to current backlog evidence and wrote the runner report.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Remaining open items need manual/device/provider/auth/payment/CAL/product gates or Claude/Yuri decisions.
 
@@ -9349,6 +9349,6 @@
 
 **Задача:** Morning safe backlog docs status sync
 **Результат:** Inbox had no NEW briefs; synced stale `BACK-044` and `INFRA-005` task-file statuses to canonical backlog/roadmap `Done` state.
-**Коммит:** pending
+**Коммит:** `5bab618`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Remaining open items need manual/device/provider/auth/payment/CAL/product gates or Claude/Yuri decisions.

@@ -8,7 +8,7 @@
 
 **Тест:** production `npm run build:worker-assets`; проверка отсутствия `4-ai-staging.pages.dev` и `design-part3-handoff.js` в `.pages-dist/index.html`.
 
-**Коммит:** pending
+**Коммит:** `5bab618`
 # DEVELOPMENT LOG вЂ” РїСЂРѕРµРєС‚ 4 AI-СЃРµРєСЂРµС‚Р°СЂСЊ
 
 > Р’РµРґСѓ СЏ (Cowork-РЅР°Р±Р»СЋРґР°С‚РµР»СЊ). РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РїРѕСЃР»Рµ РєР°Р¶РґРѕРіРѕ Р·РЅР°С‡РёРјРѕРіРѕ РёР·РјРµРЅРµРЅРёСЏ.
@@ -1441,7 +1441,7 @@
 
 **Тест:** `node --check worker.js`; inline JS parse check для `index.html` вернул `inline-js-ok`; модульный smoke воркера через `node --input-type=module` с мок-KV подтвердил `GET /tariff-config`, `GET /admin/users`, `PUT /admin/tariff-config`, `PUT /admin/users/:id/plan`.
 
-**Коммит:** pending
+**Коммит:** `5bab618`
 
 ## 2026-07-18
 
