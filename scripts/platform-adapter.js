@@ -276,6 +276,10 @@
     return !!(event && event.key === 'Enter' && event.target?.matches('input'));
   }
 
+  function escapeInlineHandlerValue(value) {
+    return String(value || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+  }
+
   function setFormFieldError(fieldId, message, invalidClass) {
     const input = document.getElementById(fieldId);
     const error = document.getElementById(fieldId + '-error');
@@ -1160,6 +1164,7 @@
     isValidEmail,
     togglePasswordVisibility,
     shouldHandleEnterSubmit,
+    escapeInlineHandlerValue,
     bindClick,
     bindOAuthLoginButtons,
     bindAuthA11yHandlers,

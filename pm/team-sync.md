@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - ARCH-001 helper extraction
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-20-22-arch001-continue-split` marked `DONE`.
+- Result: moved only the pure inline `esc()` helper to `scripts/platform-adapter.js` as `escapeInlineHandlerValue()`, keeping the existing inline alias and fallback behavior in `index.html`.
+- Report: `pm/outbox/REPORT-BRIEF-2026-07-20-22-arch001-continue-split.md`.
+- Next: continue NEW inbox briefs; leave broad/global-heavy inline extraction for separate reviewed ARCH-001 slices.
+
 ## 2026-07-21 - Codex - daily runner pre-sync
 
 - Branch: `feat/admin-tariff-api`.

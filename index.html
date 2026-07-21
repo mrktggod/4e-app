@@ -5999,7 +5999,7 @@ async function generateMessage(){
   }catch(e){document.getElementById('msg-text').textContent='Ошибка. Попробуй ещё раз.';console.error(e);}
   isGenerating=false;
 }
-function esc(s){return(s||'').replace(/'/g,"&#39;").replace(/"/g,'&quot;');}
+const esc=PLATFORM.escapeInlineHandlerValue||function(s){return(s||'').replace(/'/g,"&#39;").replace(/"/g,'&quot;');};
 function selectVariant(el,text){generatedMsg=text;document.getElementById('msg-text').textContent=text;document.querySelectorAll('.variant').forEach(v=>v.classList.remove('selected'));el.classList.add('selected');}
 function copyMsg(){const t=document.getElementById('msg-text').textContent;if(!t||t==='—')return;navigator.clipboard?.writeText(t).catch(()=>{});showToast('Скопировано ✓');}
 function editMsg(){const t=document.getElementById('msg-text');t.contentEditable='true';t.focus();showToast('Редактируй прямо здесь');}

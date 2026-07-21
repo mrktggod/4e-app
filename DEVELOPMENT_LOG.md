@@ -1,5 +1,19 @@
 ## 2026-07-21
 
+### ARCH-001 inline escape helper extraction
+
+**What changed:** For `BRIEF-2026-07-20-22-arch001-continue-split`, moved the pure inline `esc()` helper into `scripts/platform-adapter.js` as `escapeInlineHandlerValue(value)`. `index.html` still exposes the local `esc` alias for existing call sites, resolving through `PLATFORM.escapeInlineHandlerValue` with the previous implementation as fallback. No UI flow, payment, entitlement, auth-security, production, CAL, price, or secret logic was changed.
+
+**Encoding check:** before editing `index.html`, marker check returned `106`; after editing, marker check returned `106`. Backup created before edit: `index.backup_20260721_2311.html`, then removed before staging as a local safety copy.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-ui-architecture.sh` (inline handlers `397 / 402`, inline scripts `3 / 3`); `bash scripts/check-portable-paths.sh`; `npm run smoke:back050` returned `"ok": true`; staged `node scripts/check-js-syntax.mjs` passed for `scripts/platform-adapter.js` and all three `index.html` inline scripts; `git diff --cached --check`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-21
+
 ### 4e PM inbox daily runner pre-sync
 
 **What changed:** Runtime code was not changed. After `git pull --ff-only` was blocked by local PM/documentation edits, the local work was stashed, origin was fast-forwarded, the stash was reapplied, and document conflicts were resolved. Upstream `BUG-2026-07-21-001..004` / `BACK-061..063` were preserved, while local manual QA/triage notes were renumbered to `BUG-2026-07-21-005..008` and `BACK-064..066`.

@@ -1,5 +1,15 @@
 ### 2026-07-21 - Codex
 
+**Task:** BRIEF-2026-07-20-22 - continue ARCH-001 inline JS split.
+**Result:** Moved the inline `esc()` handler-value escape helper into `scripts/platform-adapter.js` as `escapeInlineHandlerValue()` with the old inline implementation kept as fallback; behavior unchanged.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue NEW inbox briefs oldest-first; keep broad/global inline extractions as separate reviewed slices.
+
+---
+
+### 2026-07-21 - Codex
+
 **Task:** 4e PM inbox daily runner pre-sync conflict resolution.
 **Result:** Preserved local PM/manual QA notes after fast-forward pull, resolved document conflicts, and renumbered local collision IDs to `BUG-2026-07-21-005..008` and `BACK-064..066`.
 **Commit:** this commit
