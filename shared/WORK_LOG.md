@@ -1,3 +1,10 @@
+### 2026-07-21 — Codex
+
+**Задача:** выкатить согласованный redesign-срез в production.
+**Результат:** `feat/admin-tariff-api` объединена с актуальным `origin/main`; добавлен production build guard fix, чтобы artifact не содержал staging-host marker `4-ai-staging.pages.dev`.
+**Коммит:** pending
+**Статус:** ⚠️ в процессе
+**Следующий шаг:** повторный push в `main` и проверка production deploy.
 # WORK LOG — Командный журнал задач
 
 > Сюда пишут все участники команды после завершения задачи.  

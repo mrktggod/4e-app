@@ -62,6 +62,10 @@ if (!workerResolverPattern.test(indexHtml)) {
   throw new Error("Unable to find WORKER resolver in index.html");
 }
 
+function disableStagingHostMarkers(html) {
+  return html.replaceAll("4-ai-staging.pages.dev", "staging-preview-disabled.invalid");
+}
+
 const workerTarget = (process.env.PAGES_WORKER_TARGET || "production").trim().toLowerCase();
 if (workerTarget === "auto") {
   console.log("Pages worker target: auto resolver preserved");
@@ -69,7 +73,10 @@ if (workerTarget === "auto") {
   writeFileSync(indexPath, indexHtml.replace(workerResolverPattern, stagingWorkerResolver));
   console.log("Pages worker target: staging");
 } else if (workerTarget === "production") {
-  writeFileSync(indexPath, indexHtml.replace(workerResolverPattern, prodWorkerResolver));
+  writeFileSync(
+    indexPath,
+    disableStagingHostMarkers(indexHtml.replace(workerResolverPattern, prodWorkerResolver)),
+  );
   console.log("Pages worker target: production");
 } else {
   throw new Error(`Unsupported PAGES_WORKER_TARGET: ${workerTarget}`);

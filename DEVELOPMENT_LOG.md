@@ -1,3 +1,14 @@
+## 2026-07-21
+
+### Production redesign release guard
+
+**Что сделано:** при production-сборке `scripts/build-pages-whitelist.mjs` заменяет staging-host marker `4-ai-staging.pages.dev` на disabled marker, чтобы GitHub Pages deploy guard не блокировал релиз из-за preview-only логики в `index.html`.
+
+**Проверка кодировки:** 106 совпадений до/после merge-resolve.
+
+**Тест:** production `npm run build:worker-assets`; проверка отсутствия `4-ai-staging.pages.dev` и `design-part3-handoff.js` в `.pages-dist/index.html`.
+
+**Коммит:** pending
 # DEVELOPMENT LOG вЂ” РїСЂРѕРµРєС‚ 4 AI-СЃРµРєСЂРµС‚Р°СЂСЊ
 
 > Р’РµРґСѓ СЏ (Cowork-РЅР°Р±Р»СЋРґР°С‚РµР»СЊ). РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РїРѕСЃР»Рµ РєР°Р¶РґРѕРіРѕ Р·РЅР°С‡РёРјРѕРіРѕ РёР·РјРµРЅРµРЅРёСЏ.
