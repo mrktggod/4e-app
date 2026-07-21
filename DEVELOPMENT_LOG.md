@@ -1543,7 +1543,7 @@
 
 **Test:** `npm run smoke:auth-avatar` against local checkout + staging worker showed account B no longer inherits account A avatar, legacy draft is empty, logout clears avatar backgrounds, and account A gets its own scoped avatar back on same-browser re-login; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
 
-**Commit:** pending
+**Commit:** `a78323fa915d71a858f62a7fc2826b1f5c7848c1`
 
 ### Part 3 handoff route for notification settings
 

@@ -9421,6 +9421,6 @@
 
 **Задача:** BRIEF-2026-07-21 avatar draft privacy scope
 **Результат:** Local profile/avatar draft is scoped per user, legacy global draft is dropped, and logout clears visible avatar UI.
-**Коммит:** pending
+**Коммит:** `a78323fa915d71a858f62a7fc2826b1f5c7848c1`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Re-run staging after deployment; fresh-browser avatar persistence remains a separate product decision.
