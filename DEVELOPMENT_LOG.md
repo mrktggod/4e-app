@@ -1,3 +1,17 @@
+## 2026-07-22
+
+### BACK-064 classified as Yuri-only notification smoke
+
+**What changed:** Marked `BACK-064` and `BUG-2026-07-21-006` as `NEED-YURI` and added the outbox report. Runtime code was not changed because the task's acceptance criteria require real Telegram/device delivery, correct-recipient proof, sound/vibration, and visible badge/card evidence.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
+
+**Test:** Reviewed `docs/tasks/BACK-064-notification-salience-delivery-audit.md`, `pm/backlog.md`, and `pm/bugs.md` against autonomous guardrails.
+
+**Commit:** this commit
+
+---
+
 ## 2026-07-21
 
 ### PM inbox daily runner final summary

@@ -1,3 +1,13 @@
+### 2026-07-22 - Codex
+
+**Task:** BACK-064 notification salience and delivery audit classification.
+**Result:** Marked `BACK-064` / `BUG-2026-07-21-006` as `NEED-YURI`; runtime code was not changed because the DoD requires real Telegram/device delivery, correct-recipient proof, sound/vibration, and visible badge/card evidence.
+**Commit:** this commit
+**Status:** NEED-YURI
+**Next step:** Yuri/Alexey should run staging phone/TMA smoke and provide raw delivery/salience evidence for a narrow follow-up fix.
+
+---
+
 ### 2026-07-21 - Codex
 
 **Task:** 4e PM inbox daily runner final summary.

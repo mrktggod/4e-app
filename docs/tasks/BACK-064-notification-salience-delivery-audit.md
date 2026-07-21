@@ -4,7 +4,7 @@
 **Владелец:** Codex / Yuri / Алексей QA
 **Тип:** Bug / QA / Product reliability
 **Приоритет:** P1
-**Статус:** Triaged
+**Статус:** NEED-YURI
 
 ## Контекст
 

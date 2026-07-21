@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-064 needs Yuri device smoke
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-064` / `BUG-2026-07-21-006` marked `NEED-YURI`.
+- Result: no runtime code changed; notification delivery/salience DoD requires real Telegram/device smoke, correct-recipient proof, sound/vibration, and visible badge/card evidence.
+- Report: `pm/outbox/REPORT-BACK-064-notification-salience-delivery-audit.md`.
+- Next: Yuri/Alexey should run the staging phone/TMA notification smoke window and capture raw evidence before a narrow fix brief.
+
 ## 2026-07-21 - Codex - PM inbox runner closed
 
 - Branch: `feat/admin-tariff-api`.
