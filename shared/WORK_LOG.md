@@ -6,6 +6,16 @@
 
 ---
 
+### 2026-07-21 — Codex
+
+**Задача:** Pre-dawn inbox/backlog runner: close safe docs/status drift after inbox scan.
+**Результат:** `pm/inbox` had no executable `status: NEW` briefs. Synced stale `docs/tasks/BACK-056-home-focus-time-copy.md` from `Todo` to `Done` and added closeout evidence that matches `pm/backlog.md`, `shared/ROADMAP.md`, and the 2026-07-15 work-log closeout.
+**Коммит:** `this commit`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Remaining rows need manual TMA/device/provider/OAuth/bot/payment QA, Yuri/Claude review, product decisions, CAL/post-beta work, prod/main actions, or broader runtime refactors.
+
+---
+
 ### 2026-07-19 - Codex
 
 **Task:** ANALYTICS-002 Step 1 app attribution capture

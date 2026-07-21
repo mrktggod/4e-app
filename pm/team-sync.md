@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - pre-dawn inbox/backlog runner
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: no executable `status: NEW` non-template `BRIEF-*.md` files.
+- Result: completed 1 safe docs/status whitelist task; synced stale `docs/tasks/BACK-056-home-focus-time-copy.md` from `Todo` to `Done` with closeout evidence.
+- Report: `pm/outbox/REPORT-4e-pre-dawn-inbox-and-whitelist-backlog-runner-2026-07-21.md`.
+- Next: remaining open rows require manual TMA/device/provider/OAuth/bot/payment QA, Yuri/Claude review, product decisions, CAL/post-beta work, prod/main actions, or broader runtime refactors.
+
 ## 2026-07-21 - Codex - night inbox/backlog runner
 
 - Branch: `feat/admin-tariff-api`.

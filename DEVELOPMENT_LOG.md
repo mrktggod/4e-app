@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-21 - BACK-056 task-doc status sync
+
+### Pre-dawn inbox/backlog runner closeout
+
+**What changed:** Runtime code was not changed. `docs/tasks/BACK-056-home-focus-time-copy.md` was synced from stale `Todo` to `Done` and now includes a 2026-07-21 closeout section pointing to the already-recorded evidence in `pm/backlog.md`, `shared/ROADMAP.md`, and `shared/WORK_LOG.md`.
+
+**Encoding check:** `index.html` was not edited; `node scripts/check-cp1251-mojibake.mjs` is required before commit and recorded in the outbox report/final summary.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; Git Bash `scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** `this commit`
+
+---
+
 ## 2026-07-20 - Auth/avatar login diagnosis
 
 ### BRIEF-2026-07-20-morning-refine-01 auth/avatar root cause
