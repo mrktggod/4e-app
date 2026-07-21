@@ -1715,3 +1715,15 @@
 **Тест:** `npm run build:css`; `npm run smoke:home001` → ok=true, homeRows=3, metricCards=4, bottomNavButtons=3, documentScrollWidth=390; визуально проверены light/dark smoke screenshots.
 
 **Коммит:** pending
+
+## 2026-07-21
+
+### Light theme switch fix after soft-glass polish
+
+**Что сделано:** добавлен финальный CSS-слой, где `html[data-theme="light"]` принудительно включает светлые цвета для dashboard/profile/subscription/task-detail, а dark-override больше не срабатывает от отсутствия `.soft-light`.
+
+**Проверка кодировки:** `node scripts/check-cp1251-mojibake.mjs` → 0 suspicious tokens.
+
+**Тест:** `npm run build:css`; `npm run smoke:home001` → ok=true, homeRows=3, metricCards=4, bottomNavButtons=3, documentScrollWidth=390; визуально проверен light smoke screenshot.
+
+**Коммит:** pending

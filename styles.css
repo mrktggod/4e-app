@@ -14555,3 +14555,158 @@ html[data-theme="dark"] body #home#home #home-task-list .home-ai-row-meta,
 body #home#home:not(.soft-light) #home-task-list .home-ai-row-meta {
   color: rgba(216, 226, 207, 0.68) !important;
 }
+/* 2026-07-21 THEME SWITCH FIX - data-theme is the source of truth */
+html[data-theme="light"] body,
+html[data-theme="light"] #app,
+html[data-theme="light"] .screen,
+html[data-theme="light"] .view,
+html[data-theme="light"] #home,
+html[data-theme="light"] #profile,
+html[data-theme="light"] #subscription,
+html[data-theme="light"] #task-detail {
+  background: #f8f7ef !important;
+  background-color: #f8f7ef !important;
+  color: #0b0f0c !important;
+  color-scheme: light !important;
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] #app,
+html[data-theme="dark"] #home,
+html[data-theme="dark"] #home .dash-artboard {
+  background: #000 !important;
+  background-color: #000 !important;
+  color-scheme: dark !important;
+}
+html[data-theme="light"] #home#home,
+html[data-theme="light"] #home#home .dash-artboard {
+  background: radial-gradient(circle at 72% 9%, rgba(177, 214, 98, 0.22), transparent 28%), linear-gradient(180deg, #f8f7ef 0%, #eeeee6 100%) !important;
+  background-color: #f8f7ef !important;
+  color: #0b0f0c !important;
+}
+html[data-theme="light"] #home#home .dash-statusbar,
+html[data-theme="dark"] #home#home .dash-statusbar {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+html[data-theme="light"] #home#home .dash-title strong,
+html[data-theme="light"] #home#home .dash-hero-noun,
+html[data-theme="light"] #home#home .dash-hero-title,
+html[data-theme="light"] #home#home #home-section-title,
+html[data-theme="light"] #home#home .dash-month-title {
+  color: #11130f !important;
+}
+html[data-theme="light"] #home#home .dash-hero-subtitle,
+html[data-theme="light"] #home#home .dash-metric-head,
+html[data-theme="light"] #home#home .dash-metric-note {
+  color: rgba(39, 45, 39, 0.68) !important;
+}
+html[data-theme="light"] #home#home .dash-hero,
+html[data-theme="light"] #home#home .dash-metric,
+html[data-theme="light"] #home#home .home-ai-row-main {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(242, 246, 235, 0.76)) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 18px 44px rgba(86, 92, 70, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.94) !important;
+}
+html[data-theme="light"] #home#home .dash-hero-orb,
+html[data-theme="light"] #home#home .dash-hero-orb::before,
+html[data-theme="light"] #home#home .dash-hero-orb::after,
+html[data-theme="light"] #home#home .dash-metric-icon,
+html[data-theme="light"] #home#home .dash-metric-icon::before,
+html[data-theme="light"] #home#home .dash-metric-icon::after,
+html[data-theme="light"] #home#home .dash-ring,
+html[data-theme="light"] #home#home .dash-ring::before,
+html[data-theme="light"] #home#home .dash-ring::after {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+html[data-theme="light"] #profile,
+html[data-theme="light"] #profile .profile-stage,
+html[data-theme="light"] #profile .profile-handoff-scroll {
+  background: linear-gradient(180deg, #f8f7ef 0%, #eeeee6 100%) !important;
+  color: #101411 !important;
+}
+html[data-theme="light"] #profile .profile-handoff-hero,
+html[data-theme="light"] #profile .profile-premium-card,
+html[data-theme="light"] #profile .profile-card,
+html[data-theme="light"] #profile .profile-referral-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(242, 246, 235, 0.76)) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  color: #101411 !important;
+}
+html[data-theme="light"] #profile .back-title,
+html[data-theme="light"] #profile .profile-name,
+html[data-theme="light"] #profile .profile-card-title,
+html[data-theme="light"] #profile .profile-menu-row,
+html[data-theme="light"] #profile .profile-data-row,
+html[data-theme="light"] #profile .profile-row-value,
+html[data-theme="light"] #profile .profile-row-input,
+html[data-theme="light"] #profile .profile-referral-card,
+html[data-theme="light"] #profile .profile-referral-card input {
+  color: #101411 !important;
+}
+html[data-theme="light"] #profile .profile-id,
+html[data-theme="light"] #profile .profile-row-label,
+html[data-theme="light"] #profile .premium-sub,
+html[data-theme="light"] #profile .profile-field-counter {
+  color: rgba(24, 31, 25, 0.62) !important;
+}
+html[data-theme="light"] #task-detail,
+html[data-theme="light"] #task-detail .detail-redesign-shell {
+  background: linear-gradient(180deg, #f8f7ef 0%, #eeeee6 100%) !important;
+  color: #0f2638 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-hero,
+html[data-theme="light"] #task-detail .detail-participants-card,
+html[data-theme="light"] #task-detail .detail-status-card,
+html[data-theme="light"] #task-detail .detail-chat-card,
+html[data-theme="light"] #task-detail .detail-info-card,
+html[data-theme="light"] #task-detail .detail-ai-card,
+html[data-theme="light"] #task-detail .detail-comment-input {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(242, 246, 235, 0.72)) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  color: #123047 !important;
+  box-shadow: 0 18px 44px rgba(86, 92, 70, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.94) !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-title,
+html[data-theme="light"] #task-detail .task-hero-title,
+html[data-theme="light"] #task-detail .task-detail-title,
+html[data-theme="light"] #task-detail .detail-title {
+  color: #0d3048 !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-desc,
+html[data-theme="light"] #task-detail .task-hero-description,
+html[data-theme="light"] #task-detail .task-detail-description,
+html[data-theme="light"] #task-detail .detail-description,
+html[data-theme="light"] #task-detail .detail-comments-empty,
+html[data-theme="light"] #task-detail .detail-comment-input,
+html[data-theme="light"] #task-detail .detail-comment-input::placeholder {
+  color: rgba(18, 48, 71, 0.72) !important;
+}
+html[data-theme="light"] #task-detail .detail-round-btn,
+html[data-theme="light"] #task-detail .detail-avatar-add,
+html[data-theme="light"] #task-detail .detail-status-dot,
+html[data-theme="light"] #task-detail .detail-redesign-bell,
+html[data-theme="light"] #task-detail .detail-comment-send-btn {
+  background: radial-gradient(circle at 35% 25%, #f7ffe8, #d8f3ae 66%, #a9d35f) !important;
+  border-color: rgba(137, 184, 75, 0.35) !important;
+  color: #5f9a20 !important;
+  box-shadow: 0 12px 28px rgba(102, 137, 57, 0.18) !important;
+}
+html[data-theme="light"] #subscription,
+html[data-theme="light"] #subscription .subscription-screen,
+html[data-theme="light"] #subscription .subscription-stage {
+  background: linear-gradient(180deg, #f8f7ef 0%, #eeeee6 100%) !important;
+  color: #0b0f0c !important;
+}
+html[data-theme="light"] #subscription .subscription-card,
+html[data-theme="light"] #subscription .subscription-plan,
+html[data-theme="light"] #subscription .subscription-feature-card,
+html[data-theme="light"] #subscription .subscription-price-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(242, 246, 235, 0.76)) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  color: #0b0f0c !important;
+}
