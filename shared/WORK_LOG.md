@@ -9405,6 +9405,6 @@
 
 **Задача:** BRIEF-2026-07-20-25 preview stability fix
 **Результат:** Preview demo routing now opens dashboard/task-detail/profile/subscription/chats/chat-conv directly and no longer falls back to login during preview navigation.
-**Коммит:** `0217f77bdcf1662c6d8d39b50bd5e216eaa3bede`
+**Коммит:** `f26b3d46d6a3acff7038df35e5e5dc6ae76293ab`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Continue with morning refine auth password error brief.

@@ -1521,7 +1521,7 @@
 
 **Known tails:** API smoke against staging worker fails at `register: 500`; full browser visual smoke was not run because Playwright is not installed locally; prod deploy is NEED-YURI and was not performed.
 
-**Commit:** `0217f77bdcf1662c6d8d39b50bd5e216eaa3bede`
+**Commit:** `f26b3d46d6a3acff7038df35e5e5dc6ae76293ab`
 
 ## 2026-07-20
 
