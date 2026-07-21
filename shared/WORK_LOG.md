@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** 4e night inbox and whitelist backlog runner final report.
+**Result:** Inbox had no `NEW` briefs; completed/pushed 4 backlog tasks this run and added the final outbox report with stop reason.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Review `BACK-065` on staging and split remaining `BACK-066` VK parity holes into narrow briefs.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-066A VK chat task intent/deadline parsing.
 **Result:** Fixed VK chat task command detection for Cyrillic text, stripped recognized deadline phrases from VK-created task titles, preserved raw input in `originalMsg`, and added `npm run smoke:back066-vk`.
 **Commit:** this commit

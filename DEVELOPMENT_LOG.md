@@ -1,5 +1,19 @@
 ## 2026-07-22
 
+### Night inbox/backlog runner final report
+
+**What changed:** Added the final report for `4e-night-inbox-and-whitelist-backlog-runner` on 2026-07-22 and team/work log sync. Inbox had no `NEW` briefs; the run completed 4 backlog tasks and stopped because remaining work is gated or needs reviewed follow-up briefs.
+
+**Encoding check:** `index.html` was not edited in this final report task; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-22
+
 ### BACK-066A VK task intent parsing
 
 **What changed:** Fixed VK chat task command parsing to avoid Cyrillic-unsafe JS `\b`, normalize simple assignee-task phrases, strip recognized deadline phrases from `task.text`, preserve raw input in `originalMsg`, and added `scripts/back-066-vk-task-intent-smoke.mjs` / `npm run smoke:back066-vk`. VK Pay/payment, production deploy, `main`, CAL, secrets, and entitlement were untouched.

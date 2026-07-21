@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-22 - Codex - night runner closed four tasks
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: no `status: NEW` non-template briefs.
+- Result: 4 backlog/roadmap tasks handled: `BACK-064` NEED-YURI, `BACK-065` DONE/Ready for QA, `BACK-066` source audit DONE/Partial Done, `BACK-066A` DONE.
+- Report: `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-22.md`.
+- Stop reason: remaining rows require manual/device/provider/auth/payment/CAL/product/prod/main gates, are already Ready for QA, Deferred, or need separate reviewed fix briefs.
+
 ## 2026-07-22 - Codex - BACK-066A VK task intent fixed
 
 - Branch: `feat/admin-tariff-api`.
