@@ -77,7 +77,7 @@
 | 1-7 | Head scripts | VK bridge |
 | 8-222 | CSS | VK layout, auth, cards, tabs, screens |
 | 224-481 | HTML | VK auth, home, task detail, ask, calendar, stats, profile |
-| 482-1622 | JavaScript | VK auth, tasks, task detail, AI chat, calendar, stats |
+| 482-1630 | JavaScript | VK auth, tasks, task detail, AI chat, calendar, stats |
 
 ### VK JavaScript ranges
 
@@ -87,10 +87,10 @@
 | 628-848 | Diagnostics, auth token, D1 sync, launch params, warmup |
 | 874-955 | VK bridge init and auto-login |
 | 960-1218 | Enter app, identities, login/register/logout |
-| 1226-1340 | Task loading, rendering, save task from chat |
-| 1347-1445 | Task detail discussion |
-| 1452-1513 | Navigation and ask chat |
-| 1516-1569 | Calendar, stats, toast |
+| 1226-1369 | Task loading, rendering, Cyrillic-safe task intent helpers |
+| 1370-1453 | Save task from chat and task detail |
+| 1460-1521 | Task discussion, navigation, ask chat |
+| 1522-1630 | Calendar, stats, toast |
 
 ## `privacy.html`
 

@@ -90,7 +90,7 @@ Source-only audit completed: `docs/tasks/BACK-066-vk-functional-parity-audit-202
 
 Top P1 follow-ups from the audit:
 
-1. VK chat task creation likely misses Russian task intents/deadlines because `isTaskCommand()` and `inferTaskDeadline()` use JS `\b` with Cyrillic words.
+1. DONE 2026-07-22: VK chat task creation now uses Cyrillic-safe intent/deadline regex and preserves `originalMsg`; smoke `npm run smoke:back066-vk`.
 2. VK has no server-backed task edit flow for title/person/priority/deadline/description; task detail is mostly read-only plus `Готово`.
 3. VK AI chat is local-history only and lacks main app task-action/create-task parity, AI memory context, and remote `/ai/messages` history.
 4. VK calendar only marks exact ISO `deadline` matches and lacks the main app all-deadlines/relative-date path.

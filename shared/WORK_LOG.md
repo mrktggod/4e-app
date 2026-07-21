@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** BACK-066A VK chat task intent/deadline parsing.
+**Result:** Fixed VK chat task command detection for Cyrillic text, stripped recognized deadline phrases from VK-created task titles, preserved raw input in `originalMsg`, and added `npm run smoke:back066-vk`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue BACK-066 parity through separate VK edit/detail, AI-chat, calendar, stats/profile briefs plus mobile VK smoke.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-066 VK stable line source parity audit.
 **Result:** Added source parity table for `index.html` vs `vk.html`; identified P1 VK holes in task intent/deadline parsing, task editing, AI chat/history, calendar, stats, and profile surfaces. Runtime code and payment paths were not changed.
 **Commit:** this commit

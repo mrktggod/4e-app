@@ -1,5 +1,19 @@
 ## 2026-07-22
 
+### BACK-066A VK task intent parsing
+
+**What changed:** Fixed VK chat task command parsing to avoid Cyrillic-unsafe JS `\b`, normalize simple assignee-task phrases, strip recognized deadline phrases from `task.text`, preserve raw input in `originalMsg`, and added `scripts/back-066-vk-task-intent-smoke.mjs` / `npm run smoke:back066-vk`. VK Pay/payment, production deploy, `main`, CAL, secrets, and entitlement were untouched.
+
+**Encoding check:** before editing `vk.html`, marker check returned `13`; after editing, marker check returned `14` (not lower; new smoke/package text adds a marker occurrence outside the existing UI copy). `index.html` was not edited in this task.
+
+**Test:** `npm run smoke:back066-vk`; `node scripts/check-cp1251-mojibake.mjs`; `node --check scripts/back-066-vk-task-intent-smoke.mjs`; `git diff --check`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-22
+
 ### BACK-066 VK functional parity source audit
 
 **What changed:** Added `docs/tasks/BACK-066-vk-functional-parity-audit-2026-07-22.md`, linked it from the parent task, and updated backlog/QA/team sync status to `Partial Done`. Runtime code was not changed; VK Pay/payment, production deploy, `main`, CAL, secrets, and entitlement were untouched.

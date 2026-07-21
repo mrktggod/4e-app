@@ -11,7 +11,7 @@ Source-only comparison of `vk.html` against the main `index.html` surface. No ru
 ## Anchors Reviewed
 
 - `vk.html:286` home, `321` task detail, `359` AI chat, `377` calendar, `393` stats, `406` profile.
-- `vk.html:962` enter app, `983` profile apply, `1270` load tasks, `1289` render tasks, `1337` task command detection, `1363` chat task save, `1426` task detail, `1508` AI chat, `1562` calendar, `1589` stats.
+- `vk.html:962` enter app, `983` profile apply, `1270` load tasks, `1289` render tasks, `1337` task command detection, `1370` chat task save, `1434` task detail, `1516` AI chat, `1570` calendar, `1597` stats.
 - `index.html:330` home, `414` ask, `444` task detail, `504` calendar, `541` statistics, `613` notifications, `633` profile, `696` subscription, `3114` load tasks, `3467` quick-add, `5607` task detail, `6358` chat task creation, `6871` calendar deadlines, `8052` chats.
 
 ## Parity Table
@@ -34,7 +34,7 @@ Source-only comparison of `vk.html` against the main `index.html` surface. No ru
 
 ## Recommended P1 Fix Briefs
 
-1. `BACK-066A` - VK chat task intent/deadline parsing: replace Cyrillic-unsafe `\b` regex, preserve `originalMsg`, and align title cleanup with BACK-065 without importing the full main monolith.
+1. DONE 2026-07-22: `BACK-066A` - VK chat task intent/deadline parsing now uses Cyrillic-safe regex, preserves `originalMsg`, and has smoke `npm run smoke:back066-vk`.
 2. `BACK-066B` - VK task detail edit MVP: allow title, deadline, status/done, person, and description/original text updates through existing `x-action:update-task`.
 3. `BACK-066C` - VK AI chat parity slice: keep local simplicity but add normalized task title/originalMsg and graceful state for unsupported task actions.
 4. `BACK-066D` - VK calendar deadline parity: render an all-deadlines list and support the same date strings that existing tasks can contain.

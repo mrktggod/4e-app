@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-066A VK task intent fixed
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-066A` narrow fix completed under `BACK-066`.
+- Result: VK chat task creation now detects Russian task commands/deadlines without JS `\b`, strips deadline from title, and preserves raw input in `originalMsg`; VK Pay/payment untouched.
+- Report: `pm/outbox/REPORT-BACK-066A-vk-task-intent.md`.
+- Next: continue with separate VK edit/detail, AI-chat, calendar, stats/profile parity briefs plus mobile VK smoke.
+
 ## 2026-07-22 - Codex - BACK-066 VK parity audited
 
 - Branch: `feat/admin-tariff-api`.

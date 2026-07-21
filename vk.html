@@ -1336,15 +1336,22 @@ function formatDate(d) {
 
 function isTaskCommand(text) {
   const value = String(text || '').trim().toLowerCase();
-  return /^(добавь|создай|поставь|запиши|зафиксируй|сохрани)\b.*\bзадач/.test(value) ||
-         /^(напомни|надо|нужно|сделать)\b/.test(value);
+  return /(^|\s)(добавь|создай|поставь|запиши|зафиксируй|сохрани|напомни|надо|нужно|сделать|проверить|придумать|подготовить)(?=\s|$)/i.test(value);
 }
 
 function normalizeTaskText(text) {
-  const cleaned = String(text || '')
+  let cleaned = String(text || '')
     .trim()
-    .replace(/^(добавь|создай|поставь|запиши|зафиксируй|сохрани)(\s+мне)?(\s+задач[ауиу]?)?\s*[:—-]?\s*/i, '')
-    .replace(/^(надо|нужно|сделать|напомни)\s*/i, '')
+    .replace(/^(добавь|создай|поставь|запиши|зафиксируй|сохрани)(\s+мне)?(\s+задач[ауиу]?)?\s*[:—-]?\s*/i,'')
+    .replace(/^(надо|нужно|сделать|напомни)\s*/i,'')
+    .trim();
+  const directedTask = cleaned.match(/^(поставь|добавь|создай|запиши)\s+([А-ЯЁA-Z][A-ZА-ЯЁа-яёa-z-]{1,30})\s+задач[ауи]?\s+(.+)$/i);
+  const assigneeTask = directedTask || cleaned.match(/^([А-ЯЁA-Z][A-ZА-ЯЁа-яёa-z-]{1,30})\s+задач[ауи]?\s+(.+)$/);
+  if(directedTask) cleaned = directedTask[3];
+  else if(assigneeTask) cleaned = assigneeTask[2];
+  cleaned = cleaned
+    .replace(/(^|\s)(сегодня|завтра|послезавтра|в понедельник|во вторник|в среду|в четверг|в пятницу|в субботу|в воскресенье|к понедельнику|ко вторнику|к среде|к четвергу|к пятнице|к субботе|к воскресенью)(?=\s|$)/ig,' ')
+    .replace(/\s+/g,' ')
     .trim();
   return cleaned || String(text || '').trim();
 }
@@ -1352,8 +1359,8 @@ function normalizeTaskText(text) {
 function inferTaskDeadline(text) {
   const value = String(text || '').toLowerCase();
   const date = new Date();
-  if (/\bсегодня\b/.test(value)) return date.toISOString().slice(0, 10);
-  if (/\bзавтра\b/.test(value)) {
+  if (/(^|\s)сегодня(?=\s|$)/i.test(value)) return date.toISOString().slice(0, 10);
+  if (/(^|\s)завтра(?=\s|$)/i.test(value)) {
     date.setDate(date.getDate() + 1);
     return date.toISOString().slice(0, 10);
   }
@@ -1373,7 +1380,8 @@ async function maybeSaveTaskFromChat(text) {
     done: false,
     date: new Date().toISOString().slice(0, 10),
     createdAt: Date.now(),
-    source: 'vk_chat'
+    source: 'vk_chat',
+    originalMsg: text
   };
   if (deadline) task.deadline = deadline;
   const res = await fetch(WORKER, {

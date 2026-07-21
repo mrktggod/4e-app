@@ -13,6 +13,7 @@
         "smoke:back019": "node scripts/back-019-task-card-smoke.mjs",
         "smoke:back055": "node scripts/back-055-notifications-smoke.mjs",
         "smoke:back065": "node scripts/back-065-task-title-normalization-smoke.mjs",
+        "smoke:back066-vk": "node scripts/back-066-vk-task-intent-smoke.mjs",
         "smoke:back050": "node scripts/back-050-accessibility-smoke.mjs",
         "smoke:smart007": "node scripts/smart-007-memory-fixture-smoke.mjs",
         "smoke:auth-avatar": "node scripts/auth-avatar-login-diagnose.mjs",
