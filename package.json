@@ -15,6 +15,7 @@
         "smoke:back050": "node scripts/back-050-accessibility-smoke.mjs",
         "smoke:smart007": "node scripts/smart-007-memory-fixture-smoke.mjs",
         "smoke:auth-avatar": "node scripts/auth-avatar-login-diagnose.mjs",
+        "smoke:viral-share": "node scripts/viral-share-card-smoke.mjs",
         "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",
         "deploy:vk-hosting": "npm run build:vk-hosting && vk-miniapps-deploy",
         "api-smoke": "node scripts/api-smoke.mjs",

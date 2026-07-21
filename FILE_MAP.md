@@ -38,6 +38,7 @@
 | `scripts/back-050-accessibility-smoke.mjs` | 349 | Headless Chrome/CDP smoke for BACK-050 accessibility baseline: auth labels/errors, toast status/alert live-region, dialog ARIA/focus/restore on 390x844 viewport | Run with `npm run smoke:back050` before changing auth accessibility, toast behavior, or quick-add/contact/focus dialogs |
 | `scripts/smart-007-memory-fixture-smoke.mjs` | 450 | Staging-only SMART-007 AI-memory fixture smoke with fresh synthetic account: saves safe facts, verifies `/ai/facts`, renders `#ai-memory-list`, delete-one and clear-all | Run with `npm run smoke:smart007` before promoting SMART-007 evidence beyond source-only |
 | `scripts/auth-avatar-login-diagnose.mjs` | 269 | Live staging Chrome/CDP diagnostic for auth wrong-password UI and profile avatar localStorage leak/persistence behavior on fresh accounts | Run with `npm run smoke:auth-avatar` before fixing auth field errors or profile avatar persistence |
+| `scripts/viral-share-card-smoke.mjs` | 126 | Static smoke for VIRAL-001/004/006 share-card runtime: validates canvas PNG builders, streak/weekly helpers, native share, download fallback and lite analytics hooks | Run with `npm run smoke:viral-share` before promoting share-card evidence beyond source-only |
 | `.githooks/pre-commit` | 5 | Локальный hook для запуска path guard и UI architecture guard перед commit | Активировать через `git config core.hooksPath .githooks` |
 | `.github/workflows/path-guard.yml` | 15 | GitHub Actions quality guard: переносимые пути + UI architecture debt | Срабатывает на push и PR |
 

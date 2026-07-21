@@ -1,5 +1,16 @@
 ## 2026-07-21
 
+### VIRAL share-card static smoke
+
+**Что сделано:** для `BRIEF-2026-07-20-21-viral-share-card-finish` добавлен `scripts/viral-share-card-smoke.mjs` и npm-script `smoke:viral-share`. Скрипт статически проверяет существующий runtime без изменения `index.html`: `buildDailyShareCardBlob()`, `buildWeeklySummaryCardBlob()`, `shareDailyCard()`, `shareWeeklySummaryCard()`, streak/achievements и weekly stats, PNG canvas 1080x1350, native share, download fallback и lite analytics events.
+
+**Проверка кодировки:** `index.html` не изменялся; обязательная проверка cp1251/mojibake выполнена отдельным guard.
+
+**Тест:** `npm run smoke:viral-share`, `node scripts/check-cp1251-mojibake.mjs`, `node scripts/check-js-syntax.mjs`, `bash scripts/check-ui-architecture.sh`, `git diff --check`, `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** этот коммит; SHA см. в финальном отчёте Codex.
+## 2026-07-21
+
 ### BACK-012 auth CSS/BEM cleanup island
 
 **Что сделано:** один безопасный auth-island inline→LESS: forgot/reset center panel, auth icon card, password relative wrapper и small auth action wrappers перенесены из inline `style="..."` в `styles/layout.less` как `.auth-center-panel`, `.auth-icon-card`, `.auth-password-field`, `.auth-inline-action*`. Разметка и поведение не менялись; `styles.css`/`styles.min.css` пересобраны через `npm run build:css`. Brief `BRIEF-2026-07-20-20-back012-css-bem-cleanup.md` закрыт, report добавлен в `pm/outbox`.

@@ -1,5 +1,12 @@
 ### 2026-07-21 — Codex
 
+**Задача:** BRIEF-2026-07-20-21 — закрыть автономную часть VIRAL share-card finish.
+**Результат:** добавлен `npm run smoke:viral-share`: статическая проверка daily/weekly PNG canvas 1080x1350, streak/achievements, weekly stats, native share, download fallback и lite analytics `share-card`/`share-weekly-card`. `VIRAL-001` и `VIRAL-006` переведены в `Ready for QA`, `VIRAL-004` оставлен `Done` с дополнительным evidence; live VK/TG visual smoke оставлен как `NEED-YURI`.
+**Коммит:** этот коммит; SHA см. в финальном отчёте Codex.
+**Статус:** ✅ выполнено
+**Следующий шаг:** Юрию проверить реальный share sheet/Stories/TG на телефоне, если нужно переводить VIRAL-001/006 из `Ready for QA` в `Done`.
+### 2026-07-21 — Codex
+
 **Задача:** выполнить первый маленький `BACK-012` CSS/BEM cleanup island.
 **Результат:** layout-only inline styles на auth forgot/reset/password/action wrappers вынесены из `index.html` в `styles/layout.less`; CSS пересобран. UI guard снизился с `366` до `356` inline style attrs без роста inline handlers/scripts. `pm/inbox/BRIEF-2026-07-20-20-back012-css-bem-cleanup.md` переведён в `DONE`, report создан в `pm/outbox`.
 **Коммит:** `this commit`

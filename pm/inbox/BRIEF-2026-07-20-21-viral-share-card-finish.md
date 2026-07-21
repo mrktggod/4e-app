@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-20-21-viral-share-card-finish
 
