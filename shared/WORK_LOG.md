@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** BACK-066 VK stable line source parity audit.
+**Result:** Added source parity table for `index.html` vs `vk.html`; identified P1 VK holes in task intent/deadline parsing, task editing, AI chat/history, calendar, stats, and profile surfaces. Runtime code and payment paths were not changed.
+**Commit:** this commit
+**Status:** DONE / Partial Done
+**Next step:** Split P1 VK holes into narrow fix briefs and run mobile VK/browser shell smoke after fixes.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-065 task title normalization from dictated/AI intent.
 **Result:** Added shared task-title normalization for AI-chat, voice task creation, and quick-add; full raw input is preserved in `originalMsg`; `npm run smoke:back065` covers the task examples.
 **Commit:** this commit

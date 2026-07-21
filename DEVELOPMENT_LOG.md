@@ -1,5 +1,19 @@
 ## 2026-07-22
 
+### BACK-066 VK functional parity source audit
+
+**What changed:** Added `docs/tasks/BACK-066-vk-functional-parity-audit-2026-07-22.md`, linked it from the parent task, and updated backlog/QA/team sync status to `Partial Done`. Runtime code was not changed; VK Pay/payment, production deploy, `main`, CAL, secrets, and entitlement were untouched.
+
+**Encoding check:** `index.html` was not edited in this task.
+
+**Test:** Source audit of `vk.html` anchors for auth, enter-app, tasks, task detail, AI chat, calendar, stats, and profile against `index.html` anchors from `FILE_MAP_UI.md`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-22
+
 ### BACK-065 task title normalization
 
 **What changed:** Added `normalizeTaskTitle()` and connected it to fallback AI-chat task creation, voice task creation, model-created task payloads, and quick-add. The full raw user phrase remains in `originalMsg` when normalization changes the title. Added `scripts/back-065-task-title-normalization-smoke.mjs` and `npm run smoke:back065`; updated `FILE_MAP.md` and `FILE_MAP_UI.md`.

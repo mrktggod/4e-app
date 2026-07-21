@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-066 VK parity audited
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-066` moved to `Partial Done`.
+- Result: source parity audit completed for `index.html` vs `vk.html`; no runtime code changed and no VK Pay/payment path touched.
+- Report: `pm/outbox/REPORT-BACK-066-vk-functional-parity-audit.md`.
+- Next: split the P1 VK holes into narrow fix briefs, then run mobile VK/browser shell smoke.
+
 ## 2026-07-22 - Codex - BACK-065 title normalization ready for QA
 
 - Branch: `feat/admin-tariff-api`.

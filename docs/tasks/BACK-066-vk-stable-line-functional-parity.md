@@ -4,7 +4,7 @@
 **Владелец:** Codex / Yuri / Alexey QA
 **Тип:** Product/Platform/UX
 **Приоритет:** P1
-**Статус:** Triaged
+**Статус:** Partial Done
 
 ## Контекст
 
@@ -83,3 +83,17 @@
 ```
 
 После этого выделить 3-5 самых заметных функциональных дыр и закрывать их отдельными маленькими PR.
+
+## Source parity audit 2026-07-22
+
+Source-only audit completed: `docs/tasks/BACK-066-vk-functional-parity-audit-2026-07-22.md`.
+
+Top P1 follow-ups from the audit:
+
+1. VK chat task creation likely misses Russian task intents/deadlines because `isTaskCommand()` and `inferTaskDeadline()` use JS `\b` with Cyrillic words.
+2. VK has no server-backed task edit flow for title/person/priority/deadline/description; task detail is mostly read-only plus `Готово`.
+3. VK AI chat is local-history only and lacks main app task-action/create-task parity, AI memory context, and remote `/ai/messages` history.
+4. VK calendar only marks exact ISO `deadline` matches and lacks the main app all-deadlines/relative-date path.
+5. VK profile lacks extended profile/privacy/security/notification/settings surfaces from the main app.
+
+`NEEDS-REAL`: mobile VK/browser shell smoke still required before marking the stable line Done.
