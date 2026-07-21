@@ -89,7 +89,165 @@ function isDashboardSubscriptionPreviewHost(){
   return host!=='4-ai-staging.pages.dev' && host.endsWith('.4-ai-staging.pages.dev');
 }
 
+const DASHBOARD_PREVIEW_FLAGS={
+  user:['trial','paid','expired','free'],
+  tasks:['empty','mixed','done-failed'],
+  api:['ok','error'],
+  theme:['light','dark']
+};
+
+function getDashboardPreviewParams(){
+  try{return new URLSearchParams(location.search||'');}catch(_err){return new URLSearchParams();}
+}
+
+function getDashboardPreviewFlag(name,fallback){
+  if(!shouldAutoOpenDashboardPreview())return fallback;
+  const params=getDashboardPreviewParams();
+  const value=String(params.get(name)||fallback||'').trim().toLowerCase();
+  const key=name.replace(/^preview/,'').toLowerCase();
+  const allowed=DASHBOARD_PREVIEW_FLAGS[key]||[];
+  return allowed.includes(value)?value:fallback;
+}
+
+function buildDashboardPreviewUser(){
+  const now=Date.now();
+  const mode=getDashboardPreviewFlag('previewUser','trial');
+  const base={id:'preview-dashboard-user',email:'preview-dashboard-20260718@example.com',name:'Юрий',referralCode:'preview',source:'preview'};
+  if(mode==='paid'){
+    return {...base,plan:'premium',trialEndsAt:0,entitlement:{status:'active',plan:'premium',accessUntil:now+365*864e5,source:'preview',updatedAt:now}};
+  }
+  if(mode==='expired'){
+    return {...base,plan:'trial',trialEndsAt:now-2*864e5,entitlement:{status:'expired',plan:'trial',accessUntil:now-2*864e5,source:'preview',updatedAt:now}};
+  }
+  if(mode==='free'){
+    return {...base,plan:'free',trialEndsAt:0,entitlement:{status:'inactive',plan:'free',accessUntil:0,source:'preview',updatedAt:now}};
+  }
+  return {...base,plan:'trial',trialEndsAt:now+14*864e5,entitlement:{status:'active',plan:'trial',accessUntil:now+14*864e5,source:'preview',updatedAt:now}};
+}
+
+function buildDashboardPreviewTasks(){
+  const mode=getDashboardPreviewFlag('previewTasks','empty');
+  if(mode==='empty')return [];
+  const now=Date.now();
+  const today=new Date(now+2*3600e3).toISOString();
+  const tomorrow=new Date(now+26*3600e3).toISOString();
+  const overdue=new Date(now-30*3600e3).toISOString();
+  if(mode==='done-failed'){
+    return [
+      {id:'preview-done-1',text:'Закрыть блок визуального QA',direction:'outgoing',person:'Алексей',priority:'p2',deadline:today,done:true,status:'done',doneAt:now-3*3600e3,tags:['qa']},
+      {id:'preview-done-2',text:'Сверить статусы inbox',direction:'outgoing',person:'Юрий',priority:'p3',deadline:tomorrow,done:true,status:'done',doneAt:now-8*3600e3,tags:['pm']},
+      {id:'preview-failed-1',text:'Просроченный созвон без решения',direction:'incoming',person:'Клиент',priority:'p0',deadline:overdue,status:'failed',tags:['risk']},
+      {id:'preview-failed-2',text:'Неотправленный follow-up по оплате',direction:'outgoing',person:'Финансы',priority:'p1',deadline:overdue,status:'failed',tags:['follow-up']}
+    ];
+  }
+  return [
+    {id:'preview-mixed-1',text:'Подготовить короткий QA пакет для GPT',direction:'outgoing',person:'Юрий',priority:'p1',deadline:today,status:'active',tags:['qa','preview']},
+    {id:'preview-mixed-2',text:'Ответить на комментарии по дашборду',direction:'incoming',person:'Алексей',priority:'p2',deadline:tomorrow,status:'active',tags:['team']},
+    {id:'preview-mixed-3',text:'Проверить светлую тему на карточках',direction:'outgoing',person:'Codex',priority:'p3',deadline:tomorrow,status:'active',tags:['ui']},
+    {id:'preview-mixed-4',text:'Закрыть утренний smoke',direction:'outgoing',person:'QA',priority:'p2',deadline:today,done:true,status:'done',doneAt:now-3600e3,tags:['smoke']}
+  ];
+}
+
+function applyDashboardPreviewTheme(){
+  const theme=getDashboardPreviewFlag('previewTheme','');
+  if(!theme)return;
+  try{
+    if(typeof applyTheme==='function')applyTheme(theme);
+    else document.documentElement.setAttribute('data-theme',theme);
+    document.documentElement.setAttribute('data-preview-theme',theme);
+    ['dark','light','system'].forEach(function(t){
+      const r=document.getElementById('radio-'+t);
+      if(r)r.className='radio-wrap'+(t===theme?' checked':'');
+    });
+  }catch(_err){}
+}
+
+function applyDashboardPreviewSubscriptionState(){
+  const mode=getDashboardPreviewFlag('previewUser','trial');
+  const nameEl=document.getElementById('plan-status-name');
+  const subEl=document.getElementById('plan-status-sub');
+  const badgeEl=document.getElementById('plan-status-badge');
+  const labels={
+    trial:['Trial','Preview trial: 14 days left','Trial'],
+    paid:['Premium','Preview paid account: active for 365 days','Active'],
+    expired:['Expired','Preview expired account: paywall visible','Expired'],
+    free:['Free','Preview free account: premium access locked','Free']
+  }[mode]||null;
+  if(!labels)return;
+  if(nameEl)nameEl.textContent=labels[0];
+  if(subEl)subEl.textContent=labels[1];
+  if(badgeEl){
+    badgeEl.textContent=labels[2];
+    badgeEl.className=(mode==='paid'||mode==='trial')?'plan-badge-active':'plan-badge-expired';
+  }
+  document.documentElement.setAttribute('data-preview-user',mode);
+}
+
+function renderDashboardPreviewApiError(){
+  allTasksCache=[];
+  const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
+  setText('focus-day-count','!');
+  setText('focus-day-noun','api');
+  setText('focus-day-text','Preview API error');
+  setText('focus-day-sub','Mock error state only; real API is not called by this flag');
+  setText('stat-done','—');
+  setText('stat-done-meta','mock error');
+  setText('stat-tasks','—');
+  setText('stat-tasks-meta','mock error');
+  setText('stat-promises','—');
+  setText('stat-promises-meta','mock error');
+  setText('stat-progress','0%');
+  setText('stat-progress-meta','mock error');
+  const arc=document.getElementById('progress-arc');
+  if(arc)arc.setAttribute('stroke-dashoffset','88');
+  const list=document.getElementById('home-task-list');
+  if(list){
+    list.classList.add('dash-tasks--empty');
+    list.innerHTML='<article class="dash-empty-card dash-glass"><h2>Preview API error</h2><p>Mocked API failure for visual QA. This state is enabled only by previewApi=error on previewDemo=dashboard hosts.</p></article>';
+  }
+  document.documentElement.setAttribute('data-preview-api','error');
+}
+
+function renderDashboardPreviewTasks(tasks){
+  const active=(tasks||[]).filter(t=>!t.done);
+  const done=(tasks||[]).filter(t=>t.done);
+  const outgoing=active.filter(t=>t.direction!=='incoming');
+  const incoming=active.filter(t=>t.direction==='incoming');
+  allTasksCache=tasks||[];
+  const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
+  setText('focus-day-count',String(outgoing.length+incoming.length));
+  setText('focus-day-noun','задач');
+  setText('focus-day-text',active.length?'Preview focus loaded':'Сегодня всё спокойно');
+  setText('focus-day-sub',active.length?'Mock tasks only for visual QA':'Добавь первую задачу, и я соберу фокус дня');
+  setText('stat-done',String(done.length));
+  setText('stat-done-meta',done.length?'закрыто в mock':'нет данных');
+  setText('stat-tasks',String(active.length));
+  setText('stat-tasks-meta',active.length?'активные mock':'спокойный день');
+  setText('stat-promises',String(incoming.length));
+  setText('stat-promises-meta',incoming.length?'ждут ответа':'без просрочек');
+  const total=Math.max(1,tasks.length);
+  const progress=Math.round((done.length/total)*100);
+  setText('stat-progress',progress+'%');
+  setText('stat-progress-meta','preview mock');
+  const arc=document.getElementById('progress-arc');
+  if(arc)arc.setAttribute('stroke-dashoffset',String(88-(88*progress/100)));
+  if(typeof updateHomeAiPlanner==='function')updateHomeAiPlanner({outgoing,incoming,done,all:tasks,raw:tasks});
+  if(typeof updateHomeDashboardList==='function')updateHomeDashboardList({outgoing,incoming});
+  document.documentElement.setAttribute('data-preview-tasks',getDashboardPreviewFlag('previewTasks','empty'));
+}
+
 function renderDashboardSubscriptionPreviewDemo(){
+  applyDashboardPreviewTheme();
+  applyDashboardPreviewSubscriptionState();
+  if(getDashboardPreviewFlag('previewApi','ok')==='error'){
+    renderDashboardPreviewApiError();
+    return;
+  }
+  const previewTasks=buildDashboardPreviewTasks();
+  if(previewTasks.length){
+    renderDashboardPreviewTasks(previewTasks);
+    return;
+  }
   const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
   setText('focus-day-count','0');
   setText('focus-day-noun','задач');
@@ -119,6 +277,8 @@ function openDashboardSubscriptionPreviewScreen(previewScreen){
     setTimeout(function(){
       try{
         if(typeof updateSubscriptionScreen==='function')updateSubscriptionScreen();
+        applyDashboardPreviewSubscriptionState();
+        applyDashboardPreviewTheme();
         var params=new URLSearchParams(location.search||'');
         if(params.get('previewScroll')==='plans'){
           var scroller=document.querySelector('#subscription .sub-scroll');
@@ -174,8 +334,7 @@ function openDashboardSubscriptionPreviewScreen(previewScreen){
 function tryDashboardSubscriptionPreviewLogin(email,pass){
   if(!isDashboardSubscriptionPreviewHost())return false;
   if(String(email||'').trim().toLowerCase()!=='preview-dashboard-20260718@example.com'||!String(pass||'').trim())return false;
-  const now=Date.now();
-  const user={id:'preview-dashboard-user',email:'preview-dashboard-20260718@example.com',name:'Юрий',plan:'trial',trialEndsAt:now+14*864e5,referralCode:'preview',entitlement:{status:'active',accessUntil:now+14*864e5,source:'preview',updatedAt:now}};
+  const user=buildDashboardPreviewUser();
   setLegacyToken('preview-dashboard-demo-token');
   localStorage.setItem(ONBOARD_K,'1');
   currentUser=user;
@@ -183,6 +342,7 @@ function tryDashboardSubscriptionPreviewLogin(email,pass){
   chatId='user_'+user.id;
   window.chatId=chatId;
   applyUserInfo();
+  applyDashboardPreviewTheme();
   let previewScreen='home';
   try{
     const params=new URLSearchParams(location.search||'');

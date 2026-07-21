@@ -1,5 +1,19 @@
 ## 2026-07-21
 
+### Dashboard preview state flags
+
+**What changed:** For `BRIEF-2026-07-20-23-preview-state-flags-for-qa`, added preview-only query flags in `scripts/auth-handlers.js`: `previewUser=trial|paid|expired|free`, `previewTasks=empty|mixed|done-failed`, `previewApi=ok|error`, and `previewTheme=light|dark`. The flags only work with `previewDemo=dashboard` on localhost or direct `*.4-ai-staging.pages.dev` preview hosts. They only alter mock user/task/API/theme visuals.
+
+**Encoding check:** `index.html` was not edited in this task; cp1251/mojibake guard passed with `0 suspicious tokens`.
+
+**Test:** `node --check scripts/auth-handlers.js`; `npm run smoke:home001` returned `"ok": true`; `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-ui-architecture.sh` (inline handlers `397 / 402`, inline scripts `3 / 3`); staged `node scripts/check-js-syntax.mjs` passed for `scripts/auth-handlers.js`; `git diff --cached --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-21
+
 ### ARCH-001 inline escape helper extraction
 
 **What changed:** For `BRIEF-2026-07-20-22-arch001-continue-split`, moved the pure inline `esc()` helper into `scripts/platform-adapter.js` as `escapeInlineHandlerValue(value)`. `index.html` still exposes the local `esc` alias for existing call sites, resolving through `PLATFORM.escapeInlineHandlerValue` with the previous implementation as fallback. No UI flow, payment, entitlement, auth-security, production, CAL, price, or secret logic was changed.

@@ -1,5 +1,15 @@
 ### 2026-07-21 - Codex
 
+**Task:** BRIEF-2026-07-20-23 - add preview-only state flags for GPT visual QA.
+**Result:** Added gated `previewUser`, `previewTasks`, `previewApi`, and `previewTheme` handling inside the existing dashboard preview layer; real runtime/payment/entitlement/auth-security paths are untouched.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Use a direct `*.4-ai-staging.pages.dev` deployment URL for GPT QA; shared staging alias intentionally ignores these flags.
+
+---
+
+### 2026-07-21 - Codex
+
 **Task:** BRIEF-2026-07-20-22 - continue ARCH-001 inline JS split.
 **Result:** Moved the inline `esc()` handler-value escape helper into `scripts/platform-adapter.js` as `escapeInlineHandlerValue()` with the old inline implementation kept as fallback; behavior unchanged.
 **Commit:** this commit

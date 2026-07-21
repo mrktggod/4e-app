@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - preview state flags
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-20-23-preview-state-flags-for-qa` marked `DONE`.
+- Result: added gated preview-only `previewUser`, `previewTasks`, `previewApi`, and `previewTheme` flags for GPT visual QA; production/shared staging/runtime entitlement/payment/auth paths are untouched.
+- Report: `pm/outbox/REPORT-BRIEF-2026-07-20-23-preview-state-flags-for-qa.md`.
+- Next: use a direct `*.4-ai-staging.pages.dev` deployment URL for the QA matrix; shared alias intentionally does not activate these flags.
+
 ## 2026-07-21 - Codex - ARCH-001 helper extraction
 
 - Branch: `feat/admin-tariff-api`.
