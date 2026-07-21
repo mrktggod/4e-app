@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-21 - Codex - daily runner pre-sync
+
+- Branch: `feat/admin-tariff-api`.
+- Sync: `git fetch` and `git pull --ff-only` completed after temporarily stashing local PM/documentation edits.
+- Result: resolved PM-doc conflicts from local manual QA notes versus fresh origin; preserved both sides and renumbered local collision IDs to `BUG-2026-07-21-005..008` and `BACK-064..066`.
+- Report: `pm/outbox/REPORT-4e-pm-inbox-daily-runner-presync-2026-07-21.md`.
+- Next: continue processing `pm/inbox` NEW briefs oldest-first; no production/main/payment/entitlement/CAL/secret work.
+
 ## 2026-07-21 - Codex - pre-dawn inbox/backlog runner
 
 - Branch: `feat/admin-tariff-api`.

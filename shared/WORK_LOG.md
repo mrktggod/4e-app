@@ -1,3 +1,13 @@
+### 2026-07-21 - Codex
+
+**Task:** 4e PM inbox daily runner pre-sync conflict resolution.
+**Result:** Preserved local PM/manual QA notes after fast-forward pull, resolved document conflicts, and renumbered local collision IDs to `BUG-2026-07-21-005..008` and `BACK-064..066`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue with NEW inbox briefs oldest-first on `feat/admin-tariff-api`.
+
+---
+
 ### 2026-07-21 — Codex
 
 **Задача:** BRIEF-2026-07-20-21 — закрыть автономную часть VIRAL share-card finish.
@@ -65,6 +75,76 @@
 > Сюда пишут все участники команды после завершения задачи.  
 > Формат: дата — агент — что сделано — статус.  
 > Детальный технический лог: `../DEVELOPMENT_LOG.md`
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Record autologin delay/login flicker bug.
+**Результат:** Added `BUG-2026-07-21-008` in `pm/bugs.md` and noted it in `pm/qa-results-2026-07-17.md`: with an existing authorization, the app briefly shows login / delays before entering the app. Expected behavior: skip login UI or show neutral splash while auth bootstrap completes.
+**Коммит:** N/A
+**Статус:** ⚠️ triaged / needs repro
+**Следующий шаг:** Reproduce on staging with saved session, measure time to home, then fix auth bootstrap/login-shell flicker.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Record Alexey's NEED-YURI/manual decision notes for redesign and voice.
+**Результат:** Updated `pm/qa-results-2026-07-17.md` and `pm/backlog.md`: redesign corrections are resolved in another chat per Alexey, so no new redesign decision was made here; voice is user-visible PASS / subjective because Alexey reports it works and he uses it constantly. `NEW-020` remains a technical perf-measurement tail only if raw latency numbers are still needed.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Keep focus on concrete blockers found in this QA pass: subscription button UI and red GitHub Pages deploy run.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Record Alexey's auth/avatar manual recheck.
+**Результат:** Updated `pm/qa-results-2026-07-17.md` and `pm/bugs.md`: wrong-password inline error is manually green once on staging (`ошибка видна`); avatar leak/persistence recheck is blocked because setting a new avatar now shows that the function is not working yet.
+**Коммит:** N/A
+**Статус:** ⚠️ partial / avatar blocked
+**Следующий шаг:** Repeat wrong-password check once more before closing `BUG-2026-07-20-001`; decide/fix avatar UI behavior separately before re-testing leak/persistence.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Record Alexey's manual release-readiness check.
+**Результат:** Updated `docs/tasks/MERGE-READINESS-2026-07-17.md` and `pm/qa-results-2026-07-17.md`: GitHub Actions are mostly green with one red `Deploy GitHub Pages #264` on `main` commit `7325c27`; production app opens; production tariff config opens; price looks normal.
+**Коммит:** N/A
+**Статус:** ⚠️ partial / release blocker remains
+**Следующий шаг:** Investigate the red GitHub Pages deploy run before any `main` merge/prod release decision.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Record Alexey's staging subscription button bug.
+**Результат:** Added `BUG-2026-07-21-007` in `pm/bugs.md` and marked `QA-PAY-001` as FAIL in `pm/qa-results-2026-07-17.md`: on `https://4-ai-staging.pages.dev/`, the subscription button does not work and does not open the page. No real payment was attempted.
+**Коммит:** N/A
+**Статус:** ⚠️ triaged / needs repro
+**Следующий шаг:** Reproduce in staging with console/network evidence, then fix the paywall/subscription button entrypoint.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Record Alexey's Telegram Mini App manual smoke.
+**Результат:** Updated `pm/qa-results-2026-07-17.md`, `docs/tasks/NEW-006-tma-safe-area-live-smoke.md`, and `docs/tasks/NEW-008-chat-keyboard-live-smoke.md`: Alexey reported `ТГ Mini App ок` after the requested Telegram Mini App AI-chat keyboard and bottom-nav/safe-area check. Payment/provider/OAuth gates remain Not run.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Decide whether to run share/PWA checks next or move toward beta go/no-go with remaining provider/payment gates explicitly out of scope.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Record Alexey's manual browser staging smoke.
+**Результат:** Updated `pm/qa-results-2026-07-17.md`: basic browser staging flow on `https://4-ai-staging.pages.dev/` is recorded as PASS for login/task-create/reload persistence based on Alexey's report. Telegram Mini App keyboard/safe-area and payment/provider/OAuth gates remain Not run.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Open the app through Telegram and check AI-chat keyboard plus bottom navigation/safe-area.
 
 ---
 
@@ -9455,3 +9535,61 @@
 **Коммит:** pending
 **Статус:** ✅ выполнено локально, smoke зелёный
 **Следующий шаг:** проверить branch preview с cache-bust после деплоя.
+
+**Задача:** Зафиксировать первую продиктованную идею Алексея для будущего backlog/roadmap triage.
+**Результат:** Создан черновик `pm/idea-capture-2026-07-21.md` с идеей использовать 4 как внутренний штаб разработки агентабота: задачи разработки, управление агентами, уведомления и лента событий.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** После диктовки остальных идей разложить черновики на задачи, backlog и roadmap через approval-gate.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Зафиксировать вторую продиктованную идею Алексея для будущего triage.
+**Результат:** В `pm/idea-capture-2026-07-21.md` добавлена идея отправки задач другим людям из Telegram-группы: roster участников, распознавание исполнителя по имени/mention/reply, проверка наличия приложения и fallback для неподключенных.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** При разборе идей сверить с `SMART-001/002/003/004` и выделить минимальный MVP назначения задач.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Зафиксировать и первично проверить баг с пропажей части истории чата.
+**Результат:** В `pm/bugs.md` добавлен `BUG-2026-07-21-005`. Первичный code read нашел вероятные причины: AI-чат и чат задачи ограничены 40 сообщениями, group chat полностью перерисовывается ответом `/messages`.
+**Коммит:** N/A
+**Статус:** ⚠️ частично / needs repro
+**Следующий шаг:** Уточнить, где именно пропала история: AI-чат, чат задачи или Telegram/group переписка; затем воспроизвести на staging.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Зафиксировать недоработку уведомлений: плохо видны, иногда не срабатывают, нужен звук/вибрация.
+**Результат:** В `pm/bugs.md` добавлен `BUG-2026-07-21-006`, в backlog добавлен `BACK-064`, создан task `docs/tasks/BACK-064-notification-salience-delivery-audit.md`, QA checklist расширен delivery/salience проверкой.
+**Коммит:** N/A
+**Статус:** ⚠️ triaged / needs staging device smoke
+**Следующий шаг:** Пройти staging-сценарий delivery -> badge/card -> Telegram sound/vibration -> Mini App haptic/fallback с raw evidence.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Зафиксировать доработку генерации читаемых заголовков задач из диктовки.
+**Результат:** В backlog добавлен `BACK-065`, создан task `docs/tasks/BACK-065-task-title-normalization.md`, QA checklist расширен проверкой title normalization.
+**Коммит:** N/A
+**Статус:** ⚠️ triaged / needs implementation
+**Следующий шаг:** Реализовать нормализацию `task.text` с сохранением полного исходника в `originalMsg`, затем проверить AI-chat, voice и quick-add сценарии.
+
+---
+
+### 2026-07-21 — Codex
+
+**Задача:** Зафиксировать VK-версию как потенциально самую стабильную продуктовую линию и добить functional parity.
+**Результат:** В backlog добавлен `BACK-066`, создан task `docs/tasks/BACK-066-vk-stable-line-functional-parity.md`, QA checklist расширен regression-зоной VK functional parity.
+**Коммит:** N/A
+**Статус:** ⚠️ triaged / needs parity audit
+**Следующий шаг:** Составить таблицу `index.html` vs `vk.html`, затем закрыть 3-5 самых заметных P1-дыр VK без оплаты и без большого ARCH-001 распила.
+
+---

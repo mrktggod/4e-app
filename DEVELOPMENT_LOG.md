@@ -1,5 +1,19 @@
 ## 2026-07-21
 
+### 4e PM inbox daily runner pre-sync
+
+**What changed:** Runtime code was not changed. After `git pull --ff-only` was blocked by local PM/documentation edits, the local work was stashed, origin was fast-forwarded, the stash was reapplied, and document conflicts were resolved. Upstream `BUG-2026-07-21-001..004` / `BACK-061..063` were preserved, while local manual QA/triage notes were renumbered to `BUG-2026-07-21-005..008` and `BACK-064..066`.
+
+**Encoding check:** `index.html` was not edited; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
+
+**Test:** `rg` conflict-marker check; `git diff --check`; `bash scripts/check-portable-paths.sh`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-21
+
 ### VIRAL share-card static smoke
 
 **Что сделано:** для `BRIEF-2026-07-20-21-viral-share-card-finish` добавлен `scripts/viral-share-card-smoke.mjs` и npm-script `smoke:viral-share`. Скрипт статически проверяет существующий runtime без изменения `index.html`: `buildDailyShareCardBlob()`, `buildWeeklySummaryCardBlob()`, `shareDailyCard()`, `shareWeeklySummaryCard()`, streak/achievements и weekly stats, PNG canvas 1080x1350, native share, download fallback и lite analytics events.
@@ -86,6 +100,104 @@
 
 > Р’РµРґСѓ СЏ (Cowork-РЅР°Р±Р»СЋРґР°С‚РµР»СЊ). РћР±РЅРѕРІР»СЏРµС‚СЃСЏ РїРѕСЃР»Рµ РєР°Р¶РґРѕРіРѕ Р·РЅР°С‡РёРјРѕРіРѕ РёР·РјРµРЅРµРЅРёСЏ.
 > РњРёРјРѕ Рё Codex РґРѕРїРёСЃС‹РІР°СЋС‚ СЂР°Р·РґРµР» РїРѕСЃР»Рµ РєР°Р¶РґРѕР№ РІС‹РїРѕР»РЅРµРЅРЅРѕР№ Р·Р°РґР°С‡Рё.
+
+---
+
+## 2026-07-21 - Autologin delay bug
+
+### BUG-2026-07-21-008 login flicker before authorized app entry
+
+**What changed:** Runtime code was not changed. `pm/bugs.md` now tracks `BUG-2026-07-21-008`: with an existing authorization, the app has a small delay between autologin and app entry, and may briefly show the login screen. `pm/qa-results-2026-07-17.md` records it as a new auth-shell bug.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** User report by Alexey in chat; runtime reproduction still needed with a saved staging session and timing evidence.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-21 - NEED-YURI manual notes
+
+### Redesign resolved elsewhere, voice user-visible pass
+
+**What changed:** Runtime code was not changed. `pm/qa-results-2026-07-17.md` records Alexey's note that redesign corrections were handled in another chat and should be treated as resolved outside this manual-QA thread. `pm/backlog.md` records that voice works for Alexey and he uses it constantly; `NEW-020` remains only as an optional technical perf-breakdown tail if raw `__voicePerfLast` numbers are still required.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual report by Alexey in chat: redesign had many corrections in another chat and is resolved; voice works and is used constantly.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-21 - Auth/avatar manual recheck
+
+### Wrong password green once, avatar blocked
+
+**What changed:** Runtime code was not changed. `pm/qa-results-2026-07-17.md` now records `QA-AUTH-004` as PASS from Alexey's manual staging check: `Неверный пароль: ошибка видна`. `pm/bugs.md` was updated so `BUG-2026-07-20-001` is `Ready for QA / manually green once`; avatar bugs `BUG-2026-07-20-002` and `BUG-2026-07-20-003` remain blocked because Alexey reported that setting a new avatar says the function is not working yet.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual staging report by Alexey in chat: wrong-password error is visible; new avatar cannot be set because the app says the function is not working yet.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-21 - Manual release-readiness check
+
+### Production reachability and GitHub Actions snapshot
+
+**What changed:** Runtime code was not changed. `docs/tasks/MERGE-READINESS-2026-07-17.md` and `pm/qa-results-2026-07-17.md` now record Alexey's manual release-readiness snapshot: Actions are mostly green with one red `Deploy GitHub Pages #264` on `main` commit `7325c27`; production app opens; production tariff config opens; price looks normal.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual report and screenshot from Alexey: `Actions: зеленые и один красный`, `Prod app: открывается`, `Prod tariff: открывается`, `Цена: норм`.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-21 - Subscription button staging bug
+
+### BUG-2026-07-21-007 payment UI entrypoint
+
+**What changed:** Runtime code was not changed. `pm/bugs.md` now tracks `BUG-2026-07-21-007`: on `https://4-ai-staging.pages.dev/`, the subscription button does not work and does not open the page. `pm/qa-results-2026-07-17.md` marks `QA-PAY-001` as FAIL for this payment UI entrypoint. No real payment/provider flow was attempted.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual staging report by Alexey in chat: "кнопка подписки не работает не открывает страницу" on `https://4-ai-staging.pages.dev/`.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-21 - Telegram Mini App manual smoke
+
+### NEW-006 / NEW-008 live phone check
+
+**What changed:** Runtime code was not changed. `pm/qa-results-2026-07-17.md`, `docs/tasks/NEW-006-tma-safe-area-live-smoke.md`, and `docs/tasks/NEW-008-chat-keyboard-live-smoke.md` now record Alexey's Telegram Mini App report: `ТГ Mini App ок`. The evidence is scoped to the requested AI-chat keyboard and bottom-nav/safe-area phone check; payment/provider/OAuth gates remain Not run.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual Telegram Mini App smoke reported by Alexey in chat: `ТГ Mini App ок`.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-21 - Manual browser staging smoke
+
+### Alexey basic staging check
+
+**What changed:** Runtime code was not changed. `pm/qa-results-2026-07-17.md` now records Alexey's manual browser report for `https://4-ai-staging.pages.dev/` as PASS for the basic login/task-create/reload persistence flow. Telegram Mini App safe-area/keyboard and payment/provider/OAuth gates remain Not run.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual browser smoke reported by Alexey in chat: "все ок".
+
+**Commit:** N/A
 
 ---
 
@@ -1727,3 +1839,81 @@
 **Тест:** `npm run build:css`; `npm run smoke:home001` → ok=true, homeRows=3, metricCards=4, bottomNavButtons=3, documentScrollWidth=390; визуально проверен light smoke screenshot.
 
 **Коммит:** pending
+
+## 2026-07-21 - Idea capture
+
+### Internal agentbot development command center
+
+**Что сделано:** Код приложения не менялся. Создан черновик `pm/idea-capture-2026-07-21.md` с первой продиктованной идеей Алексея: использовать 4 как внутренний штаб разработки агентабота, где можно вести задачи разработки, управлять агентами и получать уведомления о работе агентов в аккаунт.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** Документальная проверка связки с текущими PM-файлами; идея оставлена как raw idea, без изменения `pm/backlog.md` и `shared/ROADMAP.md` до согласования.
+
+**Коммит:** N/A
+
+### Telegram group task assignment idea
+
+**Что сделано:** В тот же черновик `pm/idea-capture-2026-07-21.md` добавлена вторая идея Алексея: отправка задач другим людям из Telegram-группы через roster участников, распознавание исполнителя по имени/mention/reply, проверку наличия приложения/аккаунта 4 и fallback для неподключенных исполнителей.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** Документальная проверка; идея оставлена как raw idea и связана с уже существующими направлениями `SMART-001/002/003/004`, без изменения backlog/roadmap до triage.
+
+**Коммит:** N/A
+
+## 2026-07-21 - Chat history disappearance bug triage
+
+### BUG-2026-07-21-005: часть истории чата пропадает
+
+**Что сделано:** Код приложения не менялся. В `pm/bugs.md` заведен `BUG-2026-07-21-005` по сообщению Алексея: "стерлась часть чата, пропала просто". Выполнен первичный code read по трем поверхностям: AI-чат `ask`, чат задачи и Telegram/group `chat-conv`.
+
+**Первичные кандидаты root cause:** AI-чат ограничен `ASK_HISTORY_MAX = 40` и режет локальную историю через `trimAskHistory()` / `sessionStorage`, remote load также запрашивает `/ai/messages?limit=40`; task chat грузит только `limit=40`; group chat при poll полностью перерисовывает список тем, что вернул `/messages?chatId=...`.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** `rg` и узкое чтение диапазонов `index.html` вокруг `loadAskHistoryRemote`, `loadTaskChat`, `loadConvMessages`, `renderRealMessages`; runtime-воспроизведение пока не выполнялось, нужны поверхность и шаги.
+
+**Коммит:** N/A
+
+## 2026-07-21 - Notification salience triage
+
+### BACK-064 / BUG-2026-07-21-006: уведомления должны быть заметными и надежными
+
+**Что сделано:** Код приложения не менялся. По сообщению Алексея заведён `BUG-2026-07-21-006`: уведомления есть, но их плохо видно и они иногда не срабатывают. Создан task `docs/tasks/BACK-064-notification-salience-delivery-audit.md`, добавлена строка `BACK-064` в `pm/backlog.md` и отдельная QA-зона в `pm/qa-checklist.md`.
+
+**Контекст:** `BACK-055` уже закрывал action-feed и карточки уведомлений, но не доказывал реальную доставку, звук, вибрацию и заметность сигнала. `BACK-017` покрывает delivery smoke; `BACK-064` расширяет его до полного user-visible сигнала.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** `rg` по notification/haptic/sound/vibration, чтение `BACK-055`, `BACK-017`, `pm/qa-checklist.md` и `scripts/task-ui-renderers.js` notification area. Runtime smoke пока не выполнялся: для Done нужен staging device smoke с raw evidence.
+
+**Коммит:** N/A
+
+## 2026-07-21 - Task title normalization triage
+
+### BACK-065: читаемые заголовки задач из диктовки
+
+**Что сделано:** Код приложения не менялся. По сообщению Алексея заведена задача `docs/tasks/BACK-065-task-title-normalization.md`: заголовок задачи должен быть коротким и читаемым, а не сырой фразой из диктовки вроде "я придумать на платформе". В `pm/backlog.md` добавлен `BACK-065`, в `pm/qa-checklist.md` добавлена QA-зона для проверки нормализации заголовков.
+
+**Контекст:** Первичный code read показал, что сейчас `fallbackTaskFromText()` и `formatTaskIntentTitle()` в `index.html` в основном чистят вводные слова и капитализируют строку, а `scripts/task-ui-renderers.js:getTaskCardTitle()` показывает `task.text` как основной заголовок. Для полноценного результата нужен отдельный helper/AI-contract: `task.text` как нормализованный заголовок, `originalMsg` как полный исходный текст.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** Документальный triage и code read зон `formatTaskIntentTitle`, `fallbackTaskFromText`, `createTaskFromChat`, `sendVoiceMessage`, `submitQuickAdd`, `getTaskCardTitle`. Runtime-тест не выполнялся, потому что реализация пока не начата.
+
+**Коммит:** N/A
+
+## 2026-07-21 - VK stable line triage
+
+### BACK-066: VK-версия как стабильная продуктовая линия
+
+**Что сделано:** Код приложения не менялся. По сообщению Алексея заведена задача `docs/tasks/BACK-066-vk-stable-line-functional-parity.md`: VK-версия логинится и на телефоне/browser shell работает стабильнее остальных поверхностей, поэтому ее нужно добить по функционалу и использовать как наиболее стабильную линию. В `pm/backlog.md` добавлен `BACK-066`, в `pm/qa-checklist.md` добавлена regression-зона `VK stable line / Functional parity`.
+
+**Контекст:** Roadmap уже фиксирует VK-инфраструктуру как рабочую (`INFRA-004`, `INFRA-005`) и `FILE_MAP_UI.md` показывает, что `vk.html` содержит отдельную урезанную поверхность: auth, tasks, task detail, AI chat, calendar, stats. `BACK-066` не включает VK Pay/payment, production deploy или большой `ARCH-001` распил; первый шаг — parity-аудит `index.html` vs `vk.html`.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** `rg` по VK/VK Mini/vk.html в roadmap/backlog/tasks, чтение `FILE_MAP_UI.md` диапазонов `vk.html`. Runtime-smoke не выполнялся, потому что задача пока заведена как triage/plan.
+
+**Коммит:** N/A

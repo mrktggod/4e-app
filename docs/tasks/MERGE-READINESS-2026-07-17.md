@@ -11,6 +11,19 @@ Not ready for merge to `main` or production cutover yet.
 
 The staging API layer is healthy, but there are release blockers that should be resolved before production: production secret naming mismatch for Anthropic, failing worker deploy CI on `main`, and an unresolved tariff year-price mismatch versus the expected product value.
 
+## Manual check — 2026-07-21
+
+Alexey checked the visible release surfaces manually:
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| GitHub Actions overview | PARTIAL | Actions mostly green, but one red run is visible: `Deploy GitHub Pages #264`, commit `7325c27`, on `main`; nearby `Mojibake Check #110` for commit `614d7c2` is green. |
+| Production app | PASS | `https://app.4-ai.site/` opens. |
+| Production tariff config | PASS | `https://edge.4-ai.site/tariff-config` opens. |
+| Price visual check | PASS | Alexey reported the price looks normal. |
+
+This improves confidence that production is currently reachable, but does not clear the merge/prod gate while a red deploy run and the blocker list below remain unresolved.
+
 ## Blockers
 
 | Blocker | Severity | Evidence | Required action |

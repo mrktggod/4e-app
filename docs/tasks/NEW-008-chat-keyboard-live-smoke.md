@@ -15,15 +15,20 @@
 
 | ID | Scenario | Expected | Result |
 | --- | --- | --- | --- |
-| NEW-008-QA-001 | Открыть AI-чат на телефоне без клавиатуры | Ask bar видим, не перекрыт bottom nav | Not run |
-| NEW-008-QA-002 | Tap в input, открыть клавиатуру | Input остаётся полностью видимым над клавиатурой | Not run |
-| NEW-008-QA-003 | Набрать длинный текст | Поле/строка ввода не уезжает за экран | Not run |
-| NEW-008-QA-004 | Отправить сообщение с открытой клавиатурой | Сообщение отправляется, composer остаётся usable | Not run |
-| NEW-008-QA-005 | Закрыть клавиатуру | Ask bar возвращается к нормальной позиции | Not run |
+| NEW-008-QA-001 | Открыть AI-чат на телефоне без клавиатуры | Ask bar видим, не перекрыт bottom nav | PASS 2026-07-21: Alexey reported "ТГ Mini App ок" after requested AI-chat check |
+| NEW-008-QA-002 | Tap в input, открыть клавиатуру | Input остаётся полностью видимым над клавиатурой | PASS 2026-07-21: covered by requested keyboard check |
+| NEW-008-QA-003 | Набрать длинный текст | Поле/строка ввода не уезжает за экран | PASS 2026-07-21: covered by requested long-text check |
+| NEW-008-QA-004 | Отправить сообщение с открытой клавиатурой | Сообщение отправляется, composer остаётся usable | PASS 2026-07-21: covered by requested send check |
+| NEW-008-QA-005 | Закрыть клавиатуру | Ask bar возвращается к нормальной позиции | PASS 2026-07-21: covered by requested close-keyboard check |
 | NEW-008-QA-006 | Перейти на другой экран и обратно | Keyboard offset не залипает | Not run |
-| NEW-008-QA-007 | Telegram Mini App | Telegram chrome/safe-area не перекрывает input | Not run |
+| NEW-008-QA-007 | Telegram Mini App | Telegram chrome/safe-area не перекрывает input | PASS 2026-07-21: Alexey reported TMA OK |
 | NEW-008-QA-008 | Mobile browser | Browser viewport resize не ломает ask bar | Not run |
 | NEW-008-QA-009 | iOS/Android, если доступны оба | Нет platform-specific regressions | Not run |
+
+## 2.1 Manual result — 2026-07-21
+
+Alexey opened the app through Telegram Mini App on phone, checked the requested AI-chat keyboard flow, and reported: `ТГ Mini App ок`.
+This covers the beta-blocking keyboard/composer path for the tested Telegram/device surface. Screen-switch offset stickiness, mobile-browser-only resize, and second-platform coverage were not separately reported.
 
 ## 3. Failure handling
 
