@@ -1,5 +1,20 @@
 ## 2026-07-21
 
+### Production Worker Static Assets deploy for redesign
+
+**Что сделано:** после успешного merge/push в `main` и Cloudflare Pages deploy обнаружено, что боевой `pp.4-ai.site` обслуживается не Pages custom domain, а Worker Static Assets из `wrangler.toml` (`4-ai-app-worker`, routes `pp.4-ai.site` и `pp.4-ai.site/*`). Выполнен production `
+pm run build:worker-assets` и `
+px wrangler deploy`.
+
+**Проверка кодировки:** 106 совпадений после merge-resolve и перед деплоем.
+
+**Тест:** production artifact содержит `https://edge.4-ai.site` и не содержит `4-ai-staging.pages.dev`, `workers.dev`, `design-part3-handoff.js`. Live `https://app.4-ai.site/sw.js` содержит `prod-redesign-2026-07-21`; live HTML содержит `dash-artboard`, `detail-redesign-shell`, `profile-handoff-shell` и не содержит staging marker / Part 3 script.
+
+**Деплой:** `4-ai-app-worker` version `6aeffdda-4ab0-476c-892b-0ee0725fea4d`.
+
+**Коммит:** pending
+## 2026-07-21
+
 ### Production redesign release guard
 
 **Что сделано:** при production-сборке `scripts/build-pages-whitelist.mjs` заменяет staging-host marker `4-ai-staging.pages.dev` на disabled marker, чтобы GitHub Pages deploy guard не блокировал релиз из-за preview-only логики в `index.html`.

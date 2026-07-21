@@ -1,5 +1,13 @@
 ### 2026-07-21 — Codex
 
+**Задача:** довести production deploy redesign до реального домена app.4-ai.site.
+**Результат:** выяснено, что app.4-ai.site обслуживается Worker Static Assets route `4-ai-app-worker`, а не Cloudflare Pages custom domain. Выполнен production build и `
+px wrangler deploy`; route `pp.4-ai.site` / `pp.4-ai.site/*` обновлён до Worker version `6aeffdda-4ab0-476c-892b-0ee0725fea4d`. Live proof: `/sw.js` содержит `prod-redesign-2026-07-21`, HTML содержит `dash-artboard`/`detail-redesign-shell`/`profile-handoff-shell`, не содержит staging marker и Part 3 script.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** Юрию проверить app.4-ai.site в браузере с обновлением service worker/cache.
+### 2026-07-21 — Codex
+
 **Задача:** выкатить согласованный redesign-срез в production.
 **Результат:** `feat/admin-tariff-api` объединена с актуальным `origin/main`; добавлен production build guard fix, чтобы artifact не содержал staging-host marker `4-ai-staging.pages.dev`.
 **Коммит:** `5bab618`
