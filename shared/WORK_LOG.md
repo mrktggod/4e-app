@@ -1,5 +1,15 @@
 ### 2026-07-21 — Codex
 
+**Задача:** закрыть `BACK-061` — legal-link на политику в auth/register не открывал документ.
+**Результат:** в `index.html` обе auth/onboarding ссылки на `privacy.html` получили `data-privacy-policy-link` и явный обработчик `openPrivacyPolicy()`: Telegram WebApp открывает документ через `openLink`, обычный браузер — через `window.open`, с fallback на текущую вкладку. `pm/backlog.md` и `pm/bugs.md` переведены в `Ready for QA`.
+**Коммит:** `this commit`
+**Статус:** ✅ выполнено
+**Следующий шаг:** QA-клик по `Политикой конфиденциальности` на login/register/onboarding после staging/prod artifact.
+
+---
+
+### 2026-07-21 — Codex
+
 **Задача:** актуализировать PM-файлы по публичному smoke-аудиту QA-001.
 **Результат:** draft PR https://github.com/mrktggod/qb2b/pull/1 разобран как внешний QA-отчёт: публичная часть app.4-ai.site проверена частично, post-auth/mobile/payment/TMA не покрыты. Находки заведены в `pm/bugs.md` как `BUG-2026-07-21-001..004`, а в `pm/backlog.md` добавлены `BACK-061..063` и строка `QA-001`.
 **Коммит:** `this commit`

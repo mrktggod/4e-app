@@ -1,5 +1,17 @@
 ## 2026-07-21
 
+### BACK-061 auth legal privacy link
+
+**Что сделано:** в `index.html` ссылки `Политикой конфиденциальности` на onboarding и login/register получили явный `data-privacy-policy-link` binding. Добавлены `openPrivacyPolicy()` и `bindPrivacyPolicyLinks()`: в Telegram WebApp используется `Telegram.WebApp.openLink`, в обычном браузере `window.open('privacy.html')`, при блокировке popup — переход текущей вкладки. PM-контур обновлён: `BACK-061` и `BUG-2026-07-21-001` переведены в `Ready for QA`.
+
+**Проверка кодировки:** до правки 106 совпадений по `Войти|Задачи|Сегодня`; после правки 106 совпадений.
+
+**Тест:** перед commit запустить `node scripts/check-cp1251-mojibake.mjs`, `node scripts/check-js-syntax.mjs`, `git diff --check`, `bash scripts/check-portable-paths.sh`, `bash scripts/check-ui-architecture.sh`.
+
+**Коммит:** `this commit`
+
+## 2026-07-21
+
 ### QA-001 public smoke audit triage
 
 **Что сделано:** внешний draft PR https://github.com/mrktggod/qb2b/pull/1 разобран и перенесён в PM-контур проекта. В `pm/bugs.md` добавлены четыре подтверждённые/продуктовые находки: privacy-link click, contrast, touch targets, desktop-public-shell decision. В `pm/backlog.md` добавлены `BACK-061`, `BACK-062`, `BACK-063` и строка `QA-001`. Также исправлена повреждённая запись WORK_LOG/DEVELOPMENT_LOG по production Worker Static Assets deploy без изменения кода приложения.

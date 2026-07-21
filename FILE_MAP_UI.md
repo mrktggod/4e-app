@@ -8,8 +8,8 @@
 | --- | --- | --- |
 | 1-23 | Head scripts and stylesheet | Telegram SDK, VK bridge, marked, `styles.min.css` |
 | 24-1841 | HTML screens and overlays | Все экраны приложения и overlays |
-| 1842-8274 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
-| 8275-8449 | Biometric consent patch | Screen `biometric-consent`, CSS, localStorage consent gate for voice input |
+| 1842--1 | JavaScript | Auth, задачи, AI-чат, календарь, профиль, privacy, lock, chats, VK adapter |
+| 0-8592 | Biometric consent patch | Screen `biometric-consent`, CSS, localStorage consent gate for voice input |
 
 ### HTML screens
 
@@ -52,7 +52,7 @@
 | 1640 | `task-move` | Перенос задачи |
 | 1657 | `task-done` | Завершение задачи |
 | 1671 | `voice` | Голосовой режим |
-| 8284 | `biometric-consent` | Согласие на обработку голоса по 152-ФЗ |
+| 8426 | `biometric-consent` | Согласие на обработку голоса по 152-ФЗ |
 
 ### JavaScript ranges
 
@@ -69,9 +69,9 @@
 | 5431-5678 | Subscreens, privacy API, notification prefs | `_showSubScreenBase`, `loadPrivacyCenter`, `loadNotificationSettings`, `saveNotifPref` |
 | 5678-5822 | Settings | `savePassword`, `applyTheme`, `setThemeChoice`, `setLanguage`, `filterFaq` |
 | 5842-6193 | App lock and password reset | `showLockScreen`, `tryBiometric`, `registerBiometric`, `doForgotPassword`, `doResetPassword` |
-| 6897-8234 | Subscreens, settings, app lock, password reset, chats and messages | `_showSubScreenBase`, `savePassword`, `showLockScreen`, `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
-| 8235-8274 | Task detail soft-glass helpers | `appendDetailHistoryMessage`, detail popover/status/checklist helpers |
-| 8402-8449 | Biometric consent JS | `biometricConsentRequired`, `revokeBiometricConsent`, checkbox enablement |
+| 6897-8376 | Subscreens, settings, app lock, password reset, chats and messages | `_showSubScreenBase`, `openPrivacyPolicy`, `bindPrivacyPolicyLinks`, `savePassword`, `showLockScreen`, `openChats`, `loadChatsList`, `openConv`, `loadConvMessages`, `convSend`, `quickDoneTask` |
+| 8377--1 | Task detail soft-glass helpers | `appendDetailHistoryMessage`, detail popover/status/checklist helpers |
+| 0-8592 | Biometric consent JS | `biometricConsentRequired`, `revokeBiometricConsent`, checkbox enablement |
 
 ## `vk.html` — VK Mini App
 

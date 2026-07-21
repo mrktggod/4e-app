@@ -198,7 +198,7 @@ if('serviceWorker' in navigator){
         <div class="ob-dot-nav" id="obn-3" onclick="obGoTo(3)"></div>
       </div>
       <button class="ob-btn" id="ob-btn" onclick="obNext()">Далее</button>
-      <p style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin:12px auto 0;max-width:320px">Продолжая, вы подтверждаете ознакомление с <a href="privacy.html" target="_blank" style="color:var(--green);text-decoration:none">Политикой конфиденциальности</a></p>
+      <p style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin:12px auto 0;max-width:320px">Продолжая, вы подтверждаете ознакомление с <a href="privacy.html" target="_blank" rel="noopener noreferrer" data-privacy-policy-link style="color:var(--green);text-decoration:none">Политикой конфиденциальности</a></p>
       <div class="ob-skip" onclick="obSkip()">Пропустить</div>
     </div>
   </div>
@@ -322,7 +322,7 @@ if('serviceWorker' in navigator){
       <button class="login-oauth-btn login-oauth-btn--vk" id="login-vk-id-btn" type="button">Войти через VK ID</button>
       <button class="login-oauth-btn login-oauth-btn--yandex" id="login-yandex-id-btn" type="button">Войти через Яндекс ID</button>
     </div>
-    <p class="legal-note" style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin:14px 0 0;max-width:320px">Нажимая «Войти» или «Создать аккаунт», вы соглашаетесь с <a href="privacy.html" target="_blank" style="color:var(--green);text-decoration:none">Политикой конфиденциальности</a></p>
+    <p class="legal-note" style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin:14px 0 0;max-width:320px">Нажимая «Войти» или «Создать аккаунт», вы соглашаетесь с <a href="privacy.html" target="_blank" rel="noopener noreferrer" data-privacy-policy-link style="color:var(--green);text-decoration:none">Политикой конфиденциальности</a></p>
   </div>
 </div>
 
@@ -7002,6 +7002,25 @@ function _showSubScreenBase(id){
   if(id==='profile') setNavActive('profile');
 }
 
+function openPrivacyPolicy(event){
+  if(event) event.preventDefault();
+  const url=new URL('privacy.html',window.location.href).toString();
+  try{
+    const tg=window.Telegram?.WebApp;
+    if(tg&&typeof tg.openLink==='function'){
+      tg.openLink(url);
+      return;
+    }
+  }catch(e){}
+  const opened=window.open(url,'_blank','noopener,noreferrer');
+  if(!opened) window.location.href=url;
+}
+function bindPrivacyPolicyLinks(){
+  document.querySelectorAll('[data-privacy-policy-link]').forEach(link=>{
+    link.addEventListener('click',openPrivacyPolicy);
+  });
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   window.FourTmaDiagnostics?.mark?.('app-domcontentloaded-start');
   try{
@@ -7058,6 +7077,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       }
     });
   }
+  bindPrivacyPolicyLinks();
   const bindProfileMenuItems = PLATFORM.bindProfileMenuItems;
   const bindProfileMenu = typeof bindProfileMenuItems === 'function'
     ? bindProfileMenuItems.bind(PLATFORM, bindClick)
