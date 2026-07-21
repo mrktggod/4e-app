@@ -9337,3 +9337,11 @@
 **Коммит:** pending
 **Статус:** ✅ выполнено
 **Следующий шаг:** Remaining open items need manual/device/provider/auth/payment/CAL/product gates or Claude/Yuri decisions.
+
+### 2026-07-21 — Codex
+
+**Задача:** Morning safe backlog docs status sync
+**Результат:** Inbox had no NEW briefs; synced stale `BACK-044` and `INFRA-005` task-file statuses to canonical backlog/roadmap `Done` state.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** Remaining open items need manual/device/provider/auth/payment/CAL/product gates or Claude/Yuri decisions.

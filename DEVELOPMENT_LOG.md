@@ -1569,3 +1569,13 @@
 **Test:** `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
 
 **Commit:** pending
+
+### Morning safe backlog docs status sync
+
+**What changed:** Scanned `pm/inbox` and found no `status: NEW` briefs. Synchronized stale task-file statuses for `BACK-044` and `INFRA-005` with canonical `pm/backlog.md` / `shared/ROADMAP.md` state and added the matching outbox report.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** pending

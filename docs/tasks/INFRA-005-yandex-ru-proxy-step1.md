@@ -4,10 +4,12 @@
 **Владелец:** Codex + Алексей  
 **Тип:** Infra  
 **Приоритет:** P0  
-**Статус:** In Progress  
+**Статус:** Done
 **Рекомендуемая ветка:** `feat/infra-005-yandex-ru-proxy-step1`
 
 **Факт 2026-07-11:** gateway создан в Yandex Cloud как `ai-ru-proxy`, домен `https://d5dg7uthvqp4ebomg3rl.ccx97b51.apigw.yandexcloud.net`. VK artifact собирается с этим `VK_API_BASE_URL`; version `1783760421` загружена в VK hosting, dev URLs обновлены на `https://stage-app54636698-6d0441567e74.pages.vk-apps.com/index.html`. Production deploy ждёт ручной confirm code из VK Administration.
+
+**Статус 2026-07-21:** `pm/backlog.md` и `shared/ROADMAP.md` уже фиксируют `INFRA-005` как `Done`: gateway `ai-ru-proxy` используется как `VK_API_BASE_URL`, VK deploy version `1783968473` прошёл manual Administration confirm, Юрий подтвердил живой VK phone-smoke без VPN. Этот task-файл синхронизирован с каноническим PM-статусом без infra/deploy/runtime изменений.
 
 ## Контекст
 
