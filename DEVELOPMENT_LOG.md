@@ -1533,7 +1533,7 @@
 
 **Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
 
-**Commit:** pending
+**Commit:** `2230a25b8eacf4a5ee238ed295254e55afcb754e`
 
 ### Part 3 handoff route for notification settings
 
@@ -1661,4 +1661,14 @@
 
 **Test:** Local Chrome/CDP smoke verified all six preview URLs (`dashboard`, `task-detail`, `profile`, `subscription`, `chats`, `chat-conv`) open the expected screen with preview token and that internal preview navigation stays on `chats>task-detail`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
 
-**Commit:** `0217f77bdcf1662c6d8d39b50bd5e216eaa3bede`
+**Commit:** `f26b3d46d6a3acff7038df35e5e5dc6ae76293ab`
+
+### Auth password inline error lookup
+
+**What changed:** Updated `scripts/auth.js` fallback field-error lookup to use `document.getElementById(fieldId + '-error')` before the older parent `.form-error` search, so password-wrapper fields can render inline errors.
+
+**Encoding check:** `index.html` was not edited in this task.
+
+**Test:** `npm run smoke:auth-avatar` against local checkout + staging worker showed `wrongPasswordUi.passError="Неверный email или пароль"`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending

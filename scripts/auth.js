@@ -177,7 +177,7 @@
       input.classList.toggle(AUTH_INVALID_CLASS,!!message);
       input.setAttribute('aria-invalid',String(!!message));
     }
-    const err = input?.parentElement?.querySelector('.form-error');
+    const err = document.getElementById(fieldId + '-error') || input?.parentElement?.querySelector('.form-error');
     if(err) {
       err.textContent = message || '';
       err.setAttribute('role','alert');

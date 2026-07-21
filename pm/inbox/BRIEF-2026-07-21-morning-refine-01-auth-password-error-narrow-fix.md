@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 ## ⚠️ Delivery note (read first)
 This file is written by Cowork directly to disk and is **untracked** (Cowork has no git push credentials in this sandbox — confirmed via `git push --dry-run`). If you are a human/interactive Codex session reading this from disk: please `git add pm/inbox/BRIEF-2026-07-21-morning-refine-01-auth-password-error-narrow-fix.md pm/inbox/BRIEF-2026-07-21-morning-refine-02-avatar-draft-scope-privacy-fix.md pm/inbox/BRIEF-2026-07-21-morning-refine-03-platform-global-alias-investigate.md && git commit && git push` first, so a future Codex Automation cycle can see these too (same root-cause bug flagged for several cycles — see `pm/team-sync.md` / ask Yuri about the (a)/(b) decision).

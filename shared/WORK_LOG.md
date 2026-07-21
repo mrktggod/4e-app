@@ -9408,3 +9408,11 @@
 **Коммит:** `f26b3d46d6a3acff7038df35e5e5dc6ae76293ab`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Continue with morning refine auth password error brief.
+
+### 2026-07-21 — Codex
+
+**Задача:** BRIEF-2026-07-21 auth password inline error
+**Результат:** Wrong-password login now renders the API error under the password field via direct `login-pass-error` lookup.
+**Коммит:** `2230a25b8eacf4a5ee238ed295254e55afcb754e`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Continue with avatar draft scoping privacy fix.
