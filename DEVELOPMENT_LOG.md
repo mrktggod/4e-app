@@ -1,10 +1,20 @@
 ## 2026-07-21
 
+### QA-001 public smoke audit triage
+
+**Что сделано:** внешний draft PR https://github.com/mrktggod/qb2b/pull/1 разобран и перенесён в PM-контур проекта. В `pm/bugs.md` добавлены четыре подтверждённые/продуктовые находки: privacy-link click, contrast, touch targets, desktop-public-shell decision. В `pm/backlog.md` добавлены `BACK-061`, `BACK-062`, `BACK-063` и строка `QA-001`. Также исправлена повреждённая запись WORK_LOG/DEVELOPMENT_LOG по production Worker Static Assets deploy без изменения кода приложения.
+
+**Проверка кодировки:** index.html не изменялся; проверка не применялась.
+
+**Тест:** PM-only правка; перед commit запустить `node scripts/check-cp1251-mojibake.mjs`, `git diff --check`, `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** `this commit`
+
+## 2026-07-21
+
 ### Production Worker Static Assets deploy for redesign
 
-**Что сделано:** после успешного merge/push в `main` и Cloudflare Pages deploy обнаружено, что боевой `pp.4-ai.site` обслуживается не Pages custom domain, а Worker Static Assets из `wrangler.toml` (`4-ai-app-worker`, routes `pp.4-ai.site` и `pp.4-ai.site/*`). Выполнен production `
-pm run build:worker-assets` и `
-px wrangler deploy`.
+**Что сделано:** после успешного merge/push в `main` и Cloudflare Pages deploy обнаружено, что боевой `app.4-ai.site` обслуживается не Pages custom domain, а Worker Static Assets из `wrangler.toml` (`4-ai-app-worker`, routes `app.4-ai.site` и `app.4-ai.site/*`). Выполнен production `npm run build:worker-assets` и `npx wrangler deploy`.
 
 **Проверка кодировки:** 106 совпадений после merge-resolve и перед деплоем.
 
@@ -12,7 +22,8 @@ px wrangler deploy`.
 
 **Деплой:** `4-ai-app-worker` version `6aeffdda-4ab0-476c-892b-0ee0725fea4d`.
 
-**Коммит:** pending
+**Коммит:** `57ae1b4`
+
 ## 2026-07-21
 
 ### Production redesign release guard

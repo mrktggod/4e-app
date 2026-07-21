@@ -1,11 +1,21 @@
 ### 2026-07-21 — Codex
 
+**Задача:** актуализировать PM-файлы по публичному smoke-аудиту QA-001.
+**Результат:** draft PR https://github.com/mrktggod/qb2b/pull/1 разобран как внешний QA-отчёт: публичная часть app.4-ai.site проверена частично, post-auth/mobile/payment/TMA не покрыты. Находки заведены в `pm/bugs.md` как `BUG-2026-07-21-001..004`, а в `pm/backlog.md` добавлены `BACK-061..063` и строка `QA-001`.
+**Коммит:** `this commit`
+**Статус:** ✅ выполнено
+**Следующий шаг:** брать первым `BACK-061` (privacy link), затем `BACK-062`; `BACK-063` требует продуктового решения Юрия/Алексея.
+
+---
+
+### 2026-07-21 — Codex
+
 **Задача:** довести production deploy redesign до реального домена app.4-ai.site.
-**Результат:** выяснено, что app.4-ai.site обслуживается Worker Static Assets route `4-ai-app-worker`, а не Cloudflare Pages custom domain. Выполнен production build и `
-px wrangler deploy`; route `pp.4-ai.site` / `pp.4-ai.site/*` обновлён до Worker version `6aeffdda-4ab0-476c-892b-0ee0725fea4d`. Live proof: `/sw.js` содержит `prod-redesign-2026-07-21`, HTML содержит `dash-artboard`/`detail-redesign-shell`/`profile-handoff-shell`, не содержит staging marker и Part 3 script.
-**Коммит:** pending
+**Результат:** выяснено, что app.4-ai.site обслуживается Worker Static Assets route `4-ai-app-worker`, а не Cloudflare Pages custom domain. Выполнен production build и `npx wrangler deploy`; route `app.4-ai.site` / `app.4-ai.site/*` обновлён до Worker version `6aeffdda-4ab0-476c-892b-0ee0725fea4d`. Live proof: `/sw.js` содержит `prod-redesign-2026-07-21`, HTML содержит `dash-artboard`/`detail-redesign-shell`/`profile-handoff-shell`, не содержит staging marker и Part 3 script.
+**Коммит:** `57ae1b4`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Юрию проверить app.4-ai.site в браузере с обновлением service worker/cache.
+
 ### 2026-07-21 — Codex
 
 **Задача:** выкатить согласованный redesign-срез в production.
