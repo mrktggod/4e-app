@@ -1556,6 +1556,16 @@
 
 **Commit:** `a78323fa915d71a858f62a7fc2826b1f5c7848c1`
 
+### Liquid-glass design brief for night session
+
+**What changed:** Copied Alexey's `4_liquid_glass_panel_component.html` into `docs/tasks/assets/4_liquid_glass_panel_component_2026-07-21.html` and added `pm/inbox/BRIEF-2026-07-21-night-liquid-glass-system.md` for safe design-system integration through LESS/BEM classes, preserving the click glow.
+
+**Encoding check:** `index.html` was not edited in this task.
+
+**Test:** `git diff --check`; `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** pending
+
 ### Part 3 handoff route for notification settings
 
 **What changed:** The Part 3 `notifications-light/dark` handoff was previously mounted only on the `notifications` screen, while Profile -> Notifications opens `notif-settings`. Added a second mount for `notif-settings` with back navigation to Profile and bumped `scripts/design-part3-handoff.js` plus `sw.js` cache versions.

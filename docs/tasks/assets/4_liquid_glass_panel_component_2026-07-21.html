@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Liquid Glass Panel — 4</title>
+
+  <style>
+    :root {
+      --panel-width: min(92vw, 980px);
+      --panel-ratio: 21 / 9;
+      --panel-radius: 28px;
+
+      --glass-blur: 18px;
+      --glass-saturation: 118%;
+      --glass-brightness: 72%;
+      --glass-tint: 5, 18, 13;
+      --glass-opacity: 0.62;
+
+      --refraction-scale: 14;
+      --refraction-scale-hover: 24;
+
+      --edge-light: rgba(236, 255, 244, 0.78);
+      --edge-soft: rgba(176, 214, 185, 0.26);
+      --green-glow: rgba(151, 255, 96, 0.22);
+      --green-glow-strong: rgba(151, 255, 96, 0.38);
+
+      --chromatic-red: rgba(255, 82, 82, 0.16);
+      --chromatic-blue: rgba(80, 160, 255, 0.16);
+
+      --hover-lift: -4px;
+      --transition: 420ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow-x: hidden;
+      color: #f7f7f7;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      background: #040706;
+    }
+
+    /* Демо-фон для проверки рефракции */
+    .demo {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: 48px 20px;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(209, 255, 74, .12), transparent 26%),
+        radial-gradient(circle at 82% 18%, rgba(30, 117, 255, .10), transparent 25%),
+        radial-gradient(circle at 66% 80%, rgba(255, 82, 171, .08), transparent 26%),
+        linear-gradient(145deg, #05120c 0%, #07110e 42%, #020403 100%);
+    }
+
+    .demo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      opacity: .36;
+      background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    }
+
+    .demo-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: saturate(115%);
+      box-shadow:
+        inset 0 14px 24px rgba(255,255,255,.18),
+        inset 0 -18px 28px rgba(0,0,0,.24),
+        0 24px 60px rgba(0,0,0,.34);
+      animation: drift 8s ease-in-out infinite alternate;
+    }
+
+    .demo-orb.one {
+      width: 170px;
+      aspect-ratio: 1;
+      left: 8%;
+      top: 18%;
+      background: radial-gradient(circle at 30% 20%, #fbffd9 0 4%, #d4ff64 18%, #63a81d 58%, #173411 100%);
+    }
+
+    .demo-orb.two {
+      width: 220px;
+      aspect-ratio: 1;
+      right: 5%;
+      bottom: 8%;
+      animation-delay: -2.5s;
+      background: radial-gradient(circle at 30% 22%, #f2e6ff 0 4%, #935cff 22%, #352079 65%, #120a26 100%);
+    }
+
+    .demo-orb.three {
+      width: 96px;
+      aspect-ratio: 1;
+      right: 20%;
+      top: 12%;
+      animation-delay: -4s;
+      background: radial-gradient(circle at 30% 20%, #eafcff 0 4%, #42d6ff 24%, #125b8e 66%, #071d2b 100%);
+    }
+
+    .demo-copy {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: -1;
+      width: min(880px, 90vw);
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: clamp(34px, 7vw, 92px);
+      font-weight: 800;
+      letter-spacing: -.06em;
+      line-height: .92;
+      color: rgba(245, 255, 248, .92);
+      text-shadow: 0 20px 50px rgba(0,0,0,.38);
+      user-select: none;
+    }
+
+    .demo-copy span { color: #a9ef4c; }
+
+    @keyframes drift {
+      from { transform: translate3d(-8px, -5px, 0) rotate(-2deg); }
+      to   { transform: translate3d(12px, 14px, 0) rotate(4deg); }
+    }
+
+    /* Компонент */
+    .liquid-glass-panel {
+      position: relative;
+      width: var(--panel-width);
+      aspect-ratio: var(--panel-ratio);
+      min-height: 280px;
+      overflow: hidden;
+      isolation: isolate;
+      border-radius: var(--panel-radius);
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(var(--glass-tint), calc(var(--glass-opacity) - .08)) 0%,
+          rgba(var(--glass-tint), var(--glass-opacity)) 52%,
+          rgba(1, 8, 5, calc(var(--glass-opacity) + .10)) 100%
+        );
+
+      -webkit-backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(var(--glass-saturation))
+        brightness(var(--glass-brightness))
+        url(#glass);
+      backdrop-filter:
+        blur(var(--glass-blur))
+        saturate(var(--glass-saturation))
+        brightness(var(--glass-brightness))
+        url(#glass);
+
+      border: 1px solid rgba(223, 245, 230, .34);
+
+      box-shadow:
+        0 34px 76px rgba(0, 0, 0, .56),
+        0 8px 24px rgba(0, 0, 0, .42),
+        0 0 40px var(--green-glow),
+        inset 0 1px 1px rgba(255, 255, 255, .22),
+        inset 0 -3px 7px rgba(0, 0, 0, .58),
+        inset 0 0 0 1px rgba(255, 255, 255, .045);
+
+      transform: translateZ(0);
+      transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+    }
+
+    /* Толстая стеклянная кромка */
+    .liquid-glass-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      padding: 1.5px;
+      pointer-events: none;
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.92) 0%,
+          rgba(255,255,255,.28) 10%,
+          rgba(255,255,255,.06) 32%,
+          rgba(125,178,130,.08) 62%,
+          rgba(229,255,235,.48) 100%
+        );
+
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+
+      filter:
+        drop-shadow(-1px 0 0 var(--chromatic-blue))
+        drop-shadow(1px 0 0 var(--chromatic-red));
+    }
+
+    /* Наружное зелёное свечение */
+    .liquid-glass-panel::after {
+      content: "";
+      position: absolute;
+      inset: auto 4% -18px 4%;
+      z-index: -1;
+      height: 36px;
+      pointer-events: none;
+      border-radius: 50%;
+      background: var(--green-glow);
+      filter: blur(18px);
+      opacity: .9;
+      transition: opacity var(--transition), filter var(--transition);
+    }
+
+    /* Верхний диагональный блик */
+    .glass-highlight {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      border-radius: inherit;
+      background:
+        radial-gradient(
+          115% 85% at 10% -18%,
+          rgba(255,255,255,.36) 0%,
+          rgba(255,255,255,.18) 20%,
+          rgba(255,255,255,.055) 42%,
+          transparent 66%
+        ),
+        linear-gradient(
+          150deg,
+          rgba(255,255,255,.17) 0%,
+          rgba(255,255,255,.06) 18%,
+          transparent 44%
+        );
+      mix-blend-mode: screen;
+      opacity: .88;
+    }
+
+    .glass-depth {
+      position: absolute;
+      inset: 3px;
+      z-index: 2;
+      pointer-events: none;
+      border-radius: calc(var(--panel-radius) - 3px);
+      box-shadow:
+        inset 16px 20px 40px rgba(255,255,255,.025),
+        inset -18px -22px 38px rgba(0,0,0,.42),
+        inset 0 0 28px rgba(69, 117, 79, .08);
+    }
+
+    .glass-content {
+      position: relative;
+      z-index: 6;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: clamp(24px, 5vw, 58px);
+    }
+
+    .glass-kicker {
+      margin: 0;
+      color: #a2dd56;
+      font-size: clamp(12px, 1.3vw, 18px);
+      font-weight: 650;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+
+    .glass-title {
+      margin: 0;
+      max-width: 680px;
+      color: rgba(247, 247, 247, .96);
+      font-size: clamp(34px, 5.2vw, 74px);
+      line-height: .98;
+      letter-spacing: -.055em;
+      font-weight: 700;
+    }
+
+    .glass-caption {
+      margin: 8px 0 0;
+      max-width: 620px;
+      color: rgba(214, 222, 216, .56);
+      font-size: clamp(15px, 1.7vw, 22px);
+      line-height: 1.35;
+    }
+
+    .liquid-glass-panel:hover {
+      transform: translateY(var(--hover-lift)) scale(1.006);
+      border-color: rgba(230, 255, 236, .46);
+      box-shadow:
+        0 42px 92px rgba(0, 0, 0, .62),
+        0 10px 28px rgba(0, 0, 0, .48),
+        0 0 56px var(--green-glow-strong),
+        inset 0 1px 1px rgba(255, 255, 255, .28),
+        inset 0 -3px 7px rgba(0, 0, 0, .62),
+        inset 0 0 0 1px rgba(255, 255, 255, .06);
+
+      -webkit-backdrop-filter:
+        blur(calc(var(--glass-blur) + 2px))
+        saturate(126%)
+        brightness(76%)
+        url(#glass-hover);
+      backdrop-filter:
+        blur(calc(var(--glass-blur) + 2px))
+        saturate(126%)
+        brightness(76%)
+        url(#glass-hover);
+    }
+
+    .liquid-glass-panel:hover::after {
+      opacity: 1;
+      filter: blur(23px);
+    }
+
+    @media (max-width: 680px) {
+      :root {
+        --panel-radius: 22px;
+        --glass-blur: 14px;
+      }
+
+      .liquid-glass-panel {
+        min-height: 250px;
+        aspect-ratio: auto;
+      }
+
+      .glass-content { padding: 28px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .demo-orb,
+      .liquid-glass-panel {
+        animation: none;
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- SVG-фильтры: noise + displacement -->
+  <svg
+    width="0"
+    height="0"
+    aria-hidden="true"
+    focusable="false"
+    style="position:absolute"
+  >
+    <defs>
+      <filter
+        id="glass"
+        x="-20%"
+        y="-20%"
+        width="140%"
+        height="140%"
+        color-interpolation-filters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.009 0.016"
+          numOctaves="2"
+          seed="17"
+          result="noise"
+        />
+        <feGaussianBlur in="noise" stdDeviation="0.55" result="softNoise" />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="softNoise"
+          scale="14"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+
+      <filter
+        id="glass-hover"
+        x="-25%"
+        y="-25%"
+        width="150%"
+        height="150%"
+        color-interpolation-filters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.012 0.021"
+          numOctaves="3"
+          seed="24"
+          result="noise"
+        />
+        <feGaussianBlur in="noise" stdDeviation="0.7" result="softNoise" />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="softNoise"
+          scale="24"
+          xChannelSelector="R"
+          yChannelSelector="B"
+        />
+      </filter>
+    </defs>
+  </svg>
+
+  <main class="demo">
+    <div class="demo-orb one"></div>
+    <div class="demo-orb two"></div>
+    <div class="demo-orb three"></div>
+
+    <div class="demo-copy">
+      ЖИВОЕ <span>СТЕКЛО</span><br />
+      ПОВЕРХ ЛЮБОГО ФОНА
+    </div>
+
+    <section class="liquid-glass-panel" aria-label="Стеклянная панель">
+      <div class="glass-highlight"></div>
+      <div class="glass-depth"></div>
+
+      <div class="glass-content">
+        <p class="glass-kicker">Liquid glass</p>
+        <h1 class="glass-title">Реалистичная стеклянная плашка</h1>
+        <p class="glass-caption">
+          Фон просвечивает, размывается и преломляется внутри компонента.
+        </p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

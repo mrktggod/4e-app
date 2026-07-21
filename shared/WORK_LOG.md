@@ -9434,6 +9434,14 @@
 
 ### 2026-07-21 — Codex
 
+**Задача:** Add liquid-glass design brief for night session
+**Результат:** Copied Alexey's liquid-glass HTML component into task assets and added a NEW inbox brief for safe LESS/BEM integration with click glow preserved.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** Night runner implements or reports NEED-CLAUDE if scope becomes broad redesign architecture.
+
+### 2026-07-21 — Codex
+
 **Задача:** исправить мобильные визуальные регрессии soft-glass дизайна после прод-катовера.
 **Результат:** убран нарисованный phone statusbar на home, тёмный home-фон закреплён чёрным, восстановлены avatar/notifications/nav, разведены hero/метрики/список задач, показаны 3 приоритетные задачи, убраны квадратные артефакты теней у home-иконок и orb, ограничены заголовок/описание task detail.
 **Коммит:** pending
