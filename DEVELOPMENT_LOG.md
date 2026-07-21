@@ -1533,7 +1533,17 @@
 
 **Tests:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
 
-**Commit:** `2230a25b8eacf4a5ee238ed295254e55afcb754e`
+**Commit:** `885e3a30baff45a5532ef32926340bf9ea89942c`
+
+### Avatar draft user scoping
+
+**What changed:** Replaced the global `extendedProfileDraft` localStorage key with a per-user key, dropped legacy unscoped drafts instead of migrating them, cleared visible avatar UI during logout, and updated the auth/avatar smoke to verify same-browser account switching and same-user re-login.
+
+**Encoding check:** `index.html` marker count before edit: 106; after edit: 106.
+
+**Test:** `npm run smoke:auth-avatar` against local checkout + staging worker showed account B no longer inherits account A avatar, legacy draft is empty, logout clears avatar backgrounds, and account A gets its own scoped avatar back on same-browser re-login; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** pending
 
 ### Part 3 handoff route for notification settings
 

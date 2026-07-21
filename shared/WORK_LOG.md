@@ -9413,6 +9413,14 @@
 
 **Задача:** BRIEF-2026-07-21 auth password inline error
 **Результат:** Wrong-password login now renders the API error under the password field via direct `login-pass-error` lookup.
-**Коммит:** `2230a25b8eacf4a5ee238ed295254e55afcb754e`
+**Коммит:** `885e3a30baff45a5532ef32926340bf9ea89942c`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Continue with avatar draft scoping privacy fix.
+
+### 2026-07-21 — Codex
+
+**Задача:** BRIEF-2026-07-21 avatar draft privacy scope
+**Результат:** Local profile/avatar draft is scoped per user, legacy global draft is dropped, and logout clears visible avatar UI.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** Re-run staging after deployment; fresh-browser avatar persistence remains a separate product decision.

@@ -2105,9 +2105,19 @@ function applyUserInfo(){
   renderExtendedProfile();
 }
 
-const EXT_PROFILE_K='extendedProfileDraft';
-function getExtendedProfileDraft(){try{return JSON.parse(localStorage.getItem(EXT_PROFILE_K)||'{}')||{};}catch(e){return{};}}
-function saveExtendedProfileDraft(draft){localStorage.setItem(EXT_PROFILE_K,JSON.stringify(draft));}
+const EXT_PROFILE_LEGACY_K='extendedProfileDraft';
+const EXT_PROFILE_K_PREFIX='extendedProfileDraft:';
+function getExtendedProfileUserKey(){
+  const rawId=currentUser?.id||currentUser?.email||currentUser?.telegramId||currentUser?.vkId||'';
+  const stableId=String(rawId||'').trim().toLowerCase();
+  return stableId?EXT_PROFILE_K_PREFIX+encodeURIComponent(stableId):'';
+}
+function dropLegacyExtendedProfileDraft(){
+  try{localStorage.removeItem(EXT_PROFILE_LEGACY_K);}catch(e){}
+}
+function getExtendedProfileDraft(){dropLegacyExtendedProfileDraft();const key=getExtendedProfileUserKey();if(!key)return{};try{return JSON.parse(localStorage.getItem(key)||'{}')||{};}catch(e){return{};}}
+function saveExtendedProfileDraft(draft){dropLegacyExtendedProfileDraft();const key=getExtendedProfileUserKey();if(key)localStorage.setItem(key,JSON.stringify(draft));}
+function clearExtendedProfileUi(){['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.style.backgroundImage='';el.style.backgroundSize='';el.style.backgroundPosition='';if(id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent='';}});}
 function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'Пользователь').trim();}
 function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();if(draft.photoDataUrl){el.classList.remove('profile-avatar--orb');el.textContent='';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';if(el.id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent=initials;}}}
 function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}

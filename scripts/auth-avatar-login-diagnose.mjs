@@ -180,7 +180,8 @@ async function loginViaUi(cdp, user) {
       profileName: document.getElementById('profile-name')?.textContent || '',
       homeAvatarText: document.getElementById('user-avatar-small')?.textContent || '',
       homeAvatarBg: document.getElementById('user-avatar-small')?.style.backgroundImage || '',
-      draft: localStorage.getItem('extendedProfileDraft') || ''
+      draft: typeof getExtendedProfileDraft === 'function' ? JSON.stringify(getExtendedProfileDraft()) : '',
+      legacyDraft: localStorage.getItem('extendedProfileDraft') || ''
     };
   })()`);
 }
@@ -207,12 +208,14 @@ async function wrongPasswordViaUi(cdp, email) {
 async function writeAvatarDraft(cdp) {
   return evalJs(cdp, `(()=>{
     const dataUrl='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
-    const draft=JSON.parse(localStorage.getItem('extendedProfileDraft')||'{}');
+    const draft=typeof getExtendedProfileDraft === 'function' ? getExtendedProfileDraft() : {};
     draft.photoDataUrl=dataUrl;
-    localStorage.setItem('extendedProfileDraft',JSON.stringify(draft));
+    if (typeof saveExtendedProfileDraft === 'function') saveExtendedProfileDraft(draft);
+    else localStorage.setItem('extendedProfileDraft',JSON.stringify(draft));
     if (typeof applyUserInfo === 'function') applyUserInfo();
     return {
-      draft: localStorage.getItem('extendedProfileDraft') || '',
+      draft: typeof getExtendedProfileDraft === 'function' ? JSON.stringify(getExtendedProfileDraft()) : '',
+      legacyDraft: localStorage.getItem('extendedProfileDraft') || '',
       homeAvatarBg: document.getElementById('user-avatar-small')?.style.backgroundImage || '',
       profileAvatarBg: document.getElementById('profile-avatar')?.style.backgroundImage || ''
     };
@@ -245,10 +248,14 @@ async function run() {
     log(`loginA=${JSON.stringify(loginA)}`);
     const avatarA = await writeAvatarDraft(browser1.cdp);
     log(`avatarA.localDraft=${JSON.stringify(avatarA)}`);
-    const logout = await evalJs(browser1.cdp, `(()=>{doLogout();return {token:localStorage.getItem('chetam_token')||'',draft:localStorage.getItem('extendedProfileDraft')||''};})()`);
+    const logout = await evalJs(browser1.cdp, `(()=>{doLogout();return {token:localStorage.getItem('chetam_token')||'',legacyDraft:localStorage.getItem('extendedProfileDraft')||'',homeAvatarBg:document.getElementById('user-avatar-small')?.style.backgroundImage||'',profileAvatarBg:document.getElementById('profile-avatar')?.style.backgroundImage||''};})()`);
     log(`logoutA=${JSON.stringify(logout)}`);
     const loginB = await loginViaUi(browser1.cdp, userB);
     log(`loginB.sameBrowser=${JSON.stringify(loginB)}`);
+    const logoutB = await evalJs(browser1.cdp, `(()=>{doLogout();return {token:localStorage.getItem('chetam_token')||'',legacyDraft:localStorage.getItem('extendedProfileDraft')||''};})()`);
+    log(`logoutB=${JSON.stringify(logoutB)}`);
+    const loginAAgain = await loginViaUi(browser1.cdp, userA);
+    log(`loginA.sameBrowserAgain=${JSON.stringify(loginAAgain)}`);
   } finally {
     await browser1.close();
   }

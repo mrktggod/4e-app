@@ -41,7 +41,7 @@ The same smoke still reproduced avatar draft leakage, which is intentionally lef
 
 ## Commit
 
-`2230a25b8eacf4a5ee238ed295254e55afcb754e`
+`885e3a30baff45a5532ef32926340bf9ea89942c`
 
 ## Guardrails
 

@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 ## ⚠️ Delivery note
 Same untracked-file delivery risk as `-01` — see that brief's note. Commit+push all three morning-refine-* briefs together if you pick this up from disk.

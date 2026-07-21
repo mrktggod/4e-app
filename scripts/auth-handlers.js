@@ -473,6 +473,7 @@ function doLogout(){
   clearD1Token();
   localStorage.setItem(LOGOUT_K,'1');
   sessionStorage.clear();
+  if(typeof clearExtendedProfileUi==='function')clearExtendedProfileUi();
   currentUser=null;
   chatId='global';
   allTasksCache=[];
