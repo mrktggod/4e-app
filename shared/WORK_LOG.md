@@ -9400,3 +9400,11 @@
 **Коммит:** `5bab618`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Remaining open items need manual/device/provider/auth/payment/CAL/product gates or Claude/Yuri decisions.
+
+### 2026-07-21 — Codex
+
+**Задача:** BRIEF-2026-07-20-25 preview stability fix
+**Результат:** Preview demo routing now opens dashboard/task-detail/profile/subscription/chats/chat-conv directly and no longer falls back to login during preview navigation.
+**Коммит:** `0217f77bdcf1662c6d8d39b50bd5e216eaa3bede`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Continue with morning refine auth password error brief.

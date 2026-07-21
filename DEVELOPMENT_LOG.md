@@ -1521,7 +1521,7 @@
 
 **Known tails:** API smoke against staging worker fails at `register: 500`; full browser visual smoke was not run because Playwright is not installed locally; prod deploy is NEED-YURI and was not performed.
 
-**Commit:** pending
+**Commit:** `0217f77bdcf1662c6d8d39b50bd5e216eaa3bede`
 
 ## 2026-07-20
 
@@ -1652,3 +1652,13 @@
 **Test:** `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
 
 **Commit:** pending
+
+### Preview demo routing stability
+
+**What changed:** Fixed `previewDemo=dashboard` direct routing by opening the preview screen before real auth/session checks in `initApp()` and by allowing only preview whitelisted screens through `showScreen()` without a real token while preview mode is active.
+
+**Encoding check:** `index.html` marker count before edit: 106; after edit: 106.
+
+**Test:** Local Chrome/CDP smoke verified all six preview URLs (`dashboard`, `task-detail`, `profile`, `subscription`, `chats`, `chat-conv`) open the expected screen with preview token and that internal preview navigation stays on `chats>task-detail`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`; `bash scripts/check-portable-paths.sh`; `bash scripts/check-ui-architecture.sh`.
+
+**Commit:** `0217f77bdcf1662c6d8d39b50bd5e216eaa3bede`

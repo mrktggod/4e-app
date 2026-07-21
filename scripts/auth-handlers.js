@@ -85,6 +85,7 @@ function submitLoginOnEnter(event){
 
 function isDashboardSubscriptionPreviewHost(){
   const host=String(location.hostname||'').toLowerCase();
+  if(host==='localhost'||host==='127.0.0.1')return true;
   return host!=='4-ai-staging.pages.dev' && host.endsWith('.4-ai-staging.pages.dev');
 }
 
@@ -204,6 +205,10 @@ function shouldAutoOpenDashboardPreview(){
   }catch(_err){
     return false;
   }
+}
+
+function isDashboardPreviewActive(){
+  return shouldAutoOpenDashboardPreview();
 }
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -528,4 +533,3 @@ function bindChangePasswordHandlers(){
 }
 
 document.addEventListener('DOMContentLoaded',bindChangePasswordHandlers);
-

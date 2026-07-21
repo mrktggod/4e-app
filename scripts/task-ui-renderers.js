@@ -184,7 +184,9 @@ function setNavActive(id){
 
 function showScreen(id){
   const publicScreens=['onboarding','login','forgot-password','reset-password'];
-  if(!publicScreens.includes(id)&&!getToken()){
+  const previewScreens=['home','task-detail','profile','subscription','chats','chat-conv'];
+  const allowPreviewScreen=typeof isDashboardPreviewActive==='function'&&isDashboardPreviewActive()&&previewScreens.includes(id);
+  if(!publicScreens.includes(id)&&!getToken()&&!allowPreviewScreen){
     id=localStorage.getItem(ONBOARD_K)?'login':'onboarding';
   }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));

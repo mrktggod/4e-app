@@ -2018,6 +2018,13 @@ async function initApp(){
   loadTariffConfig().catch(()=>{});
   showStartupFallback();
 
+  if(typeof shouldAutoOpenDashboardPreview==='function'&&shouldAutoOpenDashboardPreview()){
+    if(typeof tryDashboardSubscriptionPreviewLogin==='function'){
+      tryDashboardSubscriptionPreviewLogin('preview-dashboard-20260718@example.com','preview');
+      return;
+    }
+  }
+
   const token=getToken();
   if(token){
     try{
