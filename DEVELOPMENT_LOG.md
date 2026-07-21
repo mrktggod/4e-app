@@ -1,5 +1,17 @@
 ## 2026-07-21
 
+### BACK-062 auth legal contrast and touch targets
+
+**Что сделано:** в `index.html` legal-note на onboarding/login/register поднят с 11px/muted до 13px/`var(--text2)` и ссылка privacy получила класс `.auth-legal-link`. В `styles/layout.less` добавлены доступные размеры: privacy link min-height 44px, login/register tabs min-height 44px, password-eye 44x44, forgot-link min-height 44px; фокус `:focus-visible` расширен на `.auth-legal-link`. `styles.css` и `styles.min.css` пересобраны через `npm run build:css`. PM-контур обновлён: `BACK-062`, `BUG-2026-07-21-002` и `BUG-2026-07-21-003` переведены в `Ready for QA`.
+
+**Проверка кодировки:** до правки 106 совпадений по `Войти|Задачи|Сегодня`; после правки 106 совпадений.
+
+**Тест:** `npm run build:css`; перед commit запустить `node scripts/check-cp1251-mojibake.mjs`, `node scripts/check-js-syntax.mjs`, `git diff --check`, `bash scripts/check-portable-paths.sh`, `bash scripts/check-ui-architecture.sh`.
+
+**Коммит:** `this commit`
+
+## 2026-07-21
+
 ### BACK-061 auth legal privacy link
 
 **Что сделано:** в `index.html` ссылки `Политикой конфиденциальности` на onboarding и login/register получили явный `data-privacy-policy-link` binding. Добавлены `openPrivacyPolicy()` и `bindPrivacyPolicyLinks()`: в Telegram WebApp используется `Telegram.WebApp.openLink`, в обычном браузере `window.open('privacy.html')`, при блокировке popup — переход текущей вкладки. PM-контур обновлён: `BACK-061` и `BUG-2026-07-21-001` переведены в `Ready for QA`.

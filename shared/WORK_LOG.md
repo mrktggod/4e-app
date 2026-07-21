@@ -1,5 +1,15 @@
 ### 2026-07-21 — Codex
 
+**Задача:** закрыть `BACK-062` — auth legal copy contrast и маленькие touch targets.
+**Результат:** legal-note на onboarding/login/register поднят до 13px и `var(--text2)`, ссылка privacy получила `.auth-legal-link` с 44px hit area, auth tabs получили `min-height:44px`, password-eye — 44x44, forgot-link — 44px min-height. CSS пересобран из `styles/main.less` в `styles.css`/`styles.min.css`; `pm/backlog.md` и `pm/bugs.md` переведены в `Ready for QA`.
+**Коммит:** `this commit`
+**Статус:** ✅ выполнено
+**Следующий шаг:** QA на auth-экране в dark/light: читаемость legal-copy, фокус клавиатурой, touch targets, без сдвига формы.
+
+---
+
+### 2026-07-21 — Codex
+
 **Задача:** закрыть `BACK-061` — legal-link на политику в auth/register не открывал документ.
 **Результат:** в `index.html` обе auth/onboarding ссылки на `privacy.html` получили `data-privacy-policy-link` и явный обработчик `openPrivacyPolicy()`: Telegram WebApp открывает документ через `openLink`, обычный браузер — через `window.open`, с fallback на текущую вкладку. `pm/backlog.md` и `pm/bugs.md` переведены в `Ready for QA`.
 **Коммит:** `this commit`
