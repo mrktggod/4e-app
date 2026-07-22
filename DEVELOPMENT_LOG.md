@@ -1,5 +1,19 @@
 ## 2026-07-22
 
+### BACK-012 statistics inline style cleanup
+
+**What changed:** Moved statistics screen header wrapper, period pill, action-link cursor styles, weekly rhythm label layout, and custom-list initial hidden state from `index.html` into `styles/screens/tasks.less`; rebuilt `styles.css` and `styles.min.css`. Runtime statistics calculations and click handlers were not changed.
+
+**Encoding check:** before editing `index.html`, marker check returned `106`; after editing, marker check returned `106`.
+
+**Test:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `npm run smoke:home001`; `git diff --check`; `node scripts/check-js-syntax.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh` (`inline style attributes = 313 / 465`).
+
+**Commit:** this commit
+
+---
+
+## 2026-07-22
+
 ### BACK-012 calendar inline style cleanup
 
 **What changed:** Moved calendar screen header wrapper, month navigation actions, deadlines section, deadlines label/icon, empty state, and footer layout styles from `index.html` into `styles/screens/tasks.less`; rebuilt `styles.css` and `styles.min.css`. Runtime calendar logic was not changed.

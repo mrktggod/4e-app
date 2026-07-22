@@ -541,8 +541,8 @@ if('serviceWorker' in navigator){
 <div class="screen" id="statistics">
   <div class="back-bar">
     <button class="back-btn" data-stats-action="back-home" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">Статистика</div></div>
-    <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:5px 12px;font-size:11px;color:var(--muted);cursor:pointer">Месяц задач &#9662;</div>
+    <div class="stats-title-wrap"><div class="back-title">Статистика</div></div>
+    <div class="stats-period-pill">Месяц задач &#9662;</div>
   </div>
   <div class="stats-scroll">
     <div id="stats-overview">
@@ -564,7 +564,7 @@ if('serviceWorker' in navigator){
       </div>
 <div class="section">
         <div class="progress-card">
-          <div class="progress-header"><span class="progress-title">Обещания</span><span class="progress-period" data-stats-action="open-promises" onclick="openPromiseList()" style="cursor:pointer">Смотреть все</span></div>
+          <div class="progress-header"><span class="progress-title">Обещания</span><span class="progress-period stats-action-link" data-stats-action="open-promises" onclick="openPromiseList()">Смотреть все</span></div>
           <div class="cat-list" id="stats-promises-list">
             <div class="cat-item"><span class="cat-name">Активные обещания</span><span><strong id="stats-promises-total">—</strong></span></div>
             <div class="cat-item"><span class="cat-name">Просрочено</span><span><strong id="stats-promises-overdue">—</strong></span></div>
@@ -575,7 +575,7 @@ if('serviceWorker' in navigator){
       </div>
       <div class="section">
         <div class="progress-card">
-          <div class="progress-header"><span class="progress-title">Активные задачи</span><span class="progress-period" data-stats-action="open-active-tasks" onclick="openActiveTaskList()" style="cursor:pointer">Смотреть все</span></div>
+          <div class="progress-header"><span class="progress-title">Активные задачи</span><span class="progress-period stats-action-link" data-stats-action="open-active-tasks" onclick="openActiveTaskList()">Смотреть все</span></div>
           <div class="active-tasks-list" id="stat-tasks-list">
             <div class="active-task-row"><span class="active-task-name">Загружаю...</span></div>
           </div>
@@ -583,7 +583,7 @@ if('serviceWorker' in navigator){
       </div>
       <div class="section">
         <div class="progress-card">
-          <div class="progress-header"><span class="progress-title">Выполнено и история</span><span class="progress-period" onclick="openDoneList()" style="cursor:pointer">Смотреть все</span></div>
+          <div class="progress-header"><span class="progress-title">Выполнено и история</span><span class="progress-period stats-action-link" onclick="openDoneList()">Смотреть все</span></div>
           <div class="active-tasks-list" id="stats-done-list">
             <div class="active-task-row"><span class="active-task-name">Собираю завершённые задачи...</span></div>
           </div>
@@ -593,7 +593,7 @@ if('serviceWorker' in navigator){
         <div class="progress-card">
           <div class="progress-header"><span class="progress-title">Ритм недели</span><span class="progress-period">локально по задачам</span></div>
           <div class="bar-chart" id="bar-chart"></div>
-          <div style="display:flex;justify-content:space-between" id="bar-labels"></div>
+          <div class="stats-bar-labels" id="bar-labels"></div>
         </div>
       </div>
       <div class="section">
@@ -605,7 +605,7 @@ if('serviceWorker' in navigator){
         </div>
       </div>
     </div>
-    <div class="section" id="stats-custom-list" style="display:none"></div>
+    <div class="section stats-custom-list" id="stats-custom-list"></div>
   </div>
 </div>
 
