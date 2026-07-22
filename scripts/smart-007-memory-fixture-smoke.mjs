@@ -183,7 +183,7 @@ async function evaluate(ws, expression, awaitPromise = false) {
   return result.result?.value;
 }
 
-async function renderMemoryScreenDom(token, expectedText) {
+async function renderMemoryScreenDom(token, expectedText, options = {}) {
   const chrome = await findChrome();
   const cdpPort = await getFreePort();
   const profileDir = await fs.mkdtemp(path.join(os.tmpdir(), 'smart007-chrome-'));
@@ -251,6 +251,8 @@ async function renderMemoryScreenDom(token, expectedText) {
           activeScreen: document.querySelector('.screen.active')?.id || '',
           status: document.querySelector('#ai-memory-status')?.textContent?.trim() || '',
           rows,
+          emptyText: document.querySelector('#ai-memory-list .ai-memory-empty')?.textContent?.trim() || '',
+          forgetDisabled: !!document.querySelector('#ai-memory-forget-btn')?.disabled,
           containsExpected: rows.some(row => row.text.includes(${JSON.stringify(expectedText)})),
           scrollWidth: document.documentElement.scrollWidth
         };
@@ -258,11 +260,84 @@ async function renderMemoryScreenDom(token, expectedText) {
     `, true);
 
     assert(dom.activeScreen === 'ai-memory', `ai-memory screen not active: ${dom.activeScreen}`);
-    assert(dom.rows.length > 0, 'ai-memory DOM rendered no rows');
-    assert(dom.containsExpected, 'ai-memory DOM did not render expected fixture fact');
-    assert(dom.rows.every((row) => row.hasDelete), 'ai-memory DOM rows should expose delete buttons');
+    if (options.expectEmpty) {
+      assert(dom.rows.length === 0, `ai-memory DOM expected empty rows, got ${dom.rows.length}`);
+      assert(dom.emptyText, 'ai-memory DOM empty state text is missing');
+      assert(dom.forgetDisabled, 'ai-memory forget button should be disabled in empty state');
+    } else {
+      assert(dom.rows.length > 0, 'ai-memory DOM rendered no rows');
+      assert(dom.containsExpected, 'ai-memory DOM did not render expected fixture fact');
+      assert(dom.rows.every((row) => row.hasDelete), 'ai-memory DOM rows should expose delete buttons');
+    }
     assert(dom.scrollWidth === 390, `unexpected horizontal overflow: ${dom.scrollWidth}`);
-    return dom;
+
+    let localProbe = null;
+    if (options.runLocalProbe) {
+      localProbe = await evaluate(ws, `
+        (async () => {
+          window.__smart007Xss = 0;
+          const payload = '<img src=x onerror="window.__smart007Xss=1"> SMART-007-LONG-' + 'A'.repeat(260);
+          aiMemoryFactsCache = [{
+            id: 'local-html-like',
+            fact: payload,
+            category: 'privacy',
+            confidence: 0.99,
+            updatedAt: Date.now()
+          }];
+          aiMemoryFactsEnabled = true;
+          renderAiMemoryScreen();
+          await new Promise(r => setTimeout(r, 100));
+          const row = document.querySelector('#ai-memory-list .ai-memory-row');
+          const text = row?.querySelector('.ai-memory-row-text')?.textContent || '';
+          const html = row?.querySelector('.ai-memory-row-text')?.innerHTML || '';
+          const hasExecutableNode = !!row?.querySelector('img,script,iframe,svg,onload');
+          const deleteButton = row?.querySelector('.ai-memory-delete-btn');
+          const longLayout = {
+            scrollWidth: document.documentElement.scrollWidth,
+            rowHeight: Math.round((row?.getBoundingClientRect().height || 0) * 100) / 100,
+            buttonVisible: !!deleteButton && deleteButton.getBoundingClientRect().width > 0
+          };
+
+          aiMemoryFactsCache = [];
+          renderAiMemoryScreen();
+          const emptyText = document.querySelector('#ai-memory-list .ai-memory-empty')?.textContent?.trim() || '';
+          const emptyForgetDisabled = !!document.querySelector('#ai-memory-forget-btn')?.disabled;
+
+          const statusEl = document.querySelector('#ai-memory-status');
+          const listEl = document.querySelector('#ai-memory-list');
+          if (statusEl) statusEl.textContent = 'Unable to load AI memory. Try again later.';
+          if (listEl) listEl.innerHTML = '<div class="ai-memory-empty">Server temporarily unavailable.</div>';
+          const errorText = [
+            document.querySelector('#ai-memory-status')?.textContent || '',
+            document.querySelector('#ai-memory-list')?.textContent || ''
+          ].join(' ');
+          const hasTechnicalLeak = /token|authorization|bearer|stack|trace|sql|d1|kv|password|secret/i.test(errorText);
+
+          return {
+            textLength: text.length,
+            textIncludesPayload: text.includes('SMART-007-LONG-'),
+            htmlEscaped: html.includes('&lt;img') && !hasExecutableNode,
+            xssFlag: window.__smart007Xss,
+            longLayout,
+            emptyText,
+            emptyForgetDisabled,
+            errorText,
+            hasTechnicalLeak
+          };
+        })()
+      `, true);
+
+      assert(localProbe.textIncludesPayload, 'local HTML-like payload text was not rendered as text');
+      assert(localProbe.htmlEscaped, 'local HTML-like payload was not escaped');
+      assert(localProbe.xssFlag === 0, 'local HTML-like payload executed script-like behavior');
+      assert(localProbe.longLayout.scrollWidth === 390, `local long payload overflowed horizontally: ${localProbe.longLayout.scrollWidth}`);
+      assert(localProbe.longLayout.buttonVisible, 'delete button not visible for long local payload');
+      assert(localProbe.emptyText, 'local empty state missing after clearing injected facts');
+      assert(localProbe.emptyForgetDisabled, 'forget button should be disabled after local empty render');
+      assert(!localProbe.hasTechnicalLeak, `local error state leaked technical text: ${localProbe.errorText}`);
+    }
+
+    return { ...dom, localProbe };
   } finally {
     if (ws && ws.readyState === WebSocket.OPEN) ws.close();
     staticServer.server.close();
@@ -392,7 +467,7 @@ async function pollFacts(token) {
   assert(!matchedText.includes(email), 'fact leaked fixture email');
   assert(!/token|парол|password/i.test(matchedText), 'fact leaked auth-like text');
 
-  const dom = await renderMemoryScreenDom(token, matchedText);
+  const dom = await renderMemoryScreenDom(token, matchedText, { runLocalProbe: true });
 
   const deleteOne = await request(`/ai/facts/${encodeURIComponent(matchedFact.id)}`, {
     method: 'DELETE',
@@ -407,6 +482,8 @@ async function pollFacts(token) {
   log(`facts.after-delete-one: ${afterDelete.status} ${afterDelete.elapsed}ms`);
   assert(afterDelete.status === 200 && afterDelete.body?.ok === true, `after delete list failed: ${afterDelete.text}`);
   assert(!afterDelete.body.facts?.some((fact) => String(fact.id) === String(matchedFact.id)), 'deleted fact still appears');
+  const remainingFact = Array.isArray(afterDelete.body.facts) ? afterDelete.body.facts[0] : null;
+  const domAfterDelete = remainingFact ? await renderMemoryScreenDom(token, factText(remainingFact)) : null;
 
   const clearAll = await request('/ai/facts', {
     method: 'DELETE',
@@ -421,6 +498,7 @@ async function pollFacts(token) {
   log(`facts.after-clear: ${afterClear.status} ${afterClear.elapsed}ms`);
   assert(afterClear.status === 200 && afterClear.body?.ok === true, `after clear list failed: ${afterClear.text}`);
   assert(Array.isArray(afterClear.body.facts) && afterClear.body.facts.length === 0, 'facts should be empty after clear all');
+  const domAfterClear = await renderMemoryScreenDom(token, '', { expectEmpty: true });
 
   log('smart-007-memory-fixture-smoke: OK');
   log(JSON.stringify({
@@ -441,6 +519,8 @@ async function pollFacts(token) {
       confidence: matchedFact.confidence
     },
     dom,
+    domAfterDelete,
+    domAfterClear,
     afterDeleteCount: afterDelete.body.facts.length,
     afterClearCount: afterClear.body.facts.length
   }, null, 2));

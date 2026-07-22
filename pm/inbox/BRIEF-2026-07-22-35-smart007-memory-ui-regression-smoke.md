@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-22-35-smart007-memory-ui-regression-smoke
 
