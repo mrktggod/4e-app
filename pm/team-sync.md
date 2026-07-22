@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-012 notifications cleanup island
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-012` remains `Partial Done`.
+- Result: notifications header, unread badge, filters, and list wrapper inline styles moved into `styles/screens/tasks.less`; CSS rebuilt.
+- Evidence: encoding markers `106 -> 106`, `npm run smoke:back055` passed, UI guard reports inline style attrs `309 / 465`.
+- Report: `pm/outbox/REPORT-BACK-012-notifications-inline-cleanup-2026-07-22.md`.
+- Next: continue `BACK-012` only as separate small BEM islands with focused proof.
+
 ## 2026-07-22 - Codex - BACK-012 statistics cleanup island
 
 - Branch: `feat/admin-tariff-api`.

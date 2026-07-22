@@ -613,18 +613,18 @@ if('serviceWorker' in navigator){
 <div class="screen screen--no-bottom-nav" id="notifications">
   <div class="back-bar">
     <button class="back-btn" data-notifs-action="back-home" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">Уведомления</div></div>
-    <div id="notif-unread-count" style="background:var(--green);color:var(--bg);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;display:none"></div>
+    <div class="notif-title-wrap"><div class="back-title">Уведомления</div></div>
+    <div class="notif-unread-badge" id="notif-unread-count"></div>
   </div>
   <!-- Filters -->
-  <div class="notif-filters" style="padding:0 16px 4px">
+  <div class="notif-filters notif-filters-bar">
     <button class="notif-filter active" data-notifs-filter="all">Все</button>
     <button class="notif-filter" data-notifs-filter="task">Задачи</button>
     <button class="notif-filter" data-notifs-filter="deadline">Горит</button>
     <button class="notif-filter" data-notifs-filter="reminder">Напоминания</button>
     <button class="notif-filter" data-notifs-filter="system">Система</button>
   </div>
-  <div class="notif-scroll" id="notif-list-wrap" style="padding:0 16px 96px">
+  <div class="notif-scroll notif-list-wrap" id="notif-list-wrap">
     <div id="notif-list"></div>
   </div>
 </div>

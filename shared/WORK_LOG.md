@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** BACK-012 notifications BEM cleanup island.
+**Result:** Moved notifications header, unread badge, filters, and list wrapper inline styles from `index.html` to `styles/screens/tasks.less`; CSS rebuilt.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue `BACK-012` only as separate small BEM islands with focused proof.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-012 statistics BEM cleanup island.
 **Result:** Moved statistics header, period pill, action links, weekly labels, and custom-list hidden state inline styles from `index.html` to `styles/screens/tasks.less`; CSS rebuilt.
 **Commit:** this commit
