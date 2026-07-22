@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-22-38-horizon05-manual-gates-pack
 
