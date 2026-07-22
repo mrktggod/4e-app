@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-22 - Codex - pre-dawn runner closed
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: no executable `status: NEW` non-template briefs; only `BRIEF-TEMPLATE.md` is `NEW`.
+- Result: 3 safe tasks completed: `SMART-005` roadmap status sync, `BACK-012` auth/forgot/reset BEM island, `BACK-012` task-move BEM island.
+- Report: `pm/outbox/REPORT-4e-pre-dawn-inbox-and-whitelist-backlog-runner-2026-07-22.md`.
+- Stop reason: current run limits after 3 tasks; remaining rows are manual-gated, decision-gated, sensitive, deferred/done/Ready for QA, or need separate reviewed briefs.
+- Next: review the two `BACK-012` cleanup commits; continue further CSS cleanup only as small smoke-proven slices.
+
 ## 2026-07-22 - Codex - BACK-012 task-move cleanup island
 
 - Branch: `feat/admin-tariff-api`.

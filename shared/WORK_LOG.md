@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** 4e pre-dawn inbox and whitelist backlog runner final report.
+**Result:** Inbox had no executable `NEW` briefs; completed 3 safe tasks and added the final automation closeout report with stop reason.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Review the two `BACK-012` BEM islands; continue further cleanup only as separate small slices.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-012 task-move BEM cleanup island.
 **Result:** Moved task-move preset row text, panel, scroll, last-row and confirm button inline styles from `index.html` to `styles/screens/tasks.less`; rebuilt CSS.
 **Commit:** this commit

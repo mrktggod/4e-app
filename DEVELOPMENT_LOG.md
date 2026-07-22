@@ -1798,6 +1798,16 @@
 
 ## 2026-07-22
 
+### Pre-dawn inbox and whitelist backlog runner final report
+
+**What changed:** Added final automation closeout report for the 2026-07-22 pre-dawn run. The run found no executable `NEW` inbox briefs, completed 3 safe tasks, and stopped due to current run limits after docs/status sync plus two small `BACK-012` BEM cleanup islands. Runtime behavior was not changed in this closeout commit.
+
+**Encoding check:** `index.html` was not edited in this closeout task; latest `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** pending
+
 ### BACK-012 task-move BEM cleanup island
 
 **What changed:** Removed task-move preset row text, panel, scroll, last-row and confirm button layout-only inline styles from `index.html` and moved them to `styles/screens/tasks.less`. Rebuilt `styles.css` and `styles.min.css`. No task behavior, backend, payment, entitlement, CAL, production deploy, or `main` merge was touched.
