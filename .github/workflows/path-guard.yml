@@ -9,12 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install npm dependencies
+        run: npm ci
       - name: Install ripgrep
         run: sudo apt-get update && sudo apt-get install -y ripgrep
       - name: Check portable paths
         run: bash scripts/check-portable-paths.sh
       - name: Check markdown encoding for pm/ and shared/
         run: node scripts/check-doc-encoding.mjs
+      - name: Check JS syntax
+        run: npm run check:js-syntax
+      - name: Build CSS
+        run: npm run build:css
       - name: Check Pages script assets
         run: npm run check:pages-script-assets
       - name: Check UI architecture debt
