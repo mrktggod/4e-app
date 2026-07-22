@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** SMART-005 roadmap status sync.
+**Result:** Updated stale `shared/ROADMAP.md` proactive-bot row so `SMART-005` matches canonical `pm/backlog.md` status `Done`; runtime code was not changed.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Keep `SMART-011` on real Telegram/group smoke before Done.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** 4e night inbox and whitelist backlog runner final report.
 **Result:** Inbox had no `NEW` briefs; completed/pushed 4 backlog tasks this run and added the final outbox report with stop reason.
 **Commit:** this commit

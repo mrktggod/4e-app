@@ -1796,6 +1796,18 @@
 
 **Коммит:** `5bab618`
 
+## 2026-07-22
+
+### SMART-005 roadmap status sync
+
+**What changed:** Synchronized stale roadmap status for `SMART-005`: `shared/ROADMAP.md` now matches canonical `pm/backlog.md`, where the morning chat briefing task is already `Done`. No runtime code, worker code, payment, entitlement, CAL, production deploy, or `main` merge was touched.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Test:** `rg` source proof for `SMART-005` in `shared/ROADMAP.md` and `pm/backlog.md`; `node scripts/check-cp1251-mojibake.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** pending
+
 ## 2026-07-18
 
 ### Redesign soft-glass cutover to staging

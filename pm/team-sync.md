@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-22 - Codex - SMART-005 roadmap synced
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: no `status: NEW` non-template briefs.
+- Result: `shared/ROADMAP.md` proactive-bot row now matches `pm/backlog.md`: `SMART-005` is `Done`, while `SMART-011` remains `Ready for QA`.
+- Report: `pm/outbox/REPORT-SMART-005-roadmap-status-sync.md`.
+- Next: keep `SMART-011` gated on real Telegram/group smoke for recipient, copy, and no-spam evidence.
+
 ## 2026-07-22 - Codex - night runner closed four tasks
 
 - Branch: `feat/admin-tariff-api`.
