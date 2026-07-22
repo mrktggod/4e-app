@@ -1,5 +1,55 @@
 ### 2026-07-22 - Codex
 
+**Task:** Audit iPhone task-detail screenshots after notification QA was blocked.
+**Result:** Confirmed three P1 regressions: untappable reminder timing, tag/datalist popup covering content, and long tag/title metadata overlap. Saved screenshots and added an evidence-backed task document.
+**Commit:** N/A
+**Status:** DONE
+**Next step:** Fix the task-detail controls/layout, deploy a fresh preview, then repeat notification QA.
+
+---
+
+### 2026-07-22 - Codex
+
+**Task:** Record short AI-chat history persistence on the current preview.
+**Result:** Test message and visible history remained after full close/reopen on `b7076e2`; extended history beyond the 40-message window remains unverified.
+**Commit:** N/A
+**Status:** PARTIAL
+**Next step:** Test long history separately or proceed to real-device notification QA.
+
+---
+
+### 2026-07-22 - Codex
+
+**Task:** Record saved-session autologin behavior on the current preview.
+**Result:** Autologin succeeds on `b7076e2`, but the login screen flashes very briefly before home; `BUG-2026-07-21-008` is confirmed as non-blocking P2.
+**Commit:** N/A
+**Status:** DONE
+**Next step:** Fix the auth shell so login is not rendered before saved-session validation completes.
+
+---
+
+### 2026-07-22 - Codex
+
+**Task:** Record the current-preview subscription entry manual result.
+**Result:** Alexey reached the payment card-entry form on preview `b7076e2`; `BUG-2026-07-21-007` is closed for this build. No real payment was performed.
+**Commit:** N/A
+**Status:** DONE
+**Next step:** Check saved-session autologin flicker on the same preview.
+
+---
+
+### 2026-07-22 - Codex
+
+**Task:** Publish an isolated staging preview of the current release candidate.
+**Result:** Cloudflare Pages preview for commit `b7076e2` is live at `https://qa-b7076e2.4-ai-staging.pages.dev/`; HTTP, staging Worker wiring, asset markers, and CORS checks passed. Production, `main`, and the shared staging alias were untouched.
+**Commit:** N/A
+**Status:** DONE
+**Next step:** Run manual QA on the preview, starting with subscription CTA and autologin/login-screen flicker.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** 4e morning inbox and safe backlog runner final report.
 **Result:** Inbox had no executable `NEW` briefs; completed 3 safe `BACK-012` BEM-island cleanup tasks and added the final automation closeout report.
 **Commit:** this commit
@@ -9793,3 +9843,50 @@
 **Следующий шаг:** Составить таблицу `index.html` vs `vk.html`, затем закрыть 3-5 самых заметных P1-дыр VK без оплаты и без большого ARCH-001 распила.
 
 ---
+### 2026-07-23 — Codex
+
+**Задача:** ночной inbox/backlog runner после уже закрытой очереди
+**Результат:** `pm/inbox` не содержал `status: NEW`; pending Focus popup summary UI выделен в отдельный commit, финальный report добавлен.
+**Коммит:** `91a483a` + this docs/report commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** проверить видимость Focus popup summary на preview; iPhone task-detail briefs остаются blocked concurrent work.
+
+---
+
+### 2026-07-22 — Codex
+
+**Задача:** перенести дневной summary-блок в попап «Фокус дня».
+**Результат:** в попап добавлена карточка «ЗАДАЧИ · СЕГОДНЯ» с дневными метриками, кнопками шаринга и списком задач ниже; CSS пересобран.
+**Коммит:** N/A
+**Статус:** ✅ выполнено локально
+**Следующий шаг:** визуально проверить в TMA после ревью ветки.
+
+---
+
+### 2026-07-22 — Codex
+
+**Задача:** Сформировать ночную очередь после ручной проверки фокуса и ограниченно открыть безопасный резерв после Горизонта 0.
+**Результат:** Созданы пять атомарных `status: NEW` briefs: проверка видимости «Фокуса дня», три iPhone task-detail фикса и synthetic evidence для истории чата длиннее 40 сообщений. В backlog/roadmap закреплён ограниченный safe Г0.5 pilot без изменения постоянных stop points.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Ночной runner обрабатывает briefs `30-34` по имени; при сохранении чужих незакоммиченных изменений честно блокирует затронутый brief и ничего не перезаписывает.
+
+---
+
+### 2026-07-22 — Codex
+
+**Задача:** Закрыть `NEW-020` после явной пользовательской приёмки голосового ввода.
+**Результат:** Алексей подтвердил, что голос работает в постоянном использовании и претензий нет. Backlog, roadmap, QA evidence и бывший `NEED-YURI` brief синхронизированы в `Done`; дополнительный perf-замер снят.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Голос исключён из открытых хвостов Горизонта 0.
+
+---
+
+### 2026-07-22 — Codex
+
+**Задача:** Расширить безопасный ночной резерв задачами Горизонта 0.5.
+**Результат:** После briefs `30-34` добавлены семь атомарных `status: NEW` briefs `35-41`: SMART-007 memory UI/privacy regression, privacy artifact/link smoke, BACK-037 CI audit, manual gates pack, ARCH-001 status evidence, BACK-012 component inventory и status consistency audit. Кандидаты Горизонта 1 были исключены после сверки заголовков roadmap; permanent stop points сохранены.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Ночной runner идёт по имени и завершает столько задач, сколько позволяют время и чистота рабочей копии; blocked/manual tails не форсирует.

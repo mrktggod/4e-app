@@ -13,6 +13,25 @@
 - P2 — заметное улучшение или некритичный баг.
 - P3 — идея, полировка, отложенное улучшение.
 
+## Ночная очередь 2026-07-22
+
+Алексей разрешил ограниченно открыть безопасные задачи после Горизонта 0, чтобы ночной запуск не простаивал. Это не отменяет постоянные stop points: сначала идут текущие P1, затем только явно описанный безопасный резерв Горизонта 0.5; Горизонт 1, CAL, платежи, entitlement, auth-security, production и крупная архитектура остаются закрыты.
+
+| Порядок | Brief | Результат ночи |
+| ---: | --- | --- |
+| 1 | `BRIEF-2026-07-22-30-focus-panel-visible-preview` | Проверить, почему Алексей не видит изменение «Фокуса дня»; не трогать незакоммиченные изменения другой сессии |
+| 2 | `BRIEF-2026-07-22-31-task-reminder-time-ios` | Разблокировать tap выбора времени уведомления на iPhone/TMA |
+| 3 | `BRIEF-2026-07-22-32-task-tag-popup-ios` | Убрать перекрывающий карточку нативный popup тега |
+| 4 | `BRIEF-2026-07-22-33-task-detail-hero-overflow-ios` | Устранить наложения длинного тега, заголовка, срока и приоритета |
+| 5 | `BRIEF-2026-07-22-34-chat-history-over-40-evidence` | Первый safe Г0.5 reserve: доказать поведение истории длиннее 40 сообщений без личных данных и массовых AI-вызовов |
+| 6 | `BRIEF-2026-07-22-35-smart007-memory-ui-regression-smoke` | Усилить AI-memory v1 smoke: escaping, reload, empty/error states |
+| 7 | `BRIEF-2026-07-22-36-privacy-surface-regression-smoke` | Повторяемо проверить privacy artifact и ссылки на трёх поверхностях |
+| 8 | `BRIEF-2026-07-22-37-back037-ci-coverage-audit` | Сверить CI/local smoke wiring и portable команды |
+| 9 | `BRIEF-2026-07-22-38-horizon05-manual-gates-pack` | Собрать единый утренний пакет ручных gates Горизонта 0.5 |
+| 10 | `BRIEF-2026-07-22-39-arch001-status-evidence-audit` | Устранить конфликт статуса ARCH-001 без архитектурного рефакторинга |
+| 11 | `BRIEF-2026-07-22-40-back012-component-inventory` | Инвентаризация BEM-компонентов без runtime/CSS правок |
+| 12 | `BRIEF-2026-07-22-41-horizon05-status-consistency` | Сверить и очистить устаревшие статусы Горизонта 0.5 |
+
 ---
 
 ## Now
@@ -69,7 +88,7 @@
 | NEW-017 | Календарь: при первом запуске показываются демо-задачи | Bug/UX | P2 | Юрий + Codex | Done | Г2 | Живой smoke 2026-07-12 не воспроизвёл баг ни локально, ни на staging deploy. Локальная ветка `.tmp-4e-app-publish` против staging worker после seed-а показывает реальные задачи `Smoke calendar alpha/beta`; реальная `https://4-ai-staging.pages.dev/` после seed-а свежего аккаунта показывает `13 июля — Мария — Stage calendar task`. Демо-набор в календаре на текущем коде/деплое не воспроизводится, значит исходный баг считаем закрытым. |
 | NEW-019 | Карточка задачи: "Человек" не кликабелен | Bug/Accessibility | P2 | Codex | Done | Г2 | Подтверждено кодом и живым smoke 2026-07-10: `#detail-person-row` (index.html) был размечен `role="button" tabindex="0"`, но без обработчика клика/клавиатуры. Исправлено коммитом `fix(tasks): make detail assignee row actionable` — добавлены `onclick="openDetailPersonPicker()"` и `onkeydown="handleDetailPersonRowKeydown(event)"` на строку, `onclick` на кнопку `detail-contact-btn`. Живой повторный smoke после фикса ещё не проводился. |
 | NEW-018 | Профиль: email в поле "Email" склеен из двух значений | Bug/Data | P2 | Codex | Done | Г2 | ЗАКРЫТО 2026-07-12: Юрий вручную исправил email и сохранил профиль → localStorage-черновик (`extendedProfileDraft`) перезаписан корректным значением. Юрий подтвердил через End/копирование значения поля: хвост строки чистый — `shelckograff@gmail.com`, без дублей и мусора. Итоговая причина — комбинация 2 факторов: (1) backend отдавал email не по каноническому `userId`, исправлено `f25051a`/`getSessionUser`, задеплоено (версия `f038d88a`); (2) клиентский `localStorage` черновик (`saveExtendedProfile()`, index.html ~2384) один раз закешировал битое значение и с тех пор перекрывал любой корректный backend-ответ при рендере (`draft.email\|\|currentUser.email\|\|''`). Открытый non-blocking follow-up: local draft не должен молча перекрывать backend без сверки/валидации — рассмотреть отдельной задачей, если повторится у других пользователей. |
-| NEW-020 | Голосовой ввод субъективно медленный | Performance/Voice | P2 | Codex | Ready for QA | Г2 | В `index.html` добавлена живая телеметрия voice-flow: каждый запуск пишет breakdown в `window.__voicePerfLast` и `window.__voicePerfHistory`, а также в console (`[voice-perf]`) с этапами `recognitionMs`, `preDispatchUiMs`, `branchMs`, `totalMs`, branch=`task|ask`, статусом и ошибкой. Статический аудит текущего кода уже выявил вероятную главную причину субъективной медлительности: после `SpeechRecognition.onresult` UI ещё искусственно держит примерно 3.6с анимационных `setTimeout` до фактического `sendVoiceMessage()`. 2026-07-21 Alexey reported voice works and he uses it constantly, so the user-visible voice path is not a beta blocker for him. Remaining tail, if needed: raw `__voicePerfLast` breakdown to decide whether to shorten UI animation delay. |
+| NEW-020 | Голосовой ввод субъективно медленный | Performance/Voice | P2 | Codex | Done | Г2 | Закрыто 2026-07-22 по явной пользовательской приёмке Алексея: голос работает в постоянном использовании, претензий к скорости или сценарию больше нет. Телеметрия `window.__voicePerfLast` / `__voicePerfHistory` остаётся диагностическим инструментом, но дополнительный замер и speculative timing fix не требуются. |
 | NEW-021 | Календарь: блок «Все дедлайны» не показывает данные по умолчанию | Bug/UX | P3 | Codex | Done | Г2 | В `index.html` нижний блок `Все дедлайны` больше не ждёт клика по дню: `renderCalendar()` теперь сразу рендерит список всех активных дедлайнов по реальным задачам, отсортированный по сроку; day-specific верхний блок `Дедлайны — <дата>` сохранён отдельно. Это устраняет пустое состояние `Выберите дату` по умолчанию. Нужен короткий QA-smoke на календаре после открытия экрана. Live headless smoke 2026-07-15 on https://44ccd355.4-ai-staging.pages.dev: calendar opens with 'Все дедлайны' populated by real active deadlines without selecting a day. |
 
 ## Next

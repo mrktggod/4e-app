@@ -45,7 +45,7 @@
 | AI-планерный дашборд | BACK-025 — утренний AI-дашборд в стиле "План на сегодня"; BACK-055 — уведомления как лента внимания; BACK-056 — убрать отрицательное время после 22:00; HOME-001 — редизайн главного экрана «Сегодня» | P1 | BACK-025 Done; BACK-055 Done; BACK-056 Done; HOME-001 Done |
 | Качество задач | Фаза 11 — относительные даты в карточках задач; BACK-019 — улучшенные карточки в списке; BACK-022 — ручной MVP детальной карточки задачи; BACK-044 — упрощение детальной карточки | P1 | BACK-022 Done; BACK-044 Done; BACK-019 Done |
 | Доступ и авторизация | BACK-024 — Telegram вход не должен упираться в тупиковую подсказку между Mini App и ботом; BACK-036 — web fallback Telegram-входа без `tg://resolve`; BACK-041 — bot-side возврат на сайт из `/start auth_*` | P1 | BACK-024 Done; BACK-036 Ready for QA; BACK-041 Ready for QA |
-| Голосовой ввод | BACK-021 — MediaRecorder + Whisper вместо SpeechRecognition (фикс BUG-2026-06-29-002, iOS); NEW-020 — voice-flow telemetry для субъективной медлительности | P1 | BACK-021 Done; NEW-020 Ready for QA — нужен живой staging/TMA smoke с реальными числами, без слепого runtime-фикса |
+| Голосовой ввод | BACK-021 — MediaRecorder + Whisper вместо SpeechRecognition (фикс BUG-2026-06-29-002, iOS); NEW-020 — voice-flow telemetry для субъективной медлительности | P1 | Done — BACK-021 закрыт iPhone smoke; NEW-020 закрыт 2026-07-22 явной приёмкой Алексея: голос работает в постоянном использовании, претензий нет |
 | 152-ФЗ | BACK-007 — номер уведомления РКН вшит в privacy.html, ссылка видна на login/register/онбординге, live staging `privacy.html` отдаёт `200` и содержит `102299/77` | P1 | Done |
 | Staging-контур | BACK-034 — Staging D1/KV + `wrangler --env staging`, тестовый бот, dev-версия Pages подняты; staging AI smoke пройден | P1 | Done — 2026-07-20 resmoke: staging app shell, worker marker, CORS, auth/register/login, tasks, `/anthropic` and `/transcribe` negative all green |
 | Хостинг фронта | INFRA-001 — whitelist-фронт на Workers Static Assets + маршрут `app.4-ai.site/*` через Worker | P0 | Done — решение 2026-07-14: РФ-без-VPN сознательно отложен до PLAT-002, Telegram/VK уже закрывают RU-доступ без VPN |
@@ -61,6 +61,8 @@
 ## Next — Горизонт 0.5 + 0.8 (июль–август 2026)
 
 Цель: закрыть правовые риски до публичного промо, привести кодовую базу в порядок.
+
+**Операционный режим с 2026-07-22:** после текущей очереди P1 ночной запуск может брать только явно оформленные safe-briefs Горизонта 0.5, которые проходят постоянный whitelist. Резерв включает AI-memory/privacy regression-smoke, CI evidence и docs/inventory; это не открытие Горизонта 0.8 или 1. CAL, платежи/entitlement, auth-security, production/main, продуктовые решения и крупная архитектура по-прежнему требуют отдельного решения Юрия.
 
 | Направление | Задачи | Приоритет | Статус |
 | --- | --- | --- | --- |

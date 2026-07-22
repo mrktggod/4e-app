@@ -1,3 +1,87 @@
+## 2026-07-23
+
+### Night inbox/backlog runner sync
+
+**What changed:** Current run found no `status: NEW` executable inbox briefs because night queue `30-41` was already closed or classified in HEAD. The pending Focus Day popup summary UI was committed separately, and this final automation report was added.
+
+**Encoding check:** current `index.html` marker check returned `111`; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `git fetch origin`; `git pull --ff-only`; `git diff --check`; `npm run build:css`; `node scripts/check-js-syntax.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `npm run smoke:home001`.
+
+**Commit:** `91a483a` plus this docs/report commit.
+
+---
+
+## 2026-07-22
+
+### iPhone task-detail regression audit
+
+**What changed:** Runtime code was not changed. Saved Alexey's two iPhone/TMA screenshots, added `docs/tasks/BUG-2026-07-22-task-detail-ios-regressions.md`, and registered `BUG-2026-07-22-001..003`: reminder timing cannot be tapped, tag/native suggestion UI covers content, and long tag/title overlap deadline/priority cards. Notification delivery QA is blocked until the reminder control is fixed.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Visual inspection of the two supplied screenshots plus narrow source/CSS audit of task-detail reminder, tag input/datalist, and late hero layout overrides. `git diff --check`; mojibake guard required before commit.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-22
+
+### Short AI-chat history persistence manual pass
+
+**What changed:** Runtime code was not changed. Recorded Alexey's manual check on current preview `b7076e2`: a recognizable AI-chat message and the visible history remained after fully closing and reopening the app. `BUG-2026-07-21-005` remains open only for an extended history over the current 40-message load/window or another chat surface.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual AI-chat send, full close, reopen, and history recheck by Alexey.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-22
+
+### Autologin login-screen flicker confirmed
+
+**What changed:** Runtime code was not changed. Recorded Alexey's manual check on `https://qa-b7076e2.4-ai-staging.pages.dev/`, source `b7076e2`: saved-session autologin succeeds, but the login screen flashes very briefly before home. `BUG-2026-07-21-008` is confirmed as a non-blocking P2 auth-shell issue.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual close/reopen check by Alexey with an existing authorized session.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-22
+
+### Subscription entry manual pass on current preview
+
+**What changed:** Runtime code was not changed. Recorded Alexey's manual check on `https://qa-b7076e2.4-ai-staging.pages.dev/`, source `b7076e2`: the subscription button opened the payment provider flow through the card-entry form. `BUG-2026-07-21-007` is closed for the current preview; real payment completion remains untested.
+
+**Encoding check:** `index.html` was not edited.
+
+**Test:** Manual staging-preview check by Alexey; no card data entered and no money charged.
+
+**Commit:** N/A
+
+---
+
+## 2026-07-22
+
+### Isolated staging preview for release QA
+
+**What changed:** Built the current `feat/admin-tariff-api` HEAD `b7076e2` with `PAGES_WORKER_TARGET=staging` and deployed only a Cloudflare Pages preview branch `qa-b7076e2`. Production, `main`, the shared staging alias, Worker code, payments, entitlements, and secrets were not changed. Direct deployment: `https://9ff9c715.4-ai-staging.pages.dev/`; stable preview alias: `https://qa-b7076e2.4-ai-staging.pages.dev/`.
+
+**Encoding check:** `index.html` was not edited; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** staging asset build and script-asset check passed; JS syntax check passed; both preview URLs returned `200` with the staging Worker marker, privacy-link fix, task-title normalization, and preview flags; `/auth/login` CORS preflight from the direct preview returned `204` with the matching origin. Cloudflare deployment source is `b7076e2`.
+
+**Commit:** N/A (preview deployment and documentation only)
+
+---
+
 ## 2026-07-22
 
 ### Morning inbox/safe backlog runner final report
@@ -2181,5 +2265,52 @@
 **Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
 
 **Тест:** `rg` по VK/VK Mini/vk.html в roadmap/backlog/tasks, чтение `FILE_MAP_UI.md` диапазонов `vk.html`. Runtime-smoke не выполнялся, потому что задача пока заведена как triage/plan.
+
+**Коммит:** N/A
+## 2026-07-22
+
+### Дневной summary-блок в попапе фокуса дня
+
+**Что сделано:** блок дневной сводки перенесён в начало попапа «Фокус дня»: добавлены метрики дня, пульс дня, кнопки «Поделиться планом дня» и «Итоги недели», список задач остаётся ниже блока.
+
+**Проверка кодировки:** совпадений до / после: 106 / 111.
+
+**Тест:** `npm run build:css`, `npm run check:cp1251-mojibake`, `git diff --check`, `bash scripts/check-portable-paths.sh`, `bash scripts/check-ui-architecture.sh`; `npm run smoke:home001` вернул `ok: true`, но завершился с Windows `EBUSY` на cleanup временного Chrome cookie-файла.
+
+**Коммит:** N/A
+
+## 2026-07-22
+
+### Ночная очередь Focus + iPhone task-detail + safe Horizon 0.5
+
+**Что сделано:** После ручного результата Алексея «по фокусу ничего не изменилось» созданы атомарные briefs `BRIEF-2026-07-22-30..34`. Очередь начинается с проверки commit/preview фокуса, затем исправляет три подтверждённых iPhone-регрессии детальной карточки задачи. Пятый brief открывает только безопасный evidence-проход Горизонта 0.5 для истории чата длиннее 40 сообщений. В каждом brief сохранены запреты на production/main, CAL, payment/entitlement, auth-security, secrets и перезапись чужого dirty worktree.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** Проверены порядок `status: NEW` inbox, уникальность brief-имён, постоянные stop points и ссылки на `BUG-2026-07-21-005`, `BUG-2026-07-22-001..003`. Runtime-тест не выполнялся: это PM/QA постановка ночной очереди.
+
+**Коммит:** N/A
+
+## 2026-07-22
+
+### NEW-020 — голос принят и закрыт
+
+**Что сделано:** Runtime-код не менялся. По явному решению Алексея `NEW-020` переведён из `Ready for QA` / `NEED-YURI` в `Done`: голос работает в его постоянном использовании, претензий к скорости и сценарию нет. Синхронизированы backlog, roadmap, QA evidence, brief и report; необязательный raw latency tail снят.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** Документальная сверка всех ссылок на `NEW-020`; пользовательская приёмка Алексея 2026-07-22.
+
+**Коммит:** N/A
+
+## 2026-07-22
+
+### Расширение safe night reserve Горизонта 0.5
+
+**Что сделано:** Созданы атомарные briefs `BRIEF-2026-07-22-35..41` после текущей P1/QA очереди. После точной сверки roadmap кандидаты SMART-008/009/010, VIRAL-005 и PLAT-002 исключены как Горизонт 1. Итоговый резерв 0.5: SMART-007 memory UI/privacy regression, privacy artifact/link smoke, BACK-037 CI audit, manual gates pack, ARCH-001 status evidence, BACK-012 component inventory и status consistency audit. Каждый brief исключает production/main, реальные AI/пользовательские данные, CAL, payments/entitlement, auth-security, stores, secrets и крупную архитектуру.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** Проверены уникальные имена briefs, последовательность `30-41`, соответствие permanent whitelist и наличие явных stop points/report paths.
 
 **Коммит:** N/A

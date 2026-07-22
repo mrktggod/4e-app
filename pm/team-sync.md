@@ -1,5 +1,70 @@
 # Team Sync
 
+## 2026-07-23 - Codex - night runner synced pending focus work
+
+- Branch `feat/admin-tariff-api` was fetched and fast-forward checked; origin was already up to date.
+- Inbox had no `status: NEW` non-template briefs; night queue `30-41` was already closed or classified in HEAD.
+- Codex committed the pending Focus popup summary UI as `feat(home): add focus panel daily summary`; final runner report: `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-23.md`.
+- Next: review Focus popup visibility on the next preview; iPhone task-detail fixes remain blocked until the concurrent-work state is cleared.
+
+## 2026-07-22 - Alexey/Codex - safe Horizon 0.5 night reserve expanded
+
+- Added briefs `35-41` after the current Focus/task-detail/history queue.
+- Evidence: SMART-007 memory UI/privacy regression, privacy surface artifact smoke and BACK-037 CI coverage audit.
+- Documentation: Horizon 0.5 manual gates pack, ARCH-001 status evidence, BACK-012 component inventory and status consistency audit.
+- Permanent gates remain: no CAL, payments/entitlement, auth-security, production/main, product decisions, stores or major architecture.
+
+## 2026-07-22 - Alexey/Codex - NEW-020 voice closed
+
+- Alexey explicitly confirmed that voice works in regular use and there are no complaints.
+- `NEW-020` and its former `NEED-YURI` brief are now `Done`; no raw latency measurement or speculative timing fix remains.
+- Horizon 0 open count decreases by one.
+
+## 2026-07-22 - Alexey/Codex - night queue opened with safe Horizon 0.5 reserve
+
+- Manual Focus result: no visible change; queued first as `BRIEF-2026-07-22-30-focus-panel-visible-preview` with a hard guard against overwriting current uncommitted work.
+- Next P1 fixes: iOS reminder trigger, tag popup and task-detail hero overflow (`31-33`).
+- First post-H0 safe reserve: extended chat-history evidence over 40 messages (`34`), synthetic data only.
+- Horizon 1 remains closed; no CAL, payments/entitlement, auth-security, production/main, product decisions or major architecture at night.
+
+## 2026-07-22 - Alexey/Codex - iPhone task-detail regressions block notification QA
+
+- Preview/source: `b7076e2`, iPhone Telegram Mini App.
+- Manual blocker: reminder timing could not be tapped, so notification delivery/sound/vibration were not tested.
+- Screenshot findings: native tag suggestion/input covers the hero; long tag wraps vertically; title overlaps deadline/priority and clips.
+- Bugs: `BUG-2026-07-22-001..003`; audit: `docs/tasks/BUG-2026-07-22-task-detail-ios-regressions.md`.
+- Next: narrow task-detail UI fix and 390x844 regression smoke, then repeat real iPhone notification QA.
+
+## 2026-07-22 - Alexey/Codex - short AI-chat history persistence green
+
+- Preview: `https://qa-b7076e2.4-ai-staging.pages.dev/`, source `b7076e2`.
+- Manual result: a recognizable AI-chat message and visible history remained after full close and reopen.
+- Status: short-session persistence is green; `BUG-2026-07-21-005` remains open for history longer than 40 messages or another chat surface.
+- Next: test notification delivery/salience on a real phone, or run an extended chat-history fixture separately.
+
+## 2026-07-22 - Alexey/Codex - autologin works with brief login flicker
+
+- Preview: `https://qa-b7076e2.4-ai-staging.pages.dev/`, source `b7076e2`.
+- Manual result: saved-session autologin succeeds, but the login screen flashes very briefly before home.
+- Status: `BUG-2026-07-21-008` confirmed as a non-blocking P2 auth-shell issue.
+- Suggested fix: hold a neutral splash until early auth bootstrap or `/auth/me` resolves, then show either home or login.
+
+## 2026-07-22 - Alexey/Codex - subscription entry green on current preview
+
+- Preview: `https://qa-b7076e2.4-ai-staging.pages.dev/`, source `b7076e2`.
+- Manual result: subscription button opened the provider flow through the card-entry form.
+- Status: `BUG-2026-07-21-007` closed for the current preview; no real payment was made.
+- Next: check saved-session autologin flicker on the same preview.
+
+## 2026-07-22 - Codex - current QA preview deployed
+
+- Branch: `feat/admin-tariff-api`; source commit `b7076e2`.
+- Preview: `https://qa-b7076e2.4-ai-staging.pages.dev/` (direct deployment `https://9ff9c715.4-ai-staging.pages.dev/`).
+- Evidence: both URLs return `200`, staging Worker marker and current-code markers are present, and auth CORS preflight returns `204` with the direct preview origin.
+- Boundaries: production, `main`, shared staging alias, Worker code, payment/entitlement logic, and secrets were untouched.
+- GitHub Pages note: red run on `7325c27` was a historical guard failure caused by a staging marker in the production artifact; later main deployments succeeded.
+- Next: manual QA on this exact preview, starting with subscription CTA and saved-session autologin flicker.
+
 ## 2026-07-22 - Codex - morning runner closed
 
 - Branch: `feat/admin-tariff-api`.

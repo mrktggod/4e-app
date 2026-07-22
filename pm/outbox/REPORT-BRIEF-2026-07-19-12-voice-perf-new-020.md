@@ -1,4 +1,4 @@
-status: NEED-YURI
+status: DONE
 
 # REPORT-BRIEF-2026-07-19-12-voice-perf-new-020
 
@@ -33,3 +33,7 @@ CP1251 mojibake check passed: 0 suspicious tokens
 - No production deploy.
 - No merge into `main`.
 - No CAL, price, secret, payment, or entitlement work.
+
+## Resolution Update - 2026-07-22
+
+Alexey explicitly confirmed that voice works in his regular use and there are no remaining complaints. `NEW-020` is therefore closed as user-accepted without a speculative timing change. The earlier `NEED-YURI` classification remains useful history, but no additional raw telemetry or real-device pass is required for this task.

@@ -1,6 +1,8 @@
-status: NEED-YURI
+status: DONE
 
-Need Yuri report: `pm/outbox/REPORT-BRIEF-2026-07-19-12-voice-perf-new-020.md`
+Resolution report: `pm/outbox/REPORT-BRIEF-2026-07-19-12-voice-perf-new-020.md`
+
+Closed 2026-07-22 by Alexey's explicit product acceptance: voice works in regular use and there are no remaining complaints. Raw latency telemetry is no longer required for this task.
 
 # BRIEF-2026-07-19-12-voice-perf-new-020
 
