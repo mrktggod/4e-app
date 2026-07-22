@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** BACK-012 task-move BEM cleanup island.
+**Result:** Moved task-move preset row text, panel, scroll, last-row and confirm button inline styles from `index.html` to `styles/screens/tasks.less`; rebuilt CSS.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Stop this automation run after final report; further `BACK-012` cleanup should continue as separate small slices.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-012 auth/forgot/reset BEM cleanup island.
 **Result:** Moved auth legal notes, forgot/reset titles and hints, forgot-success card, and login inner layout styles from `index.html` to `styles/layout.less`; rebuilt CSS.
 **Commit:** this commit

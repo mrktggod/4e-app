@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-012 task-move cleanup island
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-012` remains `Partial Done`.
+- Result: task-move preset row text, panel, scroll and confirm button inline styles moved into `styles/screens/tasks.less`; CSS rebuilt.
+- Evidence: encoding markers `106 -> 106`, `npm run smoke:back019` passed, UI guard reports inline style attrs `328 / 465`.
+- Report: `pm/outbox/REPORT-BACK-012-task-move-inline-cleanup-2026-07-22.md`.
+- Next: stop this automation run after final closeout report; further CSS cleanup should continue as separate small slices.
+
 ## 2026-07-22 - Codex - BACK-012 auth cleanup island
 
 - Branch: `feat/admin-tariff-api`.
