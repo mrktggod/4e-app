@@ -16,6 +16,7 @@
         "smoke:back066-vk": "node scripts/back-066-vk-task-intent-smoke.mjs",
         "smoke:back050": "node scripts/back-050-accessibility-smoke.mjs",
         "smoke:smart007": "node scripts/smart-007-memory-fixture-smoke.mjs",
+        "smoke:chat-history40": "node scripts/chat-history-over-40-evidence.mjs",
         "smoke:auth-avatar": "node scripts/auth-avatar-login-diagnose.mjs",
         "smoke:viral-share": "node scripts/viral-share-card-smoke.mjs",
         "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",

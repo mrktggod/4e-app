@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-22-34-chat-history-over-40-evidence
 
