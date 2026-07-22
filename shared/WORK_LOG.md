@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** BACK-012 auth/forgot/reset BEM cleanup island.
+**Result:** Moved auth legal notes, forgot/reset titles and hints, forgot-success card, and login inner layout styles from `index.html` to `styles/layout.less`; rebuilt CSS.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue `BACK-012` only as separate small BEM islands with visual/smoke proof.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** SMART-005 roadmap status sync.
 **Result:** Updated stale `shared/ROADMAP.md` proactive-bot row so `SMART-005` matches canonical `pm/backlog.md` status `Done`; runtime code was not changed.
 **Commit:** this commit

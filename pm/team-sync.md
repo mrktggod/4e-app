@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-012 auth cleanup island
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-012` remains `Partial Done`.
+- Result: auth/onboarding/forgot/reset layout-only inline styles moved into `styles/layout.less`; CSS rebuilt.
+- Evidence: encoding markers `106 -> 106`, `npm run smoke:back050` passed, UI guard reports inline style attrs `341 / 465`.
+- Report: `pm/outbox/REPORT-BACK-012-auth-inline-cleanup-2026-07-22.md`.
+- Next: continue `BACK-012` only as separate small BEM islands with visual/smoke proof.
+
 ## 2026-07-22 - Codex - SMART-005 roadmap synced
 
 - Branch: `feat/admin-tariff-api`.

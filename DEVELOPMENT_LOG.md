@@ -1798,6 +1798,16 @@
 
 ## 2026-07-22
 
+### BACK-012 auth/forgot/reset BEM cleanup island
+
+**What changed:** Removed a narrow set of layout-only inline styles from auth/onboarding/forgot/reset markup in `index.html` and moved them to `styles/layout.less` as `auth-screen-title`, `auth-screen-hint`, `auth-form`, `auth-success-*`, and `legal-note--*` classes. Rebuilt `styles.css` and `styles.min.css`. No auth behavior, backend, payment, entitlement, CAL, production deploy, or `main` merge was touched.
+
+**Encoding check:** `index.html` marker count before edit: 106; after edit: 106. `node scripts/check-cp1251-mojibake.mjs` returned `CP1251 mojibake check passed: 0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `npm run smoke:back050`; `npm run check:js-syntax`; `node scripts/check-cp1251-mojibake.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** pending
+
 ### SMART-005 roadmap status sync
 
 **What changed:** Synchronized stale roadmap status for `SMART-005`: `shared/ROADMAP.md` now matches canonical `pm/backlog.md`, where the morning chat briefing task is already `Done`. No runtime code, worker code, payment, entitlement, CAL, production deploy, or `main` merge was touched.
