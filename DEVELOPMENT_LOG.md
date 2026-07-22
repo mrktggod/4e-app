@@ -1,5 +1,19 @@
 ## 2026-07-22
 
+### BACK-012 calendar inline style cleanup
+
+**What changed:** Moved calendar screen header wrapper, month navigation actions, deadlines section, deadlines label/icon, empty state, and footer layout styles from `index.html` into `styles/screens/tasks.less`; rebuilt `styles.css` and `styles.min.css`. Runtime calendar logic was not changed.
+
+**Encoding check:** before editing `index.html`, marker check returned `106`; after editing, marker check returned `106`.
+
+**Test:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `node scripts/check-js-syntax.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh` (`inline style attributes = 320 / 465`).
+
+**Commit:** this commit
+
+---
+
+## 2026-07-22
+
 ### Night inbox/backlog runner final report
 
 **What changed:** Added the final report for `4e-night-inbox-and-whitelist-backlog-runner` on 2026-07-22 and team/work log sync. Inbox had no `NEW` briefs; the run completed 4 backlog tasks and stopped because remaining work is gated or needs reviewed follow-up briefs.

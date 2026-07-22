@@ -248,11 +248,13 @@
 /* ===== CALENDAR ===== */
 .cal-scroll{flex:1;overflow-y:auto;padding:0 16px 100px}
 .cal-scroll::-webkit-scrollbar{width:0}
+.cal-title-wrap{flex:1}
 .cal-tabs{display:none}
 .cal-tab{flex:1;padding:7px;border-radius:16px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif}
 .cal-tab.active{background:var(--green);color:var(--bg);font-weight:700}
 .cal-month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .cal-month-title{font-size:16px;font-weight:700;color:var(--text)}
+.cal-nav-actions{display:flex;gap:6px}
 .cal-nav-btn{width:28px;height:28px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px}
 .cal-weekday{font-size:10px;color:var(--muted);text-align:center;font-weight:500;padding:4px 0}
@@ -268,6 +270,12 @@
 .cal-event-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:4px}
 .cal-event-name{font-size:13px;color:var(--text);font-weight:500}
 .cal-add-btn{width:100%;padding:14px;border-radius:14px;background:var(--green);border:none;color:var(--bg);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;font-family:'Inter',sans-serif}
+.cal-deadlines-section{margin-top:20px;padding-bottom:16px}
+.cal-deadlines-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-deadlines-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.cal-help-icon{width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cal-empty-state{font-size:13px;color:var(--muted);padding:12px 0;text-align:center}
+.cal-footer{padding:12px 16px 28px;flex-shrink:0}
 
 /* ===== STATS ===== */
 .stats-scroll{flex:1;overflow-y:auto;padding:0 16px 96px}

@@ -504,13 +504,13 @@ if('serviceWorker' in navigator){
 <div class="screen" id="calendar">
   <div class="back-bar">
     <button class="back-btn" onclick="goHome()" aria-label="Назад"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div style="flex:1"><div class="back-title">Календарь</div></div>
+    <div class="cal-title-wrap"><div class="back-title">Календарь</div></div>
   </div>
   <div class="cal-scroll">
     <div class="cal-tabs"><div class="cal-tab" data-cal-view="day">День</div><div class="cal-tab active" data-cal-view="week">Неделя</div><div class="cal-tab" data-cal-view="month">Месяц</div></div>
     <div class="cal-month-nav">
       <span class="cal-month-title" id="cal-month-title">Май 2026</span>
-      <div style="display:flex;gap:6px">
+      <div class="cal-nav-actions">
         <div class="cal-nav-btn" data-cal-nav="-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
         <div class="cal-nav-btn" data-cal-nav="1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
@@ -521,20 +521,20 @@ if('serviceWorker' in navigator){
     <div id="cal-events"></div>
 
     <!-- Секция дедлайнов -->
-    <div style="margin-top:20px;padding-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase">Все дедлайны</div>
-        <div style="width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer">
+    <div class="cal-deadlines-section">
+      <div class="cal-deadlines-head">
+        <div class="cal-deadlines-label">Все дедлайны</div>
+        <div class="cal-help-icon">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
       </div>
       <div id="cal-deadlines-list">
-        <div style="font-size:13px;color:var(--muted);padding:12px 0;text-align:center">Выберите дату</div>
+        <div class="cal-empty-state">Выберите дату</div>
       </div>
     </div>
 
   </div>
-  <div style="padding:12px 16px 28px;flex-shrink:0"><button class="cal-add-btn" onclick="openAsk()">+ Новое событие</button></div>
+  <div class="cal-footer"><button class="cal-add-btn" onclick="openAsk()">+ Новое событие</button></div>
 </div>
 
 <!-- STATISTICS -->

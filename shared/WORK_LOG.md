@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** BACK-012 calendar BEM cleanup island.
+**Result:** Moved calendar header, month nav, deadlines section, empty state, and footer inline styles from `index.html` to `styles/screens/tasks.less`; CSS rebuilt.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue `BACK-012` only as separate small BEM islands with focused proof.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** 4e pre-dawn inbox and whitelist backlog runner final report.
 **Result:** Inbox had no executable `NEW` briefs; completed 3 safe tasks and added the final automation closeout report with stop reason.
 **Commit:** this commit

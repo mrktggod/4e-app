@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-22 - Codex - BACK-012 calendar cleanup island
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-012` remains `Partial Done`.
+- Result: calendar header, month nav, deadlines section, empty state, and footer inline styles moved into `styles/screens/tasks.less`; CSS rebuilt.
+- Evidence: encoding markers `106 -> 106`, mojibake guard passed, UI guard reports inline style attrs `320 / 465`.
+- Report: `pm/outbox/REPORT-BACK-012-calendar-inline-cleanup-2026-07-22.md`.
+- Next: continue `BACK-012` only as separate small BEM islands with focused proof.
+
 ## 2026-07-22 - Codex - pre-dawn runner closed
 
 - Branch: `feat/admin-tariff-api`.
