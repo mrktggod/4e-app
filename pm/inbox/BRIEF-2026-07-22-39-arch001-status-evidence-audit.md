@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-07-22-39-arch001-status-evidence-audit
 
