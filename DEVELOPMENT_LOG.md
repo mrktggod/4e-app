@@ -6,9 +6,9 @@
 
 **Проверка кодировки:** index.html не редактировался. Обязательный checker вернул 0 suspicious tokens; audit отдельно обнаружил blind spot checker для 823 box-drawing fragments и одной пользовательской стрелки, вынесенный в QA-ENC-001.
 
-**Тест:** home001, back019, back055, back050, back065, back066-vk, chat-history40 и privacy-surface smoke прошли. Финальные diff/portable-path checks выполняются перед docs commit.
+**Тест:** home001, back019, back055, back050, back065, back066-vk, chat-history40 и privacy-surface smoke прошли. `git diff --check`, CP1251 checker и portable-path check прошли.
 
-**Коммит:** pending docs-only commit
+**Коммит:** `2f18363` (audit docs); final metadata SHA — в task handoff
 
 ---
 

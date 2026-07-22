@@ -4,7 +4,7 @@
 Статус: DONE-DOCS / runtime untouched / NEED-CLAUDE и NEED-YURI gates вынесены отдельно
 Ветка: feat/admin-tariff-api
 Стартовый HEAD: 212dc58
-Commit: AUDIT-DOCS-COMMIT — точный SHA фиксируется metadata follow-up после первого commit
+Audit docs commit: `2f18363`
 
 ## Итог
 
@@ -228,6 +228,8 @@ BrowserStack App Live pilot для установки Telegram/VK и manual real
 - node scripts/check-cp1251-mojibake.mjs — PASS, exit code 0.
 - git diff --check — PASS.
 - C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh — PASS.
+
+Metadata follow-up меняет только SHA-ссылки в report/log/sync; итоговый HEAD указан в task handoff.
 
 Smoke-generated binary screenshots были восстановлены к tracked состоянию; в audit commit входят только документы/PM.
 

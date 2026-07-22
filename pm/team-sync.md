@@ -7,6 +7,7 @@
 - Auth-adjacent findings: standalone web-VK clears a saved token after any auth/me timeout; external OAuth helpers expect missing window.PLATFORM/window.WORKER exports. Both are NEED-CLAUDE.
 - VK AI-chat needs one redacted status/entitlement/CORS proof before code; do not weaken auth or entitlement.
 - Docs: pm/outbox/REPORT-4e-full-system-roadmap-and-design-audit-2026-07-23.md plus design, VK parity and QA tooling plans.
+- Audit docs commit: `2f18363`; final metadata SHA is recorded in the Codex task handoff.
 - Next: review the proposed atomic briefs and choose the nav/desktop product decisions; no runtime, main merge or deploy was performed.
 
 ## 2026-07-23 - Codex - night runner synced pending focus work

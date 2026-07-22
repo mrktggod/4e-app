@@ -2,7 +2,7 @@
 
 **Задача:** Полный системный audit roadmap, redesign, VK/web-VK и постоянного QA-контура.
 **Результат:** Сверены PM/Git/design/VK/auth/AI/notifications/tooling; создан итоговый report и три docs-only плана с P1 очередью, parity matrix и архитектурой 4e-qa-lab. Runtime не менялся.
-**Коммит:** pending docs-only commit
+**Коммит:** `2f18363` (audit docs); final metadata SHA — в task handoff
 **Статус:** ✅ выполнено
 **Следующий шаг:** Согласовать NEED-CLAUDE auth briefs и nav/desktop решения; затем исправлять P1 по одному brief.
 
