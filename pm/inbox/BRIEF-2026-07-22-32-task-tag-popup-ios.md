@@ -1,4 +1,4 @@
-status: NEW
+status: BLOCKED-CONCURRENT-WORK
 
 # BRIEF-2026-07-22-32-task-tag-popup-ios
 
