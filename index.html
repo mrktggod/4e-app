@@ -1847,6 +1847,43 @@ if('serviceWorker' in navigator){
   <div class="quick-add-sheet" tabindex="-1">
     <div id="focus-panel-title" class="quick-add-title">Фокус дня</div>
     <div id="focus-panel-subtitle" class="home-ai-summary-line">4 уже собрал главные приоритеты</div>
+    <section class="focus-summary-card" aria-label="Сводка дня">
+      <div class="focus-summary-head">
+        <div class="focus-summary-copy">
+          <div class="focus-summary-eyebrow">ЗАДАЧИ · СЕГОДНЯ</div>
+          <h2 id="focus-summary-title" class="focus-summary-title">Топ задач</h2>
+          <p id="focus-summary-sub" class="focus-summary-sub">Один список приоритетов, расставленный 4</p>
+        </div>
+        <div id="focus-summary-pulse" class="focus-summary-pulse">Пульс дня: 0%</div>
+      </div>
+      <div class="focus-summary-metrics" aria-label="Дневные показатели">
+        <div class="focus-summary-metric">
+          <span class="focus-summary-label">Выполнено</span>
+          <strong id="focus-summary-done">0</strong>
+          <small id="focus-summary-done-meta">нет закрытых</small>
+        </div>
+        <div class="focus-summary-metric">
+          <span class="focus-summary-label">Задачи</span>
+          <strong id="focus-summary-tasks">0</strong>
+          <small id="focus-summary-tasks-meta">спокойный день</small>
+        </div>
+        <div class="focus-summary-metric">
+          <span class="focus-summary-label">Обещания</span>
+          <strong id="focus-summary-promises">0</strong>
+          <small id="focus-summary-promises-meta">без просрочки</small>
+        </div>
+        <div class="focus-summary-metric focus-summary-metric--progress">
+          <span class="focus-summary-label">Прогресс</span>
+          <div id="focus-summary-progress-ring" class="focus-summary-ring"><span id="focus-summary-progress">0%</span></div>
+          <small id="focus-summary-progress-meta">нет данных</small>
+        </div>
+      </div>
+      <div class="focus-summary-actions">
+        <button type="button" class="focus-summary-share" onclick="shareDailyCard()">Поделиться планом дня</button>
+        <button type="button" class="focus-summary-week" onclick="shareWeeklySummaryCard()">Итоги недели</button>
+      </div>
+    </section>
+    <div class="focus-panel-list-title">Задачи на день</div>
     <div id="focus-panel-list" class="home-ai-section__rows">
       <div class="home-ai-empty">Собираю приоритеты...</div>
     </div>
@@ -3892,6 +3929,53 @@ function openHomePriorityTask(row,taskId,cacheIndex,closePanelFirst){
   openTaskById(taskId,cacheIndex);
 }
 
+function getFocusPanelTodayStats(tasks){
+  const source=Array.isArray(allTasksCache)?allTasksCache:[];
+  const todayKey=getShareCardDayKey(Date.now());
+  const active=source.filter(task=>!task.done);
+  const incoming=active.filter(task=>task.direction==='incoming');
+  const dayOutgoing=active.filter(task=>{
+    if(task.direction==='incoming') return false;
+    const deadline=parseTaskDate(getTaskDeadlineValue(task));
+    if(deadline) return getShareCardDayKey(deadline.getTime())===todayKey;
+    const createdTs=getTaskCreatedTimestamp(task);
+    return createdTs?getShareCardDayKey(createdTs)===todayKey:false;
+  });
+  const doneToday=source.filter(task=>task.done&&getShareCardDayKey(getAskTaskDoneTimestamp(task)||0)===todayKey).length;
+  const createdToday=source.filter(task=>{
+    const createdTs=getTaskCreatedTimestamp(task);
+    return createdTs?getShareCardDayKey(createdTs)===todayKey:false;
+  }).length;
+  const overduePromises=incoming.filter(task=>{
+    const deadline=parseTaskDate(getTaskDeadlineValue(task));
+    return deadline&&deadline<startOfLocalDay(new Date());
+  }).length;
+  const panelCount=Array.isArray(tasks)?tasks.length:0;
+  const dayTaskCount=panelCount||dayOutgoing.length;
+  const progressTotal=doneToday+dayTaskCount;
+  const progress=progressTotal>0?Math.min(100,Math.round(doneToday/progressTotal*100)):0;
+  return {doneToday,createdToday,dayTaskCount,panelCount,promises:incoming.length,overduePromises,progress,progressTotal};
+}
+
+function renderFocusPanelSummary(tasks){
+  const stats=getFocusPanelTodayStats(tasks);
+  const setText=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+  const topCount=stats.panelCount||stats.dayTaskCount;
+  setText('focus-summary-title',topCount?'Топ-'+topCount+' задач':'Топ задач');
+  setText('focus-summary-sub',topCount?'Один список приоритетов, расставленный 4':'Сегодня можно собрать первый приоритет');
+  setText('focus-summary-pulse','Пульс дня: '+stats.progress+'%');
+  setText('focus-summary-done',stats.doneToday);
+  setText('focus-summary-done-meta',stats.doneToday?'+'+stats.doneToday+' сегодня':(stats.createdToday?stats.createdToday+' новых сегодня':'нет закрытых'));
+  setText('focus-summary-tasks',stats.dayTaskCount);
+  setText('focus-summary-tasks-meta',stats.panelCount?stats.panelCount+' в фокусе':'спокойный день');
+  setText('focus-summary-promises',stats.promises);
+  setText('focus-summary-promises-meta',stats.overduePromises?stats.overduePromises+' просрочено':'без просрочки');
+  setText('focus-summary-progress',stats.progress+'%');
+  setText('focus-summary-progress-meta',stats.progressTotal?stats.doneToday+'/'+stats.progressTotal:'нет данных');
+  const ring=document.getElementById('focus-summary-progress-ring');
+  if(ring) ring.style.setProperty('--progress',stats.progress+'%');
+}
+
 function renderFocusPanel(){
   const subtitle=document.getElementById('focus-panel-subtitle');
   const list=document.getElementById('focus-panel-list');
@@ -3899,6 +3983,7 @@ function renderFocusPanel(){
   const tasks=getHomeDashboardTasks();
   const hotCount=(plannerSectionsCache.hot||[]).length;
   const incomingCount=(plannerSectionsCache.people||[]).length;
+  renderFocusPanelSummary(tasks);
   if(subtitle){
     if(tasks.length){
       subtitle.textContent=hotCount+' горят, '+incomingCount+' ждут ответа, 4 выделил главное';
