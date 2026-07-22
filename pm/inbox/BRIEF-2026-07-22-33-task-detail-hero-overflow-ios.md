@@ -1,4 +1,4 @@
-status: NEW
+status: BLOCKED-CONCURRENT-WORK
 
 # BRIEF-2026-07-22-33-task-detail-hero-overflow-ios
 
