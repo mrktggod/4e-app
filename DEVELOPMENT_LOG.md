@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Full system roadmap, design, VK and QA tooling audit
+
+**Что сделано:** Runtime не изменялся. Проведён системный audit PM/Git/design/VK/web-VK/auth/AI-chat/desktop notifications и QA tooling. Созданы pm/outbox/REPORT-4e-full-system-roadmap-and-design-audit-2026-07-23.md, pm/design-roadmap-correction-2026-07-23.md, pm/vk-parity-plan-2026-07-23.md и pm/qa-tooling-plan-2026-07-23.md. Зафиксированы три task-detail P1, stale concurrent statuses, OAuth global-alias candidate, web-VK token eviction на timeout, VK AI error-masking, PM-дубли и QA-lab план.
+
+**Проверка кодировки:** index.html не редактировался. Обязательный checker вернул 0 suspicious tokens; audit отдельно обнаружил blind spot checker для 823 box-drawing fragments и одной пользовательской стрелки, вынесенный в QA-ENC-001.
+
+**Тест:** home001, back019, back055, back050, back065, back066-vk, chat-history40 и privacy-surface smoke прошли. Финальные diff/portable-path checks выполняются перед docs commit.
+
+**Коммит:** pending docs-only commit
+
+---
+
 ### Night inbox/backlog runner sync
 
 **What changed:** Current run found no `status: NEW` executable inbox briefs because night queue `30-41` was already closed or classified in HEAD. The pending Focus Day popup summary UI was committed separately, and this final automation report was added.

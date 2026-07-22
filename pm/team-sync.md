@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-23 - Codex - full roadmap/design/VK/QA audit
+
+- Current branch was clean and aligned with origin before the audit; old BLOCKED-CONCURRENT-WORK statuses for briefs 30-33 are stale.
+- P1 order: iPhone reminder trigger, tag popup, hero overflow, then real notification delivery; light/chat, nav/safe-area and VK parity follow as separate briefs.
+- Auth-adjacent findings: standalone web-VK clears a saved token after any auth/me timeout; external OAuth helpers expect missing window.PLATFORM/window.WORKER exports. Both are NEED-CLAUDE.
+- VK AI-chat needs one redacted status/entitlement/CORS proof before code; do not weaken auth or entitlement.
+- Docs: pm/outbox/REPORT-4e-full-system-roadmap-and-design-audit-2026-07-23.md plus design, VK parity and QA tooling plans.
+- Next: review the proposed atomic briefs and choose the nav/desktop product decisions; no runtime, main merge or deploy was performed.
+
 ## 2026-07-23 - Codex - night runner synced pending focus work
 
 - Branch `feat/admin-tariff-api` was fetched and fast-forward checked; origin was already up to date.
