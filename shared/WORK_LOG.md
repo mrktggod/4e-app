@@ -1,5 +1,15 @@
 ### 2026-07-22 - Codex
 
+**Task:** 4e morning inbox and safe backlog runner final report.
+**Result:** Inbox had no executable `NEW` briefs; completed 3 safe `BACK-012` BEM-island cleanup tasks and added the final automation closeout report.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue `BACK-012` only as separate small BEM slices, or wait for narrower reviewed briefs.
+
+---
+
+### 2026-07-22 - Codex
+
 **Task:** BACK-012 notifications BEM cleanup island.
 **Result:** Moved notifications header, unread badge, filters, and list wrapper inline styles from `index.html` to `styles/screens/tasks.less`; CSS rebuilt.
 **Commit:** this commit

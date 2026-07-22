@@ -1,5 +1,19 @@
 ## 2026-07-22
 
+### Morning inbox/safe backlog runner final report
+
+**What changed:** Added the final report for `4e-morning-inbox-and-safe-backlog-runner` on 2026-07-22. Inbox had no executable `NEW` briefs; the run completed 3 safe `BACK-012` BEM-island cleanup tasks and stopped because current run limits were reached after three committed/pushed UI slices.
+
+**Encoding check:** `index.html` was not edited in this final report task; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-22
+
 ### BACK-012 notifications inline style cleanup
 
 **What changed:** Moved notifications screen header wrapper, unread badge, filters padding, and list wrapper padding from `index.html` into `styles/screens/tasks.less`; rebuilt `styles.css` and `styles.min.css`. Notification filter/action handlers were not changed.

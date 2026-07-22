@@ -1,5 +1,15 @@
 # Team Sync
 
+## 2026-07-22 - Codex - morning runner closed
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: no executable `status: NEW` non-template briefs.
+- Result: 3 safe backlog tasks completed: `BACK-012` calendar, statistics, and notifications BEM-island cleanup.
+- Commits: `a02ef19`, `01853cf`, `f18f20c`; final closeout report added after them.
+- Report: `pm/outbox/REPORT-4e-morning-inbox-and-safe-backlog-runner-2026-07-22.md`.
+- Stop reason: current run limits after 3 committed/pushed UI slices.
+- Next: continue `BACK-012` only as separate small BEM slices, or wait for narrower reviewed briefs.
+
 ## 2026-07-22 - Codex - BACK-012 notifications cleanup island
 
 - Branch: `feat/admin-tariff-api`.
