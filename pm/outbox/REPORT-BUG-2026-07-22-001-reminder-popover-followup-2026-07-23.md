@@ -1,6 +1,6 @@
 # REPORT-BUG-2026-07-22-001-reminder-popover-followup-2026-07-23
 
-status: READY-FOR-REAL-QA
+status: DONE
 
 ## User Evidence
 
@@ -71,6 +71,19 @@ Stable isolated preview:
 4. Confirm text stays horizontal and the task underneath does not react.
 5. Repeat in light theme.
 6. Reopen the task and verify the selected reminder remains.
+
+## Acceptance
+
+Alexey, 2026-07-23:
+
+- desktop: PASS;
+- iPhone: PASS;
+- dark theme: PASS;
+- light theme: PASS;
+- popup displays normally and options are tappable;
+- the selected reminder persists and remains highlighted when the popup is reopened.
+
+The P1 interaction bug is closed. A separate non-blocking UX tail was registered as `BUG-2026-07-23-001` / `BACK-070`: the closed bell does not visibly show that a reminder is active.
 
 ## Boundaries
 

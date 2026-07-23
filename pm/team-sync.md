@@ -1,5 +1,12 @@
 # Team Sync
 
+## 2026-07-23 - Alexey/Codex - reminder popup accepted
+
+- Desktop and iPhone re-QA passed on `https://qa-reminder-popover.4-ai-staging.pages.dev/`.
+- Dark and light popup display correctly; options are tappable; the previous selection persists and is highlighted after reopening.
+- `BUG-2026-07-22-001` is Done. Real notification delivery/sound/vibration returns to `BACK-064 NEED-YURI`.
+- New non-blocking P2: `BUG-2026-07-23-001` / `BACK-070`, because the closed bell does not show that a reminder is active.
+
 ## 2026-07-23 - Codex - reminder popup real-device follow-up
 
 - Alexey accepted the exact `5b9714c` Focus panel on iPhone: `Фокус ок`.

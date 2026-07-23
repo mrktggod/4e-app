@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Реальная приёмка reminder popup
+
+**Что сделано:** Алексей повторно проверил `https://qa-reminder-popover.4-ai-staging.pages.dev/` на desktop и iPhone. Dark/light popup отображается нормально, варианты нажимаются, выбранное значение сохраняется и подсвечивается после повторного открытия. `BUG-2026-07-22-001` переведён в Done. Наблюдение о невидимом активном reminder при закрытом popup вынесено в отдельный P2 `BUG-2026-07-23-001` / `BACK-070`; delivery/sound/vibration остаются ручным `BACK-064 NEED-YURI`.
+
+**Проверка кодировки:** runtime и `index.html` не изменялись.
+
+**Тест:** Реальная desktop/iPhone-приёмка Алексея; dark/light; повторное открытие popup и сохранение выбранного значения; `git diff --check`, Markdown encoding и mojibake guard.
+
+**Коммит:** this commit
+
+---
+
 ### Reminder popup follow-up после реальной iPhone-приёмки
 
 **Что сделано:** На точном preview `5b9714c` Алексей подтвердил Focus panel и нашёл неполный reminder fix: dark theme не давала надёжно выбрать вариант, light popup сжимал текст до 1-2 символов в строке и пропускал tap в карточку. Root cause воспроизведён через mobile hit-testing: поздний `.detail-redesign-tags button` делал вложенные options круглыми 44x44; `.detail-redesign-tags` с `overflow:hidden` исключал popup из hit-test за границами строки; light override уменьшал bell до 38px. CSS исправлен узкими селекторами/stacking/overflow, smoke расширен на dark/light геометрию и `elementFromPoint`.

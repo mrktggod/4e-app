@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** Зафиксировать реальную desktop/iPhone-приёмку reminder popup.
+**Result:** `BUG-2026-07-22-001` закрыт после dark/light PASS; выбранное значение сохраняется. Отдельный неблокирующий UX-хвост заведён как `BUG-2026-07-23-001` / `BACK-070`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Продолжить ручную приёмку tag popup; delivery/sound/vibration остаются `BACK-064 NEED-YURI`.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Исправить reminder popup после FAIL реальной iPhone-приёмки.
 **Result:** Убрано применение круглого 44x44 action-стиля к вложенным reminder options; открытая tag-row выпускает popup из overflow и поднимается над hero content; light trigger возвращён к 44x44. Smoke проверяет dark/light geometry и hit ownership.
 **Commit:** this commit
