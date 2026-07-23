@@ -6563,7 +6563,7 @@ function renderAskActionPreview(messageId,actions){
   const normalized=normalizeAskActions(actions);
   if(!messageId||dismissedAskActionMessageIds.has(String(messageId))||!normalized.length) return '';
   const alreadyApplied=askActionsAlreadyApplied(normalized);
-  return '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Предлагаемые действия</div><div style="display:flex;flex-direction:column;gap:6px">'+normalized.map(function(action){return '<div class="task-history-row">'+e2(describeAskAction(action))+'</div>';}).join('')+'</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button onclick="confirmAskActions(\''+esc(messageId)+'\')" style="background:var(--green);border:none;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--bg)">'+(alreadyApplied?'Уже выполнено':'Подтвердить')+'</button><button onclick="dismissAskActions(\''+esc(messageId)+'\')" style="background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--text2)">Не сейчас</button></div></div>';
+  return '<div class="sub-card ask-action-card"><div class="ask-action-label">Предлагаемые действия</div><div class="ask-action-list">'+normalized.map(function(action){return '<div class="task-history-row">'+e2(describeAskAction(action))+'</div>';}).join('')+'</div><div class="ask-action-controls"><button class="ask-action-btn ask-action-btn--primary" onclick="confirmAskActions(\''+esc(messageId)+'\')">'+(alreadyApplied?'Уже выполнено':'Подтвердить')+'</button><button class="ask-action-btn ask-action-btn--secondary" onclick="dismissAskActions(\''+esc(messageId)+'\')">Не сейчас</button></div></div>';
 }
 
 function getAskClarificationPeopleOptions(){
@@ -6614,9 +6614,9 @@ function buildAskTaskClarification(taskData){
 function renderAskClarificationPreview(messageId, clarify){
   if(!messageId||!clarify||pendingAskClarification?.messageId!==messageId) return '';
   const buttons=(clarify.options||[]).map(function(option,idx){
-    return '<button onclick="answerAskClarification(\''+esc(messageId)+'\','+idx+')" style="background:transparent;border:1px solid var(--border);border-radius:999px;padding:8px 12px;cursor:pointer;color:var(--text)">'+e2(option.label||'Вариант')+'</button>';
+    return '<button class="ask-action-btn ask-action-btn--pill" onclick="answerAskClarification(\''+esc(messageId)+'\','+idx+')">'+e2(option.label||'Вариант')+'</button>';
   }).join('');
-  return '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:8px">'+e2(clarify.question||'Уточним деталь')+'</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+buttons+'</div></div>';
+  return '<div class="sub-card ask-action-card"><div class="ask-action-label ask-action-label--question">'+e2(clarify.question||'Уточним деталь')+'</div><div class="ask-action-controls">'+buttons+'</div></div>';
 }
 
 function startAskTaskClarification(taskData, originalText, bubbleEl){

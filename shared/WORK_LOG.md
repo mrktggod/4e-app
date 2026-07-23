@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BACK-012 ask action preview BEM-island cleanup.
+**Result:** Moved generated ask action and clarification preview inline styles from `index.html` into `.ask-action-*` LESS classes; added focused smoke coverage.
+**Commit:** this commit
+**Status:** DONE / Ready for review
+**Next step:** Stop autonomous BACK-012 cleanup until a fresh narrow brief/smoke selects the next safe island.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BACK-012 task-card header/meta BEM-island cleanup.
 **Result:** Moved generated task-card header, category tag and deadline inline styles into `.task-card-*` classes while preserving swipe/card smoke behavior.
 **Commit:** this commit

@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-23 - Codex - ask action preview BEM slice
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-012` remains `Partial Done`; third safe BEM-island completed in this morning run.
+- Result: generated ask action and clarification preview inline styles were removed from `index.html` and moved into `.ask-action-*` classes in `styles/screens/voice.less`; CSS rebuilt.
+- Evidence: index encoding markers stayed `111 -> 111`; `npm run smoke:ask-action-preview` passed with `inlineStyleAttrs=0`; `node scripts/check-cp1251-mojibake.mjs` passed; UI guard improved to `299 / 465` style attrs and `401 / 402` handlers.
+- Next: no remaining pre-reviewed narrow whitelist BEM candidate is safe enough for autonomous DONE without a fresh brief/smoke; profile/settings and broader ask debt need review, while gated auth/payment/provider/CAL/prod/main work remains untouched.
+
 ## 2026-07-23 - Codex - task-card header BEM slice
 
 - Branch: `feat/admin-tariff-api`.

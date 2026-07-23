@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Ask action preview BEM-island cleanup
+
+**What changed:** Removed generated inline layout styles from `renderAskActionPreview()` and `renderAskClarificationPreview()` in `index.html`. Added `.ask-action-card`, `.ask-action-label`, `.ask-action-list`, `.ask-action-controls` and `.ask-action-btn*` rules in `styles/screens/voice.less`; rebuilt `styles.css` and `styles.min.css`. Added `scripts/ask-action-preview-bem-smoke.mjs` and `npm run smoke:ask-action-preview`.
+
+**Encoding check:** index marker count before / after: 111 / 111; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `npm run smoke:ask-action-preview`; `node --check scripts/ask-action-preview-bem-smoke.mjs`; `node scripts/check-cp1251-mojibake.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** this commit
+
+---
+
 ### Task-card header BEM-island cleanup
 
 **What changed:** Removed generated task-card header/category/deadline inline layout styles from `scripts/task-ui-renderers.js`. Added `.task-card-tags` wrapper and moved sizing/alignment into `.task-card-head`, `.task-card-tags`, `.task-card-tag`, and `.task-card-deadline` rules in `styles/screens/home.less`; rebuilt CSS artifacts. Updated BACK-012 inventory/backlog and team sync.

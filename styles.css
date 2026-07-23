@@ -11772,6 +11772,56 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
   border-radius: 18px;
   padding: 10px;
 }
+.ask-action-card {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--card2);
+}
+.ask-action-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.ask-action-label--question {
+  margin-bottom: 8px;
+}
+.ask-action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ask-action-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.ask-action-label--question + .ask-action-controls {
+  margin-top: 0;
+}
+.ask-action-btn {
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+}
+.ask-action-btn--primary {
+  background: var(--green);
+  border: none;
+  color: var(--bg);
+}
+.ask-action-btn--secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.ask-action-btn--pill {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+}
 .ask-input-shell {
   position: relative;
   z-index: 4;
