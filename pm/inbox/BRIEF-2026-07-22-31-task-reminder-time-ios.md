@@ -1,4 +1,4 @@
-status: BLOCKED-CONCURRENT-WORK
+status: DONE
 
 # BRIEF-2026-07-22-31-task-reminder-time-ios
 

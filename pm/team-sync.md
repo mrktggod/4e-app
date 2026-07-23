@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-23 - Codex - task-detail reminder picker fixed
+
+- Branch: `feat/admin-tariff-api`.
+- `BRIEF-2026-07-22-31-task-reminder-time-ios` is `DONE`; `BUG-2026-07-22-001` is `Ready for QA`.
+- Result: `button > select` was removed from the reminder bell; `select#detail-reminder` is now a sibling preserving the old save/update path, and the trigger is 44x44.
+- Evidence: encoding markers `111 -> 111`; `npm run smoke:back067-reminder` passed at 390x844 with trigger `44x44` and selected value `1hour`.
+- Next: run real iPhone/TMA reminder selection, then resume notification delivery/salience QA. Tag popup and hero overflow remain separate P1 fixes.
+
 ## 2026-07-23 - Codex - full roadmap/design/VK/QA audit
 
 - Current branch was clean and aligned with origin before the audit; old BLOCKED-CONCURRENT-WORK statuses for briefs 30-33 are stale.

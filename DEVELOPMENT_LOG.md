@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Task-detail reminder picker iOS fix
+
+**What changed:** Fixed the task-detail reminder picker by moving hidden `select#detail-reminder` out of `button.detail-redesign-bell`, keeping it as a sibling for the existing save/update path, and raising the task-detail action trigger size from 36px to 44px. Added `scripts/back-067-task-detail-reminder-smoke.mjs` and `npm run smoke:back067-reminder` for a focused 390x844 regression check.
+
+**Encoding check:** index marker count before / after: 111 / 111.
+
+**Test:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `npm run smoke:back067-reminder`.
+
+**Commit:** this commit
+
+---
+
 ### Full system roadmap, design, VK and QA tooling audit
 
 **Что сделано:** Runtime не изменялся. Проведён системный audit PM/Git/design/VK/web-VK/auth/AI-chat/desktop notifications и QA tooling. Созданы pm/outbox/REPORT-4e-full-system-roadmap-and-design-audit-2026-07-23.md, pm/design-roadmap-correction-2026-07-23.md, pm/vk-parity-plan-2026-07-23.md и pm/qa-tooling-plan-2026-07-23.md. Зафиксированы три task-detail P1, stale concurrent statuses, OAuth global-alias candidate, web-VK token eviction на timeout, VK AI error-masking, PM-дубли и QA-lab план.

@@ -1,3 +1,13 @@
+### 2026-07-23 - Codex
+
+**Task:** Fix iPhone/TMA task-detail reminder time picker.
+**Result:** Removed invalid nested `button > select`, kept `select#detail-reminder` as sibling for the existing save path, made the trigger 44x44, and added `npm run smoke:back067-reminder`.
+**Commit:** this commit
+**Status:** DONE / Ready for QA
+**Next step:** Run real iPhone/TMA reminder selection, then continue notification delivery QA.
+
+---
+
 ### 2026-07-23 — Codex
 
 **Задача:** Полный системный audit roadmap, redesign, VK/web-VK и постоянного QA-контура.

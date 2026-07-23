@@ -20,7 +20,7 @@
 | Порядок | Brief | Результат ночи |
 | ---: | --- | --- |
 | 1 | `BRIEF-2026-07-22-30-focus-panel-visible-preview` | Проверить, почему Алексей не видит изменение «Фокуса дня»; не трогать незакоммиченные изменения другой сессии |
-| 2 | `BRIEF-2026-07-22-31-task-reminder-time-ios` | Разблокировать tap выбора времени уведомления на iPhone/TMA |
+| 2 | `BRIEF-2026-07-22-31-task-reminder-time-ios` | DONE 2026-07-23: reminder trigger is standalone 44x44, sibling select preserves save path, `smoke:back067-reminder` green at 390x844 |
 | 3 | `BRIEF-2026-07-22-32-task-tag-popup-ios` | Убрать перекрывающий карточку нативный popup тега |
 | 4 | `BRIEF-2026-07-22-33-task-detail-hero-overflow-ios` | Устранить наложения длинного тега, заголовка, срока и приоритета |
 | 5 | `BRIEF-2026-07-22-34-chat-history-over-40-evidence` | Первый safe Г0.5 reserve: доказать поведение истории длиннее 40 сообщений без личных данных и массовых AI-вызовов |
