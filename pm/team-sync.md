@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-23 - Codex - task-card header BEM slice
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-012` remains `Partial Done`; second safe BEM-island completed in this morning run.
+- Result: generated task-card header/category/deadline inline styles were removed from `scripts/task-ui-renderers.js`; `.task-card-tags` now keeps category and offline sync badges inside the existing CSS grid.
+- Evidence: `npm run smoke:back019` passed at 390x844; `node scripts/check-cp1251-mojibake.mjs` passed; UI guard stayed within baseline at `309 / 465` style attrs and `401 / 402` handlers; renderer has no `style="` matches.
+- Next: remaining safe candidate is `ask-action-preview`, but it touches `index.html` and needs a focused ask composer smoke/encoding ritual before any code change.
+
 ## 2026-07-23 - Codex - notification renderer BEM slice
 
 - Branch: `feat/admin-tariff-api`.

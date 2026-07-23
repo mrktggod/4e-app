@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BACK-012 task-card header/meta BEM-island cleanup.
+**Result:** Moved generated task-card header, category tag and deadline inline styles into `.task-card-*` classes while preserving swipe/card smoke behavior.
+**Commit:** this commit
+**Status:** DONE / Ready for review
+**Next step:** Only continue `ask-action-preview` with index encoding ritual and a focused ask composer smoke.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BACK-012 notification renderer BEM-island cleanup.
 **Result:** Moved generated notification empty/action/chip/snooze layout styles from `scripts/task-ui-renderers.js` into `.notif-*` LESS classes; `smoke:back055` stays green.
 **Commit:** this commit

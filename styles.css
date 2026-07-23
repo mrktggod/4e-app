@@ -1604,10 +1604,18 @@ body:has(#reset-password.active) .bottom-nav-v2 {
   background: #ebcd48;
   box-shadow: 0 0 0 3px rgba(235, 205, 72, 0.14);
 }
-.task-card-shell .task-card-tag {
+.task-card-shell .task-card-tags {
   justify-self: start;
   min-width: 0;
   max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+.task-card-shell .task-card-tag {
+  min-width: 0;
+  max-width: 112px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1620,10 +1628,12 @@ body:has(#reset-password.active) .bottom-nav-v2 {
 }
 .task-card-shell .task-card-deadline {
   justify-self: end;
-  max-width: 128px;
+  max-width: 136px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: right;
+  line-height: 1.2;
   font-size: 11px;
   font-weight: 700;
   color: var(--muted);

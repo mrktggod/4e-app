@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Task-card header BEM-island cleanup
+
+**What changed:** Removed generated task-card header/category/deadline inline layout styles from `scripts/task-ui-renderers.js`. Added `.task-card-tags` wrapper and moved sizing/alignment into `.task-card-head`, `.task-card-tags`, `.task-card-tag`, and `.task-card-deadline` rules in `styles/screens/home.less`; rebuilt CSS artifacts. Updated BACK-012 inventory/backlog and team sync.
+
+**Encoding check:** `index.html` was not modified in this slice; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `node --check scripts/task-ui-renderers.js`; `npm run smoke:back019`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** this commit
+
+---
+
 ### Notification renderer BEM-island cleanup
 
 **What changed:** Moved generated notification empty-state, kind-chip, preview, action-wrap and snooze-menu layout styles out of `scripts/task-ui-renderers.js` string templates into `.notif-*` classes in `styles/screens/voice.less`; rebuilt `styles.css` and `styles.min.css`. Updated BACK-012 inventory/backlog and team sync.
