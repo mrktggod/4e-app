@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK calendar parser beta parity
+
+**What changed:** For `BRIEF-2026-07-23-47-vk-calendar-parser-beta-parity`, added `localDateKey()` and `taskDeadlineDateKey()` in `vk.html`, then used them for task date sorting, overdue checks, parser output, detail date input, calendar task dots and selected-day lists. Added `scripts/vk-calendar-date-key-smoke.mjs`, `npm run smoke:vk-calendar-date-key`, updated file maps, backlog and outbox report.
+
+**Encoding check:** `index.html` was not edited; `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** `npm run smoke:vk-calendar-date-key`; shared VK/UI guards before commit.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### VK profile beta parity
 
 **What changed:** For `BRIEF-2026-07-23-46-vk-profile-beta-parity`, added account/identity summary chips, privacy policy navigation and a local-only notification settings entry in `vk.html`, without touching subscription/payment/VK Pay/entitlement behavior. Added `scripts/vk-profile-parity-smoke.mjs`, `npm run smoke:vk-profile-parity`, updated file maps, backlog and outbox report.

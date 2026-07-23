@@ -77,7 +77,7 @@
 | 1-7 | Head scripts | VK bridge |
 | 8-249 | CSS | VK layout, auth, cards, tabs, home focus metadata, profile IA, task-detail edit form, screens |
 | 251-567 | HTML | VK auth, home focus/top-task metadata, task detail with edit controls, ask, calendar, stats, profile summary/privacy |
-| 568-1900 | JavaScript | VK auth, tasks, profile summary, home parity summary, task detail edit, AI chat, calendar, stats |
+| 568-1919 | JavaScript | VK auth, tasks, profile summary, home parity summary, task detail edit, AI chat, local date keys, calendar, stats |
 
 ### VK JavaScript ranges
 
@@ -89,11 +89,12 @@
 | 1002-1267 | Enter app, profile/account summary, identities, login/register/logout |
 | 1275-1379 | Task loading and shell rendering |
 | 1380-1466 | Home focus summary, urgent/overdue/next-deadline chips, top task row |
-| 1467-1588 | Task list HTML, save task from chat and task detail date/meta helpers |
-| 1589-1703 | Task detail edit helpers and worker update path |
-| 1704-1775 | Task detail render, discussion and done action |
-| 1776-1892 | Navigation, ask chat, calendar, stats |
-| 1893-1900 | Toast |
+| 1467-1496 | Task list HTML |
+| 1497-1588 | Local date-key helpers, task parsing, save task from chat |
+| 1589-1722 | Task detail edit helpers and worker update path |
+| 1723-1794 | Task detail render, discussion and done action |
+| 1795-1911 | Navigation, ask chat, calendar local date grouping, stats |
+| 1912-1919 | Toast |
 
 ## `privacy.html`
 

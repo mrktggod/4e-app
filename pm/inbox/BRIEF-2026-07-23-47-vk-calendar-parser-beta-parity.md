@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-23-47 - VK-CALENDAR-001 beta calendar parser parity
 

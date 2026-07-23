@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-47 VK calendar parser beta parity.
+**Result:** Added local date-key normalization for VK task deadlines/calendar grouping and covered ISO datetime fixtures with `npm run smoke:vk-calendar-date-key`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue with `BRIEF-2026-07-23-48-vk-auth-session-claude-scope`.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BRIEF-2026-07-23-46 VK profile beta parity.
 **Result:** Added VK profile account/identity summary chips, privacy policy navigation and a local-only notification settings entry; covered it with `npm run smoke:vk-profile-parity`.
 **Commit:** this commit

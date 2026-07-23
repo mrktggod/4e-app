@@ -1385,16 +1385,17 @@ function priorityWeight(task) {
 }
 
 function taskDateValue(task) {
-  const value = String(task?.deadline || '').trim();
-  return value ? Date.parse(value) || Number.MAX_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
+  const value = taskDeadlineDateKey(task?.deadline);
+  return value ? Date.parse(value + 'T00:00:00') || Number.MAX_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
 }
 
 function isTaskOverdue(task, today) {
-  return Boolean(task?.deadline && String(task.deadline).slice(0, 10) < today);
+  const dateKey = taskDeadlineDateKey(task?.deadline);
+  return Boolean(dateKey && dateKey < today);
 }
 
 function getHomeFocusState(active) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDateKey();
   const urgent = active.filter(t => priorityWeight(t) >= HOME_PRIORITY_WEIGHTS.high);
   const overdue = active.filter(t => isTaskOverdue(t, today));
   const dated = active.filter(t => t.deadline).sort((a, b) => taskDateValue(a) - taskDateValue(b));
@@ -1474,8 +1475,9 @@ function pluralRu(n, one, few, many) {
 
 function taskHTML(t, idx = 0) {
   const icons = { promise: t.subtype === 'incoming' ? '📥' : '🤝', deadline: '⏰', task: '📌' };
-  const today = new Date().toISOString().slice(0,10);
-  const overdue = t.deadline && t.deadline < today;
+  const today = localDateKey();
+  const deadlineKey = taskDeadlineDateKey(t.deadline);
+  const overdue = deadlineKey && deadlineKey < today;
   const taskId = String(t.id || '').replace(/'/g, "\\'");
   const taskText = escapeHtml(t.text || t.title || '');
   return `<div class="task-card task-card-v2" onclick="openTaskDetail('${taskId}')">
@@ -1484,7 +1486,7 @@ function taskHTML(t, idx = 0) {
       <div class="task-title">${taskText}</div>
       <div class="task-meta">
         ${t.type ? `<span class="tag">${icons[t.type]||'📌'}</span>` : ''}
-        ${t.deadline ? `<span class="tag ${overdue?'deadline':''}">${formatDate(t.deadline)}</span>` : ''}
+        ${deadlineKey ? `<span class="tag ${overdue?'deadline':''}">${formatDate(deadlineKey)}</span>` : ''}
       </div>
     </div>
     <div class="task-check" onclick="event.stopPropagation();doneTask('${taskId}')" title="Выполнить"></div>
@@ -1492,10 +1494,28 @@ function taskHTML(t, idx = 0) {
   </div>`;
 }
 
+function localDateKey(date = new Date()) {
+  const dt = date instanceof Date ? date : new Date(date);
+  if (Number.isNaN(dt.getTime())) return '';
+  const year = dt.getFullYear();
+  const month = String(dt.getMonth() + 1).padStart(2, '0');
+  const day = String(dt.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function taskDeadlineDateKey(deadline) {
+  const raw = String(deadline || '').trim();
+  if (!raw) return '';
+  const direct = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (direct) return direct[1];
+  return localDateKey(raw);
+}
+
 function formatDate(d) {
-  if (!d) return '';
+  const key = taskDeadlineDateKey(d);
+  if (!key) return '';
   const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-  const dt = new Date(d);
+  const dt = new Date(key + 'T00:00:00');
   return `${dt.getDate()} ${months[dt.getMonth()]}`;
 }
 
@@ -1524,10 +1544,10 @@ function normalizeTaskText(text) {
 function inferTaskDeadline(text) {
   const value = String(text || '').toLowerCase();
   const date = new Date();
-  if (/(^|\s)сегодня(?=\s|$)/i.test(value)) return date.toISOString().slice(0, 10);
+  if (/(^|\s)сегодня(?=\s|$)/i.test(value)) return localDateKey(date);
   if (/(^|\s)завтра(?=\s|$)/i.test(value)) {
     date.setDate(date.getDate() + 1);
-    return date.toISOString().slice(0, 10);
+    return localDateKey(date);
   }
   return '';
 }
@@ -1577,8 +1597,7 @@ function getTaskDetailPriority(task) {
 }
 
 function taskDeadlineInputValue(task) {
-  const raw = String(task?.deadline || '').trim();
-  return /^\d{4}-\d{2}-\d{2}/.test(raw) ? raw.slice(0, 10) : '';
+  return taskDeadlineDateKey(task?.deadline);
 }
 
 function setDetailEditError(message) {
@@ -1846,13 +1865,13 @@ function buildCalendar() {
   const today = new Date();
   const first = new Date(d.getFullYear(), d.getMonth(), 1);
   const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-  const taskDates = state.tasks.filter(t => t.deadline).map(t => t.deadline);
+  const taskDates = state.tasks.map(t => taskDeadlineDateKey(t.deadline)).filter(Boolean);
   let html = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(n => `<div class="cal-day-name">${n}</div>`).join('');
   let startDay = first.getDay() || 7;
   for (let i = 1; i < startDay; i++) { const d2 = new Date(first); d2.setDate(d2.getDate() - startDay + i); html += `<div class="cal-day other-month">${d2.getDate()}</div>`; }
   for (let i = 1; i <= last.getDate(); i++) {
     const dt = new Date(d.getFullYear(), d.getMonth(), i);
-    const iso = dt.toISOString().slice(0,10);
+    const iso = localDateKey(dt);
     const isToday = dt.toDateString() === today.toDateString();
     const hasTask = taskDates.includes(iso);
     html += `<div class="cal-day ${isToday?'today':''} ${hasTask?'has-task':''}" onclick="showDayTasks('${iso}')">${i}</div>`;
@@ -1860,7 +1879,7 @@ function buildCalendar() {
   grid.innerHTML = html;
 }
 function showDayTasks(dateStr) {
-  const tasks = state.tasks.filter(t => t.deadline === dateStr);
+  const tasks = state.tasks.filter(t => taskDeadlineDateKey(t.deadline) === dateStr);
   const list = document.getElementById('calTaskList');
   list.innerHTML = tasks.length ? tasks.map(t => taskHTML(t)).join('') : `<div class="text-muted text-sm" style="padding:12px 0">Нет задач на ${formatDate(dateStr)}</div>`;
 }
