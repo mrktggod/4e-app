@@ -930,6 +930,18 @@
 
 **РљРѕРјРјРёС‚:** N/A
 
+## 2026-07-23
+
+### Pre-dawn inbox/backlog runner closeout
+
+**Что сделано:** closed 3 autonomous whitelist P1 task-detail fixes from the stale night queue: reminder trigger, task tag popup, and task detail hero overflow. Added the final runner report `pm/outbox/REPORT-4e-pre-dawn-inbox-and-whitelist-backlog-runner-2026-07-23.md`.
+
+**Проверка кодировки:** `4e-app/index.html` marker matches stayed 111 / 111 during app edits.
+
+**Тест:** `npm run build:css`, `node scripts/check-cp1251-mojibake.mjs`, `git diff --check`, `bash scripts/check-portable-paths.sh`, `bash scripts/check-ui-architecture.sh`, `npm run smoke:back067-reminder`, `npm run smoke:back068-tag-popup`, `npm run smoke:back069-hero`.
+
+**Коммит:** `a736148`, `471bfab`, `4207f3a` + closeout commit
+
 **РЎС‚Р°С‚СѓСЃ:** Triaged вЂ” СЂРµР°Р»РёР·Р°С†РёСЏ РІ РІРµС‚РєРµ `fix/task-detail-card-cleanup`.
 
 ---

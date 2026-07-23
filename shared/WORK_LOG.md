@@ -8,6 +8,16 @@
 
 ---
 
+### 2026-07-23 — Codex
+
+**Задача:** pre-dawn inbox/backlog runner closeout after safe task-detail fixes
+**Результат:** closed 3 whitelist P1 iPhone task-detail bugs with reports and smokes; no remaining safe autonomous tasks found
+**Коммит:** `a736148`, `471bfab`, `4207f3a` + closeout commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** manual iPhone/TMA QA for task detail; remaining gated work needs Claude/Yuri or separate briefs
+
+---
+
 ### 2026-07-23 - Codex
 
 **Task:** Fix iPhone/TMA task-detail tag popup.

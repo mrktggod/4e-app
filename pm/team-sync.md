@@ -860,6 +860,13 @@
 - Fixed critical toast detection for Cyrillic phrases: `Нет соединения` now becomes `role=alert` with `aria-live=assertive`.
 - `BACK-050` stays `Ready for QA`; manual keyboard/mobile smoke remains the Done gate.
 
+## 2026-07-23 - pre-dawn runner task-detail fixes
+
+- `feat/admin-tariff-api` now contains three atomic P1 iPhone task-detail fixes: reminder picker, tag popup, and hero overflow.
+- Commits: `a736148`, `471bfab`, `4207f3a`.
+- Repeatable mobile smokes are green: `smoke:back067-reminder`, `smoke:back068-tag-popup`, `smoke:back069-hero`.
+- The runner stopped because the remaining backlog/roadmap candidates are manual/device/provider-gated, `NEED-CLAUDE`, `NEED-YURI`, payment/entitlement/auth-security/CAL/prod/main/secret-gated, or broad architecture work that needs a tighter brief.
+
 ## 2026-07-20 - SMART-007 memory fixture smoke
 
 - `SMART-007` evidence upgraded from `SOURCE-ONLY` to `LIVE` using safe staging fixture `npm run smoke:smart007`.
