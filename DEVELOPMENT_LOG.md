@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK auth session Claude scope
+
+**What changed:** For `BRIEF-2026-07-23-48-vk-auth-session-claude-scope`, no runtime code was changed. Wrote `pm/outbox/REPORT-2026-07-23-48-vk-auth-session-claude-scope.md`, marked the brief `NEED-CLAUDE`, and updated backlog/work logs with exact token bootstrap/removal lines and the reviewed fix plan.
+
+**Encoding check:** App HTML was not edited; `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** Source audit and shared docs guards before commit.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### VK calendar parser beta parity
 
 **What changed:** For `BRIEF-2026-07-23-47-vk-calendar-parser-beta-parity`, added `localDateKey()` and `taskDeadlineDateKey()` in `vk.html`, then used them for task date sorting, overdue checks, parser output, detail date input, calendar task dots and selected-day lists. Added `scripts/vk-calendar-date-key-smoke.mjs`, `npm run smoke:vk-calendar-date-key`, updated file maps, backlog and outbox report.

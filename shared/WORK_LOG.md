@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-48 VK auth session Claude scope.
+**Result:** Classified auth-session fix as NEED-CLAUDE and documented exact token bootstrap/removal lines, narrow reviewed fix plan and regression checklist.
+**Commit:** this commit
+**Status:** NEED-CLAUDE
+**Next step:** Claude/Yuri approve exact auth response-shape contract before runtime changes.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BRIEF-2026-07-23-47 VK calendar parser beta parity.
 **Result:** Added local date-key normalization for VK task deadlines/calendar grouping and covered ISO datetime fixtures with `npm run smoke:vk-calendar-date-key`.
 **Commit:** this commit
