@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-46 VK profile beta parity.
+**Result:** Added VK profile account/identity summary chips, privacy policy navigation and a local-only notification settings entry; covered it with `npm run smoke:vk-profile-parity`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue with `BRIEF-2026-07-23-47-vk-calendar-parser-beta-parity`.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BRIEF-2026-07-23-45 VK home beta parity.
 **Result:** Added local task-derived focus summary, urgent/overdue/next-deadline chips and top task row for VK home; covered it with `npm run smoke:vk-home-parity`.
 **Commit:** this commit

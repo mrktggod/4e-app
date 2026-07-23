@@ -155,6 +155,13 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 .profile-header { display: flex; align-items: center; gap: 16px; padding: 16px 0 20px; }
 .profile-name { font-size: 20px; font-weight: 600; }
 .profile-email { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.profile-summary { margin-top: 8px; color: var(--text2); font-size: 12px; line-height: 1.35; }
+.profile-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.profile-chip { min-height: 26px; display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 9px; background: rgba(154,194,60,0.10); color: var(--green); font-size: 11px; font-weight: 700; text-decoration: none; }
+.profile-chip.secondary { background: rgba(242,245,233,0.08); color: var(--muted); }
+.profile-legal-card { padding: 4px 16px; }
+.profile-legal-link { color: inherit; text-decoration: none; }
+.profile-legal-link:focus-visible { outline: 2px solid rgba(154,194,60,0.45); outline-offset: -2px; }
 .identity-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
 .identity-row:last-child { border-bottom: none; }
 .identity-main { min-width: 0; }
@@ -474,6 +481,11 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
     <div>
       <div class="profile-name" id="profileName">Пользователь</div>
       <div class="profile-email" id="profileEmail"></div>
+      <div class="profile-summary" id="profileAccountSummary">VK Mini App</div>
+      <div class="profile-chips" aria-label="Статус профиля">
+        <span class="profile-chip" id="profileIdentitySummary">0 подключено</span>
+        <a class="profile-chip secondary profile-legal-link" href="privacy.html" target="_blank" rel="noopener">Приватность</a>
+      </div>
     </div>
   </div>
   <div class="trial-banner">
@@ -499,14 +511,21 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
     </div>
     <div class="identity-hint">Email, VK и Telegram должны вести к одному профилю, чтобы задачи и история не распадались по разным аккаунтам.</div>
   </div>
+  <div class="section-label">Безопасность и документы</div>
+  <div class="card profile-legal-card">
+    <a class="setting-row profile-legal-link" href="privacy.html" target="_blank" rel="noopener">
+      <span class="label">Политика конфиденциальности</span>
+      <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+    <div class="setting-row" onclick="showToast('Настройки уведомлений пока локальные')">
+      <span class="label">Уведомления</span>
+      <span class="value">Локально</span>
+    </div>
+  </div>
   <div class="card" style="padding:4px 16px">
     <div class="setting-row" onclick="toggleTheme()">
       <span class="label">Тема оформления</span>
       <span class="value" id="themeLabel">Тёмная</span>
-    </div>
-    <div class="setting-row" onclick="showToast('Скоро')">
-      <span class="label">Уведомления</span>
-      <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div class="setting-row" onclick="showToast('Скоро')">
       <span class="label">Подписка</span>
@@ -1053,6 +1072,8 @@ function applyUser() {
   document.getElementById('profileName').textContent = name;
   document.getElementById('profileEmail').textContent = state.user.email || '';
   document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
+  const accountSummary = document.getElementById('profileAccountSummary');
+  if (accountSummary) accountSummary.textContent = state.user.vkId ? 'VK Mini App · VK ID подключён' : 'VK Mini App · вход по email';
   const trial = state.user.trialEndsAt ? Math.max(0, Math.ceil((state.user.trialEndsAt - Date.now()) / 86400000)) : 30;
   document.getElementById('trialDays').textContent = trial;
 }
@@ -1088,6 +1109,11 @@ function renderIdentityRows(status = '') {
     { title: 'VK', value: identityValue(vk, 'VK ID'), connected: Boolean(vk || state.user?.vkId) },
     { title: 'Telegram', value: identityValue(telegram, 'TG ID'), connected: Boolean(telegram || state.user?.telegramId) }
   ];
+  const connectedCount = rows.filter((row) => row.connected).length;
+  const identitySummary = document.getElementById('profileIdentitySummary');
+  if (identitySummary) {
+    identitySummary.textContent = connectedCount + ' ' + pluralRu(connectedCount, 'связь', 'связи', 'связей');
+  }
   list.innerHTML = rows.map((row) => `<div class="identity-row">
     <div class="identity-main">
       <div class="identity-title">${escapeHtml(row.title)}</div>

@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-23-46 - VK-PROFILE-001 beta profile parity
 

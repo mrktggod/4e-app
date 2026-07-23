@@ -75,25 +75,25 @@
 | Диапазон | Блок | Что внутри |
 | --- | --- | --- |
 | 1-7 | Head scripts | VK bridge |
-| 8-242 | CSS | VK layout, auth, cards, tabs, home focus metadata, task-detail edit form, screens |
-| 244-548 | HTML | VK auth, home focus/top-task metadata, task detail with edit controls, ask, calendar, stats, profile |
-| 549-1874 | JavaScript | VK auth, tasks, home parity summary, task detail edit, AI chat, calendar, stats |
+| 8-249 | CSS | VK layout, auth, cards, tabs, home focus metadata, profile IA, task-detail edit form, screens |
+| 251-567 | HTML | VK auth, home focus/top-task metadata, task detail with edit controls, ask, calendar, stats, profile summary/privacy |
+| 568-1900 | JavaScript | VK auth, tasks, profile summary, home parity summary, task detail edit, AI chat, calendar, stats |
 
 ### VK JavaScript ranges
 
 | Диапазон | Назначение |
 | --- | --- |
-| 550-639 | Config, theme, fetch helpers, auth diagnostics |
-| 651-871 | Diagnostics, auth token, D1 sync, launch params, warmup |
-| 897-978 | VK bridge init and auto-login |
-| 983-1241 | Enter app, identities, login/register/logout |
-| 1249-1353 | Task loading and shell rendering |
-| 1354-1440 | Home focus summary, urgent/overdue/next-deadline chips, top task row |
-| 1441-1562 | Task list HTML, save task from chat and task detail date/meta helpers |
-| 1563-1677 | Task detail edit helpers and worker update path |
-| 1678-1749 | Task detail render, discussion and done action |
-| 1750-1866 | Navigation, ask chat, calendar, stats |
-| 1867-1874 | Toast |
+| 569-658 | Config, theme, fetch helpers, auth diagnostics |
+| 670-890 | Diagnostics, auth token, D1 sync, launch params, warmup |
+| 916-997 | VK bridge init and auto-login |
+| 1002-1267 | Enter app, profile/account summary, identities, login/register/logout |
+| 1275-1379 | Task loading and shell rendering |
+| 1380-1466 | Home focus summary, urgent/overdue/next-deadline chips, top task row |
+| 1467-1588 | Task list HTML, save task from chat and task detail date/meta helpers |
+| 1589-1703 | Task detail edit helpers and worker update path |
+| 1704-1775 | Task detail render, discussion and done action |
+| 1776-1892 | Navigation, ask chat, calendar, stats |
+| 1893-1900 | Toast |
 
 ## `privacy.html`
 

@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK profile beta parity
+
+**What changed:** For `BRIEF-2026-07-23-46-vk-profile-beta-parity`, added account/identity summary chips, privacy policy navigation and a local-only notification settings entry in `vk.html`, without touching subscription/payment/VK Pay/entitlement behavior. Added `scripts/vk-profile-parity-smoke.mjs`, `npm run smoke:vk-profile-parity`, updated file maps, backlog and outbox report.
+
+**Encoding check:** `index.html` was not edited; `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** `npm run smoke:vk-profile-parity`; shared VK/UI guards before commit.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### VK home beta parity
 
 **What changed:** For `BRIEF-2026-07-23-45-vk-home-beta-parity`, added a narrow VK home parity slice in `vk.html`: focus summary, urgent/overdue/next-deadline chips, and a top task row derived from already loaded local task data. Added `scripts/vk-home-parity-smoke.mjs`, `npm run smoke:vk-home-parity`, updated file maps, backlog and outbox report.
