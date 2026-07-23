@@ -9862,7 +9862,7 @@
 
 **Task:** Transfer approved soft-glass redesign slices to `feat/admin-tariff-api` and publish staging.
 **Result:** Profile `328fdff`, chat `1b1ff0`, task-detail `e2d861c`, and dashboard/subscription `a5d40e3` slices were integrated into app runtime files, CSS was rebuilt, and Cloudflare Pages staging deployed to `https://263b279c.4-ai-staging.pages.dev/`.
-**Commit:** pending
+**Commit:** final automation commit, see `git rev-parse HEAD`
 **Status:** NEED-YURI - production deploy waits for Yuri approval; staging API smoke currently fails at `register: 500`.
 **Next step:** Yuri reviews staging URL and decides prod cutover after API/register status is understood.
 
@@ -10017,6 +10017,16 @@
 **Следующий шаг:** проверить branch preview с cache-bust после деплоя.
 
 **Задача:** Зафиксировать первую продиктованную идею Алексея для будущего backlog/roadmap triage.
+### 2026-07-24 — Codex
+
+**Task:** DESIGN-GLASS-001 night pass with missing reference image.
+**Result:** Produced `pm/design-system-glass-inventory-2026-07-24.md`, updated the outbox report to `NEED-REFERENCE`, and kept runtime/CSS unchanged.
+**Commit:** pending
+**Status:** ⚠️ blocked / NEED-REFERENCE
+**Next step:** Alexey adds `pm/design-references/glass-card-reference.png` or Claude/Yuri approve token-only scope.
+
+---
+
 **Результат:** Создан черновик `pm/idea-capture-2026-07-21.md` с идеей использовать 4 как внутренний штаб разработки агентабота: задачи разработки, управление агентами, уведомления и лента событий.
 **Коммит:** N/A
 **Статус:** ✅ выполнено

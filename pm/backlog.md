@@ -25,7 +25,7 @@
 
 | ID | Task | Type | Priority | Owner | Status | Horizon | Done criteria |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| DESIGN-GLASS-001 | Global glass design system: make glass panels the base visual language for cards, buttons, fields, notifications, popups, and new blocks | Design/UI | P1 | Codex + Claude/Yuri review | Planned for night pass | H0.5 | First pass creates token/component map and, only if Alexey's reference image exists in `pm/design-references/glass-card-reference.*`, one narrow branch/preview-ready implementation slice with visual evidence. No prod, no main merge, no payment/entitlement/CAL/secrets. |
+| DESIGN-GLASS-001 | Global glass design system: make glass panels the base visual language for cards, buttons, fields, notifications, popups, and new blocks | Design/UI | P1 | Codex + Claude/Yuri review | NEED-REFERENCE | H0.5 | 2026-07-24 inventory exists in `pm/design-system-glass-inventory-2026-07-24.md`, but implementation is blocked until Alexey adds `pm/design-references/glass-card-reference.*` or Claude/Yuri approve a token-only first slice. No prod, no main merge, no payment/entitlement/CAL/secrets. |
 
 ## VK beta readiness queue - 2026-07-23
 

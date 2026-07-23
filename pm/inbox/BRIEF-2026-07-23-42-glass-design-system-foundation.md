@@ -1,4 +1,4 @@
-status: NEED-CLAUDE
+status: NEED-REFERENCE
 
 # BRIEF-2026-07-23-42-glass-design-system-foundation
 

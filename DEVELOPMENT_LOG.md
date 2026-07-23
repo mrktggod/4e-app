@@ -1,3 +1,17 @@
+## 2026-07-24
+
+### DESIGN-GLASS-001 inventory refresh
+
+**What changed:** The 2026-07-24 automation run found no glass reference image in `pm/design-references/`, so runtime glass styling stayed blocked. Added `pm/design-system-glass-inventory-2026-07-24.md`, updated the existing outbox report to `NEED-REFERENCE`, and moved the backlog row from planned night pass to the current reference gate.
+
+**Encoding check:** `index.html` was not edited; the mandatory encoding ritual was not required for this docs-only run.
+
+**Test:** Source/PM audit with `rg`, plus shared guards before commit.
+
+**Commit:** final automation commit, see `git rev-parse HEAD`
+
+---
+
 ## 2026-07-23
 
 ### VK AI chat Claude scope
