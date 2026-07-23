@@ -1875,6 +1875,27 @@ body:has(#reset-password.active) .bottom-nav-v2 {
   display: grid !important;
   gap: 10px !important;
 }
+#home-show-all-btn {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: 10px 0 0;
+  border-radius: 16px;
+  border: 1px solid rgba(188, 222, 150, 0.24);
+  background: rgba(24, 40, 28, 0.72);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+#home-show-all-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
 #home-task-list > * {
   max-width: 100% !important;
   overflow: hidden !important;

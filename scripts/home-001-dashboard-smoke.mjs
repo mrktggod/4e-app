@@ -48,6 +48,15 @@ const smokeTasks = [
     createdAt: new Date(Date.now() - 10800000).toISOString()
   },
   {
+    id: 'home-smoke-followup',
+    text: 'Write follow-up notes for pilot testers',
+    direction: 'outgoing',
+    directionLabel: 'Work',
+    person: 'Alex',
+    priority: 'p3',
+    createdAt: new Date(Date.now() - 12800000).toISOString()
+  },
+  {
     id: 'home-smoke-done',
     text: 'Completed previous dashboard smoke',
     direction: 'outgoing',
@@ -307,6 +316,7 @@ async function runSmoke(ws, appUrl) {
     metrics.viewportWidth = window.innerWidth;
     metrics.documentScrollWidth = document.documentElement.scrollWidth;
     metrics.homeRows = document.querySelectorAll('#home-task-list .home-ai-row').length;
+    metrics.showAllDisplay = getComputedStyle(byId('home-show-all-btn')).display;
     metrics.metricCards = document.querySelectorAll('#home .dash-metric').length;
     metrics.bottomNavButtons = document.querySelectorAll('#home .dash-bottom-nav button').length;
     metrics.focusCount = byId('focus-day-count')?.textContent || '';
@@ -316,6 +326,7 @@ async function runSmoke(ws, appUrl) {
 
     assert(metrics.initialScreen === 'home', 'home is not the active screen after auth smoke');
     assert(metrics.homeRows === 3, 'home should render exactly top-3 priority rows');
+    assert(metrics.showAllDisplay !== 'none', 'home should expose show-all when active tasks exceed visible priority rows');
     assert(metrics.metricCards === 4, 'home should render four metric cards');
     assert(metrics.bottomNavButtons === 3, 'home bottom nav should render three buttons');
     assert(Number(metrics.focusCount) >= 2, 'focus count should reflect seeded attention tasks');
@@ -359,6 +370,10 @@ async function runSmoke(ws, appUrl) {
 
     await click('[data-home-action="open-active-list"]', 'active metric action');
     await waitFor(() => activeScreen() === 'statistics', 'active metric did not open statistics');
+    await goHomeNow();
+
+    await click('#home-show-all-btn', 'show-all task action');
+    await waitFor(() => activeScreen() === 'statistics', 'show-all task action did not open statistics');
     await goHomeNow();
 
     await click('[data-home-action="open-promise-list"]', 'promise metric action');
@@ -416,12 +431,14 @@ async function runSmoke(ws, appUrl) {
       await wait(150);
       const failures = [];
       const rows = document.querySelectorAll('#home-task-list .home-ai-row').length;
+      const showAllDisplay = getComputedStyle(document.getElementById('home-show-all-btn')).display;
       const theme = document.documentElement.getAttribute('data-theme');
       const scrollWidth = document.documentElement.scrollWidth;
       if (theme !== 'light') failures.push('light theme did not apply');
       if (rows !== 3) failures.push('light theme lost priority rows');
+      if (showAllDisplay === 'none') failures.push('light theme lost show-all task action');
       if (scrollWidth > window.innerWidth + 1) failures.push('light theme has horizontal overflow');
-      return { ok: failures.length === 0, failures, metrics: { theme, rows, scrollWidth, viewportWidth: window.innerWidth } };
+      return { ok: failures.length === 0, failures, metrics: { theme, rows, showAllDisplay, scrollWidth, viewportWidth: window.innerWidth } };
     }})()`,
     awaitPromise: true,
     returnByValue: true
@@ -488,7 +505,10 @@ try {
         await fs.rm(tempDir, { recursive: true, force: true });
         break;
       } catch (error) {
-        if (attempt === 4) throw error;
+        if (attempt === 4) {
+          console.warn(`home001 smoke cleanup skipped locked temp dir: ${error.code || error.message}`);
+          break;
+        }
         await new Promise(resolve => setTimeout(resolve, 150));
       }
     }

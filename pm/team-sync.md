@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-23 - Codex - home task list visibility fix
+
+- Branch: `feat/admin-tariff-api`.
+- Bug: `BUG-2026-07-23-001` is `Ready for QA`.
+- Result: home dashboard now fills visible top rows from all active tasks, normalizes legacy task id fields for UI rendering, and shows `Смотреть все задачи` when more active tasks exist than visible cards.
+- Evidence: index encoding markers stayed `111 -> 111`; `npm run smoke:home001` passed with 4 active fixture tasks, `homeRows=3`, `showAllDisplay=flex`, and no horizontal overflow; mojibake/path/UI guards passed.
+- Next: check the real Telegram Mini App account where only one task was visible; confirm the full active list opens from `Смотреть все задачи`.
+
 ## 2026-07-23 - Codex - roadmap/backlog night results synced
 
 - `pm/backlog.md` now records the factual outcome of every night brief `30-41`, including 10 Done, the separately committed Focus implementation with manual QA tail, and `ARCH-001` as an unresolved NEED-CLAUDE decision.

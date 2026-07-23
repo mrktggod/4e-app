@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** Fix Telegram Mini App home task list showing only one visible task.
+**Result:** Home dashboard now fills visible priority rows from all active tasks, normalizes legacy task id fields for UI rendering, and shows `Смотреть все задачи` when more active tasks exist.
+**Commit:** N/A
+**Status:** DONE / Ready for QA
+**Next step:** Check in the real Telegram Mini App account where the bug was seen; tap `Смотреть все задачи` and confirm the full active list opens.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Синхронизировать результаты ночной сессии в общих roadmap и backlog.
 **Result:** В `pm/backlog.md` записан фактический исход всех briefs 30-41; в `shared/ROADMAP.md` добавлен понятный итог ночи и ссылка на подробный анализ. Спорный `ARCH-001` оставлен без изменения до решения Юрия/Claude.
 **Commit:** this commit

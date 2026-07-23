@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Telegram Mini App home task list visibility fix
+
+**What changed:** Fixed a home dashboard case where only one visible task could appear while more active tasks existed. `loadTasks()` now normalizes legacy task identifiers (`taskId`, `task_id`, `key`) into the UI `id` field. `getHomeDashboardTasks()` now includes defer/fallback active tasks when filling the visible top-3 rows, and `#home-show-all-btn` becomes visible when active tasks exceed the visible rows. Added `#home-show-all-btn` LESS styling and extended `npm run smoke:home001` to cover 4 active tasks plus the visible show-all action.
+
+**Encoding check:** index marker count before / after: 111 / 111; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `npm run smoke:home001`; `npm run check:js-syntax`; `node scripts/check-cp1251-mojibake.mjs`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Commit:** N/A
+
+---
+
 ### Синхронизация ночных результатов в roadmap и backlog
 
 **Что сделано:** В `pm/backlog.md` будущие формулировки ночной очереди 30-41 заменены фактическими результатами: 10 briefs Done, Focus отдельно реализован коммитом `91a483a` и требует ручной проверки, `ARCH-001` оставлен как решение для Claude/Юрия. В `shared/ROADMAP.md` добавлена понятная сводка ночной сессии и ссылка на `pm/ANALYSIS-2026-07-23-night-session-and-next-periods.md`. Обновлены `pm/team-sync.md` и `shared/WORK_LOG.md`.

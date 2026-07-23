@@ -3062,6 +3062,8 @@ let offlineSyncInProgress=false;
 function getOfflineUserKey(){return String(currentUser?.id||chatId||'guest').trim()||'guest';}
 function getOfflineTaskCacheKey(){return OFFLINE_TASK_CACHE_PREFIX+':'+getOfflineUserKey();}
 function getOfflineTaskQueueKey(){return OFFLINE_TASK_QUEUE_PREFIX+':'+getOfflineUserKey();}
+function getTaskUiId(task){return String(task?.id||task?.taskId||task?.task_id||task?.key||'').trim();}
+function ensureTaskUiId(task){if(task&&!task.id){const id=getTaskUiId(task);if(id)task.id=id;}return task;}
 function readJsonLocal(key,fallback){
   try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}
 }
@@ -3184,6 +3186,7 @@ async function loadTasks(){
       tasks=applyOfflineQueueToTasks(cached);
       showToast('Офлайн-режим: показываю последний сохранённый план');
     }
+    tasks=(tasks||[]).map(ensureTaskUiId);
     const active=(tasks||[]).filter(t=>!t.done);
     const done=(tasks||[]).filter(t=>t.done);
     const outgoing=active.filter(t=>t.direction!=='incoming');
@@ -3268,7 +3271,8 @@ async function loadTasks(){
     // Show-all button visibility
     const showAllBtn = document.getElementById('home-show-all-btn');
     const allHome = [...outgoing, ...incoming];
-    if(showAllBtn) showAllBtn.style.display = 'none';
+    const visibleHomeCount = document.querySelectorAll('#home-task-list .task-card-shell').length;
+    if(showAllBtn) showAllBtn.style.display = allHome.length > visibleHomeCount ? 'flex' : 'none';
 
   selectedMonth = new Date().getMonth();
   loadStats(outgoing, done, tasks);
@@ -3873,11 +3877,11 @@ async function loadStats(outgoing = [], done = [], tasks = []){
 let plannerCompactMode = false;
 let plannerSectionsCache = {first:[], hot:[], people:[], defer:[]};
 
-function getHomeDashboardTasks(){
-  const pool=[...(plannerSectionsCache.hot||[]),...(plannerSectionsCache.first||[]),...(plannerSectionsCache.people||[])];
+function getHomeDashboardTasks(fallbackTasks=[]){
+  const pool=[...(plannerSectionsCache.hot||[]),...(plannerSectionsCache.first||[]),...(plannerSectionsCache.people||[]),...(plannerSectionsCache.defer||[]),...(fallbackTasks||[])];
   const seen=new Set();
   return pool.filter(task=>{
-    const id=String(task?.id||'').trim();
+    const id=getTaskUiId(task);
     if(!id||seen.has(id)) return false;
     seen.add(id);
     return true;
@@ -4031,7 +4035,8 @@ function updateHomeDashboardList({outgoing=[],incoming=[]}){
   const titleEl=document.getElementById('home-section-title');
   const subEl=document.getElementById('home-section-sub');
   const homeList=document.getElementById('home-task-list');
-  const dashboardTasks=getHomeDashboardTasks();
+  const allHomeTasks=[...(outgoing||[]),...(incoming||[])];
+  const dashboardTasks=getHomeDashboardTasks(allHomeTasks);
   if(titleEl){
     titleEl.textContent='Задачи · текущий месяц';
   }
