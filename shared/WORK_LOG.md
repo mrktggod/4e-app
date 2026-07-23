@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-42 glass design-system foundation.
+**Result:** Reference image was missing, so runtime/CSS work was not guessed; current glass surfaces were inventoried and next atomic briefs were proposed.
+**Commit:** this commit
+**Status:** NEED-CLAUDE / NEED-REFERENCE
+**Next step:** Add `pm/design-references/glass-card-reference.png` or approve a reviewed token-only slice.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Queue VK beta readiness for the night runner.
 **Result:** Added seven NEW VK inbox briefs: one beta-readiness map, four safe local parity/test slices, and two explicit `NEED-CLAUDE` scope reports for auth session and AI-chat. Backlog and roadmap now record that VK must be working for beta while production/payment/entitlement/CAL/secret/live-device gates stay blocked.
 **Commit:** this commit

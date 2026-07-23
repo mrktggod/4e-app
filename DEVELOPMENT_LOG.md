@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### DESIGN-GLASS-001 reference gate
+
+**What changed:** For `BRIEF-2026-07-23-42-glass-design-system-foundation`, the runner found no reference image in `pm/design-references/` and did not implement cross-screen glass styling by guesswork. The brief was marked `NEED-CLAUDE`; the outbox report records the reference gate, current glass inventory and next atomic briefs.
+
+**Encoding check:** `index.html` was not edited in this task; `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** Source/PM audit through `rg`; shared guards before commit.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### VK beta readiness night queue
 
 **What changed:** Added VK beta-readiness night briefs `43-49` on `feat/admin-tariff-api`: readiness map, task-detail parity, home parity, profile parity, calendar/parser parity, plus `NEED-CLAUDE` scope reports for auth session and AI-chat. Updated `pm/backlog.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md`, and wrote `pm/outbox/REPORT-2026-07-23-vk-beta-night-queue.md`.
