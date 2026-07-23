@@ -19,8 +19,8 @@
 
 | Порядок | Brief | Результат ночи |
 | ---: | --- | --- |
-| 1 | `BRIEF-2026-07-22-30-focus-panel-visible-preview` | BLOCKED → отдельная реализация `91a483a`: ночной brief остановился из-за параллельных незакоммиченных правок; после их завершения дневная сводка была добавлена в панель «Фокус дня», `smoke:home001` прошёл. Осталась свежая ручная проверка на телефоне |
-| 2 | `BRIEF-2026-07-22-31-task-reminder-time-ios` | DONE 2026-07-23: reminder trigger is standalone 44x44, sibling select preserves save path, `smoke:back067-reminder` green at 390x844 |
+| 1 | `BRIEF-2026-07-22-30-focus-panel-visible-preview` | DONE 2026-07-23: отдельная реализация `91a483a` принята Алексеем на iPhone в точном preview `5b9714c`; панель «Фокус дня» открывается и показывает дневную сводку |
+| 2 | `BRIEF-2026-07-22-31-task-reminder-time-ios` | Ready for re-QA: первый structural fix прошёл старый headless smoke, но real iPhone 2026-07-23 нашёл collapsed 44px options и tap-through, особенно в dark theme. Follow-up исправляет selector/overflow/stacking и проверяет обе темы; повторный preview: `https://qa-reminder-popover.4-ai-staging.pages.dev/` |
 | 3 | `BRIEF-2026-07-22-32-task-tag-popup-ios` | DONE 2026-07-23: native tag datalist replaced with app-owned suggestions, visible cancel/outside/Escape close, `smoke:back068-tag-popup` green at 390x844 |
 | 4 | `BRIEF-2026-07-22-33-task-detail-hero-overflow-ios` | DONE 2026-07-23: final hero guard returns title/description to flow, long tag uses ellipsis, `smoke:back069-hero` green at 390x844 |
 | 5 | `BRIEF-2026-07-22-34-chat-history-over-40-evidence` | DONE: доказано, что интерфейс загружает и показывает последние 40 сообщений без пагинации; потери удалённого хранения не доказаны. Расширение истории требует отдельного решения по API и продукту |

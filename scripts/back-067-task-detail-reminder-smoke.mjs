@@ -198,27 +198,81 @@ async function runSmoke(ws, appUrl) {
     assert(!bell?.querySelector('select'), 'reminder select must not be nested inside button');
     assert(select?.parentElement !== bell, 'reminder select parent must be a sibling, not the button');
 
-    const triggerRect = bell?.getBoundingClientRect();
-    assert(triggerRect?.width >= 44 && triggerRect?.height >= 44, 'reminder trigger should be at least 44x44');
+    const themeResults = [];
+    for (const theme of ['dark', 'light']) {
+      document.documentElement.dataset.theme = theme;
+      setDetailReminder('none');
+      document.querySelector('#task-detail .detail-redesign-hero')
+        ?.classList.remove('detail-reminder-popover-open');
+      await wait(40);
 
-    bell?.click();
-    await wait(80);
-    const openDisplay = getComputedStyle(popover).display;
-    assert(openDisplay !== 'none', 'reminder popover should open after trigger click');
+      const triggerRect = bell?.getBoundingClientRect();
+      const triggerHit = triggerRect
+        ? document.elementFromPoint(
+            triggerRect.left + triggerRect.width / 2,
+            triggerRect.top + triggerRect.height / 2
+          )
+        : null;
+      assert(
+        triggerRect?.width >= 44 && triggerRect?.height >= 44,
+        `${theme}: reminder trigger should be at least 44x44`
+      );
+      assert(
+        triggerHit === bell || bell?.contains(triggerHit),
+        `${theme}: reminder trigger center should receive the tap`
+      );
 
-    const hourButton = popover?.querySelector('[data-reminder="1hour"]');
-    hourButton?.click();
-    await wait(120);
-    assert(select?.value === '1hour', 'select value should update to 1hour');
-    assert(currentDetailReminder === '1hour', 'currentDetailReminder should update to 1hour');
-    assert(getComputedStyle(popover).display === 'none', 'reminder popover should close after choosing value');
+      bell?.click();
+      await wait(80);
+      assert(
+        getComputedStyle(popover).display !== 'none',
+        `${theme}: reminder popover should open after trigger click`
+      );
+
+      const buttonResults = Array.from(popover?.querySelectorAll('button') || []).map(button => {
+        const rect = button.getBoundingClientRect();
+        const hit = document.elementFromPoint(
+          rect.left + rect.width / 2,
+          rect.top + rect.height / 2
+        );
+        const style = getComputedStyle(button);
+        assert(rect.width >= 120, `${theme}: reminder option should not collapse to ${rect.width}px`);
+        assert(rect.height >= 44, `${theme}: reminder option should be at least 44px tall`);
+        assert(
+          hit === button || button.contains(hit),
+          `${theme}: reminder option "${button.textContent.trim()}" should receive the tap`
+        );
+        assert(style.whiteSpace === 'nowrap', `${theme}: reminder option text should stay horizontal`);
+        return {
+          text: button.textContent.trim(),
+          width: rect.width,
+          height: rect.height,
+          hit: hit === button || button.contains(hit)
+        };
+      });
+
+      const expectedValue = theme === 'dark' ? '1hour' : '15min';
+      popover?.querySelector(`[data-reminder="${expectedValue}"]`)?.click();
+      await wait(120);
+      assert(select?.value === expectedValue, `${theme}: select value should update`);
+      assert(currentDetailReminder === expectedValue, `${theme}: current reminder should update`);
+      assert(
+        getComputedStyle(popover).display === 'none',
+        `${theme}: reminder popover should close after choosing value`
+      );
+      themeResults.push({
+        theme,
+        trigger: triggerRect ? { width: triggerRect.width, height: triggerRect.height } : null,
+        buttons: buttonResults,
+        selected: select?.value
+      });
+    }
 
     return {
       ok: failures.length === 0,
       failures,
       viewport: { width: window.innerWidth, height: window.innerHeight },
-      trigger: triggerRect ? { width: triggerRect.width, height: triggerRect.height } : null,
-      selected: select?.value || null
+      themes: themeResults
     };
   }})()`;
   const result = await send(ws, 'Runtime.evaluate', {

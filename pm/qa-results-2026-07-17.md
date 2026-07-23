@@ -140,9 +140,17 @@ Manual rows above remain `Not run` unless Yuri/real browser/device confirms them
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Reminder timing control | BLOCKED / P1 | Alexey could not tap/open reminder timing, so notification delivery was not testable. `BUG-2026-07-22-001`. |
+| Reminder timing control | FAIL / P1, follow-up Ready for re-QA | Real iPhone acceptance 2026-07-23 on exact preview `5b9714c`: dark theme did not allow a reliable option selection; light theme opened a narrow popup with 1-2 characters per line and tap-through on the second option. Follow-up CSS/smoke fix is prepared for `https://qa-reminder-popover.4-ai-staging.pages.dev/`. `BUG-2026-07-22-001`. |
 | Tag editor with keyboard | FAIL / P1 | Absolute tag input and native `datalist` suggestion cover the hero; no visible cancel/dismiss action. `BUG-2026-07-22-002`. |
 | Long tag/title responsive layout | FAIL / P1 | Tag wraps one letter per line; title overlaps deadline/priority cards and content is clipped. `BUG-2026-07-22-003`. |
 | Notification sound/vibration/delivery | Not run | Blocked before reminder setup; repeat after task-detail control fix. |
 
 Evidence and screenshots: `docs/tasks/BUG-2026-07-22-task-detail-ios-regressions.md`.
+
+## 14. Night build iPhone acceptance - 2026-07-23
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Exact preview | PASS | Isolated Pages preview source `5b9714c`; stable URL `https://qa-5b9714c.4-ai-staging.pages.dev/`; staging Worker and CORS confirmed. |
+| Focus day panel | PASS | Alexey: `Фокус ок`; daily summary opens on iPhone from the home Focus card. |
+| Reminder popup | FAIL → Ready for re-QA | Alexey reproduced dark-theme interaction failure, collapsed option text and tap-through. Root cause reproduced with dark/light 390x844 hit-testing; follow-up preview is `https://qa-reminder-popover.4-ai-staging.pages.dev/`. |

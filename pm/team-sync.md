@@ -1,5 +1,12 @@
 # Team Sync
 
+## 2026-07-23 - Codex - reminder popup real-device follow-up
+
+- Alexey accepted the exact `5b9714c` Focus panel on iPhone: `Фокус ок`.
+- Reminder acceptance failed: dark theme could not reliably select an option; light theme rendered 44px-wide options with 1-2 characters per line and tap-through.
+- Root cause reproduced at 390x844: the generic `.detail-redesign-tags button` rule hit nested reminder options, tag-row overflow removed the popup from hit-testing, and light theme reduced the bell to 38px.
+- Narrow follow-up is isolated on `fix/reminder-popover-mobile`; dark/light smoke now proves 44x44 trigger, 140x44 options and correct hit ownership. Re-QA URL: `https://qa-reminder-popover.4-ai-staging.pages.dev/`.
+
 ## 2026-07-23 - Codex - roadmap/backlog night results synced
 
 - `pm/backlog.md` now records the factual outcome of every night brief `30-41`, including 10 Done, the separately committed Focus implementation with manual QA tail, and `ARCH-001` as an unresolved NEED-CLAUDE decision.

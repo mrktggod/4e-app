@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Reminder popup follow-up после реальной iPhone-приёмки
+
+**Что сделано:** На точном preview `5b9714c` Алексей подтвердил Focus panel и нашёл неполный reminder fix: dark theme не давала надёжно выбрать вариант, light popup сжимал текст до 1-2 символов в строке и пропускал tap в карточку. Root cause воспроизведён через mobile hit-testing: поздний `.detail-redesign-tags button` делал вложенные options круглыми 44x44; `.detail-redesign-tags` с `overflow:hidden` исключал popup из hit-test за границами строки; light override уменьшал bell до 38px. CSS исправлен узкими селекторами/stacking/overflow, smoke расширен на dark/light геометрию и `elementFromPoint`.
+
+**Проверка кодировки:** `index.html` не изменялся; `node scripts/check-cp1251-mojibake.mjs` запускается перед коммитом.
+
+**Тест:** `npm run build:css`; `npm run smoke:back067-reminder`; `node --check scripts/back-067-task-detail-reminder-smoke.mjs`; `node scripts/check-cp1251-mojibake.mjs`; `bash scripts/check-portable-paths.sh`; `git diff --check`.
+
+**Коммит:** this commit
+
+---
+
 ### Синхронизация ночных результатов в roadmap и backlog
 
 **Что сделано:** В `pm/backlog.md` будущие формулировки ночной очереди 30-41 заменены фактическими результатами: 10 briefs Done, Focus отдельно реализован коммитом `91a483a` и требует ручной проверки, `ARCH-001` оставлен как решение для Claude/Юрия. В `shared/ROADMAP.md` добавлена понятная сводка ночной сессии и ссылка на `pm/ANALYSIS-2026-07-23-night-session-and-next-periods.md`. Обновлены `pm/team-sync.md` и `shared/WORK_LOG.md`.

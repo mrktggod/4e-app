@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** Исправить reminder popup после FAIL реальной iPhone-приёмки.
+**Result:** Убрано применение круглого 44x44 action-стиля к вложенным reminder options; открытая tag-row выпускает popup из overflow и поднимается над hero content; light trigger возвращён к 44x44. Smoke проверяет dark/light geometry и hit ownership.
+**Commit:** this commit
+**Status:** Ready for real-device re-QA
+**Next step:** Алексей повторяет выбор `За 1 час` на `https://qa-reminder-popover.4-ai-staging.pages.dev/`.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Синхронизировать результаты ночной сессии в общих roadmap и backlog.
 **Result:** В `pm/backlog.md` записан фактический исход всех briefs 30-41; в `shared/ROADMAP.md` добавлен понятный итог ночи и ссылка на подробный анализ. Спорный `ARCH-001` оставлен без изменения до решения Юрия/Claude.
 **Commit:** this commit

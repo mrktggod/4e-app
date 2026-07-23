@@ -1928,7 +1928,9 @@ body:has(#task-detail.active) #global-nav,
 }
 
 .detail-reminder-popover button {
-  min-height: 34px;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
   border-radius: 12px;
   border: 1px solid rgba(166,184,164,.16);
   background: linear-gradient(180deg, rgba(32,43,36,.84), rgba(12,20,16,.82));
@@ -1937,6 +1939,10 @@ body:has(#task-detail.active) #global-nav,
   font-weight: 850;
   text-align: left;
   padding: 0 11px;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  touch-action: manipulation;
 }
 
 .detail-reminder-popover button.active {
@@ -2590,7 +2596,7 @@ body:has(#task-detail.active) #global-nav,
 }
 
 .detail-redesign-bell,
-.detail-redesign-tags button,
+.detail-redesign-tags > button,
 .detail-top-tag-add,
 .detail-avatar-add {
   width: 44px !important;
@@ -2600,7 +2606,7 @@ body:has(#task-detail.active) #global-nav,
 }
 
 .detail-redesign-bell svg,
-.detail-redesign-tags button svg {
+.detail-redesign-tags > button svg {
   width: 18px !important;
   height: 18px !important;
 }
@@ -2702,4 +2708,9 @@ body:has(#task-detail.active) #global-nav,
   #task-detail .detail-redesign-title {
     font-size: 26px !important;
   }
+}
+
+#task-detail .detail-redesign-hero.detail-reminder-popover-open .detail-redesign-tags {
+  z-index: 100 !important;
+  overflow: visible !important;
 }
