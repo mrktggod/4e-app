@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BACK-012 notification renderer BEM-island cleanup.
+**Result:** Moved generated notification empty/action/chip/snooze layout styles from `scripts/task-ui-renderers.js` into `.notif-*` LESS classes; `smoke:back055` stays green.
+**Commit:** this commit
+**Status:** DONE / Ready for review
+**Next step:** Continue only with a separate safe `task-card-head-meta` BEM slice.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Fix iPhone/TMA task-detail hero overflow.
 **Result:** Added a final mobile hero layout guard: long tags stay single-line with ellipsis, title/description return to normal flow, and `npm run smoke:back069-hero` covers long tag/title overlap.
 **Commit:** this commit

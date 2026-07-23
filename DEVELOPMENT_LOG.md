@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Notification renderer BEM-island cleanup
+
+**What changed:** Moved generated notification empty-state, kind-chip, preview, action-wrap and snooze-menu layout styles out of `scripts/task-ui-renderers.js` string templates into `.notif-*` classes in `styles/screens/voice.less`; rebuilt `styles.css` and `styles.min.css`. Updated BACK-012 inventory/backlog and team sync.
+
+**Encoding check:** `index.html` was not modified in this slice; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `node --check scripts/task-ui-renderers.js`; `npm run smoke:back055`; `C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh`; `C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh`.
+
+**Commit:** this commit
+
+---
+
 ### Task-detail hero overflow iOS fix
 
 **What changed:** Added a final task-detail mobile hero guard in `styles/screens/tasks.less`: long top tags stay one-line with ellipsis, title and description are back in normal flow, fixed absolute coordinates are overridden, and right-side date/priority cards keep a reserved column. Added `scripts/back-069-task-detail-hero-overflow-smoke.mjs` and `npm run smoke:back069-hero`.

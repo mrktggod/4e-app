@@ -372,10 +372,10 @@ function getNotifEmptyState(type){
 
 function renderNotifEmptyState(type){
   const state = getNotifEmptyState(type);
-  return '<div class="notif-empty" style="padding:52px 18px 24px;text-align:center;border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,rgba(154,194,60,0.08),rgba(154,194,60,0.02));">'
-    + '<div style="width:44px;height:44px;margin:0 auto 14px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:rgba(154,194,60,0.12);color:var(--green);font-size:20px">•</div>'
-    + '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">' + e2(state.title) + '</div>'
-    + '<div style="font-size:13px;line-height:1.5;color:var(--muted)">' + e2(state.text) + '</div>'
+  return '<div class="notif-empty notif-empty--panel">'
+    + '<div class="notif-empty-icon">•</div>'
+    + '<div class="notif-empty-title">' + e2(state.title) + '</div>'
+    + '<div class="notif-empty-text">' + e2(state.text) + '</div>'
     + '</div>';
 }
 
@@ -447,9 +447,9 @@ function renderNotifActionButtons(notif, task){
   }
 
   if(canSnooze && canOpenTask){
-    html += '<div class="notif-snooze-menu" id="nsnooze-' + id + '" style="display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;margin-top:10px">';
+    html += '<div class="notif-snooze-menu" id="nsnooze-' + id + '">';
     html += NOTIF_SNOOZE_OPTIONS.map(function(option){
-      return '<button class="notif-act-btn notif-act-task" style="justify-content:center" onclick="notifSnooze(this)" data-nid="' + id + '" data-task-id="' + taskId + '" data-snooze-kind="' + e2(option.value) + '">' + e2(option.label) + '</button>';
+      return '<button class="notif-act-btn notif-act-task notif-act-center" onclick="notifSnooze(this)" data-nid="' + id + '" data-task-id="' + taskId + '" data-snooze-kind="' + e2(option.value) + '">' + e2(option.label) + '</button>';
     }).join('');
     html += '</div>';
   }
@@ -526,8 +526,7 @@ function renderNotifGroup(label, items){
     var isUnread = n.unread && !isRead;
     var clr = isUnread ? 'var(--green)' : 'var(--muted)';
     var svg = (icons[type]||icons.system).replace('stroke-width', 'stroke="'+clr+'" stroke-width');
-    var chipBg = type === 'deadline' ? 'rgba(255,96,96,0.12)' : (type === 'reminder' ? 'rgba(255,214,102,0.12)' : 'rgba(154,194,60,0.12)');
-    var chipColor = type === 'deadline' ? '#ff8080' : (type === 'reminder' ? '#ffd666' : 'var(--green)');
+    var chipClass = type === 'deadline' ? ' notif-kind-chip--deadline' : (type === 'reminder' ? ' notif-kind-chip--reminder' : '');
     var title = getNotifTitle(n, task);
     var detail = getNotifDetail(n, task);
     var kindLabel = getNotifKindLabel(n, task);
@@ -535,12 +534,12 @@ function renderNotifGroup(label, items){
     out += '<div class="notif-card-header" onclick="toggleNotif(this)" data-nid="'+n.id+'">';
     out += '<div class="notif-card-icon">'+svg+'</div>';
     out += '<div class="notif-card-body">';
-    out += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">';
-    out += '<span style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:'+chipBg+';color:'+chipColor+';font-size:10px;font-weight:700;letter-spacing:.02em;text-transform:uppercase">' + e2(kindLabel) + '</span>';
+    out += '<div class="notif-card-meta">';
+    out += '<span class="notif-kind-chip' + chipClass + '">' + e2(kindLabel) + '</span>';
     out += '<div class="notif-card-time">'+e2(n.time)+'</div>';
     out += '</div>';
     out += '<div class="notif-card-title">'+e2(title)+'</div>';
-    out += '<div style="font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px">' + e2(detail) + '</div>';
+    out += '<div class="notif-card-preview">' + e2(detail) + '</div>';
     out += '</div>';
     out += '<div class="notif-card-right">';
     if(isUnread) out += '<div class="notif-unread-dot"></div>';
@@ -548,7 +547,7 @@ function renderNotifGroup(label, items){
     out += '</div></div>';
     out += '<div class="notif-detail" id="ndet-'+n.id+'">';
     out += '<div class="notif-detail-text">' + e2(detail) + '</div>';
-    out += '<div class="notif-actions" style="display:flex;flex-wrap:wrap;gap:8px">' + renderNotifActionButtons(n, task) + '</div>';
+    out += '<div class="notif-actions notif-actions--wrap">' + renderNotifActionButtons(n, task) + '</div>';
     out += '</div></div>';
   });
   return out;

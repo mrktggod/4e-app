@@ -425,7 +425,12 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
 .notif-card-icon{width:36px;height:36px;border-radius:10px;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .notif-card.unread .notif-card-icon{background:var(--green3);border-color:rgba(154,194,60,0.3)}
 .notif-card-body{flex:1;min-width:0}
+.notif-card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.notif-kind-chip{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(154,194,60,0.12);color:var(--green);font-size:10px;font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.notif-kind-chip--deadline{background:rgba(255,96,96,0.12);color:#ff8080}
+.notif-kind-chip--reminder{background:rgba(255,214,102,0.12);color:#ffd666}
 .notif-card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.35}
+.notif-card-preview{font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px}
 .notif-card-time{font-size:11px;color:var(--muted);margin-top:3px}
 .notif-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
 .notif-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
@@ -437,12 +442,19 @@ html[data-theme="light"] .promise-row-v2{border-bottom-color:rgba(26,34,16,0.08)
 .notif-detail.open{display:block}
 .notif-detail-text{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px;padding-top:12px}
 .notif-actions{display:flex;gap:6px}
+.notif-actions--wrap{flex-wrap:wrap;gap:8px}
 .notif-act-btn{flex:1;padding:9px 8px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px}
+.notif-act-center{justify-content:center}
 .notif-act-task{background:var(--green);color:var(--bg)}
 .notif-act-read{background:var(--card2);color:var(--text);border:1px solid var(--border)}
 .notif-act-del{background:rgba(255,80,80,0.08);color:#ff6060;border:1px solid rgba(255,80,80,0.15)}
+.notif-snooze-menu{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;margin-top:10px}
 
 .notif-empty{text-align:center;padding:40px 20px;font-size:13px;color:var(--muted)}
+.notif-empty--panel{padding:52px 18px 24px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,rgba(154,194,60,0.08),rgba(154,194,60,0.02))}
+.notif-empty-icon{width:44px;height:44px;margin:0 auto 14px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:rgba(154,194,60,0.12);color:var(--green);font-size:20px}
+.notif-empty-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+.notif-empty-text{font-size:13px;line-height:1.5;color:var(--muted)}
 
 
 /* ===== CHATS SCREEN ===== */

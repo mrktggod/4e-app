@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-23 - Codex - notification renderer BEM slice
+
+- Branch: `feat/admin-tariff-api`.
+- Backlog: `BACK-012` remains `Partial Done`; one safe BEM-island was completed.
+- Result: generated notification empty-state, kind-chip, preview, actions and snooze-menu layout styles moved from `scripts/task-ui-renderers.js` into `.notif-*` classes in `styles/screens/voice.less`; CSS rebuilt.
+- Evidence: `npm run smoke:back055` passed; `node scripts/check-cp1251-mojibake.mjs` passed; UI guard stayed within baseline at `309 / 465` style attrs and `401 / 402` handlers.
+- Next: if continuing BACK-012, the next safe reviewed slice is `task-card-head-meta` with `npm run smoke:back019`; manual/device/payment/auth/CAL gates remain untouched.
+
 ## 2026-07-23 - Codex - task-detail hero overflow fixed
 
 - Branch: `feat/admin-tariff-api`.
