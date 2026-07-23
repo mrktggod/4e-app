@@ -1,5 +1,41 @@
 ## 2026-07-23
 
+### Roadmap and backlog autotest status sync
+
+**What changed:** Updated `shared/ROADMAP.md` and `pm/backlog.md` with the new `Auto evidence green / manual tail` status rule. Added the 2026-07-23 safe full-suite result to roadmap/backlog, updated `BACK-035`, `BACK-050`, `BACK-061`, `BACK-062`, `BACK-065`, `BACK-066` and `BACK-055` evidence notes, and kept live Telegram/VK/payment/OAuth/production gates out of `Done`.
+
+**Encoding check:** `index.html` was not modified; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** Full safe autotest suite passed before this docs sync; follow-up guards passed: `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `npm run check:ui-architecture`, `git diff --check`.
+
+**Commit:** this commit
+
+---
+
+### Autotest coverage playbook and backlog map
+
+**What changed:** Added `docs/qa/autotest-agent-playbook.md` with agent rules for Playwright, k6, existing `smoke:*` tests, `qa:prebeta`, night-session usage and manual-gate boundaries. Added `pm/autotest-backlog-coverage-2026-07-23.md` mapping current backlog/roadmap items to fully automatable, partially automatable and still-human QA gates. Added `scripts/run-bash-script.mjs` so npm scripts can run Git Bash guards on Windows even when `bash` is not in PATH, and added `check:portable-paths` plus `qa:prebeta` to `package.json`.
+
+**Encoding check:** `index.html` was not modified; `node scripts/check-cp1251-mojibake.mjs` passed inside `npm run qa:prebeta` with `0 suspicious tokens`.
+
+**Test:** `npm run qa:prebeta` passed end-to-end: JS syntax, mojibake, portable paths, UI architecture guard, Playwright 8/8, `smoke:home001`, `smoke:back050`, `smoke:back055`, `smoke:privacy-surface`, and `smoke:viral-share`.
+
+**Commit:** this commit
+
+---
+
+### Playwright and k6 autotest tooling setup
+
+**What changed:** Added `@playwright/test`, `playwright.config.ts`, `autotests/README.md`, Playwright smoke tests for web, Telegram Mini App and VK Mini App, plus `autotests/load/smoke-load.js` for guarded k6 local load smoke. Added npm scripts `test:e2e`, `test:e2e:web`, `test:e2e:telegram`, `test:e2e:vk`, `test:e2e:report` and `load:smoke`. Installed k6 via winget as `C:\Program Files\k6\k6.exe`.
+
+**Encoding check:** `index.html` was not modified; `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `npm run test:e2e:web` passed 4/4; `npm run test:e2e` passed 8/8; local k6 smoke passed 81/81 checks with `http_req_failed=0.00%` and `p95=182.5ms`; `npm audit fix` resolved the existing `brace-expansion` audit finding; `npm audit --omit=optional`, `npm run check:js-syntax`, `bash scripts/check-portable-paths.sh` and `git diff --check` passed.
+
+**Commit:** this commit
+
+---
+
 ### Telegram Mini App home task list visibility fix
 
 **What changed:** Fixed a home dashboard case where only one visible task could appear while more active tasks existed. `loadTasks()` now normalizes legacy task identifiers (`taskId`, `task_id`, `key`) into the UI `id` field. `getHomeDashboardTasks()` now includes defer/fallback active tasks when filling the visible top-3 rows, and `#home-show-all-btn` becomes visible when active tasks exceed the visible rows. Added `#home-show-all-btn` LESS styling and extended `npm run smoke:home001` to cover 4 active tasks plus the visible show-all action.
@@ -1001,6 +1037,18 @@
 **Тест:** `npm run build:css`, `node scripts/check-cp1251-mojibake.mjs`, `git diff --check`, `bash scripts/check-portable-paths.sh`, `bash scripts/check-ui-architecture.sh`, `npm run smoke:back067-reminder`, `npm run smoke:back068-tag-popup`, `npm run smoke:back069-hero`.
 
 **Коммит:** `a736148`, `471bfab`, `4207f3a` + closeout commit
+
+## 2026-07-23
+
+### DESIGN-GLASS-001 night scheduling
+
+**Что сделано:** added the global glass design-system direction to PM docs, created `pm/inbox/BRIEF-2026-07-23-42-glass-design-system-foundation.md`, created `pm/design-references/README.md`, and updated the one-off night automation to run a safe glass design-system pass at 23:30.
+
+**Проверка кодировки:** `index.html` was not edited; Step 0 not applicable.
+
+**Тест:** documentation-only change; `node scripts/check-cp1251-mojibake.mjs`, `git diff --check`, and `bash scripts/check-portable-paths.sh`.
+
+**Коммит:** this planning commit
 
 **РЎС‚Р°С‚СѓСЃ:** Triaged вЂ” СЂРµР°Р»РёР·Р°С†РёСЏ РІ РІРµС‚РєРµ `fix/task-detail-card-cleanup`.
 

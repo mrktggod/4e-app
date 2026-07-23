@@ -18,6 +18,14 @@
 
 Execution rule: this is a design-system change, not a one-shot restyle. Night automation may produce an inventory, token/component map, and one narrow branch/preview implementation slice if Alexey's reference image is available. Production deploy, `main` merge, payment/entitlement/CAL/secret work, and broad cross-screen redesign without review stay blocked.
 
+## Autotest Direction - 2026-07-23
+
+Playwright, local k6 smoke and the existing Chrome/CDP/static smoke scripts are now an official QA layer for roadmap/backlog work. The safe full suite passed on 2026-07-23: `qa:prebeta`, Playwright web/TG/VK, local `load:smoke`, and focused smokes for home, accessibility, notifications, task-detail, VK intent, privacy, viral/share, SMART-007 and chat-history.
+
+Roadmap rule: use `Auto evidence green / manual tail` when tests cover the repeatable part but the DoD still needs live Telegram/VK, real device, real user, OAuth, payment, production, `main` merge, CAL or product approval. Night sessions should run the narrow relevant smoke plus shared guards; `qa:prebeta` is the release/prebeta gate. Production load, live payments, live Telegram/VK delivery and product decisions remain human-gated.
+
+Details: `pm/autotest-backlog-coverage-2026-07-23.md` and `docs/qa/autotest-agent-playbook.md`.
+
 ## Продуктовые столпы
 
 | # | Столп | Суть |
@@ -58,9 +66,9 @@ Execution rule: this is a design-system change, not a one-shot restyle. Night au
 | VK-хостинг | INFRA-004 — VK-поверхность переехала на хостинг VK Mini Apps; API остаётся на `edge.4-ai.site`, потому что Workers доступны из РФ | P1 | Done |
 | VK на мобильном интернете РФ | INFRA-005 — промежуточный RU API proxy в Yandex Cloud для VK Mini App; шаг 1 = gateway-прокси на `edge.4-ai.site` + VK-сборка с новым API base, без полного переноса backend | P0 | Done — живой phone-smoke без VPN подтверждён |
 | UI-архитектурный guard | BACK-049 — правило LESS + BEM для нового UI-кода, запрет роста inline `style`/handlers, проверка в pre-commit и GitHub Actions | P1 | Done |
-| Accessibility baseline | BACK-050 — базовая доступность критических сценариев: auth-формы, статусные сообщения, keyboard/focus, dialog-поведение quick-add/contact/consent и touch-target smoke перед закрытым тестом | P1 | Ready for QA — code baseline готов, нужен ручной keyboard/mobile smoke |
+| Accessibility baseline | BACK-050 — базовая доступность критических сценариев: auth-формы, статусные сообщения, keyboard/focus, dialog-поведение quick-add/contact/consent и touch-target smoke перед закрытым тестом | P1 | Auto evidence green / Ready for live QA — `smoke:back050` и `qa:prebeta` зелёные, нужен один ручной keyboard/mobile smoke |
 | Единая рабочая копия | INFRA-006 — одна рабочая папка (X-drive), обмен только через git; worker/app line-ending policy, дубль-клон worker-p0 архивирован | P1 | Partial Done — канон закреплён, осталось командное принятие правила |
-| Закрытый тест и измерение | BACK-035 — QA smoke; BACK-048 — dev/test аккаунты; BETA-001 — закрытый тест 5-10 пользователей; ANALYTICS-001 — lite-события активации; FEEDBACK-001 — быстрый feedback loop | P1 | ANALYTICS-001 Done; BETA-001/FEEDBACK-001 Partial Done — runbook/invite pack/feedback loop готовы, реальный запуск ещё не проведён |
+| Закрытый тест и измерение | BACK-035 — QA smoke; BACK-048 — dev/test аккаунты; BETA-001 — закрытый тест 5-10 пользователей; ANALYTICS-001 — lite-события активации; FEEDBACK-001 — быстрый feedback loop | P1 | BACK-035 Auto evidence green: `qa:prebeta` и полный safe suite прошли 2026-07-23; ANALYTICS-001 Done; BETA-001/FEEDBACK-001 Partial Done — runbook/invite pack/feedback loop готовы, реальный запуск ещё не проведён |
 
 ---
 

@@ -1,5 +1,27 @@
 # Team Sync
 
+## 2026-07-23 - Codex - autotest roadmap/backlog statuses synced
+
+- `shared/ROADMAP.md` now names autotests as an official QA layer and defines `Auto evidence green / manual tail`.
+- `pm/backlog.md` now records the safe full-suite evidence from 2026-07-23 and updates `BACK-035`, `BACK-050`, `BACK-055`, `BACK-061`, `BACK-062`, `BACK-065` and `BACK-066`.
+- Important boundary: live Telegram/VK delivery, OAuth, payments, production load, `main` merge, CAL and product decisions are still human-gated and were not marked Done from headless tests.
+- Branch: `feat/admin-tariff-api`; ready for one reviewed commit and explicit push.
+
+## 2026-07-23 - Codex - autotest backlog coverage mapped
+
+- Added `docs/qa/autotest-agent-playbook.md`: agents should use Playwright/k6/existing smokes before asking Alexey for repeated manual QA.
+- Added `pm/autotest-backlog-coverage-2026-07-23.md`: identifies backlog items that can be mostly automated (`BACK-061/062/050`, `HOME-001`, `BACK-065/066A`, `BACK-055`, task-detail iOS smokes, viral/share, AI-memory) and items that remain live gates.
+- Added and verified `npm run qa:prebeta`: JS syntax, mojibake, portable paths, UI architecture guard, Playwright 8/8, home, a11y, notifications UI, privacy and viral/share smokes all passed.
+- Recommendation: use `qa:prebeta` before preview/beta readiness; do not mark Telegram/VK/payment/OAuth/notification-delivery tasks Done from headless tests alone.
+
+## 2026-07-23 - Codex - autotest tooling installed
+
+- Branch: `feat/admin-tariff-api`.
+- Result: Playwright e2e layer added for web, Telegram Mini App and VK Mini App; k6 local load smoke added under `autotests/load`.
+- Commands: `npm run test:e2e`, `npm run test:e2e:web`, `npm run test:e2e:telegram`, `npm run test:e2e:vk`, `npm run load:smoke`.
+- Evidence: Playwright web smoke passed 4/4, full Playwright smoke passed 8/8, k6 local smoke passed 81/81 checks with 0 failed requests.
+- Guardrail: k6 defaults to local `http://127.0.0.1:4174`; staging/production load requires explicit `BASE_URL`, and production load still needs a separate human decision.
+
 ## 2026-07-23 - Codex - home task list visibility fix
 
 - Branch: `feat/admin-tariff-api`.
@@ -912,6 +934,13 @@
 - Commits: `a736148`, `471bfab`, `4207f3a`.
 - Repeatable mobile smokes are green: `smoke:back067-reminder`, `smoke:back068-tag-popup`, `smoke:back069-hero`.
 - The runner stopped because the remaining backlog/roadmap candidates are manual/device/provider-gated, `NEED-CLAUDE`, `NEED-YURI`, payment/entitlement/auth-security/CAL/prod/main/secret-gated, or broad architecture work that needs a tighter brief.
+
+## 2026-07-23 - DESIGN-GLASS-001 scheduled for night
+
+- Alexey set the global direction: glass panels become the base visual language for cards, buttons, fields, notifications, popups, and new blocks.
+- Created `pm/inbox/BRIEF-2026-07-23-42-glass-design-system-foundation.md` and `pm/design-references/README.md`.
+- Updated automation `4e-full-system-roadmap-and-design-audit` into a one-off `4e glass design system night pass` at 23:30 local time.
+- Guardrail: the night run may prepare branch/preview-ready code, but no prod deploy, no `main` merge, and no broad cross-screen redesign without Claude/Yuri review.
 
 ## 2026-07-20 - SMART-007 memory fixture smoke
 

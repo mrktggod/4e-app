@@ -1,10 +1,50 @@
 ### 2026-07-23 - Codex
 
+**Task:** Sync autotest evidence into roadmap and backlog.
+**Result:** `shared/ROADMAP.md` and `pm/backlog.md` now use `Auto evidence green / manual tail` for tasks where Playwright/k6/smoke tests replace repeatable manual checks but live platform gates remain. Updated `BACK-035`, `BACK-050`, `BACK-055`, `BACK-061`, `BACK-062`, `BACK-065` and `BACK-066` evidence notes.
+**Commit:** this commit
+**Status:** DONE / ready for reviewed commit
+**Next step:** Commit and push the autotest/tooling/docs package after explicit GitHub sync approval.
+
+---
+
+### 2026-07-23 - Codex
+
+**Task:** Map new autotest tools to roadmap/backlog and document usage rules for agents.
+**Result:** Added `docs/qa/autotest-agent-playbook.md` for AI/developer test usage and `pm/autotest-backlog-coverage-2026-07-23.md` with backlog items that can be automated, partially automated, or still require live human gates. Added and verified `npm run qa:prebeta`.
+**Commit:** this commit
+**Status:** DONE / docs and aggregate QA command ready
+**Next step:** Add narrower Playwright specs for auth/legal, safe-area, chat keyboard and VK parity.
+
+---
+
+### 2026-07-23 - Codex
+
+**Task:** Set up automatic Playwright and k6 test tooling from Alexey's instruction.
+**Result:** Added Playwright e2e config and web/Telegram/VK smoke tests under `autotests/`; added a guarded local k6 smoke for static app routes; installed `@playwright/test` and system k6.
+**Commit:** this commit
+**Status:** DONE / local tests green
+**Next step:** Extend these smoke tests with real staging auth fixtures and visual baselines after the next reviewed QA brief.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Fix Telegram Mini App home task list showing only one visible task.
 **Result:** Home dashboard now fills visible priority rows from all active tasks, normalizes legacy task id fields for UI rendering, and shows `Смотреть все задачи` when more active tasks exist.
 **Commit:** N/A
 **Status:** DONE / Ready for QA
 **Next step:** Check in the real Telegram Mini App account where the bug was seen; tap `Смотреть все задачи` and confirm the full active list opens.
+
+---
+
+### 2026-07-23 — Codex
+
+**Задача:** schedule global glass design-system night pass
+**Результат:** added `DESIGN-GLASS-001` to roadmap/backlog, created night brief and reference-image drop zone, updated one-off automation for 23:30
+**Коммит:** this planning commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** place Alexey's mockup at `pm/design-references/glass-card-reference.png` before the night run
 
 ---
 
