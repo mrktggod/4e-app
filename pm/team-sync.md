@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-23 - Codex - task-detail hero overflow fixed
+
+- Branch: `feat/admin-tariff-api`.
+- `BRIEF-2026-07-22-33-task-detail-hero-overflow-ios` is `DONE`; `BUG-2026-07-22-003` is `Ready for QA`.
+- Result: final mobile hero guard keeps long tags one-line with ellipsis, returns title/description to normal flow, and reserves the right meta column.
+- Evidence: encoding markers `111 -> 111`; `npm run smoke:back069-hero` passed at 390x844 with tag `nowrap`, title `position=static`, hero height `330`, and no overlap.
+- Next: real iPhone/TMA visual smoke. The three task-detail P1 UI blockers are now code-fixed and ready for device QA.
+
 ## 2026-07-23 - Codex - task-detail tag popup fixed
 
 - Branch: `feat/admin-tariff-api`.

@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Task-detail hero overflow iOS fix
+
+**What changed:** Added a final task-detail mobile hero guard in `styles/screens/tasks.less`: long top tags stay one-line with ellipsis, title and description are back in normal flow, fixed absolute coordinates are overridden, and right-side date/priority cards keep a reserved column. Added `scripts/back-069-task-detail-hero-overflow-smoke.mjs` and `npm run smoke:back069-hero`.
+
+**Encoding check:** index marker count before / after: 111 / 111; `index.html` was not modified in this slice.
+
+**Test:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `node --check scripts/back-069-task-detail-hero-overflow-smoke.mjs`; `npm run smoke:back069-hero`; `git diff --check`.
+
+**Commit:** this commit
+
+---
+
 ### Task-detail tag popup iOS fix
 
 **What changed:** Replaced native task-detail tag `<datalist>` behavior with an app-owned suggestion list inside `div#detail-tag-options`, added a visible cancel action, outside-click close, Escape close and focus restoration, and made `toggleTagInput()` open from computed display state. Added `scripts/back-068-task-detail-tag-popup-smoke.mjs` and `npm run smoke:back068-tag-popup`.

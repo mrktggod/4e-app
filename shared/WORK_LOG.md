@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** Fix iPhone/TMA task-detail hero overflow.
+**Result:** Added a final mobile hero layout guard: long tags stay single-line with ellipsis, title/description return to normal flow, and `npm run smoke:back069-hero` covers long tag/title overlap.
+**Commit:** this commit
+**Status:** DONE / Ready for QA
+**Next step:** Run real iPhone/TMA visual smoke for the task-detail hero.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Fix iPhone/TMA task-detail tag popup.
 **Result:** Replaced native tag `datalist` with app-owned suggestions, added visible cancel plus outside/Escape close, and added `npm run smoke:back068-tag-popup`.
 **Commit:** this commit

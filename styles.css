@@ -7000,6 +7000,82 @@ body:has(#task-detail.active) #global-nav,
   color: #9fbd6d !important;
   border-color: rgba(131, 170, 73, 0.26) !important;
 }
+/* ===== TASK DETAIL QA 2026-07-23: mobile hero overflow guard ===== */
+#task-detail .detail-redesign-hero {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 330px !important;
+  overflow: visible !important;
+  padding: 22px 116px 22px 18px !important;
+}
+#task-detail .detail-redesign-tags,
+#task-detail .detail-status-row,
+#task-detail .detail-redesign-title,
+#task-detail .detail-redesign-desc {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+#task-detail .detail-redesign-tags,
+#task-detail .detail-top-tags {
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+}
+#task-detail .detail-top-tags .tag-chip,
+#task-detail .detail-top-tags .tag {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+#task-detail .detail-top-tags .tag-x {
+  flex: 0 0 auto !important;
+}
+#task-detail .detail-redesign-title {
+  position: static !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  max-height: 3.4em !important;
+  margin-top: 14px !important;
+  overflow: hidden !important;
+  font-size: 28px !important;
+  line-height: 1.08 !important;
+  letter-spacing: 0 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+#task-detail .detail-redesign-desc {
+  position: static !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  max-height: 2.9em !important;
+  margin-top: 10px !important;
+  overflow: hidden !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+@media (max-width: 390px) {
+  #task-detail .detail-redesign-hero {
+    padding-right: 104px !important;
+  }
+  #task-detail .detail-info-stack {
+    right: 7px !important;
+    width: 88px !important;
+  }
+  #task-detail .detail-redesign-title {
+    font-size: 26px !important;
+  }
+}
 .profile-stage {
   min-height: 100%;
   background: radial-gradient(circle at 50% -6%, rgba(171, 220, 72, 0.15), transparent 30%), linear-gradient(180deg, rgba(16, 30, 16, 0.95), rgba(3, 15, 8, 0.98) 58%, #020a05);
