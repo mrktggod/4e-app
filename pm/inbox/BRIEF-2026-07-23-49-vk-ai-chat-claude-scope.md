@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-07-23-49 - VK-AI-CHAT-001 Claude scope
 

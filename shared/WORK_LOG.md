@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-49 VK AI chat Claude scope.
+**Result:** Classified VK AI-chat fix as NEED-CLAUDE and documented exact `/anthropic` request/response lines, redacted diagnostic plan and allowed post-review fix.
+**Commit:** this commit
+**Status:** NEED-CLAUDE
+**Next step:** Claude/Yuri run fresh-account diagnostics and approve exact auth/entitlement-safe fix.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BRIEF-2026-07-23-48 VK auth session Claude scope.
 **Result:** Classified auth-session fix as NEED-CLAUDE and documented exact token bootstrap/removal lines, narrow reviewed fix plan and regression checklist.
 **Commit:** this commit

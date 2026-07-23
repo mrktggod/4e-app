@@ -39,7 +39,7 @@ Alexey set the beta requirement: VK must be a working beta surface, not only a h
 | VK-PROFILE-001 | `BRIEF-2026-07-23-46-vk-profile-beta-parity` | VK/UI | P2 | Codex | Done | H0.5 | VK profile now has account/identity summary chips, privacy policy navigation and a local-only notification settings entry; `npm run smoke:vk-profile-parity` covers the safe IA slice without subscription/payment changes. |
 | VK-CALENDAR-001 | `BRIEF-2026-07-23-47-vk-calendar-parser-beta-parity` | VK/QA | P2 | Codex | Done | H0.5 | VK calendar now uses local date keys for task deadlines, calendar dots and selected-day task lists; `npm run smoke:vk-calendar-date-key` covers ISO datetime timezone fixtures. |
 | VK-AUTH-SESSION-001 | `BRIEF-2026-07-23-48-vk-auth-session-claude-scope` | VK/Auth | P1 | Claude/Yuri review | NEED-CLAUDE | H0.5 | Scope report written: token bootstrap currently removes `vk4_token` after any `/auth/me` exception/timeout; reviewed fix should keep token on timeout/5xx/offline and clear only confirmed 401/403 or explicit logout. |
-| VK-AI-CHAT-001 | `BRIEF-2026-07-23-49-vk-ai-chat-claude-scope` | VK/AI/Auth | P1 | Claude/Yuri review | NEED-CLAUDE scope brief | H0.5 | Report exact source/risk and reviewed diagnostic/fix plan; no autonomous code changes. |
+| VK-AI-CHAT-001 | `BRIEF-2026-07-23-49-vk-ai-chat-claude-scope` | VK/AI/Auth | P1 | Claude/Yuri review | NEED-CLAUDE | H0.5 | Scope report written: VK AI chat currently posts to `/anthropic` with optional `x-token`, parses JSON without `res.ok`, and can mask backend/auth/entitlement errors; needs reviewed fresh-account diagnostics before runtime changes. |
 
 ## Ночная очередь 2026-07-22
 

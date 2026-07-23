@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK AI chat Claude scope
+
+**What changed:** For `BRIEF-2026-07-23-49-vk-ai-chat-claude-scope`, no runtime code was changed. Wrote `pm/outbox/REPORT-2026-07-23-49-vk-ai-chat-claude-scope.md`, marked the brief `NEED-CLAUDE`, and updated backlog/work logs with exact `/anthropic` request/response lines, redacted diagnostic plan and allowed post-review fix boundaries.
+
+**Encoding check:** App HTML was not edited; `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** Source audit and shared docs guards before commit.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### VK auth session Claude scope
 
 **What changed:** For `BRIEF-2026-07-23-48-vk-auth-session-claude-scope`, no runtime code was changed. Wrote `pm/outbox/REPORT-2026-07-23-48-vk-auth-session-claude-scope.md`, marked the brief `NEED-CLAUDE`, and updated backlog/work logs with exact token bootstrap/removal lines and the reviewed fix plan.
