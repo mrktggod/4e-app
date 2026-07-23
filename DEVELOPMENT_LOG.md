@@ -2620,3 +2620,14 @@
 **Тест:** `node scripts/check-doc-encoding.mjs`, `node scripts/check-cp1251-mojibake.mjs`, `git diff --check`; факты сверены с runner reports, briefs `30-41`, git log, текущим origin и GitHub Actions.
 
 **Коммит:** N/A
+## 2026-07-24
+
+### Night inbox/backlog runner closeout
+
+**Что сделано:** код приложения не менялся. Проверены `pm/inbox`, `pm/backlog.md` и `shared/ROADMAP.md`: новых `status: NEW` briefs нет, а оставшиеся backlog/roadmap-кандидаты не проходят автономный whitelist без Claude/Yuri/live gate или свежего atomic brief. Добавлен closeout-report ночного runner.
+
+**Проверка кодировки:** `index.html` не редактировался; обязательный guard `node scripts/check-cp1251-mojibake.mjs` запускается перед commit.
+
+**Тест:** `git checkout feat/admin-tariff-api`, `git fetch`, `git pull --ff-only`, scan `pm/inbox`, `git diff --check`, `node scripts/check-cp1251-mojibake.mjs`, portable paths guard.
+
+**Коммит:** pending
