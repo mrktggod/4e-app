@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-23-44 - VK-TASK-DETAIL-001 beta task detail parity
 

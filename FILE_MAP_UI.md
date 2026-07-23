@@ -75,9 +75,9 @@
 | Диапазон | Блок | Что внутри |
 | --- | --- | --- |
 | 1-7 | Head scripts | VK bridge |
-| 8-222 | CSS | VK layout, auth, cards, tabs, screens |
-| 224-481 | HTML | VK auth, home, task detail, ask, calendar, stats, profile |
-| 482-1630 | JavaScript | VK auth, tasks, task detail, AI chat, calendar, stats |
+| 8-233 | CSS | VK layout, auth, cards, tabs, task-detail edit form, screens |
+| 235-525 | HTML | VK auth, home, task detail with edit controls, ask, calendar, stats, profile |
+| 526-1777 | JavaScript | VK auth, tasks, task detail edit, AI chat, calendar, stats |
 
 ### VK JavaScript ranges
 
@@ -87,10 +87,12 @@
 | 628-848 | Diagnostics, auth token, D1 sync, launch params, warmup |
 | 874-955 | VK bridge init and auto-login |
 | 960-1218 | Enter app, identities, login/register/logout |
-| 1226-1369 | Task loading, rendering, Cyrillic-safe task intent helpers |
-| 1370-1453 | Save task from chat and task detail |
-| 1460-1521 | Task discussion, navigation, ask chat |
-| 1522-1630 | Calendar, stats, toast |
+| 1226-1371 | Task loading, rendering, Cyrillic-safe task intent helpers |
+| 1372-1465 | Save task from chat and task detail date/meta helpers |
+| 1466-1580 | Task detail edit helpers and worker update path |
+| 1581-1652 | Task detail render, discussion and done action |
+| 1653-1769 | Navigation, ask chat, calendar, stats |
+| 1770-1777 | Toast |
 
 ## `privacy.html`
 

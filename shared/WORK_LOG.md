@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-44 VK task-detail beta parity.
+**Result:** Added VK task-detail title/status/priority/deadline edit controls with worker-backed save, local persistence smoke, and updated VK parity backlog state.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue with `BRIEF-2026-07-23-45-vk-home-beta-parity`.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BRIEF-2026-07-23-43 VK beta readiness map.
 **Result:** Wrote the VK beta blocker/order report and marked the readiness-map row Done; runtime code was not touched.
 **Commit:** this commit

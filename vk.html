@@ -178,6 +178,15 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 .detail-tab.active { color: var(--text); border-bottom-color: var(--green); }
 .detail-panel { display: none; }
 .detail-panel.active { display: block; }
+.detail-edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 4px; }
+.detail-edit-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.detail-edit-field--wide { grid-column: 1 / -1; }
+.detail-edit-label { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.detail-edit-input, .detail-edit-select { width: 100%; min-height: 42px; border-radius: 13px; border: 1px solid var(--border); background: var(--bg2); color: var(--text); padding: 10px 12px; font: inherit; font-size: 14px; outline: none; }
+.detail-edit-input:focus, .detail-edit-select:focus { border-color: rgba(154,194,60,0.45); }
+.detail-edit-actions { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
+.detail-edit-error { grid-column: 1 / -1; min-height: 16px; font-size: 12px; color: var(--danger); }
+@media (max-width: 430px) { .detail-edit-grid { grid-template-columns: 1fr; } }
 .discussion-list { display: flex; flex-direction: column; gap: 8px; min-height: 70px; }
 .discussion-msg { padding: 10px 12px; border-radius: 16px; font-size: 13px; line-height: 1.45; border: 1px solid var(--border); background: var(--bg2); color: var(--text); }
 .discussion-msg.user { align-self: flex-end; background: var(--green); color: #101707; border-color: var(--green); max-width: 86%; }
@@ -333,6 +342,39 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
         <div id="detailTaskStatus" style="font-size:15px;font-weight:700;margin-top:4px">Активна</div>
       </div>
       <button class="btn btn-secondary" id="detailDoneBtn" style="width:auto;padding:10px 14px" onclick="doneCurrentTask()">Готово</button>
+    </div>
+    <div class="detail-edit-grid" id="taskDetailEditForm">
+      <label class="detail-edit-field detail-edit-field--wide">
+        <span class="detail-edit-label">Название</span>
+        <input class="detail-edit-input" id="detailEditTitle" maxlength="160">
+      </label>
+      <label class="detail-edit-field">
+        <span class="detail-edit-label">Статус</span>
+        <select class="detail-edit-select" id="detailEditStatus">
+          <option value="active">Активна</option>
+          <option value="waiting">Ожидает</option>
+          <option value="blocked">Заблокирована</option>
+          <option value="done">Готово</option>
+        </select>
+      </label>
+      <label class="detail-edit-field">
+        <span class="detail-edit-label">Приоритет</span>
+        <select class="detail-edit-select" id="detailEditPriority">
+          <option value="low">Низкий</option>
+          <option value="normal">Обычный</option>
+          <option value="high">Высокий</option>
+          <option value="urgent">Горит</option>
+        </select>
+      </label>
+      <label class="detail-edit-field">
+        <span class="detail-edit-label">Срок</span>
+        <input class="detail-edit-input" id="detailEditDeadline" type="date">
+      </label>
+      <div class="detail-edit-actions">
+        <button class="btn btn-primary" id="detailSaveBtn" type="button">Сохранить</button>
+        <button class="btn btn-secondary" id="detailCancelBtn" type="button">Отмена</button>
+      </div>
+      <div class="detail-edit-error" id="detailEditError" role="alert" aria-live="polite"></div>
     </div>
     <div class="detail-tabs">
       <button class="detail-tab active" onclick="switchTaskDetailTab('desc',this)">Описание</button>
@@ -1400,6 +1442,111 @@ function taskDisplayTitle(task) {
   return task?.text || task?.title || 'Задача';
 }
 
+function getTaskDetailStatus(task) {
+  if (task?.done || task?.status === 'done') return 'done';
+  if (['active', 'waiting', 'blocked'].includes(task?.status)) return task.status;
+  return 'active';
+}
+
+function getTaskDetailPriority(task) {
+  const value = task?.priority || task?.urgency || 'normal';
+  return ['low', 'normal', 'high', 'urgent'].includes(value) ? value : 'normal';
+}
+
+function taskDeadlineInputValue(task) {
+  const raw = String(task?.deadline || '').trim();
+  return /^\d{4}-\d{2}-\d{2}/.test(raw) ? raw.slice(0, 10) : '';
+}
+
+function setDetailEditError(message) {
+  const el = document.getElementById('detailEditError');
+  if (el) el.textContent = message || '';
+}
+
+function syncTaskDetailEditFields(task) {
+  const title = document.getElementById('detailEditTitle');
+  const status = document.getElementById('detailEditStatus');
+  const priority = document.getElementById('detailEditPriority');
+  const deadline = document.getElementById('detailEditDeadline');
+  if (title) title.value = taskDisplayTitle(task);
+  if (status) status.value = getTaskDetailStatus(task);
+  if (priority) priority.value = getTaskDetailPriority(task);
+  if (deadline) deadline.value = taskDeadlineInputValue(task);
+  setDetailEditError('');
+}
+
+function collectTaskDetailUpdates() {
+  const title = (document.getElementById('detailEditTitle')?.value || '').trim();
+  const status = document.getElementById('detailEditStatus')?.value || 'active';
+  const priority = document.getElementById('detailEditPriority')?.value || 'normal';
+  const deadline = document.getElementById('detailEditDeadline')?.value || '';
+  if (title.length < 2) throw new Error('Название слишком короткое');
+  return {
+    text: title,
+    title,
+    status,
+    priority,
+    deadline,
+    done: status === 'done'
+  };
+}
+
+function applyTaskDetailUpdates(task, updates) {
+  if (!task || !updates) return;
+  Object.assign(task, updates);
+  if (updates.status !== 'done') task.done = false;
+}
+
+async function updateTaskOnWorker(taskId, updates) {
+  const res = await fetch(WORKER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-action': 'update-task', ...(state.token ? { 'x-token': state.token } : {}) },
+    body: JSON.stringify({ taskId, updates })
+  });
+  const data = await readJsonSafe(res);
+  if (!res.ok || data?.ok === false) throw new Error(data?.error || 'Не удалось сохранить задачу');
+  return data;
+}
+
+async function saveTaskDetailEdits() {
+  const task = state.currentTask;
+  if (!task) return;
+  if (!state.token) { setDetailEditError('Нужно повторно войти'); return; }
+  const saveBtn = document.getElementById('detailSaveBtn');
+  const cancelBtn = document.getElementById('detailCancelBtn');
+  let updates;
+  try {
+    updates = collectTaskDetailUpdates();
+  } catch(e) {
+    setDetailEditError(e.message || 'Проверьте поля');
+    return;
+  }
+  setButtonBusy(saveBtn, true, 'Сохраняем...');
+  if (cancelBtn) cancelBtn.disabled = true;
+  setDetailEditError('');
+  try {
+    await updateTaskOnWorker(task.id, updates);
+    applyTaskDetailUpdates(task, updates);
+    openTaskDetail(task.id);
+    renderTasks();
+    buildStats();
+    showToast('Сохранено');
+  } catch(e) {
+    setDetailEditError(e.message || 'Не удалось сохранить');
+  } finally {
+    setButtonBusy(saveBtn, false);
+    if (cancelBtn) cancelBtn.disabled = false;
+  }
+}
+
+function cancelTaskDetailEdits() {
+  if (state.currentTask) syncTaskDetailEditFields(state.currentTask);
+  showToast('Изменения отменены');
+}
+
+document.getElementById('detailSaveBtn')?.addEventListener('click', saveTaskDetailEdits);
+document.getElementById('detailCancelBtn')?.addEventListener('click', cancelTaskDetailEdits);
+
 function taskDiscussionKey(task) {
   return 'vk4_task_discussion_' + (state.user?.id || 'anon') + '_' + String(task?.id || 'unknown');
 }
@@ -1439,10 +1586,12 @@ function openTaskDetail(taskId) {
   }
   state.currentTask = task;
   document.getElementById('detailTaskTitle').textContent = taskDisplayTitle(task);
-  document.getElementById('detailTaskMeta').textContent = [task.deadline ? formatDate(task.deadline) : '', task.type || 'task'].filter(Boolean).join(' · ') || 'Без срока';
-  document.getElementById('detailTaskStatus').textContent = task.done ? 'Выполнена' : 'Активна';
-  document.getElementById('detailTaskDescription').textContent = task.description || taskDisplayTitle(task);
+  document.getElementById('detailTaskMeta').textContent = [task.deadline ? formatDate(task.deadline) : '', getTaskDetailPriority(task)].filter(Boolean).join(' · ') || 'Без срока';
+  const statusLabels = { active: 'Активна', waiting: 'Ожидает', blocked: 'Заблокирована', done: 'Выполнена' };
+  document.getElementById('detailTaskStatus').textContent = statusLabels[getTaskDetailStatus(task)] || 'Активна';
+  document.getElementById('detailTaskDescription').textContent = task.description || task.originalMsg || taskDisplayTitle(task);
   document.getElementById('detailTaskHistory').textContent = task.createdAt ? 'Создана: ' + new Date(task.createdAt).toLocaleString('ru-RU') : 'История изменений пока пуста';
+  syncTaskDetailEditFields(task);
   renderTaskDiscussion(task);
   const firstTab = document.querySelector('#screen-task-detail .detail-tab');
   switchTaskDetailTab('desc', firstTab);

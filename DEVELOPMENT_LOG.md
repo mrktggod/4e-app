@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK task-detail beta parity
+
+**What changed:** For `BRIEF-2026-07-23-44-vk-task-detail-beta-parity`, added a narrow VK task-detail edit slice in `vk.html`: title, status, priority and deadline fields, save/cancel/error UX, worker update helper, local task-state sync, and a static/local smoke `scripts/vk-task-detail-edit-smoke.mjs`. Updated `package.json`, file maps, backlog and outbox report.
+
+**Encoding check:** `index.html` was not edited; `node scripts/check-cp1251-mojibake.mjs` passed before commit.
+
+**Test:** `npm run smoke:vk-task-detail-edit`, `npm run test:e2e:vk`, `node scripts/check-cp1251-mojibake.mjs`, `npm run check:js-syntax`, `node --check scripts/vk-task-detail-edit-smoke.mjs`, `npm run check:ui-architecture`, `npm run check:portable-paths`, `git diff --check`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### VK beta readiness map
 
 **What changed:** For `BRIEF-2026-07-23-43-vk-beta-readiness-map`, wrote `pm/outbox/REPORT-2026-07-23-43-vk-beta-readiness-map.md`, marked the brief `DONE`, and changed the `VK-BETA-READINESS-001` backlog row to `Done`. The report orders briefs `44-49`, identifies auth/session and AI-chat as `NEED-CLAUDE`, and leaves real VK/device smoke to Yuri.
