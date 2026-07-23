@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK home beta parity
+
+**What changed:** For `BRIEF-2026-07-23-45-vk-home-beta-parity`, added a narrow VK home parity slice in `vk.html`: focus summary, urgent/overdue/next-deadline chips, and a top task row derived from already loaded local task data. Added `scripts/vk-home-parity-smoke.mjs`, `npm run smoke:vk-home-parity`, updated file maps, backlog and outbox report.
+
+**Encoding check:** `index.html` was not edited; `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** `npm run smoke:vk-home-parity`; shared VK/UI guards before commit.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### VK task-detail beta parity
 
 **What changed:** For `BRIEF-2026-07-23-44-vk-task-detail-beta-parity`, added a narrow VK task-detail edit slice in `vk.html`: title, status, priority and deadline fields, save/cancel/error UX, worker update helper, local task-state sync, and a static/local smoke `scripts/vk-task-detail-edit-smoke.mjs`. Updated `package.json`, file maps, backlog and outbox report.

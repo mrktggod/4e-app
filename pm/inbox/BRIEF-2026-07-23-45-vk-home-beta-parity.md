@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-23-45 - VK-HOME-PARITY-001 beta home parity
 

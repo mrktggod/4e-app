@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-45 VK home beta parity.
+**Result:** Added local task-derived focus summary, urgent/overdue/next-deadline chips and top task row for VK home; covered it with `npm run smoke:vk-home-parity`.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue with `BRIEF-2026-07-23-46-vk-profile-beta-parity`.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BRIEF-2026-07-23-44 VK task-detail beta parity.
 **Result:** Added VK task-detail title/status/priority/deadline edit controls with worker-backed save, local persistence smoke, and updated VK parity backlog state.
 **Commit:** this commit

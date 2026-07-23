@@ -26,6 +26,7 @@
         "smoke:back069-hero": "node scripts/back-069-task-detail-hero-overflow-smoke.mjs",
         "smoke:ask-action-preview": "node scripts/ask-action-preview-bem-smoke.mjs",
         "smoke:vk-task-detail-edit": "node scripts/vk-task-detail-edit-smoke.mjs",
+        "smoke:vk-home-parity": "node scripts/vk-home-parity-smoke.mjs",
         "test:e2e": "playwright test",
         "test:e2e:web": "playwright test autotests/tests/web",
         "test:e2e:telegram": "playwright test autotests/tests/telegram-app",

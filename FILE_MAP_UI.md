@@ -75,24 +75,25 @@
 | Диапазон | Блок | Что внутри |
 | --- | --- | --- |
 | 1-7 | Head scripts | VK bridge |
-| 8-233 | CSS | VK layout, auth, cards, tabs, task-detail edit form, screens |
-| 235-525 | HTML | VK auth, home, task detail with edit controls, ask, calendar, stats, profile |
-| 526-1777 | JavaScript | VK auth, tasks, task detail edit, AI chat, calendar, stats |
+| 8-242 | CSS | VK layout, auth, cards, tabs, home focus metadata, task-detail edit form, screens |
+| 244-548 | HTML | VK auth, home focus/top-task metadata, task detail with edit controls, ask, calendar, stats, profile |
+| 549-1874 | JavaScript | VK auth, tasks, home parity summary, task detail edit, AI chat, calendar, stats |
 
 ### VK JavaScript ranges
 
 | Диапазон | Назначение |
 | --- | --- |
-| 483-616 | Config, theme, fetch helpers, auth diagnostics |
-| 628-848 | Diagnostics, auth token, D1 sync, launch params, warmup |
-| 874-955 | VK bridge init and auto-login |
-| 960-1218 | Enter app, identities, login/register/logout |
-| 1226-1371 | Task loading, rendering, Cyrillic-safe task intent helpers |
-| 1372-1465 | Save task from chat and task detail date/meta helpers |
-| 1466-1580 | Task detail edit helpers and worker update path |
-| 1581-1652 | Task detail render, discussion and done action |
-| 1653-1769 | Navigation, ask chat, calendar, stats |
-| 1770-1777 | Toast |
+| 550-639 | Config, theme, fetch helpers, auth diagnostics |
+| 651-871 | Diagnostics, auth token, D1 sync, launch params, warmup |
+| 897-978 | VK bridge init and auto-login |
+| 983-1241 | Enter app, identities, login/register/logout |
+| 1249-1353 | Task loading and shell rendering |
+| 1354-1440 | Home focus summary, urgent/overdue/next-deadline chips, top task row |
+| 1441-1562 | Task list HTML, save task from chat and task detail date/meta helpers |
+| 1563-1677 | Task detail edit helpers and worker update path |
+| 1678-1749 | Task detail render, discussion and done action |
+| 1750-1866 | Navigation, ask chat, calendar, stats |
+| 1867-1874 | Toast |
 
 ## `privacy.html`
 

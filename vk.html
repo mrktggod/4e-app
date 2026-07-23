@@ -79,6 +79,15 @@ html[data-theme="light"] .home-pill { background: rgba(255,255,255,0.92); box-sh
 .focus-orb { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--green); border: 1px solid rgba(154,194,60,0.32); background: radial-gradient(circle, rgba(154,194,60,0.16), transparent 68%); font-size: 28px; }
 .focus-kicker { font-size: 12px; font-weight: 800; letter-spacing: 0.16em; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
 .focus-title { font-size: 22px; line-height: 1.24; font-weight: 700; color: var(--text); }
+.focus-summary { margin-top: 8px; color: var(--text2); font-size: 13px; line-height: 1.35; }
+.focus-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.focus-meta-chip { min-height: 24px; display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 8px; background: rgba(154,194,60,0.10); color: var(--green); font-size: 11px; font-weight: 700; }
+.home-priority-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 16px; padding: 13px 14px; border: 1px solid var(--border); border-radius: 20px; background: var(--card); box-shadow: var(--shadow); cursor: pointer; }
+.home-priority-row[hidden] { display: none; }
+.home-priority-label { margin: 0 0 5px; }
+.home-priority-title { color: var(--text); font-size: 15px; line-height: 1.35; font-weight: 700; overflow-wrap: anywhere; }
+.home-priority-meta { margin-top: 4px; color: var(--muted); font-size: 12px; }
+.home-priority-arrow { color: var(--green); font-size: 24px; line-height: 1; flex-shrink: 0; }
 .planet-mini { position: relative; width: 118px; height: 82px; }
 .planet-mini::before { content: ''; position: absolute; width: 78px; height: 78px; right: 10px; top: 2px; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #d8ff5a, #8FC51E 48%, #24320f 78%); box-shadow: 0 0 24px rgba(154,194,60,0.36); }
 .planet-mini::after { content: ''; position: absolute; width: 118px; height: 34px; right: -3px; top: 25px; border-radius: 50%; border: 1px solid rgba(154,194,60,0.45); transform: rotate(-12deg); }
@@ -309,6 +318,12 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
       <div>
         <div class="focus-kicker">Фокус дня</div>
         <div class="focus-title"><span id="focusTaskCount">0 задач</span><br>требуют внимания</div>
+        <div class="focus-summary" id="focusSummary">План появится после загрузки задач</div>
+        <div class="focus-meta" aria-label="Сводка фокуса">
+          <span class="focus-meta-chip" id="focusUrgent">0 срочных</span>
+          <span class="focus-meta-chip" id="focusOverdue">0 просрочено</span>
+          <span class="focus-meta-chip" id="focusNextDeadline">Нет сроков</span>
+        </div>
       </div>
       <div class="planet-mini" aria-hidden="true"></div>
     </div>
@@ -321,6 +336,14 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
     </div>
 
     <div style="display:none"><span id="taskCount">0</span></div>
+    <div class="home-priority-row" id="homePriorityRow" role="button" tabindex="0" hidden>
+      <div>
+        <div class="section-label home-priority-label">Главная задача</div>
+        <div class="home-priority-title" id="homePriorityTitle"></div>
+        <div class="home-priority-meta" id="homePriorityMeta"></div>
+      </div>
+      <div class="home-priority-arrow" aria-hidden="true">›</div>
+    </div>
     <div class="section-label">Задачи</div>
     <div id="taskList"><div class="text-muted text-sm" style="padding:20px 0;text-align:center">Загрузка...</div></div>
   </div>
@@ -1328,6 +1351,79 @@ async function doneTask(id) {
   } catch(e) { showToast('Ошибка'); }
 }
 
+const HOME_PRIORITY_WEIGHTS = { urgent: 4, high: 3, normal: 2, low: 1 };
+
+function priorityWeight(task) {
+  const key = String(task?.priority || task?.urgency || 'normal').toLowerCase();
+  return HOME_PRIORITY_WEIGHTS[key] || HOME_PRIORITY_WEIGHTS.normal;
+}
+
+function taskDateValue(task) {
+  const value = String(task?.deadline || '').trim();
+  return value ? Date.parse(value) || Number.MAX_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
+}
+
+function isTaskOverdue(task, today) {
+  return Boolean(task?.deadline && String(task.deadline).slice(0, 10) < today);
+}
+
+function getHomeFocusState(active) {
+  const today = new Date().toISOString().slice(0, 10);
+  const urgent = active.filter(t => priorityWeight(t) >= HOME_PRIORITY_WEIGHTS.high);
+  const overdue = active.filter(t => isTaskOverdue(t, today));
+  const dated = active.filter(t => t.deadline).sort((a, b) => taskDateValue(a) - taskDateValue(b));
+  const topTask = active.slice().sort((a, b) => {
+    const priorityDiff = priorityWeight(b) - priorityWeight(a);
+    if (priorityDiff) return priorityDiff;
+    const overdueDiff = Number(isTaskOverdue(b, today)) - Number(isTaskOverdue(a, today));
+    if (overdueDiff) return overdueDiff;
+    return taskDateValue(a) - taskDateValue(b);
+  })[0] || null;
+  return { urgent, overdue, nextDeadline: dated[0] || null, topTask };
+}
+
+function renderHomeSummary(active) {
+  const focus = getHomeFocusState(active);
+  const summary = document.getElementById('focusSummary');
+  const urgent = document.getElementById('focusUrgent');
+  const overdue = document.getElementById('focusOverdue');
+  const nextDeadline = document.getElementById('focusNextDeadline');
+  const priorityRow = document.getElementById('homePriorityRow');
+  const priorityTitle = document.getElementById('homePriorityTitle');
+  const priorityMeta = document.getElementById('homePriorityMeta');
+
+  if (summary) {
+    if (!active.length) summary.textContent = 'На сегодня нет активных задач';
+    else if (focus.overdue.length) summary.textContent = 'Сначала просроченные и срочные задачи';
+    else if (focus.urgent.length) summary.textContent = 'Сначала срочные задачи с высоким приоритетом';
+    else if (focus.nextDeadline) summary.textContent = 'Ближайший срок: ' + formatDate(focus.nextDeadline.deadline);
+    else summary.textContent = 'Выберите главную задачу на день';
+  }
+  if (urgent) urgent.textContent = focus.urgent.length + ' ' + pluralRu(focus.urgent.length, 'срочная', 'срочные', 'срочных');
+  if (overdue) overdue.textContent = focus.overdue.length + ' просрочено';
+  if (nextDeadline) nextDeadline.textContent = focus.nextDeadline ? formatDate(focus.nextDeadline.deadline) : 'Нет сроков';
+
+  if (!priorityRow || !priorityTitle || !priorityMeta) return;
+  if (!focus.topTask) {
+    priorityRow.hidden = true;
+    priorityRow.dataset.taskId = '';
+    return;
+  }
+  priorityRow.hidden = false;
+  priorityRow.dataset.taskId = String(focus.topTask.id || '');
+  priorityTitle.textContent = focus.topTask.text || focus.topTask.title || 'Задача без названия';
+  priorityMeta.textContent = [getTaskDetailPriority(focus.topTask), focus.topTask.deadline ? formatDate(focus.topTask.deadline) : 'Без срока'].filter(Boolean).join(' · ');
+  priorityRow.onclick = () => {
+    if (priorityRow.dataset.taskId) openTaskDetail(priorityRow.dataset.taskId);
+  };
+  priorityRow.onkeydown = (event) => {
+    if ((event.key === 'Enter' || event.key === ' ') && priorityRow.dataset.taskId) {
+      event.preventDefault();
+      openTaskDetail(priorityRow.dataset.taskId);
+    }
+  };
+}
+
 function renderTasks() {
   const list = document.getElementById('taskList');
   const active = state.tasks.filter(t => !t.done);
@@ -1336,6 +1432,7 @@ function renderTasks() {
   if (focusCount) focusCount.textContent = active.length + ' ' + pluralRu(active.length, 'задача', 'задачи', 'задач');
   const homeActive = document.getElementById('homeActive');
   if (homeActive) homeActive.textContent = active.length;
+  renderHomeSummary(active);
   list.innerHTML = active.length
     ? active.map((t, idx) => taskHTML(t, idx)).join('')
     : '<div class="text-muted text-sm" style="padding:20px 0;text-align:center">Активных задач нет</div>';
