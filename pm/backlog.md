@@ -27,6 +27,20 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | DESIGN-GLASS-001 | Global glass design system: make glass panels the base visual language for cards, buttons, fields, notifications, popups, and new blocks | Design/UI | P1 | Codex + Claude/Yuri review | Planned for night pass | H0.5 | First pass creates token/component map and, only if Alexey's reference image exists in `pm/design-references/glass-card-reference.*`, one narrow branch/preview-ready implementation slice with visual evidence. No prod, no main merge, no payment/entitlement/CAL/secrets. |
 
+## VK beta readiness queue - 2026-07-23
+
+Alexey set the beta requirement: VK must be a working beta surface, not only a hosted fallback. Night work may take narrow local VK parity/testing slices, but auth/session and AI-chat remain Claude-reviewed gray-zone work. Live VK Mini App/device smoke, production deploy, VK Pay, payment, entitlement, secrets, CAL, and `main` are blocked.
+
+| ID | Brief | Type | Priority | Owner | Status | Horizon | Done criteria |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| VK-BETA-READINESS-001 | `BRIEF-2026-07-23-43-vk-beta-readiness-map` | PM/QA | P1 | Codex | Ready for night inbox | H0.5 | Runner has a clear beta checklist and ordered next briefs; no runtime code. |
+| VK-TASK-DETAIL-001 | `BRIEF-2026-07-23-44-vk-task-detail-beta-parity` | VK/UI | P1 | Codex | Ready for night inbox | H0.5 | Narrow server-backed task-detail edit slice with local VK smoke, no reminder/payment/entitlement. |
+| VK-HOME-PARITY-001 | `BRIEF-2026-07-23-45-vk-home-beta-parity` | VK/UI | P1 | Codex | Ready for night inbox | H0.5 | Focus/task metadata parity slice with local evidence, no broad redesign. |
+| VK-PROFILE-001 | `BRIEF-2026-07-23-46-vk-profile-beta-parity` | VK/UI | P2 | Codex | Ready for night inbox | H0.5 | Profile IA/navigation parity slice, no subscription/payment changes. |
+| VK-CALENDAR-001 | `BRIEF-2026-07-23-47-vk-calendar-parser-beta-parity` | VK/QA | P2 | Codex | Ready for night inbox | H0.5 | Local date/parser fixture improves VK task grouping; explicitly not CAL work. |
+| VK-AUTH-SESSION-001 | `BRIEF-2026-07-23-48-vk-auth-session-claude-scope` | VK/Auth | P1 | Claude/Yuri review | NEED-CLAUDE scope brief | H0.5 | Report exact source/risk and reviewed plan; no autonomous code changes. |
+| VK-AI-CHAT-001 | `BRIEF-2026-07-23-49-vk-ai-chat-claude-scope` | VK/AI/Auth | P1 | Claude/Yuri review | NEED-CLAUDE scope brief | H0.5 | Report exact source/risk and reviewed diagnostic/fix plan; no autonomous code changes. |
+
 ## Ночная очередь 2026-07-22
 
 Алексей разрешил ограниченно открыть безопасные задачи после Горизонта 0, чтобы ночной запуск не простаивал. Это не отменяет постоянные stop points: сначала идут текущие P1, затем только явно описанный безопасный резерв Горизонта 0.5; Горизонт 1, CAL, платежи, entitlement, auth-security, production и крупная архитектура остаются закрыты.

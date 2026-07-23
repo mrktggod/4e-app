@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK beta readiness night queue
+
+**What changed:** Added VK beta-readiness night briefs `43-49` on `feat/admin-tariff-api`: readiness map, task-detail parity, home parity, profile parity, calendar/parser parity, plus `NEED-CLAUDE` scope reports for auth session and AI-chat. Updated `pm/backlog.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md`, and wrote `pm/outbox/REPORT-2026-07-23-vk-beta-night-queue.md`.
+
+**Encoding check:** App HTML was not modified.
+
+**Test:** Documentation/PM change. Final guard: `node scripts/check-cp1251-mojibake.mjs`, `git diff --check`.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### Roadmap and backlog autotest status sync
 
 **What changed:** Updated `shared/ROADMAP.md` and `pm/backlog.md` with the new `Auto evidence green / manual tail` status rule. Added the 2026-07-23 safe full-suite result to roadmap/backlog, updated `BACK-035`, `BACK-050`, `BACK-061`, `BACK-062`, `BACK-065`, `BACK-066` and `BACK-055` evidence notes, and kept live Telegram/VK/payment/OAuth/production gates out of `Done`.

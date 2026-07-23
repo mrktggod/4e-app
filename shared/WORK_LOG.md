@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** Queue VK beta readiness for the night runner.
+**Result:** Added seven NEW VK inbox briefs: one beta-readiness map, four safe local parity/test slices, and two explicit `NEED-CLAUDE` scope reports for auth session and AI-chat. Backlog and roadmap now record that VK must be working for beta while production/payment/entitlement/CAL/secret/live-device gates stay blocked.
+**Commit:** this commit
+**Status:** DONE / ready for commit
+**Next step:** Night runner should process glass first, then VK briefs 43-49 by filename order.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Sync autotest evidence into roadmap and backlog.
 **Result:** `shared/ROADMAP.md` and `pm/backlog.md` now use `Auto evidence green / manual tail` for tasks where Playwright/k6/smoke tests replace repeatable manual checks but live platform gates remain. Updated `BACK-035`, `BACK-050`, `BACK-055`, `BACK-061`, `BACK-062`, `BACK-065` and `BACK-066` evidence notes.
 **Commit:** this commit
