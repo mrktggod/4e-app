@@ -12,6 +12,12 @@
 
 Пользователь открывает 4 утром и за 30 секунд видит что важно сегодня, что горит и что ждёт команда.
 
+## Design Direction - 2026-07-23
+
+`DESIGN-GLASS-001`: Alexey set the global direction that the glass panels already visible on Focus of the Day and menu blocks become the base 4e design language. The target surface family includes cards, buttons, icon buttons, notification panels, new blocks, form fields, popups, and small status panels.
+
+Execution rule: this is a design-system change, not a one-shot restyle. Night automation may produce an inventory, token/component map, and one narrow branch/preview implementation slice if Alexey's reference image is available. Production deploy, `main` merge, payment/entitlement/CAL/secret work, and broad cross-screen redesign without review stay blocked.
+
 ## Продуктовые столпы
 
 | # | Столп | Суть |

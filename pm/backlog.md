@@ -13,6 +13,12 @@
 - P2 — заметное улучшение или некритичный баг.
 - P3 — идея, полировка, отложенное улучшение.
 
+## Design system queue - 2026-07-23
+
+| ID | Task | Type | Priority | Owner | Status | Horizon | Done criteria |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| DESIGN-GLASS-001 | Global glass design system: make glass panels the base visual language for cards, buttons, fields, notifications, popups, and new blocks | Design/UI | P1 | Codex + Claude/Yuri review | Planned for night pass | H0.5 | First pass creates token/component map and, only if Alexey's reference image exists in `pm/design-references/glass-card-reference.*`, one narrow branch/preview-ready implementation slice with visual evidence. No prod, no main merge, no payment/entitlement/CAL/secrets. |
+
 ## Ночная очередь 2026-07-22
 
 Алексей разрешил ограниченно открыть безопасные задачи после Горизонта 0, чтобы ночной запуск не простаивал. Это не отменяет постоянные stop points: сначала идут текущие P1, затем только явно описанный безопасный резерв Горизонта 0.5; Горизонт 1, CAL, платежи, entitlement, auth-security, production и крупная архитектура остаются закрыты.
