@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-23 - Codex - task-detail tag popup fixed
+
+- Branch: `feat/admin-tariff-api`.
+- `BRIEF-2026-07-22-32-task-tag-popup-ios` is `DONE`; `BUG-2026-07-22-002` is `Ready for QA`.
+- Result: native tag `datalist` was replaced with app-owned suggestions, visible `Отмена`, outside-click close and Escape close with focus restore.
+- Evidence: encoding markers `111 -> 111`; `npm run smoke:back068-tag-popup` passed at 390x844 with controlled `#Дом` suggestion and compact panel rect `25..389`.
+- Next: real iPhone/TMA keyboard smoke; remaining task-detail P1 is long tag/title hero overflow.
+
 ## 2026-07-23 - Codex - task-detail reminder picker fixed
 
 - Branch: `feat/admin-tariff-api`.

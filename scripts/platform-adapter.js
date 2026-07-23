@@ -498,6 +498,14 @@
           addTagFromInput();
           return;
         }
+        if (action === 'cancel-tag-input' && typeof closeTagInput === 'function') {
+          closeTagInput(true);
+          return;
+        }
+        if (action === 'choose-tag-suggestion' && typeof chooseDetailTagSuggestion === 'function') {
+          chooseDetailTagSuggestion(button.dataset.tag || '');
+          return;
+        }
         if (action === 'set-reminder-quick' && typeof setReminder === 'function') {
           const reminder = button.dataset.detailReminder || '';
           if (reminder) {
@@ -514,6 +522,11 @@
 
     const detailTagInput = document.getElementById('detail-tag-input');
     if (detailTagInput) {
+      detailTagInput.addEventListener('input', () => {
+        if (typeof renderDetailTagOptions === 'function') {
+          renderDetailTagOptions();
+        }
+      });
       detailTagInput.addEventListener('keydown', event => {
         if (event && event.key === 'Enter') {
           event.preventDefault();

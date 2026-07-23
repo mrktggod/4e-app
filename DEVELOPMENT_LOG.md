@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Task-detail tag popup iOS fix
+
+**What changed:** Replaced native task-detail tag `<datalist>` behavior with an app-owned suggestion list inside `div#detail-tag-options`, added a visible cancel action, outside-click close, Escape close and focus restoration, and made `toggleTagInput()` open from computed display state. Added `scripts/back-068-task-detail-tag-popup-smoke.mjs` and `npm run smoke:back068-tag-popup`.
+
+**Encoding check:** index marker count before / after: 111 / 111.
+
+**Test:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `node --check scripts/back-068-task-detail-tag-popup-smoke.mjs`; `npm run smoke:back068-tag-popup`.
+
+**Commit:** this commit
+
+---
+
 ### Task-detail reminder picker iOS fix
 
 **What changed:** Fixed the task-detail reminder picker by moving hidden `select#detail-reminder` out of `button.detail-redesign-bell`, keeping it as a sibling for the existing save/update path, and raising the task-detail action trigger size from 36px to 44px. Added `scripts/back-067-task-detail-reminder-smoke.mjs` and `npm run smoke:back067-reminder` for a focused 390x844 regression check.

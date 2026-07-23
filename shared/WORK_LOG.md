@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** Fix iPhone/TMA task-detail tag popup.
+**Result:** Replaced native tag `datalist` with app-owned suggestions, added visible cancel plus outside/Escape close, and added `npm run smoke:back068-tag-popup`.
+**Commit:** this commit
+**Status:** DONE / Ready for QA
+**Next step:** Run real iPhone/TMA keyboard smoke; then fix remaining task-detail hero overflow.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** Fix iPhone/TMA task-detail reminder time picker.
 **Result:** Removed invalid nested `button > select`, kept `select#detail-reminder` as sibling for the existing save path, made the trigger 44x44, and added `npm run smoke:back067-reminder`.
 **Commit:** this commit

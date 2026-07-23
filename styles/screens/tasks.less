@@ -1453,7 +1453,7 @@
   top: 58px;
   z-index: 20;
   display: none;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 8px;
   padding: 10px;
   border-radius: 16px;
@@ -1462,8 +1462,7 @@
   box-shadow: 0 18px 30px rgba(0,0,0,.42), inset 0 1px 1px rgba(255,255,255,.08);
 }
 
-.detail-top-tag-input[style*='block'],
-.detail-top-tag-input:focus-within {
+.detail-top-tag-input[style*='grid'] {
   display: grid !important;
 }
 
@@ -1475,9 +1474,41 @@
   min-height: 38px;
 }
 
+.detail-tag-options {
+  grid-column: 1 / -1;
+  display: none;
+  gap: 6px;
+  max-height: 112px;
+  overflow-y: auto;
+}
+
+.detail-tag-suggestion {
+  min-height: 34px;
+  border-radius: 12px !important;
+  border: 1px solid rgba(166,184,164,.16);
+  background: linear-gradient(180deg, rgba(32,43,36,.84), rgba(12,20,16,.82));
+  color: #c2cac1;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+  padding: 0 11px;
+}
+
+.detail-tag-cancel-btn {
+  color: #d7ddd4 !important;
+  border-color: rgba(184,198,182,.24) !important;
+}
+
 @media (max-width: 390px) {
   .detail-info-card--priority { margin-top: 46px !important; }
-  .detail-top-tag-input { left: 12px; right: 12px; }
+  .detail-top-tag-input {
+    left: 12px;
+    right: 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .detail-tag-cancel-btn {
+    grid-column: 2;
+  }
 }
 
 
