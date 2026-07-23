@@ -19,18 +19,18 @@
 
 | Порядок | Brief | Результат ночи |
 | ---: | --- | --- |
-| 1 | `BRIEF-2026-07-22-30-focus-panel-visible-preview` | Проверить, почему Алексей не видит изменение «Фокуса дня»; не трогать незакоммиченные изменения другой сессии |
+| 1 | `BRIEF-2026-07-22-30-focus-panel-visible-preview` | BLOCKED → отдельная реализация `91a483a`: ночной brief остановился из-за параллельных незакоммиченных правок; после их завершения дневная сводка была добавлена в панель «Фокус дня», `smoke:home001` прошёл. Осталась свежая ручная проверка на телефоне |
 | 2 | `BRIEF-2026-07-22-31-task-reminder-time-ios` | DONE 2026-07-23: reminder trigger is standalone 44x44, sibling select preserves save path, `smoke:back067-reminder` green at 390x844 |
 | 3 | `BRIEF-2026-07-22-32-task-tag-popup-ios` | DONE 2026-07-23: native tag datalist replaced with app-owned suggestions, visible cancel/outside/Escape close, `smoke:back068-tag-popup` green at 390x844 |
 | 4 | `BRIEF-2026-07-22-33-task-detail-hero-overflow-ios` | DONE 2026-07-23: final hero guard returns title/description to flow, long tag uses ellipsis, `smoke:back069-hero` green at 390x844 |
-| 5 | `BRIEF-2026-07-22-34-chat-history-over-40-evidence` | Первый safe Г0.5 reserve: доказать поведение истории длиннее 40 сообщений без личных данных и массовых AI-вызовов |
-| 6 | `BRIEF-2026-07-22-35-smart007-memory-ui-regression-smoke` | Усилить AI-memory v1 smoke: escaping, reload, empty/error states |
-| 7 | `BRIEF-2026-07-22-36-privacy-surface-regression-smoke` | Повторяемо проверить privacy artifact и ссылки на трёх поверхностях |
-| 8 | `BRIEF-2026-07-22-37-back037-ci-coverage-audit` | Сверить CI/local smoke wiring и portable команды |
-| 9 | `BRIEF-2026-07-22-38-horizon05-manual-gates-pack` | Собрать единый утренний пакет ручных gates Горизонта 0.5 |
-| 10 | `BRIEF-2026-07-22-39-arch001-status-evidence-audit` | Устранить конфликт статуса ARCH-001 без архитектурного рефакторинга |
-| 11 | `BRIEF-2026-07-22-40-back012-component-inventory` | Инвентаризация BEM-компонентов без runtime/CSS правок |
-| 12 | `BRIEF-2026-07-22-41-horizon05-status-consistency` | Сверить и очистить устаревшие статусы Горизонта 0.5 |
+| 5 | `BRIEF-2026-07-22-34-chat-history-over-40-evidence` | DONE: доказано, что интерфейс загружает и показывает последние 40 сообщений без пагинации; потери удалённого хранения не доказаны. Расширение истории требует отдельного решения по API и продукту |
+| 6 | `BRIEF-2026-07-22-35-smart007-memory-ui-regression-smoke` | DONE: усилен smoke AI-памяти — безопасный вывод длинного текста, защита от HTML/XSS, удаление, очистка, повторная загрузка, пустое и ошибочное состояния |
+| 7 | `BRIEF-2026-07-22-36-privacy-surface-regression-smoke` | DONE: сборка содержит `privacy.html` и номер РКН `102299/77`; ссылки регистрации, входа и онбординга ведут на документ и имеют мобильную область нажатия 44px |
+| 8 | `BRIEF-2026-07-22-37-back037-ci-coverage-audit` | DONE: в общий GitHub Actions Quality guard добавлены существующие проверки синтаксиса JavaScript и сборки CSS; остальные обязательные проверки подтверждены |
+| 9 | `BRIEF-2026-07-22-38-horizon05-manual-gates-pack` | DONE: создан единый пакет ручных проверок Горизонта 0.5 с ответственными и блокерами для Telegram, OAuth и инфраструктуры |
+| 10 | `BRIEF-2026-07-22-39-arch001-status-evidence-audit` | NEED-CLAUDE: подтверждён конфликт статусов. Рекомендация — `In Progress / SOURCE-ONLY`; backlog и roadmap не меняются до решения Юрия/Claude |
+| 11 | `BRIEF-2026-07-22-40-back012-component-inventory` | DONE: собрана воспроизводимая инвентаризация оставшихся inline-стилей и выбраны следующие небольшие BEM-участки с подходящими smoke-тестами |
+| 12 | `BRIEF-2026-07-22-41-horizon05-status-consistency` | DONE: доказанный privacy-хвост исправлен на `Done`; спорный `ARCH-001` и ручные Telegram/OAuth/infrastructure gates оставлены с честными ограничениями |
 
 ---
 

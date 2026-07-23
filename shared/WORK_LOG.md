@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** Синхронизировать результаты ночной сессии в общих roadmap и backlog.
+**Result:** В `pm/backlog.md` записан фактический исход всех briefs 30-41; в `shared/ROADMAP.md` добавлен понятный итог ночи и ссылка на подробный анализ. Спорный `ARCH-001` оставлен без изменения до решения Юрия/Claude.
+**Commit:** this commit
+**Status:** DONE / Ready for review
+**Next step:** Проверить GitHub после push; merge в `main` выполнять отдельно после человеческой проверки.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BACK-012 ask action preview BEM-island cleanup.
 **Result:** Moved generated ask action and clarification preview inline styles from `index.html` into `.ask-action-*` LESS classes; added focused smoke coverage.
 **Commit:** this commit
@@ -9970,3 +9980,13 @@
 **Коммит:** N/A
 **Статус:** ✅ выполнено
 **Следующий шаг:** Ночной runner идёт по имени и завершает столько задач, сколько позволяют время и чистота рабочей копии; blocked/manual tails не форсирует.
+
+---
+
+### 2026-07-23 — Codex
+
+**Задача:** Подробно разобрать ночную рабочую сессию и спланировать следующие четыре активных периода.
+**Результат:** Создан `pm/ANALYSIS-2026-07-23-night-session-and-next-periods.md`: фактическая хронология ночи, оценка технологии runners, смысл выхода из Горизонта 0, ограничения real-device QA и план из четырёх периодов — приёмка, release candidate, closed beta, затем VK reliability + QA-lab.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Алексей читает документ и начинает Период 1 с проверки точной сборки на iPhone/TMA.

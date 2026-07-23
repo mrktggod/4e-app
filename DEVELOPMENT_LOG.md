@@ -1,5 +1,17 @@
 ## 2026-07-23
 
+### Синхронизация ночных результатов в roadmap и backlog
+
+**Что сделано:** В `pm/backlog.md` будущие формулировки ночной очереди 30-41 заменены фактическими результатами: 10 briefs Done, Focus отдельно реализован коммитом `91a483a` и требует ручной проверки, `ARCH-001` оставлен как решение для Claude/Юрия. В `shared/ROADMAP.md` добавлена понятная сводка ночной сессии и ссылка на `pm/ANALYSIS-2026-07-23-night-session-and-next-periods.md`. Обновлены `pm/team-sync.md` и `shared/WORK_LOG.md`.
+
+**Проверка кодировки:** `index.html` не изменялся; обязательный mojibake guard запускается перед коммитом.
+
+**Тест:** Markdown diff, проверка ссылок на локальные документы, `node scripts/check-cp1251-mojibake.mjs`, `bash scripts/check-portable-paths.sh`, `git diff --check`.
+
+**Коммит:** this commit
+
+---
+
 ### Ask action preview BEM-island cleanup
 
 **What changed:** Removed generated inline layout styles from `renderAskActionPreview()` and `renderAskClarificationPreview()` in `index.html`. Added `.ask-action-card`, `.ask-action-label`, `.ask-action-list`, `.ask-action-controls` and `.ask-action-btn*` rules in `styles/screens/voice.less`; rebuilt `styles.css` and `styles.min.css`. Added `scripts/ask-action-preview-bem-smoke.mjs` and `npm run smoke:ask-action-preview`.
@@ -2408,5 +2420,17 @@
 **Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
 
 **Тест:** Проверены уникальные имена briefs, последовательность `30-41`, соответствие permanent whitelist и наличие явных stop points/report paths.
+
+**Коммит:** N/A
+
+## 2026-07-23
+
+### Анализ ночной сессии и план следующих четырёх периодов
+
+**Что сделано:** Создан подробный документ `pm/ANALYSIS-2026-07-23-night-session-and-next-periods.md`. Он сводит фактические результаты вечернего, ночного, предрассветного и утреннего runners; разделяет runtime, test/CI и process output; оценивает сильные и слабые стороны автономного процесса; объясняет состояние Горизонта 0 и предлагает последовательность из четырёх рабочих периодов: real-device acceptance, managed release candidate, closed beta, затем Horizon 0.5 через VK reliability и QA-lab.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** `node scripts/check-doc-encoding.mjs`, `node scripts/check-cp1251-mojibake.mjs`, `git diff --check`; факты сверены с runner reports, briefs `30-41`, git log, текущим origin и GitHub Actions.
 
 **Коммит:** N/A

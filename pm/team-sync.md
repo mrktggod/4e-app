@@ -1,5 +1,19 @@
 # Team Sync
 
+## 2026-07-23 - Codex - roadmap/backlog night results synced
+
+- `pm/backlog.md` now records the factual outcome of every night brief `30-41`, including 10 Done, the separately committed Focus implementation with manual QA tail, and `ARCH-001` as an unresolved NEED-CLAUDE decision.
+- `shared/ROADMAP.md` now contains a plain-language night-session result and links to the detailed four-period analysis.
+- No runtime, priority, payment, entitlement, production, `main`, or ARCH-001 status change was made.
+- Branch: `feat/admin-tariff-api`; this documentation set is prepared for one reviewed commit and push.
+
+## 2026-07-23 - Codex - night session analysis and next four periods
+
+- Detailed plain-language analysis: `pm/ANALYSIS-2026-07-23-night-session-and-next-periods.md`.
+- Night result: 26 commits; 10/12 queued briefs Done, Focus implementation committed but needs fresh visual proof, ARCH-001 remains NEED-CLAUDE.
+- Current branch is clean, pushed and CI-green, but 61 commits / 245 changed files ahead of `main`; release preparation and human review are required before merge/deploy.
+- Recommended order: real-device acceptance -> managed release candidate -> 5-10 user closed beta -> Horizon 0.5 through VK reliability and QA-lab.
+
 ## 2026-07-23 - Codex - ask action preview BEM slice
 
 - Branch: `feat/admin-tariff-api`.
