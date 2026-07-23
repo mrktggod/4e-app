@@ -1,5 +1,19 @@
 ## 2026-07-23
 
+### VK beta readiness map
+
+**What changed:** For `BRIEF-2026-07-23-43-vk-beta-readiness-map`, wrote `pm/outbox/REPORT-2026-07-23-43-vk-beta-readiness-map.md`, marked the brief `DONE`, and changed the `VK-BETA-READINESS-001` backlog row to `Done`. The report orders briefs `44-49`, identifies auth/session and AI-chat as `NEED-CLAUDE`, and leaves real VK/device smoke to Yuri.
+
+**Encoding check:** App HTML was not edited; `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** PM/source audit through `pm/vk-parity-plan-2026-07-23.md`, `docs/tasks/BACK-066-vk-functional-parity-audit-2026-07-22.md`, `docs/tasks/BACK-066-vk-stable-line-functional-parity.md`, and `rg`; shared guards before commit.
+
+**Commit:** this commit
+
+---
+
+## 2026-07-23
+
 ### DESIGN-GLASS-001 reference gate
 
 **What changed:** For `BRIEF-2026-07-23-42-glass-design-system-foundation`, the runner found no reference image in `pm/design-references/` and did not implement cross-screen glass styling by guesswork. The brief was marked `NEED-CLAUDE`; the outbox report records the reference gate, current glass inventory and next atomic briefs.

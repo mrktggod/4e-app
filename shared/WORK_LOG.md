@@ -1,5 +1,15 @@
 ### 2026-07-23 - Codex
 
+**Task:** BRIEF-2026-07-23-43 VK beta readiness map.
+**Result:** Wrote the VK beta blocker/order report and marked the readiness-map row Done; runtime code was not touched.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue with `BRIEF-2026-07-23-44-vk-task-detail-beta-parity`.
+
+---
+
+### 2026-07-23 - Codex
+
 **Task:** BRIEF-2026-07-23-42 glass design-system foundation.
 **Result:** Reference image was missing, so runtime/CSS work was not guessed; current glass surfaces were inventoried and next atomic briefs were proposed.
 **Commit:** this commit

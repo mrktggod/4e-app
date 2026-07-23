@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-23-43 - VK-BETA-READINESS-001 beta readiness map
 

@@ -33,7 +33,7 @@ Alexey set the beta requirement: VK must be a working beta surface, not only a h
 
 | ID | Brief | Type | Priority | Owner | Status | Horizon | Done criteria |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| VK-BETA-READINESS-001 | `BRIEF-2026-07-23-43-vk-beta-readiness-map` | PM/QA | P1 | Codex | Ready for night inbox | H0.5 | Runner has a clear beta checklist and ordered next briefs; no runtime code. |
+| VK-BETA-READINESS-001 | `BRIEF-2026-07-23-43-vk-beta-readiness-map` | PM/QA | P1 | Codex | Done | H0.5 | Runner has a clear beta checklist and ordered next briefs in `pm/outbox/REPORT-2026-07-23-43-vk-beta-readiness-map.md`; no runtime code. |
 | VK-TASK-DETAIL-001 | `BRIEF-2026-07-23-44-vk-task-detail-beta-parity` | VK/UI | P1 | Codex | Ready for night inbox | H0.5 | Narrow server-backed task-detail edit slice with local VK smoke, no reminder/payment/entitlement. |
 | VK-HOME-PARITY-001 | `BRIEF-2026-07-23-45-vk-home-beta-parity` | VK/UI | P1 | Codex | Ready for night inbox | H0.5 | Focus/task metadata parity slice with local evidence, no broad redesign. |
 | VK-PROFILE-001 | `BRIEF-2026-07-23-46-vk-profile-beta-parity` | VK/UI | P2 | Codex | Ready for night inbox | H0.5 | Profile IA/navigation parity slice, no subscription/payment changes. |
