@@ -6,6 +6,7 @@
 - `BUG-2026-07-22-001` is Done; real notification delivery/sound/vibration remains `BACK-064`.
 - New unique `BUG-2026-07-24-001` / `BACK-070` adds a compact selected-time label to the closed reminder trigger.
 - `npm run smoke:back067-reminder` is green at 390x844 in light/dark, including hit targets, saved value, visible indicator and aria label.
+- Manual acceptance: Alexey checked the exact preview on iPhone/TMA; `15 мин` is visible on the closed trigger and does not break the task card.
 - Focus brief 30 is synchronized to Done after Alexey's manual «Фокус ок».
 - Branch: `fix/reminder-indicator-unified`; no `main`, production, payment, entitlement, CAL or secrets changes.
 

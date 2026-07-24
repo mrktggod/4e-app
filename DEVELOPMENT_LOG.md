@@ -2735,3 +2735,13 @@
 **Коммит:** `85cb141`
 
 **Staging:** `https://09e6cd2b.4-ai-staging.pages.dev/` и alias `https://qa-reminder-indicator.4-ai-staging.pages.dev/` отвечают `200`, содержат `syncDetailReminderIndicator` и staging worker marker.
+
+### BACK-070 manual iPhone/TMA acceptance
+
+**Что сделано:** Зафиксирована ручная приёмка точного preview `qa-reminder-indicator`: Алексей подтвердил на iPhone внутри Telegram Mini App, что после выбора `За 15 минут` закрытый reminder trigger показывает `15 мин`, карточка задачи не ломается и соседние элементы не перекрываются. `BUG-2026-07-24-001` / `BACK-070` переведён из `Ready for QA / auto green` в `Done`.
+
+**Проверка кодировки:** `index.html` не менялся в этой записи.
+
+**Тест:** Ранее пройден `npm run smoke:back067-reminder` и полный `npm run qa:prebeta`; ручной spot-check подтверждён скриншотом Алексея 2026-07-24.
+
+**Коммит:** `docs(qa): accept reminder indicator phone check`

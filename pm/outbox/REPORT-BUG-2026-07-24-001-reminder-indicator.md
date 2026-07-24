@@ -3,7 +3,7 @@
 **Date:** 2026-07-24  
 **Branch:** `fix/reminder-indicator-unified`  
 **App commit:** `85cb141`
-**Status:** DONE in code / NEEDS-REAL one iPhone visual spot-check
+**Status:** DONE / accepted on iPhone TMA
 
 ## Problem
 
@@ -77,13 +77,8 @@ syncDetailReminderIndicator=True
 staging worker marker=True
 ```
 
-## Manual tail
+## Manual acceptance
 
-NEEDS-REAL:
-
-1. Открыть `https://qa-reminder-indicator.4-ai-staging.pages.dev/` на iPhone внутри Telegram.
-2. Выбрать `За 15 минут`.
-3. Закрыть popup.
-4. Подтвердить, что `15 мин` читается и не перекрывает тег или заголовок.
+2026-07-24 Алексей проверил exact preview на телефоне в Telegram Mini App и прислал скрин: после выбора `За 15 минут` закрытый trigger показывает компактную метку `15 мин`; карточка не ломается, заголовок и соседние элементы не перекрываются. `BUG-2026-07-24-001` / `BACK-070` можно считать закрытым.
 
 Реальная доставка, звук и вибрация не входят в этот баг и остаются `BACK-064`.
