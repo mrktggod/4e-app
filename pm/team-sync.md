@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-24 - Codex - navigation safe-area Playwright smoke added
+
+- Branch: `feat/admin-tariff-api`.
+- Result: added `autotests/tests/web/navigation-safe-area.spec.ts` for `NEW-006` / `BACK-046`.
+- Evidence: `npm run test:e2e:web` passed 12/12, covering home/global nav viewport bounds and no horizontal overflow on mobile and desktop Playwright projects.
+- Boundaries: no runtime code, prod, `main`, payment, entitlement, auth-security logic, OAuth, CAL, secrets or live TMA/device QA.
+- Next: real Telegram Mini App safe-area smoke remains the Done-gate for `NEW-006`.
+
 ## 2026-07-24 - Codex - auth legal Playwright smoke added
 
 - Branch: `feat/admin-tariff-api`.

@@ -10157,3 +10157,13 @@
 **Коммит:** `test(auth): add legal accessibility e2e smoke`
 **Статус:** ✅ выполнено
 **Следующий шаг:** live click / dark-light / keyboard-mobile spot check после deploy/hosting changes.
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** добавить Playwright smoke для navigation/safe-area (`NEW-006`, `BACK-046`).
+**Результат:** `autotests/tests/web/navigation-safe-area.spec.ts` проверяет home/global nav внутри viewport и отсутствие horizontal overflow; `npm run test:e2e:web` прошёл 12/12.
+**Коммит:** `test(ui): add navigation safe-area e2e smoke`
+**Статус:** ✅ выполнено
+**Следующий шаг:** real Telegram Mini App safe-area smoke остаётся Done-gate для `NEW-006`.

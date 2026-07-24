@@ -69,8 +69,9 @@
    - Польза: почти убирает ручной legal/auth UI smoke; остаётся live click после deploy/hosting changes.
 
 3. Playwright navigation/safe-area spec.
-   - Проверять desktop 1366/1024 and mobile 390: bottom nav width, no horizontal overflow, no content under nav.
-   - Польза: закрывать `NEW-006`, `BACK-046`, часть glass redesign risk.
+   - Status: added 2026-07-24 as `autotests/tests/web/navigation-safe-area.spec.ts`.
+   - Проверяет desktop 1366 and mobile 390: home bottom nav and global nav stay inside viewport, with no HTML/body horizontal overflow.
+   - Польза: закрывает repeatable part of `NEW-006`, `BACK-046`, and part of glass redesign shell risk.
 
 4. Playwright chat keyboard spec.
    - Эмулировать `--app-keyboard-offset`, focus ask input, no overlap with nav.

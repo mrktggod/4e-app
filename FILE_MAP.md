@@ -62,6 +62,7 @@
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |
 | `autotests/tests/web/auth-legal.spec.ts` | 61 | Playwright auth/legal smoke: onboarding/login privacy links, login/register privacy opening, auth legal/tabs/password/forgot 44px targets | Run with `npm run test:e2e:web` before changing auth legal/accessibility UI |
+| `autotests/tests/web/navigation-safe-area.spec.ts` | 76 | Playwright nav/safe-area smoke: synthetic auth shell, home/global nav inside viewport, no horizontal overflow on mobile and desktop projects | Run with `npm run test:e2e:web` before changing navigation, safe-area, or app shell layout |
 | `autotests/tests/telegram-app/basic.spec.ts` | 34 | Playwright Telegram Mini App smoke with mocked `window.Telegram.WebApp` | Run with `npm run test:e2e:telegram` |
 | `autotests/tests/vk-app/basic.spec.ts` | 38 | Playwright VK Mini App smoke with mocked `window.vkBridge` | Run with `npm run test:e2e:vk` |
 | `autotests/load/smoke-load.js` | 20 | k6 local/static load smoke for `/index.html`, `/vk.html`, `/privacy.html` | Run with `npm run load:smoke`; set `BASE_URL`, `K6_VUS`, `K6_DURATION` explicitly for staging |

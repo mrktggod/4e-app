@@ -1,5 +1,19 @@
 ## 2026-07-24
 
+### NEW-006 / BACK-046 navigation safe-area Playwright smoke
+
+**What changed:** Added `autotests/tests/web/navigation-safe-area.spec.ts` to cover synthetic-auth home/global navigation viewport bounds and no HTML/body horizontal overflow on Playwright mobile and desktop projects. Updated `FILE_MAP.md`, `pm/autotest-backlog-coverage-2026-07-23.md`, `pm/backlog.md` and the outbox report.
+
+**Encoding check:** `index.html` was not edited; the mandatory encoding ritual was not required. `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** `npm run test:e2e:web` passed 12/12.
+
+**Commit:** `test(ui): add navigation safe-area e2e smoke`
+
+---
+
+## 2026-07-24
+
 ### BACK-061/062 auth legal Playwright smoke
 
 **What changed:** Added `autotests/tests/web/auth-legal.spec.ts` to cover onboarding/login privacy links, login/register privacy opening, auth tab/password/forgot/legal 44px touch targets and legal copy font size. Updated `FILE_MAP.md`, `pm/autotest-backlog-coverage-2026-07-23.md`, `pm/backlog.md` and the outbox report.
