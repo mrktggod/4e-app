@@ -1,6 +1,10 @@
-status: BLOCKED-CONCURRENT-WORK
+status: DONE
 
 # BRIEF-2026-07-22-30-focus-panel-visible-preview
+
+## Acceptance update 2026-07-24
+
+Отдельная реализация `91a483a` была принята Алексеем на телефоне: «Фокус ок». Старый статус `BLOCKED-CONCURRENT-WORK` относился к первоначальному ночному исполнению и больше не описывает фактический результат.
 
 ## Context
 

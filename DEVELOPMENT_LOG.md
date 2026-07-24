@@ -2721,3 +2721,15 @@
 **Тест:** `git checkout feat/admin-tariff-api`, `git fetch`, `git pull --ff-only`, scan `pm/inbox`, `git diff --check`, `node scripts/check-cp1251-mojibake.mjs`, portable paths guard.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### Reminder popup acceptance и видимый выбранный интервал
+
+**Что сделано:** Ветка `fix/reminder-indicator-unified` создана от `feat/admin-tariff-api`, потому что основная рабочая копия занята параллельной glass-подготовкой. Из принятой reminder-ветки перенесены только runtime/test изменения без устаревших PM-ID. Popup-варианты получили стабильные 44px tap targets и горизонтальный текст в light/dark. Закрытый колокольчик теперь показывает `15 мин`, `1 час` или `1 день`, скрывает метку для `none` и обновляет полный `aria-label`. `BUG-2026-07-22-001` закрыт ручной приёмкой Алексея; новый индикатор зарегистрирован как уникальный `BUG-2026-07-24-001` / `BACK-070`. Старый focus brief синхронизирован в Done по ручному «Фокус ок». Portable-path guard дополнен исключением служебного `.git` worktree-файла, чтобы полный QA можно было честно запускать в изолированных рабочих копиях. Flaky keyboard-тест теперь ждёт завершения CSS transition через `expect.poll()` вместо мгновенного замера.
+
+**Проверка кодировки:** совпадений до / после: 111 / 111.
+
+**Тест:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `npm run smoke:back067-reminder` — `ok: true`, failures `[]`, dark/light trigger 44x44, options 140x44, selected indicators `1 час` / `15 мин`, opacity `1`; `npm run qa:prebeta` — exit 0, Playwright 20/20 и все обязательные smoke зелёные; `npm run smoke:back068-tag-popup` и `npm run smoke:back069-hero` — `ok: true`; portable/doc/diff guards прошли.
+
+**Коммит:** this commit

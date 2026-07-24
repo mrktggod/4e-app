@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-24 - Codex - reminder acceptance and visible state
+
+- Alexey accepted the task reminder popup on phone and desktop; light/dark mobile popup and persistence are green.
+- `BUG-2026-07-22-001` is Done; real notification delivery/sound/vibration remains `BACK-064`.
+- New unique `BUG-2026-07-24-001` / `BACK-070` adds a compact selected-time label to the closed reminder trigger.
+- `npm run smoke:back067-reminder` is green at 390x844 in light/dark, including hit targets, saved value, visible indicator and aria label.
+- Focus brief 30 is synchronized to Done after Alexey's manual «Фокус ок».
+- Branch: `fix/reminder-indicator-unified`; no `main`, production, payment, entitlement, CAL or secrets changes.
+
 ## 2026-07-24 - pre-dawn runner closeout
 
 - Completed 4 autonomous whitelist tasks on `feat/admin-tariff-api`: auth legal e2e, nav safe-area e2e, chat keyboard guard/fix, and mocked VK parity e2e.

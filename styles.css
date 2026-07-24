@@ -6411,7 +6411,9 @@ body:has(#task-detail.active) #global-nav,
   display: grid;
 }
 .detail-reminder-popover button {
-  min-height: 34px;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
   border-radius: 12px;
   border: 1px solid rgba(166, 184, 164, 0.16);
   background: linear-gradient(180deg, rgba(32, 43, 36, 0.84), rgba(12, 20, 16, 0.82));
@@ -6420,6 +6422,10 @@ body:has(#task-detail.active) #global-nav,
   font-weight: 850;
   text-align: left;
   padding: 0 11px;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  touch-action: manipulation;
 }
 .detail-reminder-popover button.active {
   color: #071008;
@@ -7007,7 +7013,7 @@ body:has(#task-detail.active) #global-nav,
   line-height: 1.07 !important;
 }
 .detail-redesign-bell,
-.detail-redesign-tags button,
+.detail-redesign-tags > button,
 .detail-top-tag-add,
 .detail-avatar-add {
   width: 44px !important;
@@ -7016,7 +7022,7 @@ body:has(#task-detail.active) #global-nav,
   border-radius: 50% !important;
 }
 .detail-redesign-bell svg,
-.detail-redesign-tags button svg {
+.detail-redesign-tags > button svg {
   width: 18px !important;
   height: 18px !important;
 }
@@ -7106,6 +7112,41 @@ body:has(#task-detail.active) #global-nav,
   #task-detail .detail-redesign-title {
     font-size: 26px !important;
   }
+}
+#task-detail .detail-redesign-hero.detail-reminder-popover-open .detail-redesign-tags {
+  z-index: 100 !important;
+  overflow: visible !important;
+}
+#task-detail .detail-redesign-tags.detail-reminder-selected {
+  overflow: visible !important;
+}
+#task-detail .detail-redesign-bell {
+  position: relative !important;
+  overflow: visible !important;
+}
+#task-detail .detail-redesign-bell::after {
+  content: attr(data-reminder-label);
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  z-index: 2;
+  min-width: max-content;
+  padding: 2px 5px;
+  border: 1px solid rgba(159, 202, 84, 0.35);
+  border-radius: 7px;
+  background: rgba(18, 28, 22, 0.94);
+  color: #b9db79;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%);
+}
+#task-detail .detail-redesign-bell[data-reminder-active="true"]::after {
+  opacity: 1;
 }
 .profile-stage {
   min-height: 100%;
@@ -13971,6 +14012,16 @@ html[data-theme="light"] #focus-panel-overlay .quick-add-submit {
   background: linear-gradient(180deg, #bce776, #5ba512) !important;
   color: #111411 !important;
   box-shadow: 0 12px 24px rgba(111, 165, 46, 0.22) !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-bell {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+}
+html[data-theme="light"] #task-detail .detail-redesign-bell::after {
+  border-color: rgba(95, 154, 32, 0.32) !important;
+  background: rgba(247, 255, 232, 0.96) !important;
+  color: #497f17 !important;
 }
 html[data-theme="light"] #focus-panel-overlay .quick-add-cancel {
   background: rgba(255, 255, 255, 0.76) !important;

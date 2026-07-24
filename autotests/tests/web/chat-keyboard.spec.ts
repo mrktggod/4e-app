@@ -52,6 +52,12 @@ test.describe('chat keyboard geometry', () => {
 
     await page.locator('#ask-field').focus();
     await expect(page.locator('.ask-bar')).toHaveClass(/ask-bar--keyboard-open/);
+    await expect.poll(
+      () => page.locator('.ask-bar').evaluate(element =>
+        Number.parseFloat(window.getComputedStyle(element).paddingBottom || '0')
+      ),
+      { message: 'keyboard padding transition should reach its final value' }
+    ).toBeGreaterThanOrEqual(260);
 
     const openMetrics = await page.evaluate(() => {
       const doc = document.documentElement;

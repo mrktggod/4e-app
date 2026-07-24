@@ -146,3 +146,12 @@ Manual rows above remain `Not run` unless Yuri/real browser/device confirms them
 | Notification sound/vibration/delivery | Not run | Blocked before reminder setup; repeat after task-detail control fix. |
 
 Evidence and screenshots: `docs/tasks/BUG-2026-07-22-task-detail-ios-regressions.md`.
+
+## 14. Reminder mobile acceptance and indicator follow-up — 2026-07-24
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Reminder popup on iPhone/TMA | PASS | Алексей подтвердил: popup нормально отображается и нажимается в светлой и тёмной теме, выбранное значение сохраняется. |
+| Reminder popup on desktop | PASS | Алексей подтвердил корректное открытие и сохранение. |
+| Selected reminder visible while popup is closed | FIX READY FOR QA | Найден отдельный `BUG-2026-07-24-001`: ранее значение было видно только после повторного открытия popup. `BACK-070` добавляет метку `15 мин` / `1 час` / `1 день`; `smoke:back067-reminder` зелёный в light/dark. |
+| Notification delivery/sound/vibration | NOT RUN | UI-блокер снят; теперь нужен реальный `BACK-064` smoke со свёрнутым Telegram и ближайшим временем. |
