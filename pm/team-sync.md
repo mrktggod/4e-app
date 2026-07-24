@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-25 - night runner found no executable whitelist work
+
+- Branch: `feat/admin-tariff-api`; `fetch` and `pull --ff-only` were clean.
+- Inbox result: no non-template `BRIEF-*.md` with first line `status: NEW`.
+- Backlog/roadmap result: no autonomous `DONE` candidate remained inside the whitelist without Claude/Yuri/live/manual/payment/entitlement/CAL/prod/main/secret gates.
+- Report: `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-25.md`.
+- Note: existing local changes in `index.html` and `scripts/auth.js` were left untouched.
+
 ## 2026-07-24 - pre-dawn runner closeout
 
 - Completed 4 autonomous whitelist tasks on `feat/admin-tariff-api`: auth legal e2e, nav safe-area e2e, chat keyboard guard/fix, and mocked VK parity e2e.

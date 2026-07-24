@@ -1,3 +1,13 @@
+### 2026-07-25 - Codex
+
+**Task:** night inbox/backlog runner closeout.
+**Result:** no `status: NEW` briefs and no safe autonomous whitelist backlog task; final report added.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Claude/Yuri/live gates must unblock the remaining backlog candidates.
+
+---
+
 ### 2026-07-24 — Codex
 
 **Задача:** morning inbox/backlog runner docs commit sync.

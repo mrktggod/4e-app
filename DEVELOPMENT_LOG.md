@@ -1,3 +1,15 @@
+## 2026-07-25
+
+### Night runner no executable whitelist work
+
+**What changed:** Created final report `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-25.md` after scanning `pm/inbox`, `pm/backlog.md`, and `shared/ROADMAP.md`. The run found 0 executable `status: NEW` briefs and 0 safe autonomous whitelist backlog tasks.
+
+**Encoding check:** `index.html` and `vk.html` were not edited by this closeout; Step 0 was not applicable. Required `node scripts/check-cp1251-mojibake.mjs` runs before commit.
+
+**Test:** `git checkout feat/admin-tariff-api`, `git fetch origin`, `git pull --ff-only`, inbox first-line scan, backlog/roadmap whitelist scan, `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `npm run check:ui-architecture`, `git diff --check`.
+
+**Commit:** this commit
+
 ## 2026-07-24
 
 ### Morning runner docs commit sync
