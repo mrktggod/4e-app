@@ -78,6 +78,7 @@
 | `pm/bugs.md` | Сбор багов, входящие, активные, отчёт для разработки |
 | `pm/backlog.md` | Фичи, улучшения, техзадачи |
 | `pm/qa-checklist.md` | Smoke, regression areas, acceptance criteria |
+| `pm/QA-LAB-AND-CLIENT-BUG-INTAKE-2026-07-24.md` | План бесплатного QA Lab: axe-core, Playwright visual, Lighthouse CI, ZAP baseline и клиентский bug intake |
 | `pm/release-checklist.md` | Проверки до/после релиза |
 | `pm/assistant-evaluation.md` | Рубрика оценки качества AI-ассистента |
 | `pm/agent-inbox/` | Короткие запросы между Codex, Claude Юры и командой до утверждения решений |

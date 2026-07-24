@@ -10207,3 +10207,13 @@
 **Коммит:** `test(ui): add navigation safe-area e2e smoke`
 **Статус:** ✅ выполнено
 **Следующий шаг:** real Telegram Mini App safe-area smoke остаётся Done-gate для `NEW-006`.
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** Спланировать бесплатный QA Lab и клиентский приём багов.
+**Результат:** Создан `pm/QA-LAB-AND-CLIENT-BUG-INTAKE-2026-07-24.md`: понятная схема бесплатных инструментов (`axe-core`, Playwright visual screenshots, Lighthouse CI, OWASP ZAP baseline), правила где автоматика помогает и где остаётся живой gate. Добавлены backlog-строки `QA-LAB-001..004` и `FEEDBACK-002`, task docs и atomic briefs `61-64`. В `pm/bugs.md` закреплён формат `CLIENT-BUG-*`, `source: client`, статусы актуальности и privacy-правило для скриншотов. Portable guard теперь игнорирует служебный `.git` pointer worktree-файла.
+**Коммит:** `docs(qa): plan qa lab and client bug intake`
+**Статус:** ✅ выполнено
+**Следующий шаг:** Выполнить `BRIEF-2026-07-24-61-qa-lab-axe-core-playwright` как первую техническую задачу QA Lab.

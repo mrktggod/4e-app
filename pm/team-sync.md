@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-24 - Codex - QA Lab and client bug intake plan
+
+- Added canonical plan `pm/QA-LAB-AND-CLIENT-BUG-INTAKE-2026-07-24.md`.
+- Selected free tools Codex can operate: axe-core on Playwright, Playwright visual screenshots, Lighthouse CI report, OWASP ZAP passive baseline.
+- Added `FEEDBACK-002` client bug intake: `/bug` wizard, screenshots with consent, `CLIENT-BUG-*`, `source: client`, relevance check before normal `BUG-*`.
+- Created atomic briefs `61-64` for axe, visual screenshots, Lighthouse report and PM intake template.
+- No app runtime, bot runtime, production, `main`, payment, entitlement, CAL or secrets touched.
+
 ## 2026-07-24 - pre-dawn runner closeout
 
 - Completed 4 autonomous whitelist tasks on `feat/admin-tariff-api`: auth legal e2e, nav safe-area e2e, chat keyboard guard/fix, and mocked VK parity e2e.

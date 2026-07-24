@@ -21,6 +21,18 @@
 
 Карта покрытия и правила для агентов: `pm/autotest-backlog-coverage-2026-07-23.md` и `docs/qa/autotest-agent-playbook.md`.
 
+## QA Lab + client bug intake - 2026-07-24
+
+Alexey approved expanding the free testing/tooling layer and building a client bug intake path. Canonical plan: `pm/QA-LAB-AND-CLIENT-BUG-INTAKE-2026-07-24.md`.
+
+| ID | Task | Type | Priority | Owner | Status | Horizon | Done criteria |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| QA-LAB-001 | Free axe-core accessibility smoke on Playwright | QA/Accessibility | P1 | Codex | Ready / brief NEW | H0.5 | `BRIEF-2026-07-24-61-qa-lab-axe-core-playwright`: add `@axe-core/playwright`, `npm run test:a11y`, scoped checks for stable screens, report violations honestly; no broad legacy refactor. |
+| QA-LAB-002 | Playwright visual screenshot discipline for glass/design QA | QA/Design | P1 | Codex | Ready / brief NEW | H0.5 | `BRIEF-2026-07-24-62-qa-lab-visual-screenshots`: start with component-level evidence/baselines, not full-page flaky screenshots; feed glass handoff reports. |
+| QA-LAB-003 | Lighthouse CI report for preview/prebeta quality | QA/Perf | P2 | Codex | Ready / brief NEW | H0.5 | `BRIEF-2026-07-24-63-qa-lab-lighthouse-ci-report`: local/preview report for `/index.html`, `/vk.html`, `/privacy.html`; soft thresholds first, no production load. |
+| QA-LAB-004 | OWASP ZAP baseline for staging preview only | QA/Security | P2 | Codex + Claude review | Planned / NEED-CLAUDE before strict gate | H0.5 | Passive baseline scan only on staging/preview; results triaged as report first. Any auth/security/payment-adjacent finding needs Claude/Yuri review before runtime changes. |
+| FEEDBACK-002 | Client bug intake via Telegram bot + PM triage | Product/QA/Bot | P1 | Codex + bot repo owner | Ready / PM brief NEW, runtime blocked by bot repo access | H0.5 | `BRIEF-2026-07-24-64-feedback-client-bug-intake-pm-template` covers app-repo PM format. Runtime `/bug` wizard belongs to `mrktggod/4e-bot`: screenshot, simple questions, `CLIENT-BUG-*`, `source: client`, relevance check, privacy consent. |
+
 ## Design system queue - 2026-07-23
 
 | ID | Task | Type | Priority | Owner | Status | Horizon | Done criteria |

@@ -26,6 +26,20 @@ Roadmap rule: use `Auto evidence green / manual tail` when tests cover the repea
 
 Details: `pm/autotest-backlog-coverage-2026-07-23.md` and `docs/qa/autotest-agent-playbook.md`.
 
+## QA Lab Direction - 2026-07-24
+
+Alexey approved the next testing layer: free tools that Codex can install and operate without paid SaaS. The phased QA Lab is documented in `pm/QA-LAB-AND-CLIENT-BUG-INTAKE-2026-07-24.md`.
+
+Priority order:
+
+1. `QA-LAB-001` axe-core on Playwright for repeatable accessibility checks.
+2. `QA-LAB-002` Playwright visual screenshots for stable glass/design components.
+3. `QA-LAB-003` Lighthouse CI reports for preview/prebeta quality.
+4. `QA-LAB-004` OWASP ZAP passive baseline on staging/preview, report-first and Claude-reviewed.
+5. `FEEDBACK-002` client bug intake through Telegram bot with `CLIENT-BUG-*`, screenshot consent, relevance checks and `source: client`.
+
+Rule: these tools reduce manual QA, but do not close real Telegram/VK device gates, live OAuth, live payments, notification sound/vibration, production load or product decisions.
+
 ## Продуктовые столпы
 
 | # | Столп | Суть |
@@ -68,7 +82,7 @@ Details: `pm/autotest-backlog-coverage-2026-07-23.md` and `docs/qa/autotest-agen
 | UI-архитектурный guard | BACK-049 — правило LESS + BEM для нового UI-кода, запрет роста inline `style`/handlers, проверка в pre-commit и GitHub Actions | P1 | Done |
 | Accessibility baseline | BACK-050 — базовая доступность критических сценариев: auth-формы, статусные сообщения, keyboard/focus, dialog-поведение quick-add/contact/consent и touch-target smoke перед закрытым тестом | P1 | Auto evidence green / Ready for live QA — `smoke:back050` и `qa:prebeta` зелёные, нужен один ручной keyboard/mobile smoke |
 | Единая рабочая копия | INFRA-006 — одна рабочая папка (X-drive), обмен только через git; worker/app line-ending policy, дубль-клон worker-p0 архивирован | P1 | Partial Done — канон закреплён, осталось командное принятие правила |
-| Закрытый тест и измерение | BACK-035 — QA smoke; BACK-048 — dev/test аккаунты; BETA-001 — закрытый тест 5-10 пользователей; ANALYTICS-001 — lite-события активации; FEEDBACK-001 — быстрый feedback loop | P1 | BACK-035 Auto evidence green: `qa:prebeta` и полный safe suite прошли 2026-07-23; ANALYTICS-001 Done; BETA-001/FEEDBACK-001 Partial Done — runbook/invite pack/feedback loop готовы, реальный запуск ещё не проведён |
+| Закрытый тест и измерение | BACK-035 — QA smoke; BACK-048 — dev/test аккаунты; BETA-001 — закрытый тест 5-10 пользователей; ANALYTICS-001 — lite-события активации; FEEDBACK-001 — быстрый feedback loop; FEEDBACK-002 — клиентский `/bug` intake | P1 | BACK-035 Auto evidence green: `qa:prebeta` и полный safe suite прошли 2026-07-23; ANALYTICS-001 Done; BETA-001/FEEDBACK-001 Partial Done — runbook/invite pack/feedback loop готовы, реальный запуск ещё не проведён; FEEDBACK-002 planned/briefed — PM-формат готовится в app repo, runtime требует bot repo |
 
 ---
 

@@ -2721,3 +2721,15 @@
 **Тест:** `git checkout feat/admin-tariff-api`, `git fetch`, `git pull --ff-only`, scan `pm/inbox`, `git diff --check`, `node scripts/check-cp1251-mojibake.mjs`, portable paths guard.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### QA Lab и клиентский приём багов
+
+**Что сделано:** Runtime-код приложения не менялся. Создан `pm/QA-LAB-AND-CLIENT-BUG-INTAKE-2026-07-24.md` с простым планом бесплатных QA-инструментов и клиентского bug intake. В backlog добавлены `QA-LAB-001` axe-core/Playwright, `QA-LAB-002` visual screenshots, `QA-LAB-003` Lighthouse CI, `QA-LAB-004` OWASP ZAP baseline и `FEEDBACK-002` клиентский `/bug` intake. Созданы task docs и briefs `61-64`. В `pm/bugs.md` добавлены правила `CLIENT-BUG-*`, `source: client`, `NEEDS-REPRO`, `CONFIRMED`, `STALE`, `DUPLICATE` и privacy-consent для скриншотов. Portable-path guard дополнен исключением служебного `.git` pointer-файла, чтобы проверки честно проходили в Git worktree; `.git/**` и проектные файлы продолжают проверяться.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** Документальная сверка текущего `qa:prebeta`, Playwright/k6/smoke-контура и официальных источников по axe-core, Playwright screenshots, Lighthouse CI, OWASP ZAP, Telegram Bot API, GitHub Issues API, Cloudflare R2 и OpenTelemetry. Перед commit: `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `git diff --check`.
+
+**Коммит:** `docs(qa): plan qa lab and client bug intake`

@@ -6,6 +6,7 @@ cd "$(git rev-parse --show-toplevel)"
 pattern='/[U]sers/|[A-Za-z]:\\[U]sers\\'
 
 if rg -n --hidden \
+  --glob '!.git' \
   --glob '!.git/**' \
   --glob '!node_modules/**' \
   --glob '!dist/**' \

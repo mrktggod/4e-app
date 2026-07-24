@@ -66,6 +66,19 @@ BASE_URL=https://example-preview.pages.dev K6_VUS=5 K6_DURATION=20s npm run load
 
 Production k6 запрещён без отдельного явного решения человека.
 
+## QA Lab next layer
+
+План следующих бесплатных инструментов закреплён в `pm/QA-LAB-AND-CLIENT-BUG-INTAKE-2026-07-24.md`.
+
+Порядок внедрения:
+
+1. `QA-LAB-001` — `axe-core` через Playwright. Проверяет accessibility/ARIA на ключевых mock-экранах.
+2. `QA-LAB-002` — Playwright visual screenshots. Сначала component-level evidence, потом стабильные baselines.
+3. `QA-LAB-003` — Lighthouse CI report. Сначала non-blocking для preview/prebeta.
+4. `QA-LAB-004` — OWASP ZAP baseline. Только passive scan на staging/preview и только report-first.
+
+Эти инструменты не закрывают real-device gates. Они должны готовить зелёный preview, чтобы человек проверял только живой хвост.
+
 ## Что запускать по типу задачи
 
 | Зона | Команды |
