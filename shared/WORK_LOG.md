@@ -10337,3 +10337,13 @@
 **Коммит:** pending
 **Статус:** ❌ BLOCKED-DEPENDENCY
 **Следующий шаг:** Вернуться к chat surfaces после package 2 и 57 DONE.
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** BRIEF-2026-07-24-59 glass VK parity package 3
+**Результат:** Runtime не менялся; brief заблокирован, потому что packages 1/2 не оба `DONE`.
+**Коммит:** pending
+**Статус:** ❌ BLOCKED-DEPENDENCY
+**Следующий шаг:** Вернуться к VK visual parity после package 2 DONE.
