@@ -2827,3 +2827,15 @@
 **Тест:** source/dependency check по `pm/inbox/BRIEF-2026-07-24-54-glass-task-list-card-family-package2.md`; runtime smoke не запускался, потому что brief остановлен до кода.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### DESIGN-GLASS-001 package 2 profile blocked
+
+**Что сделано:** `BRIEF-2026-07-24-55` переведен в `BLOCKED-DEPENDENCY`; код не менялся. Brief 55 требует 53 и 54 `DONE`, но оба остановлены по dependency gate.
+
+**Проверка кодировки:** `index.html` не редактировался; Step 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` проходит с `0 suspicious tokens`.
+
+**Тест:** source/dependency check по `pm/inbox/BRIEF-2026-07-24-55-glass-profile-menu-package2.md`; runtime smoke не запускался, потому что brief остановлен до кода.
+
+**Коммит:** pending
