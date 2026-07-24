@@ -64,8 +64,9 @@
    - Польза: единая команда перед preview/beta вместо ручного списка.
 
 2. Playwright auth/legal spec.
-   - Покрыть `BACK-061/062`: login/register legal link click, tab hit target, password-eye 44px, contrast-adjacent DOM checks.
-   - Польза: почти убрать ручной legal/auth UI smoke.
+   - Status: added 2026-07-24 as `autotests/tests/web/auth-legal.spec.ts`.
+   - Покрывает `BACK-061/062`: onboarding/login privacy link presence, login/register privacy opening, tab hit targets, password-eye 44px, forgot-link 44px, legal-link 44px and legal copy font size.
+   - Польза: почти убирает ручной legal/auth UI smoke; остаётся live click после deploy/hosting changes.
 
 3. Playwright navigation/safe-area spec.
    - Проверять desktop 1366/1024 and mobile 390: bottom nav width, no horizontal overflow, no content under nav.

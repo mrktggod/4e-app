@@ -1,5 +1,19 @@
 ## 2026-07-24
 
+### BACK-061/062 auth legal Playwright smoke
+
+**What changed:** Added `autotests/tests/web/auth-legal.spec.ts` to cover onboarding/login privacy links, login/register privacy opening, auth tab/password/forgot/legal 44px touch targets and legal copy font size. Updated `FILE_MAP.md`, `pm/autotest-backlog-coverage-2026-07-23.md`, `pm/backlog.md` and the outbox report.
+
+**Encoding check:** `index.html` was not edited; the mandatory encoding ritual was not required. `node scripts/check-cp1251-mojibake.mjs` is run before commit.
+
+**Test:** `npm run test:e2e:web` passed 8/8.
+
+**Commit:** `test(auth): add legal accessibility e2e smoke`
+
+---
+
+## 2026-07-24
+
 ### DESIGN-GLASS-001 inventory refresh
 
 **What changed:** The 2026-07-24 automation run found no glass reference image in `pm/design-references/`, so runtime glass styling stayed blocked. Added `pm/design-system-glass-inventory-2026-07-24.md`, updated the existing outbox report to `NEED-REFERENCE`, and moved the backlog row from planned night pass to the current reference gate.

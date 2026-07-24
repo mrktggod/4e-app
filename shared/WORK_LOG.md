@@ -10147,3 +10147,13 @@
 **Коммит:** pending
 **Статус:** ✅ выполнено
 **Следующий шаг:** дать новый узкий brief для следующего безопасного `BACK-012`/glass/VK-среза или пройти ручные live-gates.
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** добавить Playwright smoke для auth legal/accessibility (`BACK-061/062`).
+**Результат:** `autotests/tests/web/auth-legal.spec.ts` проверяет privacy links и 44px auth touch targets; `npm run test:e2e:web` прошёл 8/8.
+**Коммит:** `test(auth): add legal accessibility e2e smoke`
+**Статус:** ✅ выполнено
+**Следующий шаг:** live click / dark-light / keyboard-mobile spot check после deploy/hosting changes.

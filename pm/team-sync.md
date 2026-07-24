@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-24 - Codex - auth legal Playwright smoke added
+
+- Branch: `feat/admin-tariff-api`.
+- Result: added `autotests/tests/web/auth-legal.spec.ts` for `BACK-061/062`.
+- Evidence: `npm run test:e2e:web` passed 8/8, covering onboarding/login privacy links, login/register privacy opening, and auth tab/password/forgot/legal 44px touch targets.
+- Boundaries: no runtime code, prod, `main`, payment, entitlement, auth-security logic, OAuth, CAL or secrets.
+- Next: one live click / dark-light / keyboard-mobile spot check after deploy or hosting changes.
+
 ## 2026-07-24 - Codex - night runner found no safe executable work
 
 - Branch: `feat/admin-tariff-api`.
