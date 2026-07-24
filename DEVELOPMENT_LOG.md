@@ -2755,3 +2755,15 @@
 **Тест:** `node scripts/check-cp1251-mojibake.mjs` — 0 suspicious tokens; `npm run check:portable-paths` — passed; `git diff --check` — passed. Runtime-тесты не выполнялись, потому что это PM-постановка ночной очереди.
 
 **Коммит:** N/A
+
+## 2026-07-24
+
+### DESIGN-GLASS-001 foundation tokens
+
+**Что сделано:** для `BRIEF-2026-07-23-42` добавлены shared `--glass-*` custom properties в `styles/variables.less`: default/strong/muted surfaces, strokes, highlight, outer/inset shadows, blur/saturation, radii, active/danger glows, light/dark values и reduced-transparency fallback. Добавлена минимальная `.ui-glass-*` primitive family для будущих narrow slices; runtime-экраны не мигрировались.
+
+**Проверка кодировки:** `index.html` не редактировался этим task commit; обязательный `node scripts/check-cp1251-mojibake.mjs` прошёл с `0 suspicious tokens`.
+
+**Тест:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:ui-architecture`; `npm run check:portable-paths`; `git diff --check`; `rg -n -- "--glass-surface|--glass-reduced-surface|ui-glass-card|prefers-reduced-transparency" styles\\variables.less styles.css styles.min.css`.
+
+**Коммит:** pending

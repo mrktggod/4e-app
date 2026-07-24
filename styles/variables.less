@@ -14,6 +14,21 @@
   --card:#151c10;
   --card2:#1e2918;
   --shadow:0 2px 16px rgba(0,0,0,0.4);
+  --glass-surface:rgba(28,42,30,0.58);
+  --glass-surface-strong:rgba(32,48,34,0.78);
+  --glass-surface-muted:rgba(242,245,233,0.07);
+  --glass-stroke:rgba(242,245,233,0.16);
+  --glass-stroke-strong:rgba(154,194,60,0.36);
+  --glass-highlight:linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.035) 44%,rgba(154,194,60,0.06));
+  --glass-shadow:0 18px 48px rgba(0,0,0,0.28),0 8px 22px rgba(76,108,42,0.14);
+  --glass-inset-shadow:inset 0 1px 0 rgba(255,255,255,0.2),inset 0 -1px 0 rgba(0,0,0,0.2);
+  --glass-blur:24px;
+  --glass-saturate:125%;
+  --glass-radius-card:28px;
+  --glass-radius-control:22px;
+  --glass-active-glow:0 0 0 1px rgba(154,194,60,0.32),0 10px 30px rgba(154,194,60,0.18);
+  --glass-danger-glow:0 0 0 1px rgba(255,96,96,0.34),0 10px 30px rgba(255,96,96,0.14);
+  --glass-reduced-surface:#1f2b18;
 }
 
 [data-theme="light"] {
@@ -31,6 +46,100 @@
   --card:  #FFFFFF;
   --card2: #F7FAF0;
   --shadow:0 8px 28px rgba(26,34,16,0.08);
+  --glass-surface:rgba(255,255,255,0.58);
+  --glass-surface-strong:rgba(255,255,255,0.76);
+  --glass-surface-muted:rgba(246,250,237,0.54);
+  --glass-stroke:rgba(255,255,255,0.86);
+  --glass-stroke-strong:rgba(126,174,48,0.36);
+  --glass-highlight:linear-gradient(135deg,rgba(255,255,255,0.82),rgba(255,255,255,0.28) 46%,rgba(126,174,48,0.08));
+  --glass-shadow:0 22px 62px rgba(33,44,20,0.13),0 8px 28px rgba(106,158,31,0.12);
+  --glass-inset-shadow:inset 0 1px 0 rgba(255,255,255,0.92),inset 0 -1px 0 rgba(106,158,31,0.09);
+  --glass-blur:26px;
+  --glass-saturate:128%;
+  --glass-radius-card:30px;
+  --glass-radius-control:24px;
+  --glass-active-glow:0 0 0 1px rgba(106,158,31,0.28),0 12px 32px rgba(106,158,31,0.16);
+  --glass-danger-glow:0 0 0 1px rgba(195,59,59,0.34),0 12px 32px rgba(195,59,59,0.13);
+  --glass-reduced-surface:#f7faf0;
+}
+.ui-glass-card,
+.ui-glass-row,
+.ui-glass-button,
+.ui-glass-field,
+.ui-glass-sheet,
+.ui-glass-popover,
+.ui-glass-status{
+  position:relative;
+  border:1px solid var(--glass-stroke);
+  background:var(--glass-surface);
+  box-shadow:var(--glass-shadow),var(--glass-inset-shadow);
+  backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+.ui-glass-card::before,
+.ui-glass-sheet::before,
+.ui-glass-popover::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:var(--glass-highlight);
+  pointer-events:none;
+}
+.ui-glass-card > *,
+.ui-glass-sheet > *,
+.ui-glass-popover > *{position:relative;z-index:1}
+.ui-glass-card,
+.ui-glass-sheet{border-radius:var(--glass-radius-card)}
+.ui-glass-row,
+.ui-glass-button,
+.ui-glass-field,
+.ui-glass-status{border-radius:var(--glass-radius-control)}
+.ui-glass-card--strong,
+.ui-glass-sheet,
+.ui-glass-popover{background:var(--glass-surface-strong)}
+.ui-glass-card--muted,
+.ui-glass-row,
+.ui-glass-field{background:var(--glass-surface-muted)}
+.ui-glass-card--interactive,
+.ui-glass-button,
+.ui-glass-icon-button{transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease,background .16s ease}
+.ui-glass-card--interactive:hover,
+.ui-glass-button:hover,
+.ui-glass-icon-button:hover{border-color:var(--glass-stroke-strong)}
+.ui-glass-card--active,
+.ui-glass-button--primary,
+.ui-glass-status--success{border-color:var(--glass-stroke-strong);box-shadow:var(--glass-shadow),var(--glass-inset-shadow),var(--glass-active-glow)}
+.ui-glass-card--danger,
+.ui-glass-status--danger{box-shadow:var(--glass-shadow),var(--glass-inset-shadow),var(--glass-danger-glow)}
+.ui-glass-icon-button{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.ui-glass-button,
+.ui-glass-field{min-height:44px}
+.ui-glass-button:focus-visible,
+.ui-glass-icon-button:focus-visible,
+.ui-glass-field:focus-within,
+.ui-glass-card--interactive:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .ui-glass-card,
+  .ui-glass-row,
+  .ui-glass-button,
+  .ui-glass-field,
+  .ui-glass-sheet,
+  .ui-glass-popover,
+  .ui-glass-status{background:var(--glass-reduced-surface)}
+}
+@media (prefers-reduced-transparency: reduce){
+  .ui-glass-card,
+  .ui-glass-row,
+  .ui-glass-button,
+  .ui-glass-field,
+  .ui-glass-sheet,
+  .ui-glass-popover,
+  .ui-glass-status{
+    background:var(--glass-reduced-surface);
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+  }
 }
 [data-theme="light"] .glass{background:rgba(255,255,255,0.7);border-color:rgba(26,34,16,0.08)}
 [data-theme="light"] .glass-green{background:rgba(106,158,31,0.08);border-color:rgba(106,158,31,0.2)}

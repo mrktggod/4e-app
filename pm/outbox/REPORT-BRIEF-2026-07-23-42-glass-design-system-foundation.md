@@ -2,63 +2,93 @@
 
 ## Outcome
 
-NEED-REFERENCE.
+DONE.
 
-Reference gate remains active on the 2026-07-24 automation run. `pm/design-references/` contains only `README.md`; no `glass-card-reference.png`, `.jpg`, `.jpeg`, `.webp`, or other clearly named visual target was present at runtime. The brief and `pm/design-references/README.md` both say not to invent pixel details when the image is missing.
+Implemented the token/primitives foundation for `DESIGN-GLASS-001` without migrating runtime screens or changing app behavior.
 
-No runtime, CSS, production, `main`, payment, entitlement, CAL, secret, or broad redesign work was touched.
+## Reference
 
-Inventory artifact produced: `pm/design-system-glass-inventory-2026-07-24.md`.
-
-## Current Glass Inventory
-
-Existing token layer:
-
-- `styles/variables.less`: generic `.glass`, `.glass-green`, `.glass-nav` and light theme overrides.
-- `styles/screens/voice.less`: older generic glass helpers plus notification card, privacy/security/settings surfaces, chat conversation glass variables.
-- `styles/screens/home.less`: strongest current implementation, including `--sg-*` soft-glass variables, Focus/home surfaces and `#home .dash-glass` with layered highlights, inset shadows, blur and saturation.
-
-Existing component families already using or approximating glass:
-
-- Focus/day panels and dashboard cards: `styles/screens/home.less` around `--sg-*`, `#home .dash-glass`, focus panel and metric/task surfaces.
-- Menu/settings blocks: profile/settings screens mostly use `var(--card)`, `var(--card2)`, `var(--border)` and partial green translucent states.
-- Task cards: `styles/screens/home.less` `.task-card-shell`, `.task-row.task-card`, `.task-num-badge`, tag/deadline states.
-- Notification cards: `styles/screens/voice.less` `.notif-card`, `.notif-card-icon`, `.notif-kind-chip`, `.notif-empty--panel`, action buttons.
-- Buttons/icon buttons: mixed ad hoc styles across `layout.less`, `home.less`, `voice.less`; nav buttons already use blur, rounded surfaces and green glow.
-- Inputs/selects: login/auth inputs and task detail controls are still mostly flat `var(--card)` surfaces, not a shared glass family.
-- Popups/sheets/status panels: focus panel, quick-add/contact/dialog helpers and task-detail popovers use separate surface rules; no common `.ui-glass-*` API exists.
-
-## Recommended Atomic Briefs
-
-1. `DESIGN-GLASS-001A`: add a reviewed token map only, no UI behavior. Define shared LESS custom properties for glass surface, stroke, highlight, inset shadow, blur, active glow and reduced-transparency fallback.
-2. `DESIGN-GLASS-001B`: migrate notification cards to the shared glass class family. This is a narrow safe slice with `npm run smoke:back055`, 390x844 screenshot evidence and no inline styles.
-3. `DESIGN-GLASS-001C`: migrate task cards to the shared glass class family with `npm run smoke:back019`.
-4. `DESIGN-GLASS-001D`: migrate inputs/selects and icon buttons only after reference image and Claude/Yuri review, because this touches auth, task detail and settings surfaces.
-
-## Verification
-
-Commands run:
-
-```text
-git checkout feat/admin-tariff-api
-git fetch origin; git pull --ff-only
-rg -n "glass|soft-glass|liquid|blur|backdrop|focus|menu-block|card|notif|popup|sheet" styles scripts index.html vk.html pm docs
-rg -n "dash-glass|focus-panel|focus-sheet|glass|notif-card|task-card|settings|profile-action|dialog|modal|sheet|backdrop-filter|rgba\(|blur\(" styles -g "*.less"
-```
-
-Shared guards are run before commit.
+- Image: `pm/design-references/glass-card-reference.png`
+- Spec: `pm/design-references/glass-card-reference-spec.md`
+- Image opened and reviewed during the run.
+- Host chrome in the reference remains out of scope and was not recreated.
 
 ## Changed Files
 
+- `styles/variables.less`
+- `styles.css`
+- `styles.min.css`
 - `pm/inbox/BRIEF-2026-07-23-42-glass-design-system-foundation.md`
-- `pm/design-system-glass-inventory-2026-07-24.md`
 - `pm/outbox/REPORT-BRIEF-2026-07-23-42-glass-design-system-foundation.md`
-- `pm/backlog.md`
 - `shared/WORK_LOG.md`
 - `DEVELOPMENT_LOG.md`
 
+Pre-existing uncommitted runtime edits in `index.html` and `scripts/auth.js` were intentionally not staged.
+
+## Token / Primitive Result
+
+Added shared `--glass-*` custom properties for:
+
+- default, strong and muted surfaces;
+- default and active strokes;
+- highlight layer, outer shadow and inset shadow;
+- blur and saturation;
+- card and control radii;
+- active and danger glows;
+- reduced-transparency fallback;
+- light and dark theme values.
+
+Added the first reusable primitive class family:
+
+- `.ui-glass-card`
+- `.ui-glass-row`
+- `.ui-glass-button`
+- `.ui-glass-icon-button`
+- `.ui-glass-field`
+- `.ui-glass-sheet`
+- `.ui-glass-popover`
+- `.ui-glass-status`
+
+Variants added: `--strong`, `--muted`, `--interactive`, `--active`, `--primary`, `--success`, `--danger`.
+
+Deliberate deviations from the reference:
+
+- foundation uses tokens and primitive classes only; no component family is migrated in this commit;
+- radii are tokenized as 28px dark / 30px light cards and 22px dark / 24px light controls, within the reference range;
+- light theme follows the supplied milky warm-glass direction, while dark theme keeps existing dark semantic contrast;
+- reduced-transparency and unsupported-backdrop fallbacks use opaque theme surfaces.
+
+## Raw Evidence
+
+```text
+npm run build:css
+exit 0
+
+node scripts/check-cp1251-mojibake.mjs
+CP1251 mojibake check passed: 0 suspicious tokens
+
+npm run check:ui-architecture
+UI architecture guard: inline style attributes = 299 / 465
+UI architecture guard: inline event handlers = 401 / 402
+UI architecture guard: style tags = 0 / 0
+UI architecture guard: inline script tags = 3 / 3
+
+npm run check:portable-paths
+Portable path check passed.
+
+git diff --check
+exit 0
+
+rg -n -- "--glass-surface|--glass-reduced-surface|ui-glass-card|prefers-reduced-transparency" styles\variables.less styles.css styles.min.css
+matched tokens and primitives in source and built CSS.
+```
+
 ## Remaining Tails
 
-Alexey needs to place the visual target at `pm/design-references/glass-card-reference.png` or approve a Claude/Yuri-reviewed token-only first slice. Until then, autonomous code changes for the global glass system stay blocked.
+Next atomic briefs can now consume the primitive API:
 
-Commit SHA: final automation commit, see `git rev-parse HEAD`.
+1. `BRIEF-2026-07-24-50-glass-notification-card-slice`
+2. `BRIEF-2026-07-24-51-glass-task-detail-reference-slice`
+3. `BRIEF-2026-07-24-52-glass-night-visual-qa-handoff`
+
+Commit SHA: same task commit that contains this report.
