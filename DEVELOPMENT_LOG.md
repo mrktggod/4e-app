@@ -2899,3 +2899,15 @@
 **Тест:** source/dependency check по `pm/inbox/BRIEF-2026-07-24-60-glass-package3-final-qa-handoff.md`; `npm run qa:prebeta` не перезапускался, потому что prerequisites отсутствуют и последний known result уже red в brief 52.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### PM inbox daily runner closeout
+
+**Что сделано:** Закрыт automation runner report. Обработано 12 inbox briefs: `42`, `50`, `51` как `DONE`; `52` как `NEED-CLAUDE`; `53-60` как `BLOCKED-DEPENDENCY` по явным dependency gates. После inbox проверены `pm/backlog.md`, `shared/ROADMAP.md` и BACK-012 inventory: новых whitelist-задач без fresh brief, Claude/Yuri/live/manual gate или запрещенных зон не найдено.
+
+**Проверка кодировки:** `index.html` не редактировался; Step 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` проходит с `0 suspicious tokens`.
+
+**Тест:** `pm/inbox` scan подтвердил отсутствие `status: NEW`; backlog/roadmap scan подтвердил, что открытые кандидаты сейчас gated. Перед commit запускаются `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `git diff --check`.
+
+**Коммит:** pending
