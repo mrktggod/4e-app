@@ -11960,6 +11960,10 @@ body:has(#ask.active) #global-nav,
   min-height: 58px;
   align-items: end;
 }
+.ask-input-shell.ask-bar--keyboard-open {
+  min-height: calc(58px + var(--app-keyboard-offset));
+  padding-bottom: calc(16px + var(--safe-area-bottom) + var(--app-keyboard-offset));
+}
 .ask-field {
   min-height: 56px;
   overflow-y: auto;

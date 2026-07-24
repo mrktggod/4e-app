@@ -34,7 +34,7 @@
 | `BACK-041` bot-side return | Можно API/browser-check callback URL и token one-time UI | Реальный bot `/start auth_*` остаётся live Telegram |
 | `BACK-045` VK ID / Яндекс ID OAuth | Playwright может проверить кнопки, callback error states, no broken shell | Реальный OAuth требует провайдера и аккаунта |
 | `NEW-006` safe-area | Playwright/Chrome viewport checks nav/content overlap | Реальный Telegram safe area отличается от обычного browser viewport |
-| `NEW-008` AI chat keyboard | Playwright может эмулировать viewport/keyboard CSS state | Реальная mobile keyboard/TMA всё ещё нужна |
+| `NEW-008` AI chat keyboard | DONE 2026-07-24: `autotests/tests/web/chat-keyboard.spec.ts` эмулирует `--app-keyboard-offset=260px`, фокус `#ask-field`, reserve ниже поля и отсутствие horizontal overflow; `npm run test:e2e:web` прошёл 14/14 | Реальная mobile keyboard/TMA всё ещё нужна |
 | `PLAT-002` PWA shell | Playwright может проверить manifest, service worker, static routes | Установка PWA/иконки/store wrapper — ручной device smoke |
 | `BACK-012` BEM cleanup | Для каждого BEM island: UI guard + closest smoke + Playwright screenshot | Визуальный дизайн иногда требует human review |
 | `BACK-066` VK parity | Playwright/VK mock can cover startup/navigation/basic flows | Полный VK Mini App container и VK Pay не мокать как Done |
@@ -74,8 +74,8 @@
    - Польза: закрывает repeatable part of `NEW-006`, `BACK-046`, and part of glass redesign shell risk.
 
 4. Playwright chat keyboard spec.
-   - Эмулировать `--app-keyboard-offset`, focus ask input, no overlap with nav.
-   - Польза: сократить ручной `NEW-008` до финального real-device acceptance.
+   - DONE 2026-07-24: добавлен `autotests/tests/web/chat-keyboard.spec.ts`; тест эмулирует `--app-keyboard-offset`, focus ask input, reserve под keyboard и no horizontal overflow на mobile/desktop.
+   - Польза: `NEW-008` сокращён до финального real-device/TMA acceptance.
 
 5. Playwright VK parity smoke.
    - Mock VK launch, check home/list/detail/basic navigation and no fatal console errors.

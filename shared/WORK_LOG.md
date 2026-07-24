@@ -1,3 +1,13 @@
+### 2026-07-24 — Codex
+
+**Задача:** добавить Playwright smoke для AI chat keyboard (`NEW-008`).
+**Результат:** `autotests/tests/web/chat-keyboard.spec.ts` проверяет `--app-keyboard-offset=260px`, focus `#ask-field`, reserve под клавиатуру и отсутствие horizontal overflow; CSS `.ask-input-shell.ask-bar--keyboard-open` закрепляет keyboard padding после сборки LESS; `npm run test:e2e:web` прошёл 14/14.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** живой Telegram Mini App/mobile keyboard smoke остаётся Done-gate.
+
+---
+
 ### 2026-07-23 - Codex
 
 **Task:** BRIEF-2026-07-23-49 VK AI chat Claude scope.

@@ -1,5 +1,17 @@
 ## 2026-07-24
 
+### NEW-008 — Playwright guard для AI chat keyboard
+
+**Что сделано:** добавлен `autotests/tests/web/chat-keyboard.spec.ts`, который в synthetic auth shell открывает экран `ask`, выставляет `--app-keyboard-offset=260px`, фокусирует `#ask-field` и проверяет reserve под клавиатуру без horizontal overflow. В `styles/screens/voice.less` добавлено scoped-правило `.ask-input-shell.ask-bar--keyboard-open`, потому что поздний `.ask-input-shell` стиль после сборки фактически обнулял keyboard padding. `styles.css` и `styles.min.css` пересобраны.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся. Обязательный `node scripts/check-cp1251-mojibake.mjs` запускается перед commit.
+
+**Тест:** `npm run build:css`; `npm run test:e2e:web` — 14/14 passed. Первичный Playwright прогон до CSS-фикса поймал `paddingBottom=0`, после scoped-правила keyboard smoke прошёл на mobile/desktop.
+
+**Коммит:** pending
+
+## 2026-07-24
+
 ### NEW-006 / BACK-046 navigation safe-area Playwright smoke
 
 **What changed:** Added `autotests/tests/web/navigation-safe-area.spec.ts` to cover synthetic-auth home/global navigation viewport bounds and no HTML/body horizontal overflow on Playwright mobile and desktop projects. Updated `FILE_MAP.md`, `pm/autotest-backlog-coverage-2026-07-23.md`, `pm/backlog.md` and the outbox report.

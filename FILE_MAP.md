@@ -23,9 +23,9 @@
 | `AGENTS.md` | 237 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 2496 | Канонический технический лог | Обновлять после значимых правок |
+| `DEVELOPMENT_LOG.md` | 2687 | Канонический технический лог | Обновлять после значимых правок |
 | `shared/ROADMAP.md` | 217 | Единственный roadmap продукта: стратегия, горизонты, решения, Now / Next / Later | Читать при планировании |
-| `shared/WORK_LOG.md` | 10042 | Общий журнал задач команды | Обновлять после выполненной задачи |
+| `shared/WORK_LOG.md` | 10179 | Общий журнал задач команды | Обновлять после выполненной задачи |
 | `shared/COMMIT_CONVENTION.md` | 64 | Правила понятных заголовков коммитов | Читать перед коммитом |
 | `docs/git-team-rules.md` | 104 | Git-процесс команды: ветки, commit, push/merge, согласование рисков | Читать при push/merge/ветках |
 | `docs/team-sync-protocol.md` | 169 | Team Sync: ключевые фразы `Что там у Лехи?` / `Что там у Юры?`, commit/push и отчёты | Читать при синхронизации Алексея и Юрия |
@@ -63,11 +63,12 @@
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |
 | `autotests/tests/web/auth-legal.spec.ts` | 61 | Playwright auth/legal smoke: onboarding/login privacy links, login/register privacy opening, auth legal/tabs/password/forgot 44px targets | Run with `npm run test:e2e:web` before changing auth legal/accessibility UI |
 | `autotests/tests/web/navigation-safe-area.spec.ts` | 76 | Playwright nav/safe-area smoke: synthetic auth shell, home/global nav inside viewport, no horizontal overflow on mobile and desktop projects | Run with `npm run test:e2e:web` before changing navigation, safe-area, or app shell layout |
+| `autotests/tests/web/chat-keyboard.spec.ts` | 81 | Playwright chat keyboard smoke: synthetic auth shell, emulated `--app-keyboard-offset`, ask input focus, keyboard reserve, no horizontal overflow | Run with `npm run test:e2e:web` before changing AI chat input, keyboard offset, or ask layout |
 | `autotests/tests/telegram-app/basic.spec.ts` | 34 | Playwright Telegram Mini App smoke with mocked `window.Telegram.WebApp` | Run with `npm run test:e2e:telegram` |
 | `autotests/tests/vk-app/basic.spec.ts` | 38 | Playwright VK Mini App smoke with mocked `window.vkBridge` | Run with `npm run test:e2e:vk` |
 | `autotests/load/smoke-load.js` | 20 | k6 local/static load smoke for `/index.html`, `/vk.html`, `/privacy.html` | Run with `npm run load:smoke`; set `BASE_URL`, `K6_VUS`, `K6_DURATION` explicitly for staging |
 | `docs/qa/autotest-agent-playbook.md` | 101 | Agent-facing rules for when and how to use Playwright, k6, `qa:prebeta` and existing smoke tests | Read before UI/QA/night automation work |
-| `pm/autotest-backlog-coverage-2026-07-23.md` | 78 | Backlog coverage map: what autotests can replace, reduce, or cannot cover | Read when choosing QA/night/autonomous tasks |
+| `pm/autotest-backlog-coverage-2026-07-23.md` | 102 | Backlog coverage map: what autotests can replace, reduce, or cannot cover | Read when choosing QA/night/autonomous tasks |
 | `scripts/run-bash-script.mjs` | 29 | Cross-Windows npm wrapper for Git Bash based shell guards | Used by `npm run check:portable-paths` and `npm run check:ui-architecture` |
 
 ## PM / QA

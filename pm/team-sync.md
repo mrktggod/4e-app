@@ -1,5 +1,12 @@
 # Team Sync
 
+## 2026-07-24 - NEW-008 chat keyboard guard
+
+- Added `autotests/tests/web/chat-keyboard.spec.ts` for AI chat keyboard geometry.
+- Fixed the scoped ask bar CSS priority with `.ask-input-shell.ask-bar--keyboard-open`; rebuilt `styles.css` and `styles.min.css`.
+- `npm run test:e2e:web` is green: 14/14 across mobile and desktop Chromium.
+- `NEW-008` is now `Auto evidence green / Ready for live QA`; the real Telegram Mini App/mobile keyboard checklist remains the Done gate.
+
 ## 2026-07-24 - Codex - navigation safe-area Playwright smoke added
 
 - Branch: `feat/admin-tariff-api`.
