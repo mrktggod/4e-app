@@ -6,6 +6,11 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const evidenceDir = path.join(root, 'docs', 'tasks', 'assets');
+const evidenceFiles = {
+  light: path.join(evidenceDir, 'BACK-069-task-detail-glass-2026-07-24-light.png'),
+  dark: path.join(evidenceDir, 'BACK-069-task-detail-glass-2026-07-24-dark.png')
+};
 const chromeCandidates = [
   process.env.CHROME_PATH,
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -166,13 +171,66 @@ async function runSmoke(ws, appUrl) {
       failures,
       viewport: { width: window.innerWidth, height: window.innerHeight },
       hero: { height: Math.round(heroRect.height), bottom: Math.round(heroRect.bottom) },
+      infoCards: infoCards.map(card => {
+        const rect = card.getBoundingClientRect();
+        return { left: Math.round(rect.left), right: Math.round(rect.right), top: Math.round(rect.top), bottom: Math.round(rect.bottom) };
+      }),
       tag: { width: Math.round(tagRect.width), height: Math.round(tagRect.height), whiteSpace: tagStyle?.whiteSpace },
-      title: { position: titleStyle?.position, height: Math.round(titleRect.height) }
+      title: { position: titleStyle?.position, width: Math.round(titleRect.width), right: Math.round(titleRect.right), height: Math.round(titleRect.height), computedWidth: titleStyle?.width }
     };
   }})()`;
   const result = await send(ws, 'Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true });
   const value = result.result?.value;
   if (!value?.ok) throw new Error(`BACK-069 hero smoke failed: ${(value?.failures || []).join('; ')}`);
+  return value;
+}
+
+async function captureThemeScreenshot(ws, theme, file) {
+  await send(ws, 'Runtime.evaluate', {
+    expression: `document.documentElement.setAttribute('data-theme', ${JSON.stringify(theme)}); if (typeof currentDetailTask !== 'undefined' && currentDetailTask) openTask(currentDetailTask, 0);`,
+    awaitPromise: false
+  });
+  await send(ws, 'Runtime.evaluate', {
+    expression: 'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+    awaitPromise: true
+  });
+  const shot = await send(ws, 'Page.captureScreenshot', {
+    format: 'png',
+    captureBeyondViewport: false
+  });
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, Buffer.from(shot.data, 'base64'));
+  return path.relative(root, file).split(path.sep).join('/');
+}
+
+async function captureEvidenceScreenshots(ws) {
+  await send(ws, 'Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  return {
+    light: await captureThemeScreenshot(ws, 'light', evidenceFiles.light),
+    dark: await captureThemeScreenshot(ws, 'dark', evidenceFiles.dark)
+  };
+}
+
+async function runDesktopOverflowCheck(ws) {
+  await send(ws, 'Emulation.setDeviceMetricsOverride', { width: 1024, height: 768, deviceScaleFactor: 1, mobile: false });
+  await send(ws, 'Runtime.evaluate', {
+    expression: "document.documentElement.setAttribute('data-theme', 'light'); if (typeof currentDetailTask !== 'undefined' && currentDetailTask) openTask(currentDetailTask, 0);",
+    awaitPromise: false
+  });
+  await send(ws, 'Runtime.evaluate', {
+    expression: 'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+    awaitPromise: true
+  });
+  const result = await send(ws, 'Runtime.evaluate', {
+    expression: `({
+      viewportWidth: window.innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      ok: document.documentElement.scrollWidth <= window.innerWidth
+    })`,
+    returnByValue: true
+  });
+  const value = result.result?.value;
+  if (!value?.ok) throw new Error(`desktop overflow check failed: scrollWidth ${value?.scrollWidth}, viewport ${value?.viewportWidth}`);
   return value;
 }
 
@@ -198,6 +256,8 @@ try {
     ws.addEventListener('error', reject, { once: true });
   });
   const result = await runSmoke(ws, pathToFileURL(path.join(root, 'index.html')).href);
+  result.screenshots = await captureEvidenceScreenshots(ws);
+  result.desktop = await runDesktopOverflowCheck(ws);
   ws.close();
   console.log(JSON.stringify({ smoke: 'back069-hero-overflow', ...result }, null, 2));
 } finally {

@@ -3411,3 +3411,65 @@ html[data-theme="light"] #subscription .subscription-price-card {
   border-color: rgba(255,255,255,.92) !important;
   color: #0b0f0c !important;
 }
+
+/* DESIGN-GLASS-001 task-detail light surface slice */
+html[data-theme="light"] #task-detail,
+html[data-theme="light"] #task-detail .detail-redesign-shell {
+  background:
+    radial-gradient(280px 220px at 76% 9%, rgba(177,214,98,.22), transparent 72%),
+    radial-gradient(260px 220px at 8% 88%, rgba(177,214,98,.12), transparent 72%),
+    linear-gradient(180deg, #f8f7ef 0%, #eeeee6 100%) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-hero,
+html[data-theme="light"] #task-detail .detail-participants-card,
+html[data-theme="light"] #task-detail .detail-status-card,
+html[data-theme="light"] #task-detail .detail-info-card {
+  background: var(--glass-surface) !important;
+  border-color: var(--glass-stroke) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-hero {
+  border-radius: var(--glass-radius-card) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-title,
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  width: min(220px, calc(100% - 170px)) !important;
+  max-width: min(220px, calc(100% - 170px)) !important;
+  inline-size: min(220px, calc(100% - 170px)) !important;
+  max-inline-size: min(220px, calc(100% - 170px)) !important;
+  display: block !important;
+  overflow: hidden !important;
+  contain: layout paint !important;
+}
+
+html[data-theme="light"] #task-detail .detail-info-card,
+html[data-theme="light"] #task-detail .detail-redesign-tag,
+html[data-theme="light"] #task-detail .detail-status-select {
+  background: var(--glass-surface-muted) !important;
+  border-color: var(--glass-stroke) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-bell,
+html[data-theme="light"] #task-detail .detail-round-btn,
+html[data-theme="light"] #task-detail .detail-avatar-add,
+html[data-theme="light"] #task-detail .detail-comment-send-btn,
+html[data-theme="light"] #task-detail .detail-status-node svg,
+html[data-theme="light"] #task-detail .detail-node-core {
+  background: var(--glass-surface-muted) !important;
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+  color: var(--green) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-node--active .detail-node-core,
+html[data-theme="light"] #task-detail .detail-status-node--active svg,
+html[data-theme="light"] #task-detail .detail-status-badge {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}

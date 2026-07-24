@@ -2703,3 +2703,83 @@ body:has(#task-detail.active) #global-nav,
     font-size: 26px !important;
   }
 }
+
+/* ===== DESIGN-GLASS-001: task-detail bounded surface slice ===== */
+#task-detail {
+  background:
+    radial-gradient(280px 220px at 74% 12%, rgba(154,194,60,.13), transparent 72%),
+    radial-gradient(260px 220px at 8% 88%, rgba(154,194,60,.07), transparent 72%),
+    linear-gradient(180deg, var(--bg) 0%, #070d09 100%) !important;
+}
+
+#task-detail .detail-redesign-hero,
+#task-detail .detail-participants-card,
+#task-detail .detail-status-card,
+#task-detail .detail-info-card {
+  border-color: var(--glass-stroke) !important;
+  background: var(--glass-surface) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+
+#task-detail .detail-redesign-hero {
+  border-radius: var(--glass-radius-card) !important;
+}
+
+#task-detail .detail-redesign-title,
+#task-detail .detail-redesign-desc {
+  width: min(220px, calc(100% - 170px)) !important;
+  max-width: min(220px, calc(100% - 170px)) !important;
+  inline-size: min(220px, calc(100% - 170px)) !important;
+  max-inline-size: min(220px, calc(100% - 170px)) !important;
+  display: block !important;
+  overflow: hidden !important;
+  contain: layout paint !important;
+}
+
+#task-detail .detail-info-card,
+#task-detail .detail-redesign-tag,
+#task-detail .detail-status-select {
+  background: var(--glass-surface-muted) !important;
+  border-color: var(--glass-stroke) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+}
+
+#task-detail .detail-redesign-bell,
+#task-detail .detail-round-btn,
+#task-detail .detail-avatar-add,
+#task-detail .detail-comment-send-btn,
+#task-detail .detail-status-node svg,
+#task-detail .detail-node-core {
+  border-color: var(--glass-stroke-strong) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+
+#task-detail .detail-status-node--active .detail-node-core,
+#task-detail .detail-status-node--active svg,
+#task-detail .detail-status-badge {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  #task-detail .detail-redesign-hero,
+  #task-detail .detail-participants-card,
+  #task-detail .detail-status-card,
+  #task-detail .detail-info-card {
+    background: var(--glass-reduced-surface) !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  #task-detail .detail-redesign-hero,
+  #task-detail .detail-participants-card,
+  #task-detail .detail-status-card,
+  #task-detail .detail-info-card {
+    background: var(--glass-reduced-surface) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

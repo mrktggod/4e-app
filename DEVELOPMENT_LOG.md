@@ -2779,3 +2779,15 @@
 **Тест:** `npm run build:css`; `npm run smoke:back055` (`ok: true`, 4 cards, no horizontal overflow, light/dark screenshots saved); `node --check scripts/back-055-notifications-smoke.mjs`; `node --check scripts/task-ui-renderers.js`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:ui-architecture`; `npm run check:portable-paths`; визуально открыты screenshots `docs/tasks/assets/BACK-055-notifications-glass-2026-07-24-light.png` и `docs/tasks/assets/BACK-055-notifications-glass-2026-07-24-dark.png`.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### DESIGN-GLASS-001 task-detail surface slice
+
+**Что сделано:** для `BRIEF-2026-07-24-51` CSS-only срез task-detail переведён на shared `--glass-*` tokens: canvas, hero/content panel, info cards, participant/status panels, active controls and reduced-transparency fallback. Поведение reminder/tag/priority/deadline не менялось; dirty `index.html`/`scripts/auth.js` правки не включались.
+
+**Проверка кодировки:** `index.html` не редактировался этим task commit; `node scripts/check-cp1251-mojibake.mjs` прошёл с `0 suspicious tokens`.
+
+**Тест:** `npm run build:css`; `npm run smoke:back067-reminder`; `npm run smoke:back068-tag-popup`; `npm run smoke:back069-hero` с light/dark screenshots и desktop overflow `1024/1024 ok`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:ui-architecture`; `npm run check:portable-paths`.
+
+**Коммит:** pending

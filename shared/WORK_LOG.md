@@ -10257,3 +10257,13 @@
 **Коммит:** pending
 **Статус:** ✅ выполнено
 **Следующий шаг:** продолжить с `BRIEF-2026-07-24-51-glass-task-detail-reference-slice`.
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** BRIEF-2026-07-24-51 glass task-detail reference slice
+**Результат:** Task-detail canvas, hero, info/status/participant surfaces and controls now use shared glass tokens; reminder/tag/hero smokes remain green with light/dark evidence.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** продолжить с `BRIEF-2026-07-24-52-glass-night-visual-qa-handoff`.
