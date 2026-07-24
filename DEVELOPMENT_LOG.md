@@ -2791,3 +2791,15 @@
 **Тест:** `npm run build:css`; `npm run smoke:back067-reminder`; `npm run smoke:back068-tag-popup`; `npm run smoke:back069-hero` с light/dark screenshots и desktop overflow `1024/1024 ok`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:ui-architecture`; `npm run check:portable-paths`.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### DESIGN-GLASS-001 package 1 handoff
+
+**Что сделано:** для `BRIEF-2026-07-24-52` собран QA/handoff без новых runtime family: commit matrix 42/50/51, screenshot paths, implemented/deferred list, morning questions. `pm/backlog.md` и `pm/design-system-glass-inventory-2026-07-24.md` обновлены до package 1 partial status.
+
+**Проверка кодировки:** `index.html` не редактировался этим handoff commit; `node scripts/check-cp1251-mojibake.mjs` проходил с `0 suspicious tokens`.
+
+**Тест:** `npm run qa:prebeta` — failed: Playwright 19/20, failed mobile `autotests/tests/web/chat-keyboard.spec.ts` (`paddingBottom` expected `>=260`, received `235.23`). Это не auth/legal timeout, поэтому targeted auth/legal rerun не запускался. Focused glass smokes до handoff были green: `back055`, `back067`, `back068`, `back069`.
+
+**Коммит:** pending

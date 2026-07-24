@@ -2,9 +2,14 @@
 
 ## Outcome
 
-Reference image was not present during the 2026-07-24 automation run. Runtime glass implementation is blocked as `NEED-REFERENCE`; this file is the safe design-system inventory for Claude/Yuri review.
+Reference image was missing during the earlier 2026-07-24 automation run, so this file started as a safe inventory. Alexey later supplied `pm/design-references/glass-card-reference.png`, and package 1 now has partial implementation evidence:
 
-Reference search result:
+- `BRIEF-2026-07-23-42`: DONE — shared `--glass-*` tokens and `.ui-glass-*` primitives.
+- `BRIEF-2026-07-24-50`: DONE — notification card family proof with light/dark screenshots.
+- `BRIEF-2026-07-24-51`: DONE — bounded task-detail surface slice with light/dark screenshots and desktop overflow check.
+- `BRIEF-2026-07-24-52`: NEED-CLAUDE — package handoff blocked by unrelated `qa:prebeta` mobile chat keyboard failure, not by focused glass smokes.
+
+Original reference search result:
 
 - Found: `pm/design-references/README.md`
 - Missing: `pm/design-references/glass-card-reference.png`
