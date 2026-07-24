@@ -2721,3 +2721,37 @@
 **Тест:** `git checkout feat/admin-tariff-api`, `git fetch`, `git pull --ff-only`, scan `pm/inbox`, `git diff --check`, `node scripts/check-cp1251-mojibake.mjs`, portable paths guard.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### Анализ ночной сессии, тестовых инструментов и ручной очереди
+
+**Что сделано:** Создан `pm/ANALYSIS-2026-07-24-night-session-test-tools-and-manual-queue.md`. В документе разобраны 21 ночной коммит и 62 затронутых файла, результаты безопасных VK-срезов, новые Playwright-проверки, оставшиеся Claude/Yuri/live gates и влияние выхода в Горизонт 0.5. Задачи разделены на автоматически проверяемые, требующие узкого исправления с тестом и неизбежно ручные. Отдельно зафиксировано расхождение веток: принятый mobile reminder fix находится в `fix/reminder-popover-mobile` и ещё не интегрирован в `feat/admin-tariff-api`; номер `BUG-2026-07-23-001` уже занят home-багом и не должен повторно использоваться для reminder indicator.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся.
+
+**Тест:** `npm run qa:prebeta` — exit code 0, Playwright 20/20; `npm run smoke:back068-tag-popup` — `ok: true`; `npm run smoke:back069-hero` — `ok: true`; в worktree reminder-фикса `npm run smoke:back067-reminder` — `ok: true` в light/dark на viewport 390x844. Тестовые эталонные изображения главной возвращены к состоянию ветки; перед документальными правками рабочее дерево было чистым.
+
+**Коммит:** N/A
+
+### Подготовка длинной ночной сессии DESIGN-GLASS-001
+
+**Что сделано:** Референс Алексея сохранён как `pm/design-references/glass-card-reference.png` и описан в `glass-card-reference-spec.md`. Снят блок `NEED-REFERENCE`, brief 42 возвращён в `NEW` как token/primitives foundation. Создана последовательная очередь briefs 50–52: notification-card proof, task-detail reference slice с обязательным reminder dependency gate и visual QA/handoff. Общий порядок, временные рамки, stop points и утренняя приёмка зафиксированы в `pm/night-session-2026-07-24-glass-reference-plan.md`.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся. Все новые Markdown-файлы проверены как strict UTF-8 без BOM; `node scripts/check-cp1251-mojibake.mjs` — 0 suspicious tokens.
+
+**Тест:** SHA-256 исходного и скопированного PNG совпал (`C116612E0CBAB43582D04474BA29B2C2D4090E7312E7219CC414E23DA46E93C8`); четыре briefs имеют первую строку `status: NEW`; `npm run check:portable-paths` и `git diff --check` прошли.
+
+**Коммит:** N/A
+
+## 2026-07-24
+
+### Расширение ночной дизайн-сессии DESIGN-GLASS-001 пакетами 2 и 3
+
+**Что сделано:** Добавлены атомарные briefs 53–60 и отдельный план `pm/night-session-2026-07-24-glass-packages-2-3-plan.md`. Пакет 2 закрывает основные Telegram-поверхности: home/focus dashboard, task-list cards, safe profile/menu и QA handoff. Пакет 3 закрывает интерактивные safe controls/dialogs, Telegram chat, safe VK parity и финальный evidence handoff. Для каждого brief указаны dependency gates, stop points, raw report path и существующие smoke/Playwright проверки.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся. Новые Markdown-файлы проверяются как UTF-8 без BOM; общий mojibake guard запускается перед сдачей.
+
+**Тест:** `node scripts/check-cp1251-mojibake.mjs` — 0 suspicious tokens; `npm run check:portable-paths` — passed; `git diff --check` — passed. Runtime-тесты не выполнялись, потому что это PM-постановка ночной очереди.
+
+**Коммит:** N/A

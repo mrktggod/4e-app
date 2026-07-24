@@ -10207,3 +10207,33 @@
 **Коммит:** `test(ui): add navigation safe-area e2e smoke`
 **Статус:** ✅ выполнено
 **Следующий шаг:** real Telegram Mini App safe-area smoke остаётся Done-gate для `NEW-006`.
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** Проанализировать ночную сессию, определить задачи для автотестов и подготовить ручную очередь
+**Результат:** Создан подробный разбор `pm/ANALYSIS-2026-07-24-night-session-test-tools-and-manual-queue.md`. Зафиксированы 21 ночной коммит, результаты VK/QA-работы, утренний `qa:prebeta` 20/20, зелёные узкие проверки тегов, длинного заголовка и reminder popup. Выявлен главный организационный риск: принятое исправление напоминаний остаётся в отдельной ветке и должно быть перенесено до общей ручной приёмки. Составлен план четырёх рабочих периодов.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** Перенести `fix/reminder-popover-mobile` в основную рабочую ветку, прогнать тесты и выдать единый preview для короткой ручной очереди
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** подготовить длинную ночную DESIGN-GLASS-001 сессию по новому референсу карточки задачи
+**Результат:** Канонический PNG и дизайн-спецификация добавлены в `pm/design-references/`; снят `NEED-REFERENCE`; подготовлены четыре последовательных atomic briefs: foundation, notification proof, task-detail slice и visual QA/handoff. Task-detail brief не дублирует принятую reminder-ветку и блокируется без её dependency.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** ночной runner начинает с brief 42 и делает по одному отчёту/коммиту на brief, не затрагивая production или `main`
+
+---
+
+### 2026-07-24 — Codex
+
+**Задача:** подготовить второй и третий ночные дизайн-пакеты DESIGN-GLASS-001
+**Результат:** Добавлены briefs `53-60` и план `pm/night-session-2026-07-24-glass-packages-2-3-plan.md`. Пакет 2: home/focus, task-list cards, safe profile/menu, QA handoff. Пакет 3: safe controls/dialogs, Telegram chat, safe VK parity, финальный evidence handoff. Каждый brief завязан на существующие smoke/Playwright проверки и сохраняет запреты на production, `main`, payments, entitlement, auth-security, CAL и secrets.
+**Коммит:** N/A
+**Статус:** ✅ выполнено
+**Следующий шаг:** после package 1 runner продолжает briefs `53-60` по имени, пока зависимости и focused tests остаются зелёными

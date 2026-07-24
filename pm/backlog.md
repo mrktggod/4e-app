@@ -25,7 +25,7 @@
 
 | ID | Task | Type | Priority | Owner | Status | Horizon | Done criteria |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| DESIGN-GLASS-001 | Global glass design system: make glass panels the base visual language for cards, buttons, fields, notifications, popups, and new blocks | Design/UI | P1 | Codex + Claude/Yuri review | NEED-REFERENCE | H0.5 | 2026-07-24 inventory exists in `pm/design-system-glass-inventory-2026-07-24.md`, but implementation is blocked until Alexey adds `pm/design-references/glass-card-reference.*` or Claude/Yuri approve a token-only first slice. No prod, no main merge, no payment/entitlement/CAL/secrets. |
+| DESIGN-GLASS-001 | Global glass design system: make glass panels the base visual language for cards, buttons, fields, notifications, popups, and new blocks | Design/UI | P1 | Codex + Claude/Yuri review | Ready — reference supplied | H0.5 | Alexey supplied `pm/design-references/glass-card-reference.png` on 2026-07-24. Execute ordered atomic package 1 briefs 42, 50, 51, 52 from `pm/night-session-2026-07-24-glass-reference-plan.md`, then packages 2/3 briefs 53-60 from `pm/night-session-2026-07-24-glass-packages-2-3-plan.md` while tests stay green; no prod, main merge, payment/entitlement/CAL/secrets or broad one-shot restyle. |
 
 ## VK beta readiness queue - 2026-07-23
 
