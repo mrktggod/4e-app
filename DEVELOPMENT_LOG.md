@@ -2767,3 +2767,15 @@
 **Тест:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:ui-architecture`; `npm run check:portable-paths`; `git diff --check`; `rg -n -- "--glass-surface|--glass-reduced-surface|ui-glass-card|prefers-reduced-transparency" styles\\variables.less styles.css styles.min.css`.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### DESIGN-GLASS-001 notification cards
+
+**Что сделано:** для `BRIEF-2026-07-24-50` notification-card family переведена на shared `.ui-glass-*` primitives: карточка, unread state, empty panel, type/status chip, icon button и action controls. Поведение уведомлений, фильтры, expand, snooze, done, write и go-to-task не менялись.
+
+**Проверка кодировки:** `index.html` не редактировался; `node scripts/check-cp1251-mojibake.mjs` прошёл с `0 suspicious tokens`.
+
+**Тест:** `npm run build:css`; `npm run smoke:back055` (`ok: true`, 4 cards, no horizontal overflow, light/dark screenshots saved); `node --check scripts/back-055-notifications-smoke.mjs`; `node --check scripts/task-ui-renderers.js`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:ui-architecture`; `npm run check:portable-paths`; визуально открыты screenshots `docs/tasks/assets/BACK-055-notifications-glass-2026-07-24-light.png` и `docs/tasks/assets/BACK-055-notifications-glass-2026-07-24-dark.png`.
+
+**Коммит:** pending

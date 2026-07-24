@@ -6,6 +6,11 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const evidenceDir = path.join(root, 'docs', 'tasks', 'assets');
+const evidenceFiles = {
+  light: path.join(evidenceDir, 'BACK-055-notifications-glass-2026-07-24-light.png'),
+  dark: path.join(evidenceDir, 'BACK-055-notifications-glass-2026-07-24-dark.png')
+};
 const chromeCandidates = [
   process.env.CHROME_PATH,
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -270,6 +275,57 @@ async function runSmoke(ws) {
   return result.result.value;
 }
 
+async function waitForHarness(ws) {
+  await send(ws, 'Runtime.evaluate', {
+    expression: `(${async function waitHarnessReady() {
+      const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      for (let i = 0; i < 50 && !window.__harnessReady; i += 1) await wait(100);
+      return !!window.__harnessReady;
+    }})()`,
+    awaitPromise: true,
+    returnByValue: true
+  });
+}
+
+async function captureThemeScreenshot(ws, theme, file) {
+  await send(ws, 'Runtime.evaluate', {
+    expression: `document.documentElement.setAttribute('data-theme', ${JSON.stringify(theme)}); renderNotifs(notifCache);`,
+    awaitPromise: false
+  });
+  await send(ws, 'Runtime.evaluate', {
+    expression: 'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+    awaitPromise: true
+  });
+  const shot = await send(ws, 'Page.captureScreenshot', {
+    format: 'png',
+    captureBeyondViewport: false
+  });
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, Buffer.from(shot.data, 'base64'));
+  return path.relative(root, file).split(path.sep).join('/');
+}
+
+async function captureEvidenceScreenshots(ws) {
+  await send(ws, 'Runtime.enable');
+  await send(ws, 'Page.enable');
+  await send(ws, 'Emulation.setDeviceMetricsOverride', {
+    width: 390,
+    height: 844,
+    deviceScaleFactor: 1,
+    mobile: true
+  });
+  await waitForHarness(ws);
+  const screenshots = {
+    light: await captureThemeScreenshot(ws, 'light', evidenceFiles.light),
+    dark: await captureThemeScreenshot(ws, 'dark', evidenceFiles.dark)
+  };
+  await send(ws, 'Runtime.evaluate', {
+    expression: "document.documentElement.setAttribute('data-theme', 'light'); renderNotifs(notifCache);",
+    awaitPromise: false
+  });
+  return screenshots;
+}
+
 let chrome;
 let tempDir;
 try {
@@ -317,7 +373,10 @@ try {
     ws.addEventListener('error', reject, { once: true });
   });
 
+  const screenshots = await captureEvidenceScreenshots(ws);
   const result = await runSmoke(ws);
+  result.metrics = result.metrics || {};
+  result.metrics.screenshots = screenshots;
   ws.close();
   console.log(JSON.stringify(result, null, 2));
   if (!result.ok) process.exitCode = 1;

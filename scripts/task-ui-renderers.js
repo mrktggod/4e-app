@@ -372,7 +372,7 @@ function getNotifEmptyState(type){
 
 function renderNotifEmptyState(type){
   const state = getNotifEmptyState(type);
-  return '<div class="notif-empty notif-empty--panel">'
+  return '<div class="notif-empty notif-empty--panel ui-glass-card ui-glass-card--muted">'
     + '<div class="notif-empty-icon">•</div>'
     + '<div class="notif-empty-title">' + e2(state.title) + '</div>'
     + '<div class="notif-empty-text">' + e2(state.text) + '</div>'
@@ -406,50 +406,50 @@ function renderNotifActionButtons(notif, task){
   let html = '';
 
   if(type === 'system'){
-    return '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+    return '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
   }
 
   if(type === 'waiting'){
     if(canWrite){
-      html += '<button class="notif-act-btn notif-act-task" onclick="notifWrite(this)" data-nid="' + id + '">Написать</button>';
+      html += '<button class="notif-act-btn notif-act-task ui-glass-button ui-glass-button--primary" onclick="notifWrite(this)" data-nid="' + id + '">Написать</button>';
     }
     if(canOpenTask){
-      html += '<button class="notif-act-btn notif-act-read" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Открыть задачу</button>';
+      html += '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Открыть задачу</button>';
     }
     if(!html){
-      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+      html += '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
     }
     return html;
   }
 
   if(type === 'reminder'){
     if(canOpenTask){
-      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkDone(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Готово</button>';
-      html += '<button class="notif-act-btn notif-act-del" onclick="notifToggleSnoozeMenu(this)" data-nid="' + id + '">Отложить</button>';
-      html += '<button class="notif-act-btn notif-act-task" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">К задаче</button>';
+      html += '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifMarkDone(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Готово</button>';
+      html += '<button class="notif-act-btn notif-act-del ui-glass-button ui-glass-status--danger" onclick="notifToggleSnoozeMenu(this)" data-nid="' + id + '">Отложить</button>';
+      html += '<button class="notif-act-btn notif-act-task ui-glass-button ui-glass-button--primary" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">К задаче</button>';
     } else {
-      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+      html += '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
     }
   } else {
     if(canOpenTask){
-      html += '<button class="notif-act-btn notif-act-task" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">К задаче</button>';
+      html += '<button class="notif-act-btn notif-act-task ui-glass-button ui-glass-button--primary" onclick="notifGoToTask(this)" data-nid="' + id + '" data-task-id="' + taskId + '">К задаче</button>';
     }
     if(canSnooze && canOpenTask){
-      html += '<button class="notif-act-btn notif-act-del" onclick="notifToggleSnoozeMenu(this)" data-nid="' + id + '">Отложить</button>';
+      html += '<button class="notif-act-btn notif-act-del ui-glass-button ui-glass-status--danger" onclick="notifToggleSnoozeMenu(this)" data-nid="' + id + '">Отложить</button>';
     }
     if(canWrite){
-      html += '<button class="notif-act-btn notif-act-read" onclick="notifWrite(this)" data-nid="' + id + '">Написать</button>';
+      html += '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifWrite(this)" data-nid="' + id + '">Написать</button>';
     } else if(canOpenTask){
-      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkDone(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Готово</button>';
+      html += '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifMarkDone(this)" data-nid="' + id + '" data-task-id="' + taskId + '">Готово</button>';
     } else {
-      html += '<button class="notif-act-btn notif-act-read" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
+      html += '<button class="notif-act-btn notif-act-read ui-glass-button" onclick="notifMarkRead(this)" data-nid="' + id + '">Понятно</button>';
     }
   }
 
   if(canSnooze && canOpenTask){
     html += '<div class="notif-snooze-menu" id="nsnooze-' + id + '">';
     html += NOTIF_SNOOZE_OPTIONS.map(function(option){
-      return '<button class="notif-act-btn notif-act-task notif-act-center" onclick="notifSnooze(this)" data-nid="' + id + '" data-task-id="' + taskId + '" data-snooze-kind="' + e2(option.value) + '">' + e2(option.label) + '</button>';
+      return '<button class="notif-act-btn notif-act-task notif-act-center ui-glass-button ui-glass-button--primary" onclick="notifSnooze(this)" data-nid="' + id + '" data-task-id="' + taskId + '" data-snooze-kind="' + e2(option.value) + '">' + e2(option.label) + '</button>';
     }).join('');
     html += '</div>';
   }
@@ -530,12 +530,12 @@ function renderNotifGroup(label, items){
     var title = getNotifTitle(n, task);
     var detail = getNotifDetail(n, task);
     var kindLabel = getNotifKindLabel(n, task);
-    out += '<div class="notif-card' + (isUnread?' unread':'') + '" id="ncard-'+n.id+'">';
+    out += '<div class="notif-card ui-glass-card ui-glass-card--interactive' + (isUnread?' unread ui-glass-card--active':'') + '" id="ncard-'+n.id+'">';
     out += '<div class="notif-card-header" onclick="toggleNotif(this)" data-nid="'+n.id+'">';
-    out += '<div class="notif-card-icon">'+svg+'</div>';
+    out += '<div class="notif-card-icon ui-glass-icon-button">'+svg+'</div>';
     out += '<div class="notif-card-body">';
     out += '<div class="notif-card-meta">';
-    out += '<span class="notif-kind-chip' + chipClass + '">' + e2(kindLabel) + '</span>';
+    out += '<span class="notif-kind-chip ui-glass-status' + chipClass + '">' + e2(kindLabel) + '</span>';
     out += '<div class="notif-card-time">'+e2(n.time)+'</div>';
     out += '</div>';
     out += '<div class="notif-card-title">'+e2(title)+'</div>';
