@@ -1,8 +1,18 @@
 ### 2026-07-24 — Codex
 
+**Задача:** morning inbox/backlog runner docs commit sync.
+**Результат:** inbox had no `status: NEW` briefs; synced fresh pending log commit references to actual SHA values and added the morning runner report.
+**Коммит:** this commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** remaining backlog/roadmap work needs live/manual, Claude/Yuri, reference, or explicit atomic brief gates.
+
+---
+
+### 2026-07-24 — Codex
+
 **Задача:** закрыть pre-dawn inbox/backlog runner итоговым отчётом.
 **Результат:** за запуск выполнено 4 whitelist-задачи и создан final report `pm/outbox/REPORT-4e-pre-dawn-inbox-and-whitelist-backlog-runner-2026-07-24.md`; остановка зафиксирована из-за отсутствия оставшихся безопасных autonomous задач без reference/Claude/Yuri/live gates.
-**Коммит:** pending
+**Коммит:** `3fe5b91`
 **Статус:** ✅ выполнено
 **Следующий шаг:** ручные live gates и Claude/Yuri решения из отчёта.
 
@@ -12,7 +22,7 @@
 
 **Задача:** расширить mocked Playwright smoke для VK parity (`BACK-066`).
 **Результат:** `autotests/tests/vk-app/basic.spec.ts` теперь проверяет VK launch, saved token auth, mocked tasks/identities, home/detail/ask/calendar/stats/profile navigation и отсутствие fatal console/page errors; `npm run test:e2e:vk` прошёл 4/4.
-**Коммит:** pending
+**Коммит:** `004c90b`
 **Статус:** ✅ выполнено
 **Следующий шаг:** live VK Mini App/device smoke и Claude-reviewed auth/AI-chat хвосты остаются вне автономного scope.
 
@@ -22,7 +32,7 @@
 
 **Задача:** добавить Playwright smoke для AI chat keyboard (`NEW-008`).
 **Результат:** `autotests/tests/web/chat-keyboard.spec.ts` проверяет `--app-keyboard-offset=260px`, focus `#ask-field`, reserve под клавиатуру и отсутствие horizontal overflow; CSS `.ask-input-shell.ask-bar--keyboard-open` закрепляет keyboard padding после сборки LESS; `npm run test:e2e:web` прошёл 14/14.
-**Коммит:** pending
+**Коммит:** `9ccdaa0`
 **Статус:** ✅ выполнено
 **Следующий шаг:** живой Telegram Mini App/mobile keyboard smoke остаётся Done-gate.
 

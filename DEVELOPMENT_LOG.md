@@ -1,5 +1,17 @@
 ## 2026-07-24
 
+### Morning runner docs commit sync
+
+**Что сделано:** inbox runner не нашёл `status: NEW` briefs, затем выполнил одну безопасную docs hygiene задачу из whitelist: верхние pending-ссылки на commits в `DEVELOPMENT_LOG.md` и `shared/WORK_LOG.md` заменены на фактические SHA pre-dawn задач; добавлен итоговый report `pm/outbox/REPORT-4e-morning-inbox-and-safe-backlog-runner-2026-07-24.md`.
+
+**Проверка кодировки:** `index.html` и `vk.html` не редактировались; Шаг 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` запускается перед commit.
+
+**Тест:** `git checkout feat/admin-tariff-api`, `git fetch origin`, `git pull --ff-only`, scan `pm/inbox`, `node scripts/check-cp1251-mojibake.mjs`, shared guards before commit.
+
+**Коммит:** this commit
+
+## 2026-07-24
+
 ### Pre-dawn runner final closeout
 
 **Что сделано:** создан final report `pm/outbox/REPORT-4e-pre-dawn-inbox-and-whitelist-backlog-runner-2026-07-24.md`: перечислены 4 выполненные whitelist-задачи, их commits/reports/proof, origin verification и причина остановки.
@@ -8,7 +20,7 @@
 
 **Тест:** документальная сверка `pm/inbox`, `pm/backlog.md`, `shared/ROADMAP.md`, `git log`; финальные guards запускаются перед closeout commit.
 
-**Коммит:** pending
+**Коммит:** `3fe5b91` (`docs(pm): close pre-dawn runner`)
 
 ## 2026-07-24
 
@@ -20,7 +32,7 @@
 
 **Тест:** `npm run test:e2e:vk` — 4/4 passed.
 
-**Коммит:** pending
+**Коммит:** `004c90b` (`test(vk): add mocked parity navigation smoke`)
 
 ## 2026-07-24
 
@@ -32,7 +44,7 @@
 
 **Тест:** `npm run build:css`; `npm run test:e2e:web` — 14/14 passed. Первичный Playwright прогон до CSS-фикса поймал `paddingBottom=0`, после scoped-правила keyboard smoke прошёл на mobile/desktop.
 
-**Коммит:** pending
+**Коммит:** `9ccdaa0` (`fix(ui): reserve ask input above keyboard`)
 
 ## 2026-07-24
 
