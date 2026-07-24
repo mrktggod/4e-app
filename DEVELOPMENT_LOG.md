@@ -2851,3 +2851,15 @@
 **Тест:** source/dependency check по `pm/inbox/BRIEF-2026-07-24-56-glass-package2-visual-qa-handoff.md`; focused package 2 tests не запускались, потому что package 2 work заблокирован.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### DESIGN-GLASS-001 package 3 controls blocked
+
+**Что сделано:** `BRIEF-2026-07-24-57` переведен в `BLOCKED-DEPENDENCY`; код не менялся. Brief 57 требует package 1 и package 2 `DONE`, но package 2 не выполнен.
+
+**Проверка кодировки:** `index.html` не редактировался; Step 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` проходит с `0 suspicious tokens`.
+
+**Тест:** source/dependency check по `pm/inbox/BRIEF-2026-07-24-57-glass-forms-dialogs-controls-package3.md`; runtime smoke не запускался, потому что brief остановлен до кода.
+
+**Коммит:** pending
