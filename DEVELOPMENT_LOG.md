@@ -1,5 +1,17 @@
 ## 2026-07-24
 
+### Pre-dawn runner final closeout
+
+**Что сделано:** создан final report `pm/outbox/REPORT-4e-pre-dawn-inbox-and-whitelist-backlog-runner-2026-07-24.md`: перечислены 4 выполненные whitelist-задачи, их commits/reports/proof, origin verification и причина остановки.
+
+**Проверка кодировки:** `index.html` и `vk.html` не редактировались; Шаг 0 не применялся. Обязательный `node scripts/check-cp1251-mojibake.mjs` запускается перед commit.
+
+**Тест:** документальная сверка `pm/inbox`, `pm/backlog.md`, `shared/ROADMAP.md`, `git log`; финальные guards запускаются перед closeout commit.
+
+**Коммит:** pending
+
+## 2026-07-24
+
 ### BACK-066 — mocked VK Playwright parity guard
 
 **Что сделано:** существующий `autotests/tests/vk-app/basic.spec.ts` расширен с shell-open smoke до mocked parity guard: saved `vk4_token`, `window.vkBridge`, Worker mocks для `/auth/me`, `/tasks`, `/v2/auth/legacy-session`, `/v2/auth/identities`, проверки home task list, task detail, ask, calendar, stats, profile и отсутствия fatal console/page errors.

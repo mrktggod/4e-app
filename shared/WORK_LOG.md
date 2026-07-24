@@ -1,5 +1,15 @@
 ### 2026-07-24 — Codex
 
+**Задача:** закрыть pre-dawn inbox/backlog runner итоговым отчётом.
+**Результат:** за запуск выполнено 4 whitelist-задачи и создан final report `pm/outbox/REPORT-4e-pre-dawn-inbox-and-whitelist-backlog-runner-2026-07-24.md`; остановка зафиксирована из-за отсутствия оставшихся безопасных autonomous задач без reference/Claude/Yuri/live gates.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** ручные live gates и Claude/Yuri решения из отчёта.
+
+---
+
+### 2026-07-24 — Codex
+
 **Задача:** расширить mocked Playwright smoke для VK parity (`BACK-066`).
 **Результат:** `autotests/tests/vk-app/basic.spec.ts` теперь проверяет VK launch, saved token auth, mocked tasks/identities, home/detail/ask/calendar/stats/profile navigation и отсутствие fatal console/page errors; `npm run test:e2e:vk` прошёл 4/4.
 **Коммит:** pending
