@@ -1,5 +1,17 @@
 ## 2026-07-24
 
+### BACK-066 — mocked VK Playwright parity guard
+
+**Что сделано:** существующий `autotests/tests/vk-app/basic.spec.ts` расширен с shell-open smoke до mocked parity guard: saved `vk4_token`, `window.vkBridge`, Worker mocks для `/auth/me`, `/tasks`, `/v2/auth/legacy-session`, `/v2/auth/identities`, проверки home task list, task detail, ask, calendar, stats, profile и отсутствия fatal console/page errors.
+
+**Проверка кодировки:** `index.html` и `vk.html` не редактировались; Шаг 0 не применялся. Обязательный `node scripts/check-cp1251-mojibake.mjs` запускается перед commit.
+
+**Тест:** `npm run test:e2e:vk` — 4/4 passed.
+
+**Коммит:** pending
+
+## 2026-07-24
+
 ### NEW-008 — Playwright guard для AI chat keyboard
 
 **Что сделано:** добавлен `autotests/tests/web/chat-keyboard.spec.ts`, который в synthetic auth shell открывает экран `ask`, выставляет `--app-keyboard-offset=260px`, фокусирует `#ask-field` и проверяет reserve под клавиатуру без horizontal overflow. В `styles/screens/voice.less` добавлено scoped-правило `.ask-input-shell.ask-bar--keyboard-open`, потому что поздний `.ask-input-shell` стиль после сборки фактически обнулял keyboard padding. `styles.css` и `styles.min.css` пересобраны.

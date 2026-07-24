@@ -1,5 +1,12 @@
 # Team Sync
 
+## 2026-07-24 - BACK-066 VK Playwright parity
+
+- Expanded `autotests/tests/vk-app/basic.spec.ts` from shell-open smoke to mocked VK navigation parity.
+- Covered saved-token auth, mocked tasks/identities, home/detail/ask/calendar/stats/profile navigation and no fatal console/page errors.
+- `npm run test:e2e:vk` is green: 4/4 across mobile and desktop Chromium.
+- Live VK Mini App/device smoke and Claude-reviewed auth/AI-chat runtime tails remain outside autonomous scope.
+
 ## 2026-07-24 - NEW-008 chat keyboard guard
 
 - Added `autotests/tests/web/chat-keyboard.spec.ts` for AI chat keyboard geometry.

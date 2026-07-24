@@ -1,5 +1,15 @@
 ### 2026-07-24 — Codex
 
+**Задача:** расширить mocked Playwright smoke для VK parity (`BACK-066`).
+**Результат:** `autotests/tests/vk-app/basic.spec.ts` теперь проверяет VK launch, saved token auth, mocked tasks/identities, home/detail/ask/calendar/stats/profile navigation и отсутствие fatal console/page errors; `npm run test:e2e:vk` прошёл 4/4.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** live VK Mini App/device smoke и Claude-reviewed auth/AI-chat хвосты остаются вне автономного scope.
+
+---
+
+### 2026-07-24 — Codex
+
 **Задача:** добавить Playwright smoke для AI chat keyboard (`NEW-008`).
 **Результат:** `autotests/tests/web/chat-keyboard.spec.ts` проверяет `--app-keyboard-offset=260px`, focus `#ask-field`, reserve под клавиатуру и отсутствие horizontal overflow; CSS `.ask-input-shell.ask-bar--keyboard-open` закрепляет keyboard padding после сборки LESS; `npm run test:e2e:web` прошёл 14/14.
 **Коммит:** pending

@@ -37,7 +37,7 @@
 | `NEW-008` AI chat keyboard | DONE 2026-07-24: `autotests/tests/web/chat-keyboard.spec.ts` эмулирует `--app-keyboard-offset=260px`, фокус `#ask-field`, reserve ниже поля и отсутствие horizontal overflow; `npm run test:e2e:web` прошёл 14/14 | Реальная mobile keyboard/TMA всё ещё нужна |
 | `PLAT-002` PWA shell | Playwright может проверить manifest, service worker, static routes | Установка PWA/иконки/store wrapper — ручной device smoke |
 | `BACK-012` BEM cleanup | Для каждого BEM island: UI guard + closest smoke + Playwright screenshot | Визуальный дизайн иногда требует human review |
-| `BACK-066` VK parity | Playwright/VK mock can cover startup/navigation/basic flows | Полный VK Mini App container и VK Pay не мокать как Done |
+| `BACK-066` VK parity | DONE 2026-07-24: `autotests/tests/vk-app/basic.spec.ts` covers mocked VK startup, saved token auth, tasks/identities, home/detail/ask/calendar/stats/profile navigation and no fatal console/page errors; `npm run test:e2e:vk` прошёл 4/4 | Полный VK Mini App container, auth/session gray-zone, AI-chat gray-zone and VK Pay не мокать как Done |
 | `ONBOARD-001` first AI plan | Staging fixture/fresh account Playwright can verify empty-home CTA paths | Voice/AI semantic “wow” и fresh-user feel лучше проверить человеком |
 | `BETA-001` closed beta readiness | Autotest gate can prevent inviting users into broken build | Сам beta-run и feedback не автоматизируются |
 
@@ -78,8 +78,8 @@
    - Польза: `NEW-008` сокращён до финального real-device/TMA acceptance.
 
 5. Playwright VK parity smoke.
-   - Mock VK launch, check home/list/detail/basic navigation and no fatal console errors.
-   - Польза: помогать `BACK-066` без реального VK при каждом кодовом изменении.
+   - DONE 2026-07-24: `autotests/tests/vk-app/basic.spec.ts` мокает VK launch, saved token, Worker auth/tasks/identities and checks home/list/detail/ask/calendar/stats/profile navigation with no fatal console/page errors.
+   - Польза: `BACK-066` получает repeatable mocked guard без реального VK при каждом кодовом изменении.
 
 6. Visual screenshot discipline for glass redesign.
    - Не включать жёсткие full-page baselines сразу.
