@@ -2803,3 +2803,15 @@
 **Тест:** `npm run qa:prebeta` — failed: Playwright 19/20, failed mobile `autotests/tests/web/chat-keyboard.spec.ts` (`paddingBottom` expected `>=260`, received `235.23`). Это не auth/legal timeout, поэтому targeted auth/legal rerun не запускался. Focused glass smokes до handoff были green: `back055`, `back067`, `back068`, `back069`.
 
 **Коммит:** pending
+
+## 2026-07-24
+
+### DESIGN-GLASS-001 package 2 home blocked
+
+**Что сделано:** `BRIEF-2026-07-24-53` переведен в `BLOCKED-DEPENDENCY`; код не менялся. Dependency gate brief 53 требует, чтобы 42/50/51/52 были `DONE`, но 52 имеет статус `NEED-CLAUDE` из-за красного `qa:prebeta`.
+
+**Проверка кодировки:** `index.html` не редактировался; Step 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` проходит с `0 suspicious tokens`.
+
+**Тест:** source/dependency check по `pm/inbox/BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2.md`; runtime smoke не запускался, потому что brief остановлен до кода.
+
+**Коммит:** pending
