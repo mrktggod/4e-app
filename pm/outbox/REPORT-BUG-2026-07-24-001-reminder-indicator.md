@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-24  
 **Branch:** `fix/reminder-indicator-unified`  
-**Commit:** this commit  
+**App commit:** `85cb141`
 **Status:** DONE in code / NEEDS-REAL one iPhone visual spot-check
 
 ## Problem
@@ -61,11 +61,27 @@ Encoding markers: `111 -> 111`.
 
 Повторный прогон обнаружил flaky-ожидание в новом chat-keyboard guard: тест иногда читал `padding-bottom` в середине CSS transition. Проверка стабилизирована через `expect.poll()` до финального значения; runtime AI-чата не менялся.
 
+Staging preview:
+
+```text
+wrangler pages deploy .pages-dist --project-name 4-ai-staging --branch qa-reminder-indicator
+Deployment: https://09e6cd2b.4-ai-staging.pages.dev
+Alias: https://qa-reminder-indicator.4-ai-staging.pages.dev
+
+GET direct preview -> 200, length 475290
+syncDetailReminderIndicator=True
+staging worker marker=True
+
+GET alias -> 200, length 475290
+syncDetailReminderIndicator=True
+staging worker marker=True
+```
+
 ## Manual tail
 
 NEEDS-REAL:
 
-1. Открыть точный branch preview на iPhone внутри Telegram.
+1. Открыть `https://qa-reminder-indicator.4-ai-staging.pages.dev/` на iPhone внутри Telegram.
 2. Выбрать `За 15 минут`.
 3. Закрыть popup.
 4. Подтвердить, что `15 мин` читается и не перекрывает тег или заголовок.

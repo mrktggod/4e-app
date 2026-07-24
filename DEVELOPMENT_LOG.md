@@ -2732,4 +2732,6 @@
 
 **Тест:** `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `npm run smoke:back067-reminder` — `ok: true`, failures `[]`, dark/light trigger 44x44, options 140x44, selected indicators `1 час` / `15 мин`, opacity `1`; `npm run qa:prebeta` — exit 0, Playwright 20/20 и все обязательные smoke зелёные; `npm run smoke:back068-tag-popup` и `npm run smoke:back069-hero` — `ok: true`; portable/doc/diff guards прошли.
 
-**Коммит:** this commit
+**Коммит:** `85cb141`
+
+**Staging:** `https://09e6cd2b.4-ai-staging.pages.dev/` и alias `https://qa-reminder-indicator.4-ai-staging.pages.dev/` отвечают `200`, содержат `syncDetailReminderIndicator` и staging worker marker.
