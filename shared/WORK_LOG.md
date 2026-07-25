@@ -10490,3 +10490,10 @@
 **Коммит:** `fix(ui): unify safe area reserve token`
 **Статус:** ✅ выполнено
 **Следующий шаг:** отдельный brief на landscape-композицию home, если нужен полноценный landscape UX.
+### 2026-07-25 — Codex
+
+**Задача:** SW cache matrix на staging.
+**Результат:** проверены first/second/update/offline/cleared-storage сценарии; найдено, что staging отдаёт старый `sw.js` с `4-pwa-shell-v1`, не текущий локальный `PWA_VERSION`.
+**Коммит:** `docs(qa): add sw cache matrix evidence`
+**Статус:** ✅ выполнено
+**Следующий шаг:** отдельный brief `SW-STAGING-PARITY`, затем повторить update-over-old-deploy.

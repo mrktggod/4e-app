@@ -1,0 +1,484 @@
+{
+  "capturedAt": "2026-07-25T19:55:06.497Z",
+  "base": "https://4-ai-staging.pages.dev/",
+  "assetSnapshot": [
+    {
+      "name": "index.html",
+      "url": "https://4-ai-staging.pages.dev/index.html",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "etag": null,
+      "bytes": 459855,
+      "sha256": "8928302333c3",
+      "version": {
+        "swRegister": true,
+        "scripts": [
+          "scripts/platform-adapter.js?v=dashboard-handoff-20260718-7",
+          "scripts/auth.js?v=dashboard-handoff-20260718-7",
+          "scripts/auth-handlers.js?v=dashboard-handoff-20260718-7",
+          "scripts/task-ui-renderers.js?v=dashboard-handoff-20260718-7"
+        ]
+      }
+    },
+    {
+      "name": "sw.js",
+      "url": "https://4-ai-staging.pages.dev/sw.js",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "etag": "W/\"c2954c9ecdad60c36bd194694a02fcdb\"",
+      "bytes": 2041,
+      "sha256": "e1590cdcbfa0",
+      "version": "4-pwa-shell-v1"
+    },
+    {
+      "name": "styles.min.css",
+      "url": "https://4-ai-staging.pages.dev/styles.min.css",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "etag": "W/\"2815034a0128815fb156364e7f7f1af6\"",
+      "bytes": 197090,
+      "sha256": "3f14c5319f7c",
+      "version": null
+    },
+    {
+      "name": "scripts/auth.js",
+      "url": "https://4-ai-staging.pages.dev/scripts/auth.js",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "etag": "W/\"9973d1fd89cb1864a001e33ff1f80f1f\"",
+      "bytes": 10982,
+      "sha256": "87f18f274c5c",
+      "version": null
+    },
+    {
+      "name": "scripts/auth-handlers.js",
+      "url": "https://4-ai-staging.pages.dev/scripts/auth-handlers.js",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "etag": "W/\"6eeb91759039476d79086b8740710cf7\"",
+      "bytes": 18170,
+      "sha256": "d576b3275068",
+      "version": null
+    },
+    {
+      "name": "scripts/task-ui-renderers.js",
+      "url": "https://4-ai-staging.pages.dev/scripts/task-ui-renderers.js",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "etag": "W/\"5a8bc6e403453c233c6be8ed897eb621\"",
+      "bytes": 31781,
+      "sha256": "7a05fafa5d1c",
+      "version": null
+    }
+  ],
+  "records": [
+    {
+      "scenario": "first load",
+      "sw": {
+        "label": "first load",
+        "href": "https://4-ai-staging.pages.dev/",
+        "controlled": false,
+        "controllerUrl": null,
+        "registration": {
+          "scope": "https://4-ai-staging.pages.dev/",
+          "active": {
+            "scriptURL": "https://4-ai-staging.pages.dev/sw.js",
+            "state": "activated"
+          },
+          "waiting": null,
+          "installing": null
+        },
+        "caches": [
+          "4-pwa-shell-v1"
+        ],
+        "performance": {
+          "type": "navigate",
+          "transferSize": 109762,
+          "encodedBodySize": 109462,
+          "decodedBodySize": 493499
+        }
+      },
+      "title": "4",
+      "online": true
+    },
+    {
+      "scenario": "second load",
+      "sw": {
+        "label": "second load",
+        "href": "https://4-ai-staging.pages.dev/",
+        "controlled": true,
+        "controllerUrl": "https://4-ai-staging.pages.dev/sw.js",
+        "registration": {
+          "scope": "https://4-ai-staging.pages.dev/",
+          "active": {
+            "scriptURL": "https://4-ai-staging.pages.dev/sw.js",
+            "state": "activated"
+          },
+          "waiting": null,
+          "installing": null
+        },
+        "caches": [
+          "4-pwa-shell-v1"
+        ],
+        "performance": {
+          "type": "reload",
+          "transferSize": 493799,
+          "encodedBodySize": 493499,
+          "decodedBodySize": 493499
+        }
+      },
+      "title": "4",
+      "online": true
+    },
+    {
+      "scenario": "update check without controllable new deploy",
+      "updateResult": {
+        "ok": true,
+        "before": {
+          "active": "https://4-ai-staging.pages.dev/sw.js",
+          "waiting": false,
+          "installing": false
+        },
+        "after": {
+          "active": "https://4-ai-staging.pages.dev/sw.js",
+          "waiting": false,
+          "installing": false
+        }
+      },
+      "sw": {
+        "label": "update check",
+        "href": "https://4-ai-staging.pages.dev/",
+        "controlled": true,
+        "controllerUrl": "https://4-ai-staging.pages.dev/sw.js",
+        "registration": {
+          "scope": "https://4-ai-staging.pages.dev/",
+          "active": {
+            "scriptURL": "https://4-ai-staging.pages.dev/sw.js",
+            "state": "activated"
+          },
+          "waiting": null,
+          "installing": null
+        },
+        "caches": [
+          "4-pwa-shell-v1"
+        ],
+        "performance": {
+          "type": "reload",
+          "transferSize": 493799,
+          "encodedBodySize": 493499,
+          "decodedBodySize": 493499
+        }
+      }
+    },
+    {
+      "scenario": "offline",
+      "result": {
+        "ok": true,
+        "status": 200,
+        "url": "https://4-ai-staging.pages.dev/",
+        "title": "4"
+      },
+      "sw": {
+        "label": "offline",
+        "href": "https://4-ai-staging.pages.dev/",
+        "controlled": true,
+        "controllerUrl": "https://4-ai-staging.pages.dev/sw.js",
+        "registration": {
+          "scope": "https://4-ai-staging.pages.dev/",
+          "active": {
+            "scriptURL": "https://4-ai-staging.pages.dev/sw.js",
+            "state": "activated"
+          },
+          "waiting": null,
+          "installing": null
+        },
+        "caches": [
+          "4-pwa-shell-v1"
+        ],
+        "performance": {
+          "type": "navigate",
+          "transferSize": 0,
+          "encodedBodySize": 493499,
+          "decodedBodySize": 493499
+        }
+      },
+      "online": false
+    },
+    {
+      "scenario": "cleared storage new context",
+      "sw": {
+        "label": "cleared storage",
+        "href": "https://4-ai-staging.pages.dev/",
+        "controlled": false,
+        "controllerUrl": null,
+        "registration": {
+          "scope": "https://4-ai-staging.pages.dev/",
+          "active": {
+            "scriptURL": "https://4-ai-staging.pages.dev/sw.js",
+            "state": "activated"
+          },
+          "waiting": null,
+          "installing": null
+        },
+        "caches": [
+          "4-pwa-shell-v1"
+        ],
+        "performance": {
+          "type": "navigate",
+          "transferSize": 109762,
+          "encodedBodySize": 109462,
+          "decodedBodySize": 493499
+        }
+      },
+      "title": "4",
+      "online": true
+    }
+  ],
+  "consoleMessages": [
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_header_color {color_key: bg_color}"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_bottom_bar_color {color: #ffffff}"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_theme "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_viewport "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_safe_area "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_content_safe_area "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "main",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "main",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_header_color {color_key: bg_color}"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_bottom_bar_color {color: #ffffff}"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_theme "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_viewport "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_safe_area "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_content_safe_area "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "main",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "main",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_header_color {color_key: bg_color}"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_bottom_bar_color {color: #ffffff}"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_theme "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_viewport "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_safe_area "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_content_safe_area "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "main",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "main",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "main",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    },
+    {
+      "phase": "main",
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_header_color {color_key: bg_color}"
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_set_bottom_bar_color {color: #ffffff}"
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_theme "
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_viewport "
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_safe_area "
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_request_content_safe_area "
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "cleared",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_ready "
+    },
+    {
+      "phase": "cleared",
+      "type": "log",
+      "text": "[Telegram.WebView] > postEvent web_app_expand "
+    },
+    {
+      "phase": "cleared",
+      "type": "warning",
+      "text": "[Telegram.WebApp] Changing swipes behavior is not supported in version 6.0"
+    }
+  ]
+}

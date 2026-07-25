@@ -3048,3 +3048,14 @@
 **Тест:** `npm run build:css`; Playwright evidence на `390x844` и `844x390`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`.
 
 **Коммит:** `fix(ui): unify safe area reserve token`
+## 2026-07-25
+
+### SW cache matrix evidence
+
+**Что сделано:** снята service worker матрица на `https://4-ai-staging.pages.dev/` для first load, second load, update check, offline и cleared storage.
+
+**Проверка кодировки:** `index.html` не менялся; обязательный mojibake-check выполнен перед коммитом.
+
+**Тест:** Playwright Chromium с service workers enabled; live asset hashes через `fetch`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`.
+
+**Коммит:** `docs(qa): add sw cache matrix evidence`
