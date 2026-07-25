@@ -1,5 +1,15 @@
 ## 2026-07-25
 
+### Manual staging QA intake
+
+**Что сделано:** принят ручной QA-сигнал Алексея по `https://4-ai-staging.pages.dev/`: откатаны 4 generated screenshot artifacts, `c1af3d1` запушен в `origin/feat/admin-tariff-api`, а в `pm/bugs.md` заведены `BUG-2026-07-25-001..007`. По ручным фактам reopened: `NEW-006` safe-area/bottom nav, `NEW-008` chat composer, `BUG-2026-07-22-001` task-detail reminder popup.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся. `index.html` и `scripts/auth.js` оставлены как pre-existing local changes по решению Алексея.
+
+**Тест:** документальная сверка `pm/bugs.md`; `git status --short`; `git push origin feat/admin-tariff-api` для предыдущего code commit `c1af3d1`.
+
+**Коммит:** this commit
+
 ### QA prebeta chat keyboard blocker
 
 **Что сделано:** исправлен переходный баг AI-чата: при фокусе поля ввода класс `.ask-input-shell.ask-bar--keyboard-open` уже задавал нужный keyboard padding, но общий `.ask-bar` ещё анимировал `padding-bottom .18s`, поэтому Playwright иногда снимал метрику в середине перехода и `qa:prebeta` падал на `paddingBottom=235.23` при ожидаемых `>=260`. Для открытой клавиатуры transition отключён, CSS пересобран. PM-статусы синхронизированы: `BRIEF-2026-07-24-52` переведён в `DONE`, `BRIEF-2026-07-24-53` возвращён в `NEW`.

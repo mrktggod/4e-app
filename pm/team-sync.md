@@ -1,5 +1,12 @@
 # Team Sync
 
+## 2026-07-25 - Alexey manual staging QA intake
+
+- Branch: `feat/admin-tariff-api`; commit `c1af3d1` was pushed to origin.
+- Alexey decision: keep local `index.html` and `scripts/auth.js` changes for Claude/Yuri review; revert the 4 generated QA screenshots.
+- Manual staging check on `https://4-ai-staging.pages.dev/` found new/reopened P1 UI issues: mock statusbar visible in live app, phone bottom nav/chat entry hidden, home task text low-contrast/overflowing, stats/list theme mismatch and title overflow, AI-chat long input composer leaving viewport, task-detail reminder popup not opening, task-detail hero title collapsing into a narrow column.
+- PM sync: added `BUG-2026-07-25-001` through `BUG-2026-07-25-007`; reopened `NEW-006`, `NEW-008`, and `BUG-2026-07-22-001` from manual staging evidence.
+
 ## 2026-07-25 - Codex - qa:prebeta green and glass package 2 unblocked
 
 - Branch: `feat/admin-tariff-api`.

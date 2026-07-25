@@ -1,5 +1,15 @@
 ### 2026-07-25 — Codex
 
+**Задача:** принять ручной staging QA Алексея после `qa:prebeta`.
+**Результат:** `c1af3d1` отправлен в `origin/feat/admin-tariff-api`; 4 generated QA screenshots откатаны; новые ручные баги `BUG-2026-07-25-001..007` занесены в `pm/bugs.md`, старые `NEW-006`, `NEW-008`, `BUG-2026-07-22-001` помечены как reopened/manual red.
+**Коммит:** this commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** разобрать P1 staging UI regressions перед продолжением широкого glass package 2.
+
+---
+
+### 2026-07-25 — Codex
+
 **Задача:** вернуть `qa:prebeta` в зелёный статус и разблокировать следующий glass-slice.
 **Результат:** убран переходный `padding-bottom` во время открытой клавиатуры AI-чата; `npm run qa:prebeta` прошёл зелёно, brief `52` закрыт, brief `53` снова `NEW`.
 **Коммит:** this commit

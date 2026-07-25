@@ -21,6 +21,20 @@
 
 Карта покрытия и правила для агентов: `pm/autotest-backlog-coverage-2026-07-23.md` и `docs/qa/autotest-agent-playbook.md`.
 
+## Manual staging QA - 2026-07-25
+
+Алексей проверил `https://4-ai-staging.pages.dev/` на телефоне и desktop после зелёного `qa:prebeta`. Автотестовый gate остаётся полезным, но ручная проверка нашла live UI-хвосты, которые нельзя считать закрытыми только по headless-тестам:
+
+- `BUG-2026-07-25-001` — фейковый statusbar `9:41`/сеть/батарея виден в live app;
+- `BUG-2026-07-25-002` — на телефоне нижнее меню/вход в чат частично спрятаны;
+- `BUG-2026-07-25-003` — home task text в тёмной теме плохо читается и выходит за карточку;
+- `BUG-2026-07-25-004` — список/statistics открывается белым в тёмной теме, с неверной nav-видимостью и overflow;
+- `BUG-2026-07-25-005` — длинный ввод в AI-чате на desktop уводит composer вниз;
+- `BUG-2026-07-25-006` — task-detail reminder popup не открывается;
+- `BUG-2026-07-25-007` — task-detail hero на desktop ломает title в узкую колонку.
+
+Практический приоритет: сначала закрыть P1 staging UI regressions, затем продолжать package 2 glass slices (`BRIEF-2026-07-24-53+`), чтобы не переносить старые ошибки в новый визуальный слой.
+
 ## Design system queue - 2026-07-23
 
 | ID | Task | Type | Priority | Owner | Status | Horizon | Done criteria |
