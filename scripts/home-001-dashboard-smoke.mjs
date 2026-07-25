@@ -402,6 +402,19 @@ async function runSmoke(ws, appUrl) {
 
     await click('[data-home-action="open-statistics"]', 'progress metric action');
     await waitFor(() => activeScreen() === 'statistics', 'progress metric did not open statistics');
+    metrics.statsActiveText = document.querySelector('#stat-tasks-list')?.textContent || '';
+    assert(!metrics.statsActiveText.includes('Нет активных задач'), 'statistics should list seeded active tasks');
+    const originalTasks = Array.isArray(allTasksCache) ? allTasksCache.slice() : [];
+    const incomingOnlyTasks = originalTasks.filter(task => !task.done && task.direction === 'incoming').slice(0, 1);
+    if (incomingOnlyTasks.length) {
+      await loadStats([], [], incomingOnlyTasks);
+      metrics.statsIncomingOnlyText = document.querySelector('#stat-tasks-list')?.textContent || '';
+      assert(metrics.statsIncomingOnlyText.includes('показано выше'), 'statistics should clarify incoming-only active tasks');
+      allTasksCache = originalTasks;
+      const restoredOutgoing = originalTasks.filter(task => !task.done && task.direction !== 'incoming');
+      const restoredDone = originalTasks.filter(task => !!task.done);
+      await loadStats(restoredOutgoing, restoredDone, originalTasks);
+    }
     await goHomeNow();
 
     await click('[data-home-nav-action="brain"]', 'center nav action');

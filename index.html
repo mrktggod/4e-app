@@ -3885,7 +3885,9 @@ async function loadStats(outgoing = [], done = [], tasks = []){
   safeText('stats-promises-top-person', promiseTopPerson ? (promiseTopPerson.name + ' · ' + promiseTopPerson.count) : '—');
 
   if(activeOutgoing.length===0){
-    const emptyActiveText = localTasks.length ? 'Сейчас нет активных задач' : 'Пока задач нет — добавьте первую';
+    const emptyActiveText = activeIncoming.length
+      ? ('Активных задач без обещаний нет. ' + activeIncoming.length + ' ' + (activeIncoming.length===1?'обещание показано':'обещаний показано') + ' выше.')
+      : (localTasks.length ? 'Сейчас нет активных задач' : 'Пока задач нет — добавьте первую');
     list.innerHTML='<div class="active-task-row"><span class="active-task-name" style="color:var(--muted)">' + emptyActiveText + '</span></div>';
   }else{
     list.innerHTML = activeOutgoing.slice(0,4).map(t=>{

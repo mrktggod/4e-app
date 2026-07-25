@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-71-statistics-active-tasks-empty
 
@@ -28,4 +28,3 @@ Fix statistics active-task data source/filter mismatch or clarify the period fil
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-71-statistics-active-tasks-empty.md`.
-

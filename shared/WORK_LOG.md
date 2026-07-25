@@ -10602,3 +10602,13 @@
 **Next step:** Manual mobile/staging QA can confirm the live Russian copy reads clearly.
 
 ---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-71 statistics active-task empty state
+**Result:** Statistics now clarifies incoming-only active data instead of saying generic `Нет активных задач`; `smoke:home001` covers both seeded active and incoming-only cases.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Product can later decide whether promises should also duplicate into the active list.
+
+---

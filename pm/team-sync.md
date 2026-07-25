@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - statistics empty state done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-71-statistics-active-tasks-empty` moved to `DONE`.
+- Result: statistics no longer says generic `Нет активных задач` when active incoming promises exist; it clarifies that promises are shown above.
+- Evidence: `npm run smoke:home001` passed with seeded active tasks listed and incoming-only text `1 обещание показано выше`.
+- Scope: app/UI copy and smoke only; no backend migration, payment, entitlement, price, prod or `main` changes.
+
 ## 2026-07-26 - Codex - focus counters done
 
 - Branch: `feat/admin-tariff-api`.

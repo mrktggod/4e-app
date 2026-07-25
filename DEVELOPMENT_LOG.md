@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### Statistics active-task empty state
+
+**What changed:** Statistics keeps the existing split between outgoing active tasks and incoming promises, but no longer shows generic `Нет активных задач` when active incoming promises exist. The copy now explains that active tasks without promises are empty and promises are shown above.
+
+**Encoding check:** `index.html` markers `Войти|Задачи|Сегодня` stayed `112 / 112`.
+
+**Test:** `npm run smoke:home001` passed; it now checks normal active stats and incoming-only active data.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### Focus counters consistency
 
 **What changed:** Added a shared focus-task summary for the home focus card and focus popup. The focus card count, popup row count, popup task metric and popup subtitle now all use the visible focus list count; the ambiguous `4 выделил главное` copy was removed.
