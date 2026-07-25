@@ -1,5 +1,15 @@
 ### 2026-07-25 — Codex
 
+**Задача:** BRIEF-2026-07-24-53 glass home/focus dashboard package 2
+**Результат:** Home/focus dashboard surfaces moved onto shared glass tokens; 390x844 light/dark smoke screenshots refreshed; `smoke:home001` green.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** Продолжить package 2 sequencing с `BRIEF-2026-07-24-54`.
+
+---
+
+### 2026-07-25 — Codex
+
 **Задача:** закрепить правило «проект живёт только на X:» и сделать path guard автоматическим.
 **Результат:** `AGENTS.md` и `FILE_MAP.md` теперь явно фиксируют канон `.tmp-4e-app-publish`; path guard проверяет tracked файлы на C-drive project paths; CI workflow вызывает guard отдельным шагом; старые fallback-пути к браузерам/Git Bash в scripts заменены на PATH/env.
 **Коммит:** this commit

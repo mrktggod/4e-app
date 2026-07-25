@@ -3147,6 +3147,131 @@ body:has(#reset-password.active) .bottom-nav-v2 {
     min-height: 100%;
   }
 }
+/* DESIGN-GLASS-001 package 2: home/focus dashboard surfaces */
+#home {
+  --home-glass-canvas-light: radial-gradient(360px 280px at 78% 8%, rgba(177, 214, 98, 0.22), transparent 70%), radial-gradient(300px 260px at 6% 88%, rgba(125, 174, 48, 0.12), transparent 72%), linear-gradient(180deg, #f7f5ef 0%, #efeee6 55%, #f8f6ef 100%);
+  --home-glass-canvas-dark: radial-gradient(330px 250px at 74% 8%, rgba(116, 157, 69, 0.16), transparent 70%), radial-gradient(280px 230px at 8% 88%, rgba(93, 126, 69, 0.12), transparent 72%), linear-gradient(180deg, #050a08 0%, #020605 58%, #010403 100%);
+}
+html[data-theme="light"] #home#home,
+html[data-theme="light"] #home#home .dash-artboard,
+body #home#home.soft-light,
+body #home#home.soft-light .dash-artboard {
+  background: var(--home-glass-canvas-light) !important;
+  background-color: #f7f5ef !important;
+}
+html[data-theme="dark"] #home#home,
+html[data-theme="dark"] #home#home .dash-artboard,
+html:not([data-theme="light"]) body #home#home:not(.soft-light),
+html:not([data-theme="light"]) body #home#home:not(.soft-light) .dash-artboard {
+  background: var(--home-glass-canvas-dark) !important;
+  background-color: #020605 !important;
+}
+#home#home .dash-glass,
+#home#home .dash-hero,
+#home#home .dash-metric,
+#home#home .dash-empty-card,
+#home#home .dash-bottom-nav {
+  border: 1px solid var(--glass-stroke) !important;
+  background: var(--glass-surface) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+#home#home .dash-hero,
+#home#home .dash-bottom-nav {
+  border-radius: var(--glass-radius-card) !important;
+}
+#home#home .dash-metric,
+#home#home .dash-empty-card,
+#home#home #home-task-list .home-ai-row-main {
+  border-radius: var(--glass-radius-control) !important;
+}
+html[data-theme="light"] #home#home #home-task-list .home-ai-row-main,
+body #home#home.soft-light #home-task-list .home-ai-row-main,
+html[data-theme="dark"] #home#home #home-task-list .home-ai-row-main,
+body #home#home:not(.soft-light) #home-task-list .home-ai-row-main {
+  background: var(--glass-surface-muted) !important;
+  border: 1px solid var(--glass-stroke) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+#home#home .dash-hero:focus-visible,
+#home#home .dash-metric:focus-visible,
+#home#home .dash-bottom-nav button:focus-visible,
+#home#home #home-task-list .home-ai-row:focus-visible .home-ai-row-main {
+  outline: 2px solid var(--green) !important;
+  outline-offset: 3px !important;
+}
+#home#home .dash-metric:is(:hover, :focus-visible),
+#home#home #home-task-list .home-ai-row:is(:hover, :focus-visible) .home-ai-row-main {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow), var(--glass-active-glow) !important;
+}
+#home#home .dash-metric-icon,
+#home#home .dash-ring,
+#home#home #home-task-list .home-ai-row-avatar {
+  background: var(--glass-surface-muted) !important;
+  border: 1px solid var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  color: var(--green) !important;
+}
+#home#home .dash-nav-item.active {
+  color: var(--green) !important;
+  font-weight: 760 !important;
+  text-shadow: none !important;
+}
+#home#home .dash-nav-item.active svg {
+  filter: drop-shadow(0 0 8px rgba(106, 158, 31, 0.22)) !important;
+}
+.focus-summary-card {
+  border: 1px solid var(--glass-stroke) !important;
+  background: var(--glass-surface) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  border-radius: var(--glass-radius-card) !important;
+}
+.focus-summary-pulse,
+.focus-summary-metric,
+.focus-summary-week {
+  border: 1px solid var(--glass-stroke) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  border-radius: var(--glass-radius-control) !important;
+}
+.focus-summary-share,
+.focus-summary-metric--progress {
+  border-color: var(--glass-stroke-strong) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+html[data-theme="light"] .focus-summary-card {
+  color: #101411 !important;
+}
+html[data-theme="light"] .focus-summary-sub,
+html[data-theme="light"] .focus-summary-label,
+html[data-theme="light"] .focus-summary-metric small,
+html[data-theme="light"] .focus-panel-list-title {
+  color: rgba(39, 45, 39, 0.68) !important;
+}
+html[data-theme="dark"] .focus-summary-card {
+  color: #f2f5eb !important;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #home#home .dash-glass,
+  #home#home .dash-hero,
+  #home#home .dash-metric,
+  #home#home .dash-empty-card,
+  #home#home .dash-bottom-nav,
+  #home#home #home-task-list .home-ai-row-main,
+  .focus-summary-card,
+  .focus-summary-pulse,
+  .focus-summary-metric,
+  .focus-summary-week {
+    background: var(--glass-reduced-surface) !important;
+  }
+}
 /* hide legacy global nav on dashboard so the handoff bottom nav is the only menu */
 #home.active ~ #global-nav,
 body:has(#home.active .dash-artboard) #global-nav,
@@ -15607,4 +15732,124 @@ html[data-theme="light"] #task-detail .detail-status-node--active svg,
 html[data-theme="light"] #task-detail .detail-status-badge {
   border-color: var(--glass-stroke-strong) !important;
   box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+/* DESIGN-GLASS-001 package 2 final cascade: home/focus dashboard */
+html[data-theme="light"] #home#home,
+html[data-theme="light"] #home#home .dash-artboard,
+body #home#home.soft-light,
+body #home#home.soft-light .dash-artboard {
+  background: radial-gradient(360px 280px at 78% 8%, rgba(177, 214, 98, 0.22), transparent 70%), radial-gradient(300px 260px at 6% 88%, rgba(125, 174, 48, 0.12), transparent 72%), linear-gradient(180deg, #f7f5ef 0%, #efeee6 55%, #f8f6ef 100%) !important;
+  background-color: #f7f5ef !important;
+}
+html[data-theme="dark"] #home#home,
+html[data-theme="dark"] #home#home .dash-artboard,
+html:not([data-theme="light"]) body #home#home:not(.soft-light),
+html:not([data-theme="light"]) body #home#home:not(.soft-light) .dash-artboard {
+  background: radial-gradient(330px 250px at 74% 8%, rgba(116, 157, 69, 0.16), transparent 70%), radial-gradient(280px 230px at 8% 88%, rgba(93, 126, 69, 0.12), transparent 72%), linear-gradient(180deg, #050a08 0%, #020605 58%, #010403 100%) !important;
+  background-color: #020605 !important;
+}
+#home#home .dash-glass,
+#home#home .dash-hero,
+#home#home .dash-metric,
+#home#home .dash-empty-card,
+#home#home .dash-bottom-nav,
+#home#home #home-task-list .home-ai-row-main,
+.focus-summary-card {
+  background: var(--glass-surface) !important;
+  border-color: var(--glass-stroke) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+#home#home #home-task-list .home-ai-row-main,
+.focus-summary-pulse,
+.focus-summary-metric,
+.focus-summary-week {
+  background: var(--glass-surface-muted) !important;
+  border-color: var(--glass-stroke) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+}
+#home#home .dash-hero,
+#home#home .dash-bottom-nav,
+.focus-summary-card {
+  border-radius: var(--glass-radius-card) !important;
+}
+#home#home .dash-metric,
+#home#home .dash-empty-card,
+#home#home #home-task-list .home-ai-row-main,
+.focus-summary-pulse,
+.focus-summary-metric,
+.focus-summary-week {
+  border-radius: var(--glass-radius-control) !important;
+}
+#home#home .dash-metric:is(:hover, :focus-visible),
+#home#home #home-task-list .home-ai-row:is(:hover, :focus-visible) .home-ai-row-main,
+.focus-summary-share,
+.focus-summary-metric--progress {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow), var(--glass-active-glow) !important;
+}
+#home#home .dash-metric-icon,
+#home#home .dash-ring,
+#home#home #home-task-list .home-ai-row-avatar {
+  background: var(--glass-surface-muted) !important;
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  color: var(--green) !important;
+}
+#home#home .dash-nav-item.active {
+  color: var(--green) !important;
+  font-weight: 760 !important;
+  text-shadow: none !important;
+}
+#home#home .dash-hero:focus-visible,
+#home#home .dash-metric:focus-visible,
+#home#home .dash-bottom-nav button:focus-visible,
+#home#home #home-task-list .home-ai-row:focus-visible .home-ai-row-main,
+.focus-summary-share:focus-visible,
+.focus-summary-week:focus-visible {
+  outline: 2px solid var(--green) !important;
+  outline-offset: 3px !important;
+}
+html[data-theme="dark"] #home#home .dash-bottom-nav .dash-nav-item svg,
+html[data-theme="dark"] #home#home .dash-bottom-nav .dash-nav-item span,
+html:not([data-theme="light"]) #home#home .dash-bottom-nav .dash-nav-item svg,
+html:not([data-theme="light"]) #home#home .dash-bottom-nav .dash-nav-item span {
+  opacity: 1 !important;
+  color: inherit !important;
+}
+html[data-theme="dark"] #home#home .dash-bottom-nav .dash-nav-item,
+html:not([data-theme="light"]) #home#home .dash-bottom-nav .dash-nav-item {
+  color: rgba(216, 226, 207, 0.72) !important;
+}
+html[data-theme="dark"] #home#home .dash-center-button,
+html:not([data-theme="light"]) #home#home .dash-center-button {
+  width: 68px !important;
+  height: 68px !important;
+  margin: 0 !important;
+  border: 1px solid var(--glass-stroke-strong) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+html[data-theme="dark"] #home#home .dash-center-button .dash-brand-orb-grid,
+html:not([data-theme="light"]) #home#home .dash-center-button .dash-brand-orb-grid {
+  display: grid !important;
+}
+body #home#home #home-task-list:has(.home-ai-row) {
+  height: auto !important;
+  bottom: calc(var(--app-viewport-bottom-reserve) + 84px) !important;
+}
+body #home#home #home-show-all-btn {
+  position: absolute !important;
+  left: 18px !important;
+  right: 18px !important;
+  bottom: calc(var(--app-viewport-bottom-reserve) + 32px) !important;
+  z-index: 14 !important;
+  margin: 0 !important;
+  display: flex;
+  border-color: var(--glass-stroke) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
 }

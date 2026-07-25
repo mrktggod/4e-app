@@ -1,38 +1,79 @@
-# REPORT-BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2
+# REPORT — BRIEF-2026-07-24-53 glass home/focus dashboard package 2
 
-Outcome: `BLOCKED-DEPENDENCY`
-
-## Dependency Gate
-
-Brief 53 requires briefs 42, 50, 51 and 52 to be `DONE`.
-
-Current state:
-
-- 42: `DONE`, commit `0a538fe5dfd5623e1fbc6d5ce3e653a218ef5545`
-- 50: `DONE`, commit `3ad54f9adc7856eef1e70f3894f375fedeb117cf`
-- 51: `DONE`, commit `a59b098ab00a7ce8e40cc1e6a8bc15f99dd334e1`
-- 52: `NEED-CLAUDE`, commit `9f3c6d3bf4cf3744b034dbe55f386e5e76771471`
-
-Because 52 is not `DONE`, package 2 home/focus dashboard work did not start.
+Status: DONE
 
 ## Root Cause
 
-Dependency gate in `pm/inbox/BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2.md:11` requires 52 `DONE`. Brief 52 was closed as `NEED-CLAUDE` because `npm run qa:prebeta` failed 19/20 on mobile chat keyboard padding.
+`styles/screens/home.less:1160` and late dashboard overrides in `styles/screens/light-redesign.less:2971` kept the home/focus dashboard on older bespoke glass gradients, dark image-handoff nav rules and an empty-state task-list height. After package 1 established shared `--glass-*` tokens, home still did not consistently consume them.
 
 ## Changed Files
 
-- `pm/inbox/BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2.md`
-- `pm/outbox/REPORT-BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2.md`
-- `pm/backlog.md`
-- `shared/WORK_LOG.md`
-- `DEVELOPMENT_LOG.md`
+- `styles/screens/home.less` — package-2 home/focus dashboard glass token mapping, reduced-transparency fallback, focus-visible and active surface states.
+- `styles/screens/light-redesign.less` — final cascade overrides for late light/dark handoff rules, visible dark nav controls, task-list height and show-all placement.
+- `styles.css`, `styles.min.css` — rebuilt from LESS.
+- `scripts/home-001-dashboard-smoke.mjs` — Windows Chrome/Edge candidates and bounded Chrome cleanup wait; assertions unchanged.
+- `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png`
+- `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`
 
-## Verification
+## Raw Proof
 
-- Runtime files were not changed.
-- `index.html` was not edited; Step 0 was not applicable.
-- Guard commands are run before commit: `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `git diff --check`.
+```text
+Before index encoding check: 111 matches for Войти|Задачи|Сегодня
+After index encoding check: 111 matches for Войти|Задачи|Сегодня
 
-## Next Step
+node scripts/check-cp1251-mojibake.mjs
+CP1251 mojibake check passed: 0 suspicious tokens
 
-Claude/Yuri should decide whether the `qa:prebeta` chat-keyboard failure blocks packages 2/3 or should become a separate narrow fix that unblocks the visual queue.
+npm run build:css
+lessc styles/main.less styles.css && cleancss styles.css -o styles.min.css
+
+npm run smoke:home001
+ok: true
+failures: []
+viewportWidth: 390
+documentScrollWidth: 390
+homeRows: 3
+showAllDisplay: flex
+metricCards: 4
+bottomNavButtons: 3
+focusCount: 2
+focusText: требуют внимания
+home-task-list: 18,416,372,664
+dark.rowCount: 3
+dark.scrollWidth: 390
+light.rows: 3
+light.showAllDisplay: flex
+light.scrollWidth: 390
+
+Git Bash scripts/check-portable-paths.sh
+Portable path check passed.
+
+Git Bash scripts/check-ui-architecture.sh
+inline style attributes = 299 / 465
+inline event handlers = 401 / 402
+style tags = 0 / 0
+inline script tags = 3 / 3
+
+git diff --check
+PASS
+```
+
+## Screenshots
+
+- `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-dark.png`
+- `docs/tasks/assets/HOME-001-dashboard-smoke-2026-07-20-light.png`
+
+## Visual Differences From Reference
+
+- Applied milky glass fill, quiet white/green edges, warmer light canvas, active green emphasis and reduced-transparency fallbacks to home/focus surfaces.
+- Preserved existing data, routes, event handlers and Russian copy.
+- Deferred broader typography/layout redesign; this slice is home/focus only and does not claim global design-system completion.
+
+## Commit
+
+Pending in this task commit on `feat/admin-tariff-api`.
+
+## Deferred Manual Tails
+
+- Real phone/TMA visual check after deployment remains manual.
+- Package 2 follow-up briefs `54-56` should be re-evaluated after this DONE status.

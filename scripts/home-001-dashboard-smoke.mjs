@@ -11,6 +11,8 @@ const artifactDir = path.join(root, 'docs', 'tasks', 'assets');
 const chromeCandidates = [
   process.env.CHROME_PATH,
   process.env.BROWSER_PATH,
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
   'chrome',
   'google-chrome',
   'chromium',
@@ -500,7 +502,13 @@ try {
   }
   if (chrome && !chrome.killed) {
     chrome.kill();
-    await new Promise(resolve => chrome.once('exit', resolve));
+    await new Promise(resolve => {
+      const timeout = setTimeout(resolve, 3000);
+      chrome.once('exit', () => {
+        clearTimeout(timeout);
+        resolve();
+      });
+    });
   }
   if (tempDir) {
     for (let attempt = 0; attempt < 5; attempt += 1) {

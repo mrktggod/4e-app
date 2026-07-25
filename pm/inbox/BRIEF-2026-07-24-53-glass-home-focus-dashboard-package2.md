@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2
 

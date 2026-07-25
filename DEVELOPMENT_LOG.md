@@ -1,5 +1,17 @@
 ## 2026-07-25
 
+### DESIGN-GLASS-001 home/focus package 2
+
+**Что сделано:** Главный экран и focus summary переведены на shared `--glass-*` tokens: canvas light fields, hero, metric cards, priority rows, show-all action, focus summary card and bottom nav. `home001` smoke also now has stable Windows Chrome discovery and bounded Chrome cleanup.
+
+**Проверка кодировки:** `index.html` не редактировался; обязательный Step 0 выполнен как guard: 111 совпадений до / 111 после.
+
+**Тест:** `npm run build:css`; `npm run smoke:home001`; `node --check scripts/home-001-dashboard-smoke.mjs`; `node scripts/check-cp1251-mojibake.mjs`; Git Bash `scripts/check-portable-paths.sh`; Git Bash `scripts/check-ui-architecture.sh`; `git diff --check`.
+
+**Коммит:** pending
+
+## 2026-07-25
+
 ### X-drive canon and tracked path guard
 
 **Что сделано:** в `AGENTS.md` и `FILE_MAP.md` добавлен явный канон: приложение живёт в `.tmp-4e-app-publish`, проектные файлы создаются и читаются только внутри `X:\4`, старая C-drive копия ликвидирована 2026-07-25. `scripts/check-portable-paths.sh` теперь проверяет tracked git files и падает на реальные C-drive project paths; `.github/workflows/path-guard.yml` вызывает guard отдельным шагом. Убраны hardcoded `Program Files` fallback-пути из smoke scripts и `run-bash-script.mjs`; инструменты теперь берутся из PATH/env. Обновлены противоречащие документы `shared/ROADMAP.md` и `docs/ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ.md`.

@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-25 - Codex - glass home package 2 done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2` moved to `DONE`.
+- Result: Telegram home/focus dashboard now consumes shared glass tokens for canvas, hero, metrics, priority rows, show-all action, focus summary and bottom nav.
+- Evidence: `npm run smoke:home001` passed on 390x844 with refreshed light/dark screenshots; mojibake, CSS build, portable path, UI architecture and diff checks passed.
+- Next: package 2 can continue with `BRIEF-2026-07-24-54` after sync.
+
 ## 2026-07-25 - Codex - Misha bug queue prepared
 
 - Branch: `feat/admin-tariff-api`.
