@@ -35,6 +35,22 @@
 
 Практический приоритет: сначала закрыть P1 staging UI regressions, затем продолжать package 2 glass slices (`BRIEF-2026-07-24-53+`), чтобы не переносить старые ошибки в новый визуальный слой.
 
+## Misha production/Premium bug intake - 2026-07-25
+
+Миша тестировал приложение сначала с истёкшим Premium, затем после ручного продления доступа. Командные наблюдения оформлены как ночные briefs `61-71`. Они должны идти как узкие bugfix/QA-задачи без production deploy, `main`, CAL, цен, payment/entitlement refactor и секретов.
+
+| ID | Brief | Type | Priority | Owner | Status | Horizon | Done criteria |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PREMIUM-UX-001 | `BRIEF-2026-07-25-61-expired-premium-task-actions` + `62-expired-premium-voice-gate` | UI/Auth/Premium UX | P1 | Codex | NEW | H0.5 | Expired Premium denial is shown as clear paywall/benefits state for task actions and voice, not generic save/listening failure; no entitlement rule changes. |
+| VOICE-UX-001 | `BRIEF-2026-07-25-63-voice-consent-checkbox-accessibility` + `64-voice-exit-controls` | Voice/UI/A11y | P1 | Codex | NEW | H0.5 | Consent checkbox is visible/tappable; voice cancel and back reliably exit the flow. |
+| TASK-COPY-001 | `BRIEF-2026-07-25-65-relative-time-copy` | UI/Copy | P2 | Codex | NEW | H0.5 | Old tasks are not described as `недавно` when exact age is dozens of days. |
+| HOME-OVERFLOW-001 | `BRIEF-2026-07-25-66-dashboard-right-edge-overflow` | Home/UI | P1 | Codex | NEW | H0.5 | Home dashboard has no right-edge clipping or horizontal overflow on mobile viewport. |
+| CHAT-VOICE-001 | `BRIEF-2026-07-25-67-chat-voice-entrypoint` | AI Chat/Voice/UI | P2 | Codex | NEW | H0.5 | AI chat composer has a clear voice input entrypoint wired to the existing voice flow and gates. |
+| AI-INTENT-DELETE-001 | `BRIEF-2026-07-25-68-ai-delete-intent-safety` | AI Chat/Tasks/Safety | P0 | Codex + Claude if broad | NEW | H0.5 | Delete intent is never executed as mass-complete; destructive bulk action needs explicit confirmation or refusal. |
+| BOT-GROUP-001 | `BRIEF-2026-07-25-69-telegram-group-bot-capture` | Bot/Telegram | P1 | Codex + Claude/Yuri | NEW | H0.5 | Telegram group bot capture/respond path is audited; if local bot/live evidence is unavailable, report `NEED-CLAUDE`/`NEED-YURI`. |
+| HOME-FOCUS-COUNTERS-001 | `BRIEF-2026-07-25-70-focus-counters-consistency` | Home/UI/Data | P1 | Codex | NEW | H0.5 | Home focus card and popup counters use one consistent task summary. |
+| STATS-ACTIVE-001 | `BRIEF-2026-07-25-71-statistics-active-tasks-empty` | Statistics/UI/Data | P1 | Codex | NEW | H0.5 | Statistics does not show `Нет активных задач` when the same user has active tasks on home. |
+
 ## Design system queue - 2026-07-23
 
 | ID | Task | Type | Priority | Owner | Status | Horizon | Done criteria |

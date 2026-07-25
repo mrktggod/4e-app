@@ -1,5 +1,15 @@
 ## 2026-07-25
 
+### Misha bug intake night queue
+
+**Что сделано:** командные баги из тестирования Миши оформлены в `pm/bugs.md` как `BUG-2026-07-25-008`-`018`, добавлены ночные briefs `BRIEF-2026-07-25-61`-`71`, backlog queue, team-sync и report `pm/outbox/REPORT-2026-07-25-misha-bug-night-queue.md`.
+
+**Проверка кодировки:** `index.html` и `vk.html` не редактировались; Шаг 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` запускается перед commit.
+
+**Тест:** PM/source-only постановка; обязательные guards перед commit.
+
+**Коммит:** this commit
+
 ### Morning runner MAN-007 status reconcile
 
 **Что сделано:** через Codex `automation_update` обновлён prompt только `4e-morning-inbox-and-safe-backlog-runner`. В конец prompt добавлен финальный шаг, который выполняется всегда: пройти `pm/inbox/BRIEF-*.md`, не трогать `BRIEF-TEMPLATE.md` и `README.md`, для каждого оставшегося `status: NEW` сверить наличие outbox report и git-коммита, при фактически выполненной работе поставить реальный статус (`DONE`, `NEED-CLAUDE`, `NEED-YURI`, `HOLD-MANUAL`) и записать подтверждающий SHA в тело brief. Результат автоматизации должен быть отдельным commit `docs(pm): reconcile inbox statuses` + push и closeout-таблица с NEW до/после.

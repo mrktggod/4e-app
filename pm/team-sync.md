@@ -1,5 +1,14 @@
 # Team Sync
 
+## 2026-07-25 - Codex - Misha bug queue prepared
+
+- Branch: `feat/admin-tariff-api`.
+- Intake: accepted 11 team bugs from Misha's Premium/working-account testing.
+- PM sync: added `BUG-2026-07-25-008` through `BUG-2026-07-25-018` and queued `BRIEF-2026-07-25-61` through `71` in `pm/inbox`.
+- Highest risk: `BUG-2026-07-25-015` where AI interpreted delete intent as mass-complete; brief `68` has a Claude stop if the fix is not narrow.
+- Bot gate: Telegram group bot brief `69` must report `NEED-CLAUDE`/`NEED-YURI` if local bot repo or live Telegram evidence is unavailable.
+- Boundaries: no runtime code, prod, `main`, CAL, price, payment/entitlement refactor, or secret action.
+
 ## 2026-07-25 - Codex - morning runner MAN-007 reconcile step
 
 - Updated only `4e-morning-inbox-and-safe-backlog-runner`.
