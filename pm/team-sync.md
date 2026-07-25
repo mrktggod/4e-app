@@ -1,5 +1,12 @@
 # Team Sync
 
+## 2026-07-25 - Codex - automation disk guard added
+
+- Updated active Codex cron automation prompts for `4e-night-inbox-and-whitelist-backlog-runner`, `4e-pre-dawn-inbox-and-whitelist-backlog-runner`, and `4e-morning-inbox-and-safe-backlog-runner`.
+- Each prompt now starts with Alexey's disk rule: work only in `X:\4`; stop and write REPORT if the working folder is not `X:\4`; classify objective C-drive project-path needs as `NEED-YURI`.
+- Verification: read back all three local automation configs and confirmed the new `ДИСК:` prefix is present.
+- Tail: Codex currently lists the registered `4` project on the old C-drive workspace; `X:\4` exists on disk but is not yet listed as a Codex project, so the new rule will stop runs until the automation target is moved to a registered `X:\4` project.
+
 ## 2026-07-25 - Codex - PLATFORM/WORKER auth bridge approved and tested
 
 - Branch: `feat/admin-tariff-api`.

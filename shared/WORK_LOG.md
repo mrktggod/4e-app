@@ -1,5 +1,15 @@
 ### 2026-07-25 — Codex
 
+**Задача:** добавить правило диска в prompts ночных/утренних автоматизаций.
+**Результат:** prompts `4e-night-*`, `4e-pre-dawn-*`, `4e-morning-*` теперь начинаются с правила: работать только в `X:\4`, при другом рабочем каталоге остановиться и написать REPORT.
+**Коммит:** this commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** зарегистрировать/переназначить Codex project на `X:\4`; сейчас локальный target всё ещё указывает на старый C-drive project, поэтому новые prompts будут стопорить запуск.
+
+---
+
+### 2026-07-25 — Codex
+
 **Задача:** закрыть Claude-reviewed `window.PLATFORM/window.WORKER` auth bridge.
 **Результат:** внешний `scripts/auth.js` теперь видит live `FourPlatform` и Worker URL; OAuth start `GET` упрощён без custom auth headers; `qa:prebeta`, auth smoke и OAuth-start smoke зелёные; `BRIEF-2026-07-21-morning-refine-03` переведён в `DONE`.
 **Коммит:** this commit

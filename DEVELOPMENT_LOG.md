@@ -1,5 +1,15 @@
 ## 2026-07-25
 
+### Automation disk guard
+
+**Что сделано:** через Codex `automation_update` обновлены prompts трёх активных cron-runners: `4e-night-inbox-and-whitelist-backlog-runner`, `4e-pre-dawn-inbox-and-whitelist-backlog-runner`, `4e-morning-inbox-and-safe-backlog-runner`. В начало каждого добавлено правило диска: работать только в `X:\4`; если рабочая папка не `X:\4`, остановиться, написать REPORT и не продолжать; абсолютные C-drive project paths в коде/конфигах запрещены, инструменты вызывать через PATH.
+
+**Проверка кодировки:** runtime-файлы не редактировались; `index.html` не трогался.
+
+**Тест:** read-back локальных automation configs подтвердил, что все три prompts начинаются с `ДИСК: работать только в X:\4`.
+
+**Коммит:** this commit
+
 ### PLATFORM/WORKER global bridge for auth scripts
 
 **Что сделано:** после Claude/Cowork review принят узкий client-side auth wiring fix: `index.html` экспортирует `window.PLATFORM=PLATFORM` и `window.WORKER=WORKER`, чтобы внешние `scripts/auth.js`/`scripts/auth-handlers.js` видели live `FourPlatform` и Worker URL, а не падали/уходили в legacy fallback из-за lexical `const`. В `scripts/auth.js` OAuth start `GET` больше не отправляет `authHeaders()`, потому что Worker `buildOAuthStart()` читает только query-параметры, а callback/merge path не изменён. Синхронизированы `BRIEF-2026-07-21-morning-refine-03`, `pm/backlog.md`, `pm/vk-parity-plan-2026-07-23.md`, `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`, добавлен outbox report.
