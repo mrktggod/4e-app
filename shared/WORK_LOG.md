@@ -1,3 +1,12 @@
+### 2026-07-25 — Codex
+
+**Задача:** закрепить правило «проект живёт только на X:» и сделать path guard автоматическим.
+**Результат:** `AGENTS.md` и `FILE_MAP.md` теперь явно фиксируют канон `.tmp-4e-app-publish`; path guard проверяет tracked файлы на C-drive project paths; CI workflow вызывает guard отдельным шагом; старые fallback-пути к браузерам/Git Bash в scripts заменены на PATH/env.
+**Коммит:** this commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** после push проверить remote GitHub Actions для ветки `feat/admin-tariff-api`.
+
+---
 ### 2026-07-25 - Codex
 
 **Task:** оформить баги Миши в ночную очередь.

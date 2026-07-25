@@ -8,10 +8,12 @@ const WORKER_URL = process.env.STAGING_WORKER_URL || 'https://restless-lab-d737-
 
 const chromeCandidates = [
   process.env.CHROME_PATH,
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+  process.env.BROWSER_PATH,
+  'chrome',
+  'google-chrome',
+  'chromium',
+  'chromium-browser',
+  'msedge',
 ].filter(Boolean);
 
 function log(message) {
@@ -49,9 +51,11 @@ async function registerUser(label) {
 }
 
 async function findChrome() {
-  const candidate = chromeCandidates.find((item) => existsSync(item));
-  if (!candidate) throw new Error('Chrome/Edge executable was not found');
-  return candidate;
+  for (const candidate of chromeCandidates) {
+    const isPathLike = candidate.includes('/') || candidate.includes('\\');
+    if (!isPathLike || existsSync(candidate)) return candidate;
+  }
+  throw new Error('Chrome/Edge executable was not found in PATH');
 }
 
 async function waitForCdp(port) {

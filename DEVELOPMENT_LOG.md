@@ -1,5 +1,16 @@
 ## 2026-07-25
 
+### X-drive canon and tracked path guard
+
+**Что сделано:** в `AGENTS.md` и `FILE_MAP.md` добавлен явный канон: приложение живёт в `.tmp-4e-app-publish`, проектные файлы создаются и читаются только внутри `X:\4`, старая C-drive копия ликвидирована 2026-07-25. `scripts/check-portable-paths.sh` теперь проверяет tracked git files и падает на реальные C-drive project paths; `.github/workflows/path-guard.yml` вызывает guard отдельным шагом. Убраны hardcoded `Program Files` fallback-пути из smoke scripts и `run-bash-script.mjs`; инструменты теперь берутся из PATH/env. Обновлены противоречащие документы `shared/ROADMAP.md` и `docs/ЗАДАЧИ_БЕТА_И_ВИРАЛЬНОСТЬ.md`.
+
+**Проверка кодировки:** `index.html` не редактировался; runtime worker/payment не трогались. `node scripts/check-cp1251-mojibake.mjs` — 0 suspicious tokens.
+
+**Тест:** negative path-guard fixture со staged C-drive path дал `NEGATIVE_EXIT=1`; после удаления fixture `npm run check:portable-paths` дал `POSITIVE_EXIT=0`. Локальный эквивалент `.github/workflows/path-guard.yml` прошёл: portable paths, doc encoding, JS syntax, CSS build, Pages script assets, UI architecture. `git diff --check` прошёл. `git worktree prune` выполнен; stale locked worktree registrations сняты через unlock + prune.
+
+**Коммит:** this commit
+## 2026-07-25
+
 ### Misha bug intake night queue
 
 **Что сделано:** командные баги из тестирования Миши оформлены в `pm/bugs.md` как `BUG-2026-07-25-008`-`021`, добавлены ночные briefs `BRIEF-2026-07-25-61`-`74`, backlog queue, team-sync и report `pm/outbox/REPORT-2026-07-25-misha-bug-night-queue.md`.

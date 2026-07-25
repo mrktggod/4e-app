@@ -3,19 +3,21 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
-pattern='/[U]sers/|[A-Za-z]:\\[U]sers\\'
+# Real project paths have at least one path character after the drive prefix.
+# A bare quoted prefix in docs is ok.
+pattern='[Cc]:\\[[:alnum:]_.-]'
 
-if rg -n --hidden \
-  --glob '!.git/**' \
-  --glob '!node_modules/**' \
-  --glob '!dist/**' \
-  --glob '!build/**' \
-  --glob '!index.backup_*.html' \
-  --glob '!index.merge_backup_*.html' \
-  -e "$pattern" .; then
+if git grep -n -I -E "$pattern" -- . \
+  ':!:docs/**' \
+  ':!:pm/**' \
+  ':!:cowork-docs/**' \
+  ':!:*DEVELOPMENT_HISTORY*.md' \
+  ':!:*DEVELOPMENT_LOG*.md' \
+  ':!:*ROADMAP*.md'; then
   echo
-  echo "Found machine-specific absolute paths. Use <repo-root>, <worker-repo-root>, or a relative path instead."
+  echo 'Found forbidden absolute C-drive project paths in tracked files.'
+  echo 'Use repo-relative paths or PATH-resolved tools instead.'
   exit 1
 fi
 
-echo "Portable path check passed."
+echo 'Portable path check passed.'

@@ -12,8 +12,6 @@ if (!script) {
 const candidates = [
   process.env.BASH_PATH,
   'bash',
-  'C:\\Program Files\\Git\\bin\\bash.exe',
-  'C:\\Program Files (x86)\\Git\\bin\\bash.exe',
 ].filter(Boolean);
 
 let lastError = null;

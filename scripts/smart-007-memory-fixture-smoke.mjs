@@ -10,10 +10,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = process.env.STAGING_WORKER_BASE_URL || 'https://restless-lab-d737-staging.shelckograff.workers.dev';
 const chromeCandidates = [
   process.env.CHROME_PATH,
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+  process.env.BROWSER_PATH,
+  'chrome',
+  'google-chrome',
+  'chromium',
+  'chromium-browser',
+  'msedge'
 ].filter(Boolean);
 
 const seedFacts = [
@@ -56,9 +58,10 @@ async function exists(file) {
 
 async function findChrome() {
   for (const candidate of chromeCandidates) {
-    if (await exists(candidate)) return candidate;
+    const isPathLike = candidate.includes('/') || candidate.includes('\\');
+    if (!isPathLike || await exists(candidate)) return candidate;
   }
-  throw new Error('Chrome or Edge executable was not found');
+  throw new Error('Chrome or Edge executable was not found in PATH');
 }
 
 function getFreePort() {

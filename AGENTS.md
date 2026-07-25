@@ -1,3 +1,8 @@
+> 🔴 КАНОН ПРИЛОЖЕНИЯ — папка `.tmp-4e-app-publish`. Несмотря на префикс «tmp»,
+> это НЕ временная папка и её НЕЛЬЗЯ удалять. Канон воркера — `X:\4\4e-worker`.
+> Копии `4e-app`, `4e-bot-repo`, `src\bot`, `.tmp-4e-app-p0`,
+> `.tmp-docs-monetization-i18n` каноном не являются — в них не работать.
+> Файлы проекта на диске C: не хранятся (см. AGENTS.md, раздел «Диск»).
 # Инструкции для Codex — проект 4 AI-секретарь
 
 ## НАВИГАЦИЯ ПО ФАЙЛАМ — читай это ПЕРВЫМ
@@ -247,6 +252,13 @@ These stop points are permanent unless Yuri explicitly overrides them in the cur
 
 Secrets must never be written to code, chat, logs, or reports. Use environment variables only. In reports, use `<redacted>`.
 
+## Диск: проект живёт только на X:
+
+- Канон проекта — `X:\4`. Любые файлы проекта (код, docs, pm, скрипты, бэкапы, worktree, временные деревья) создаются и читаются ТОЛЬКО внутри `X:\4`.
+- Диск C: для файлов проекта не используется. Папка `Documents\4` на диске C ликвидирована 2026-07-25 и не воссоздаётся ни при каких условиях.
+- В коде, конфигах и скриптах запрещены абсолютные пути, начинающиеся с `C:\`. Инструменты (wrangler, node, npm) вызывать через PATH, не по абсолютному пути.
+- Исключение: собственные данные приложений (Claude, Codex, npm) на C: — это не файлы проекта, правило их не касается.
+- Нарушение = СТОП. Сессия не продолжает работу: фиксирует расхождение в REPORT и ставит NEED-YURI.
 Always run `node scripts/check-cp1251-mojibake.mjs` before each app commit and require exit code 0. Do not weaken `.gitattributes`, do not add BOM, use fresh test accounts, avoid Yuri's personal data, keep changes narrow, and include raw evidence in reports. For security fixes, perform a live exploit re-test; code reading alone is not enough.
 
 PM file protocol:
