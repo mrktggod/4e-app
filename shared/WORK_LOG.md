@@ -1,5 +1,15 @@
 ### 2026-07-25 — Codex
 
+**Задача:** добавить MAN-007 в последний утренний runner.
+**Результат:** `4e-morning-inbox-and-safe-backlog-runner` теперь в финале всегда сверяет `pm/inbox` с outbox reports и git history, переводит фактически закрытые briefs из `NEW` в реальный статус и пишет SHA подтверждения.
+**Коммит:** this commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** на ближайшем 06:30 запуске проверить closeout-таблицу: NEW до/после, какие briefs переведены и по какому SHA.
+
+---
+
+### 2026-07-25 — Codex
+
 **Задача:** добавить Step 0 для 23:00 runner, чтобы принимать Cowork briefs в git.
 **Результат:** `4e-night-inbox-and-whitelist-backlog-runner` теперь первым шагом коммитит/пушит изменения `pm/` из X-drive app publish workspace; если изменений нет, продолжает обычный inbox/backlog проход.
 **Коммит:** this commit

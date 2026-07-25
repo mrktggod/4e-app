@@ -1,5 +1,15 @@
 ## 2026-07-25
 
+### Morning runner MAN-007 status reconcile
+
+**Что сделано:** через Codex `automation_update` обновлён prompt только `4e-morning-inbox-and-safe-backlog-runner`. В конец prompt добавлен финальный шаг, который выполняется всегда: пройти `pm/inbox/BRIEF-*.md`, не трогать `BRIEF-TEMPLATE.md` и `README.md`, для каждого оставшегося `status: NEW` сверить наличие outbox report и git-коммита, при фактически выполненной работе поставить реальный статус (`DONE`, `NEED-CLAUDE`, `NEED-YURI`, `HOLD-MANUAL`) и записать подтверждающий SHA в тело brief. Результат автоматизации должен быть отдельным commit `docs(pm): reconcile inbox statuses` + push и closeout-таблица с NEW до/после.
+
+**Проверка кодировки:** runtime-файлы не редактировались; `index.html` не трогался.
+
+**Тест:** read-back локального automation config: prompt всё ещё начинается с `ДИСК:`, финальный reconcile block найден в конце prompt; `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `git diff --check` запускаются перед commit.
+
+**Коммит:** this commit
+
 ### Night runner Cowork inbox intake Step 0
 
 **Что сделано:** через Codex `automation_update` обновлён prompt только `4e-night-inbox-and-whitelist-backlog-runner`. В самое начало добавлен `ШАГ 0`: до обычного inbox/backlog прохода раннер должен принять накопленные Cowork briefs в git из X-drive app publish workspace, закоммитить `pm/`, запушить ветку `feat/admin-tariff-api`, а если изменений в `pm/` нет — продолжить без ошибки. Причина MAN-002 записана в prompt: Cowork пишет briefs файлами и не имеет git-прав, поэтому без этого шага cloud runners не видят новые briefs.

@@ -1,5 +1,12 @@
 # Team Sync
 
+## 2026-07-25 - Codex - morning runner MAN-007 reconcile step
+
+- Updated only `4e-morning-inbox-and-safe-backlog-runner`.
+- Added final always-run status reconciliation step: scan `pm/inbox/BRIEF-*.md`, ignore templates/readme, compare remaining `status: NEW` briefs against outbox reports and git history, then update already-finished briefs to real statuses with confirming SHA.
+- Required result inside the automation: one commit `docs(pm): reconcile inbox statuses` plus push, with a closeout table showing NEW before/after and changed briefs.
+- Verification: read back local automation config; prompt still starts with `ДИСК:`, and the final reconcile block is appended near the end.
+
 ## 2026-07-25 - Codex - night runner Cowork inbox intake step
 
 - Updated only `4e-night-inbox-and-whitelist-backlog-runner`.
