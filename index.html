@@ -1899,12 +1899,14 @@ window.FourTmaDiagnostics?.mark?.('main-inline-start');
 function parseMarkdown(text){if(!text||typeof marked==='undefined')return text||'';try{marked.setOptions({breaks:true,gfm:true});return marked.parse(text);}catch(e){return text;}}
 
 const PLATFORM=window.FourPlatform||{};
+window.PLATFORM=PLATFORM;
 const tg=PLATFORM.telegramApp||null;
 try{
   if(PLATFORM.initTelegram){PLATFORM.initTelegram();}
   else if(tg){tg.ready?.();tg.expand?.();tg.disableVerticalSwipes?.();}
 }catch(e){console.warn('[telegram-webapp] startup init skipped',e);}
 const WORKER=(()=>{const host=location.hostname.toLowerCase();if(host==='4-ai-staging.pages.dev'||host.endsWith('.4-ai-staging.pages.dev')||host==='localhost'||host==='127.0.0.1'){return 'https://restless-lab-d737-staging.shelckograff.workers.dev';}return 'https://edge.4-ai.site';})();
+window.WORKER=WORKER;
 const TELEGRAM_BOT_USERNAME=PLATFORM.getTelegramBotUsername?PLATFORM.getTelegramBotUsername():(new URLSearchParams(location.search).get('bot')||'Denzel89bot');
 const TOKEN_K='chetam_token';
 const ONBOARD_K='chetam_onboarded';

@@ -1,5 +1,15 @@
 ## 2026-07-25
 
+### PLATFORM/WORKER global bridge for auth scripts
+
+**Что сделано:** после Claude/Cowork review принят узкий client-side auth wiring fix: `index.html` экспортирует `window.PLATFORM=PLATFORM` и `window.WORKER=WORKER`, чтобы внешние `scripts/auth.js`/`scripts/auth-handlers.js` видели live `FourPlatform` и Worker URL, а не падали/уходили в legacy fallback из-за lexical `const`. В `scripts/auth.js` OAuth start `GET` больше не отправляет `authHeaders()`, потому что Worker `buildOAuthStart()` читает только query-параметры, а callback/merge path не изменён. Синхронизированы `BRIEF-2026-07-21-morning-refine-03`, `pm/backlog.md`, `pm/vk-parity-plan-2026-07-23.md`, `docs/tasks/EVIDENCE-AUDIT-2026-07-17.md`, добавлен outbox report.
+
+**Проверка кодировки:** `index.html` markers `Войти|Задачи|Сегодня` = 111 совпадений; `node scripts/check-cp1251-mojibake.mjs` прошёл с 0 suspicious tokens внутри `qa:prebeta`.
+
+**Тест:** `npm run qa:prebeta` — passed, 20/20 Playwright плюс `home001`, `back050`, `back055`, `privacy-surface`, `viral-share`; локальный `smoke:auth-avatar` против staging Worker — register/login/wrong-password UI passed; local OAuth-start smoke — `window.PLATFORM === window.FourPlatform`, `window.WORKER` задан, PKCE создан, `/auth/vk-id/start` и `/auth/yandex-id/start` вернули `200` с `authUrl`, console errors empty.
+
+**Коммит:** this commit
+
 ### Manual staging QA intake
 
 **Что сделано:** принят ручной QA-сигнал Алексея по `https://4-ai-staging.pages.dev/`: откатаны 4 generated screenshot artifacts, `c1af3d1` запушен в `origin/feat/admin-tariff-api`, а в `pm/bugs.md` заведены `BUG-2026-07-25-001..007`. По ручным фактам reopened: `NEW-006` safe-area/bottom nav, `NEW-008` chat composer, `BUG-2026-07-22-001` task-detail reminder popup.

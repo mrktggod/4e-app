@@ -1,5 +1,15 @@
 ### 2026-07-25 — Codex
 
+**Задача:** закрыть Claude-reviewed `window.PLATFORM/window.WORKER` auth bridge.
+**Результат:** внешний `scripts/auth.js` теперь видит live `FourPlatform` и Worker URL; OAuth start `GET` упрощён без custom auth headers; `qa:prebeta`, auth smoke и OAuth-start smoke зелёные; `BRIEF-2026-07-21-morning-refine-03` переведён в `DONE`.
+**Коммит:** this commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** после deploy провести реальный VK/Yandex OAuth callback smoke; это остаётся ручным gate `BACK-045`.
+
+---
+
+### 2026-07-25 — Codex
+
 **Задача:** принять ручной staging QA Алексея после `qa:prebeta`.
 **Результат:** `c1af3d1` отправлен в `origin/feat/admin-tariff-api`; 4 generated QA screenshots откатаны; новые ручные баги `BUG-2026-07-25-001..007` занесены в `pm/bugs.md`, старые `NEW-006`, `NEW-008`, `BUG-2026-07-22-001` помечены как reopened/manual red.
 **Коммит:** this commit

@@ -1,4 +1,4 @@
-status: NEED-CLAUDE-PENDING-REVIEW
+status: DONE
 
 ## ⚠️ Delivery note
 Same untracked-file delivery risk as `-01`/`-02` — see `-01`'s note.

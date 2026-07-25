@@ -40,7 +40,7 @@
       const redirectUri=getOAuthRedirectUri();
       const pkce=await createOAuthPkce();
       const startUrl=window.WORKER+cfg.path+'?redirectUri='+encodeURIComponent(redirectUri)+'&state='+encodeURIComponent(state)+'&codeChallenge='+encodeURIComponent(pkce.challenge);
-      const r=await withTimeout(fetch(startUrl,{headers:authHeaders()}),10000);
+      const r=await withTimeout(fetch(startUrl),10000);
       const d=await readJsonSafe(r);
       if(!r.ok||!d.ok||!d.authUrl){
         showToast(d.error||cfg.label+' пока не настроен');

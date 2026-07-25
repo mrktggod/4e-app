@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-25 - Codex - PLATFORM/WORKER auth bridge approved and tested
+
+- Branch: `feat/admin-tariff-api`.
+- Claude/Cowork review from Alexey approved the pending local `index.html` / `scripts/auth.js` changes as the right fix, not a hack.
+- Fix: `index.html` exports `window.PLATFORM=PLATFORM` and `window.WORKER=WORKER`; OAuth start `GET` no longer sends custom auth headers.
+- Evidence: `npm run qa:prebeta` passed; local `smoke:auth-avatar` against staging Worker passed register/login/wrong-password UI; local OAuth-start smoke confirmed `window.PLATFORM === window.FourPlatform`, PKCE generation, and `200 authUrl` responses from VK ID and Yandex start endpoints.
+- PM sync: `BRIEF-2026-07-21-morning-refine-03-platform-global-alias-investigate` is `DONE`; `BACK-045` is `Ready for QA / start smoke green` but still needs real provider callback smoke after deploy.
+
 ## 2026-07-25 - Alexey manual staging QA intake
 
 - Branch: `feat/admin-tariff-api`; commit `c1af3d1` was pushed to origin.

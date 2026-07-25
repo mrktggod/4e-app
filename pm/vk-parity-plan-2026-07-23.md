@@ -17,7 +17,7 @@
 | --- | --- | --- | --- | --- |
 | Auth: сохранённая web-сессия | chetam_token, auth/me; токен удаляется только на 401/403 | vk4_token, auth/me timeout 2.5s; после любого exception токен удаляется | BROKEN web-VK | VK-AUTH-SESSION-001, NEED-CLAUDE |
 | Auth: platform autologin | Telegram initData/start-token fallback | signed VK launch params + auth/vk только внутри VK Bridge context | MATCH core / NEEDS-REAL | VK Mini mobile+web smoke |
-| VK ID / Yandex OAuth в общем app | UI и endpoints заявлены | scripts/auth.js ждёт window.PLATFORM и window.WORKER, а app создаёт FourPlatform и lexical const WORKER | BROKEN-CANDIDATE | PLATFORM-GLOBAL-ALIAS-001, NEED-CLAUDE |
+| VK ID / Yandex OAuth в общем app | UI и endpoints заявлены | `window.PLATFORM` и `window.WORKER` экспортированы для external auth helpers; local OAuth-start smoke вернул authUrl для VK ID и Yandex | START-SMOKE-GREEN / CALLBACK-NEEDS-REAL | Реальный provider callback остаётся manual OAuth gate |
 | Home/dashboard | rich focus, metrics, top-3, summary overlay | упрощённый focus card, metrics и task list | LAGGING | VK-HOME-PARITY-001 |
 | Navigation | home nav = 3 actions; global nav = 4 actions | 5-slot nav с AI center, без общего adapter contract | LAGGING / TG CONTRACT BROKEN | NAV-CONTRACT-001 |
 | Tasks list | rich metadata, swipe/actions, filters | базовый list + done | LAGGING | после auth/AI |
@@ -87,7 +87,7 @@ Source audit не доказывает единственную причину, 
 
 | Brief | Класс | Scope |
 | --- | --- | --- |
-| PLATFORM-GLOBAL-ALIAS-001 | NEED-CLAUDE | Явный reviewed export FourPlatform/WORKER для external auth helpers + OAuth regression |
+| PLATFORM-GLOBAL-ALIAS-001 | DONE | Claude-reviewed export `window.PLATFORM=PLATFORM` / `window.WORKER=WORKER`; `qa:prebeta`, local auth smoke and OAuth-start smoke green |
 | VK-AUTH-SESSION-001 | NEED-CLAUDE | Не терять valid saved session на timeout/5xx |
 | VK-AI-CHAT-001 | NEED-CLAUDE | Найти status/root cause и сделать честный error UX |
 | VK-TASK-DETAIL-001 | READY/FIXABLE | Server-backed edit deadline/status/priority с regression smoke, без reminder/payment |
