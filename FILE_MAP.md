@@ -35,6 +35,7 @@
 | `docs/git-team-rules.md` | 104 | Git-процесс команды: ветки, commit, push/merge, согласование рисков | Читать при push/merge/ветках |
 | `docs/team-sync-protocol.md` | 169 | Team Sync: ключевые фразы `Что там у Лехи?` / `Что там у Юры?`, commit/push и отчёты | Читать при синхронизации Алексея и Юрия |
 | `docs/ui-architecture-rules.md` | 44 | UI-правило: HTML=структура, LESS=стили, JS=поведение, BEM и legacy policy | Читать перед UI-правками |
+| `docs/archive/2026-06-pre-beta/` | 70 files | Архив старого pre-beta docs-дерева: `CODEX-001..058`, June roadmaps/audits, migration notes, secrets inventory and `MIMO_*`; current roadmap stays in `shared/ROADMAP.md` | Historical reference only; do not use as active task source without Yuri decision |
 | `scripts/platform-adapter.js` | 1188 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` |
 | `scripts/auth-handlers.js` | 696 | Auth and preview-demo handlers: login/register flows, dashboard preview routing, and preview-only state flags for visual QA | Read narrow preview/auth ranges before changing login or preview behavior |
 | `scripts/check-portable-paths.sh` | 24 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
