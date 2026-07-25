@@ -580,6 +580,13 @@
           }
         }
       });
+      calendarScreen.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        const calTaskRow = event.target.closest('[data-cal-task-id]');
+        if (!calTaskRow) return;
+        event.preventDefault();
+        calTaskRow.click();
+      });
     }
 
     const statisticsScreen = document.getElementById('statistics');

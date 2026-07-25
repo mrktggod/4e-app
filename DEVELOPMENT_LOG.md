@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### Calendar task row clickability
+
+**What changed:** Calendar deadline rows now share delegated `data-cal-task-id` routing to existing task detail, including Enter/Space keyboard activation and visible cursor/focus states. The old mixed default/selected-day row behavior was unified without adding a new calendar model.
+
+**Encoding check:** `index.html` markers `Войти|Задачи|Сегодня` stayed `112 / 112`.
+
+**Test:** `npm run build:css`; `npm run smoke:home001` passed and clicked a calendar task row into `task-detail`.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### Statistics active-task empty state
 
 **What changed:** Statistics keeps the existing split between outgoing active tasks and incoming promises, but no longer shows generic `Нет активных задач` when active incoming promises exist. The copy now explains that active tasks without promises are empty and promises are shown above.

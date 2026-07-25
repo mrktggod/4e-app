@@ -7091,7 +7091,7 @@ function renderCalendarDeadlinesList(tasks){
   listEl.innerHTML=hot.map(item=>{
     const t=item.task;
     const deadlineValue=getTaskDeadlineValue(t);
-    return '<div class="cal-event" data-cal-task-id="'+e2(String(t.id||''))+'">'
+    return '<div class="cal-event" data-cal-task-id="'+e2(String(t.id||''))+'" role="button" tabindex="0">'
       +'<div class="cal-event-time">'+e2(deadlineValue||'')+'</div>'
       +'<div class="cal-event-dot"></div>'
       +'<div class="cal-event-name">'+e2(t.person)+' — '+e2(t.text)+'</div>'
@@ -7118,7 +7118,7 @@ function renderCalendar(){
   renderCalendarDeadlinesList(tasks);
   if(hot.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет событий</div>';return;}
   titEl.textContent='Дедлайны';
-  evEl.innerHTML=hot.map(t=>`<div class="cal-event"><div class="cal-event-time">${e2(getTaskDeadlineValue(t)||'')}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
+  evEl.innerHTML=hot.map(t=>`<div class="cal-event" data-cal-task-id="${e2(String(t.id||''))}" role="button" tabindex="0"><div class="cal-event-time">${e2(getTaskDeadlineValue(t)||'')}</div><div class="cal-event-dot"></div><div class="cal-event-name">${e2(t.person)} — ${e2(t.text)}</div></div>`).join('');
 }
 function selectCalDay(d){
   document.querySelectorAll('.cal-day').forEach(el=>el.classList.remove('selected'));
@@ -7137,7 +7137,7 @@ function selectCalDay(d){
   if(dayTasks.length===0){evEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:16px 0">Нет задач на этот день</div>';return;}
   evEl.innerHTML=dayTasks.map(t=>{
     const tid=t.id;
-    return '<div class="cal-event" onclick="openTaskById(\''+tid+'\',0)" style="cursor:pointer">'
+    return '<div class="cal-event" data-cal-task-id="'+e2(String(tid||''))+'" role="button" tabindex="0">'
       +'<div class="cal-event-time">'+e2(getTaskDeadlineValue(t)||'')+'</div>'
       +'<div class="cal-event-dot"></div>'
       +'<div style="flex:1">'

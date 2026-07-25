@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-72-calendar-task-list-clickability
 
@@ -29,4 +29,3 @@ Make calendar task rows/cards clickable and route to the existing task detail vi
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-72-calendar-task-list-clickability.md`.
-

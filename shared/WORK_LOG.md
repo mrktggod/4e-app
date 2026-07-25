@@ -10612,3 +10612,13 @@
 **Next step:** Product can later decide whether promises should also duplicate into the active list.
 
 ---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-72 calendar task list clickability
+**Result:** Calendar deadline rows now open task detail through delegated click/keyboard routing; `smoke:home001` proves the path.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Mobile/staging QA can confirm hit area comfort in the live container.
+
+---

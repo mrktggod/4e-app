@@ -423,6 +423,10 @@ async function runSmoke(ws, appUrl) {
 
     await click('[data-home-nav-action="calendar"]', 'calendar nav action');
     await waitFor(() => activeScreen() === 'calendar', 'calendar nav did not open calendar');
+    metrics.calendarTaskRows = document.querySelectorAll('#calendar [data-cal-task-id]').length;
+    assert(metrics.calendarTaskRows >= 1, 'calendar should render clickable task rows');
+    await click('#calendar [data-cal-task-id]', 'calendar task row');
+    await waitFor(() => activeScreen() === 'task-detail', 'calendar task row did not open task detail');
     await goHomeNow();
 
     const collectTheme = async (theme) => {

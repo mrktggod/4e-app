@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - calendar rows clickable
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-72-calendar-task-list-clickability` moved to `DONE`.
+- Result: calendar deadline rows now route to task detail through delegated `data-cal-task-id` click/keyboard handling with visible focus/cursor affordance.
+- Evidence: `npm run smoke:home001` passed and clicked a calendar task row into `task-detail`.
+- Scope: app/UI only; no CAL expansion, backend, payment, entitlement, price, prod or `main` changes.
+
 ## 2026-07-26 - Codex - statistics empty state done
 
 - Branch: `feat/admin-tariff-api`.
