@@ -10592,3 +10592,13 @@
 **Next step:** Yuri should provide canonical bot worktree or live group evidence without secrets.
 
 ---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-70 focus counters consistency
+**Result:** Home focus card and popup counters now use the same visible focus summary; `smoke:home001` guards card count, popup rows, popup metric and subtitle.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Manual mobile/staging QA can confirm the live Russian copy reads clearly.
+
+---

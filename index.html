@@ -3255,14 +3255,15 @@ async function loadTasks(){
     const focusNounEl = document.getElementById('focus-day-noun');
     const focusEl = document.getElementById('focus-day-text');
     const focusSubEl = document.getElementById('focus-day-sub');
-    const attentionCount = hotCount || outgoing.length || incoming.length;
-    const taskWord = attentionCount % 10 === 1 && attentionCount % 100 !== 11 ? 'задача' : ((attentionCount % 10 >= 2 && attentionCount % 10 <= 4 && (attentionCount % 100 < 10 || attentionCount % 100 >= 20)) ? 'задачи' : 'задач');
+    const focusSummary = getFocusTaskSummary({outgoing,incoming});
+    const attentionCount = focusSummary.count;
+    const taskWord = getFocusTaskWord(attentionCount);
     if(focusCountEl) focusCountEl.textContent = String(attentionCount || 0);
     if(focusNounEl) focusNounEl.textContent = taskWord;
     if(focusEl) focusEl.textContent = attentionCount > 0 ? 'требуют внимания' : 'Сегодня всё спокойно';
     if(focusSubEl){
-      if(hotCount > 0) focusSubEl.textContent = '4 рядом: сначала снимем горячее';
-      else if(outgoing.length > 0 || incoming.length > 0) focusSubEl.textContent = '4 держит штаб: идём по первому приоритету';
+      if(focusSummary.hotCount > 0) focusSubEl.textContent = '4 рядом: сначала снимем горячее';
+      else if(focusSummary.count > 0) focusSubEl.textContent = '4 держит штаб: идём по первому приоритету';
       else focusSubEl.textContent = 'Добавь первую задачу, и я соберу фокус дня';
     }
 
@@ -4019,6 +4020,29 @@ function getFocusPanelTodayStats(tasks){
   return {doneToday,createdToday,dayTaskCount,panelCount,promises:incoming.length,overduePromises,progress,progressTotal};
 }
 
+function getFocusTaskWord(count){
+  count=Math.abs(Number(count)||0);
+  if(count%10===1&&count%100!==11) return 'задача';
+  if(count%10>=2&&count%10<=4&&(count%100<10||count%100>=20)) return 'задачи';
+  return 'задач';
+}
+
+function getFocusTaskSummary({outgoing=[],incoming=[],tasks=null}={}){
+  const visibleTasks=Array.isArray(tasks)?tasks:getHomeDashboardTasks([...(outgoing||[]),...(incoming||[])]);
+  const hotCount=visibleTasks.filter(task=>getTaskDeadlineValue(task)).length;
+  const incomingCount=visibleTasks.filter(task=>task&&task.direction==='incoming').length;
+  return {tasks:visibleTasks,count:visibleTasks.length,hotCount,incomingCount};
+}
+
+function getFocusPanelSubtitle(summary){
+  if(!summary||!summary.count) return 'Сейчас критичных задач не видно';
+  const parts=[];
+  if(summary.hotCount) parts.push(summary.hotCount===1?'1 горит':summary.hotCount+' горят');
+  if(summary.incomingCount) parts.push(summary.incomingCount===1?'1 ждёт ответа':summary.incomingCount+' ждут ответа');
+  parts.push(summary.count+' '+getFocusTaskWord(summary.count)+' в фокусе');
+  return parts.join(', ');
+}
+
 function renderFocusPanelSummary(tasks){
   const stats=getFocusPanelTodayStats(tasks);
   const setText=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
@@ -4028,7 +4052,7 @@ function renderFocusPanelSummary(tasks){
   setText('focus-summary-pulse','Пульс дня: '+stats.progress+'%');
   setText('focus-summary-done',stats.doneToday);
   setText('focus-summary-done-meta',stats.doneToday?'+'+stats.doneToday+' сегодня':(stats.createdToday?stats.createdToday+' новых сегодня':'нет закрытых'));
-  setText('focus-summary-tasks',stats.dayTaskCount);
+  setText('focus-summary-tasks',stats.panelCount);
   setText('focus-summary-tasks-meta',stats.panelCount?stats.panelCount+' в фокусе':'спокойный день');
   setText('focus-summary-promises',stats.promises);
   setText('focus-summary-promises-meta',stats.overduePromises?stats.overduePromises+' просрочено':'без просрочки');
@@ -4043,15 +4067,10 @@ function renderFocusPanel(){
   const list=document.getElementById('focus-panel-list');
   if(!list) return;
   const tasks=getHomeDashboardTasks();
-  const hotCount=(plannerSectionsCache.hot||[]).length;
-  const incomingCount=(plannerSectionsCache.people||[]).length;
+  const focusSummary=getFocusTaskSummary({tasks});
   renderFocusPanelSummary(tasks);
   if(subtitle){
-    if(tasks.length){
-      subtitle.textContent=hotCount+' горят, '+incomingCount+' ждут ответа, 4 выделил главное';
-    }else{
-      subtitle.textContent='Сейчас критичных задач не видно';
-    }
+    subtitle.textContent=getFocusPanelSubtitle(focusSummary);
   }
   if(!tasks.length){
     list.innerHTML='<div class="home-ai-empty">Сейчас в фокусе пусто</div>';

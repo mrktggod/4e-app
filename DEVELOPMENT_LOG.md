@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### Focus counters consistency
+
+**What changed:** Added a shared focus-task summary for the home focus card and focus popup. The focus card count, popup row count, popup task metric and popup subtitle now all use the visible focus list count; the ambiguous `4 выделил главное` copy was removed.
+
+**Encoding check:** `index.html` markers `Войти|Задачи|Сегодня` stayed `112 / 112`.
+
+**Test:** `npm run smoke:home001` passed and now asserts focus counter consistency.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### Telegram group bot capture classification
 
 **What changed:** No runtime code changed. `BRIEF-2026-07-25-69` was classified as `NEED-YURI` because the bot repo is separate/not connected to the app checkout, local bot copies are non-canon, and live Telegram group actions are prohibited for automation.

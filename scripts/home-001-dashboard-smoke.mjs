@@ -374,7 +374,13 @@ async function runSmoke(ws, appUrl) {
     await click('[data-home-action="open-focus-list"]', 'focus action');
     await waitFor(() => getComputedStyle(byId('focus-panel-overlay')).display !== 'none', 'focus action did not open focus overlay');
     metrics.focusPanelRows = document.querySelectorAll('#focus-panel-list .home-ai-row').length;
+    metrics.focusPanelTasksMetric = Number(byId('focus-summary-tasks')?.textContent || '0');
+    metrics.focusPanelSubtitle = byId('focus-panel-subtitle')?.textContent || '';
     assert(metrics.focusPanelRows >= 1, 'focus overlay should list priority rows');
+    assert(Number(metrics.focusCount) === metrics.focusPanelRows, 'focus card count should match focus overlay rows');
+    assert(metrics.focusPanelTasksMetric === metrics.focusPanelRows, 'focus summary tasks metric should match focus overlay rows');
+    assert(metrics.focusPanelSubtitle.includes(metrics.focusPanelRows + ' задачи в фокусе'), 'focus subtitle should use the same visible focus count');
+    assert(!metrics.focusPanelSubtitle.includes('4 выделил главное'), 'focus subtitle should not look like a contradictory count');
     window.closeFocusPanel?.();
     await wait(50);
 

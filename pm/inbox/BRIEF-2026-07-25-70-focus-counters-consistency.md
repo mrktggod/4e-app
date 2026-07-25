@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-70-focus-counters-consistency
 
@@ -28,4 +28,3 @@ Make focus card and focus popup counters derive from one consistent task summary
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-70-focus-counters-consistency.md`.
-

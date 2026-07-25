@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - focus counters done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-70-focus-counters-consistency` moved to `DONE`.
+- Result: focus card and popup now use one visible focus-task summary; popup copy no longer says ambiguous `4 выделил главное`.
+- Evidence: `npm run smoke:home001` passed with focus card count 3, popup rows 3, popup task metric 3, and subtitle `2 горят, 3 задачи в фокусе`.
+- Scope: app/UI only; no backend, payment, entitlement, price, prod or `main` changes.
+
 ## 2026-07-26 - Codex - group bot needs Yuri
 
 - Branch: `feat/admin-tariff-api`.
