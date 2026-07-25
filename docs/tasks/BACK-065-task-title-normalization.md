@@ -4,7 +4,7 @@
 **Владелец:** Codex / Yuri
 **Тип:** Product/AI/UX
 **Приоритет:** P2
-**Статус:** Ready for QA
+**Статус:** Auto evidence green / Ready for live QA
 
 ## Контекст
 

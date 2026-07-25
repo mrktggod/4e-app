@@ -2923,3 +2923,15 @@
 **Тест:** `pm/inbox` scan подтвердил отсутствие `status: NEW`; backlog/roadmap scan подтвердил, что открытые кандидаты сейчас gated. Перед commit запускаются `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `git diff --check`.
 
 **Коммит:** pending
+
+## 2026-07-25
+
+### BACK-065 status sync
+
+**Что сделано:** Код приложения не менялся. `docs/tasks/BACK-065-task-title-normalization.md` синхронизирован с уже записанным статусом backlog: `Auto evidence green / Ready for live QA`. Добавлен отчет `pm/outbox/REPORT-BACK-065-status-sync-2026-07-25.md`.
+
+**Проверка кодировки:** `index.html` не редактировался; Step 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` проходит с `0 suspicious tokens`.
+
+**Тест:** `npm run smoke:back065` -> `BACK-065 task title normalization smoke: PASS`.
+
+**Коммит:** pending

@@ -10377,3 +10377,13 @@
 **Коммит:** pending
 **Статус:** ✅ выполнено
 **Следующий шаг:** Claude/Yuri решить chat-keyboard gate из brief 52, затем перезапустить glass packages 2/3.
+
+---
+
+### 2026-07-25 — Codex
+
+**Задача:** BACK-065 task status sync after safe smoke evidence
+**Результат:** `docs/tasks/BACK-065-task-title-normalization.md` синхронизирован с backlog: `Auto evidence green / Ready for live QA`; повторный `npm run smoke:back065` зелёный.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** Оставшийся хвост BACK-065 — только live voice/AI/quick-add smoke при ручной QA.

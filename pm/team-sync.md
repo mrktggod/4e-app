@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-25 - Codex - BACK-065 status sync
+
+- Branch: `feat/admin-tariff-api`.
+- Result: `docs/tasks/BACK-065-task-title-normalization.md` now matches backlog status `Auto evidence green / Ready for live QA`.
+- Proof: `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens; `npm run smoke:back065` passed.
+- Report: `pm/outbox/REPORT-BACK-065-status-sync-2026-07-25.md`.
+- Note: pre-existing unstaged `index.html`/`scripts/auth.js` auth-adjacent diff was not committed and still needs Claude/Yuri review if intentional.
+
 ## 2026-07-25 - night runner found no executable whitelist work
 
 - Branch: `feat/admin-tariff-api`; `fetch` and `pull --ff-only` were clean.
