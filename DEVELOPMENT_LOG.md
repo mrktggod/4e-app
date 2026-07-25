@@ -3118,3 +3118,14 @@
 **Test:** `node --check scripts/premium-task-action-denial-smoke.mjs`; `npm run smoke:premium-task-denial`; `npm run check:js-syntax`; `node scripts/check-cp1251-mojibake.mjs`; Git Bash `scripts/check-portable-paths.sh`; Git Bash `scripts/check-ui-architecture.sh`; `git diff --check`.
 
 **Commit:** this commit
+## 2026-07-26
+
+### BRIEF-2026-07-25-65 relative time copy
+
+**Что сделано:** `getTaskCreatedTimestamp()` now handles explicit created fields, `ts`, and legacy `date`; `getHomePriorityMeta()` uses `formatTaskCreatedMeta()` so old tasks render exact age and dateless tasks use neutral `поставлена без даты` instead of `поставлена недавно`. Added `scripts/relative-time-copy-smoke.mjs` and npm script `smoke:relative-time-copy`.
+
+**Проверка кодировки:** `index.html` markers before / after = 112 / 112.
+
+**Тест:** `npm run smoke:relative-time-copy`; `node scripts/check-cp1251-mojibake.mjs`; staged JS syntax, portable path equivalent, UI architecture equivalent and `git diff --cached --check` before commit.
+
+**Коммит:** pending

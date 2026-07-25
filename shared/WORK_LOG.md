@@ -10544,3 +10544,12 @@
 **Commit:** this commit
 **Status:** DONE
 **Next step:** Live Telegram WebView tap smoke; continue with BRIEF-2026-07-25-65.
+### 2026-07-26 — Codex
+
+**Задача:** BRIEF-2026-07-25-65 relative time copy
+**Результат:** old legacy tasks now show exact created age (`поставлена 47 дней назад`) instead of ambiguous `поставлена недавно`; added focused smoke.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** staging visual QA on a real old task after deploy.
+
+---

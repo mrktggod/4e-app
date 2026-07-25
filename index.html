@@ -3668,6 +3668,7 @@ function selectMonth(idx, el){
 
 function getStatsTimestampMs(value){
   if(value===null || value===undefined || value==='') return null;
+  if(value instanceof Date) return Number.isNaN(value.getTime()) ? null : value.getTime();
   if(typeof value === 'number' && Number.isFinite(value)){
     return value < 1e11 ? value * 1000 : value;
   }
@@ -3677,7 +3678,27 @@ function getStatsTimestampMs(value){
 
 function getTaskCreatedTimestamp(task){
   if(!task || typeof task !== 'object') return null;
-  return getStatsTimestampMs(task.createdAt) || getStatsTimestampMs(task.ts) || getStatsTimestampMs(task.updatedAt);
+  const explicit = [
+    getStatsTimestampMs(task.createdAt),
+    getStatsTimestampMs(task.created_at),
+    getStatsTimestampMs(task.createdTs),
+    getStatsTimestampMs(task.created_timestamp),
+    getStatsTimestampMs(task.createAt),
+    getStatsTimestampMs(task.create_time),
+    getStatsTimestampMs(task.created),
+    getStatsTimestampMs(task.ts)
+  ].find(ts=>ts!==null);
+  if(explicit!==undefined) return explicit;
+  const legacyDate = parseTaskDate(task.date);
+  if(legacyDate) return legacyDate.getTime();
+  return getStatsTimestampMs(task.updatedAt);
+}
+
+function formatTaskCreatedMeta(task){
+  const createdTs=getTaskCreatedTimestamp(task);
+  return createdTs!==null
+    ? ('поставлена ' + formatRelativeTaskDate(new Date(createdTs),{deadline:false}))
+    : 'поставлена без даты';
 }
 
 function getStatsLast7DayBuckets(tasks){
@@ -3928,13 +3949,10 @@ function getHomeDashboardTasks(fallbackTasks=[]){
 }
 
 function getHomePriorityMeta(task){
-  const createdTs=getTaskCreatedTimestamp(task);
   const deadlineMeta=formatTaskCardDeadline(task);
   const deadlineLabel=deadlineMeta&&deadlineMeta.text?deadlineMeta.text:(task.deadline?String(task.deadline):'без срока');
   const directionLabel=(task.directionLabel||'').trim()||(task.direction==='incoming'?'Личное':'Работа');
-  const createdLabel=createdTs!==null
-    ? ('поставлена ' + formatRelativeTaskDate(new Date(createdTs),{deadline:false}))
-    : 'поставлена недавно';
+  const createdLabel=formatTaskCreatedMeta(task);
   const syncLabel=task?._offlineQueued?'ждёт синхронизации':'';
   return [directionLabel,createdLabel,'дедлайн ' + deadlineLabel,syncLabel].filter(Boolean).join(' · ');
 }

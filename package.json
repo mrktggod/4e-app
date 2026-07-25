@@ -33,6 +33,7 @@
         "smoke:premium-voice-gate": "node scripts/premium-voice-gate-smoke.mjs",
         "smoke:voice-consent-checkbox": "node scripts/voice-consent-checkbox-smoke.mjs",
         "smoke:voice-exit-controls": "node scripts/voice-exit-controls-smoke.mjs",
+        "smoke:relative-time-copy": "node scripts/relative-time-copy-smoke.mjs",
         "test:e2e": "playwright test",
         "test:e2e:web": "playwright test autotests/tests/web",
         "test:e2e:telegram": "playwright test autotests/tests/telegram-app",

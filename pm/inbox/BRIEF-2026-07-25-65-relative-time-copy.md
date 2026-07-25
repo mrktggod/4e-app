@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-65-relative-time-copy
 
@@ -28,4 +28,3 @@ Fix relative-time wording so old tasks are not described as `недавно`. Ke
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-65-relative-time-copy.md`.
-

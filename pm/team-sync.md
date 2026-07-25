@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - relative time copy done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-65-relative-time-copy` moved to `DONE`.
+- Result: home/focus task meta no longer falls back to `поставлена недавно`; old legacy-date tasks now show exact age, and dateless tasks use neutral `поставлена без даты`.
+- Evidence: `npm run smoke:relative-time-copy`, mojibake and diff checks passed.
+- Scope: app-only copy/date helper fix; no backend migration, payment, entitlement, price, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-66`.
+
 ## 2026-07-26 - Codex - voice exit controls done
 
 - Branch: `feat/admin-tariff-api`.

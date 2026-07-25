@@ -20,7 +20,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 8891 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 8909 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 1921 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `privacy.html` | 240 | Политика конфиденциальности | Можно читать целиком при правовых правках |
 | `worker-static.js` | 187 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets и маршрутизирует VK launch на `vk.html` без внешнего редиректа | Можно читать целиком; точка входа инфраструктуры INFRA-001 |
@@ -28,9 +28,9 @@
 | `AGENTS.md` | 312 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 3029 | Канонический технический лог | Обновлять после значимых правок |
+| `DEVELOPMENT_LOG.md` | 3131 | Канонический технический лог | Обновлять после значимых правок |
 | `shared/ROADMAP.md` | 222 | Единственный roadmap продукта: стратегия, горизонты, решения, Now / Next / Later | Читать при планировании |
-| `shared/WORK_LOG.md` | 10479 | Общий журнал задач команды | Обновлять после выполненной задачи |
+| `shared/WORK_LOG.md` | 10555 | Общий журнал задач команды | Обновлять после выполненной задачи |
 | `shared/COMMIT_CONVENTION.md` | 64 | Правила понятных заголовков коммитов | Читать перед коммитом |
 | `docs/git-team-rules.md` | 104 | Git-процесс команды: ветки, commit, push/merge, согласование рисков | Читать при push/merge/ветках |
 | `docs/team-sync-protocol.md` | 169 | Team Sync: ключевые фразы `Что там у Лехи?` / `Что там у Юры?`, commit/push и отчёты | Читать при синхронизации Алексея и Юрия |
@@ -56,6 +56,7 @@
 | `scripts/premium-voice-gate-smoke.mjs` | 81 | Static smoke for expired-Premium voice gate: verifies voice opens subscription before listening and handles premium Worker-style errors | Run with `npm run smoke:premium-voice-gate` before changing voice Premium gate behavior |
 | `scripts/voice-consent-checkbox-smoke.mjs` | 52 | Static smoke for biometric voice-consent checkbox visibility, 44px target, checked/focus state and unchanged legal copy | Run with `npm run smoke:voice-consent-checkbox` before changing voice consent checkbox behavior |
 | `scripts/voice-exit-controls-smoke.mjs` | 77 | Static smoke for voice cancel/back behavior: verifies both controls call `closeVoice`, timers clear, recognition stops, and safe return screen is used | Run with `npm run smoke:voice-exit-controls` before changing voice close/cancel behavior |
+| `scripts/relative-time-copy-smoke.mjs` | 66 | Static smoke for task relative-time copy: verifies a 47-day-old legacy task shows exact age and never `недавно` | Run with `npm run smoke:relative-time-copy` before changing task created/date helpers |
 | `scripts/back-067-task-detail-reminder-smoke.mjs` | 249 | Headless Chrome/CDP smoke for task-detail reminder trigger at 390x844: verifies no `button > select`, 44x44 trigger, popover open, option select, and form value persistence | Run with `npm run smoke:back067-reminder` before changing task-detail reminder picker |
 | `scripts/back-068-task-detail-tag-popup-smoke.mjs` | 236 | Headless Chrome/CDP smoke for task-detail tag editor at 390x844: verifies no native datalist, controlled suggestions, add, cancel, outside and Escape close, and viewport fit | Run with `npm run smoke:back068-tag-popup` before changing task-detail tag editor |
 | `scripts/back-069-task-detail-hero-overflow-smoke.mjs` | 194 | Headless Chrome/CDP smoke for task-detail hero at 390x844: verifies long tag ellipsis, no title/description overlap with meta cards, bounded hero growth, and no horizontal overflow | Run with `npm run smoke:back069-hero` before changing task-detail hero layout |
@@ -67,7 +68,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 54 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 55 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |
