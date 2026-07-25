@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-62-expired-premium-voice-gate
 
@@ -30,4 +30,3 @@ Add clear expired-Premium handling for voice entry/start failures. The user shou
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-62-expired-premium-voice-gate.md`.
-

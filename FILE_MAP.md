@@ -20,7 +20,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 8661 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 8846 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 1921 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `privacy.html` | 240 | Политика конфиденциальности | Можно читать целиком при правовых правках |
 | `worker-static.js` | 187 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets и маршрутизирует VK launch на `vk.html` без внешнего редиректа | Можно читать целиком; точка входа инфраструктуры INFRA-001 |
@@ -53,6 +53,7 @@
 | `scripts/vk-profile-parity-smoke.mjs` | 68 | Static smoke for VK profile parity: verifies account summary, identity summary, privacy link and local-only notification entry without touching payment/subscription | Run with `npm run smoke:vk-profile-parity` before changing VK profile structure |
 | `scripts/vk-calendar-date-key-smoke.mjs` | 55 | Static smoke for VK calendar date keys: verifies ISO datetime deadlines stay on intended local days, calendar task dots render, and selected-day task lists match normalized keys | Run with `npm run smoke:vk-calendar-date-key` before changing VK calendar date grouping |
 | `scripts/premium-task-action-denial-smoke.mjs` | 70 | Static smoke for Premium-required task action denials: verifies backend 402/403 task failures show explicit subscription UI before generic task error toasts | Run with `npm run smoke:premium-task-denial` before changing task action failure handling |
+| `scripts/premium-voice-gate-smoke.mjs` | 81 | Static smoke for expired-Premium voice gate: verifies voice opens subscription before listening and handles premium Worker-style errors | Run with `npm run smoke:premium-voice-gate` before changing voice Premium gate behavior |
 | `scripts/back-067-task-detail-reminder-smoke.mjs` | 249 | Headless Chrome/CDP smoke for task-detail reminder trigger at 390x844: verifies no `button > select`, 44x44 trigger, popover open, option select, and form value persistence | Run with `npm run smoke:back067-reminder` before changing task-detail reminder picker |
 | `scripts/back-068-task-detail-tag-popup-smoke.mjs` | 236 | Headless Chrome/CDP smoke for task-detail tag editor at 390x844: verifies no native datalist, controlled suggestions, add, cancel, outside and Escape close, and viewport fit | Run with `npm run smoke:back068-tag-popup` before changing task-detail tag editor |
 | `scripts/back-069-task-detail-hero-overflow-smoke.mjs` | 194 | Headless Chrome/CDP smoke for task-detail hero at 390x844: verifies long tag ellipsis, no title/description overlap with meta cards, bounded hero growth, and no horizontal overflow | Run with `npm run smoke:back069-hero` before changing task-detail hero layout |
@@ -64,7 +65,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 50 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 52 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |

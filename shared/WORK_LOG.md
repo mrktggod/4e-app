@@ -10516,3 +10516,11 @@
 **Next step:** Continue with BRIEF-2026-07-25-62 expired Premium voice gate.
 
 ---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-62 expired Premium voice gate.
+**Result:** Voice entry now checks existing Premium access before listening, shows clear Premium-required copy, routes to subscription, and has a focused static smoke.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Live expired-Premium TMA smoke; continue with BRIEF-2026-07-25-63.

@@ -1,12 +1,20 @@
 # Team Sync
 
+## 2026-07-26 - Codex - premium voice gate done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-62-expired-premium-voice-gate` moved to `DONE`.
+- Result: expired Premium users are routed to subscription before voice listening starts; premium-style voice task errors also use the same explicit Premium gate.
+- Evidence: `npm run smoke:premium-voice-gate`, `npm run smoke:premium-task-denial`, mojibake, JS syntax, portable path equivalent, UI architecture equivalent and diff checks passed.
+- Scope: no payment, entitlement, price, backend, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-63`.
+
 ## 2026-07-25 - Codex - premium task denial UX done
 
 - Branch: `feat/admin-tariff-api`.
 - Inbox: `BRIEF-2026-07-25-61-expired-premium-task-actions` moved to `DONE`.
 - Result: expired/missing Premium denials on task actions now show explicit Premium-required copy and route to subscription instead of generic save/action errors.
 - Evidence: `npm run smoke:premium-task-denial`, mojibake guard, JS syntax, portable path, UI architecture and diff checks passed.
-- Scope: no entitlement/payment/price/backend policy changes; `BRIEF-2026-07-25-62` remains the next Premium voice-gate slice.
+- Scope: no entitlement/payment/price/backend policy changes; `BRIEF-2026-07-25-62` is now done in the next commit.
 
 ## 2026-07-25 - Codex - glass home package 2 done
 

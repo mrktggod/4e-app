@@ -1995,6 +1995,22 @@ function handlePremiumRequiredTaskActionError(error){
   return true;
 }
 
+function showPremiumRequiredVoiceGate(){
+  showToast('Голосовой режим доступен с Premium. Открой подписку, чтобы продолжить');
+  setTimeout(()=>showSubScreen('subscription'),650);
+  return true;
+}
+
+function handlePremiumRequiredVoiceAccess(){
+  if(!currentUser||hasCurrentPremiumAccess(currentUser)) return false;
+  return showPremiumRequiredVoiceGate();
+}
+
+function handlePremiumRequiredVoiceError(error){
+  if(!isPremiumRequiredError(error)) return false;
+  return showPremiumRequiredVoiceGate();
+}
+
 function saveTelegramPendingStart(startToken){
   if(PLATFORM.saveTelegramPendingStart) PLATFORM.saveTelegramPendingStart(TG_PENDING_START_K,startToken);
 }
@@ -7132,6 +7148,7 @@ function finishVoicePerf(status,meta){
 }
 function toggleVoice(){if(recognition){finishVoicePerf('cancelled');closeVoice();}else openVoice();}
 async function openVoice(){
+  if(handlePremiumRequiredVoiceAccess()) return;
   if (!window.biometricConsentRequired()) return;
   beginVoicePerf();
   showScreen('voice');
@@ -7190,6 +7207,10 @@ async function sendVoiceMessage(text){
       }
       finishVoicePerf('task_failed',{error:'task_create_not_ok'});
     } catch (e) {
+      if(handlePremiumRequiredVoiceError(e)){
+        finishVoicePerf('premium_required',{error:e?.message||'premium_required'});
+        return;
+      }
       finishVoicePerf('task_failed',{error:e?.message||'task_create_failed'});
       console.error('sendVoiceMessage createTaskFromChat:', e);
       showToast('Task save failed, fallback to chat.');

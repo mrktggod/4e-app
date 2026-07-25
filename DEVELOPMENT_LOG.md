@@ -103,6 +103,18 @@
 
 **Commit:** this commit
 
+## 2026-07-26
+
+### Expired Premium voice gate
+
+**What changed:** `openVoice()` now checks current Premium access before entering biometric/listening state. Expired Premium users see explicit voice Premium-required copy and route to `subscription`; voice task dispatch also handles Worker-style premium denial through the same gate.
+
+**Encoding check:** `index.html` markers stayed 112 before / 112 after; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:premium-voice-gate`; `npm run smoke:premium-task-denial`; `npm run check:js-syntax`; `node scripts/check-cp1251-mojibake.mjs`; direct portable path equivalent; direct UI architecture equivalent; `git diff --check`.
+
+**Commit:** this commit
+
 ### Night runner no executable whitelist work
 
 **What changed:** Created final report `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-25.md` after scanning `pm/inbox`, `pm/backlog.md`, and `shared/ROADMAP.md`. The run found 0 executable `status: NEW` briefs and 0 safe autonomous whitelist backlog tasks.
