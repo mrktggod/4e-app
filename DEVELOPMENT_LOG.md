@@ -2663,7 +2663,7 @@
 
 **Тест:** `npm run build:css`; `npm run smoke:home001` → ok=true, homeRows=3, metricCards=4, bottomNavButtons=3, documentScrollWidth=390; визуально проверены light/dark smoke screenshots.
 
-**Коммит:** pending
+**Коммит:** `docs(qa): add light chat evidence`
 
 ## 2026-07-21
 
@@ -3024,5 +3024,16 @@
 **Проверка кодировки:** `index.html` не редактировался; Step 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` проходит с `0 suspicious tokens`.
 
 **Тест:** `npm run smoke:back065` -> `BACK-065 task title normalization smoke: PASS`.
+
+**Коммит:** pending
+## 2026-07-25
+
+### DESIGN-LIGHT-CHAT evidence
+
+**Что сделано:** собраны DOM-метрики и 48 скриншотов для `#ask`, `#chats`, `#chat-conv` на viewport 360x800, 390x844, 430x932 в dark/light.
+
+**Проверка кодировки:** `index.html` не менялся; обязательный mojibake-check выполнен перед коммитом.
+
+**Тест:** Playwright Chromium, локальная раздача `index.html`, проверка active screen, horizontal overflow и элементов ниже viewport. Дополнительно выполнены `node scripts/check-cp1251-mojibake.mjs` и `git diff --check`.
 
 **Коммит:** pending

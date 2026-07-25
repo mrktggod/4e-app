@@ -10135,7 +10135,7 @@
 
 **Задача:** Add liquid-glass design brief for night session
 **Результат:** Copied Alexey's liquid-glass HTML component into task assets and added a NEW inbox brief for safe LESS/BEM integration with click glow preserved.
-**Коммит:** pending
+**Коммит:** `docs(qa): add light chat evidence`
 **Статус:** ✅ выполнено
 **Следующий шаг:** Night runner implements or reports NEED-CLAUDE if scope becomes broad redesign architecture.
 
@@ -10476,3 +10476,10 @@
 **Коммит:** pending
 **Статус:** ✅ выполнено
 **Следующий шаг:** Оставшийся хвост BACK-065 — только live voice/AI/quick-add smoke при ручной QA.
+### 2026-07-25 — Codex
+
+**Задача:** DESIGN-LIGHT-CHAT evidence по `#ask`, `#chats`, `#chat-conv`.
+**Результат:** сняты 48 скриншотов и DOM-метрики на 360x800/390x844/430x932 в dark/light; явного CSS-бага раскладки не найдено.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** отдельный кандидат на контраст secondary text в light-теме.
