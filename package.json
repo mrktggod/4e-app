@@ -31,6 +31,7 @@
         "smoke:vk-calendar-date-key": "node scripts/vk-calendar-date-key-smoke.mjs",
         "smoke:premium-task-denial": "node scripts/premium-task-action-denial-smoke.mjs",
         "smoke:premium-voice-gate": "node scripts/premium-voice-gate-smoke.mjs",
+        "smoke:voice-consent-checkbox": "node scripts/voice-consent-checkbox-smoke.mjs",
         "test:e2e": "playwright test",
         "test:e2e:web": "playwright test autotests/tests/web",
         "test:e2e:telegram": "playwright test autotests/tests/telegram-app",

@@ -1,12 +1,20 @@
 # Team Sync
 
+## 2026-07-26 - Codex - voice consent checkbox done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-63-voice-consent-checkbox-accessibility` moved to `DONE`.
+- Result: biometric voice-consent checkbox now has a 56px label target, larger visible 32px box, clear checked/focus states, and unchanged legal copy.
+- Evidence: `npm run build:css`, `npm run smoke:voice-consent-checkbox`, mojibake and diff checks passed; `smoke:back050` timed out in this environment, so focused smoke is the acceptance gate.
+- Scope: no legal text, payment, entitlement, price, backend, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-64`.
+
 ## 2026-07-26 - Codex - premium voice gate done
 
 - Branch: `feat/admin-tariff-api`.
 - Inbox: `BRIEF-2026-07-25-62-expired-premium-voice-gate` moved to `DONE`.
 - Result: expired Premium users are routed to subscription before voice listening starts; premium-style voice task errors also use the same explicit Premium gate.
 - Evidence: `npm run smoke:premium-voice-gate`, `npm run smoke:premium-task-denial`, mojibake, JS syntax, portable path equivalent, UI architecture equivalent and diff checks passed.
-- Scope: no payment, entitlement, price, backend, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-63`.
+- Scope: no payment, entitlement, price, backend, prod or `main` changes; `BRIEF-2026-07-25-63` is now done in the next commit.
 
 ## 2026-07-25 - Codex - premium task denial UX done
 

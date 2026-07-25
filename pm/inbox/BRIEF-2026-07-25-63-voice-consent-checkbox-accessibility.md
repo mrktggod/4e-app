@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-63-voice-consent-checkbox-accessibility
 
@@ -28,4 +28,3 @@ Improve checkbox visibility and touch target on the voice consent screen without
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-63-voice-consent-checkbox-accessibility.md`.
-

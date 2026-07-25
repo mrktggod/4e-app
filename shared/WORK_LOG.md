@@ -10524,3 +10524,13 @@
 **Commit:** this commit
 **Status:** DONE
 **Next step:** Live expired-Premium TMA smoke; continue with BRIEF-2026-07-25-63.
+
+---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-63 voice consent checkbox accessibility.
+**Result:** Voice biometric-consent checkbox now has a 56px label target, 32px visible box, clearer checked/focus states, and unchanged legal copy.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Mobile visual check; continue with BRIEF-2026-07-25-64.

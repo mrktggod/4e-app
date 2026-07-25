@@ -54,6 +54,7 @@
 | `scripts/vk-calendar-date-key-smoke.mjs` | 55 | Static smoke for VK calendar date keys: verifies ISO datetime deadlines stay on intended local days, calendar task dots render, and selected-day task lists match normalized keys | Run with `npm run smoke:vk-calendar-date-key` before changing VK calendar date grouping |
 | `scripts/premium-task-action-denial-smoke.mjs` | 70 | Static smoke for Premium-required task action denials: verifies backend 402/403 task failures show explicit subscription UI before generic task error toasts | Run with `npm run smoke:premium-task-denial` before changing task action failure handling |
 | `scripts/premium-voice-gate-smoke.mjs` | 81 | Static smoke for expired-Premium voice gate: verifies voice opens subscription before listening and handles premium Worker-style errors | Run with `npm run smoke:premium-voice-gate` before changing voice Premium gate behavior |
+| `scripts/voice-consent-checkbox-smoke.mjs` | 52 | Static smoke for biometric voice-consent checkbox visibility, 44px target, checked/focus state and unchanged legal copy | Run with `npm run smoke:voice-consent-checkbox` before changing voice consent checkbox behavior |
 | `scripts/back-067-task-detail-reminder-smoke.mjs` | 249 | Headless Chrome/CDP smoke for task-detail reminder trigger at 390x844: verifies no `button > select`, 44x44 trigger, popover open, option select, and form value persistence | Run with `npm run smoke:back067-reminder` before changing task-detail reminder picker |
 | `scripts/back-068-task-detail-tag-popup-smoke.mjs` | 236 | Headless Chrome/CDP smoke for task-detail tag editor at 390x844: verifies no native datalist, controlled suggestions, add, cancel, outside and Escape close, and viewport fit | Run with `npm run smoke:back068-tag-popup` before changing task-detail tag editor |
 | `scripts/back-069-task-detail-hero-overflow-smoke.mjs` | 194 | Headless Chrome/CDP smoke for task-detail hero at 390x844: verifies long tag ellipsis, no title/description overlap with meta cards, bounded hero growth, and no horizontal overflow | Run with `npm run smoke:back069-hero` before changing task-detail hero layout |
@@ -65,7 +66,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 52 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 53 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |

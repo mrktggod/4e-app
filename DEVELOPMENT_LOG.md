@@ -115,6 +115,18 @@
 
 **Commit:** this commit
 
+## 2026-07-26
+
+### Voice consent checkbox accessibility
+
+**What changed:** `.bio-consent-check` now provides a 56px tap target with a stronger panel treatment. `.bio-check-box` is 32px, has a clearer unchecked border/background, and keeps green checked/focus states. The legal consent text was not changed.
+
+**Encoding check:** `index.html` was not edited for this task; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run build:css`; `npm run smoke:voice-consent-checkbox`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`. `npm run smoke:back050` timed out in this environment, so the focused checkbox smoke is the task gate.
+
+**Commit:** this commit
+
 ### Night runner no executable whitelist work
 
 **What changed:** Created final report `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-25.md` after scanning `pm/inbox`, `pm/backlog.md`, and `shared/ROADMAP.md`. The run found 0 executable `status: NEW` briefs and 0 safe autonomous whitelist backlog tasks.
