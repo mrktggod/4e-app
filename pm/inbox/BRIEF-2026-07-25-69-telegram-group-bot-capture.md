@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-YURI
 
 # BRIEF-2026-07-25-69-telegram-group-bot-capture
 
@@ -30,4 +30,3 @@ Audit the Telegram group capture/respond path and either fix a narrow source iss
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-69-telegram-group-bot-capture.md`.
-

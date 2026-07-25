@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### Telegram group bot capture classification
+
+**What changed:** No runtime code changed. `BRIEF-2026-07-25-69` was classified as `NEED-YURI` because the bot repo is separate/not connected to the app checkout, local bot copies are non-canon, and live Telegram group actions are prohibited for automation.
+
+**Encoding check:** `index.html` was not edited for this brief.
+
+**Test:** source/canon audit using `FILE_MAP.md`, `FILE_MAP_BOT.md`, and brief stop points; `node scripts/check-cp1251-mojibake.mjs` and shared diff/portable guards run before commit.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### AI delete intent safety classification
 
 **What changed:** No runtime code changed. `BRIEF-2026-07-25-68` was classified as `NEED-CLAUDE` because it is P0 destructive/bulk task behavior and source evidence points to the AI chat prompt/action contract rather than a narrow autonomous UI bug.

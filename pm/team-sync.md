@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - group bot needs Yuri
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-69-telegram-group-bot-capture` moved to `NEED-YURI`.
+- Reason: canonical bot repo is not available in the app checkout, local bot copies are non-canon, and live Telegram group actions are prohibited for automation.
+- Evidence: `FILE_MAP_BOT.md` says not to change bot logic from `4e-app` without bot repo access.
+- Next step: Yuri provides canonical bot worktree or live group evidence; no runtime files changed.
+
 ## 2026-07-26 - Codex - delete intent needs Claude
 
 - Branch: `feat/admin-tariff-api`.

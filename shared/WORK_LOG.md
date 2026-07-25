@@ -10582,3 +10582,13 @@
 **Next step:** Claude should choose refusal vs explicit confirmation contract before code.
 
 ---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-69 Telegram group bot capture
+**Result:** Classified as NEED-YURI: canonical bot repo is unavailable in app checkout, local bot copies are non-canon, and live Telegram group actions are prohibited for automation.
+**Commit:** this commit
+**Status:** NEED-YURI
+**Next step:** Yuri should provide canonical bot worktree or live group evidence without secrets.
+
+---
