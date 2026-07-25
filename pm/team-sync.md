@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - dashboard edge guard done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-66-dashboard-right-edge-overflow` moved to `DONE`.
+- Result: current home runtime is inside viewport at 390/360/320px; `smoke:home001` now fails on clipped right/left edges instead of checking only document scroll width.
+- Evidence: `npm run smoke:home001` passed with narrow viewport geometry and refreshed dark/light screenshots.
+- Scope: test/evidence hardening only; no runtime CSS, backend, payment, entitlement, price, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-67`.
+
 ## 2026-07-26 - Codex - relative time copy done
 
 - Branch: `feat/admin-tariff-api`.

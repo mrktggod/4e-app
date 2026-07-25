@@ -291,6 +291,19 @@ async function runSmoke(ws, appUrl) {
         height: Math.round(rect.height * 100) / 100
       } : null;
     };
+    const assertRectInsideViewport = (selector) => {
+      const el = document.querySelector(selector);
+      const info = rectInfo(el);
+      const ok = Boolean(
+        info
+        && info.width > 0
+        && info.height > 0
+        && info.left >= -1
+        && info.right <= window.innerWidth + 1
+      );
+      if (!ok) failures.push(`${selector} overflows the mobile viewport`);
+      return { selector, ok, info };
+    };
     const assert = (condition, message) => {
       if (!condition) failures.push(message);
     };
@@ -347,11 +360,7 @@ async function runSmoke(ws, appUrl) {
       '#home-task-list'
     ];
     metrics.overflowChecks = overflowSelectors.map(selector => {
-      const el = document.querySelector(selector);
-      const info = rectInfo(el);
-      const ok = Boolean(info && info.width > 0 && info.height > 0);
-      if (!ok) failures.push(`${selector} is outside the mobile viewport`);
-      return { selector, ok, info };
+      return assertRectInsideViewport(selector);
     });
 
     await click('[data-home-action="open-profile"]', 'profile action');
@@ -450,11 +459,69 @@ async function runSmoke(ws, appUrl) {
   });
   const lightSmoke = lightResult.result.value;
   const lightShot = await screenshot(ws, 'HOME-001-dashboard-smoke-2026-07-20-light.png');
+  const narrowViewports = [];
+  for (const width of [360, 320]) {
+    await send(ws, 'Emulation.setDeviceMetricsOverride', {
+      width,
+      height: 844,
+      deviceScaleFactor: 1,
+      mobile: true
+    });
+    const narrowResult = await send(ws, 'Runtime.evaluate', {
+      expression: `(${async function collectNarrowGeometry() {
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        window.showScreen?.('home');
+        window.setNavActive?.('tasks');
+        await wait(120);
+        const failures = [];
+        const rectInfo = (el) => {
+          const rect = el?.getBoundingClientRect();
+          return rect ? {
+            left: Math.round(rect.left * 100) / 100,
+            right: Math.round(rect.right * 100) / 100,
+            width: Math.round(rect.width * 100) / 100,
+            height: Math.round(rect.height * 100) / 100
+          } : null;
+        };
+        const selectors = [
+          '#home .dash-artboard',
+          '#home .dash-header',
+          '#home .dash-hero',
+          '#home .dash-metrics',
+          '#home-task-list',
+          '#home-show-all-btn',
+          '#home .dash-bottom-nav',
+          '#home-task-list > *:first-child'
+        ];
+        const viewportWidth = window.innerWidth;
+        const scrollWidth = document.documentElement.scrollWidth;
+        if (scrollWidth > viewportWidth + 1) failures.push(`document scrollWidth ${scrollWidth} exceeds viewport ${viewportWidth}`);
+        const checks = selectors.map(selector => {
+          const el = document.querySelector(selector);
+          const style = el ? getComputedStyle(el) : null;
+          if (style?.display === 'none') return { selector, skipped: true };
+          const info = rectInfo(el);
+          const ok = Boolean(info && info.width > 0 && info.height > 0 && info.left >= -1 && info.right <= viewportWidth + 1);
+          if (!ok) failures.push(`${selector} overflows ${viewportWidth}px viewport`);
+          return { selector, ok, info };
+        });
+        return { ok: failures.length === 0, failures, metrics: { viewportWidth, scrollWidth, checks } };
+      }})()`,
+      awaitPromise: true,
+      returnByValue: true
+    });
+    narrowViewports.push(narrowResult.result.value);
+  }
 
   smokeResult.screenshots = { dark: darkShot, light: lightShot };
   smokeResult.light = lightSmoke;
-  smokeResult.ok = Boolean(smokeResult.ok && lightSmoke.ok);
-  smokeResult.failures = [...(smokeResult.failures || []), ...(lightSmoke.failures || [])];
+  smokeResult.narrowViewports = narrowViewports;
+  smokeResult.ok = Boolean(smokeResult.ok && lightSmoke.ok && narrowViewports.every(result => result.ok));
+  smokeResult.failures = [
+    ...(smokeResult.failures || []),
+    ...(lightSmoke.failures || []),
+    ...narrowViewports.flatMap(result => result.failures || [])
+  ];
   return smokeResult;
 }
 

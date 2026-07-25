@@ -10546,6 +10546,16 @@
 **Next step:** Live Telegram WebView tap smoke; continue with BRIEF-2026-07-25-65.
 ### 2026-07-26 — Codex
 
+**Задача:** BRIEF-2026-07-25-66 dashboard right-edge overflow
+**Результат:** current home dashboard geometry is inside viewport at 390/360/320px; `smoke:home001` now guards actual right/left edges and refreshed screenshots.
+**Коммит:** pending
+**Статус:** ✅ выполнено
+**Следующий шаг:** staging/mobile visual QA if the original phone viewport still clips.
+
+---
+
+### 2026-07-26 — Codex
+
 **Задача:** BRIEF-2026-07-25-65 relative time copy
 **Результат:** old legacy tasks now show exact created age (`поставлена 47 дней назад`) instead of ambiguous `поставлена недавно`; added focused smoke.
 **Коммит:** pending

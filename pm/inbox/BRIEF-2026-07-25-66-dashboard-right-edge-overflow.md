@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-66-dashboard-right-edge-overflow
 
@@ -29,4 +29,3 @@ Find and fix the home/dashboard horizontal overflow or app-shell width issue cau
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-66-dashboard-right-edge-overflow.md`.
-

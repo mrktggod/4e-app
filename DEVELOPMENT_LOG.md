@@ -105,6 +105,18 @@
 
 ## 2026-07-26
 
+### BRIEF-2026-07-25-66 dashboard right-edge overflow
+
+**Что сделано:** `scripts/home-001-dashboard-smoke.mjs` now validates actual `left/right` bounds for home dashboard surfaces and reruns geometry at 390px, 360px and 320px. Current runtime CSS passed all edge checks; refreshed dark/light smoke screenshots.
+
+**Проверка кодировки:** `index.html` не редактировался; `node scripts/check-cp1251-mojibake.mjs` = 0 suspicious tokens.
+
+**Тест:** `npm run smoke:home001`; `node scripts/check-cp1251-mojibake.mjs`; staged JS syntax, portable path equivalent, UI architecture equivalent and `git diff --cached --check` before commit.
+
+**Коммит:** pending
+
+## 2026-07-26
+
 ### Expired Premium voice gate
 
 **What changed:** `openVoice()` now checks current Premium access before entering biometric/listening state. Expired Premium users see explicit voice Premium-required copy and route to `subscription`; voice task dispatch also handles Worker-style premium denial through the same gate.
