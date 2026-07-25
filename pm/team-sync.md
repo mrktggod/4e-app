@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-25 - Codex - night runner Cowork inbox intake step
+
+- Updated only `4e-night-inbox-and-whitelist-backlog-runner`.
+- Added `ШАГ 0` at the very start of the prompt: before normal work, commit and push accumulated Cowork `pm/` briefs from the X-drive app publish workspace.
+- If `pm/` has no changes, the runner continues normally; this is not an error.
+- Reason: MAN-002 delivery split decided; Cowork has no git rights, so file-written briefs must be brought into git before cloud/night runners read `pm/inbox`.
+- Verification: read back local automation config; prompt starts with Unicode codepoints `1064,1040,1043,32,48,32` (`ШАГ 0 `), and the disk guard remains after it.
+
 ## 2026-07-25 - Codex - automation disk guard added
 
 - Updated active Codex cron automation prompts for `4e-night-inbox-and-whitelist-backlog-runner`, `4e-pre-dawn-inbox-and-whitelist-backlog-runner`, and `4e-morning-inbox-and-safe-backlog-runner`.

@@ -1,5 +1,15 @@
 ## 2026-07-25
 
+### Night runner Cowork inbox intake Step 0
+
+**Что сделано:** через Codex `automation_update` обновлён prompt только `4e-night-inbox-and-whitelist-backlog-runner`. В самое начало добавлен `ШАГ 0`: до обычного inbox/backlog прохода раннер должен принять накопленные Cowork briefs в git из X-drive app publish workspace, закоммитить `pm/`, запушить ветку `feat/admin-tariff-api`, а если изменений в `pm/` нет — продолжить без ошибки. Причина MAN-002 записана в prompt: Cowork пишет briefs файлами и не имеет git-прав, поэтому без этого шага cloud runners не видят новые briefs.
+
+**Проверка кодировки:** runtime-файлы не редактировались; `index.html` не трогался.
+
+**Тест:** read-back локального automation config: первые Unicode codepoints prompt = `1064,1040,1043,32,48,32`, то есть `ШАГ 0 `; блок `ДИСК:` сохранён ниже. `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `git diff --check` запускаются перед commit.
+
+**Коммит:** this commit
+
 ### Automation disk guard
 
 **Что сделано:** через Codex `automation_update` обновлены prompts трёх активных cron-runners: `4e-night-inbox-and-whitelist-backlog-runner`, `4e-pre-dawn-inbox-and-whitelist-backlog-runner`, `4e-morning-inbox-and-safe-backlog-runner`. В начало каждого добавлено правило диска: работать только в `X:\4`; если рабочая папка не `X:\4`, остановиться, написать REPORT и не продолжать; абсолютные C-drive project paths в коде/конфигах запрещены, инструменты вызывать через PATH.
