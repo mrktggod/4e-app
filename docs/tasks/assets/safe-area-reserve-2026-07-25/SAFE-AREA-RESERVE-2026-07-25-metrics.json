@@ -1,0 +1,253 @@
+{
+  "capturedAt": "2026-07-25T19:35:25.070Z",
+  "records": [
+    {
+      "label": "home-last-card-390x844",
+      "activeId": "home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "token": "calc(96px + 0px)",
+      "legacyToken": "calc(96px + 0px)",
+      "scroll": {
+        "selector": "#home-task-list",
+        "scrollHeight": 362,
+        "clientHeight": 300,
+        "scrollTop": 62,
+        "paddingBottom": "8px"
+      },
+      "rects": {
+        "homeLast": {
+          "y": 630,
+          "bottom": 708,
+          "height": 78
+        },
+        "nav": {
+          "y": 724,
+          "bottom": 836,
+          "height": 112
+        },
+        "artboard": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 844,
+          "bottom": 844,
+          "right": 390,
+          "display": "block",
+          "paddingBottom": "0px",
+          "marginBottom": "0px",
+          "overflow": "hidden",
+          "overflowY": "hidden"
+        },
+        "homeTaskList": {
+          "x": 18,
+          "y": 416,
+          "width": 354,
+          "height": 300,
+          "bottom": 716,
+          "right": 372,
+          "display": "flex",
+          "paddingBottom": "8px",
+          "marginBottom": "0px",
+          "overflow": "hidden auto",
+          "overflowY": "auto"
+        },
+        "profileScroll": null,
+        "askComposer": null,
+        "profileFooter": null
+      },
+      "widths": {
+        "document": 390,
+        "body": 390,
+        "activeScrollWidth": 585,
+        "activeClientWidth": 390
+      },
+      "visibleOverflow": false,
+      "visibleWide": [],
+      "bottomOverflow": [],
+      "lastCardCoveredByNav": false
+    },
+    {
+      "label": "profile-footer-390x844",
+      "activeId": "profile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "token": "calc(96px + 0px)",
+      "legacyToken": "calc(96px + 0px)",
+      "scroll": {
+        "selector": ".profile-scroll profile-soft-shell profile-handoff-scroll",
+        "scrollHeight": 1412,
+        "clientHeight": 772,
+        "scrollTop": 640,
+        "paddingBottom": "132px"
+      },
+      "rects": {
+        "homeLast": null,
+        "nav": {
+          "y": 764,
+          "bottom": 828,
+          "height": 64
+        },
+        "artboard": null,
+        "homeTaskList": null,
+        "profileScroll": {
+          "x": 0,
+          "y": 62,
+          "width": 390,
+          "height": 772,
+          "bottom": 834,
+          "right": 390,
+          "display": "flex",
+          "paddingBottom": "132px",
+          "marginBottom": "0px",
+          "overflow": "auto",
+          "overflowY": "auto"
+        },
+        "askComposer": null,
+        "profileFooter": {
+          "x": 8,
+          "y": -441,
+          "width": 374,
+          "height": 88,
+          "bottom": -353,
+          "right": 382,
+          "display": "grid",
+          "paddingBottom": "18px",
+          "marginBottom": "0px",
+          "overflow": "visible",
+          "overflowY": "visible"
+        }
+      },
+      "widths": {
+        "document": 390,
+        "body": 390,
+        "activeScrollWidth": 390,
+        "activeClientWidth": 390
+      },
+      "visibleOverflow": false,
+      "visibleWide": [],
+      "bottomOverflow": [],
+      "lastCardCoveredByNav": false
+    },
+    {
+      "label": "ask-keyboard-390x844",
+      "activeId": "ask",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "token": "calc(96px + 0px)",
+      "legacyToken": "calc(96px + 0px)",
+      "scroll": {
+        "selector": null,
+        "scrollHeight": 0,
+        "clientHeight": 0,
+        "scrollTop": 0,
+        "paddingBottom": null
+      },
+      "rects": {
+        "homeLast": null,
+        "nav": null,
+        "artboard": null,
+        "homeTaskList": null,
+        "profileScroll": null,
+        "askComposer": {
+          "x": 14,
+          "y": 735,
+          "width": 362,
+          "height": 96,
+          "bottom": 831,
+          "right": 376,
+          "display": "grid",
+          "paddingBottom": "96px",
+          "marginBottom": "0px",
+          "overflow": "visible",
+          "overflowY": "visible"
+        },
+        "profileFooter": null
+      },
+      "widths": {
+        "document": 390,
+        "body": 390,
+        "activeScrollWidth": 390,
+        "activeClientWidth": 390
+      },
+      "visibleOverflow": false,
+      "visibleWide": [],
+      "bottomOverflow": [],
+      "lastCardCoveredByNav": false
+    },
+    {
+      "label": "home-landscape-844x390",
+      "activeId": "home",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "token": "calc(96px + 0px)",
+      "legacyToken": "calc(96px + 0px)",
+      "scroll": {
+        "selector": "#home-task-list",
+        "scrollHeight": 362,
+        "clientHeight": 8,
+        "scrollTop": 354,
+        "paddingBottom": "8px"
+      },
+      "rects": {
+        "homeLast": {
+          "y": 338,
+          "bottom": 416,
+          "height": 78
+        },
+        "nav": {
+          "y": 270,
+          "bottom": 382,
+          "height": 112
+        },
+        "artboard": {
+          "x": 207,
+          "y": 0,
+          "width": 430,
+          "height": 390,
+          "bottom": 390,
+          "right": 637,
+          "display": "block",
+          "paddingBottom": "0px",
+          "marginBottom": "0px",
+          "overflow": "hidden",
+          "overflowY": "hidden"
+        },
+        "homeTaskList": {
+          "x": 225,
+          "y": 416,
+          "width": 394,
+          "height": 8,
+          "bottom": 424,
+          "right": 619,
+          "display": "flex",
+          "paddingBottom": "8px",
+          "marginBottom": "0px",
+          "overflow": "hidden auto",
+          "overflowY": "auto"
+        },
+        "profileScroll": null,
+        "askComposer": null,
+        "profileFooter": null
+      },
+      "widths": {
+        "document": 844,
+        "body": 844,
+        "activeScrollWidth": 430,
+        "activeClientWidth": 430
+      },
+      "visibleOverflow": false,
+      "visibleWide": [],
+      "bottomOverflow": [],
+      "lastCardCoveredByNav": true
+    }
+  ]
+}

@@ -210,8 +210,8 @@
 .ask-msgs::-webkit-scrollbar{width:0}
 .bubble-user{align-self:flex-end;background:var(--green);color:var(--bg);padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:13px;line-height:1.5;max-width:85%;font-weight:500}
 .bubble-ai{align-self:flex-start;background:var(--card2);border:1px solid var(--border);padding:10px 14px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.5;max-width:85%;color:var(--text)}
-.ask-bar{display:flex;gap:8px;align-items:flex-end;padding:10px 0 var(--app-bottom-nav-reserve);transition:padding-bottom .18s ease}
-.ask-bar--keyboard-open{padding-bottom:calc(16px + var(--safe-area-bottom) + var(--app-keyboard-offset))}
+.ask-bar{display:flex;gap:8px;align-items:flex-end;padding:10px 0 @app-viewport-bottom-reserve;transition:padding-bottom .18s ease}
+.ask-bar--keyboard-open{padding-bottom:calc(@app-viewport-bottom-reserve + var(--app-keyboard-offset))}
 .ask-field{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:13px;padding:10px 12px;outline:none;font-family:'Inter',sans-serif;resize:none;line-height:1.4;max-height:100px}
 .ask-field:focus{border-color:rgba(154,194,60,0.4)}
 /* Welcome */
@@ -312,7 +312,7 @@
 .active-task-fill{height:100%;background:var(--green);border-radius:2px}
 
 /* ===== NOTIFICATIONS ===== */
-.notif-scroll{flex:1;overflow-y:auto;padding:0 16px calc(32px + var(--app-bottom-nav-reserve))}
+.notif-scroll{flex:1;overflow-y:auto;padding:0 16px calc(32px + @app-viewport-bottom-reserve)}
 .notif-scroll::-webkit-scrollbar{width:0}
 .notif-title-wrap{flex:1}
 .notif-unread-badge{background:var(--green);color:var(--bg);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;display:none}

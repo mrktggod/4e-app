@@ -10483,3 +10483,10 @@
 **Коммит:** pending
 **Статус:** ✅ выполнено
 **Следующий шаг:** отдельный кандидат на контраст secondary text в light-теме.
+### 2026-07-25 — Codex
+
+**Задача:** единый safe-area reserve token для нижнего UI.
+**Результат:** добавлен `@app-viewport-bottom-reserve`, scroll/footer reserves переведены на него, исправлен узкий home overflow и перекрытие последней карточки nav в portrait.
+**Коммит:** `fix(ui): unify safe area reserve token`
+**Статус:** ✅ выполнено
+**Следующий шаг:** отдельный brief на landscape-композицию home, если нужен полноценный landscape UX.

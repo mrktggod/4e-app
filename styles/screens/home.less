@@ -846,8 +846,8 @@
 }
 
 #subscription .sub-scroll {
-  padding-bottom: max(152px, calc(128px + var(--safe-area-bottom))) !important;
-  scroll-padding-bottom: max(152px, calc(128px + var(--safe-area-bottom))) !important;
+  padding-bottom: max(152px, calc(@app-viewport-bottom-reserve + 32px)) !important;
+  scroll-padding-bottom: max(152px, calc(@app-viewport-bottom-reserve + 32px)) !important;
 }
 
 #subscription .plan-status-card,

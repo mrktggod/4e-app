@@ -3037,3 +3037,14 @@
 **Тест:** Playwright Chromium, локальная раздача `index.html`, проверка active screen, horizontal overflow и элементов ниже viewport. Дополнительно выполнены `node scripts/check-cp1251-mojibake.mjs` и `git diff --check`.
 
 **Коммит:** pending
+## 2026-07-25
+
+### Safe-area reserve token
+
+**Что сделано:** добавлен `@app-viewport-bottom-reserve` и runtime `--app-viewport-bottom-reserve`; нижние scroll/footer reserves переведены на единый токен; `#home-task-list` получил scroll area над nav; `dash-artboard` больше не фиксируется шире mobile viewport.
+
+**Проверка кодировки:** `index.html` не менялся; обязательный mojibake-check выполнен перед коммитом.
+
+**Тест:** `npm run build:css`; Playwright evidence на `390x844` и `844x390`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`.
+
+**Коммит:** `fix(ui): unify safe area reserve token`

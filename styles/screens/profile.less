@@ -904,7 +904,7 @@
 .profile-stage .profile-handoff-scroll,
 .profile-stage .profile-body,
 .profile-stage .profile-content {
-  padding-bottom: max(132px, calc(var(--safe-area-bottom, 0px) + 132px)) !important;
+  padding-bottom: max(132px, calc(@app-viewport-bottom-reserve + 36px)) !important;
 }
 
 .profile-stage .profile-status-badge:not(.verified) {

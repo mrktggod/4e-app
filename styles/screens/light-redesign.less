@@ -1881,7 +1881,7 @@ html[data-theme="light"] #ask .task-history-row {
 html[data-theme="light"] #home .dash-bottom-nav {
   bottom: 18px !important;
   height: 60px !important;
-  padding: 0 22px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+  padding: 0 22px calc(6px + var(--safe-area-bottom)) !important;
 }
 html[data-theme="light"] #home .dash-center-button {
   top: -1px !important;
@@ -3075,7 +3075,7 @@ html[data-theme="dark"] body #home#home .dash-artboard {
 body #home#home .dash-artboard {
   position: relative !important;
   display: block !important;
-  width: 430px !important;
+  width: min(430px, 100vw) !important;
   min-height: 100dvh !important;
   overflow: hidden !important;
 }
@@ -3131,6 +3131,7 @@ body #home#home .dash-tasks {
   top: 416px !important;
   left: 18px !important;
   right: 18px !important;
+  bottom: calc(@app-viewport-bottom-reserve + 32px) !important;
   width: auto !important;
   margin: 0 !important;
   transform: none !important;
@@ -3138,13 +3139,18 @@ body #home#home .dash-tasks {
   display: flex !important;
   flex-direction: column !important;
   gap: 14px !important;
-  overflow: visible !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-bottom: 8px !important;
+  scrollbar-width: none !important;
 }
+body #home#home #home-task-list::-webkit-scrollbar,
+body #home#home .dash-tasks::-webkit-scrollbar { display: none !important; }
 body #home#home .dash-bottom-nav {
   position: fixed !important;
   left: 50% !important;
   right: auto !important;
-  bottom: max(8px, env(safe-area-inset-bottom)) !important;
+  bottom: max(8px, var(--safe-area-bottom)) !important;
   width: min(394px, calc(100vw - 28px)) !important;
   transform: translateX(-50%) !important;
   z-index: 80 !important;
