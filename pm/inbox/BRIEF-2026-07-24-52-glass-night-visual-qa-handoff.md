@@ -1,4 +1,4 @@
-status: NEED-CLAUDE
+status: DONE
 
 # BRIEF-2026-07-24-52-glass-night-visual-qa-handoff
 

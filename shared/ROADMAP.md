@@ -18,6 +18,8 @@
 
 Execution rule: this is a design-system change, not a one-shot restyle. Night automation may produce an inventory, token/component map, and one narrow branch/preview implementation slice if Alexey's reference image is available. Production deploy, `main` merge, payment/entitlement/CAL/secret work, and broad cross-screen redesign without review stay blocked.
 
+2026-07-25 status: package 1 is handed off after the chat-keyboard `qa:prebeta` blocker was fixed. Briefs `42`, `50`, `51` and `52` are complete; the next safe queued slice is `BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2`. Package 2 still moves one surface at a time with review/checkpoints, not as a broad restyle.
+
 ## Autotest Direction - 2026-07-23
 
 Playwright, local k6 smoke and the existing Chrome/CDP/static smoke scripts are now an official QA layer for roadmap/backlog work. The safe full suite passed on 2026-07-23: `qa:prebeta`, Playwright web/TG/VK, local `load:smoke`, and focused smokes for home, accessibility, notifications, task-detail, VK intent, privacy, viral/share, SMART-007 and chat-history.

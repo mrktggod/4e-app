@@ -1,5 +1,15 @@
 ## 2026-07-25
 
+### QA prebeta chat keyboard blocker
+
+**Что сделано:** исправлен переходный баг AI-чата: при фокусе поля ввода класс `.ask-input-shell.ask-bar--keyboard-open` уже задавал нужный keyboard padding, но общий `.ask-bar` ещё анимировал `padding-bottom .18s`, поэтому Playwright иногда снимал метрику в середине перехода и `qa:prebeta` падал на `paddingBottom=235.23` при ожидаемых `>=260`. Для открытой клавиатуры transition отключён, CSS пересобран. PM-статусы синхронизированы: `BRIEF-2026-07-24-52` переведён в `DONE`, `BRIEF-2026-07-24-53` возвращён в `NEW`.
+
+**Проверка кодировки:** `index.html` не редактировался; Шаг 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` прошёл с 0 suspicious tokens внутри `npm run qa:prebeta`.
+
+**Тест:** `npm run build:css`; `npx playwright test autotests/tests/web/chat-keyboard.spec.ts --project=mobile-chromium --project=desktop-chromium` — 2/2 passed; `npm run qa:prebeta` — passed, включая 20/20 Playwright tests и smokes `home001`, `back050`, `back055`, `privacy-surface`, `viral-share`.
+
+**Коммит:** this commit
+
 ### Morning runner no executable whitelist work
 
 **What changed:** Created final report `pm/outbox/REPORT-4e-morning-inbox-and-safe-backlog-runner-2026-07-25.md` after scanning `pm/inbox`, `pm/backlog.md`, `shared/ROADMAP.md`, `pm/bugs.md`, and `docs/tasks`. The run found 0 executable `status: NEW` briefs and 0 safe autonomous whitelist backlog tasks.

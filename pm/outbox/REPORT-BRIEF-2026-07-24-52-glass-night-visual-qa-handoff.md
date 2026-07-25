@@ -2,11 +2,13 @@
 
 ## Outcome
 
-NEED-CLAUDE.
+DONE.
 
-This brief did not add another component family. It gathered package 1 evidence and ran the full prebeta gate once. Focused glass/component smokes are green, but the full `qa:prebeta` gate is not green because mobile chat keyboard geometry failed.
+This brief did not add another component family. It gathered package 1 evidence and ran the full prebeta gate. The initial run exposed an unrelated chat-keyboard geometry blocker; the 2026-07-25 follow-up fixed that blocker with a narrow CSS change and the full `qa:prebeta` gate is now green.
 
 Production and `main` were untouched.
+
+2026-07-25 update: the separate narrow chat-keyboard fix landed in CSS, then the focused keyboard spec and full `qa:prebeta` gate passed. Package 1 handoff is no longer blocked by the red prebeta gate.
 
 ## Brief / Commit Matrix
 
@@ -15,7 +17,7 @@ Production and `main` were untouched.
 | `BRIEF-2026-07-23-42-glass-design-system-foundation` | DONE | `0a538fe` |
 | `BRIEF-2026-07-24-50-glass-notification-card-slice` | DONE | `3ad54f9` |
 | `BRIEF-2026-07-24-51-glass-task-detail-reference-slice` | DONE | `a59b098` |
-| `BRIEF-2026-07-24-52-glass-night-visual-qa-handoff` | NEED-CLAUDE | same commit as this report |
+| `BRIEF-2026-07-24-52-glass-night-visual-qa-handoff` | DONE | same commit as this report plus 2026-07-25 CSS fix |
 
 ## Prebeta Gate
 
@@ -28,13 +30,21 @@ npm run qa:prebeta
 Result:
 
 ```text
+Initial result:
+
 FAILED
 Playwright: 19 passed, 1 failed
 Failed test: [mobile-chromium] autotests/tests/web/chat-keyboard.spec.ts
 Assertion: expected paddingBottom >= 260, received 235.23
+
+2026-07-25 rerun after the narrow CSS fix:
+
+PASSED
+Playwright: 20 passed
+Full qa:prebeta chain: passed, including home, accessibility, notifications, privacy and viral/share smokes
 ```
 
-This was not the known auth/legal mobile timeout case, so no auth/legal one-worker rerun was required by the brief. I did not rewrite tests or broaden the glass task to fix chat keyboard geometry.
+The initial failure was not the known auth/legal mobile timeout case, so no auth/legal one-worker rerun was required by the brief. The follow-up did not rewrite tests or broaden the glass task; it fixed the keyboard padding transition that caused the measured reserve to be sampled too early.
 
 ## Focused Glass Evidence
 
@@ -85,4 +95,4 @@ Deferred:
 
 ## Stop Reason
 
-The handoff cannot be marked `DONE` while `qa:prebeta` is red. It needs Claude/Yuri decision or a separate narrow fix for the mobile chat keyboard padding regression.
+The previous stop reason was removed by a separate narrow CSS fix for the chat keyboard padding transition. Package 2 may continue from `BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2`.

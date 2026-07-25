@@ -1,3 +1,13 @@
+### 2026-07-25 — Codex
+
+**Задача:** вернуть `qa:prebeta` в зелёный статус и разблокировать следующий glass-slice.
+**Результат:** убран переходный `padding-bottom` во время открытой клавиатуры AI-чата; `npm run qa:prebeta` прошёл зелёно, brief `52` закрыт, brief `53` снова `NEW`.
+**Коммит:** this commit
+**Статус:** ✅ выполнено
+**Следующий шаг:** выполнять `BRIEF-2026-07-24-53-glass-home-focus-dashboard-package2`.
+
+---
+
 ### 2026-07-25 - Codex
 
 **Task:** morning inbox/backlog runner closeout.
