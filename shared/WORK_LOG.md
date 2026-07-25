@@ -1,7 +1,7 @@
 ### 2026-07-25 - Codex
 
 **Task:** оформить баги Миши в ночную очередь.
-**Result:** добавлены `BUG-2026-07-25-008`-`018`, briefs `61`-`71` в `pm/inbox`, backlog/team-sync и outbox report.
+**Result:** добавлены `BUG-2026-07-25-008`-`020`, briefs `61`-`73` в `pm/inbox`, backlog/team-sync и outbox report.
 **Commit:** this commit
 **Status:** ✅ выполнено
 **Следующий шаг:** ночной runner должен обработать NEW briefs по порядку, с Claude/Yuri gates для bot/live/broad destructive paths.

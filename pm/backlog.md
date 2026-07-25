@@ -50,6 +50,8 @@
 | BOT-GROUP-001 | `BRIEF-2026-07-25-69-telegram-group-bot-capture` | Bot/Telegram | P1 | Codex + Claude/Yuri | NEW | H0.5 | Telegram group bot capture/respond path is audited; if local bot/live evidence is unavailable, report `NEED-CLAUDE`/`NEED-YURI`. |
 | HOME-FOCUS-COUNTERS-001 | `BRIEF-2026-07-25-70-focus-counters-consistency` | Home/UI/Data | P1 | Codex | NEW | H0.5 | Home focus card and popup counters use one consistent task summary. |
 | STATS-ACTIVE-001 | `BRIEF-2026-07-25-71-statistics-active-tasks-empty` | Statistics/UI/Data | P1 | Codex | NEW | H0.5 | Statistics does not show `Нет активных задач` when the same user has active tasks on home. |
+| CALENDAR-UI-001 | `BRIEF-2026-07-25-72-calendar-task-list-clickability` | Calendar/UI | P1 | Codex | NEW | H0.5 | Calendar bottom task list rows are clickable and open task detail, or are restyled so non-clickable content is not misleading. |
+| TASK-DETAIL-GLASS-001 | `BRIEF-2026-07-25-73-task-detail-glass-layout-restore` | Task Detail/UI | P1 | Codex | NEW | H0.5 | Task detail is restored to the agreed glass layout: separate status/participants panels, wide hero, no title/meta overlap. |
 
 ## Design system queue - 2026-07-23
 

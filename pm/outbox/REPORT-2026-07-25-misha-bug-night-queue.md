@@ -4,7 +4,7 @@ status: DONE
 
 ## Result
 
-Converted 11 team/user bug reports into PM bug records and night-session briefs.
+Converted 13 team/user bug reports into PM bug records and night-session briefs.
 
 ## Added Bugs
 
@@ -19,6 +19,8 @@ Converted 11 team/user bug reports into PM bug records and night-session briefs.
 - `BUG-2026-07-25-016` - Telegram group bot does not answer/capture tasks.
 - `BUG-2026-07-25-017` - focus counters are inconsistent.
 - `BUG-2026-07-25-018` - statistics empty state conflicts with home tasks.
+- `BUG-2026-07-25-019` - calendar bottom task rows are visible but not clickable.
+- `BUG-2026-07-25-020` - task detail glass layout regressed from agreed reference.
 
 ## Added Night Briefs
 
@@ -33,10 +35,11 @@ Converted 11 team/user bug reports into PM bug records and night-session briefs.
 - `pm/inbox/BRIEF-2026-07-25-69-telegram-group-bot-capture.md`
 - `pm/inbox/BRIEF-2026-07-25-70-focus-counters-consistency.md`
 - `pm/inbox/BRIEF-2026-07-25-71-statistics-active-tasks-empty.md`
+- `pm/inbox/BRIEF-2026-07-25-72-calendar-task-list-clickability.md`
+- `pm/inbox/BRIEF-2026-07-25-73-task-detail-glass-layout-restore.md`
 
 ## Boundaries
 
 No runtime code changed. No production deploy, `main` merge, CAL, price, payment, entitlement refactor, or secret action was performed.
 
 Telegram group bot work is explicitly gated: if the local bot repo or live Telegram evidence is unavailable, the executor must report `NEED-CLAUDE` or `NEED-YURI`.
-

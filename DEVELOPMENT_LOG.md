@@ -2,7 +2,7 @@
 
 ### Misha bug intake night queue
 
-**Что сделано:** командные баги из тестирования Миши оформлены в `pm/bugs.md` как `BUG-2026-07-25-008`-`018`, добавлены ночные briefs `BRIEF-2026-07-25-61`-`71`, backlog queue, team-sync и report `pm/outbox/REPORT-2026-07-25-misha-bug-night-queue.md`.
+**Что сделано:** командные баги из тестирования Миши оформлены в `pm/bugs.md` как `BUG-2026-07-25-008`-`020`, добавлены ночные briefs `BRIEF-2026-07-25-61`-`73`, backlog queue, team-sync и report `pm/outbox/REPORT-2026-07-25-misha-bug-night-queue.md`.
 
 **Проверка кодировки:** `index.html` и `vk.html` не редактировались; Шаг 0 не применялся. `node scripts/check-cp1251-mojibake.mjs` запускается перед commit.
 
