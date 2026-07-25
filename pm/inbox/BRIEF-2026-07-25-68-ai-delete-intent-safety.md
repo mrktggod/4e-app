@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-07-25-68-ai-delete-intent-safety
 
@@ -30,4 +30,3 @@ Prevent `удали` / delete intent from being executed as `done` / complete. A
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-68-ai-delete-intent-safety.md`.
-

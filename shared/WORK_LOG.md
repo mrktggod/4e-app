@@ -10572,3 +10572,13 @@
 **Next step:** Manual TMA/mobile QA should confirm the new composer affordance is obvious in the live container.
 
 ---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-68 AI delete intent safety
+**Result:** Classified as NEED-CLAUDE: P0 destructive/bulk task behavior depends on AI chat action contract and needs reviewed narrow fix before runtime changes.
+**Commit:** this commit
+**Status:** NEED-CLAUDE
+**Next step:** Claude should choose refusal vs explicit confirmation contract before code.
+
+---

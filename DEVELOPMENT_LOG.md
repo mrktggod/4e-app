@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### AI delete intent safety classification
+
+**What changed:** No runtime code changed. `BRIEF-2026-07-25-68` was classified as `NEED-CLAUDE` because it is P0 destructive/bulk task behavior and source evidence points to the AI chat prompt/action contract rather than a narrow autonomous UI bug.
+
+**Encoding check:** `index.html` was not edited for this brief.
+
+**Test:** source audit with `rg` over AI chat and task mutation paths; `node scripts/check-cp1251-mojibake.mjs` and shared diff/portable guards run before commit.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### Chat voice composer entrypoint
 
 **What changed:** Added a visible microphone button inside the AI chat composer. It uses the existing `openVoice()` path, so current Premium and biometric consent gates remain the source of truth. The ask composer grid and light/dark styles now reserve stable space for textarea, voice and send controls.

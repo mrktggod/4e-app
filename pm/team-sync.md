@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - delete intent needs Claude
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-68-ai-delete-intent-safety` moved to `NEED-CLAUDE`.
+- Reason: P0 destructive/bulk task behavior; current AI chat action contract exposes `complete` but no narrow delete/refuse contract.
+- Evidence: report maps the risk to `index.html:6881` prompt contract and `index.html:6784-6785` complete execution.
+- Scope: no runtime changes; next step is Claude-reviewed narrow fix plan before code.
+
 ## 2026-07-26 - Codex - chat voice entrypoint done
 
 - Branch: `feat/admin-tariff-api`.
