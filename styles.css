@@ -12205,7 +12205,7 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
   position: relative;
   z-index: 4;
   display: grid;
-  grid-template-columns: 1fr 56px;
+  grid-template-columns: minmax(0, 1fr) 56px 56px;
   gap: 10px;
   height: 56px;
   padding: 0;
@@ -12230,6 +12230,7 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
 .ask-field::placeholder {
   color: #687269;
 }
+.ask-voice,
 .ask-send {
   width: 56px;
   height: 56px;
@@ -12241,6 +12242,19 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
   border: 1px solid rgba(180, 194, 179, 0.2);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.34), 0 4px 9px rgba(0, 0, 0, 0.22), 0 0 14px rgba(105, 145, 67, 0.055), inset 0 1px 1px rgba(255, 255, 255, 0.075), inset 0 -2px 2px rgba(0, 0, 0, 0.25), inset 0 0 0 0.6px rgba(183, 198, 183, 0.07);
 }
+.ask-voice {
+  color: #d8dfd5;
+}
+.ask-voice:focus-visible,
+.ask-send:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.ask-voice:active,
+.ask-send:active {
+  transform: scale(0.98);
+}
+.ask-voice svg,
 .ask-send svg {
   width: 25px;
   height: 25px;
@@ -14159,6 +14173,7 @@ html[data-theme="light"] #ask .ask-plan-text em {
   color: #65716a !important;
 }
 html[data-theme="light"] #ask .ask-soft-back,
+html[data-theme="light"] #ask .ask-voice,
 html[data-theme="light"] #ask .ask-send,
 html[data-theme="light"] #ask .ask-plan-row,
 html[data-theme="light"] #ask .ask-glass-card,
@@ -14272,6 +14287,7 @@ html[data-theme="light"] #ask .ask-field {
   overflow: hidden !important;
   box-shadow: 0 12px 24px rgba(116, 112, 92, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
 }
+html[data-theme="light"] #ask .ask-voice,
 html[data-theme="light"] #ask .ask-send {
   flex: 0 0 58px !important;
   width: 58px !important;
@@ -14280,8 +14296,13 @@ html[data-theme="light"] #ask .ask-send {
   overflow: hidden !important;
   color: #17324a !important;
 }
+html[data-theme="light"] #ask .ask-voice {
+  color: #4c8f24 !important;
+}
 html[data-theme="light"] #ask .ask-send::before,
 html[data-theme="light"] #ask .ask-send::after,
+html[data-theme="light"] #ask .ask-voice::before,
+html[data-theme="light"] #ask .ask-voice::after,
 html[data-theme="light"] #ask .ask-field::before,
 html[data-theme="light"] #ask .ask-field::after {
   content: none !important;

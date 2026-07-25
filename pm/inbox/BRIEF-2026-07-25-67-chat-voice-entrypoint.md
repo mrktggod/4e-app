@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-67-chat-voice-entrypoint
 
@@ -29,4 +29,3 @@ Add or restore a clear voice entrypoint inside the AI chat composer. It should b
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-67-chat-voice-entrypoint.md`.
-

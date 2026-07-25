@@ -1062,7 +1062,7 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
   position: relative;
   z-index: 4;
   display: grid;
-  grid-template-columns: 1fr 56px;
+  grid-template-columns: minmax(0, 1fr) 56px 56px;
   gap: 10px;
   height: 56px;
   padding: 0;
@@ -1096,6 +1096,7 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
   color: #687269;
 }
 
+.ask-voice,
 .ask-send {
   width: 56px;
   height: 56px;
@@ -1116,6 +1117,22 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
     inset 0 0 0 .6px rgba(183,198,183,.07);
 }
 
+.ask-voice {
+  color: #d8dfd5;
+}
+
+.ask-voice:focus-visible,
+.ask-send:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+.ask-voice:active,
+.ask-send:active {
+  transform: scale(.98);
+}
+
+.ask-voice svg,
 .ask-send svg {
   width: 25px;
   height: 25px;

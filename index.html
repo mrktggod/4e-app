@@ -435,6 +435,7 @@ if('serviceWorker' in navigator){
     </div>
     <div class="ask-bar ask-input-shell">
       <textarea class="ask-field" id="ask-field" placeholder="Напиши или выбери подсказку..." rows="1"></textarea>
+      <button id="ask-voice-button" class="ask-voice" type="button" aria-label="Голосовой ввод"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/></svg></button>
       <button class="ask-send" type="button" onclick="sendAsk()" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
     </div>
   </div>
@@ -7233,6 +7234,11 @@ async function openVoice(){
   recognition.onend=()=>{if(!resultReceived&&document.getElementById('voice-title').textContent==='Слушаю...'){finishVoicePerf('no_result');document.getElementById('voice-title').textContent='Не расслышал';queueVoiceTimeout(closeVoice,1200);}};
   recognition.start();
 }
+function bindAskVoiceEntrypoint(){
+  const button=document.getElementById('ask-voice-button');
+  if(button&&!button.dataset.voiceBound){button.dataset.voiceBound='1';button.addEventListener('click',openVoice);}
+}
+bindAskVoiceEntrypoint();
 function setVoiceStep(idx,state){
   const el=document.getElementById('vs-'+idx);if(!el)return;
   const icon=el.querySelector('.voice-step-icon');

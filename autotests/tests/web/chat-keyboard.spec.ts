@@ -17,7 +17,19 @@ async function prepareAuthedShell(page) {
         contentType: 'application/json',
         body: JSON.stringify({
           ok: true,
-          user: { id: 'playwright-keyboard', name: 'Playwright', email: 'keyboard@example.com', premium: true },
+          user: {
+            id: 'playwright-keyboard',
+            name: 'Playwright',
+            email: 'keyboard@example.com',
+            premium: true,
+            trialActive: true,
+            trialEndsAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+            entitlement: {
+              status: 'active',
+              accessUntil: Date.now() + 7 * 24 * 60 * 60 * 1000,
+              plan: 'trial',
+            },
+          },
         }),
       });
     }
@@ -44,6 +56,24 @@ async function openAsk(page) {
 }
 
 test.describe('chat keyboard geometry', () => {
+  test('ask composer exposes visible voice entrypoint wired to voice flow', async ({ page }) => {
+    await openAsk(page);
+
+    const voiceButton = page.locator('.ask-voice');
+    await expect(voiceButton).toBeVisible();
+    const box = await voiceButton.boundingBox();
+    expect(box, 'voice button box should exist').not.toBeNull();
+    expect(box!.width, 'voice button width').toBeGreaterThanOrEqual(44);
+    expect(box!.height, 'voice button height').toBeGreaterThanOrEqual(44);
+
+    await voiceButton.click();
+    const consentScreen = page.locator('#biometric-consent');
+    await expect(consentScreen).toHaveAttribute('aria-hidden', 'false');
+    if ((page.viewportSize()?.width ?? 0) <= 500) {
+      await expect(consentScreen).toBeVisible();
+    }
+  });
+
   test('ask input reserves keyboard space without horizontal overflow', async ({ page }) => {
     await openAsk(page);
     await page.evaluate(() => {

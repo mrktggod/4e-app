@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-26 - Codex - chat voice entrypoint done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-67-chat-voice-entrypoint` moved to `DONE`.
+- Result: AI chat composer now has a visible 56px microphone button next to send; it calls existing `openVoice()` and keeps Premium/biometric consent gates.
+- Evidence: focused Playwright chat/voice smoke passed 4/4 on mobile and desktop.
+- Scope: no new backend, payment, entitlement, price, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-68`.
+
 ## 2026-07-26 - Codex - dashboard edge guard done
 
 - Branch: `feat/admin-tariff-api`.

@@ -1,3 +1,15 @@
+## 2026-07-26
+
+### Chat voice composer entrypoint
+
+**What changed:** Added a visible microphone button inside the AI chat composer. It uses the existing `openVoice()` path, so current Premium and biometric consent gates remain the source of truth. The ask composer grid and light/dark styles now reserve stable space for textarea, voice and send controls.
+
+**Encoding check:** `index.html` markers `Войти|Задачи|Сегодня` stayed `112 / 112`.
+
+**Test:** `npm run build:css`; `npx playwright test autotests/tests/web/chat-keyboard.spec.ts` passed 4/4; remaining shared guards run before commit.
+
+**Commit:** this commit
+
 ## 2026-07-25
 
 ### DESIGN-GLASS-001 home/focus package 2

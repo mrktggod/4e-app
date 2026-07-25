@@ -10563,3 +10563,12 @@
 **Следующий шаг:** staging visual QA on a real old task after deploy.
 
 ---
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-67 chat voice entrypoint
+**Result:** AI chat composer now has a visible microphone button wired to existing `openVoice()`; focused chat/voice Playwright smoke passed 4/4.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Manual TMA/mobile QA should confirm the new composer affordance is obvious in the live container.
+
+---
