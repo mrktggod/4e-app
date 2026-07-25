@@ -454,3 +454,9 @@ BODY: {"ok":false,"error":"Не авторизован"}
 ```
 
 Result: no new sibling P1 bug opened. Both paths rejected the sessionless foreign-`telegramUserId` request before mutation.
+
+## 2026-07-25 Addendum
+
+| ID | Bug | Severity | Priority | Status | Owner | Link | Note |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| BUG-2026-07-25-021 | Telegram Mini App task chat: suggested-actions `Confirm` / `Подтвердить` button does not work | High | P1 | Triaged / queued for night | Codex | TASK-CHAT-ACTIONS-001 / SMART-004 | In Telegram Mini App task-detail chat, an AI suggested-actions card shows a green `Confirm` / `Подтвердить` button, but tapping it does not apply the proposed action. Expected: confirm applies the suggested task action exactly once, updates UI state, and shows clear failure feedback if the action cannot be applied. |

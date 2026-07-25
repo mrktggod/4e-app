@@ -52,6 +52,7 @@
 | STATS-ACTIVE-001 | `BRIEF-2026-07-25-71-statistics-active-tasks-empty` | Statistics/UI/Data | P1 | Codex | NEW | H0.5 | Statistics does not show `Нет активных задач` when the same user has active tasks on home. |
 | CALENDAR-UI-001 | `BRIEF-2026-07-25-72-calendar-task-list-clickability` | Calendar/UI | P1 | Codex | NEW | H0.5 | Calendar bottom task list rows are clickable and open task detail, or are restyled so non-clickable content is not misleading. |
 | TASK-DETAIL-GLASS-001 | `BRIEF-2026-07-25-73-task-detail-glass-layout-restore` | Task Detail/UI | P1 | Codex | NEW | H0.5 | Task detail is restored to the agreed glass layout: separate status/participants panels, wide hero, no title/meta overlap. |
+| TASK-CHAT-ACTIONS-001 | `BRIEF-2026-07-25-74-task-chat-confirm-action` | Task Detail/AI Chat | P1 | Codex | NEW | H0.5 | Suggested-action `Confirm` button in Telegram Mini App task chat applies the proposed action or shows a clear failure state. |
 
 ## Design system queue - 2026-07-23
 

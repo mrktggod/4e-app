@@ -4,7 +4,7 @@ status: DONE
 
 ## Result
 
-Converted 13 team/user bug reports into PM bug records and night-session briefs.
+Converted 14 team/user bug reports into PM bug records and night-session briefs.
 
 ## Added Bugs
 
@@ -21,6 +21,7 @@ Converted 13 team/user bug reports into PM bug records and night-session briefs.
 - `BUG-2026-07-25-018` - statistics empty state conflicts with home tasks.
 - `BUG-2026-07-25-019` - calendar bottom task rows are visible but not clickable.
 - `BUG-2026-07-25-020` - task detail glass layout regressed from agreed reference.
+- `BUG-2026-07-25-021` - Telegram Mini App task-chat suggested-action `Confirm` button does not work.
 
 ## Added Night Briefs
 
@@ -37,6 +38,7 @@ Converted 13 team/user bug reports into PM bug records and night-session briefs.
 - `pm/inbox/BRIEF-2026-07-25-71-statistics-active-tasks-empty.md`
 - `pm/inbox/BRIEF-2026-07-25-72-calendar-task-list-clickability.md`
 - `pm/inbox/BRIEF-2026-07-25-73-task-detail-glass-layout-restore.md`
+- `pm/inbox/BRIEF-2026-07-25-74-task-chat-confirm-action.md`
 
 ## Boundaries
 
