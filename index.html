@@ -1975,6 +1975,26 @@ async function readJsonSafe(response){
   }
 }
 
+function createWorkerActionError(response,data,fallbackMessage){
+  const error=new Error(data?.error||fallbackMessage||'Не удалось выполнить действие');
+  error.status=response?.status||0;
+  error.data=data||{};
+  return error;
+}
+
+function isPremiumRequiredError(error){
+  const status=Number(error?.status||error?.data?.status||0);
+  const message=String(error?.message||error?.data?.error||error?.data?.message||'').toLowerCase();
+  return (status===402||status===403) && /premium|премиум|подпис|entitlement|trial|access|доступ|оплат/.test(message);
+}
+
+function handlePremiumRequiredTaskActionError(error){
+  if(!isPremiumRequiredError(error)) return false;
+  showToast('Нужен Premium: открой подписку, чтобы завершать и менять задачи');
+  setTimeout(()=>showSubScreen('subscription'),650);
+  return true;
+}
+
 function saveTelegramPendingStart(startToken){
   if(PLATFORM.saveTelegramPendingStart) PLATFORM.saveTelegramPendingStart(TG_PENDING_START_K,startToken);
 }
@@ -3464,6 +3484,7 @@ async function confirmAndSaveTask(){
     setNavActive('tasks');
     loadTasks();
   } catch(e){
+    if(handlePremiumRequiredTaskActionError(e)) return;
     showToast('Ошибка сохранения');
     console.error(e);
   }
@@ -3530,7 +3551,7 @@ async function submitQuickAdd(){
     if(result.merged) return;
     showToast('Задача добавлена ✓');
     loadTasks();
-  } catch(e){ showToast('Ошибка сохранения'); }
+  } catch(e){ if(handlePremiumRequiredTaskActionError(e)) return; showToast('Ошибка сохранения'); }
 }
 
 // в”Ђв”Ђ Month filter в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
@@ -5585,6 +5606,7 @@ async function confirmTaskChatActions(messageId){
     showToast('Действия выполнены');
   }catch(e){
     console.error(e);
+    if(handlePremiumRequiredTaskActionError(e)) return;
     showToast('Не удалось применить действия');
   }
 }
@@ -5593,7 +5615,7 @@ async function postTaskChatMutation(actionName, payload){
   try{
     const r=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':actionName},body:JSON.stringify(payload)});
     const d=await readJsonSafe(r);
-    if(!r.ok||d.ok===false) throw new Error(d.error||'Не удалось обновить задачу');
+    if(!r.ok||d.ok===false) throw createWorkerActionError(r,d,'Не удалось обновить задачу');
     return d;
   }catch(e){
     if(['save-task','update-task','done-task','delete-task'].includes(actionName)&&isOfflineNetworkError(e)){
@@ -6042,6 +6064,7 @@ async function saveTaskEdits(){
     currentDetailTask = {...currentDetailTask, ...updates};
     loadTasks();
   } catch(e){
+    if(handlePremiumRequiredTaskActionError(e)) return;
     showToast('Ошибка сохранения');
     console.error(e);
   }
@@ -6451,6 +6474,7 @@ async function saveTaskToWorker(task){
     return {ok:true, merged:false, taskId:task.id, offlineQueued:!!data.offlineQueued};
   } catch(e) {
     console.error('saveTaskToWorker:', e);
+    if(handlePremiumRequiredTaskActionError(e)) return {ok:false, merged:false, taskId:''};
     showToast?.('Ошибка создания задачи');
     return {ok:false, merged:false, taskId:''};
   }
@@ -8562,10 +8586,18 @@ async function quickDoneTask(taskId, btn){
   const row=btn.closest('.task-card-shell')||btn.closest('.task-row')||btn.closest('.task-row-v2');
   if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}
   try{
-    await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});
+    const res=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});
+    const data=await readJsonSafe(res);
+    if(!res.ok||data.ok===false) throw createWorkerActionError(res,data,'Не удалось завершить задачу');
     showToast('Задача выполнена ✓');
     setTimeout(loadTasks,600);
   }catch(e){
+    if(handlePremiumRequiredTaskActionError(e)){
+      if(row){row.style.opacity='';row.style.pointerEvents='';}
+      btn.disabled=false;
+      btn.style.background='transparent';
+      return;
+    }
     showToast('Ошибка');
     if(row){row.style.opacity='';row.style.pointerEvents='';}
     btn.disabled=false;

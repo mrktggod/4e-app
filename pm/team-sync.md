@@ -1,5 +1,13 @@
 # Team Sync
 
+## 2026-07-25 - Codex - premium task denial UX done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-61-expired-premium-task-actions` moved to `DONE`.
+- Result: expired/missing Premium denials on task actions now show explicit Premium-required copy and route to subscription instead of generic save/action errors.
+- Evidence: `npm run smoke:premium-task-denial`, mojibake guard, JS syntax, portable path, UI architecture and diff checks passed.
+- Scope: no entitlement/payment/price/backend policy changes; `BRIEF-2026-07-25-62` remains the next Premium voice-gate slice.
+
 ## 2026-07-25 - Codex - glass home package 2 done
 
 - Branch: `feat/admin-tariff-api`.

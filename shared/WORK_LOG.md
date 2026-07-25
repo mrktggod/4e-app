@@ -10507,3 +10507,12 @@
 **Коммит:** `docs(qa): add sw cache matrix evidence`
 **Статус:** ✅ выполнено
 **Следующий шаг:** отдельный brief `SW-STAGING-PARITY`, затем повторить update-over-old-deploy.
+### 2026-07-25 - Codex
+
+**Task:** BRIEF-2026-07-25-61 expired Premium task actions.
+**Result:** Task action Worker denials preserve status/payload, show explicit Premium-required UI, and route to subscription before generic task error toasts.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Continue with BRIEF-2026-07-25-62 expired Premium voice gate.
+
+---

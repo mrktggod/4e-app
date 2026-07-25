@@ -41,7 +41,7 @@
 
 | ID | Brief | Type | Priority | Owner | Status | Horizon | Done criteria |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| PREMIUM-UX-001 | `BRIEF-2026-07-25-61-expired-premium-task-actions` + `62-expired-premium-voice-gate` | UI/Auth/Premium UX | P1 | Codex | NEW | H0.5 | Expired Premium denial is shown as clear paywall/benefits state for task actions and voice, not generic save/listening failure; no entitlement rule changes. |
+| PREMIUM-UX-001 | `BRIEF-2026-07-25-61-expired-premium-task-actions` + `62-expired-premium-voice-gate` | UI/Auth/Premium UX | P1 | Codex | Partial Done: task actions green; voice NEW | H0.5 | Expired Premium denial is shown as clear paywall/benefits state for task actions and voice, not generic save/listening failure; no entitlement rule changes. |
 | VOICE-UX-001 | `BRIEF-2026-07-25-63-voice-consent-checkbox-accessibility` + `64-voice-exit-controls` | Voice/UI/A11y | P1 | Codex | NEW | H0.5 | Consent checkbox is visible/tappable; voice cancel and back reliably exit the flow. |
 | TASK-COPY-001 | `BRIEF-2026-07-25-65-relative-time-copy` | UI/Copy | P2 | Codex | NEW | H0.5 | Old tasks are not described as `недавно` when exact age is dozens of days. |
 | HOME-OVERFLOW-001 | `BRIEF-2026-07-25-66-dashboard-right-edge-overflow` | Home/UI | P1 | Codex | NEW | H0.5 | Home dashboard has no right-edge clipping or horizontal overflow on mobile viewport. |

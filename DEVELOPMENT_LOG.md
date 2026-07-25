@@ -3071,3 +3071,14 @@
 **Тест:** Playwright Chromium с service workers enabled; live asset hashes через `fetch`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`.
 
 **Коммит:** `docs(qa): add sw cache matrix evidence`
+## 2026-07-25
+
+### Expired Premium task action UX
+
+**What changed:** `index.html` now preserves Worker task-action denial status/payload with `createWorkerActionError()`, detects 402/403 Premium/access denials, shows explicit Premium-required UI, routes to `subscription`, and handles the denial before generic save/action fallback toasts in quick-add, task detail save, task chat suggested actions, and quick done. `quickDoneTask()` now checks the Worker response before showing success.
+
+**Encoding check:** `index.html` Step 0 markers were 111 before / 112 after; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `node --check scripts/premium-task-action-denial-smoke.mjs`; `npm run smoke:premium-task-denial`; `npm run check:js-syntax`; `node scripts/check-cp1251-mojibake.mjs`; Git Bash `scripts/check-portable-paths.sh`; Git Bash `scripts/check-ui-architecture.sh`; `git diff --check`.
+
+**Commit:** this commit

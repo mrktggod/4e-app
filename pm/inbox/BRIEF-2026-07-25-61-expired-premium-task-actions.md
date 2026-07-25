@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-61-expired-premium-task-actions
 
@@ -30,4 +30,3 @@ Make task action failures caused by expired/missing Premium explicit in the app 
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-61-expired-premium-task-actions.md`.
-
