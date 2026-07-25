@@ -1,12 +1,20 @@
 # Team Sync
 
+## 2026-07-26 - Codex - voice exit controls done
+
+- Branch: `feat/admin-tariff-api`.
+- Inbox: `BRIEF-2026-07-25-64-voice-exit-controls` moved to `DONE`.
+- Result: voice back/cancel now stop recognition, clear queued voice timers and transient steps, and return to the previous safe screen instead of always forcing home.
+- Evidence: `npm run smoke:voice-exit-controls`, `npm run smoke:premium-voice-gate`, `npm run smoke:voice-consent-checkbox`, mojibake and diff checks passed.
+- Scope: Premium and consent gates preserved; no payment, entitlement, price, backend, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-65`.
+
 ## 2026-07-26 - Codex - voice consent checkbox done
 
 - Branch: `feat/admin-tariff-api`.
 - Inbox: `BRIEF-2026-07-25-63-voice-consent-checkbox-accessibility` moved to `DONE`.
 - Result: biometric voice-consent checkbox now has a 56px label target, larger visible 32px box, clear checked/focus states, and unchanged legal copy.
 - Evidence: `npm run build:css`, `npm run smoke:voice-consent-checkbox`, mojibake and diff checks passed; `smoke:back050` timed out in this environment, so focused smoke is the acceptance gate.
-- Scope: no legal text, payment, entitlement, price, backend, prod or `main` changes; next inbox item is `BRIEF-2026-07-25-64`.
+- Scope: no legal text, payment, entitlement, price, backend, prod or `main` changes; `BRIEF-2026-07-25-64` is now done in the next commit.
 
 ## 2026-07-26 - Codex - premium voice gate done
 

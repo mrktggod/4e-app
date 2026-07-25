@@ -127,6 +127,18 @@
 
 **Commit:** this commit
 
+## 2026-07-26
+
+### Voice exit controls
+
+**What changed:** voice flow now remembers the previous safe screen before entering `voice`, wraps voice pipeline delays in cancellable `queueVoiceTimeout()`, and centralizes cleanup in `closeVoice()`: stop recognition, detach handlers, clear timers, reset steps/title, return via safe screen.
+
+**Encoding check:** `index.html` markers stayed 112 before / 112 after; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:voice-exit-controls`; `npm run smoke:premium-voice-gate`; `npm run smoke:voice-consent-checkbox`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Night runner no executable whitelist work
 
 **What changed:** Created final report `pm/outbox/REPORT-4e-night-inbox-and-whitelist-backlog-runner-2026-07-25.md` after scanning `pm/inbox`, `pm/backlog.md`, and `shared/ROADMAP.md`. The run found 0 executable `status: NEW` briefs and 0 safe autonomous whitelist backlog tasks.

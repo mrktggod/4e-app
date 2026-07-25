@@ -10534,3 +10534,13 @@
 **Commit:** this commit
 **Status:** DONE
 **Next step:** Mobile visual check; continue with BRIEF-2026-07-25-64.
+
+---
+
+### 2026-07-26 - Codex
+
+**Task:** BRIEF-2026-07-25-64 voice exit controls.
+**Result:** Voice back/cancel now clear recognition, queued voice timers and step state, then return to the previous safe screen.
+**Commit:** this commit
+**Status:** DONE
+**Next step:** Live Telegram WebView tap smoke; continue with BRIEF-2026-07-25-65.

@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-64-voice-exit-controls
 
@@ -29,4 +29,3 @@ Make both voice exit controls stop the current voice flow, clear transient liste
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-64-voice-exit-controls.md`.
-
