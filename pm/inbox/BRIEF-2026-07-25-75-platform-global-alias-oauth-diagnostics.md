@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-75-platform-global-alias-oauth-diagnostics
 
