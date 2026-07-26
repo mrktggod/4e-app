@@ -146,19 +146,22 @@ async function runSmoke(ws, appUrl) {
     const desc = document.getElementById('detail-description');
     const tag = document.querySelector('#detail-tags-wrap .tag-chip');
     const infoCards = Array.from(document.querySelectorAll('#task-detail .detail-info-card'));
-    const nextSection = document.querySelector('#task-detail .detail-redesign-status-grid');
+    const statusGrid = document.querySelector('#task-detail .detail-redesign-status-grid');
+    const nextSection = document.querySelector('#task-detail .detail-chat-card');
 
     const heroRect = hero?.getBoundingClientRect();
     const titleRect = title?.getBoundingClientRect();
     const descRect = desc?.getBoundingClientRect();
     const tagRect = tag?.getBoundingClientRect();
+    const statusRect = statusGrid?.getBoundingClientRect();
     const nextRect = nextSection?.getBoundingClientRect();
     const tagStyle = tag ? getComputedStyle(tag) : null;
     const titleStyle = title ? getComputedStyle(title) : null;
 
     assert(document.documentElement.scrollWidth <= window.innerWidth, 'document should not have horizontal overflow');
     assert(Boolean(hero && title && desc && tag), 'hero fixture elements should render');
-    assert(heroRect.height >= 320 && heroRect.height < 430, 'hero height should grow but stay bounded');
+    assert(heroRect.height >= 250 && heroRect.height < 520, 'hero height should grow but stay bounded');
+    assert(statusRect.top < heroRect.top, 'status/participants grid should render above hero');
     assert(tagRect.height <= 32, 'long tag should stay one compact line');
     assert(tagStyle?.whiteSpace === 'nowrap', 'long tag should use nowrap ellipsis');
     assert(titleStyle?.position === 'static', 'title should be in normal flow');
@@ -167,13 +170,14 @@ async function runSmoke(ws, appUrl) {
       assert(!intersects(titleRect, cardRect), 'title should not overlap info cards');
       assert(!intersects(descRect, cardRect), 'description should not overlap info cards');
     }
-    assert(nextRect.top >= heroRect.bottom - 1, 'content below hero should not be covered');
+    assert(nextRect.top >= heroRect.bottom - 1, 'chat card below hero should not be covered');
 
     return {
       ok: failures.length === 0,
       failures,
       viewport: { width: window.innerWidth, height: window.innerHeight },
       hero: { height: Math.round(heroRect.height), bottom: Math.round(heroRect.bottom) },
+      statusGrid: { top: Math.round(statusRect.top), bottom: Math.round(statusRect.bottom) },
       infoCards: infoCards.map(card => {
         const rect = card.getBoundingClientRect();
         return { left: Math.round(rect.left), right: Math.round(rect.right), top: Math.round(rect.top), bottom: Math.round(rect.bottom) };
@@ -228,12 +232,20 @@ async function runDesktopOverflowCheck(ws) {
     expression: `({
       viewportWidth: window.innerWidth,
       scrollWidth: document.documentElement.scrollWidth,
+      titleWidth: Math.round(document.getElementById('detail-title')?.getBoundingClientRect().width || 0),
+      titleHeight: Math.round(document.getElementById('detail-title')?.getBoundingClientRect().height || 0),
+      heroWidth: Math.round(document.querySelector('#task-detail .detail-redesign-hero')?.getBoundingClientRect().width || 0),
+      statusTop: Math.round(document.querySelector('#task-detail .detail-redesign-status-grid')?.getBoundingClientRect().top || 0),
+      heroTop: Math.round(document.querySelector('#task-detail .detail-redesign-hero')?.getBoundingClientRect().top || 0),
       ok: document.documentElement.scrollWidth <= window.innerWidth
     })`,
     returnByValue: true
   });
   const value = result.result?.value;
   if (!value?.ok) throw new Error(`desktop overflow check failed: scrollWidth ${value?.scrollWidth}, viewport ${value?.viewportWidth}`);
+  if (value.titleWidth < 300) throw new Error(`desktop title width too narrow: ${value.titleWidth}px`);
+  if (value.titleHeight > 120) throw new Error(`desktop title appears vertically wrapped: ${value.titleHeight}px`);
+  if (value.statusTop > value.heroTop) throw new Error(`status/participants grid should render above hero: statusTop ${value.statusTop}, heroTop ${value.heroTop}`);
   return value;
 }
 
