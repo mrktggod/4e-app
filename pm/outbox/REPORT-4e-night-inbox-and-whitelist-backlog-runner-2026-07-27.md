@@ -25,7 +25,7 @@ status: DONE
 
 ## Где проверить
 
-- App branch: `feat/admin-tariff-api`, pushed head `13827daa0e5ac2ad8d67c768c4bd683a39135a70`.
+- App classification commit before this closeout report: `13827daa0e5ac2ad8d67c768c4bd683a39135a70`.
 - Private docs branch: `feat/admin-tariff-api`, pushed head `c77a0979aac697c372694d415f36aaf9828d5ec7`.
 - Focused checks passed:
   - `node scripts/task-chat-confirm-action-smoke.mjs`
