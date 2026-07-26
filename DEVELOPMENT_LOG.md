@@ -1,3 +1,15 @@
+## 2026-07-27
+
+### DESIGN-GLASS-001 reference/inventory audit
+
+**What changed:** No runtime code changed. Added `pm/design-system-glass-inventory-2026-07-27.md` and appended a 2026-07-27 addendum to `pm/outbox/REPORT-BRIEF-2026-07-23-42-glass-design-system-foundation.md`. The audit confirms the existing foundation commit `0a538fe5dfd5623e1fbc6d5ce3e653a218ef5545`, current `--glass-*` tokens, `.ui-glass-*` primitives, and follow-up notification/task-detail/home slices. Current checkout lacks `pm/design-references/`, so visual reference evidence is marked `NEED-REFERENCE` for this pass.
+
+**Encoding check:** `index.html` was not edited; Step 0 did not apply. `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `git diff --check`; direct Git Bash `scripts/check-portable-paths.sh`; direct Git Bash `scripts/check-ui-architecture.sh`. `npm run check:portable-paths` and `npm run check:ui-architecture` could not start because `bash` is not on PATH in this shell.
+
+**Commit:** pending
+
 ## 2026-07-26
 
 ### VK task completion feedback

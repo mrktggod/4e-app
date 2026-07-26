@@ -6,6 +6,22 @@ DONE.
 
 Implemented the token/primitives foundation for `DESIGN-GLASS-001` without migrating runtime screens or changing app behavior.
 
+## 2026-07-27 Night Pass Addendum
+
+Current canonical checkout audited: `X:\Projects\4-ai-secretary\app`.
+
+Reference status for this pass: `NEED-REFERENCE` for local visual evidence. The directory `pm/design-references/` is absent in this checkout, so this pass does not claim new pixel-level matching against `glass-card-reference.png`.
+
+Existing implementation remains present and traceable:
+
+- foundation commit: `0a538fe5dfd5623e1fbc6d5ce3e653a218ef5545`;
+- current source still contains shared `--glass-*` tokens and `.ui-glass-*` primitive classes in `styles/variables.less`;
+- notification, task-detail, and home/focus slices are visible in source and git history.
+
+Added current inventory: `pm/design-system-glass-inventory-2026-07-27.md`.
+
+No runtime code was changed in this pass because the reference asset is missing locally and the worktree already has unrelated dirty changes in `AGENTS.md` and `index.html`.
+
 ## Reference
 
 - Image: `pm/design-references/glass-card-reference.png`
