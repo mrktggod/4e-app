@@ -68,8 +68,6 @@ html[data-theme="light"] body { background: #FFFFFF; color: var(--text); }
 .home-redesign { position: relative; padding-top: 8px; }
 .home-glow { position: fixed; top: -90px; left: 50%; width: 280px; height: 280px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle, rgba(154,194,60,0.13), transparent 68%); pointer-events: none; z-index: -1; }
 html[data-theme="light"] .home-glow { background: radial-gradient(circle, rgba(190,235,0,0.18), transparent 68%); }
-.home-logo-center { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 34px; height: 34px; margin: 4px auto 18px; }
-.home-logo-center .b { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #d9ff64, #9AC23C 55%, #526f19); box-shadow: 0 0 10px rgba(154,194,60,0.45); }
 .home-filter-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 14px; scrollbar-width: none; }
 .home-filter-tabs::-webkit-scrollbar { display: none; }
 .home-pill { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text2); font-weight: 600; font-size: 13px; }
@@ -311,7 +309,6 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 <div class="screen active" id="screen-home">
   <div class="home-redesign">
     <div class="home-glow"></div>
-    <div class="home-logo-center"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div>
 
     <div class="home-filter-tabs">
       <div class="home-pill active">● Сегодня</div>

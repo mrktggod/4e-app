@@ -29,6 +29,7 @@
         "smoke:vk-home-parity": "node scripts/vk-home-parity-smoke.mjs",
         "smoke:vk-profile-parity": "node scripts/vk-profile-parity-smoke.mjs",
         "smoke:vk-calendar-date-key": "node scripts/vk-calendar-date-key-smoke.mjs",
+        "smoke:vk-header-logo": "node scripts/vk-header-logo-smoke.mjs",
         "smoke:premium-task-denial": "node scripts/premium-task-action-denial-smoke.mjs",
         "smoke:task-chat-confirm": "node scripts/task-chat-confirm-action-smoke.mjs",
         "smoke:premium-voice-gate": "node scripts/premium-voice-gate-smoke.mjs",

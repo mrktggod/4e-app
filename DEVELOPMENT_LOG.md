@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### VK header duplicate logo
+
+**What changed:** VK home no longer renders a second centered 4-logo under the shared topbar. The VK shell keeps one product identity block in the sticky header.
+
+**Encoding check:** `index.html` was not edited for this whitelist task.
+
+**Test:** `npm run smoke:vk-header-logo`; `npm run test:e2e:vk`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `npm run check:portable-paths`; `npm run check:ui-architecture`.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### Task chat suggested-action confirm
 
 **What changed:** Task-detail chat suggested actions now use a stable fallback key when Worker messages have no `id`, so the confirm button can find its message. Edit action fields are canonicalized so description updates keep the supported `originalMsg` payload key, and impossible actions now fail with an explicit error path instead of returning silently.
