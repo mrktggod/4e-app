@@ -21,7 +21,7 @@ jobs:
         run: bash scripts/check-portable-paths.sh
       - name: Check tracked files for forbidden C-drive paths
         run: bash scripts/check-portable-paths.sh
-      - name: Check markdown encoding for pm/ and shared/
+      - name: Check markdown encoding for operational pm docs
         run: node scripts/check-doc-encoding.mjs
       - name: Check JS syntax
         run: npm run check:js-syntax

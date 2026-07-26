@@ -12617,7 +12617,7 @@ body:has(#ask.active) #global-nav,
   display: none !important;
 }
 /* Light redesign handoff mapping.
-   Source: X:\4\_design_extract_2026-07-19\light-handoffs
+   Source: light redesign handoff extract, 2026-07-19
    Intent: map existing handoff HTML visuals onto live app markup without replacing app handlers. */
 html[data-theme="light"] {
   --handoff-bg-top: #efede6;

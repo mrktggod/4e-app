@@ -1,5 +1,6 @@
-> 🔴 КАНОН ПРИЛОЖЕНИЯ — папка `.tmp-4e-app-publish`. Несмотря на префикс «tmp»,
-> это НЕ временная папка и её НЕЛЬЗЯ удалять. Канон воркера — `X:\4\4e-worker`.
+> 🔴 КАНОН ПРИЛОЖЕНИЯ — папка `X:\Projects\4-ai-secretary\app`.
+> Старый checkout `X:\4\.tmp-4e-app-publish` не трогать: не читать, не менять, не удалять.
+> Канон воркера остаётся отдельным репозиторием и не переносится в этом checkout.
 > Копии `4e-app`, `4e-bot-repo`, `src\bot`, `.tmp-4e-app-p0`,
 > `.tmp-docs-monetization-i18n` каноном не являются — в них не работать.
 > Файлы проекта на диске C: не хранятся (см. AGENTS.md, раздел «Диск»).
@@ -30,13 +31,10 @@
 ## Обязательно читать перед работой
 
 1. `DEVELOPMENT_LOG.md` — детальная история, критические правила, известные проблемы
-2. `shared/DEVELOPMENT_HISTORY.md` — архитектурные решения и ключевые компоненты
-3. `shared/WORK_LOG.md` — что делает команда прямо сейчас (все агенты)
-4. `pm/team-sync.md` — короткая синхронизация Алексея, Юрия, Codex и Claude
-5. `pm/bugs.md`, `shared/ROADMAP.md` и `pm/backlog.md` — текущий PM/QA-контур
-6. `docs/team-sync-protocol.md` — правила коротких статусов `Что там у Юры?` / `Что там у Лехи?`
-7. `docs/tasks/` — атомарные задачи от команды
-8. `docs/tasks/done/` — что уже сделано, если папка существует
+2. `https://github.com/mrktggod/4pm` — приватная бизнес-документация: roadmap, backlog, bugs, strategy, team sync
+3. `pm/inbox/` и `pm/outbox/` — операционный обмен брифами и отчётами
+4. `docs/tasks/` — атомарные задачи от команды и архив
+5. `docs/tasks/done/` — что уже сделано, если папка существует
 
 ---
 
@@ -126,9 +124,9 @@ GitHub Desktop — удобный вариант для Алексея и сла
 
 ### Team Sync — короткие статусы между Алексеем и Юрой
 
-Если Алексей спрашивает `Что там у Юры?` или `Дай статус проекта`, сначала читай `docs/team-sync-protocol.md`, затем `pm/team-sync.md`, `pm/backlog.md`, `pm/bugs.md`, `shared/ROADMAP.md`, `shared/WORK_LOG.md` и актуальное Git-состояние.
+Если Алексей спрашивает `Что там у Юры?` или `Дай статус проекта`, используй приватный репозиторий `https://github.com/mrktggod/4pm` для team sync, backlog, bugs, roadmap и work log, затем проверь актуальное Git-состояние app.
 
-Завершённая задача должна быть синхронизирована с GitHub: проверка, commit, push в рабочую ветку, обновление `pm/team-sync.md`, затем короткий отчёт с веткой, commit/PR и следующим шагом.
+Завершённая задача должна быть синхронизирована с GitHub: проверка, commit, push в рабочую ветку, обновление team sync в приватном `https://github.com/mrktggod/4pm`, затем короткий отчёт с веткой, commit/PR и следующим шагом.
 
 Merge в `main` не является частью автоматического завершения задачи и требует отдельного подтверждения Алексея или Юрия.
 
@@ -142,7 +140,7 @@ Merge в `main` не является частью автоматическог�
 3. Попросить мнение Юрия / Claude, если решение влияет на продукт, стратегию или процесс команды.
 4. Сформулировать взвешенную рекомендацию.
 5. Получить явное решение Алексея.
-6. Только после этого закреплять правило в `shared/ROADMAP.md`, `pm/backlog.md` или инструкциях.
+6. Только после этого закреплять правило в приватном `https://github.com/mrktggod/4pm` или инструкциях.
 
 Исключение: срочный P0/P1 инцидент можно решать быстрее, но всё равно с явным подтверждением человека и записью в лог после факта.
 
@@ -151,7 +149,7 @@ Merge в `main` не является частью автоматическог�
 - После `git reset --hard` нужен `git push --force`
 - Конфликты при `git revert` → `git revert --abort` + `git reset --hard <hash>`
 - Перед правкой `index.html` — резервная копия: `Copy-Item "index.html" "index.backup_$(Get-Date -f yyyyMMdd_HHmm).html"`
-- Заголовки коммитов писать по `shared/COMMIT_CONVENTION.md`: `type(scope): что изменилось`
+- Заголовки коммитов писать по правилам из приватного `https://github.com/mrktggod/4pm/blob/feat/admin-tariff-api/shared/COMMIT_CONVENTION.md`: `type(scope): что изменилось`
 - Не использовать заголовки вроде `fix`, `update`, `правки`, `final`
 
 ### PowerShell
@@ -167,8 +165,8 @@ Merge в `main` не является частью автоматическог�
 | `index.html` | Telegram Mini App (редизайн санкционирован 2026-06-20) |
 | `vk.html` | VK Mini App — устаревший, будет заменён 08_vk_adapter.js |
 | `privacy.html` | Политика конфиденциальности — готова к деплою через git push |
-| `shared/` | Общие логи, история и roadmap команды |
-| `pm/` | Баги, backlog, QA, release checklist |
+| `https://github.com/mrktggod/4pm` | Приватные общие логи, история, roadmap, backlog, bugs, QA, release checklist |
+| `pm/inbox`, `pm/outbox` | Операционный обмен брифами и отчётами |
 | `4e-worker/worker.js` | Cloudflare Worker — отдельный репозиторий, локально не подключён |
 | `4e-bot` | Telegram бот — отдельный репозиторий `mrktggod/4e-bot`, локально не подключён |
 
@@ -183,7 +181,7 @@ Merge в `main` не является частью автоматическог�
 
 Обязательно добавь записи в **оба** файла:
 
-### 1. `shared/WORK_LOG.md` — краткая запись для команды
+### 1. `4pm/shared/WORK_LOG.md` — краткая запись для команды
 
 ```markdown
 ### YYYY-MM-DD — Codex
@@ -211,7 +209,7 @@ Merge в `main` не является частью автоматическог�
 **Коммит:** хэш или сообщение
 ```
 
-Также добавь краткую запись в `shared/WORK_LOG.md`:
+Также добавь краткую запись в приватный `4pm/shared/WORK_LOG.md`:
 
 ```markdown
 ### YYYY-MM-DD — Codex
@@ -223,7 +221,7 @@ Merge в `main` не является частью автоматическог�
 **Следующий шаг:** (если есть)
 ```
 
-Если задача связана с багами, QA или планированием — обнови соответствующий файл в `pm/`.
+Если задача связана с багами, QA или планированием — обнови соответствующий файл в приватном `https://github.com/mrktggod/4pm`.
 
 ---
 
@@ -233,8 +231,7 @@ Merge в `main` не является частью автоматическог�
 
 Актуальные источники приоритетов:
 - `pm/inbox/` — входящие BRIEF-*.md по протоколу inbox, сначала `status: NEW` по имени файла;
-- `pm/backlog.md` — текущий Now/Next backlog после закрытия inbox;
-- `shared/ROADMAP.md` — текущий горизонт roadmap и продуктовые ограничения.
+- `https://github.com/mrktggod/4pm` — текущий Now/Next backlog, roadmap и продуктовые ограничения.
 
 Redesign soft-glass cutover идёт только через актуальные согласованные ветки/брифы и NEED-YURI stop point, не через старые `redesign/patches`.
 ---
@@ -254,12 +251,16 @@ Secrets must never be written to code, chat, logs, or reports. Use environment v
 
 ## Диск: проект живёт только на X:
 
-- Канон проекта — `X:\4`. Любые файлы проекта (код, docs, pm, скрипты, бэкапы, worktree, временные деревья) создаются и читаются ТОЛЬКО внутри `X:\4`.
+- Канон app — `X:\Projects\4-ai-secretary\app`. Любые файлы app (код, операционные `pm/inbox`, `pm/outbox`, `docs/tasks`, скрипты, бэкапы, worktree, временные деревья) создаются и читаются только внутри `X:\Projects\4-ai-secretary\app`.
 - Диск C: для файлов проекта не используется. Папка `Documents\4` на диске C ликвидирована 2026-07-25 и не воссоздаётся ни при каких условиях.
 - В коде, конфигах и скриптах запрещены абсолютные пути, начинающиеся с `C:\`. Инструменты (wrangler, node, npm) вызывать через PATH, не по абсолютному пути.
 - Исключение: собственные данные приложений (Claude, Codex, npm) на C: — это не файлы проекта, правило их не касается.
 - Нарушение = СТОП. Сессия не продолжает работу: фиксирует расхождение в REPORT и ставит NEED-YURI.
 Always run `node scripts/check-cp1251-mojibake.mjs` before each app commit and require exit code 0. Do not weaken `.gitattributes`, do not add BOM, use fresh test accounts, avoid Yuri's personal data, keep changes narrow, and include raw evidence in reports. For security fixes, perform a live exploit re-test; code reading alone is not enough.
+
+## Бизнес-документация
+
+Бизнес-документация (roadmap/backlog/bugs/strategy) переехала в приватный репозиторий https://github.com/mrktggod/4pm, 2026-07-26. В этом репозитории остаются только pm/inbox, pm/outbox (обмен брифами) и docs/tasks (архив).
 
 PM file protocol:
 
@@ -276,7 +277,7 @@ If a brief conflicts with `AGENTS.md`, set the brief to `BLOCKED`, explain the c
 At the 23:00 autonomous run, use this order of work:
 
 1. First process `pm/inbox/BRIEF-*.md` files whose first line is `status: NEW`, oldest filename first. Do not treat `BRIEF-TEMPLATE.md` or `README.md` as tasks.
-2. When the inbox has no `NEW` briefs, choose tasks from `pm/backlog.md` and `shared/ROADMAP.md` only when they are explicitly inside the whitelist below.
+2. When the inbox has no `NEW` briefs, choose tasks from the private `https://github.com/mrktggod/4pm` backlog and roadmap only when they are explicitly inside the whitelist below.
 3. One task equals one commit on `feat/admin-tariff-api` plus one matching `pm/outbox/REPORT-*.md`.
 4. Continue while there are eligible tasks and local limits allow it, then finish with a final report.
 

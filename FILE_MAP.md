@@ -1,5 +1,5 @@
-> 🔴 КАНОН ПРИЛОЖЕНИЯ — папка `.tmp-4e-app-publish`. Несмотря на префикс «tmp»,
-> это НЕ временная папка и её НЕЛЬЗЯ удалять. Канон воркера — `X:\4\4e-worker`.
+> 🔴 КАНОН ПРИЛОЖЕНИЯ — папка `X:\Projects\4-ai-secretary\app`.
+> Старый checkout `X:\4\.tmp-4e-app-publish` не трогать.
 > Копии `4e-app`, `4e-bot-repo`, `src\bot`, `.tmp-4e-app-p0`,
 > `.tmp-docs-monetization-i18n` каноном не являются — в них не работать.
 > Файлы проекта на диске C: не хранятся (см. AGENTS.md, раздел «Диск»).
@@ -14,7 +14,7 @@
 | Mini App UI | В этом репозитории | `FILE_MAP_UI.md` |
 | Cloudflare Worker | Отдельный репозиторий, локально не подключён | `FILE_MAP_WORKER.md` |
 | Telegram bot | Отдельный репозиторий `mrktggod/4e-bot`, локально не подключён | `FILE_MAP_BOT.md` |
-| PM / QA документы | В этом репозитории, папка `pm/` | Этот файл + документы в `pm/` |
+| PM / QA документы | Приватный репозиторий `mrktggod/4pm`; здесь только `pm/inbox`, `pm/outbox`, `docs/tasks` | `https://github.com/mrktggod/4pm` |
 
 ## Основные файлы
 
@@ -29,13 +29,7 @@
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
 | `DEVELOPMENT_LOG.md` | 3143 | Канонический технический лог | Обновлять после значимых правок |
-| `shared/ROADMAP.md` | 222 | Единственный roadmap продукта: стратегия, горизонты, решения, Now / Next / Later | Читать при планировании |
-| `shared/WORK_LOG.md` | 10565 | Общий журнал задач команды | Обновлять после выполненной задачи |
-| `shared/COMMIT_CONVENTION.md` | 64 | Правила понятных заголовков коммитов | Читать перед коммитом |
-| `docs/git-team-rules.md` | 104 | Git-процесс команды: ветки, commit, push/merge, согласование рисков | Читать при push/merge/ветках |
-| `docs/team-sync-protocol.md` | 169 | Team Sync: ключевые фразы `Что там у Лехи?` / `Что там у Юры?`, commit/push и отчёты | Читать при синхронизации Алексея и Юрия |
-| `docs/ui-architecture-rules.md` | 44 | UI-правило: HTML=структура, LESS=стили, JS=поведение, BEM и legacy policy | Читать перед UI-правками |
-| `docs/archive/2026-06-pre-beta/` | 70 files | Архив старого pre-beta docs-дерева: `CODEX-001..058`, June roadmaps/audits, migration notes, secrets inventory and `MIMO_*`; current roadmap stays in `shared/ROADMAP.md` | Historical reference only; do not use as active task source without Yuri decision |
+| `https://github.com/mrktggod/4pm` | n/a | Приватные roadmap, work log, commit convention, PM/QA, team sync и бизнес-документация | Читать при планировании и PM/QA задачах |
 | `scripts/platform-adapter.js` | 1208 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
 | `scripts/auth-handlers.js` | 696 | Auth and preview-demo handlers: login/register flows, dashboard preview routing, and preview-only state flags for visual QA | Read narrow preview/auth ranges before changing login or preview behavior |
 | `scripts/check-portable-paths.sh` | 24 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
@@ -78,21 +72,17 @@
 | `autotests/tests/telegram-app/basic.spec.ts` | 34 | Playwright Telegram Mini App smoke with mocked `window.Telegram.WebApp` | Run with `npm run test:e2e:telegram` |
 | `autotests/tests/vk-app/basic.spec.ts` | 168 | Playwright VK Mini App smoke with mocked `window.vkBridge`, saved token, mocked Worker auth/tasks/identities, and home/detail/ask/calendar/stats/profile navigation parity | Run with `npm run test:e2e:vk` before changing VK shell, task rendering, or safe VK navigation |
 | `autotests/load/smoke-load.js` | 20 | k6 local/static load smoke for `/index.html`, `/vk.html`, `/privacy.html` | Run with `npm run load:smoke`; set `BASE_URL`, `K6_VUS`, `K6_DURATION` explicitly for staging |
-| `docs/qa/autotest-agent-playbook.md` | 101 | Agent-facing rules for when and how to use Playwright, k6, `qa:prebeta` and existing smoke tests | Read before UI/QA/night automation work |
-| `pm/autotest-backlog-coverage-2026-07-23.md` | 102 | Backlog coverage map: what autotests can replace, reduce, or cannot cover | Read when choosing QA/night/autonomous tasks |
+| `https://github.com/mrktggod/4pm` | n/a | Приватные QA playbook и backlog coverage docs | Read before UI/QA/night automation work |
 | `scripts/run-bash-script.mjs` | 29 | Cross-Windows npm wrapper for Git Bash based shell guards | Used by `npm run check:portable-paths` and `npm run check:ui-architecture` |
 
 ## PM / QA
 
 | Файл | Назначение |
 | --- | --- |
-| `pm/bugs.md` | Сбор багов, входящие, активные, отчёт для разработки |
-| `pm/backlog.md` | Фичи, улучшения, техзадачи |
-| `pm/qa-checklist.md` | Smoke, regression areas, acceptance criteria |
-| `pm/release-checklist.md` | Проверки до/после релиза |
-| `pm/assistant-evaluation.md` | Рубрика оценки качества AI-ассистента |
-| `pm/agent-inbox/` | Короткие запросы между Codex, Claude Юры и командой до утверждения решений |
-| `pm/next-actions.md` | Ближайший рабочий план: Git-процесс, QA, legal/infra blockers, закрытый тест, монетизация |
+| `https://github.com/mrktggod/4pm` | Приватные bugs, backlog, QA checklist, release checklist, assistant evaluation, agent inbox, next actions |
+| `pm/inbox/` | Входящие операционные BRIEF-файлы |
+| `pm/outbox/` | Операционные REPORT-файлы |
+| `docs/tasks/` | Архив атомарных задач |
 
 ## Правила чтения больших файлов
 

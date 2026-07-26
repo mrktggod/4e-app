@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const targets = ["pm", "shared"]
+const targets = ["pm/inbox", "pm/outbox", "docs/tasks"]
   .flatMap((dir) => {
     const root = path.join(process.cwd(), dir);
     return fs.existsSync(root)
@@ -14,7 +14,7 @@ const targets = ["pm", "shared"]
   });
 
 if (targets.length === 0) {
-  console.log("No Markdown files found under pm/ or shared/.");
+  console.log("No operational Markdown files found under pm/inbox, pm/outbox, or docs/tasks.");
   process.exit(0);
 }
 
@@ -39,4 +39,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(`Markdown encoding check passed for ${targets.length} files in pm/ and shared/.`);
+console.log(`Markdown encoding check passed for ${targets.length} operational Markdown files.`);

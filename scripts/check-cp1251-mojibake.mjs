@@ -31,7 +31,7 @@ for (let byte = 0; byte < cp1251Forward.length; byte += 1) {
 
 const cyrillicPattern = /\p{Script=Cyrillic}/u;
 const tokenPattern = /[^\t\n\r <>"'`=(){}[\],;]+/gu;
-const targetPattern = /index\.html$|scripts[\\/].*\.(?:js|mjs|cjs)$|(?:pm|shared)[\\/].*\.md$/i;
+const targetPattern = /index\.html$|scripts[\\/].*\.(?:js|mjs|cjs)$|(?:pm[\\/](?:inbox|outbox)|docs[\\/]tasks)[\\/].*\.md$/i;
 
 function walkDir(dirPath, output = []) {
   for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
@@ -43,9 +43,10 @@ function walkDir(dirPath, output = []) {
 }
 
 function collectTargets() {
-  const roots = ['index.html', 'scripts', 'pm', 'shared'];
+  const roots = ['index.html', 'scripts', 'pm/inbox', 'pm/outbox', 'docs/tasks'];
   const files = [];
   for (const root of roots) {
+    if (!fs.existsSync(root)) continue;
     const stat = fs.statSync(root);
     if (stat.isDirectory()) files.push(...walkDir(root));
     else files.push(root);
@@ -137,10 +138,11 @@ function* buildCandidateStrings() {
   yield '\u{1F4C5}';
 }
 
+const allowedFragments = new Set(['\u0422\u0451']);
 const fragmentFixMap = new Map();
 for (const candidate of buildCandidateStrings()) {
   const mojibake = toMojibakeFragment(candidate);
-  if (mojibake !== candidate && /[^\x00-\x7F]/.test(mojibake)) {
+  if (mojibake !== candidate && /[^\x00-\x7F]/.test(mojibake) && !allowedFragments.has(mojibake)) {
     fragmentFixMap.set(mojibake, candidate);
   }
 }
