@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### Task detail glass layout restore
+
+**What changed:** Task detail now renders the participants/status grid above the main hero card. The hero card returns date and priority controls to normal document flow and lets title/description use the available card width, preventing overlap with meta controls.
+
+**Encoding check:** `index.html` was not edited for this brief.
+
+**Test:** `npm run build:css`; `npm run smoke:back069-hero` passed with explicit `CHROME_PATH`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `npm run check:portable-paths`; `npm run check:ui-architecture`.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### Calendar task row clickability
 
 **What changed:** Calendar deadline rows now share delegated `data-cal-task-id` routing to existing task detail, including Enter/Space keyboard activation and visible cursor/focus states. The old mixed default/selected-day row behavior was unified without adding a new calendar model.

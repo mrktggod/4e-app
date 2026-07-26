@@ -7530,6 +7530,72 @@ body:has(#task-detail.active) #global-nav,
     -webkit-backdrop-filter: none !important;
   }
 }
+/* BRIEF-2026-07-25-73: final order restore for task detail glass layout. */
+#task-detail .detail-redesign-scroll {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+#task-detail .detail-redesign-status-grid {
+  order: -1 !important;
+  margin-bottom: 0 !important;
+}
+#task-detail .detail-redesign-hero {
+  height: auto !important;
+  min-height: 250px !important;
+  max-height: none !important;
+  flex: 0 0 auto !important;
+  padding: 18px !important;
+}
+#task-detail .detail-redesign-title,
+#task-detail .detail-redesign-desc,
+#task-detail .detail-redesign-tags,
+#task-detail .detail-status-row,
+#task-detail .detail-top-tag-input,
+#task-detail .detail-redesign-hero > *:not(.detail-date-popover):not(.detail-priority-popover):not(.detail-reminder-popover) {
+  width: 100% !important;
+  max-width: 100% !important;
+  inline-size: auto !important;
+  max-inline-size: none !important;
+}
+#task-detail .detail-info-stack {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin: 12px 0 0 !important;
+}
+#task-detail .detail-info-card {
+  min-height: 58px !important;
+}
+#task-detail .detail-redesign-title {
+  margin-top: 16px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  -webkit-line-clamp: unset !important;
+}
+#task-detail .detail-redesign-desc {
+  min-height: 72px !important;
+  height: auto !important;
+  max-height: none !important;
+}
+#task-detail .detail-date-popover,
+#task-detail .detail-priority-popover {
+  right: 0 !important;
+}
+@media (max-width: 390px) {
+  #task-detail .detail-redesign-hero {
+    min-height: 250px !important;
+    padding: 16px !important;
+  }
+  #task-detail .detail-info-stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+}
 .profile-stage {
   min-height: 100%;
   background: radial-gradient(circle at 50% -6%, rgba(171, 220, 72, 0.15), transparent 30%), linear-gradient(180deg, rgba(16, 30, 16, 0.95), rgba(3, 15, 8, 0.98) 58%, #020a05);

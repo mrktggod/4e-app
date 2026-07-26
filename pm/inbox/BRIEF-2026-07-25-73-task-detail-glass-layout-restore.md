@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-25-73-task-detail-glass-layout-restore
 
@@ -31,4 +31,3 @@ Restore task detail to the agreed glass layout without title/meta overlap. Keep 
 ## Report
 
 Write `pm/outbox/REPORT-BRIEF-2026-07-25-73-task-detail-glass-layout-restore.md`.
-
