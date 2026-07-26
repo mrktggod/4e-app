@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-07-26-79-night-session-misha-product-triage-and-release-prep
 
