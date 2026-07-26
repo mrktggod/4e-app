@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-26-80-landing-site-plan
 
