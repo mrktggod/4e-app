@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### Task chat suggested-action confirm
+
+**What changed:** Task-detail chat suggested actions now use a stable fallback key when Worker messages have no `id`, so the confirm button can find its message. Edit action fields are canonicalized so description updates keep the supported `originalMsg` payload key, and impossible actions now fail with an explicit error path instead of returning silently.
+
+**Encoding check:** `index.html` markers checked after the edit: 114 matches for `Войти|Задачи|Сегодня`; `node scripts/check-cp1251-mojibake.mjs` passed.
+
+**Test:** `npm run smoke:task-chat-confirm`; `npm run smoke:ask-action-preview`; `npm run smoke:premium-task-denial`; `npm run check:js-syntax`; `npm run check:portable-paths`; `npm run check:ui-architecture`.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### Task detail glass layout restore
 
 **What changed:** Task detail now renders the participants/status grid above the main hero card. The hero card returns date and priority controls to normal document flow and lets title/description use the available card width, preventing overlap with meta controls.

@@ -5556,17 +5556,18 @@ function renderTaskChatMessages(){
     list.textContent='Обсуждения пока нет';
     return;
   }
-  list.innerHTML=currentTaskMessages.map(function(message){
+  list.innerHTML=currentTaskMessages.map(function(message,index){
     const role=message.role==='assistant'?'assistant':'user';
     const bubbleClass=role==='assistant'?'bubble-ai':'bubble-user';
+    const messageKey=getTaskChatMessageKey(message,index);
     const author=role==='assistant'?'4':(message.from||currentUser?.name||'Вы');
     const body=role==='assistant'
       ? '<div class="md-body">'+parseMarkdown(String(message.content||''))+'</div>'
       : String(e2(message.content||'')).replace(/\n/g,'<br>');
     const actions=Array.isArray(message.actions)?message.actions:[];
     const alreadyApplied=actions.length?taskChatActionsAlreadyApplied(actions):false;
-    const preview=role==='assistant'&&!dismissedTaskActionMessageIds.has(message.id)&&actions.length
-      ? '<div class="sub-card" style="margin-top:10px;padding:10px 12px;background:var(--card2)"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Предлагаемые действия</div><div style="display:flex;flex-direction:column;gap:6px">'+actions.map(function(action){return '<div class="task-history-row">'+e2(describeTaskChatAction(action))+'</div>';}).join('')+'</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button onclick="confirmTaskChatActions(\''+esc(message.id)+'\')" style="background:var(--green);border:none;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--bg)">'+(alreadyApplied?'Уже выполнено':'Подтвердить')+'</button><button onclick="dismissTaskChatActions(\''+esc(message.id)+'\')" style="background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--text2)">Не сейчас</button></div></div>'
+    const preview=role==='assistant'&&!dismissedTaskActionMessageIds.has(messageKey)&&actions.length
+      ? '<div class="sub-card ask-action-card"><div class="ask-action-label">Предлагаемые действия</div><div class="ask-action-list">'+actions.map(function(action){return '<div class="task-history-row">'+e2(describeTaskChatAction(action))+'</div>';}).join('')+'</div><div class="ask-action-controls"><button class="ask-action-btn ask-action-btn--primary" onclick="confirmTaskChatActions(\''+esc(messageKey)+'\')">'+(alreadyApplied?'Уже выполнено':'Подтвердить')+'</button><button class="ask-action-btn ask-action-btn--secondary" onclick="dismissTaskChatActions(\''+esc(messageKey)+'\')">Не сейчас</button></div></div>'
       : '';
     return '<div class="'+bubbleClass+'">'+body+preview+'</div><div class="task-history-row">'+e2(author)+' · '+e2(formatHistoryDate(message.ts)||'сейчас')+'</div>';
   }).join('');
@@ -5577,6 +5578,14 @@ function renderTaskChatMessages(){
 const AI_TASK_ACTION_TYPES=['show','complete','reschedule','edit','remind'];
 function isAllowedAiTaskActionType(type){
   return AI_TASK_ACTION_TYPES.includes(String(type||'').trim().toLowerCase());
+}
+
+function normalizeAiTaskActionField(field){
+  const key=String(field||'').trim();
+  const lower=key.toLowerCase();
+  if(['text','person','priority','status'].includes(lower)) return lower;
+  if(['originalmsg','original_msg','description','desc'].includes(lower)) return 'originalMsg';
+  return '';
 }
 
 function normalizeTaskChatActions(actions){
@@ -5591,7 +5600,7 @@ function normalizeTaskChatActions(actions){
       return deadline?{type:'reschedule',deadline}:null;
     }
     if(type==='edit'){
-      const field=String(item.field||'').trim().toLowerCase();
+      const field=normalizeAiTaskActionField(item.field);
       const value=String(item.value||'').trim();
       return field&&value?{type:'edit',field,value}:null;
     }
@@ -5639,7 +5648,14 @@ function taskChatActionsAlreadyApplied(actions){
 }
 
 function findTaskChatMessage(messageId){
-  return currentTaskMessages.find(function(message){return String(message.id||'')===String(messageId||'');})||null;
+  const id=String(messageId||'');
+  return currentTaskMessages.find(function(message,index){return getTaskChatMessageKey(message,index)===id;})||null;
+}
+
+function getTaskChatMessageKey(message,index){
+  const explicit=message&&(message.id||message.messageId||message.uuid);
+  if(explicit) return String(explicit);
+  return 'task-chat-message-'+String(index);
 }
 
 function dismissTaskChatActions(messageId){
@@ -5688,7 +5704,9 @@ async function postTaskChatMutation(actionName, payload){
 }
 
 async function applyTaskChatAction(action){
-  if(!action||!currentTaskId||!getToken()) return;
+  if(!action) throw new Error('No task chat action to apply');
+  if(!currentTaskId) throw new Error('No current task selected');
+  if(!getToken()) throw new Error('Login is required to apply task chat actions');
   if(action.type==='show'){
     if(action.target==='history'){
       switchDetailTab('history',document.getElementById('tab-history'));
@@ -5707,14 +5725,16 @@ async function applyTaskChatAction(action){
   }
   if(action.type==='edit'){
     const allowedFields=['text','person','priority','originalMsg','status'];
-    if(!allowedFields.includes(action.field)) return;
+    if(!allowedFields.includes(action.field)) throw new Error('Unsupported task update field');
     await postTaskChatMutation('update-task',{chatId,taskId:currentTaskId,updates:{[action.field]:action.value}});
     return;
   }
   if(action.type==='remind'){
     await postTaskChatMutation('update-task',{chatId,taskId:currentTaskId,updates:{reminder:action.reminderType}});
     await setReminderOnWorker(currentTaskId,currentDetailTask?.text||'',currentDetailTask?.deadline||currentDetailTask?.time||'',action.reminderType);
+    return;
   }
+  throw new Error('Unsupported task chat action');
 }
 
 async function loadTaskChat(){
@@ -6614,7 +6634,7 @@ function normalizeAskActions(actions){
       return deadline?{type:'reschedule',taskId,deadline}:null;
     }
     if(type==='edit'){
-      const field=String(item.field||'').trim().toLowerCase();
+      const field=normalizeAiTaskActionField(item.field);
       const value=String(item.value||'').trim();
       return field&&value?{type:'edit',taskId,field,value}:null;
     }

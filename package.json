@@ -30,6 +30,7 @@
         "smoke:vk-profile-parity": "node scripts/vk-profile-parity-smoke.mjs",
         "smoke:vk-calendar-date-key": "node scripts/vk-calendar-date-key-smoke.mjs",
         "smoke:premium-task-denial": "node scripts/premium-task-action-denial-smoke.mjs",
+        "smoke:task-chat-confirm": "node scripts/task-chat-confirm-action-smoke.mjs",
         "smoke:premium-voice-gate": "node scripts/premium-voice-gate-smoke.mjs",
         "smoke:voice-consent-checkbox": "node scripts/voice-consent-checkbox-smoke.mjs",
         "smoke:voice-exit-controls": "node scripts/voice-exit-controls-smoke.mjs",
