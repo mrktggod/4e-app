@@ -5574,11 +5574,17 @@ function renderTaskChatMessages(){
   if(currentTask) renderTaskHistory(currentTask);
 }
 
+const AI_TASK_ACTION_TYPES=['show','complete','reschedule','edit','remind'];
+function isAllowedAiTaskActionType(type){
+  return AI_TASK_ACTION_TYPES.includes(String(type||'').trim().toLowerCase());
+}
+
 function normalizeTaskChatActions(actions){
   if(!Array.isArray(actions)) return [];
   return actions.map(function(item){
     if(!item||typeof item!=='object') return null;
     const type=String(item.type||'').trim().toLowerCase();
+    if(!isAllowedAiTaskActionType(type)) return null;
     if(type==='complete') return {type:'complete'};
     if(type==='reschedule'){
       const deadline=String(item.deadline||'').trim();
@@ -5756,6 +5762,7 @@ function buildTaskChatPrompt(userText){
     history ? 'История обсуждения:\n'+history : '',
     'Новое сообщение пользователя: '+sanitizeTaskForPrompt(userText),
     'Если уместно, предложи конкретные действия только из списка: complete, reschedule, edit, remind, show.',
+    'Если пользователь просит удалить, убрать или стереть задачу, не создавай actions: ответь текстом, что удаление через чат пока недоступно, и предложи открыть задачу и использовать меню задачи.',
     'Верни JSON без markdown по схеме {"reply":"краткий ответ пользователю","actions":[{"type":"complete"},{"type":"reschedule","deadline":"2026-07-08T10:00"},{"type":"edit","field":"person","value":"Алексей"},{"type":"remind","reminderType":"1h"},{"type":"show","target":"history"}]}.',
     'Если действий не нужно, верни пустой массив actions.'
   ].filter(Boolean).join('\n\n');
@@ -6597,6 +6604,7 @@ function normalizeAskActions(actions){
   return actions.map(function(item){
     if(!item||typeof item!=='object') return null;
     const type=String(item.type||'').trim().toLowerCase();
+    if(!isAllowedAiTaskActionType(type)) return null;
     const taskId=String(item.taskId||'').trim();
     if(type==='show') return taskId?{type:'show',taskId}:null;
     if(!taskId) return null;
@@ -6900,6 +6908,7 @@ async function sendAsk(){
     if(factsSummary) systemParts.push(factsSummary);
     systemParts.push(taskSummary);
     systemParts.push('Если пользователь просит изменить или открыть существующие задачи, добавь в конец ответа тег <task_actions>[...]</task_actions> без markdown. Формат action: {"type":"complete|reschedule|edit|remind|show","taskId":"id задачи","deadline":"2026-07-08T10:00","field":"text|person|priority|originalMsg|status","value":"...","reminderType":"15m|1h|1d"}. Если действий нет, тег не добавляй.');
+    systemParts.push('Удаление задач через AI-чат пока недоступно: если пользователь просит удалить, убрать или стереть задачу/задачи, ответь обычным текстом с отказом и предложи открыть задачу и использовать меню задачи. Не добавляй <task_actions> для таких запросов.');
     systemParts.push('Если пользователь просит создать задачу через <create_task>, поле text должно быть коротким самостоятельным заголовком 3-9 слов без вводных вроде "я", "мне надо", "тебе надо"; originalMsg сохраняет полную исходную фразу. Не теряй исполнителя и срок.');
     const r=await fetch(WORKER + '/anthropic',{
       method:'POST',
