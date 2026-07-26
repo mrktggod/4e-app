@@ -35,6 +35,8 @@ jobs:
           node-version: 20
 
       - name: Build whitelist artifact
+        env:
+          PWA_VERSION: ${{ github.sha }}-${{ github.run_attempt }}
         run: node scripts/build-pages-whitelist.mjs
 
       - name: Assert production worker URL in artifact

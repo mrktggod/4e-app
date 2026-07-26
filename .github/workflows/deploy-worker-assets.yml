@@ -1,0 +1,63 @@
+name: Deploy Worker Assets
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: worker-assets
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build Worker assets
+        env:
+          PWA_VERSION: ${{ github.sha }}-${{ github.run_attempt }}
+        run: npm run build:worker-assets
+
+      - name: Assert production worker URL in artifact
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = '.pages-dist/index.html';
+          const html = fs.readFileSync(path, 'utf8');
+          if (!html.includes("https://edge.4-ai.site")) {
+            throw new Error(`Artifact ${path} does not point to https://edge.4-ai.site`);
+          }
+          const forbidden = [
+            'workers.dev',
+            'restless-lab-d737-staging',
+            '4-ai-staging.pages.dev',
+            'mrktggod.github.io/4e-app'
+          ];
+          for (const marker of forbidden) {
+            if (html.includes(marker)) {
+              throw new Error(`Artifact ${path} still contains forbidden marker: ${marker}`);
+            }
+          }
+          NODE
+
+      - name: Deploy Cloudflare Worker Static Assets
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          command: deploy

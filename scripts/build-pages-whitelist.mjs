@@ -1,4 +1,5 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 
 const repoRoot = process.cwd();
@@ -52,6 +53,47 @@ for (const relPath of optionalPaths) {
 }
 
 writeFileSync(resolve(outDir, ".nojekyll"), "");
+
+function sanitizeVersion(value) {
+  return value.trim().replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+function getGitSha() {
+  try {
+    return execFileSync("git", ["rev-parse", "--short=12", "HEAD"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    return "";
+  }
+}
+
+function buildPwaVersion() {
+  const explicit = process.env.PWA_VERSION || process.env.BUILD_PWA_VERSION;
+  if (explicit && sanitizeVersion(explicit)) return sanitizeVersion(explicit);
+
+  const sha = sanitizeVersion((process.env.GITHUB_SHA || getGitSha()).slice(0, 12)) || "local";
+  const runAttempt = sanitizeVersion(process.env.GITHUB_RUN_ATTEMPT || "");
+  const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, "Z").replace(/[:]/g, "");
+  return sanitizeVersion(["build", sha, runAttempt || timestamp].join("-"));
+}
+
+const swPath = resolve(outDir, "sw.js");
+if (existsSync(swPath)) {
+  const pwaVersion = buildPwaVersion();
+  const swSource = readFileSync(swPath, "utf8");
+  const patchedSw = swSource.replace(
+    /const PWA_VERSION = "([^"]+)";/,
+    `const PWA_VERSION = "${pwaVersion}";`,
+  );
+  if (patchedSw === swSource) {
+    throw new Error("Unable to patch PWA_VERSION in sw.js");
+  }
+  writeFileSync(swPath, patchedSw);
+  console.log(`PWA version: ${pwaVersion}`);
+}
 
 const indexPath = resolve(outDir, "index.html");
 const prodWorkerResolver = "const WORKER='https://edge.4-ai.site';";
