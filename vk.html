@@ -1361,7 +1361,7 @@ async function loadTasks() {
     const res = await fetch(url, { headers: state.token ? { 'x-token': state.token } : {} });
     const data = await res.json();
     state.tasks = Array.isArray(data) ? data : (Array.isArray(data.tasks) ? data.tasks : []);
-  } catch(e) { state.tasks = []; }
+  } catch(e) { if (!Array.isArray(state.tasks)) state.tasks = []; }
   renderTasks();
   buildStats();
 }
@@ -1372,6 +1372,33 @@ async function doneTask(id) {
     await loadTasks();
     showToast('Выполнено!');
   } catch(e) { showToast('Ошибка'); }
+}
+
+function markTaskDoneLocal(id) {
+  const taskId = String(id || '');
+  const task = state.tasks.find((item) => String(item?.id || '') === taskId);
+  if (!task) return;
+  task.done = true;
+  task.completedAt = task.completedAt || new Date().toISOString();
+  renderTasks();
+  buildStats();
+}
+
+async function doneTask(id) {
+  const taskId = String(id || '').trim();
+  if (!taskId) { showToast('Не удалось завершить задачу'); return false; }
+  try {
+    const res = await fetch(WORKER, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-action': 'done-task', ...(state.token ? { 'x-token': state.token } : {}) }, body: JSON.stringify({ taskId }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data?.ok === false) throw new Error(data?.error || 'done-task failed');
+    markTaskDoneLocal(taskId);
+    await loadTasks();
+    showToast('Готово');
+    return true;
+  } catch(e) {
+    showToast('Не удалось завершить задачу');
+    return false;
+  }
 }
 
 const HOME_PRIORITY_WEIGHTS = { urgent: 4, high: 3, normal: 2, low: 1 };

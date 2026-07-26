@@ -1,5 +1,17 @@
 ## 2026-07-26
 
+### VK task completion feedback
+
+**What changed:** VK task completion now treats non-OK Worker responses as failures, shows a clear failure toast, returns a boolean result, and marks the task completed locally after a successful response before refreshing from the Worker.
+
+**Encoding check:** `index.html` was not edited for this whitelist task.
+
+**Test:** `npm run smoke:vk-task-complete`; `npm run test:e2e:vk`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `npm run check:portable-paths`; `npm run check:ui-architecture`.
+
+**Commit:** this commit
+
+## 2026-07-26
+
 ### VK header duplicate logo
 
 **What changed:** VK home no longer renders a second centered 4-logo under the shared topbar. The VK shell keeps one product identity block in the sticky header.
