@@ -1,5 +1,7 @@
 status: BLOCKED-CONCURRENT-WORK
 
+Acceptance restart note 2026-07-26: feature implementation exists in branch history and was accepted locally by `BRIEF-2026-07-25-76` smoke evidence. `npm run smoke:home001` passed at current acceptance SHA `eb5cf7fe49404b26e52bf73f612f41f6b765b382` before the 76 report commit; focus panel opened at 390x844 with 3 rows, task metric 3 and subtitle `2 горят, 3 задачи в фокусе`. Verdict: ready for Yuri acceptance on the next safe preview/staging sync; no shared staging alias update was performed by automation.
+
 # BRIEF-2026-07-22-30-focus-panel-visible-preview
 
 ## Context
