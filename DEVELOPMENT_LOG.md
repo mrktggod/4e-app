@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### DESIGN-GLASS-001 current-pass audit
+
+**What changed:** No runtime UI code changed. Rechecked the glass foundation in the canonical checkout, confirmed `styles/variables.less` still contains the shared `--glass-*` token family and `.ui-glass-*` primitives, and appended current-pass notes to `pm/outbox/REPORT-BRIEF-2026-07-23-42-glass-design-system-foundation.md` plus `pm/design-system-glass-inventory-2026-07-27.md`.
+
+**Encoding check:** `index.html` was not edited, so Step 0 did not apply. `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `git diff --check` passed. `npm run check:portable-paths` and `npm run check:ui-architecture` could not start because `bash` is not on PATH in this shell.
+
+**Commit:** this docs-only audit commit
+
 ### VK task action parity
 
 **What changed:** Added a visible VK task row fallback action `Готово` next to the existing check control. The action calls the existing safe `doneTask` path and does not add swipe, delete, archive, payment, entitlement or auth changes.

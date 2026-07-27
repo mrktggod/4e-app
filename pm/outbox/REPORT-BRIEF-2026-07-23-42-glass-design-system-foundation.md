@@ -108,3 +108,67 @@ Next atomic briefs can now consume the primitive API:
 3. `BRIEF-2026-07-24-52-glass-night-visual-qa-handoff`
 
 Commit SHA: same task commit that contains this report.
+
+## 2026-07-28 Night Pass Addendum
+
+Outcome for this pass: `NEED-REFERENCE` for any new visual implementation, with existing foundation still verified as present.
+
+Current canonical checkout audited: `X:\Projects\4-ai-secretary\app`.
+
+Reference status:
+
+- `pm/design-references/` is absent in this checkout.
+- `rg --files pm | rg "design-references|glass-card-reference|design-system-glass-inventory"` returned only `pm\design-system-glass-inventory-2026-07-27.md`.
+- Because the approved `glass-card-reference.png` and spec are not locally available, this pass does not claim pixel-level matching and does not migrate additional runtime screens.
+
+Current glass map verified:
+
+- shared token source: `styles/variables.less`;
+- token family present: `--glass-surface`, `--glass-surface-strong`, `--glass-surface-muted`, `--glass-stroke`, `--glass-stroke-strong`, `--glass-highlight`, `--glass-shadow`, `--glass-inset-shadow`, `--glass-blur`, `--glass-saturate`, `--glass-radius-card`, `--glass-radius-control`, `--glass-active-glow`, `--glass-danger-glow`, `--glass-reduced-surface`;
+- primitive family present: `.ui-glass-card`, `.ui-glass-row`, `.ui-glass-button`, `.ui-glass-icon-button`, `.ui-glass-field`, `.ui-glass-sheet`, `.ui-glass-popover`, `.ui-glass-status`;
+- current inventory remains `pm/design-system-glass-inventory-2026-07-27.md`, updated with this pass note.
+
+Implemented in this pass:
+
+- no runtime UI code changed;
+- no `index.html` edit was made, so the mandatory Step 0 encoding ritual did not apply;
+- no production deploy, no merge, no pricing/payment/entitlement/auth/CAL/secrets work.
+
+Commit status:
+
+- current pass commit: this docs-only audit commit;
+- existing foundation commit remains `0a538fe5dfd5623e1fbc6d5ce3e653a218ef5545`.
+
+Raw evidence:
+
+```text
+git branch --show-current
+feat/admin-tariff-api
+
+git status --short
+ M AGENTS.md
+?? tmp/
+
+node scripts/check-cp1251-mojibake.mjs
+CP1251 mojibake check passed: 0 suspicious tokens
+
+git diff --check
+exit 0
+
+npm run check:portable-paths
+Unable to run scripts/check-portable-paths.sh: spawnSync bash ENOENT
+
+npm run check:ui-architecture
+Unable to run scripts/check-ui-architecture.sh: spawnSync bash ENOENT
+```
+
+Why the runner stopped:
+
+- the approved reference image/spec are missing from the canonical checkout;
+- broad cross-screen migration without that reference would be design-system architecture work, not a narrow autonomous slice;
+- the worktree already contains unrelated dirty `AGENTS.md` and `tmp/`, so this pass avoided runtime edits.
+
+Next step:
+
+- Alexey/Yuri: restore or intentionally archive `pm/design-references/glass-card-reference.png` and `pm/design-references/glass-card-reference-spec.md` in the canonical PM location.
+- Claude: after reference restoration, issue one atomic brief for the next low-risk family, preferably chat `--conv-*` consolidation or a single dialog/field family migration with mobile and desktop visual evidence.

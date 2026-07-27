@@ -118,3 +118,25 @@ Review risks:
 2. Consolidate chat `--conv-*` glass variables into shared `--glass-*` tokens without changing behavior.
 3. Consolidate task-detail `--detail-*` glass variables into shared tokens after visual review.
 4. Migrate one low-risk dialog or field family to `.ui-glass-field` / `.ui-glass-sheet` with mobile and reduced-transparency screenshots.
+
+## 2026-07-28 Night Pass
+
+Rechecked from canonical checkout `X:\Projects\4-ai-secretary\app` on branch `feat/admin-tariff-api`.
+
+Status remains `NEED-REFERENCE` for additional implementation:
+
+- `pm/design-references/` is still absent locally;
+- approved `glass-card-reference.png` and `glass-card-reference-spec.md` were not available for this pass;
+- no new runtime migration was attempted.
+
+Verified current foundation:
+
+- `styles/variables.less` still contains the shared `--glass-*` token family and `.ui-glass-*` primitives;
+- follow-up glass usage remains visible in notification, task-detail, home/focus and task-list LESS;
+- existing foundation commit remains `0a538fe5dfd5623e1fbc6d5ce3e653a218ef5545`.
+
+Checks:
+
+- `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`;
+- `git diff --check` passed;
+- `npm run check:portable-paths` and `npm run check:ui-architecture` could not start because `bash` is not on `PATH` in this shell.
