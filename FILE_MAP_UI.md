@@ -62,7 +62,7 @@
 | 2083-2493 | App init, auth, profile | `initApp`, `doRegister`, `submitLoginOnEnter`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
 | 2494-3186 | Payments and subscription | `DEFAULT_TARIFF_CONFIG`, `loadTariffConfig`, `getPlanConfig`, `renderSubscriptionFeatures`, `renderPricingCards`, `openPayment`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
 | 3187-5054 | Tasks, home, focus panel daily summary, cards, calendar stats | `loadTasks`, `getTaskUiId`, `getTaskCreatedTimestamp`, `formatTaskCreatedMeta`, `getFocusTaskSummary`, `updateHomeDashboardList`, `submitQuickAdd`, `renderFocusPanelSummary`, `renderTasksForMonth`, `loadStats`, `renderTaskCard`, `markDoneKV` |
-| 5060-6166 | Task detail and editing | `loadTaskAdvice`, `openTask`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
+| 5060-6166 | Task detail and editing | `openTaskById`, `loadTaskAdvice`, `openTask`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker`; return screen is remembered before task-detail open and direct opens fall back to home |
 | 6167-6255 | Message generation, navigation, notifications | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg`, `showScreen`, `openNotifications` |
 | 6256-7078 | AI chat and task creation | `loadAskHistoryRemote`, `normalizeTaskTitle`, `fallbackTaskFromText`, `createTaskFromChat`, `sendAsk`, `showToast` |
 | 7079-7319 | Calendar and voice | `renderCalendar`, `selectCalDay`, `openVoice`, `bindAskVoiceEntrypoint`, `sendVoiceMessage`; voice uses Premium and biometric consent gates |

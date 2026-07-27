@@ -474,6 +474,10 @@
         const button = event.target.closest('[data-detail-action]');
         if (!button) return;
         const action = button.dataset.detailAction;
+        if (action === 'back-to-home' && typeof returnFromTaskDetail === 'function') {
+          returnFromTaskDetail();
+          return;
+        }
         if (action === 'back-to-home' && typeof goHome === 'function') {
           goHome();
           return;

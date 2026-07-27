@@ -390,7 +390,18 @@ async function runSmoke(ws, appUrl) {
 
     await click('[data-home-action="open-active-list"]', 'active metric action');
     await waitFor(() => activeScreen() === 'statistics', 'active metric did not open statistics');
+    metrics.statsActiveRows = document.querySelectorAll('#stats-custom-list > div:last-child > div').length;
+    assert(metrics.statsActiveRows >= 1, 'active metric list should render task rows');
+    await click('#stats-custom-list > div:last-child > div:first-child', 'active metric task row');
+    await waitFor(() => activeScreen() === 'task-detail', 'active metric task row did not open task detail');
+    await click('#task-detail [data-detail-action="back-to-home"]', 'task detail back from statistics');
+    await waitFor(() => activeScreen() === 'statistics', 'task detail back should return to statistics');
     await goHomeNow();
+
+    await click('#home-task-list .home-ai-row', 'home task row');
+    await waitFor(() => activeScreen() === 'task-detail', 'home task row did not open task detail');
+    await click('#task-detail [data-detail-action="back-to-home"]', 'task detail back from home');
+    await waitFor(() => activeScreen() === 'home', 'task detail back should return to home');
 
     await click('#home-show-all-btn', 'show-all task action');
     await waitFor(() => activeScreen() === 'statistics', 'show-all task action did not open statistics');
@@ -427,6 +438,8 @@ async function runSmoke(ws, appUrl) {
     assert(metrics.calendarTaskRows >= 1, 'calendar should render clickable task rows');
     await click('#calendar [data-cal-task-id]', 'calendar task row');
     await waitFor(() => activeScreen() === 'task-detail', 'calendar task row did not open task detail');
+    await click('#task-detail [data-detail-action="back-to-home"]', 'task detail back from calendar');
+    await waitFor(() => activeScreen() === 'calendar', 'task detail back should return to calendar');
     await goHomeNow();
 
     const collectTheme = async (theme) => {

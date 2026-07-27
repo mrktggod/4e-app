@@ -4896,7 +4896,7 @@ function openFilteredTaskList(title, tasks, isDone, emptyText){
   }
   scroll.style.display = 'block';
   scroll.innerHTML = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">' + e2(title) + '</div>' + (isDone ? renderDoneMiniDashboard(tasks) : '') + '<div style="margin-bottom:16px">' +
-    tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="goHome();setTimeout(()=>openTaskById(\'' + t.id + '\',' + i + '),300)">' +
+    tasks.map((t,i) => '<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer" onclick="openTaskById(\'' + t.id + '\',' + i + ',\'statistics\')">' +
       '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">' + e2(t.person) + ' — ' + e2(t.text) + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + e2(getHomePriorityMeta(t)) + '</div></div>' +
       (isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<span style="font-size:9px;color:var(--muted)">ждём</span>') +
     '</div>'
@@ -5230,7 +5230,7 @@ function openTaskByEl(el){
   openTaskById(taskId, idx);
 }
 
-function openTaskById(taskId,idx){const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];if(!t)return;openTask(t,allTasksCache.indexOf(t));}
+function openTaskById(taskId,idx,returnScreen){if(typeof rememberTaskDetailReturnScreen==='function')rememberTaskDetailReturnScreen(returnScreen);const t=allTasksCache.find(x=>x.id===taskId)||allTasksCache[idx];if(!t)return;openTask(t,allTasksCache.indexOf(t));}
 // Текущая задача открытая на detail экране
 let currentDetailTask = null;
 let currentTaskId = null;

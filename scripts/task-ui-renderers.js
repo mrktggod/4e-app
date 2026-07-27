@@ -206,6 +206,24 @@ function showScreen(id){
   if(hs)hs.classList.toggle('scroll-body--home', id==='home');
 }
 function goHome(){showScreen('home');setNavActive('tasks');loadTasks();}
+let taskDetailReturnScreen='home';
+const TASK_DETAIL_RETURN_SCREENS=new Set(['home','calendar','statistics','profile','chats','chat-conv']);
+function getActiveTaskReturnScreen(){
+  return document.querySelector('.screen.active')?.id||'home';
+}
+function rememberTaskDetailReturnScreen(explicitScreen){
+  const candidate=explicitScreen||getActiveTaskReturnScreen();
+  taskDetailReturnScreen=TASK_DETAIL_RETURN_SCREENS.has(candidate)&&candidate!=='task-detail'?candidate:'home';
+  return taskDetailReturnScreen;
+}
+function returnFromTaskDetail(){
+  const target=TASK_DETAIL_RETURN_SCREENS.has(taskDetailReturnScreen)?taskDetailReturnScreen:'home';
+  if(target==='home'){goHome();return;}
+  showScreen(target);
+  if(target==='calendar')setNavActive('cal');
+  else if(target==='statistics')setNavActive('stats');
+  else if(target==='profile')setNavActive('profile');
+}
 async function openAsk(){
   if(!checkTrial()) return;
   showScreen('ask');
