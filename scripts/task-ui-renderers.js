@@ -175,7 +175,42 @@ async function handleTaskReschedule(taskId,value){
     setTimeout(loadTasks,400);
   }catch(e){console.log(e);showToast('Не удалось перенести срок');if(shell)shell.style.opacity='';}
 }
-async function markDoneKV(btn,taskId){const row=btn.closest('.task-row')||btn.closest('.promise-row');if(row){row.style.opacity='0.3';row.style.pointerEvents='none';}try{if(typeof postTaskChatMutation==='function'){await postTaskChatMutation('done-task',{chatId,taskId});}else{await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});}recordAdaptiveActivity('task_done',2);showToast('Готово ✓');setTimeout(loadTasks,600);}catch(e){console.log(e);}}
+async function markDoneKV(btn,taskId){
+  if(!btn||btn.dataset.doneLoading==='1'||btn.dataset.doneDone==='1')return;
+  const row=btn.closest('.task-row')||btn.closest('.promise-row')||btn.closest('.task-card-shell');
+  const previousText=btn.textContent;
+  btn.dataset.doneLoading='1';
+  btn.disabled=true;
+  btn.setAttribute('aria-busy','true');
+  btn.textContent='...';
+  if(row){row.style.opacity='0.65';row.style.pointerEvents='none';}
+  try{
+    if(typeof postTaskChatMutation==='function'){
+      await postTaskChatMutation('done-task',{chatId,taskId});
+    }else{
+      const res=await fetch(WORKER,{method:'POST',headers:{...authHeaders(),'x-action':'done-task'},body:JSON.stringify({chatId,taskId})});
+      const data=typeof readJsonSafe==='function'?await readJsonSafe(res):{};
+      if(!res.ok||data.ok===false)throw new Error(data?.error||'Не удалось завершить задачу');
+    }
+    if(typeof recordAdaptiveActivity==='function')recordAdaptiveActivity('task_done',2);
+    btn.dataset.doneDone='1';
+    btn.removeAttribute('aria-busy');
+    btn.textContent='Готово';
+    if(row){row.style.opacity='0.55';row.style.pointerEvents='none';}
+    showToast('Готово ✓');
+    setTimeout(loadTasks,600);
+  }catch(e){
+    console.log(e);
+    if(!(typeof handlePremiumRequiredTaskActionError==='function'&&handlePremiumRequiredTaskActionError(e))){
+      showToast(e?.message||'Не удалось завершить задачу');
+    }
+    btn.dataset.doneLoading='0';
+    btn.disabled=false;
+    btn.removeAttribute('aria-busy');
+    btn.textContent=previousText;
+    if(row){row.style.opacity='';row.style.pointerEvents='';}
+  }
+}
 
 function setNavActive(id){
   document.querySelectorAll('.nav-item,.nav-mic,.nav-mic-v2').forEach(n=>n.classList.remove('active'));

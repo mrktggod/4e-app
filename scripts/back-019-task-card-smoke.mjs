@@ -84,11 +84,28 @@ function escapeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
+function extractFunction(source, name) {
+  const starts = [`async function ${name}`, `function ${name}`];
+  const start = starts.map((needle) => source.indexOf(needle)).find((index) => index >= 0);
+  if (start === undefined) throw new Error(`${name} function was not found`);
+  const braceStart = source.indexOf('{', start);
+  if (braceStart <= start) throw new Error(`${name} function body was not found`);
+  let depth = 0;
+  for (let i = braceStart; i < source.length; i += 1) {
+    if (source[i] === '{') depth += 1;
+    if (source[i] === '}') depth -= 1;
+    if (depth === 0) return source.slice(start, i + 1);
+  }
+  throw new Error(`${name} function body was not closed`);
+}
+
 async function writeHarness() {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'back-019-smoke-'));
   const htmlPath = path.join(tempDir, 'index.html');
   const stylesHref = pathToFileURL(path.join(root, 'styles.css')).href;
   const rendererSrc = pathToFileURL(path.join(root, 'scripts', 'task-ui-renderers.js')).href;
+  const appHtml = await fs.readFile(path.join(root, 'index.html'), 'utf8');
+  const quickDoneSource = extractFunction(appHtml, 'quickDoneTask');
   const html = `<!doctype html>
 <html data-theme="light">
 <head>
@@ -147,7 +164,33 @@ async function writeHarness() {
     function loadTasks() {}
     function openTaskById(taskId) { window.__openedTaskId = String(taskId); }
     function openTaskMove(taskId) { window.__movedTaskId = String(taskId); }
-    async function quickDoneTask(taskId, btn) { window.__doneTaskId = String(taskId); if (btn) btn.disabled = true; }
+    async function readJsonSafe(response) { try { return await response.json(); } catch { return {}; } }
+    function createWorkerActionError(response, data, fallback) {
+      const error = new Error(data?.error || fallback);
+      error.status = response?.status || 0;
+      error.data = data || {};
+      return error;
+    }
+    function handlePremiumRequiredTaskActionError() { return false; }
+    window.__doneMode = 'success';
+    window.__doneFetches = [];
+    window.__markDoneMode = 'success';
+    window.__markDoneCalls = [];
+    window.fetch = async function(url, options = {}) {
+      window.__doneFetches.push({ url: String(url), taskId: JSON.parse(options.body || '{}').taskId || '' });
+      await new Promise(resolve => setTimeout(resolve, 80));
+      if (window.__doneMode === 'failure') {
+        return new Response(JSON.stringify({ ok: false, error: 'Не удалось завершить задачу' }), { status: 500, headers: { 'content-type': 'application/json' } });
+      }
+      return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { 'content-type': 'application/json' } });
+    };
+    async function postTaskChatMutation(actionName, payload) {
+      window.__markDoneCalls.push({ actionName, taskId: payload?.taskId || '' });
+      await new Promise(resolve => setTimeout(resolve, 80));
+      if (window.__markDoneMode === 'failure') throw new Error('Не удалось завершить задачу');
+      return { ok: true };
+    }
+    ${quickDoneSource}
   </script>
   <script src="${rendererSrc}"></script>
   <script>
@@ -309,9 +352,67 @@ async function runSmoke(ws) {
     pointer(secondCard, 'pointerup', secondRect.left + 180, secondRect.top + 22);
     await wait(30);
     if (!second.classList.contains('swipe-right')) failures.push('right swipe did not reveal done action');
-    second.querySelector('.task-swipe-done')?.click();
-    await wait(30);
-    if (window.__doneTaskId !== 'overdue') failures.push('done action did not use the swiped task id');
+    const doneButton = second.querySelector('.task-swipe-done');
+    doneButton?.click();
+    doneButton?.click();
+    await wait(140);
+    metrics.doneFetchCount = window.__doneFetches.length;
+    metrics.doneButtonText = doneButton?.textContent || '';
+    metrics.doneButtonBusy = doneButton?.getAttribute('aria-busy') || '';
+    if (window.__doneFetches.length !== 1) failures.push('done action should ignore duplicate fast taps');
+    if (window.__doneFetches[0]?.taskId !== 'overdue') failures.push('done action did not use the swiped task id');
+    if (doneButton?.textContent !== 'Готово') failures.push('done action should leave visible success text in the control');
+    if (!doneButton?.disabled) failures.push('done action should keep successful control disabled until reload');
+    if (doneButton?.getAttribute('aria-busy')) failures.push('done action should clear busy state after success');
+
+    const failureShell = document.createElement('div');
+    failureShell.className = 'task-card-shell';
+    failureShell.innerHTML = '<div class="task-row"><button type="button" class="task-swipe-btn task-swipe-done">Завершить</button></div>';
+    document.body.appendChild(failureShell);
+    const failureButton = failureShell.querySelector('button');
+    window.__doneMode = 'failure';
+    const failureStartCount = window.__doneFetches.length;
+    quickDoneTask('failure-task', failureButton);
+    quickDoneTask('failure-task', failureButton);
+    await wait(140);
+    metrics.doneFailureFetchCount = window.__doneFetches.length - failureStartCount;
+    metrics.doneFailureText = failureButton?.textContent || '';
+    metrics.doneFailureToast = window.__lastToast || '';
+    if (metrics.doneFailureFetchCount !== 1) failures.push('failure path should ignore duplicate fast taps');
+    if (failureButton?.disabled) failures.push('failure path should re-enable done control');
+    if (failureButton?.textContent !== 'Завершить') failures.push('failure path should restore done control label');
+    if (failureShell.style.pointerEvents === 'none' || failureShell.style.opacity) failures.push('failure path should restore card interactivity');
+    if (!String(window.__lastToast || '').includes('Не удалось завершить')) failures.push('failure path should show clear completion error toast');
+    window.__doneMode = 'success';
+
+    const markRow = document.createElement('div');
+    markRow.className = 'task-row';
+    markRow.innerHTML = '<button type="button" id="mark-done-btn">Готово</button>';
+    document.body.appendChild(markRow);
+    const markButton = markRow.querySelector('button');
+    markDoneKV(markButton, 'mark-success');
+    markDoneKV(markButton, 'mark-success');
+    await wait(140);
+    metrics.markDoneCallCount = window.__markDoneCalls.length;
+    if (window.__markDoneCalls.length !== 1) failures.push('markDoneKV should ignore duplicate fast taps');
+    if (window.__markDoneCalls[0]?.taskId !== 'mark-success') failures.push('markDoneKV did not use the expected task id');
+    if (markButton?.textContent !== 'Готово') failures.push('markDoneKV success should be visible inside the control');
+    if (!markButton?.disabled) failures.push('markDoneKV success should keep control disabled until reload');
+
+    const markFailRow = document.createElement('div');
+    markFailRow.className = 'task-row';
+    markFailRow.innerHTML = '<button type="button" id="mark-fail-btn">Готово</button>';
+    document.body.appendChild(markFailRow);
+    const markFailButton = markFailRow.querySelector('button');
+    window.__markDoneMode = 'failure';
+    const markFailureStartCount = window.__markDoneCalls.length;
+    markDoneKV(markFailButton, 'mark-failure');
+    markDoneKV(markFailButton, 'mark-failure');
+    await wait(140);
+    metrics.markDoneFailureCallCount = window.__markDoneCalls.length - markFailureStartCount;
+    if (metrics.markDoneFailureCallCount !== 1) failures.push('markDoneKV failure should ignore duplicate fast taps');
+    if (markFailButton?.disabled) failures.push('markDoneKV failure should re-enable control');
+    if (!String(window.__lastToast || '').includes('Не удалось завершить')) failures.push('markDoneKV failure should show clear error toast');
 
     const thirdCard = cards[2].querySelector('.task-card');
     thirdCard.click();
