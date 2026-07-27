@@ -184,10 +184,25 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 .setting-row .label { flex: 1; font-size: 14px; }
 .setting-row .arrow { color: var(--muted); }
 .setting-row .value { color: var(--muted); font-size: 13px; }
-.detail-header { display: flex; align-items: center; gap: 10px; padding: 8px 0 16px; }
-.detail-back { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg2); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.detail-title { font-size: 24px; line-height: 1.22; font-weight: 800; letter-spacing: -0.03em; }
+.detail-header { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0 16px; }
+.detail-back { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg2); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; line-height: 1; }
+.detail-heading { min-width: 0; flex: 1; }
+.detail-title { font-size: 24px; line-height: 1.22; font-weight: 800; letter-spacing: 0; overflow-wrap: anywhere; }
 .detail-meta { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.detail-card { padding: 16px; }
+.detail-overview { display: flex; flex-direction: column; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.detail-status-line { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.detail-status-text { font-size: 15px; font-weight: 800; margin-top: 4px; }
+.detail-status-pill { flex: 0 0 auto; min-height: 30px; border-radius: 999px; padding: 7px 11px; border: 1px solid rgba(154,194,60,0.34); color: var(--green); background: rgba(154,194,60,0.1); font-size: 12px; font-weight: 800; }
+.detail-status-pill[data-status="done"] { border-color: rgba(95,202,129,0.38); background: rgba(95,202,129,0.12); color: #75dc94; }
+.detail-status-pill[data-status="blocked"] { border-color: rgba(255,107,107,0.34); background: rgba(255,107,107,0.1); color: var(--danger); }
+.detail-meta-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.detail-meta-tile { min-width: 0; border: 1px solid var(--border); border-radius: 16px; background: var(--bg2); padding: 12px; }
+.detail-meta-label { font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase; }
+.detail-meta-value { margin-top: 6px; font-size: 14px; font-weight: 800; color: var(--text); overflow-wrap: anywhere; }
+.detail-done-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; }
+.detail-done-hint { font-size: 12px; line-height: 1.45; color: var(--muted); }
+.detail-return-hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
 .detail-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin: 16px 0; }
 .detail-tab { flex: 1; padding: 11px 4px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
 .detail-tab.active { color: var(--text); border-bottom-color: var(--green); }
@@ -201,7 +216,11 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 .detail-edit-input:focus, .detail-edit-select:focus { border-color: rgba(154,194,60,0.45); }
 .detail-edit-actions { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
 .detail-edit-error { grid-column: 1 / -1; min-height: 16px; font-size: 12px; color: var(--danger); }
-@media (max-width: 430px) { .detail-edit-grid { grid-template-columns: 1fr; } }
+@media (max-width: 430px) {
+  .detail-edit-grid { grid-template-columns: 1fr; }
+  .detail-meta-grid, .detail-done-row { grid-template-columns: 1fr; }
+  .detail-done-row .btn { width: 100%; }
+}
 .discussion-list { display: flex; flex-direction: column; gap: 8px; min-height: 70px; }
 .discussion-msg { padding: 10px 12px; border-radius: 16px; font-size: 13px; line-height: 1.45; border: 1px solid var(--border); background: var(--bg2); color: var(--text); }
 .discussion-msg.user { align-self: flex-end; background: var(--green); color: #101707; border-color: var(--green); max-width: 86%; }
@@ -357,19 +376,36 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 <!-- TASK DETAIL -->
 <div class="screen" id="screen-task-detail">
   <div class="detail-header">
-    <button class="detail-back" onclick="navigate('home')" aria-label="Назад">‹</button>
-    <div>
+    <button class="detail-back" onclick="navigateTaskDetailBack()" aria-label="Назад">‹</button>
+    <div class="detail-heading">
       <div class="detail-title" id="detailTaskTitle">Задача</div>
       <div class="detail-meta" id="detailTaskMeta">—</div>
+      <div class="detail-return-hint" id="detailReturnHint">Вернемся назад после закрытия</div>
     </div>
   </div>
-  <div class="card">
-    <div class="flex-between" style="gap:12px">
-      <div>
-        <div class="text-xs text-muted">Статус</div>
-        <div id="detailTaskStatus" style="font-size:15px;font-weight:700;margin-top:4px">Активна</div>
+  <div class="card detail-card">
+    <div class="detail-overview">
+      <div class="detail-status-line">
+        <div>
+          <div class="text-xs text-muted">Статус</div>
+          <div class="detail-status-text" id="detailTaskStatus">Активна</div>
+        </div>
+        <div class="detail-status-pill" id="detailTaskStatusPill" data-status="active">В работе</div>
       </div>
-      <button class="btn btn-secondary" id="detailDoneBtn" style="width:auto;padding:10px 14px" onclick="doneCurrentTask()">Готово</button>
+      <div class="detail-meta-grid">
+        <div class="detail-meta-tile">
+          <div class="detail-meta-label">Приоритет</div>
+          <div class="detail-meta-value" id="detailTaskPriorityBadge">Обычный</div>
+        </div>
+        <div class="detail-meta-tile">
+          <div class="detail-meta-label">Срок</div>
+          <div class="detail-meta-value" id="detailTaskDeadlineBadge">Без срока</div>
+        </div>
+      </div>
+      <div class="detail-done-row">
+        <div class="detail-done-hint" id="detailDoneHint">Завершение сразу уберет задачу из активного списка. Если сервер откажет, она останется здесь.</div>
+        <button class="btn btn-secondary" id="detailDoneBtn" style="width:auto;padding:10px 14px" onclick="doneCurrentTask()">Готово</button>
+      </div>
     </div>
     <div class="detail-edit-grid" id="taskDetailEditForm">
       <label class="detail-edit-field detail-edit-field--wide">
@@ -576,7 +612,7 @@ const AUTH_WARMUP_TIMEOUT_MS = 3500;
 const AUTH_WARMUP_RETRY_DELAY_MS = 700;
 const AUTH_DIAG_TIMEOUT_MS = 15000;
 
-let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [], currentTask: null, authWarmupOk: false, authWarmupPromise: null };
+let state = { user: null, token: null, d1Token: null, tasks: [], identities: [], pendingLinkChallenge: null, filter: 'all', calDate: new Date(), chatHistory: [], currentTask: null, currentScreen: 'home', taskDetailReturnScreen: 'home', authWarmupOk: false, authWarmupPromise: null };
 
 function applyTheme(theme) {
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1621,6 +1657,26 @@ function getTaskDetailPriority(task) {
   return ['low', 'normal', 'high', 'urgent'].includes(value) ? value : 'normal';
 }
 
+function taskDetailStatusLabel(status) {
+  return ({ active: 'Активна', waiting: 'Ожидает', blocked: 'Заблокирована', done: 'Выполнена' })[status] || 'Активна';
+}
+
+function taskDetailStatusPillLabel(status) {
+  return ({ active: 'В работе', waiting: 'Ждет', blocked: 'Блокер', done: 'Готово' })[status] || 'В работе';
+}
+
+function taskDetailPriorityLabel(priority) {
+  return ({ low: 'Низкий', normal: 'Обычный', high: 'Высокий', urgent: 'Горит' })[priority] || 'Обычный';
+}
+
+function taskDetailReturnLabel(screen) {
+  return ({ home: 'Вернемся на дашборд', calendar: 'Вернемся в календарь', stats: 'Вернемся в статистику', profile: 'Вернемся в профиль', ask: 'Вернемся в AI-чат' })[screen] || 'Вернемся на дашборд';
+}
+
+function isTaskDetailReturnScreen(screen) {
+  return ['home', 'ask', 'calendar', 'stats', 'profile'].includes(screen);
+}
+
 function taskDeadlineInputValue(task) {
   return taskDeadlineDateKey(task?.deadline);
 }
@@ -1751,11 +1807,26 @@ function openTaskDetail(taskId) {
     showToast('Задача не найдена');
     return;
   }
+  const returnScreen = state.currentScreen && state.currentScreen !== 'task-detail' ? state.currentScreen : state.taskDetailReturnScreen || 'home';
+  state.taskDetailReturnScreen = isTaskDetailReturnScreen(returnScreen) ? returnScreen : 'home';
   state.currentTask = task;
+  const status = getTaskDetailStatus(task);
+  const priority = getTaskDetailPriority(task);
+  const deadlineLabel = task.deadline ? formatDate(task.deadline) : 'Без срока';
   document.getElementById('detailTaskTitle').textContent = taskDisplayTitle(task);
-  document.getElementById('detailTaskMeta').textContent = [task.deadline ? formatDate(task.deadline) : '', getTaskDetailPriority(task)].filter(Boolean).join(' · ') || 'Без срока';
-  const statusLabels = { active: 'Активна', waiting: 'Ожидает', blocked: 'Заблокирована', done: 'Выполнена' };
-  document.getElementById('detailTaskStatus').textContent = statusLabels[getTaskDetailStatus(task)] || 'Активна';
+  document.getElementById('detailTaskMeta').textContent = [deadlineLabel, taskDetailPriorityLabel(priority)].filter(Boolean).join(' · ');
+  document.getElementById('detailReturnHint').textContent = taskDetailReturnLabel(state.taskDetailReturnScreen);
+  document.getElementById('detailTaskStatus').textContent = taskDetailStatusLabel(status);
+  const statusPill = document.getElementById('detailTaskStatusPill');
+  if (statusPill) {
+    statusPill.textContent = taskDetailStatusPillLabel(status);
+    statusPill.dataset.status = status;
+  }
+  document.getElementById('detailTaskPriorityBadge').textContent = taskDetailPriorityLabel(priority);
+  document.getElementById('detailTaskDeadlineBadge').textContent = deadlineLabel;
+  document.getElementById('detailDoneHint').textContent = status === 'done'
+    ? 'Задача уже завершена. Можно вернуться назад или поправить поля, если статус был выбран ошибочно.'
+    : 'Завершение сразу уберет задачу из активного списка. Если сервер откажет, она останется здесь.';
   document.getElementById('detailTaskDescription').textContent = task.description || task.originalMsg || taskDisplayTitle(task);
   document.getElementById('detailTaskHistory').textContent = task.createdAt ? 'Создана: ' + new Date(task.createdAt).toLocaleString('ru-RU') : 'История изменений пока пуста';
   syncTaskDetailEditFields(task);
@@ -1763,6 +1834,10 @@ function openTaskDetail(taskId) {
   const firstTab = document.querySelector('#screen-task-detail .detail-tab');
   switchTaskDetailTab('desc', firstTab);
   navigate('task-detail');
+}
+
+function navigateTaskDetailBack() {
+  navigate(state.taskDetailReturnScreen || 'home');
 }
 
 function switchTaskDetailTab(id, el) {
@@ -1776,8 +1851,8 @@ function switchTaskDetailTab(id, el) {
 
 async function doneCurrentTask() {
   if (!state.currentTask) return;
-  await doneTask(state.currentTask.id);
-  navigate('home');
+  const completed = await doneTask(state.currentTask.id);
+  if (completed) navigateTaskDetailBack();
 }
 
 async function sendTaskDiscussion() {
@@ -1824,6 +1899,7 @@ function navigate(id) {
     const el = document.getElementById('nav-'+s);
     if (el) el.classList.toggle('active', s === id);
   });
+  state.currentScreen = id;
   if (id === 'calendar') buildCalendar();
   if (id === 'stats') buildStats();
 }

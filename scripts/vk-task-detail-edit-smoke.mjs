@@ -3,7 +3,7 @@ import vm from 'node:vm';
 
 const source = fs.readFileSync('vk.html', 'utf8');
 
-const start = source.indexOf('function formatDate');
+const start = source.indexOf('function localDateKey');
 const end = source.indexOf('async function sendTaskDiscussion');
 
 if (start < 0 || end < 0 || end <= start) {
@@ -32,7 +32,12 @@ const makeElement = (id) => {
 [
   'detailTaskTitle',
   'detailTaskMeta',
+  'detailReturnHint',
   'detailTaskStatus',
+  'detailTaskStatusPill',
+  'detailTaskPriorityBadge',
+  'detailTaskDeadlineBadge',
+  'detailDoneHint',
   'detailTaskDescription',
   'detailTaskHistory',
   'detailEditTitle',
@@ -74,6 +79,8 @@ const sandbox = {
     token: 'test-token',
     user: { id: 'u1' },
     currentTask: null,
+    currentScreen: 'calendar',
+    taskDetailReturnScreen: 'home',
     tasks: [task]
   },
   localStorage: {
@@ -153,6 +160,12 @@ sandbox.openTaskDetail('vk-detail-1');
 assertEqual(elements.get('detailEditTitle').value, 'Старое название', 'initial title field');
 assertEqual(elements.get('detailEditDeadline').value, '2026-07-25', 'initial deadline field');
 assertEqual(elements.get('detailEditPriority').value, 'normal', 'initial priority field');
+assertEqual(elements.get('detailReturnHint').textContent, 'Вернемся в календарь', 'return hint follows source screen');
+assertEqual(elements.get('detailTaskStatusPill').textContent, 'В работе', 'active status pill');
+assertEqual(elements.get('detailTaskStatusPill').dataset.status, 'active', 'active status data attribute');
+assertEqual(elements.get('detailTaskPriorityBadge').textContent, 'Обычный', 'priority summary tile');
+assertEqual(elements.get('detailTaskDeadlineBadge').textContent, '25 июл', 'deadline summary tile');
+assert(elements.get('detailDoneHint').textContent.includes('активного списка'), 'completion hint explains active-list removal');
 
 elements.get('detailEditTitle').value = 'Обновить договор';
 elements.get('detailEditStatus').value = 'waiting';

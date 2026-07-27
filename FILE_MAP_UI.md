@@ -75,9 +75,9 @@
 | Диапазон | Блок | Что внутри |
 | --- | --- | --- |
 | 1-7 | Head scripts | VK bridge |
-| 8-249 | CSS | VK layout, auth, cards, tabs, home focus metadata, profile IA, task-detail edit form, screens |
-| 251-567 | HTML | VK auth, home focus/top-task metadata, task detail with edit controls, ask, calendar, stats, profile summary/privacy |
-| 568-1954 | JavaScript | VK auth, tasks, profile summary, home parity summary, task detail edit, AI chat, local date keys, calendar, stats |
+| 8-264 | CSS | VK layout, auth, cards, tabs, home focus metadata, profile IA, task-detail summary/edit form, screens |
+| 266-582 | HTML | VK auth, home focus/top-task metadata, task detail with summary/edit controls, ask, calendar, stats, profile summary/privacy |
+| 583-2030 | JavaScript | VK auth, tasks, profile summary, home parity summary, task detail summary/edit/back behavior, AI chat, local date keys, calendar, stats |
 
 ### VK JavaScript ranges
 
@@ -91,9 +91,9 @@
 | 1380-1466 | Home focus summary, metric notes, urgent/overdue/next-deadline chips, top task row |
 | 1467-1496 | Task list HTML |
 | 1497-1588 | Local date-key helpers, task parsing, save task from chat |
-| 1589-1722 | Task detail edit helpers and worker update path |
-| 1723-1794 | Task detail render, discussion and done action |
-| 1795-1911 | Navigation, ask chat, calendar local date grouping, stats |
+| 1649-1803 | Task detail status/priority/return helpers, edit helpers and worker update path |
+| 1804-1894 | Task detail render, return behavior, discussion and done action |
+| 1895-1968 | Navigation, ask chat, calendar local date grouping, stats |
 | 1912-1946 | Stats and home metric notes |
 | 1947-1954 | Toast |
 

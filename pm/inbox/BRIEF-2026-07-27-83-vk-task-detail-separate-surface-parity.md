@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-27-83-vk-task-detail-separate-surface-parity
 
