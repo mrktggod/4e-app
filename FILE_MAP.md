@@ -21,7 +21,7 @@
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
 | `index.html` | 8936 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
-| `vk.html` | 1921 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `vk.html` | 1954 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
 | `privacy.html` | 240 | Политика конфиденциальности | Можно читать целиком при правовых правках |
@@ -45,7 +45,7 @@
 | `scripts/back-065-task-title-normalization-smoke.mjs` | 55 | Static smoke for BACK-065 task title normalization: extracts the inline task-title helpers and verifies dictated/AI-chat examples preserve short title, deadline, and `originalMsg` | Run with `npm run smoke:back065` before changing task-title normalization |
 | `scripts/back-066-vk-task-intent-smoke.mjs` | 47 | Static smoke for BACK-066A VK chat task intent: extracts `vk.html` helpers and verifies Cyrillic task commands, normalized title, deadline, and `originalMsg` source path | Run with `npm run smoke:back066-vk` before changing VK chat task creation |
 | `scripts/vk-task-detail-edit-smoke.mjs` | 186 | Static smoke for VK task-detail edit path: extracts `vk.html` detail helpers and verifies title/status/priority/deadline update payload plus local task state persistence | Run with `npm run smoke:vk-task-detail-edit` before changing VK task detail edit behavior |
-| `scripts/vk-home-parity-smoke.mjs` | 69 | Static smoke for VK home parity: extracts `vk.html` home helpers and verifies focus summary, urgent/overdue/next-deadline chips and top task row from mocked local tasks | Run with `npm run smoke:vk-home-parity` before changing VK home focus metadata |
+| `scripts/vk-home-parity-smoke.mjs` | 74 | Static smoke for VK home parity: extracts `vk.html` home helpers and verifies focus summary, metric notes, urgent/overdue/next-deadline chips and top task row from mocked local tasks | Run with `npm run smoke:vk-home-parity` before changing VK home focus metadata |
 | `scripts/vk-profile-parity-smoke.mjs` | 68 | Static smoke for VK profile parity: verifies account summary, identity summary, privacy link and local-only notification entry without touching payment/subscription | Run with `npm run smoke:vk-profile-parity` before changing VK profile structure |
 | `scripts/vk-calendar-date-key-smoke.mjs` | 55 | Static smoke for VK calendar date keys: verifies ISO datetime deadlines stay on intended local days, calendar task dots render, and selected-day task lists match normalized keys | Run with `npm run smoke:vk-calendar-date-key` before changing VK calendar date grouping |
 | `scripts/vk-header-logo-smoke.mjs` | 22 | Static smoke for VK header identity: verifies the VK shell has one header logo and no duplicate home logo | Run with `npm run smoke:vk-header-logo` before changing VK header/home identity |

@@ -93,6 +93,7 @@ html[data-theme="light"] .home-pill { background: rgba(255,255,255,0.92); box-sh
 .home-stat { min-height: 92px; border-radius: 20px; padding: 12px 10px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); }
 .home-stat-label { font-size: 11px; color: var(--text2); margin-bottom: 12px; }
 .home-stat-num { font-size: 28px; font-weight: 800; color: var(--green); letter-spacing: -0.04em; }
+.home-stat-note { margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.25; }
 .home-stat-line { height: 3px; border-radius: 999px; margin-top: 10px; background: linear-gradient(90deg, var(--green), rgba(154,194,60,0.08)); }
 .task-card-v2 { min-height: 82px; align-items: center; border-radius: 20px; padding: 13px 14px; background: var(--card); box-shadow: var(--shadow); }
 .task-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text2); background: var(--card2); border: 1px solid var(--border); font-size: 13px; font-weight: 700; flex-shrink: 0; }
@@ -333,10 +334,10 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
     </div>
 
     <div class="home-stat-grid">
-      <div class="home-stat"><div class="home-stat-label">Выполнено</div><div class="home-stat-num" id="homeDone">0</div><div class="home-stat-line"></div></div>
-      <div class="home-stat"><div class="home-stat-label">Задачи</div><div class="home-stat-num" id="homeActive">0</div><div class="home-stat-line"></div></div>
-      <div class="home-stat"><div class="home-stat-label">Обещания</div><div class="home-stat-num" id="homePromises">0</div><div class="home-stat-line"></div></div>
-      <div class="home-stat"><div class="home-stat-label">Прогресс</div><div class="home-stat-num" id="homeProgress">0%</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Выполнено</div><div class="home-stat-num" id="homeDone">0</div><div class="home-stat-note" id="homeDoneMeta">нет закрытых</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Задачи</div><div class="home-stat-num" id="homeActive">0</div><div class="home-stat-note" id="homeActiveMeta">спокойный день</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Обещания</div><div class="home-stat-num" id="homePromises">0</div><div class="home-stat-note" id="homePromisesMeta">без просрочек</div><div class="home-stat-line"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Прогресс</div><div class="home-stat-num" id="homeProgress">0%</div><div class="home-stat-note" id="homeProgressMeta">нет данных</div><div class="home-stat-line"></div></div>
     </div>
 
     <div style="display:none"><span id="taskCount">0</span></div>
@@ -1922,10 +1923,18 @@ function buildStats() {
   const homeActive = document.getElementById('homeActive');
   const homePromises = document.getElementById('homePromises');
   const homeProgress = document.getElementById('homeProgress');
+  const homeDoneMeta = document.getElementById('homeDoneMeta');
+  const homeActiveMeta = document.getElementById('homeActiveMeta');
+  const homePromisesMeta = document.getElementById('homePromisesMeta');
+  const homeProgressMeta = document.getElementById('homeProgressMeta');
   if (homeDone) homeDone.textContent = done;
   if (homeActive) homeActive.textContent = active;
   if (homePromises) homePromises.textContent = promise;
   if (homeProgress) homeProgress.textContent = pct + '%';
+  if (homeDoneMeta) homeDoneMeta.textContent = done ? done + ' ' + pluralRu(done, 'закрыта', 'закрыты', 'закрыто') : 'нет закрытых';
+  if (homeActiveMeta) homeActiveMeta.textContent = active ? active + ' ' + pluralRu(active, 'в работе', 'в работе', 'в работе') : 'спокойный день';
+  if (homePromisesMeta) homePromisesMeta.textContent = promise ? promise + ' ' + pluralRu(promise, 'обещание', 'обещания', 'обещаний') : 'без просрочек';
+  if (homeProgressMeta) homeProgressMeta.textContent = state.tasks.length ? 'неделя' : 'нет данных';
   const days = [active, done, promise, active+1, done+1, promise+1, active+2];
   const max = Math.max(...days, 1);
   document.getElementById('barChart').innerHTML = days.map(v => `<div class="bar-wrap"><div class="bar"><div class="bar-fill" style="height:${v/max*100}%"></div></div></div>`).join('');

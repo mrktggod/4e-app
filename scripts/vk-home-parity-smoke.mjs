@@ -3,6 +3,11 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source = fs.readFileSync('vk.html', 'utf8');
+assert.match(source, /homeDoneMeta/, 'VK home done meta note missing');
+assert.match(source, /homeActiveMeta/, 'VK home active meta note missing');
+assert.match(source, /homePromisesMeta/, 'VK home promise meta note missing');
+assert.match(source, /homeProgressMeta/, 'VK home progress meta note missing');
+assert.match(source, /home-stat-note/, 'VK home stat-note style missing');
 const start = source.indexOf('const HOME_PRIORITY_WEIGHTS');
 const end = source.indexOf('function isTaskCommand', start);
 assert.ok(start > 0 && end > start, 'VK home helper slice not found');
