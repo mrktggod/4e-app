@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-YURI
 
 # BRIEF-2026-07-27-99z-post-rollout-playwright-k6-audit
 
