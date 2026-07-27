@@ -1,3 +1,15 @@
+## 2026-07-28
+
+### Voice hold hint
+
+**What changed:** Added a small visible `Удерживай для голоса` hint above the central home voice button and linked it with `aria-describedby`. Voice permissions, Premium gates and recording logic were not changed.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run build:css`; `npm run smoke:voice-hold-hint`; `npm run smoke:voice-exit-controls`; `npm run smoke:premium-voice-gate`; `npm run smoke:voice-consent-checkbox`; `git diff --check`.
+
+**Commit:** this commit
+
 ## 2026-07-27
 
 ### Landing preview static page

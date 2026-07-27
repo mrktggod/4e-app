@@ -369,7 +369,8 @@ if('serviceWorker' in navigator){
 
     <nav class="dash-bottom-nav dash-glass" aria-label="Нижняя навигация">
       <button class="dash-nav-item active" id="home-nav-today" data-nav="today" data-home-nav-action="today" type="button" aria-label="Сегодня"><svg viewBox="0 0 24 24"><defs><linearGradient id="homeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#85aa50"/><stop offset="1" stop-color="#5f7f35"/></linearGradient></defs><path d="m3 10 9-7 9 7v10H14v-6h-4v6H3Z"/></svg><span>Сегодня</span></button>
-      <button class="dash-center-button" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" type="button" aria-label="Открыть чат с 4; удерживать для голосового ввода"><span class="dash-brand-orb-grid"><i></i><i></i><i></i><i></i></span></button>
+      <button class="dash-center-button" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" type="button" aria-label="Открыть чат с 4; удерживать для голосового ввода" aria-describedby="home-voice-hold-hint"><span class="dash-brand-orb-grid"><i></i><i></i><i></i><i></i></span></button>
+      <span class="dash-voice-hold-hint" id="home-voice-hold-hint">Удерживай для голоса</span>
       <button class="dash-nav-item" id="home-nav-cal" data-nav="cal" data-home-nav-action="calendar" type="button" aria-label="Календарь"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Календарь</span></button>
     </nav>
   </div>
