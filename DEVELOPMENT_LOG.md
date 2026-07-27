@@ -1,5 +1,15 @@
 ## 2026-07-27
 
+### Landing preview static page
+
+**What changed:** Added `landing.html` and `landing.css` as a separate sales landing preview inside the app repo. The page keeps the app entry unchanged, avoids prices, fake stats, fake testimonials and production/domain routing changes, and uses a green glass product workflow visual.
+
+**Encoding check:** `index.html` was not edited for this task; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** Local Node HTTP server plus Playwright checked `/landing.html` at 390x844 and 1366x900: H1 present, Telegram CTA present, no horizontal overflow. Screenshots saved under `tmp/landing-81/`.
+
+**Commit:** this commit
+
 ### DESIGN-GLASS-001 reference/inventory audit
 
 **What changed:** No runtime code changed. Added `pm/design-system-glass-inventory-2026-07-27.md` and appended a 2026-07-27 addendum to `pm/outbox/REPORT-BRIEF-2026-07-23-42-glass-design-system-foundation.md`. The audit confirms the existing foundation commit `0a538fe5dfd5623e1fbc6d5ce3e653a218ef5545`, current `--glass-*` tokens, `.ui-glass-*` primitives, and follow-up notification/task-detail/home slices. Current checkout lacks `pm/design-references/`, so visual reference evidence is marked `NEED-REFERENCE` for this pass.
