@@ -7590,6 +7590,30 @@ body:has(#task-detail.active) #global-nav,
 #task-detail .detail-info-card {
   min-height: 58px !important;
 }
+.task-card-reminder-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--green3);
+  color: var(--green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.task-card-reminder-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+.home-ai-row-reminder {
+  align-self: center;
+}
 #task-detail .detail-redesign-title {
   margin-top: 16px !important;
   min-height: 0 !important;

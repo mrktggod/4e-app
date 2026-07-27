@@ -471,6 +471,7 @@ if('serviceWorker' in navigator){
           <div class="detail-date-popover" id="detail-date-popover" role="dialog" aria-label="Выбор срока" onclick="event.stopPropagation()">
             <div id="detail-quick-deadline" class="detail-quick-row detail-date-quick"><button class="detail-quick-btn" data-detail-deadline-kind="today">Сегодня</button><button class="detail-quick-btn" data-detail-deadline-kind="tomorrow">Завтра</button><button class="detail-quick-btn" data-detail-deadline-kind="week">Неделя</button></div>
             <label class="detail-date-calendar"><span>Дата и время</span><input id="detail-time-input" class="detail-control detail-info-input" type="datetime-local" data-detail-field="deadline"></label>
+            <div class="detail-quick-row detail-date-actions"><button class="detail-quick-btn" type="button" data-detail-deadline-action="cancel">Отмена</button><button class="detail-quick-btn" type="button" data-detail-deadline-action="confirm">Готово</button></div>
           </div>
           <button class="detail-info-card detail-info-card--priority" type="button" onclick="toggleDetailPriorityPopover(event)" aria-haspopup="dialog" aria-controls="detail-priority-popover"><svg viewBox="0 0 24 24"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4H20l-4.5 5 4.5 5H5.5A1.5 1.5 0 0 0 4 15.5"/></svg><span><small>Приоритет</small><b id="detail-priority-display">Обычный</b><select id="detail-priority-select" class="detail-control detail-info-select" data-detail-field="priority" onchange="syncDetailPriorityDisplay()"><option value="low">Низкий</option><option value="normal">Обычный</option><option value="high">Высокий</option><option value="urgent">Горит</option></select></span></button>
           <div class="detail-priority-popover" id="detail-priority-popover" role="dialog" aria-label="Выбор приоритета" onclick="event.stopPropagation()"><button type="button" data-priority="low" onclick="setDetailPriorityFromCard('low')">Низкий</button><button type="button" data-priority="normal" onclick="setDetailPriorityFromCard('normal')">Обычный</button><button type="button" data-priority="high" onclick="setDetailPriorityFromCard('high')">Высокий</button><button type="button" data-priority="urgent" onclick="setDetailPriorityFromCard('urgent')">Горит</button></div>
@@ -3970,6 +3971,7 @@ function renderHomePriorityCard(task,index,options={}){
     +'<div class="home-ai-row-title">'+title+'</div>'
     +'<div class="home-ai-row-meta">'+meta+'</div>'
     +'</div>'
+    +'<button type="button" class="task-card-reminder-btn home-ai-row-reminder" data-task-reminder-action="open" data-task-reminder-id="'+safeId+'" data-task-reminder-index="'+cacheIndex+'" aria-label="Настроить уведомление"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>'
     +'</div>'
     +'</div>'
     +'</div>';

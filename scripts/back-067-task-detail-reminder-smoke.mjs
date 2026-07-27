@@ -10,6 +10,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const chromeCandidates = [
   process.env.CHROME_PATH,
   process.env.BROWSER_PATH,
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
   'chrome',
   'google-chrome',
   'chromium',
@@ -26,10 +30,30 @@ async function exists(file) {
   }
 }
 
+async function resolveFromPath(command) {
+  const paths = String(process.env.PATH || '').split(path.delimiter).filter(Boolean);
+  const extensions = process.platform === 'win32'
+    ? String(process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM').split(';')
+    : [''];
+  for (const dir of paths) {
+    for (const ext of extensions) {
+      const candidate = path.join(dir, command + ext.toLowerCase());
+      if (await exists(candidate)) return candidate;
+      const upperCandidate = path.join(dir, command + ext.toUpperCase());
+      if (await exists(upperCandidate)) return upperCandidate;
+    }
+  }
+  return null;
+}
+
 async function findChrome() {
   for (const candidate of chromeCandidates) {
     const isPathLike = candidate.includes('/') || candidate.includes('\\');
-    if (!isPathLike || await exists(candidate)) return candidate;
+    if (isPathLike && await exists(candidate)) return candidate;
+    if (!isPathLike) {
+      const resolved = await resolveFromPath(candidate);
+      if (resolved) return resolved;
+    }
   }
   throw new Error('Chrome or Edge executable was not found in PATH');
 }

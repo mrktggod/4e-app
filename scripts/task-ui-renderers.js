@@ -35,7 +35,7 @@ function renderTaskCard(t,i){
     '<div class="task-swipe-actions task-swipe-actions-right" ><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
     '<div class="task-swipe-actions task-swipe-actions-left" ><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
     '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
-      '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><div class="task-card-tags"><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span>'+syncBadge+'</div><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
+      '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><div class="task-card-tags"><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span>'+syncBadge+'</div><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span><button type="button" class="task-card-reminder-btn" onclick="openTaskReminderFromCard(this,event)" data-task-reminder-id="'+id+'" data-task-reminder-index="'+i+'" aria-label="Настроить уведомление"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button></div>'+
       '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
     '</div>'+
   '</div>';
@@ -73,6 +73,34 @@ function openTaskCard(taskId,index,card){
     return;
   }
   openTaskById(taskId,index);
+}
+function openTaskReminderFromCard(source,event){
+  if(event){
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const button=source?.closest?.('[data-task-reminder-id]')||source;
+  const taskId=String(button?.dataset?.taskReminderId||source||'').trim();
+  const rawIndex=button?.dataset?.taskReminderIndex;
+  const index=Number.isFinite(Number(rawIndex))?Number(rawIndex):-1;
+  if(!taskId){
+    showToast('Не нашёл задачу для уведомления');
+    return;
+  }
+  if(typeof openTaskById!=='function'){
+    showToast('Открой задачу, чтобы настроить уведомление');
+    return;
+  }
+  openTaskById(taskId,index);
+  setTimeout(()=>{
+    const active=document.querySelector('.screen.active')?.id;
+    const trigger=document.querySelector('#task-detail .detail-redesign-bell');
+    if(active==='task-detail'&&trigger){
+      trigger.click();
+      return;
+    }
+    showToast('Открой задачу, чтобы настроить уведомление');
+  },120);
 }
 function taskSwipeStart(event,card){
   if(event.pointerType==='mouse'&&event.button!==0)return;

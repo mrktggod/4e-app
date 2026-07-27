@@ -128,6 +128,9 @@ async function writeHarness() {
         <div class="tasks-wrap" id="task-list"></div>
       </section>
     </main>
+    <main id="task-detail" class="screen">
+      <button type="button" class="detail-redesign-bell" onclick="window.__reminderPopoverOpened = true"></button>
+    </main>
     <nav id="global-nav" class="bottom-nav"><div class="nav-item active"></div></nav>
   </div>
   <script>
@@ -162,7 +165,11 @@ async function writeHarness() {
     function authHeaders() { return {}; }
     function showToast(message) { window.__lastToast = message; }
     function loadTasks() {}
-    function openTaskById(taskId) { window.__openedTaskId = String(taskId); }
+    function openTaskById(taskId) {
+      window.__openedTaskId = String(taskId);
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      document.getElementById('task-detail')?.classList.add('active');
+    }
     function openTaskMove(taskId) { window.__movedTaskId = String(taskId); }
     async function readJsonSafe(response) { try { return await response.json(); } catch { return {}; } }
     function createWorkerActionError(response, data, fallback) {
@@ -307,6 +314,20 @@ async function runSmoke(ws) {
     metrics.longTitleMaxTwoLines = lineHeight ? Math.round(lineHeight * 2 * 100) / 100 : 0;
     metrics.longTitleLineClamp = titleStyle?.webkitLineClamp || '';
     if (!title || metrics.longTitleHeight > (lineHeight * 2 + 2)) failures.push('long title is not clamped to two lines');
+    const reminderButton = first?.querySelector('.task-card-reminder-btn');
+    const reminderRect = reminderButton?.getBoundingClientRect();
+    metrics.reminderButton = reminderRect ? {
+      width: Math.round(reminderRect.width * 100) / 100,
+      height: Math.round(reminderRect.height * 100) / 100
+    } : null;
+    if (!reminderButton) failures.push('task card reminder button is missing');
+    if (reminderRect && (reminderRect.width < 34 || reminderRect.height < 34)) failures.push('task card reminder button is not tappable');
+    reminderButton?.click();
+    await wait(180);
+    if (window.__openedTaskId !== 'long-title') failures.push('task card reminder button did not open the expected task');
+    if (window.__reminderPopoverOpened !== true) failures.push('task card reminder button did not open reminder settings');
+    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+    document.getElementById('tasks')?.classList.add('active');
 
     for (const [index, shell] of cards.entries()) {
       const rect = shell.getBoundingClientRect();

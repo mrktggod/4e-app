@@ -395,6 +395,13 @@
       });
     }
 
+    document.addEventListener('click', event => {
+      const button = event.target.closest('[data-task-reminder-action="open"]');
+      if (!button) return;
+      if (typeof openTaskReminderFromCard !== 'function') return;
+      openTaskReminderFromCard(button, event);
+    }, true);
+
     const taskDetailTabs = document.getElementById('task-detail-tabs');
     if (taskDetailTabs) {
       taskDetailTabs.addEventListener('click', event => {
