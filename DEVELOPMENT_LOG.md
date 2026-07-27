@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### Task title description quality
+
+**What changed:** Added frontend-only task draft quality normalization so created tasks keep a short title, move comma/detail tails into `description`, and preserve the full raw request in `originalMsg`. The AI `<create_task>` guidance now asks for `description` details without changing backend endpoints.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:task-title-description`; `npm run smoke:back065`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Telegram bottom menu diagnostic
 
 **What changed:** Hid the legacy `#global-nav` on redesigned inner pages (`profile`, `task-detail`, `subscription`, `statistics`) while preserving the dark dashboard `dash-bottom-nav`. Added a Telegram mocked smoke that checks dashboard dark-menu visibility, old-menu absence on inner pages, source nav counts, and saves a dark screenshot.

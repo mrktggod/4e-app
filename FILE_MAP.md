@@ -20,7 +20,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 9015 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 9071 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 2022 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
@@ -33,7 +33,7 @@
 | `AGENTS.md` | 312 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 3357 | Канонический технический лог | Обновлять после значимых правок |
+| `DEVELOPMENT_LOG.md` | 3367 | Канонический технический лог | Обновлять после значимых правок |
 | `https://github.com/mrktggod/4pm` | n/a | Приватные roadmap, work log, commit convention, PM/QA, team sync и бизнес-документация | Читать при планировании и PM/QA задачах |
 | `scripts/platform-adapter.js` | 1235 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, task-detail return/date confirm/reminder-card dispatch, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
 | `scripts/task-ui-renderers.js` | 793 | Shared task/notification renderers and task card helpers, including swipe actions, inline completion feedback, active-card reminder entrypoint, calendar/task row click-through, and task-detail return-screen fallback helpers | Read narrow task renderer ranges before changing task cards, task completion controls, notification cards, calendar rows, reminders, or task-detail return behavior |
@@ -48,6 +48,7 @@
 | `scripts/smart-007-memory-fixture-smoke.mjs` | 450 | Staging-only SMART-007 AI-memory fixture smoke with fresh synthetic account: saves safe facts, verifies `/ai/facts`, renders `#ai-memory-list`, delete-one and clear-all | Run with `npm run smoke:smart007` before promoting SMART-007 evidence beyond source-only |
 | `scripts/auth-avatar-login-diagnose.mjs` | 269 | Live staging Chrome/CDP diagnostic for auth wrong-password UI and profile avatar localStorage leak/persistence behavior on fresh accounts | Run with `npm run smoke:auth-avatar` before fixing auth field errors or profile avatar persistence |
 | `scripts/back-065-task-title-normalization-smoke.mjs` | 55 | Static smoke for BACK-065 task title normalization: extracts the inline task-title helpers and verifies dictated/AI-chat examples preserve short title, deadline, and `originalMsg` | Run with `npm run smoke:back065` before changing task-title normalization |
+| `scripts/task-title-description-quality-smoke.mjs` | 59 | Static fixture smoke for task title/description quality: verifies bad grammar, long input, assigned person, short titles, description extraction, and raw `originalMsg` preservation | Run with `npm run smoke:task-title-description` before changing AI/fallback task draft normalization |
 | `scripts/back-066-vk-task-intent-smoke.mjs` | 47 | Static smoke for BACK-066A VK chat task intent: extracts `vk.html` helpers and verifies Cyrillic task commands, normalized title, deadline, and `originalMsg` source path | Run with `npm run smoke:back066-vk` before changing VK chat task creation |
 | `scripts/vk-task-detail-edit-smoke.mjs` | 199 | Static smoke for VK task-detail edit path: extracts `vk.html` detail helpers and verifies visible detail summary, return hint, title/status/priority/deadline update payload plus local task state persistence | Run with `npm run smoke:vk-task-detail-edit` before changing VK task detail edit behavior |
 | `scripts/vk-home-parity-smoke.mjs` | 74 | Static smoke for VK home parity: extracts `vk.html` home helpers and verifies focus summary, metric notes, urgent/overdue/next-deadline chips and top task row from mocked local tasks | Run with `npm run smoke:vk-home-parity` before changing VK home focus metadata |
@@ -79,7 +80,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 66 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 67 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |

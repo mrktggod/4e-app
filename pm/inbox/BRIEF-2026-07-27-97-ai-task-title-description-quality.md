@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-27-97-ai-task-title-description-quality
 

@@ -6433,7 +6433,7 @@ function looksLikeTaskRequest(text){
 
 const TASK_TITLE_DEADLINE_WORDS='сегодня|завтра|послезавтра|в понедельник|во вторник|в среду|в четверг|в пятницу|в субботу|в воскресенье|к понедельнику|ко вторнику|к среде|к четвергу|к пятнице|к субботе|к воскресенью|до понедельника|до вторника|до среды|до четверга|до пятницы|до субботы|до воскресенья|вечером|утром|днем|днём';
 function getTaskTitleDeadlineRegex(flags){
-  return new RegExp('(^|\\s)('+TASK_TITLE_DEADLINE_WORDS+')(?=\\s|$)',flags||'i');
+  return new RegExp('(^|\\s)('+TASK_TITLE_DEADLINE_WORDS+')(?=\\s|$|[,.;:!?])',flags||'i');
 }
 
 function formatTaskIntentTitle(value){
@@ -6473,6 +6473,49 @@ function normalizeTaskTitle(rawText, context){
   return clean.charAt(0).toUpperCase()+clean.slice(1);
 }
 
+function normalizeTaskDetailText(value){
+  return String(value||'').replace(/\s+/g,' ').replace(/^[\s,.;:!?-]+|[\s,.;:!?-]+$/g,'').replace(/^(?:и\s+)?(?:там|где|чтобы|чтоб|не забудь|ещ[её]|подробности)\s+/i,'').trim();
+}
+
+function splitTaskTitleDetails(value){
+  const source=normalizeTaskDetailText(value);
+  if(!source) return {titleSource:'',detail:''};
+  const splitters=[
+    /\s*[,;]\s+/,
+    /\s+[—-]\s+/,
+    /\s+(?:и\s+)?(?:там|где|чтобы|чтоб|не забудь|ещ[её]|подробности|с деталями)\s+/i
+  ];
+  for(const pattern of splitters){
+    const match=source.match(pattern);
+    if(!match||match.index<8) continue;
+    const titleSource=normalizeTaskDetailText(source.slice(0,match.index));
+    const detail=normalizeTaskDetailText(source.slice(match.index+match[0].length));
+    if(titleSource&&detail&&detail.length>=8) return {titleSource,detail};
+  }
+  return {titleSource:source,detail:''};
+}
+
+function buildTaskDescription(original,title,explicitDescription,derivedDetail){
+  const explicit=normalizeTaskDetailText(explicitDescription);
+  if(explicit&&explicit!==title) return explicit;
+  const detail=normalizeTaskDetailText(derivedDetail);
+  if(detail&&detail!==title) return detail;
+  const raw=normalizeTaskDetailText(original);
+  if(raw&&raw!==title&&raw.length>String(title||'').length+12) return raw;
+  return '';
+}
+
+function normalizeTaskDraftQuality(taskData){
+  const safe=taskData||{};
+  const rawText=String(safe.text||'').trim();
+  const original=String(safe.originalMsg||rawText||safe.description||'').trim();
+  const source=rawText||original;
+  const split=splitTaskTitleDetails(source);
+  const text=normalizeTaskTitle(split.titleSource||source,{stripDeadline:!!safe.deadline});
+  const description=buildTaskDescription(original,text,safe.description,split.detail);
+  return {text,description,originalMsg:original||source};
+}
+
 function fallbackTaskFromText(text){
   const original=String(text||'').trim();
   let clean = (text || '').trim();
@@ -6481,7 +6524,7 @@ function fallbackTaskFromText(text){
   clean = clean.replace(/^надо\s+/i,'');
   clean = clean.replace(/^нужно\s+/i,'');
   const deadlineMatch = clean.match(getTaskTitleDeadlineRegex('i'));
-  const deadline = deadlineMatch ? deadlineMatch[2] : null;
+  let deadline = deadlineMatch ? deadlineMatch[2] : null;
   if(deadlineMatch){
     const deadlineIndex=deadlineMatch.index + deadlineMatch[0].indexOf(deadlineMatch[2]);
     const before=clean.slice(0,deadlineIndex).trim();
@@ -6498,9 +6541,19 @@ function fallbackTaskFromText(text){
     person=personTaskMatch[1];
     clean=personTaskMatch[2];
   }
+  const bodyDeadlineMatch=clean.match(getTaskTitleDeadlineRegex('i'));
+  if(bodyDeadlineMatch){
+    deadline=deadline||bodyDeadlineMatch[2];
+    const bodyDeadlineIndex=bodyDeadlineMatch.index + bodyDeadlineMatch[0].indexOf(bodyDeadlineMatch[2]);
+    const before=clean.slice(0,bodyDeadlineIndex).trim();
+    const after=clean.slice(bodyDeadlineIndex+bodyDeadlineMatch[2].length).trim();
+    clean=(before+' '+after).trim();
+  }
   clean=clean.replace(/\s+/g,' ').trim();
-  const normalizedText=normalizeTaskTitle(clean,{stripDeadline:!!deadline});
-  return { text: normalizedText, person, deadline, originalMsg: original };
+  const split=splitTaskTitleDetails(clean);
+  const normalizedText=normalizeTaskTitle(split.titleSource||clean,{stripDeadline:!!deadline});
+  const description=buildTaskDescription(original,normalizedText,'',split.detail);
+  return { text: normalizedText, person, deadline, originalMsg: original, description };
 }
 
 function normalizeTaskDupText(value){
@@ -6566,6 +6619,9 @@ function buildDuplicateMergeUpdates(existingTask,newTask){
   if((!existingTask.originalMsg||existingTask.originalMsg===existingTask.text)&&newTask.originalMsg&&newTask.originalMsg!==existingTask.text){
     updates.originalMsg=newTask.originalMsg;
   }
+  if(!existingTask.description&&newTask.description){
+    updates.description=newTask.description;
+  }
   return updates;
 }
 
@@ -6613,9 +6669,8 @@ async function saveTaskWithDedup(task){
 
 async function createTaskFromChat(taskData) {
   const safe = taskData || {};
-  const rawText = (safe.text || '').trim();
-  const original = (safe.originalMsg || safe.description || rawText).trim();
-  const text = normalizeTaskTitle(rawText || original,{stripDeadline:!!safe.deadline});
+  const draft = normalizeTaskDraftQuality(safe);
+  const text = draft.text;
   if(!text) return false;
   const person = (safe.person || currentUser?.name || 'Я').trim() || 'Я';
   const assignee = parseAssigneeFromPerson(person);
@@ -6629,7 +6684,8 @@ async function createTaskFromChat(taskData) {
     date: new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long'}),
     done: false,
     source: 'ai_chat',
-    originalMsg: original || text,
+    originalMsg: draft.originalMsg || text,
+    description: draft.description || '',
     assigneeUsername: safe.assigneeUsername || assignee.assigneeUsername || '',
     assigneeTgId: safe.assigneeTgId || assignee.assigneeTgId || ''
   };
@@ -6950,7 +7006,7 @@ async function sendAsk(){
     systemParts.push(taskSummary);
     systemParts.push('Если пользователь просит изменить или открыть существующие задачи, добавь в конец ответа тег <task_actions>[...]</task_actions> без markdown. Формат action: {"type":"complete|reschedule|edit|remind|show","taskId":"id задачи","deadline":"2026-07-08T10:00","field":"text|person|priority|originalMsg|status","value":"...","reminderType":"15m|1h|1d"}. Если действий нет, тег не добавляй.');
     systemParts.push('Удаление задач через AI-чат пока недоступно: если пользователь просит удалить, убрать или стереть задачу/задачи, ответь обычным текстом с отказом и предложи открыть задачу и использовать меню задачи. Не добавляй <task_actions> для таких запросов.');
-    systemParts.push('Если пользователь просит создать задачу через <create_task>, поле text должно быть коротким самостоятельным заголовком 3-9 слов без вводных вроде "я", "мне надо", "тебе надо"; originalMsg сохраняет полную исходную фразу. Не теряй исполнителя и срок.');
+    systemParts.push('Если пользователь просит создать задачу через <create_task>, поле text должно быть коротким самостоятельным заголовком 3-9 слов без вводных вроде "я", "мне надо", "тебе надо"; description хранит детали, контекст и критерии; originalMsg сохраняет полную исходную фразу. Не теряй исполнителя и срок.');
     const r=await fetch(WORKER + '/anthropic',{
       method:'POST',
       headers:authHeaders(),
