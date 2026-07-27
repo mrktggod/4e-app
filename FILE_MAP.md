@@ -20,8 +20,8 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 8936 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
-| `vk.html` | 2030 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 8960 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `vk.html` | 2022 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
 | `privacy.html` | 240 | Политика конфиденциальности | Можно читать целиком при правовых правках |
@@ -50,6 +50,7 @@
 | `scripts/vk-calendar-date-key-smoke.mjs` | 55 | Static smoke for VK calendar date keys: verifies ISO datetime deadlines stay on intended local days, calendar task dots render, and selected-day task lists match normalized keys | Run with `npm run smoke:vk-calendar-date-key` before changing VK calendar date grouping |
 | `scripts/vk-header-logo-smoke.mjs` | 22 | Static smoke for VK header identity: verifies the VK shell has one header logo and no duplicate home logo | Run with `npm run smoke:vk-header-logo` before changing VK header/home identity |
 | `scripts/vk-task-complete-smoke.mjs` | 60 | Static smoke for VK task completion: verifies done-task payload, success refresh/local state and explicit failure toast | Run with `npm run smoke:vk-task-complete` before changing VK task completion |
+| `scripts/profile-premium-banner-smoke.mjs` | 33 | Static smoke for profile premium/trial banner removal: verifies web/VK profile banners are gone and subscription entry points remain | Run with `npm run smoke:profile-premium-banner` before changing profile subscription/banner surfaces |
 | `scripts/premium-task-action-denial-smoke.mjs` | 70 | Static smoke for Premium-required task action denials: verifies backend 402/403 task failures show explicit subscription UI before generic task error toasts | Run with `npm run smoke:premium-task-denial` before changing task action failure handling |
 | `scripts/task-chat-confirm-action-smoke.mjs` | 86 | Browser smoke for task-detail chat suggested-action confirm at 390x844: verifies fallback message id, one update mutation, hidden preview after confirm and updated description | Run with `npm run smoke:task-chat-confirm` before changing task-detail chat suggested actions |
 | `scripts/premium-voice-gate-smoke.mjs` | 81 | Static smoke for expired-Premium voice gate: verifies voice opens subscription before listening and handles premium Worker-style errors | Run with `npm run smoke:premium-voice-gate` before changing voice Premium gate behavior |
@@ -67,7 +68,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 55 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 59 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |

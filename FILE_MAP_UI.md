@@ -27,7 +27,7 @@
 | 542 | `statistics` | Статистика |
 | 614 | `notifications` | Уведомления |
 | 634 | `profile` | Профиль, расширенные поля пользователя |
-| 696 | `subscription` | Подписка; feature-list и pricing cards наполняются из `/tariff-config` |
+| 692 | `subscription` | Подписка; feature-list и pricing cards наполняются из `/tariff-config` |
 | 776 | `payment` | Оплата; order summary, benefits и payment note зависят от provider + tariff config |
 | 829 | `payment-success` | Успешная оплата |
 | 853 | `notif-settings` | Живые настройки уведомлений: каналы, брифинг, просрочки |
@@ -59,9 +59,9 @@
 | Диапазон | Назначение | Ключевые функции |
 | --- | --- | --- |
 | 1898-2087 | Config, tokens, helpers | `getToken`, `authHeaders`, `withTimeout`, `readJsonSafe`, Premium denial helpers, Telegram/VK launch helpers |
-| 2088-2498 | App init, auth, profile | `initApp`, `doRegister`, `submitLoginOnEnter`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
-| 2499-3191 | Payments and subscription | `DEFAULT_TARIFF_CONFIG`, `loadTariffConfig`, `getPlanConfig`, `renderSubscriptionFeatures`, `renderPricingCards`, `openPayment`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
-| 3192-5059 | Tasks, home, focus panel daily summary, cards, calendar stats | `loadTasks`, `getTaskUiId`, `getTaskCreatedTimestamp`, `formatTaskCreatedMeta`, `getFocusTaskSummary`, `updateHomeDashboardList`, `submitQuickAdd`, `renderFocusPanelSummary`, `renderTasksForMonth`, `loadStats`, `renderTaskCard`, `markDoneKV` |
+| 2083-2493 | App init, auth, profile | `initApp`, `doRegister`, `submitLoginOnEnter`, `doLogin`, `loginWithTelegram`, `doLogout`, `renderExtendedProfile`, `saveExtendedProfile` |
+| 2494-3186 | Payments and subscription | `DEFAULT_TARIFF_CONFIG`, `loadTariffConfig`, `getPlanConfig`, `renderSubscriptionFeatures`, `renderPricingCards`, `openPayment`, `startPayment`, `launchWidget`, `updateSubscriptionScreen` |
+| 3187-5054 | Tasks, home, focus panel daily summary, cards, calendar stats | `loadTasks`, `getTaskUiId`, `getTaskCreatedTimestamp`, `formatTaskCreatedMeta`, `getFocusTaskSummary`, `updateHomeDashboardList`, `submitQuickAdd`, `renderFocusPanelSummary`, `renderTasksForMonth`, `loadStats`, `renderTaskCard`, `markDoneKV` |
 | 5060-6166 | Task detail and editing | `loadTaskAdvice`, `openTask`, `completeTask`, `saveTaskEdits`, `setReminderOnWorker` |
 | 6167-6255 | Message generation, navigation, notifications | `openWrite`, `aiCall`, `generateMessage`, `copyMsg`, `editMsg`, `showScreen`, `openNotifications` |
 | 6256-7078 | AI chat and task creation | `loadAskHistoryRemote`, `normalizeTaskTitle`, `fallbackTaskFromText`, `createTaskFromChat`, `sendAsk`, `showToast` |
@@ -76,8 +76,8 @@
 | --- | --- | --- |
 | 1-7 | Head scripts | VK bridge |
 | 8-264 | CSS | VK layout, auth, cards, tabs, home focus metadata, profile IA, task-detail summary/edit form, screens |
-| 266-582 | HTML | VK auth, home focus/top-task metadata, task detail with summary/edit controls, ask, calendar, stats, profile summary/privacy |
-| 583-2030 | JavaScript | VK auth, tasks, profile summary, home parity summary, task detail summary/edit/back behavior, AI chat, local date keys, calendar, stats |
+| 266-589 | HTML | VK auth, home focus/top-task metadata, task detail with summary/edit controls, ask, calendar, stats, profile summary/privacy |
+| 591-2022 | JavaScript | VK auth, tasks, profile summary, home parity summary, task detail summary/edit/back behavior, AI chat, local date keys, calendar, stats |
 
 ### VK JavaScript ranges
 
@@ -91,9 +91,9 @@
 | 1380-1466 | Home focus summary, metric notes, urgent/overdue/next-deadline chips, top task row |
 | 1467-1496 | Task list HTML |
 | 1497-1588 | Local date-key helpers, task parsing, save task from chat |
-| 1649-1803 | Task detail status/priority/return helpers, edit helpers and worker update path |
-| 1804-1894 | Task detail render, return behavior, discussion and done action |
-| 1895-1968 | Navigation, ask chat, calendar local date grouping, stats |
+| 1641-1795 | Task detail status/priority/return helpers, edit helpers and worker update path |
+| 1796-1886 | Task detail render, return behavior, discussion and done action |
+| 1887-1960 | Navigation, ask chat, calendar local date grouping, stats |
 | 1912-1946 | Stats and home metric notes |
 | 1947-1954 | Toast |
 

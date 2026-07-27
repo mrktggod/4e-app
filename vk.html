@@ -228,9 +228,6 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 .discussion-input-row { display: flex; gap: 8px; margin-top: 12px; }
 .discussion-input { flex: 1; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 14px; padding: 11px 13px; font: inherit; outline: none; }
 .discussion-send { width: 44px; border: none; border-radius: 14px; background: var(--green); color: #101707; font-weight: 800; cursor: pointer; }
-.trial-banner { background: linear-gradient(135deg, rgba(154,194,60,0.15), rgba(58,80,16,0.3)); border: 1px solid rgba(154,194,60,0.3); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
-.trial-days { font-size: 28px; font-weight: 700; color: var(--green); }
-.trial-btn { margin-left: auto; background: var(--green); color: #000; border: none; padding: 8px 14px; border-radius: 22px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: 16px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
 .btn-primary { background: var(--green); color: #000; }
 .btn-primary:active { transform: scale(0.97); }
@@ -521,14 +518,6 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
         <a class="profile-chip secondary profile-legal-link" href="privacy.html" target="_blank" rel="noopener">Приватность</a>
       </div>
     </div>
-  </div>
-  <div class="trial-banner">
-    <div>
-      <div class="trial-days" id="trialDays">30</div>
-      <div style="font-size:13px;font-weight:600;margin-top:2px">дней триала</div>
-      <div style="font-size:12px;color:var(--muted)">Полный доступ</div>
-    </div>
-    <button class="trial-btn" id="vkPayBtn" onclick="startVKPayment()">Купить план</button>
   </div>
   <div class="section-label">Подключённые аккаунты</div>
   <div class="card">
@@ -1108,8 +1097,11 @@ function applyUser() {
   document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
   const accountSummary = document.getElementById('profileAccountSummary');
   if (accountSummary) accountSummary.textContent = state.user.vkId ? 'VK Mini App · VK ID подключён' : 'VK Mini App · вход по email';
-  const trial = state.user.trialEndsAt ? Math.max(0, Math.ceil((state.user.trialEndsAt - Date.now()) / 86400000)) : 30;
-  document.getElementById('trialDays').textContent = trial;
+  const trialDays = document.getElementById('trialDays');
+  if (trialDays) {
+    const trial = state.user.trialEndsAt ? Math.max(0, Math.ceil((state.user.trialEndsAt - Date.now()) / 86400000)) : 30;
+    trialDays.textContent = trial;
+  }
 }
 
 function identityByProvider(provider) {
