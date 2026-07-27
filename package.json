@@ -11,6 +11,7 @@
         "check:ui-architecture": "node scripts/run-bash-script.mjs scripts/check-ui-architecture.sh",
         "check:portable-paths": "node scripts/run-bash-script.mjs scripts/check-portable-paths.sh",
         "smoke:home001": "node scripts/home-001-dashboard-smoke.mjs",
+        "smoke:iphone14-responsive": "node scripts/iphone14-responsive-regression-smoke.mjs",
         "smoke:back019": "node scripts/back-019-task-card-smoke.mjs",
         "smoke:back055": "node scripts/back-055-notifications-smoke.mjs",
         "smoke:back065": "node scripts/back-065-task-title-normalization-smoke.mjs",

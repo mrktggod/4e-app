@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### iPhone 14 responsive regression smoke
+
+**What changed:** Added a focused 390x844 Playwright smoke covering home task rows, task detail, statistics, date/time popover, bottom nav and long task titles for iPhone 14-like responsive regression evidence. Runtime UI was not changed.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:iphone14-responsive`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Task toast lifecycle
 
 **What changed:** Success toasts now auto-hide faster and task-detail scroll dismisses only non-critical toasts. Error/alert toasts keep assertive ARIA and stay visible longer before auto-hide.
