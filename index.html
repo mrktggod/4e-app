@@ -1220,10 +1220,6 @@ if('serviceWorker' in navigator){
         <div><div class="sub-row-text">English</div><div class="sub-row-sub">Английский</div></div>
         <div class="radio-wrap" id="lang-radio-en"></div>
       </div>
-      <div class="sub-row" onclick="setLanguage('Українська',this)">
-        <div><div class="sub-row-text">Українська</div><div class="sub-row-sub">Украинский</div></div>
-        <div class="radio-wrap" id="lang-radio-uk"></div>
-      </div>
       <div class="sub-row" onclick="setLanguage('Deutsch',this)">
         <div><div class="sub-row-text">Deutsch</div><div class="sub-row-sub">Немецкий</div></div>
         <div class="radio-wrap" id="lang-radio-de"></div>
@@ -5285,12 +5281,38 @@ function setDetailDeadline(value){
   if(dateEl) dateEl.textContent = formatDetailDeadline(currentDetailTime);
 }
 
+let pendingDetailDeadlineTime = '';
+
+function setPendingDetailDeadline(value){
+  pendingDetailDeadlineTime = value || '';
+  const inp = document.getElementById('detail-time-input');
+  if(inp && inp.value !== pendingDetailDeadlineTime) inp.value = pendingDetailDeadlineTime;
+}
+
+function closeDetailDatePopover(){
+  const stack=document.querySelector('#task-detail .detail-info-stack');
+  if(stack)stack.classList.remove('detail-date-popover-open');
+}
+
+function cancelDetailDeadline(){
+  setPendingDetailDeadline(currentDetailTime);
+  closeDetailDatePopover();
+}
+
+function confirmDetailDeadline(){
+  const inp=document.getElementById('detail-time-input');
+  const value=inp?.value||pendingDetailDeadlineTime||'';
+  setDetailDeadline(value);
+  closeDetailDatePopover();
+  saveTaskEdits();
+}
+
 function setQuickDeadline(kind){
   const d = new Date();
   if(kind === 'tomorrow') d.setDate(d.getDate()+1);
   if(kind === 'week') d.setDate(d.getDate()+7);
   d.setHours(18,0,0,0);
-  setDetailDeadline(toDetailDateTimeLocal(d.toISOString()));
+  setPendingDetailDeadline(toDetailDateTimeLocal(d.toISOString()));
 }
 
 function renderDetailDirectionOptions(){
@@ -8766,19 +8788,19 @@ function setDetailPriorityFromCard(value){const labels={low:'Низкий',norma
 function openDetailPrioritySelect(event){toggleDetailPriorityPopover(event);}
 function setDetailStatusFromCard(status){const labels={waiting:'Ожидает',active:'Активная',done:'Завершена',blocked:'Заблокирована'};const sel=document.getElementById('detail-status-select');if(sel)sel.value=status;currentDetailStatus=status;document.querySelectorAll('#task-detail .detail-status-node').forEach(node=>node.classList.remove('detail-status-node--active'));const nodes={waiting:0,active:1,done:2};const idx=nodes[status];const target=document.querySelectorAll('#task-detail .detail-status-node')[idx];if(target)target.classList.add('detail-status-node--active');appendDetailHistoryMessage('Статус изменён: '+(labels[status]||status));saveTaskEdits();}
 
-function toggleDetailDatePopover(event){if(event){event.preventDefault();event.stopPropagation();}const stack=document.querySelector('#task-detail .detail-info-stack');if(stack)stack.classList.toggle('detail-date-popover-open');}
+function toggleDetailDatePopover(event){if(event){event.preventDefault();event.stopPropagation();}const stack=document.querySelector('#task-detail .detail-info-stack');if(!stack)return;const opening=!stack.classList.contains('detail-date-popover-open');if(opening)setPendingDetailDeadline(currentDetailTime);stack.classList.toggle('detail-date-popover-open');}
 
-document.addEventListener('click',function(e){const stack=document.querySelector('#task-detail .detail-info-stack');if(!stack)return;if(!e.target.closest('#task-detail .detail-info-stack')){stack.classList.remove('detail-date-popover-open');stack.classList.remove('detail-priority-popover-open');}if(!e.target.closest('#task-detail .detail-redesign-hero')){const hero=document.querySelector('#task-detail .detail-redesign-hero');if(hero)hero.classList.remove('detail-reminder-popover-open');}});
+document.addEventListener('click',function(e){const stack=document.querySelector('#task-detail .detail-info-stack');if(!stack)return;if(!e.target.closest('#task-detail .detail-info-stack')){if(stack.classList.contains('detail-date-popover-open'))cancelDetailDeadline();stack.classList.remove('detail-priority-popover-open');}if(!e.target.closest('#task-detail .detail-redesign-hero')){const hero=document.querySelector('#task-detail .detail-redesign-hero');if(hero)hero.classList.remove('detail-reminder-popover-open');}});
 
 document.addEventListener('click',function(e){const wrap=document.getElementById('detail-tag-input-wrap');if(!wrap||getComputedStyle(wrap).display==='none')return;if(e.target.closest('#detail-tag-input-wrap')||e.target.closest('#detail-tag-toggle-btn'))return;closeTagInput(false);});
 
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&e.target&&e.target.closest('#detail-tag-input-wrap')){e.preventDefault();closeTagInput(true);}});
 
-document.addEventListener('change',function(e){if(e.target&&e.target.id==='detail-time-input'){const stack=document.querySelector('#task-detail .detail-info-stack');if(stack)stack.classList.remove('detail-date-popover-open');}});
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='detail-time-input')setPendingDetailDeadline(e.target.value||'');});
 
 function toggleDetailChecklistPanel(event){if(event){event.preventDefault();event.stopPropagation();}const panel=document.querySelector('#task-detail .detail-checklist-panel');if(panel)panel.classList.toggle('detail-checklist-panel--open');}
 
-document.addEventListener('focusout',function(e){if(e.target.closest('#task-detail'))saveTaskEdits();});
+document.addEventListener('focusout',function(e){if(e.target&&e.target.id==='detail-time-input')return;if(e.target.closest('#task-detail'))saveTaskEdits();});
 
 // ===== ПАТЧ 08 — VK MINI APPS АДАПТЕР =====
 if(window.FourPlatform?.initVkMiniAppAdapter){

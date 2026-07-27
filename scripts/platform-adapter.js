@@ -421,7 +421,23 @@
     if (detailDeadlineInput) {
       detailDeadlineInput.addEventListener('change', event => {
         const value = event?.target?.value || '';
-        if (typeof setDetailDeadline === 'function') setDetailDeadline(value);
+        if (typeof setPendingDetailDeadline === 'function') setPendingDetailDeadline(value);
+      });
+    }
+
+    const detailDatePopover = document.getElementById('detail-date-popover');
+    if (detailDatePopover) {
+      detailDatePopover.addEventListener('click', event => {
+        const button = event.target.closest('button[data-detail-deadline-action]');
+        if (!button) return;
+        const action = button.dataset.detailDeadlineAction;
+        if (action === 'confirm' && typeof confirmDetailDeadline === 'function') {
+          confirmDetailDeadline();
+          return;
+        }
+        if (action === 'cancel' && typeof cancelDetailDeadline === 'function') {
+          cancelDetailDeadline();
+        }
       });
     }
 

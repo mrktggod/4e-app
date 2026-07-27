@@ -20,7 +20,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 8975 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 9002 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 2022 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
@@ -32,7 +32,7 @@
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
 | `DEVELOPMENT_LOG.md` | 3143 | Канонический технический лог | Обновлять после значимых правок |
 | `https://github.com/mrktggod/4pm` | n/a | Приватные roadmap, work log, commit convention, PM/QA, team sync и бизнес-документация | Читать при планировании и PM/QA задачах |
-| `scripts/platform-adapter.js` | 1212 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, task-detail return dispatch, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
+| `scripts/platform-adapter.js` | 1228 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, task-detail return/date confirm dispatch, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
 | `scripts/task-ui-renderers.js` | 747 | Shared task/notification renderers and task card helpers, including swipe actions, inline completion feedback, calendar/task row click-through, and task-detail return-screen fallback helpers | Read narrow task renderer ranges before changing task cards, task completion controls, notification cards, calendar rows, or task-detail return behavior |
 | `scripts/auth-handlers.js` | 696 | Auth and preview-demo handlers: login/register flows, dashboard preview routing, and preview-only state flags for visual QA | Read narrow preview/auth ranges before changing login or preview behavior |
 | `scripts/check-portable-paths.sh` | 24 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
@@ -59,7 +59,7 @@
 | `scripts/voice-exit-controls-smoke.mjs` | 77 | Static smoke for voice cancel/back behavior: verifies both controls call `closeVoice`, timers clear, recognition stops, and safe return screen is used | Run with `npm run smoke:voice-exit-controls` before changing voice close/cancel behavior |
 | `scripts/relative-time-copy-smoke.mjs` | 66 | Static smoke for task relative-time copy: verifies a 47-day-old legacy task shows exact age and never `недавно` | Run with `npm run smoke:relative-time-copy` before changing task created/date helpers |
 | `scripts/back-067-task-detail-reminder-smoke.mjs` | 249 | Headless Chrome/CDP smoke for task-detail reminder trigger at 390x844: verifies no `button > select`, 44x44 trigger, popover open, option select, and form value persistence | Run with `npm run smoke:back067-reminder` before changing task-detail reminder picker |
-| `scripts/back-068-task-detail-tag-popup-smoke.mjs` | 236 | Headless Chrome/CDP smoke for task-detail tag editor at 390x844: verifies no native datalist, controlled suggestions, add, cancel, outside and Escape close, and viewport fit | Run with `npm run smoke:back068-tag-popup` before changing task-detail tag editor |
+| `scripts/back-068-task-detail-tag-popup-smoke.mjs` | 356 | Headless Chrome/CDP smoke for task-detail tag editor and date/time picker at 390x844: verifies tag popup behavior plus datetime pending/cancel/outside/confirm save semantics | Run with `npm run smoke:back068-tag-popup` before changing task-detail tag editor or date/time picker |
 | `scripts/back-069-task-detail-hero-overflow-smoke.mjs` | 194 | Headless Chrome/CDP smoke for task-detail hero at 390x844: verifies long tag ellipsis, no title/description overlap with meta cards, bounded hero growth, and no horizontal overflow | Run with `npm run smoke:back069-hero` before changing task-detail hero layout |
 | `scripts/viral-share-card-smoke.mjs` | 126 | Static smoke for VIRAL-001/004/006 share-card runtime: validates canvas PNG builders, streak/weekly helpers, native share, download fallback and lite analytics hooks | Run with `npm run smoke:viral-share` before promoting share-card evidence beyond source-only |
 | `.githooks/pre-commit` | 5 | Локальный hook для запуска path guard и UI architecture guard перед commit | Активировать через `git config core.hooksPath .githooks` |

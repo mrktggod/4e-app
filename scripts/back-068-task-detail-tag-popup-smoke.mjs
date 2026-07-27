@@ -9,6 +9,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const chromeCandidates = [
   process.env.CHROME_PATH,
   process.env.BROWSER_PATH,
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
   'chrome',
   'google-chrome',
   'chromium',
@@ -25,10 +29,30 @@ async function exists(file) {
   }
 }
 
+async function resolveFromPath(command) {
+  const paths = String(process.env.PATH || '').split(path.delimiter).filter(Boolean);
+  const extensions = process.platform === 'win32'
+    ? String(process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM').split(';')
+    : [''];
+  for (const dir of paths) {
+    for (const ext of extensions) {
+      const candidate = path.join(dir, command + ext.toLowerCase());
+      if (await exists(candidate)) return candidate;
+      const upperCandidate = path.join(dir, command + ext.toUpperCase());
+      if (await exists(upperCandidate)) return upperCandidate;
+    }
+  }
+  return null;
+}
+
 async function findChrome() {
   for (const candidate of chromeCandidates) {
     const isPathLike = candidate.includes('/') || candidate.includes('\\');
-    if (!isPathLike || await exists(candidate)) return candidate;
+    if (isPathLike && await exists(candidate)) return candidate;
+    if (!isPathLike) {
+      const resolved = await resolveFromPath(candidate);
+      if (resolved) return resolved;
+    }
   }
   throw new Error('Chrome or Edge executable was not found in PATH');
 }
@@ -116,10 +140,22 @@ async function runSmoke(ws, appUrl) {
       (() => {
         localStorage.setItem('chetam_onboarded', '1');
         localStorage.setItem('chetam_token', 'smoke-token');
-        window.fetch = async () => new Response(JSON.stringify({ ok: true }), {
+        window.__taskMutationPayloads = [];
+        window.fetch = async (url, options = {}) => {
+          const headers = options.headers || {};
+          const action = headers['x-action'] || headers.get?.('x-action') || '';
+          if (action === 'update-task') {
+            try {
+              window.__taskMutationPayloads.push(JSON.parse(options.body || '{}'));
+            } catch {
+              window.__taskMutationPayloads.push({ parseError: true });
+            }
+          }
+          return new Response(JSON.stringify({ ok: true }), {
           status: 200,
           headers: { 'content-type': 'application/json' }
-        });
+          });
+        };
       })();
     `
   });
@@ -204,12 +240,72 @@ async function runSmoke(ws, appUrl) {
     assert(getComputedStyle(wrap).display === 'none', 'Escape should close tag editor');
     assert(document.activeElement === toggle, 'Escape should restore focus to tag toggle');
 
+    const dateCard = document.querySelector('.detail-info-card--date');
+    const datePopover = document.getElementById('detail-date-popover');
+    const deadlineInput = document.getElementById('detail-time-input');
+    const confirmDeadline = document.querySelector('[data-detail-deadline-action="confirm"]');
+    const cancelDeadline = document.querySelector('[data-detail-deadline-action="cancel"]');
+
+    assert(Boolean(dateCard), 'date card trigger is missing');
+    assert(Boolean(datePopover), 'date popover is missing');
+    assert(Boolean(deadlineInput), 'datetime input is missing');
+    assert(Boolean(confirmDeadline), 'date confirm button is missing');
+    assert(Boolean(cancelDeadline), 'date cancel button is missing');
+
+    window.__taskMutationPayloads = [];
+    dateCard?.click();
+    await wait(80);
+    assert(document.querySelector('#task-detail .detail-info-stack')?.classList.contains('detail-date-popover-open'), 'date popover should open');
+    const originalDeadline = currentDetailTime;
+    const draftDeadline = '2026-07-24T15:45';
+    deadlineInput.value = draftDeadline;
+    deadlineInput.dispatchEvent(new Event('input', { bubbles: true }));
+    deadlineInput.dispatchEvent(new Event('change', { bubbles: true }));
+    await wait(120);
+    assert(document.querySelector('#task-detail .detail-info-stack')?.classList.contains('detail-date-popover-open'), 'date popover should stay open while changing time');
+    assert(currentDetailTime === originalDeadline, 'datetime change should not apply before confirm');
+    assert(window.__taskMutationPayloads.length === 0, 'datetime change should not save before confirm');
+
+    cancelDeadline?.click();
+    await wait(120);
+    assert(!document.querySelector('#task-detail .detail-info-stack')?.classList.contains('detail-date-popover-open'), 'date cancel should close popover');
+    assert(currentDetailTime === originalDeadline, 'date cancel should preserve original deadline');
+    assert(deadlineInput.value === originalDeadline, 'date cancel should restore input value');
+    assert(window.__taskMutationPayloads.length === 0, 'date cancel should not save');
+
+    dateCard?.click();
+    await wait(80);
+    deadlineInput.value = '2026-07-25T09:30';
+    deadlineInput.dispatchEvent(new Event('change', { bubbles: true }));
+    document.getElementById('detail-title')?.click();
+    await wait(120);
+    assert(!document.querySelector('#task-detail .detail-info-stack')?.classList.contains('detail-date-popover-open'), 'outside click should close date popover');
+    assert(currentDetailTime === originalDeadline, 'outside close should not apply draft deadline');
+    assert(deadlineInput.value === originalDeadline, 'outside close should restore input value');
+    assert(window.__taskMutationPayloads.length === 0, 'outside close should not save draft deadline');
+
+    dateCard?.click();
+    await wait(80);
+    const confirmedDeadline = '2026-07-26T18:15';
+    deadlineInput.value = confirmedDeadline;
+    deadlineInput.dispatchEvent(new Event('change', { bubbles: true }));
+    await wait(60);
+    confirmDeadline?.click();
+    await wait(220);
+    const lastMutation = window.__taskMutationPayloads[window.__taskMutationPayloads.length - 1];
+    assert(currentDetailTime === confirmedDeadline, 'date confirm should apply selected deadline');
+    assert(!document.querySelector('#task-detail .detail-info-stack')?.classList.contains('detail-date-popover-open'), 'date confirm should close popover');
+    assert(window.__taskMutationPayloads.length === 1, 'date confirm should save exactly once');
+    assert(lastMutation?.updates?.deadline === confirmedDeadline, 'date confirm should save selected deadline');
+
     return {
       ok: failures.length === 0,
       failures,
       viewport: { width: window.innerWidth, height: window.innerHeight },
       openRect: { left: openRect.left, right: openRect.right, height: openRect.height },
-      tags: [...currentDetailTags]
+      tags: [...currentDetailTags],
+      deadline: currentDetailTime,
+      mutationCount: window.__taskMutationPayloads.length
     };
   }})()`;
   const result = await send(ws, 'Runtime.evaluate', {
