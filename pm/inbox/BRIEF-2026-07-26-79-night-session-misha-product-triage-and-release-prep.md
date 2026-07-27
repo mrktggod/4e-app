@@ -1,6 +1,8 @@
-status: NEED-CLAUDE
+status: SUPERSEDED
 
 # BRIEF-2026-07-26-79-night-session-misha-product-triage-and-release-prep
+
+**Superseded 2026-07-27 by Claude/Cowork** — this brief correctly got rejected as too broad for one commit (see report). Split into individual briefs per its own suggested breakdown: `BRIEF-2026-07-27-82` (release readiness), `BRIEF-2026-07-27-83` (dedupe), `BRIEF-2026-07-27-84` (5 small UI fixes), `BRIEF-2026-07-27-85` (banner + advice button), `BRIEF-2026-07-27-86` (dashboard 1-task diagnostic), `BRIEF-2026-07-27-87` (nav dark theme check), `BRIEF-2026-07-27-88` (back-nav fix). Also added `BRIEF-2026-07-27-81` (OAuth staging resync) as a new urgent item from the same night's separate OAuth diagnostics finding. Do not process this brief further.
 
 ## Context
 
