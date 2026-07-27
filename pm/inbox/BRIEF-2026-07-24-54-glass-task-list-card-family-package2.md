@@ -1,4 +1,4 @@
-status: BLOCKED-DEPENDENCY
+status: DONE
 
 # BRIEF-2026-07-24-54-glass-task-list-card-family-package2
 

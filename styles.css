@@ -1604,12 +1604,17 @@ body:has(#reset-password.active) .bottom-nav-v2 {
   width: 100%;
   min-width: 0;
   overflow: hidden;
-  border-bottom: 1px solid rgba(242, 245, 233, 0.05);
-  background: rgba(8, 12, 6, 0.28);
+  margin-bottom: 10px;
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--glass-radius-card);
+  background: var(--glass-surface);
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   touch-action: pan-y;
 }
 .task-card-shell:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 .task-card-shell .task-swipe-actions {
   position: absolute;
@@ -1677,10 +1682,10 @@ body:has(#reset-password.active) .bottom-nav-v2 {
   width: 100%;
   padding: 12px 14px 13px;
   border: 0;
-  border-radius: 0;
-  background: var(--card);
+  border-radius: calc(var(--glass-radius-card) - 1px);
+  background: transparent;
   cursor: pointer;
-  transition: transform 0.18s ease, background 0.16s ease;
+  transition: transform 0.18s ease, background 0.16s ease, box-shadow 0.16s ease;
   will-change: transform;
 }
 .task-card-shell.swipe-left .task-row.task-card,
@@ -1689,8 +1694,12 @@ body:has(#reset-password.active) .bottom-nav-v2 {
 .task-card-shell.swiping-right .task-row.task-card {
   pointer-events: none;
 }
+.task-card-shell:is(.is-overdue,.priority-p0) {
+  border-color: rgba(255, 95, 95, 0.32);
+  background: linear-gradient(135deg, rgba(255, 95, 95, 0.14), var(--glass-surface) 52%);
+}
 .task-card-shell.is-overdue .task-row.task-card {
-  background: rgba(180, 44, 44, 0.16);
+  background: rgba(180, 44, 44, 0.1);
 }
 .task-card-shell .task-card-head {
   display: grid;
@@ -1805,6 +1814,12 @@ body:has(#reset-password.active) .bottom-nav-v2 {
   line-height: 1.35;
   letter-spacing: 0;
 }
+@media (hover: hover) {
+  .task-card-shell:hover {
+    border-color: var(--glass-stroke-strong);
+    box-shadow: var(--glass-shadow), var(--glass-inset-shadow), var(--glass-active-glow);
+  }
+}
 @media (pointer: fine) {
   .task-card-shell {
     touch-action: auto;
@@ -1814,6 +1829,11 @@ body:has(#reset-password.active) .bottom-nav-v2 {
   }
   .task-card-shell .task-row.task-card {
     transform: none !important;
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .task-card-shell {
+    background: var(--glass-reduced-surface);
   }
 }
 /* DASHBOARD + SUBSCRIPTION SOFT GLASS REDESIGN 2026-07-18 */

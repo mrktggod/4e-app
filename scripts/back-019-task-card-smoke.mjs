@@ -6,9 +6,20 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const evidenceDir = path.join(root, 'docs', 'tasks', 'assets');
+const screenshotPaths = {
+  light: path.join(evidenceDir, 'BACK-019-task-card-glass-2026-07-27-light.png'),
+  dark: path.join(evidenceDir, 'BACK-019-task-card-glass-2026-07-27-dark.png')
+};
 const chromeCandidates = [
   process.env.CHROME_PATH,
   process.env.BROWSER_PATH,
+  process.env.ProgramFiles && path.join(process.env.ProgramFiles, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+  process.env['ProgramFiles(x86)'] && path.join(process.env['ProgramFiles(x86)'], 'Google', 'Chrome', 'Application', 'chrome.exe'),
+  process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+  process.env.ProgramFiles && path.join(process.env.ProgramFiles, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+  process.env['ProgramFiles(x86)'] && path.join(process.env['ProgramFiles(x86)'], 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+  process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
   'chrome',
   'google-chrome',
   'chromium',
@@ -25,10 +36,30 @@ async function exists(file) {
   }
 }
 
+async function resolveFromPath(command) {
+  const paths = String(process.env.PATH || '').split(path.delimiter).filter(Boolean);
+  const extensions = process.platform === 'win32'
+    ? String(process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM').split(';')
+    : [''];
+  for (const dir of paths) {
+    for (const ext of extensions) {
+      const candidate = path.join(dir, command + ext.toLowerCase());
+      if (await exists(candidate)) return candidate;
+      const upperCandidate = path.join(dir, command + ext.toUpperCase());
+      if (await exists(upperCandidate)) return upperCandidate;
+    }
+  }
+  return null;
+}
+
 async function findChrome() {
   for (const candidate of chromeCandidates) {
     const isPathLike = candidate.includes('/') || candidate.includes('\\');
-    if (!isPathLike || await exists(candidate)) return candidate;
+    if (isPathLike && await exists(candidate)) return candidate;
+    if (!isPathLike) {
+      const resolved = await resolveFromPath(candidate);
+      if (resolved) return resolved;
+    }
   }
   throw new Error('Chrome or Edge executable was not found in PATH');
 }
@@ -169,6 +200,15 @@ async function openPage(port, url) {
   return res.json();
 }
 
+async function saveScreenshot(ws, filePath) {
+  const shot = await send(ws, 'Page.captureScreenshot', {
+    format: 'png',
+    captureBeyondViewport: false
+  });
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, Buffer.from(shot.data, 'base64'));
+}
+
 async function runSmoke(ws) {
   await send(ws, 'Runtime.enable');
   await send(ws, 'Page.enable');
@@ -177,6 +217,26 @@ async function runSmoke(ws) {
     height: 844,
     deviceScaleFactor: 1,
     mobile: true
+  });
+  await send(ws, 'Runtime.evaluate', {
+    expression: `(${async function waitForHarness() {
+      const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      for (let i = 0; i < 50 && !window.__harnessReady; i += 1) await wait(100);
+      return Boolean(window.__harnessReady);
+    }})()`,
+    awaitPromise: true,
+    returnByValue: true
+  });
+  await saveScreenshot(ws, screenshotPaths.light);
+  await send(ws, 'Runtime.evaluate', {
+    expression: `document.documentElement.setAttribute('data-theme','dark'); document.body.classList.remove('soft-light'); true;`,
+    returnByValue: true
+  });
+  await new Promise(resolve => setTimeout(resolve, 80));
+  await saveScreenshot(ws, screenshotPaths.dark);
+  await send(ws, 'Runtime.evaluate', {
+    expression: `document.documentElement.setAttribute('data-theme','light'); true;`,
+    returnByValue: true
   });
   const expression = `(${async function smoke() {
     const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -190,6 +250,13 @@ async function runSmoke(ws) {
     if (document.documentElement.scrollWidth > window.innerWidth) failures.push('document has horizontal overflow');
 
     const first = cards[0];
+    const firstShellStyle = first ? getComputedStyle(first) : null;
+    metrics.firstCardBackground = firstShellStyle?.backgroundColor || '';
+    metrics.firstCardBorderRadius = firstShellStyle?.borderRadius || '';
+    metrics.firstCardBoxShadow = firstShellStyle?.boxShadow || '';
+    metrics.firstCardBackdropFilter = firstShellStyle?.backdropFilter || firstShellStyle?.webkitBackdropFilter || '';
+    if (!firstShellStyle?.boxShadow || firstShellStyle.boxShadow === 'none') failures.push('task card does not expose glass shadow');
+    if (!firstShellStyle?.borderRadius || parseFloat(firstShellStyle.borderRadius) < 24) failures.push('task card does not use shared glass radius');
     const title = first?.querySelector('.task-card-title');
     const titleStyle = title ? getComputedStyle(title) : null;
     const lineHeight = titleStyle ? parseFloat(titleStyle.lineHeight) : 0;
@@ -253,6 +320,10 @@ async function runSmoke(ws) {
 
     metrics.swipeLeftTransform = firstCard.style.transform;
     metrics.swipeRightTransform = secondCard.style.transform;
+    metrics.screenshots = {
+      light: 'docs/tasks/assets/BACK-019-task-card-glass-2026-07-27-light.png',
+      dark: 'docs/tasks/assets/BACK-019-task-card-glass-2026-07-27-dark.png'
+    };
     return { ok: failures.length === 0, failures, metrics };
   }})()`;
   const result = await send(ws, 'Runtime.evaluate', {
