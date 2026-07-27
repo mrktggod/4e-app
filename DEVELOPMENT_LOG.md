@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### Telegram bottom menu diagnostic
+
+**What changed:** Hid the legacy `#global-nav` on redesigned inner pages (`profile`, `task-detail`, `subscription`, `statistics`) while preserving the dark dashboard `dash-bottom-nav`. Added a Telegram mocked smoke that checks dashboard dark-menu visibility, old-menu absence on inner pages, source nav counts, and saves a dark screenshot.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:telegram-bottom-menu`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Telegram dashboard one-task diagnostic
 
 **What changed:** Added a focused Playwright diagnostic that compares web and mocked Telegram surfaces with four mocked task API results. The diagnostic records API result count, parsed local cache count, active count, rendered dashboard rows, row titles, show-all visibility and focus count.

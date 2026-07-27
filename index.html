@@ -7049,7 +7049,7 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
     setTimeout(()=>{
       if(keyboardOpen)return;
       const active=document.querySelector('.screen.active');
-      const noNav=['login','voice','home','ask'];
+      const noNav=['login','voice','home','ask','task-detail','profile','subscription','statistics'];
       if(nav&&active&&!noNav.includes(active.id))nav.classList.remove('hidden');
       // Возвращаем отступ под nav
       if(askBar)askBar.classList.remove('ask-bar--keyboard-open');
@@ -7388,8 +7388,8 @@ function _showSubScreenBase(id){
   if(s){s.classList.add('active');s.scrollTop=0;}
   // Hide nav for sub-screens
   const nav=document.getElementById('global-nav');
-  const mainScreens=['home','ask','calendar','notifications','statistics','profile'];
-  const noNav=['login','voice','ask'];
+  const mainScreens=['home','ask','calendar','notifications'];
+  const noNav=['login','voice','ask','task-detail','profile','subscription','statistics'];
   if(nav){
     if(noNav.includes(id)) nav.classList.add('hidden');
     else if(mainScreens.includes(id)) nav.classList.remove('hidden');

@@ -20,7 +20,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 9003 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 9015 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 2022 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
@@ -33,7 +33,7 @@
 | `AGENTS.md` | 312 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 3347 | Канонический технический лог | Обновлять после значимых правок |
+| `DEVELOPMENT_LOG.md` | 3357 | Канонический технический лог | Обновлять после значимых правок |
 | `https://github.com/mrktggod/4pm` | n/a | Приватные roadmap, work log, commit convention, PM/QA, team sync и бизнес-документация | Читать при планировании и PM/QA задачах |
 | `scripts/platform-adapter.js` | 1235 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, task-detail return/date confirm/reminder-card dispatch, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
 | `scripts/task-ui-renderers.js` | 793 | Shared task/notification renderers and task card helpers, including swipe actions, inline completion feedback, active-card reminder entrypoint, calendar/task row click-through, and task-detail return-screen fallback helpers | Read narrow task renderer ranges before changing task cards, task completion controls, notification cards, calendar rows, reminders, or task-detail return behavior |
@@ -60,6 +60,7 @@
 | `scripts/task-action-feedback-smoke.mjs` | 96 | Source smoke for task-card action feedback: verifies disabled/loading actions do not fire feedback, rapid taps do not duplicate haptics, and pressed visual state is scoped to swipe action buttons | Run with `npm run smoke:task-action-feedback` before changing task-card action feedback or haptics |
 | `scripts/task-advice-manual-smoke.mjs` | 74 | Playwright smoke for task-detail advice generation: verifies opening a task does not call `/anthropic`, the placeholder stays visible, and the manual `Совет 4` click triggers one advice request with loading state | Run with `npm run smoke:task-advice-manual` before changing task-detail advice behavior |
 | `scripts/telegram-dashboard-one-task-diagnostic.mjs` | 115 | Playwright diagnostic for Telegram dashboard one-task reports: compares web and mocked Telegram surfaces with 4 API tasks, local cache count, rendered top-3 rows, show-all visibility and focus count | Run with `npm run smoke:telegram-dashboard-one-task` before changing dashboard task filtering or Telegram task surface behavior |
+| `scripts/telegram-bottom-menu-diagnostic-smoke.mjs` | 131 | Playwright diagnostic for Telegram bottom menu behavior: verifies dark dashboard nav visibility, legacy global nav absence on inner pages, source nav counts, and captures a dark screenshot | Run with `npm run smoke:telegram-bottom-menu` before changing dashboard or legacy bottom navigation behavior |
 | `scripts/task-chat-confirm-action-smoke.mjs` | 86 | Browser smoke for task-detail chat suggested-action confirm at 390x844: verifies fallback message id, one update mutation, hidden preview after confirm and updated description | Run with `npm run smoke:task-chat-confirm` before changing task-detail chat suggested actions |
 | `scripts/task-toast-lifecycle-smoke.mjs` | 53 | Playwright smoke for task-detail toast lifecycle at 390x844: verifies success auto-hide, success dismiss-on-scroll and longer error readability | Run with `npm run smoke:task-toast-lifecycle` before changing toast behavior or task-detail success feedback |
 | `scripts/premium-voice-gate-smoke.mjs` | 81 | Static smoke for expired-Premium voice gate: verifies voice opens subscription before listening and handles premium Worker-style errors | Run with `npm run smoke:premium-voice-gate` before changing voice Premium gate behavior |
@@ -78,7 +79,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 65 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 66 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |

@@ -280,7 +280,7 @@ function showScreen(id){
   }
   // Hide global-nav on screens that have their own nav or no nav needed
   const nav=document.getElementById('global-nav');
-  const noNav=['onboarding','login','forgot-password','reset-password','voice','home','chats','msng-settings','chat-conv'];
+  const noNav=['onboarding','login','forgot-password','reset-password','voice','home','chats','msng-settings','chat-conv','task-detail','profile','subscription','statistics'];
   if(nav)nav.classList.toggle('hidden',noNav.includes(id));
   // bottom-nav-v2 is inside #home so it's only visible when home is active — no action needed
   const hs=document.querySelector('.scroll-body');
