@@ -256,6 +256,16 @@ async function runSmoke(ws, appUrl) {
     dateCard?.click();
     await wait(80);
     assert(document.querySelector('#task-detail .detail-info-stack')?.classList.contains('detail-date-popover-open'), 'date popover should open');
+    const dateOpenRect = datePopover.getBoundingClientRect();
+    const dateInputRect = deadlineInput.getBoundingClientRect();
+    const dateConfirmRect = confirmDeadline.getBoundingClientRect();
+    const dateCancelRect = cancelDeadline.getBoundingClientRect();
+    assert(document.documentElement.scrollWidth <= window.innerWidth, 'document should not overflow horizontally with date popover open');
+    assert(dateOpenRect.left >= 0, 'date popover should not clip past left viewport edge');
+    assert(dateOpenRect.right <= window.innerWidth, 'date popover should not overflow past right viewport edge');
+    assert(dateInputRect.width >= 120 && dateInputRect.height >= 38, 'datetime input should remain tappable');
+    assert(dateConfirmRect.width >= 44 && dateConfirmRect.height >= 32, 'date confirm button should remain tappable');
+    assert(dateCancelRect.width >= 44 && dateCancelRect.height >= 32, 'date cancel button should remain tappable');
     const originalDeadline = currentDetailTime;
     const draftDeadline = '2026-07-24T15:45';
     deadlineInput.value = draftDeadline;
@@ -303,6 +313,7 @@ async function runSmoke(ws, appUrl) {
       failures,
       viewport: { width: window.innerWidth, height: window.innerHeight },
       openRect: { left: openRect.left, right: openRect.right, height: openRect.height },
+      dateRect: { left: dateOpenRect.left, right: dateOpenRect.right, width: dateOpenRect.width },
       tags: [...currentDetailTags],
       deadline: currentDetailTime,
       mutationCount: window.__taskMutationPayloads.length

@@ -2937,6 +2937,12 @@ body:has(#task-detail.active) #global-nav,
   right: 0 !important;
 }
 
+#task-detail .detail-date-popover {
+  left: auto !important;
+  width: min(100%, calc(100vw - 32px), 260px) !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
 @media (max-width: 390px) {
   #task-detail .detail-redesign-hero {
     min-height: 250px !important;
@@ -2946,5 +2952,10 @@ body:has(#task-detail.active) #global-nav,
   #task-detail .detail-info-stack {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
+  }
+
+  #task-detail .detail-date-popover {
+    width: min(100%, calc(100vw - 24px), 240px) !important;
+    max-width: calc(100vw - 24px) !important;
   }
 }
