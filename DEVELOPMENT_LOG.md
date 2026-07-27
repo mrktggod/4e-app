@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### Telegram dashboard one-task diagnostic
+
+**What changed:** Added a focused Playwright diagnostic that compares web and mocked Telegram surfaces with four mocked task API results. The diagnostic records API result count, parsed local cache count, active count, rendered dashboard rows, row titles, show-all visibility and focus count.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:telegram-dashboard-one-task`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Task action feedback haptics pilot
 
 **What changed:** Added a narrow task-card action feedback helper for swipe action buttons only. Enabled actions now get a short pressed visual state plus Telegram haptic feedback or the safe `navigator.vibrate` fallback; disabled, loading, completed and rapid duplicate taps do not fire extra feedback.

@@ -36,6 +36,7 @@
         "smoke:premium-task-denial": "node scripts/premium-task-action-denial-smoke.mjs",
         "smoke:task-action-feedback": "node scripts/task-action-feedback-smoke.mjs",
         "smoke:task-advice-manual": "node scripts/task-advice-manual-smoke.mjs",
+        "smoke:telegram-dashboard-one-task": "node scripts/telegram-dashboard-one-task-diagnostic.mjs",
         "smoke:task-chat-confirm": "node scripts/task-chat-confirm-action-smoke.mjs",
         "smoke:task-toast-lifecycle": "node scripts/task-toast-lifecycle-smoke.mjs",
         "smoke:premium-voice-gate": "node scripts/premium-voice-gate-smoke.mjs",

@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-07-27-95-telegram-dashboard-one-task-diagnostic
 
