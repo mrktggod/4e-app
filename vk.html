@@ -107,6 +107,9 @@ html[data-theme="light"] .home-pill { background: rgba(255,255,255,0.92); box-sh
 .task-body { flex: 1; min-width: 0; }
 .task-title { font-size: 14px; font-weight: 500; line-height: 1.4; }
 .task-meta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.task-actions-vk { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.task-done-action-vk { min-width: 74px; height: 34px; border: 1px solid rgba(154,194,60,0.45); border-radius: 999px; background: rgba(154,194,60,0.12); color: var(--green); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; padding: 0 12px; }
+.task-done-action-vk:active { transform: scale(0.98); background: rgba(154,194,60,0.2); }
 .tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: rgba(154,194,60,0.12); color: var(--green); font-weight: 500; }
 .tag.deadline { background: rgba(224,92,92,0.12); color: #e05c5c; }
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(14,20,11,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; padding: 0 8px; z-index: 200; }
@@ -1542,7 +1545,10 @@ function taskHTML(t, idx = 0) {
         ${deadlineKey ? `<span class="tag ${overdue?'deadline':''}">${formatDate(deadlineKey)}</span>` : ''}
       </div>
     </div>
-    <div class="task-check" onclick="event.stopPropagation();doneTask('${taskId}')" title="Выполнить"></div>
+    <div class="task-actions-vk">
+      <button class="task-done-action-vk" type="button" onclick="event.stopPropagation();doneTask('${taskId}')">Готово</button>
+      <div class="task-check" onclick="event.stopPropagation();doneTask('${taskId}')" title="Выполнить" aria-label="Готово"></div>
+    </div>
     <div class="task-chevron">›</div>
   </div>`;
 }

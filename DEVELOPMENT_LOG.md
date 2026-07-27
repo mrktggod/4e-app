@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### VK task action parity
+
+**What changed:** Added a visible VK task row fallback action `Готово` next to the existing check control. The action calls the existing safe `doneTask` path and does not add swipe, delete, archive, payment, entitlement or auth changes.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:vk-task-actions`; `npm run smoke:vk-task-complete`; `npm run test:e2e:vk`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Task title description quality
 
 **What changed:** Added frontend-only task draft quality normalization so created tasks keep a short title, move comma/detail tails into `description`, and preserve the full raw request in `originalMsg`. The AI `<create_task>` guidance now asks for `description` details without changing backend endpoints.

@@ -21,7 +21,7 @@
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
 | `index.html` | 9071 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
-| `vk.html` | 2022 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `vk.html` | 2028 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
 | `styles/screens/tasks.less` | 2988 | Source LESS for main task, home, task-detail, popover and chat/task UI surfaces | Edit source task UI styles here, then run `npm run build:css` |
@@ -33,7 +33,7 @@
 | `AGENTS.md` | 312 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 3367 | Канонический технический лог | Обновлять после значимых правок |
+| `DEVELOPMENT_LOG.md` | 3377 | Канонический технический лог | Обновлять после значимых правок |
 | `https://github.com/mrktggod/4pm` | n/a | Приватные roadmap, work log, commit convention, PM/QA, team sync и бизнес-документация | Читать при планировании и PM/QA задачах |
 | `scripts/platform-adapter.js` | 1235 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, task-detail return/date confirm/reminder-card dispatch, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
 | `scripts/task-ui-renderers.js` | 793 | Shared task/notification renderers and task card helpers, including swipe actions, inline completion feedback, active-card reminder entrypoint, calendar/task row click-through, and task-detail return-screen fallback helpers | Read narrow task renderer ranges before changing task cards, task completion controls, notification cards, calendar rows, reminders, or task-detail return behavior |
@@ -56,6 +56,7 @@
 | `scripts/vk-calendar-date-key-smoke.mjs` | 55 | Static smoke for VK calendar date keys: verifies ISO datetime deadlines stay on intended local days, calendar task dots render, and selected-day task lists match normalized keys | Run with `npm run smoke:vk-calendar-date-key` before changing VK calendar date grouping |
 | `scripts/vk-header-logo-smoke.mjs` | 22 | Static smoke for VK header identity: verifies the VK shell has one header logo and no duplicate home logo | Run with `npm run smoke:vk-header-logo` before changing VK header/home identity |
 | `scripts/vk-task-complete-smoke.mjs` | 60 | Static smoke for VK task completion: verifies done-task payload, success refresh/local state and explicit failure toast | Run with `npm run smoke:vk-task-complete` before changing VK task completion |
+| `scripts/vk-task-actions-parity-smoke.mjs` | 79 | Playwright mobile-width smoke for VK task row action parity: verifies visible `Готово` fallback buttons, safe geometry, no destructive action, done-task payload and local row removal | Run with `npm run smoke:vk-task-actions` before changing VK task row actions |
 | `scripts/profile-premium-banner-smoke.mjs` | 33 | Static smoke for profile premium/trial banner removal: verifies web/VK profile banners are gone and subscription entry points remain | Run with `npm run smoke:profile-premium-banner` before changing profile subscription/banner surfaces |
 | `scripts/premium-task-action-denial-smoke.mjs` | 70 | Static smoke for Premium-required task action denials: verifies backend 402/403 task failures show explicit subscription UI before generic task error toasts | Run with `npm run smoke:premium-task-denial` before changing task action failure handling |
 | `scripts/task-action-feedback-smoke.mjs` | 96 | Source smoke for task-card action feedback: verifies disabled/loading actions do not fire feedback, rapid taps do not duplicate haptics, and pressed visual state is scoped to swipe action buttons | Run with `npm run smoke:task-action-feedback` before changing task-card action feedback or haptics |
@@ -80,7 +81,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 67 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 68 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |
