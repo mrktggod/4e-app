@@ -7061,16 +7061,25 @@ document.getElementById('ask-field').addEventListener('keydown',e=>{if(e.key==='
 })();
 function snooze(el){const row=el.closest('.task-row');if(!row)return;row.style.opacity='0.4';showToast('Отложено на завтра');}
 let toastHideTimer=null;
+let activeToastCritical=false;
 function isCriticalToastMessage(message,type){
   if(type==='error'||type==='alert') return true;
   if(type==='success'||type==='status') return false;
   const text=String(message||'').toLowerCase();
   return /(ошибка|не удалось|нет соединения|не могу|не найден|истек|истёк|недоступ|слишком короткий|не совпадают|введите|введи|выберите|проверьте|нужен вход|сначала войдите|пробный период истёк)/i.test(text);
 }
+function dismissToast(force){
+  const t=document.getElementById('toast');
+  if(!t || (!force && activeToastCritical)) return;
+  clearTimeout(toastHideTimer);
+  toastHideTimer=null;
+  t.classList.remove('show');
+}
 function showToast(msg,type){
   const t=document.getElementById('toast');
   if(!t) return;
   const critical=isCriticalToastMessage(msg,type);
+  activeToastCritical=critical;
   clearTimeout(toastHideTimer);
   t.classList.toggle('toast--error',critical);
   t.setAttribute('role',critical?'alert':'status');
@@ -7081,8 +7090,13 @@ function showToast(msg,type){
     t.textContent=msg;
     t.classList.add('show');
   });
-  toastHideTimer=setTimeout(()=>t.classList.remove('show'),2200);
+  toastHideTimer=setTimeout(()=>dismissToast(true),critical?4200:1400);
 }
+(function bindTaskDetailToastDismiss(){
+  const scroll=document.querySelector('#task-detail .detail-redesign-scroll');
+  if(!scroll) return;
+  scroll.addEventListener('scroll',()=>dismissToast(false),{passive:true});
+})();
 window.addEventListener('online',function(){processOfflineTaskQueue().catch(()=>{});});
 function toggleTheme(){
   const current=document.documentElement.getAttribute('data-theme')||'dark';

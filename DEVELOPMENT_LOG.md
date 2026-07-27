@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### Task toast lifecycle
+
+**What changed:** Success toasts now auto-hide faster and task-detail scroll dismisses only non-critical toasts. Error/alert toasts keep assertive ARIA and stay visible longer before auto-hide.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:task-toast-lifecycle`; `npm run smoke:back050`; `npm run check:js-syntax`; `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Voice hold hint
 
 **What changed:** Added a small visible `Удерживай для голоса` hint above the central home voice button and linked it with `aria-describedby`. Voice permissions, Premium gates and recording logic were not changed.
