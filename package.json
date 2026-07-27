@@ -34,6 +34,7 @@
         "smoke:vk-task-complete": "node scripts/vk-task-complete-smoke.mjs",
         "smoke:profile-premium-banner": "node scripts/profile-premium-banner-smoke.mjs",
         "smoke:premium-task-denial": "node scripts/premium-task-action-denial-smoke.mjs",
+        "smoke:task-action-feedback": "node scripts/task-action-feedback-smoke.mjs",
         "smoke:task-advice-manual": "node scripts/task-advice-manual-smoke.mjs",
         "smoke:task-chat-confirm": "node scripts/task-chat-confirm-action-smoke.mjs",
         "smoke:task-toast-lifecycle": "node scripts/task-toast-lifecycle-smoke.mjs",

@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### Task action feedback haptics pilot
+
+**What changed:** Added a narrow task-card action feedback helper for swipe action buttons only. Enabled actions now get a short pressed visual state plus Telegram haptic feedback or the safe `navigator.vibrate` fallback; disabled, loading, completed and rapid duplicate taps do not fire extra feedback.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:task-action-feedback`; `npm run build:css`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`.
+
+**Commit:** this commit
+
 ### Task advice manual generation
 
 **What changed:** Opening task detail no longer auto-generates AI advice. The advice card resets to the manual `Совет 4` placeholder on task open, and the existing button remains the only path that calls `loadTaskAdvice()`.

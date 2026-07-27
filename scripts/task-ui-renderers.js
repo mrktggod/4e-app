@@ -48,6 +48,24 @@ function vibrateTaskCard(ms, style='light'){
   }
   if(navigator.vibrate)navigator.vibrate(ms);
 }
+function isTaskActionFeedbackBlocked(btn){
+  if(!btn||btn.disabled||btn.getAttribute?.('aria-disabled')==='true')return true;
+  if(btn.dataset.feedbackLocked==='1'||btn.dataset.doneLoading==='1'||btn.dataset.doneDone==='1')return true;
+  return false;
+}
+function triggerTaskActionFeedback(btn, options={}){
+  if(isTaskActionFeedbackBlocked(btn))return false;
+  const ms=Number.isFinite(options.ms)?options.ms:20;
+  const style=options.style||'light';
+  btn.dataset.feedbackLocked='1';
+  btn.classList.add('task-swipe-btn--pressed');
+  vibrateTaskCard(ms,style);
+  setTimeout(()=>{
+    btn.classList.remove('task-swipe-btn--pressed');
+    if(btn.dataset.feedbackLocked==='1')delete btn.dataset.feedbackLocked;
+  },180);
+  return true;
+}
 function handleTaskSwipeButton(btn, event){
   if(!btn||!btn.matches||!btn.matches('.task-swipe-btn'))return;
   const shell = btn?.closest?.('.task-card-shell');
@@ -56,8 +74,8 @@ function handleTaskSwipeButton(btn, event){
     event.preventDefault();
     event.stopPropagation();
   }
+  if(!triggerTaskActionFeedback(btn,{ms:20,style:'light'}))return;
   const taskId=shell.dataset.taskId;
-  vibrateTaskCard(20,'light');
   if(btn.dataset.taskAction==='cancel'){resetTaskSwipe(shell);return;}
   if(btn.dataset.taskAction==='move'){
     resetTaskSwipe(shell);
