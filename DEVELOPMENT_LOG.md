@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### Task advice manual generation
+
+**What changed:** Opening task detail no longer auto-generates AI advice. The advice card resets to the manual `Совет 4` placeholder on task open, and the existing button remains the only path that calls `loadTaskAdvice()`.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run smoke:task-advice-manual`; `node scripts/check-cp1251-mojibake.mjs`; `npm run check:js-syntax`; `git diff --check`.
+
+**Commit:** this commit
+
 ### iPhone 14 responsive regression smoke
 
 **What changed:** Added a focused 390x844 Playwright smoke covering home task rows, task detail, statistics, date/time popover, bottom nav and long task titles for iPhone 14-like responsive regression evidence. Runtime UI was not changed.

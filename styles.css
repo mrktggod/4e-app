@@ -6588,7 +6588,10 @@ body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
   background: linear-gradient(180deg, #b8dc62, #83aa49 72%, #6f963a);
 }
 .detail-ai-refresh--chat {
-  display: none !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
 }
 .detail-advice-message {
   margin-top: 6px;

@@ -5864,6 +5864,8 @@ function openTask(t,idx){
   const commEl = document.getElementById('detail-comments-list');
   currentTaskMessages = [];
   if(commEl) commEl.textContent = 'Загружаем обсуждение...';
+  const adviceEl = document.getElementById('detail-ai-advice');
+  if(adviceEl) adviceEl.textContent = 'Нажми «Совет 4», чтобы получить первый совет по задаче.';
   const histEl = document.getElementById('detail-history-list');
   if(histEl) renderTaskHistory(t);
 
@@ -5872,7 +5874,6 @@ function openTask(t,idx){
 
   showScreen('task-detail');
   loadTaskChat();
-  setTimeout(loadTaskAdvice, 400);
 }
 
 function openTaskMenu(){
