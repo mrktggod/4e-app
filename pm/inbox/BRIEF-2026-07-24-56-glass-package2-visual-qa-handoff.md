@@ -1,4 +1,4 @@
-status: BLOCKED-DEPENDENCY
+status: NEW
 
 # BRIEF-2026-07-24-56-glass-package2-visual-qa-handoff
 
