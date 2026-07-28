@@ -63,6 +63,7 @@
 | `scripts/task-advice-manual-smoke.mjs` | 74 | Playwright smoke for task-detail advice generation: verifies opening a task does not call `/anthropic`, the placeholder stays visible, and the manual `Совет 4` click triggers one advice request with loading state | Run with `npm run smoke:task-advice-manual` before changing task-detail advice behavior |
 | `scripts/telegram-dashboard-one-task-diagnostic.mjs` | 115 | Playwright diagnostic for Telegram dashboard one-task reports: compares web and mocked Telegram surfaces with 4 API tasks, local cache count, rendered top-3 rows, show-all visibility and focus count | Run with `npm run smoke:telegram-dashboard-one-task` before changing dashboard task filtering or Telegram task surface behavior |
 | `scripts/telegram-bottom-menu-diagnostic-smoke.mjs` | 131 | Playwright diagnostic for Telegram bottom menu behavior: verifies dark dashboard nav visibility, legacy global nav absence on inner pages, source nav counts, and captures a dark screenshot | Run with `npm run smoke:telegram-bottom-menu` before changing dashboard or legacy bottom navigation behavior |
+| `scripts/telegram-notification-delivery-contract-smoke.mjs` | 131 | Static/mock preflight for worker Telegram notification delivery: extracts sibling worker briefing/send helpers, mocks Telegram `sendMessage`, and checks recipient, copy, parse mode and app button without live API calls | Run with `npm run smoke:telegram-notification-contract` before claiming BACK-017 briefing delivery contract evidence |
 | `scripts/task-chat-confirm-action-smoke.mjs` | 86 | Browser smoke for task-detail chat suggested-action confirm at 390x844: verifies fallback message id, one update mutation, hidden preview after confirm and updated description | Run with `npm run smoke:task-chat-confirm` before changing task-detail chat suggested actions |
 | `scripts/task-toast-lifecycle-smoke.mjs` | 53 | Playwright smoke for task-detail toast lifecycle at 390x844: verifies success auto-hide, success dismiss-on-scroll and longer error readability | Run with `npm run smoke:task-toast-lifecycle` before changing toast behavior or task-detail success feedback |
 | `scripts/premium-voice-gate-smoke.mjs` | 81 | Static smoke for expired-Premium voice gate: verifies voice opens subscription before listening and handles premium Worker-style errors | Run with `npm run smoke:premium-voice-gate` before changing voice Premium gate behavior |
@@ -81,7 +82,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 68 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 70 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |

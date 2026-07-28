@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-07-28-101-telegram-notification-delivery-contract-preflight
 
