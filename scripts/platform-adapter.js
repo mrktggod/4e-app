@@ -661,6 +661,13 @@
           assistantBtn.addEventListener(eventName, clearPressTimer);
         });
       }
+      const voiceHint = document.getElementById('home-voice-hold-hint');
+      if (voiceHint && !voiceHint.dataset.autoHideBound) {
+        voiceHint.dataset.autoHideBound = '1';
+        const hideHint = () => voiceHint.classList.add('is-hidden');
+        voiceHint.addEventListener('click', hideHint);
+        setTimeout(hideHint, 5000);
+      }
 
       homeScreen.addEventListener('click', event => {
         const actionBtn = event.target.closest('[data-home-action]');
@@ -724,7 +731,9 @@
             return;
           }
           const action = navActionBtn.dataset.homeNavAction;
-          if (action === 'today' && typeof goHome === 'function') {
+          if (action === 'today' && typeof cycleHomeDashboardPeriod === 'function') {
+            cycleHomeDashboardPeriod();
+          } else if (action === 'today' && typeof goHome === 'function') {
             goHome();
           } else if ((action === 'calendar' || action === 'cal') && typeof openCalendar === 'function') {
             openCalendar();

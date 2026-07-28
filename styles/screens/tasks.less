@@ -1477,6 +1477,20 @@
   min-height: 38px;
 }
 
+#task-detail .detail-top-tag-input {
+  top: 72px !important;
+  left: 26px !important;
+  right: 26px !important;
+  max-width: calc(100% - 52px) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(86px, auto) minmax(74px, auto) !important;
+  box-sizing: border-box !important;
+}
+
+#task-detail .detail-top-tag-input .detail-quick-btn,
+#task-detail .detail-top-tag-input .tag-input {
+  min-width: 0 !important;
+}
+
 .detail-tag-options {
   grid-column: 1 / -1;
   display: none;
@@ -1505,8 +1519,9 @@
 @media (max-width: 390px) {
   .detail-info-card--priority { margin-top: 46px !important; }
   .detail-top-tag-input {
-    left: 12px;
-    right: 12px;
+    left: 18px !important;
+    right: 18px !important;
+    max-width: calc(100% - 36px) !important;
     grid-template-columns: minmax(0, 1fr) auto;
   }
   .detail-tag-cancel-btn {
@@ -2611,6 +2626,21 @@ body:has(#task-detail.active) #global-nav,
   height: 18px !important;
 }
 
+#task-detail .detail-comment-voice-btn,
+#task-detail .conv-voice-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  border: 1px solid rgba(154,194,60,.24);
+  background: rgba(154,194,60,.11);
+  color: var(--green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
 .detail-dot--green,
 .detail-status-dot {
   background: #83aa49 !important;
@@ -2841,11 +2871,39 @@ body:has(#task-detail.active) #global-nav,
 #task-detail .detail-round-btn,
 #task-detail .detail-avatar-add,
 #task-detail .detail-comment-send-btn,
+#task-detail .detail-comment-voice-btn,
 #task-detail .detail-status-node svg,
 #task-detail .detail-node-core {
   border-color: var(--glass-stroke-strong) !important;
   background: var(--glass-surface-muted) !important;
   box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+
+#task-detail .detail-status-node .detail-node-core i {
+  display: none !important;
+}
+
+#task-detail .detail-status-node .detail-node-core {
+  position: relative !important;
+}
+
+#task-detail .detail-status-node .detail-node-core::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(130,150,126,.35);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.22);
+}
+
+#task-detail .detail-status-node--active .detail-node-core::before {
+  background: #9fca54;
+  box-shadow: 0 0 12px rgba(159,202,84,.42), inset 0 1px 1px rgba(255,255,255,.38);
+}
+
+#task-detail .detail-status-node:not(.detail-status-node--active) svg,
+#task-detail .detail-status-node:not(.detail-status-node--active) .detail-node-core {
+  box-shadow: var(--glass-inset-shadow) !important;
 }
 
 #task-detail .detail-status-node--active .detail-node-core,
@@ -2921,6 +2979,39 @@ body:has(#task-detail.active) #global-nav,
   min-height: 58px !important;
 }
 
+#task-detail .detail-redesign-hero .detail-top-tag-input {
+  top: 72px !important;
+  left: 18px !important;
+  right: 18px !important;
+  width: auto !important;
+  max-width: calc(100% - 36px) !important;
+  inline-size: auto !important;
+  max-inline-size: calc(100% - 36px) !important;
+  grid-template-columns: minmax(0, 1fr) 82px 68px !important;
+  gap: 7px !important;
+  padding: 9px !important;
+  overflow: hidden !important;
+}
+
+#task-detail .detail-redesign-hero .detail-top-tag-input .detail-quick-btn {
+  min-width: 0 !important;
+  padding: 0 8px !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 390px) {
+  #task-detail .detail-redesign-hero .detail-top-tag-input {
+    left: 12px !important;
+    right: 12px !important;
+    max-width: calc(100% - 24px) !important;
+    max-inline-size: calc(100% - 24px) !important;
+    grid-template-columns: minmax(0, 1fr) 76px 60px !important;
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+}
+
 .task-card-reminder-btn {
   width: 34px;
   height: 34px;
@@ -2946,6 +3037,14 @@ body:has(#task-detail.active) #global-nav,
 
 .home-ai-row-reminder {
   align-self: center;
+}
+
+body:has(#calendar.active) #global-nav,
+.app:has(#calendar.active) #global-nav,
+#calendar.active ~ #global-nav {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 #task-detail .detail-redesign-title {
