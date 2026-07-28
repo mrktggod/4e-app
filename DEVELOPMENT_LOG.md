@@ -1,5 +1,15 @@
 ## 2026-07-28
 
+### BRIEF-2026-07-24-55 profile menu glass package 2
+
+**What changed:** Moved safe Telegram profile/menu surfaces onto shared glass tokens. Profile hero/cards now use shared glass surface, stroke, radius, shadow, blur and reduced-transparency fallbacks; safe menu rows keep 44px touch targets; referral controls use shared glass control tokens. Subscription and security rows were excluded from the new interactive row treatment.
+
+**Encoding check:** `index.html` was not edited, so Step 0 did not apply. `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
+
+**Test:** `npm run build:css`; `npm run smoke:profile-glass`; `npm run test:e2e:web`; PowerShell equivalents of `check:portable-paths` and `check:ui-architecture`; `git diff --check`. `npm run smoke:back050` timed out locally without assertion output.
+
+**Commit:** this commit
+
 ### DESIGN-GLASS-001 current-pass audit
 
 **What changed:** No runtime UI code changed. Rechecked the glass foundation in the canonical checkout, confirmed `styles/variables.less` still contains the shared `--glass-*` token family and `.ui-glass-*` primitives, and appended current-pass notes to `pm/outbox/REPORT-BRIEF-2026-07-23-42-glass-design-system-foundation.md` plus `pm/design-system-glass-inventory-2026-07-27.md`.

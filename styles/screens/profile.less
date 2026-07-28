@@ -1122,3 +1122,100 @@
 .profile-stage .profile-menu-row:first-child {
   border-top: 0 !important;
 }
+
+/* ===== PROFILE GLASS PACKAGE 2: shared glass tokens for safe profile/menu surfaces ===== */
+.profile-stage .profile-handoff-hero,
+.profile-stage .profile-card {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-card) !important;
+  background:
+    var(--glass-highlight),
+    var(--glass-surface) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+
+.profile-stage .profile-handoff-hero::after,
+.profile-stage .profile-card::after {
+  display: none !important;
+  content: none !important;
+}
+
+.profile-stage .profile-row-list {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.profile-stage .profile-data-row,
+.profile-stage .profile-menu-row:not(:nth-child(2)):not(:nth-child(5)) {
+  min-height: 44px !important;
+  border-bottom: 1px solid var(--glass-stroke) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.profile-stage .profile-menu-row:not(:nth-child(2)):not(:nth-child(5)):hover,
+.profile-stage .profile-menu-row:not(:nth-child(2)):not(:nth-child(5)):focus-visible,
+.profile-stage .profile-data-row:focus-within {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow) !important;
+  outline: 0;
+}
+
+.profile-stage .profile-row-icon,
+.profile-stage .profile-calendar-icon,
+.profile-stage .profile-ref-field input,
+.profile-stage .profile-save-btn--secondary {
+  border: 1px solid var(--glass-stroke) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+}
+
+.profile-stage .profile-row-icon,
+.profile-stage .profile-calendar-icon {
+  border-radius: var(--glass-radius-control) !important;
+}
+
+.profile-stage .profile-ref-field input,
+.profile-stage .profile-save-btn--secondary {
+  border-radius: var(--glass-radius-control) !important;
+}
+
+.profile-stage .profile-save-btn--secondary:hover,
+.profile-stage .profile-save-btn--secondary:focus-visible {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+  outline: 0;
+}
+
+.profile-stage .profile-card--settings .profile-menu-row:nth-child(2),
+.profile-stage .profile-card--settings .profile-menu-row:nth-child(5) {
+  min-height: 39px !important;
+  border-bottom-color: rgba(180,194,179,.07) !important;
+  box-shadow: none !important;
+}
+
+.profile-stage .profile-card--settings .profile-menu-row:nth-child(2) .profile-row-icon,
+.profile-stage .profile-card--settings .profile-menu-row:nth-child(5) .profile-row-icon {
+  border-color: rgba(127,165,43,.16) !important;
+  background: rgba(127,165,43,.07) !important;
+  box-shadow: none !important;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .profile-stage .profile-handoff-hero,
+  .profile-stage .profile-card {
+    background: var(--glass-reduced-surface) !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .profile-stage .profile-handoff-hero,
+  .profile-stage .profile-card {
+    background: var(--glass-reduced-surface) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

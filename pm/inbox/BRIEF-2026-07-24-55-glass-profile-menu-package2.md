@@ -1,4 +1,4 @@
-status: BLOCKED-DEPENDENCY
+status: DONE
 
 # BRIEF-2026-07-24-55-glass-profile-menu-package2
 
