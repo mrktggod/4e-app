@@ -1,3 +1,17 @@
+## 2026-07-29
+
+### SMART-014 ready-for-development handoff
+
+**What changed:** Restored the approved SMART-014 specification on top of current `origin/main`, updated its status to `Approved / Ready for Development`, and added executable inbox brief `pm/inbox/BRIEF-2026-07-29-100-smart-014-voice-multi-task-mvp.md`. The brief keeps the full MVP behind explicit confirmation and a feature flag, requires an idempotent Worker batch path, preserves the existing single-task voice flow, and blocks unsafe frontend-only fallback when the Worker repository is unavailable.
+
+**Product decision:** Alexey explicitly approved sending SMART-014 to development on 2026-07-29. The earlier review-only PR #48 received no Yuri review and is superseded by the fresh handoff; runtime implementation and merge into `main` remain separate actions.
+
+**Encoding check:** `index.html` was not edited. `node scripts/check-cp1251-mojibake.mjs` must pass before commit.
+
+**Test:** Documentation consistency, `git diff --check`, portable-path guard, UI architecture guard, and CP1251 mojibake guard.
+
+**Commit:** this docs-only handoff commit
+
 ## 2026-07-28
 
 ### BRIEF-2026-07-24-55 profile menu glass package 2
