@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-24-56-glass-package2-visual-qa-handoff
 

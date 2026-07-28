@@ -10,6 +10,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const chromeCandidates = [
   process.env.CHROME_PATH,
   process.env.BROWSER_PATH,
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
   'chrome',
   'google-chrome',
   'chromium',
@@ -336,7 +338,13 @@ try {
   }
   if (chrome && !chrome.killed) {
     chrome.kill();
-    await new Promise(resolve => chrome.once('exit', resolve));
+    await new Promise(resolve => {
+      const timeout = setTimeout(resolve, 3000);
+      chrome.once('exit', () => {
+        clearTimeout(timeout);
+        resolve();
+      });
+    });
   }
   if (tempDir) {
     for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -344,7 +352,10 @@ try {
         await fs.rm(tempDir, { recursive: true, force: true });
         break;
       } catch (error) {
-        if (attempt === 4) throw error;
+        if (attempt === 4) {
+          console.warn(`back050 smoke cleanup skipped locked temp dir: ${error.code || error.message}`);
+          break;
+        }
         await new Promise(resolve => setTimeout(resolve, 150));
       }
     }

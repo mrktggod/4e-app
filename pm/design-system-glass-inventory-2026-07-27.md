@@ -140,3 +140,26 @@ Checks:
 - `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`;
 - `git diff --check` passed;
 - `npm run check:portable-paths` and `npm run check:ui-architecture` could not start because `bash` is not on `PATH` in this shell.
+
+## 2026-07-28 Package 2 Handoff
+
+Brief 56 rechecked package 2 evidence after the previously blocked package
+slices were completed.
+
+Package 2 families now marked complete:
+
+- Home/focus dashboard surfaces: `DONE`, commit `60dd5979d8e9a2859c2acbf73e31733afb669afd`.
+- Telegram task-list card family: `DONE`, commit `a839a26d9b88c985f223de4cc4ca291d0b78158a`.
+- Safe Telegram profile/menu surfaces: `DONE`, commit `2fa8e39da4dd1e3f126d8f932a1f050d8ad9f007`.
+
+Evidence refreshed:
+
+- home/focus light and dark 390x844 screenshots;
+- task-card light and dark 390x844 screenshots covering overdue, normal and completed states;
+- profile/menu light and dark 390x844 screenshots;
+- desktop home overflow coverage through `npm run test:e2e:web`.
+
+Status note: package 2 is closed, but global `DESIGN-GLASS-001` is not
+complete. Missing/risk areas above remain open, especially global forms,
+dialogs, chat conversation variables, task-detail variable consolidation and
+reference-file restoration.
