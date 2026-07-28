@@ -3628,3 +3628,238 @@ body #home#home #home-show-all-btn {
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
 }
+
+/* 2026-07-29 light Telegram QA: remove stale frames and restore readable task detail. */
+html[data-theme="light"] #home#home #home-show-all-btn,
+body #home#home.soft-light #home-show-all-btn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html[data-theme="light"] body #home#home #home-task-list:has(.home-ai-row),
+body #home#home.soft-light #home-task-list:has(.home-ai-row) {
+  bottom: calc(@app-viewport-bottom-reserve + 32px) !important;
+}
+
+html[data-theme="light"] #home#home #home-task-list .task-card-shell,
+html[data-theme="light"] #home#home #home-task-list .home-ai-row-shell,
+body #home#home.soft-light #home-task-list .task-card-shell,
+body #home#home.soft-light #home-task-list .home-ai-row-shell {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #home#home #home-task-list .home-ai-row,
+body #home#home.soft-light #home-task-list .home-ai-row {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #home#home #home-task-list .home-ai-row-main,
+body #home#home.soft-light #home-task-list .home-ai-row-main {
+  border: 0 !important;
+  box-shadow: 0 14px 28px rgba(86,92,70,.10), inset 0 1px 0 rgba(255,255,255,.88) !important;
+}
+
+html[data-theme="light"] #home#home .dash-notification,
+html[data-theme="light"] #home#home .dash-center-button,
+html[data-theme="light"] #home#home .dash-brand-orb-grid,
+body #home#home.soft-light .dash-notification,
+body #home#home.soft-light .dash-center-button,
+body #home#home.soft-light .dash-brand-orb-grid {
+  overflow: hidden !important;
+  border-radius: 50% !important;
+  clip-path: circle(50% at 50% 50%) !important;
+  filter: none !important;
+}
+
+html[data-theme="light"] #home#home .dash-center-button,
+body #home#home.soft-light .dash-center-button {
+  display: grid !important;
+  place-items: center !important;
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  background:
+    radial-gradient(circle at 33% 24%, rgba(255,255,255,.96), rgba(217,241,150,.84) 35%, rgba(126,177,45,.92) 70%, rgba(63,94,20,.96) 100%) !important;
+  border: 1px solid rgba(255,255,255,.88) !important;
+  box-shadow: 0 16px 30px rgba(102,137,57,.24), inset 0 1px 0 rgba(255,255,255,.86) !important;
+  color: #284610 !important;
+}
+
+html[data-theme="light"] #home#home .dash-center-button .dash-brand-orb-grid,
+body #home#home.soft-light .dash-center-button .dash-brand-orb-grid {
+  display: grid !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  width: 28px !important;
+  height: 28px !important;
+  grid-template-columns: repeat(2, 12px) !important;
+  grid-template-rows: repeat(2, 12px) !important;
+  gap: 4px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] #home#home .dash-center-button .dash-brand-orb-grid i,
+body #home#home.soft-light .dash-center-button .dash-brand-orb-grid i {
+  display: block !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 30% 24%, #ffffff 0%, #daf58f 28%, #83b334 70%, #2e4d16 100%) !important;
+  border: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7) !important;
+}
+
+html[data-theme="light"] #home#home .dash-notification::before,
+html[data-theme="light"] #home#home .dash-notification::after,
+html[data-theme="light"] #home#home .dash-center-button::before,
+html[data-theme="light"] #home#home .dash-center-button::after,
+html[data-theme="light"] #home#home .dash-brand-orb-grid::before,
+html[data-theme="light"] #home#home .dash-brand-orb-grid::after,
+body #home#home.soft-light .dash-notification::before,
+body #home#home.soft-light .dash-notification::after,
+body #home#home.soft-light .dash-center-button::before,
+body #home#home.soft-light .dash-center-button::after,
+body #home#home.soft-light .dash-brand-orb-grid::before,
+body #home#home.soft-light .dash-brand-orb-grid::after {
+  content: none !important;
+  display: none !important;
+}
+
+html[data-theme="light"] #task-detail,
+html[data-theme="light"] #task-detail .detail-redesign-shell {
+  overflow: hidden !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-scroll {
+  height: calc(100dvh - 82px) !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 0 12px 132px !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-hero {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding: 16px !important;
+  overflow: visible !important;
+}
+
+html[data-theme="light"] #task-detail .detail-info-stack {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  margin: 10px 0 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-title,
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  position: static !important;
+  z-index: 1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  inline-size: auto !important;
+  max-inline-size: none !important;
+  margin: 0 !important;
+  contain: none !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-title {
+  display: block !important;
+  max-height: none !important;
+  -webkit-line-clamp: unset !important;
+  font-size: clamp(25px, 7vw, 30px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: 0 !important;
+}
+
+html[data-theme="light"] #task-detail .detail-redesign-desc {
+  display: block !important;
+  min-height: 64px !important;
+  max-height: none !important;
+  -webkit-line-clamp: unset !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+html[data-theme="light"] #task-detail .detail-reminder-popover {
+  top: 58px !important;
+  left: 0 !important;
+  width: min(100%, 220px) !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: 188px !important;
+  overflow-y: auto !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  padding: 8px !important;
+}
+
+html[data-theme="light"] #task-detail .detail-reminder-popover button {
+  min-height: 36px !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+  text-align: center !important;
+  white-space: normal !important;
+}
+
+html[data-theme="light"] #task-detail .detail-round-btn,
+html[data-theme="light"] #task-detail .detail-avatar-add,
+html[data-theme="light"] #task-detail .detail-redesign-bell,
+html[data-theme="light"] #task-detail .detail-comment-send-btn,
+html[data-theme="light"] #task-detail .detail-comment-voice-btn,
+html[data-theme="light"] #task-detail .detail-status-node svg,
+html[data-theme="light"] #task-detail .detail-node-core {
+  overflow: hidden !important;
+  border-radius: 50% !important;
+  clip-path: circle(50% at 50% 50%) !important;
+  box-shadow: 0 10px 20px rgba(102,137,57,.12), inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-line {
+  background: rgba(126,166,59,.35) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-track {
+  left: 6% !important;
+  right: 6% !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(126,166,59,.74) 0 50%, rgba(126,166,59,.28) 50% 100%) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.78), 0 0 10px rgba(126,166,59,.20) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-node svg,
+html[data-theme="light"] #task-detail .detail-node-core {
+  background: rgba(255,255,255,.62) !important;
+  border-color: rgba(126,166,59,.34) !important;
+  color: #6a9e1f !important;
+  stroke: currentColor !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-node .detail-node-core::before {
+  background: rgba(126,166,59,.45) !important;
+}
+
+html[data-theme="light"] #task-detail .detail-status-node--active .detail-node-core::before {
+  background: #8fbd3e !important;
+  box-shadow: 0 0 12px rgba(143,189,62,.42) !important;
+}
