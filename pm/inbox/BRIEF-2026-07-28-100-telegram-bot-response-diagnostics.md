@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-YURI
 
 # BRIEF-2026-07-28-100-telegram-bot-response-diagnostics
 
