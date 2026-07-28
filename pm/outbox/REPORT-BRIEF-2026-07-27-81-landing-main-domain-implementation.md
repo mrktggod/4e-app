@@ -22,8 +22,8 @@ status: DONE
   - 390x844: H1 `4 AI-секретарь`, Telegram CTA есть, horizontal overflow `390/390`;
   - 1366x900: H1 `4 AI-секретарь`, Telegram CTA есть, horizontal overflow `1366/1366`.
 - Скриншоты локально сохранены:
-  - `tmp/landing-81/mobile-390.png`;
-  - `tmp/landing-81/desktop-1366.png`.
+  - `docs/tasks/assets/BRIEF-2026-07-27-81-landing-mobile-390.png`;
+  - `docs/tasks/assets/BRIEF-2026-07-27-81-landing-desktop-1366.png`.
 - `node scripts/check-cp1251-mojibake.mjs`: passed, 0 suspicious tokens.
 
 ## Изменённые файлы

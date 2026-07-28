@@ -118,7 +118,7 @@
 
 **Encoding check:** `index.html` was not edited for this task; `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
 
-**Test:** Local Node HTTP server plus Playwright checked `/landing.html` at 390x844 and 1366x900: H1 present, Telegram CTA present, no horizontal overflow. Screenshots saved under `tmp/landing-81/`.
+**Test:** Local Node HTTP server plus Playwright checked `/landing.html` at 390x844 and 1366x900: H1 present, Telegram CTA present, no horizontal overflow. Screenshots saved under `docs/tasks/assets/BRIEF-2026-07-27-81-landing-mobile-390.png` and `docs/tasks/assets/BRIEF-2026-07-27-81-landing-desktop-1366.png`.
 
 **Commit:** this commit
 
