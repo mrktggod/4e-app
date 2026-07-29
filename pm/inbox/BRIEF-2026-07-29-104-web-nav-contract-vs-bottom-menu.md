@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-29-104-web-nav-contract-vs-bottom-menu
 

@@ -70,6 +70,11 @@ async function expectNavInsideViewport(page, selector: string) {
   expect(box!.y + box!.height, `${selector} bottom edge`).toBeLessThanOrEqual(viewport!.height + 1);
 }
 
+async function expectNavHidden(page, selector: string) {
+  const box = await page.locator(selector).boundingBox();
+  expect(box, `${selector} should stay hidden on redesigned inner screens`).toBeNull();
+}
+
 test.describe('navigation safe area geometry', () => {
   test('home bottom navigation stays inside viewport without horizontal overflow', async ({ page }) => {
     await openScreen(page, 'home');
@@ -77,9 +82,9 @@ test.describe('navigation safe area geometry', () => {
     await expectNavInsideViewport(page, '#home .dash-bottom-nav');
   });
 
-  test('global navigation stays inside viewport without horizontal overflow', async ({ page }) => {
+  test('legacy global navigation stays hidden on calendar without horizontal overflow', async ({ page }) => {
     await openScreen(page, 'calendar');
     await expectNoViewportOverflow(page);
-    await expectNavInsideViewport(page, '#global-nav');
+    await expectNavHidden(page, '#global-nav');
   });
 });
