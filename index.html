@@ -1296,44 +1296,44 @@ if('serviceWorker' in navigator){
     <div style="flex:1"><div class="back-title">Частые вопросы</div></div>
   </div>
   <div class="sub-scroll">
-    <div style="position:relative;margin-bottom:12px;padding:4px 0">
-      <input style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:13px;padding:11px 40px 11px 16px;outline:none;font-family:'Inter',sans-serif" placeholder="Поиск по вопросам..." oninput="filterFaq(this.value)"/>
-      <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+    <div class="faq-search">
+      <input class="faq-search-input" placeholder="Поиск по вопросам..."/>
+      <div class="faq-search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
     </div>
     <div class="sub-card" id="faq-list">
-      <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-item">
         <div class="faq-q">Как начать работу с AI-секретарём?<span class="faq-arrow">›</span></div>
         <div class="faq-a">Просто откройте приложение и нажмите на кнопку микрофона, чтобы начать разговор. 4 поможет вам управлять задачами и обещаниями в автоматическом режиме.</div>
       </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-item">
         <div class="faq-q">Как добавить новую задачу?<span class="faq-arrow">›</span></div>
         <div class="faq-a">Нажмите на кнопку микрофона и голосом скажите о задаче. 4 автоматически создаст и структурирует её. Также можно написать в чате.</div>
       </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-item">
         <div class="faq-q">Можно ли интегрировать с другими сервисами?<span class="faq-arrow">›</span></div>
         <div class="faq-a">Да! 4 интегрируется с Telegram, а через API-ключи можно подключить любые внешние сервисы. Раздел API-ключей в безопасности.</div>
       </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-item">
         <div class="faq-q">Как работает аналитика задач?<span class="faq-arrow">›</span></div>
         <div class="faq-a">В разделе Статистика вы видите прогресс выполнения, распределение по категориям и динамику по дням. Данные обновляются в реальном времени.</div>
       </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-item">
         <div class="faq-q">Как обеспечить безопасность данных?<span class="faq-arrow">›</span></div>
         <div class="faq-a">Включите двухфакторную аутентификацию в разделе Безопасность. Все данные зашифрованы и хранятся на защищённых серверах.</div>
       </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-item">
         <div class="faq-q">Как сменить пароль?<span class="faq-arrow">›</span></div>
         <div class="faq-a">Перейдите в Профиль → Безопасность → Изменить пароль. Потребуется ввести текущий пароль и дважды новый.</div>
       </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-item">
         <div class="faq-q">Как связаться с поддержкой?<span class="faq-arrow">›</span></div>
         <div class="faq-a">Нажмите на кнопку ниже или напишите нам через Telegram @ai_secretary_support. Отвечаем в течение 24 часов.</div>
       </div>
     </div>
-    <div style="background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:8px;text-align:center">
-      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span style="font-size:13px;color:var(--text);font-weight:600">Не нашли ответ?</span></div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Напишите нам, и мы поможем</div>
-      <div class="notif-all-btn" style="justify-content:center" onclick="showSubScreen('write-support')">Написать в поддержку <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    <div class="faq-help-card">
+      <div class="faq-help-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Не нашли ответ?</span></div>
+      <div class="faq-help-copy">Напишите нам, и мы поможем</div>
+      <div class="notif-all-btn notif-all-btn--center" data-faq-support-action>Написать в поддержку <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
     </div>
   </div>
 </div>
@@ -7566,6 +7566,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   }
   bindPrivacyPolicyLinks();
+  bindFaqHandlers();
   const bindProfileMenuItems = PLATFORM.bindProfileMenuItems;
   const bindProfileMenu = typeof bindProfileMenuItems === 'function'
     ? bindProfileMenuItems.bind(PLATFORM, bindClick)
@@ -8003,6 +8004,27 @@ function filterFaq(q){
     const text=item.querySelector('.faq-q').textContent.toLowerCase();
     item.style.display=text.includes(lq)||!q?'':'none';
   });
+}
+
+function bindFaqHandlers(){
+  const faqSearch=document.querySelector('#faq .faq-search-input');
+  if(faqSearch&&!faqSearch.dataset.bound){
+    faqSearch.dataset.bound='1';
+    faqSearch.addEventListener('input',()=>filterFaq(faqSearch.value));
+  }
+  const faqList=document.getElementById('faq-list');
+  if(faqList&&!faqList.dataset.bound){
+    faqList.dataset.bound='1';
+    faqList.addEventListener('click',event=>{
+      const item=event.target.closest('.faq-item');
+      if(item&&faqList.contains(item)) toggleFaq(item);
+    });
+  }
+  const supportAction=document.querySelector('[data-faq-support-action]');
+  if(supportAction&&!supportAction.dataset.bound){
+    supportAction.dataset.bound='1';
+    supportAction.addEventListener('click',()=>showSubScreen('write-support'));
+  }
 }
 
 
