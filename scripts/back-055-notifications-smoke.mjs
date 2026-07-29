@@ -4,6 +4,7 @@ import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { findChrome } from './lib/find-chrome.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const evidenceDir = path.join(root, 'docs', 'tasks', 'assets');
@@ -11,32 +12,6 @@ const evidenceFiles = {
   light: path.join(evidenceDir, 'BACK-055-notifications-glass-2026-07-24-light.png'),
   dark: path.join(evidenceDir, 'BACK-055-notifications-glass-2026-07-24-dark.png')
 };
-const chromeCandidates = [
-  process.env.CHROME_PATH,
-  process.env.BROWSER_PATH,
-  'chrome',
-  'google-chrome',
-  'chromium',
-  'chromium-browser',
-  'msedge'
-].filter(Boolean);
-
-async function exists(file) {
-  try {
-    await fs.access(file);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function findChrome() {
-  for (const candidate of chromeCandidates) {
-    const isPathLike = candidate.includes('/') || candidate.includes('\\');
-    if (!isPathLike || await exists(candidate)) return candidate;
-  }
-  throw new Error('Chrome or Edge executable was not found in PATH');
-}
 
 function getFreePort() {
   return new Promise((resolve, reject) => {

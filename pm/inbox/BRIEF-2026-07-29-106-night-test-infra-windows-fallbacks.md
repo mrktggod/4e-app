@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-29-106-night-test-infra-windows-fallbacks
 
