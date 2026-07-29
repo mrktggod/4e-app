@@ -2117,9 +2117,6 @@ body:has(#reset-password.active) .bottom-nav-v2 {
   font-weight: 700;
   cursor: pointer;
 }
-#home-show-all-btn {
-  display: none !important;
-}
 #home-show-all-btn svg {
   width: 16px;
   height: 16px;
@@ -16163,7 +16160,7 @@ body #home#home .dash-tasks {
   z-index: 11 !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 14px !important;
+  gap: 8px !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   padding-bottom: 8px !important;
@@ -16185,19 +16182,19 @@ body #home#home .dash-bottom-nav {
 /* 2026-07-21 FINAL HOME TASK ROWS */
 body #home#home #home-task-list .home-ai-row {
   display: block !important;
-  min-height: 78px !important;
+  min-height: 72px !important;
   height: auto !important;
   margin: 0 !important;
   overflow: visible !important;
 }
 body #home#home #home-task-list .home-ai-row-main {
-  min-height: 78px !important;
+  min-height: 72px !important;
   height: auto !important;
   display: grid !important;
   grid-template-columns: 48px minmax(0, 1fr) !important;
   align-items: center !important;
   gap: 10px !important;
-  padding: 12px 16px !important;
+  padding: 10px 14px !important;
   border-radius: 20px !important;
   overflow: hidden !important;
 }
@@ -16250,7 +16247,7 @@ body #home#home #home-task-list .home-ai-row-meta {
 body #home#home #home-task-list .task-card-shell,
 body #home#home #home-task-list .home-ai-row-shell {
   display: block !important;
-  min-height: 78px !important;
+  min-height: 72px !important;
   height: auto !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -16260,7 +16257,7 @@ body #home#home #home-task-list .home-ai-row-shell {
 body #home#home #home-task-list .home-ai-row.task-card,
 body #home#home #home-task-list .home-ai-row {
   display: block !important;
-  min-height: 78px !important;
+  min-height: 72px !important;
   height: auto !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -16616,16 +16613,13 @@ body #home#home #home-show-all-btn {
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
 }
-/* 2026-07-29 light Telegram QA: remove stale frames and restore readable task detail. */
 html[data-theme="light"] #home#home #home-show-all-btn,
 body #home#home.soft-light #home-show-all-btn {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+  color: #172113 !important;
 }
 html[data-theme="light"] body #home#home #home-task-list:has(.home-ai-row),
 body #home#home.soft-light #home-task-list:has(.home-ai-row) {
-  bottom: calc(var(--app-viewport-bottom-reserve) + 32px) !important;
+  bottom: calc(var(--app-viewport-bottom-reserve) + 84px) !important;
 }
 html[data-theme="light"] #home#home #home-task-list .task-card-shell,
 html[data-theme="light"] #home#home #home-task-list .home-ai-row-shell,
