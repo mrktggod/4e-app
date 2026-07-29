@@ -656,9 +656,11 @@ if('serviceWorker' in navigator){
         <h2 class="profile-card-title">Личные данные</h2>
         <div class="profile-row-list">
           <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span class="profile-row-label">Имя</span><input class="profile-row-input" id="profile-field-name" type="text" maxlength="80" autocomplete="name"><span class="profile-row-chevron">›</span></label>
-          <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M6.5 3.5 9 8 6 10c1.3 3.7 4.3 6.7 8 8l2-3 4.5 2.5-1 3c-.4 1.1-1.5 1.8-2.7 1.5C9.6 20.2 3.8 14.4 2 7.2 1.7 6 2.4 4.9 3.5 4.5l3-1Z"/></svg></span><span class="profile-row-label">Телефон</span><input class="profile-row-input" id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.preventDefault();toggleProfileVerified('phone')">Не подтверждён</button><span class="profile-row-chevron">›</span></label>
+          <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M6.5 3.5 9 8 6 10c1.3 3.7 4.3 6.7 8 8l2-3 4.5 2.5-1 3c-.4 1.1-1.5 1.8-2.7 1.5C9.6 20.2 3.8 14.4 2 7.2 1.7 6 2.4 4.9 3.5 4.5l3-1Z"/></svg></span><span class="profile-row-label">Телефон</span><input class="profile-row-input" id="profile-field-phone" type="tel" autocomplete="tel"><button class="profile-status-badge" id="profile-phone-status" type="button" onclick="event.preventDefault();startProfileAccountLink('yandex')" aria-label="Подтвердить телефон через Яндекс ID">Не подтверждён</button><span class="profile-row-chevron">›</span></label>
           <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span><span class="profile-row-label">Email</span><input class="profile-row-input" id="profile-field-email" type="email" autocomplete="email"><button class="profile-status-badge" id="profile-email-status" type="button" onclick="event.preventDefault();requestEmailVerification()" aria-label="Подтвердить email">Не подтверждён</button><span class="profile-row-chevron">›</span></label>
           <div class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg></span><span class="profile-row-label">Telegram</span><span class="profile-row-value" id="profile-telegram-value">Не привязан</span><span class="profile-status-badge" id="profile-telegram-status">Не привязан</span><span class="profile-row-chevron">›</span></div>
+          <div class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg></span><span class="profile-row-label">VK ID</span><span class="profile-row-value" id="profile-vk-value">Не привязан</span><button class="profile-status-badge" id="profile-vk-status" type="button" onclick="event.preventDefault();startProfileAccountLink('vk_id')" aria-label="Привязать VK ID">Привязать</button><span class="profile-row-chevron">›</span></div>
+          <div class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 7h6"/></svg></span><span class="profile-row-label">Яндекс ID</span><span class="profile-row-value" id="profile-yandex-value">Не привязан</span><button class="profile-status-badge" id="profile-yandex-status" type="button" onclick="event.preventDefault();startProfileAccountLink('yandex')" aria-label="Привязать Яндекс ID">Привязать</button><span class="profile-row-chevron">›</span></div>
           <label class="profile-data-row"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span class="profile-row-label">Дата рождения</span><input class="profile-row-input profile-row-date" id="profile-field-birthdate" type="date"><span class="profile-calendar-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span></label>
           <label class="profile-data-row profile-data-row--about"><span class="profile-row-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v13H8l-4 3V4Z"/><path d="M8 8h8M8 12h5"/></svg></span><span class="profile-row-label">О себе</span><textarea class="profile-row-input profile-row-about" id="profile-field-about" maxlength="200" rows="4" oninput="updateProfileAboutCounter()" placeholder="Расскажи немного о себе..."></textarea><small class="profile-field-counter" id="profile-about-counter">0 / 200</small><span class="profile-row-chevron">›</span></label>
         </div>
@@ -2195,6 +2197,16 @@ function getProfileReferralLink(){const code=String(currentUser?.referralCode||'
 function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
 function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerified&&String(email||'').trim().toLowerCase()===String(currentUser.email||'').trim().toLowerCase();}
 function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Не подтверждён');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
+function setProfileLinkBadge(id,connected,connectedText,actionText){const el=document.getElementById(id);if(!el)return;el.textContent=connected?(connectedText||'Привязан'):(actionText||'Привязать');el.classList.toggle('verified',!!connected);el.disabled=!!connected;}
+function startProfileAccountLink(provider){
+  if(!currentUser||!getToken()){showToast('Сначала войдите в аккаунт');return false;}
+  const normalized=String(provider||'').trim();
+  if(normalized==='vk_id'&&currentUser.vkId){showToast('VK ID уже привязан');return false;}
+  if(normalized==='yandex'&&currentUser.yandexId){showToast('Яндекс ID уже привязан');return false;}
+  if(typeof window.startOAuthLogin!=='function'){showToast('Вход через сервис временно недоступен');return false;}
+  window.startOAuthLogin(normalized);
+  return true;
+}
 function closeProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(sec)sec.style.display='none';if(arrow)arrow.textContent='›';}
 function toggleProfilePersonalData(){const sec=document.getElementById('profile-pii-section');const arrow=document.getElementById('profile-pii-arrow');if(!sec)return;const hidden=sec.style.display==='none' || sec.style.display==='';sec.style.display=hidden?'block':'none';if(arrow)arrow.textContent=hidden?'вЊ„':'›';}
 function openProfilePhotoPicker(){const el=document.getElementById('profile-photo-input');if(el)el.click();}
@@ -2216,8 +2228,12 @@ function renderExtendedProfile(){
   const tgName=currentUser.telegramUsername?('@'+currentUser.telegramUsername):(currentUser.telegramId?('ID '+currentUser.telegramId):'Не привязан');
   setProfileText('profile-telegram-value',tgName);
   setProfileVerifiedBadge('profile-telegram-status',!!currentUser.telegramId,currentUser.telegramId?'Привязан':'Не привязан');
-  setProfileVerifiedBadge('profile-phone-status',draft.phoneVerified??!!currentUser.phoneVerified);
+  setProfileLinkBadge('profile-phone-status',!!(draft.phone||currentUser.phone||currentUser.yandexId),currentUser.phone?'Подтверждён':'Привязан','Привязать');
   setProfileEmailBadge(isCurrentProfileEmailVerified(profileEmail));
+  setProfileText('profile-vk-value',currentUser.vkId?('ID '+currentUser.vkId):'Не привязан');
+  setProfileLinkBadge('profile-vk-status',!!currentUser.vkId,'Привязан','Привязать');
+  setProfileText('profile-yandex-value',currentUser.yandexId?('ID '+currentUser.yandexId):'Не привязан');
+  setProfileLinkBadge('profile-yandex-status',!!currentUser.yandexId,'Привязан','Привязать');
   const referralLink=getProfileReferralLink();
   setProfileFieldValue('profile-ref-link',referralLink||'Ссылка появится после синхронизации профиля');
   setProfileText('profile-ref-count','Приглашено: '+Number(currentUser.referralCount||0));
