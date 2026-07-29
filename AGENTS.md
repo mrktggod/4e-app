@@ -294,9 +294,12 @@ If a brief conflicts with `AGENTS.md`, set the brief to `BLOCKED`, explain the c
 At the 23:00 autonomous run, use this order of work:
 
 1. First process `pm/inbox/BRIEF-*.md` files whose first line is `status: NEW`, oldest filename first. Do not treat `BRIEF-TEMPLATE.md` or `README.md` as tasks.
-2. When the inbox has no `NEW` briefs, choose tasks from the private `https://github.com/mrktggod/4pm` backlog and roadmap only when they are explicitly inside the whitelist below.
-3. One task equals one commit on `feat/admin-tariff-api` plus one matching `pm/outbox/REPORT-*.md`.
-4. Continue while there are eligible tasks and local limits allow it, then finish with a final report.
+2. Before any private backlog or roadmap whitelist fixes, run the mandatory nightly QA suite for Web, Telegram, VK, and load-safe checks that are available locally. Record the raw commands and results in a QA report.
+3. If the nightly QA suite is red, triage each confirmed failure into an atomic `pm/inbox/BRIEF-*.md`, then fix those briefs one at a time. A separate review agent must inspect the fix agent's report/evidence before the runner treats the QA failure as closed.
+4. After QA-failure briefs are fixed, re-run the failed QA commands plus `node scripts/check-cp1251-mojibake.mjs`. Only after green QA may the runner proceed to ordinary private backlog or roadmap whitelist work.
+5. When the inbox has no `NEW` briefs and QA is green, choose tasks from the private `https://github.com/mrktggod/4pm` backlog and roadmap only when they are explicitly inside the whitelist below.
+6. One task equals one commit on `feat/admin-tariff-api` plus one matching `pm/outbox/REPORT-*.md`.
+7. Continue while there are eligible tasks and local limits allow it, then finish with a final report.
 
 Use exactly these task outcomes:
 

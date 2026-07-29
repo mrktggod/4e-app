@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-29-100-night-qa-first-runner-protocol
 
