@@ -163,3 +163,69 @@ Status note: package 2 is closed, but global `DESIGN-GLASS-001` is not
 complete. Missing/risk areas above remain open, especially global forms,
 dialogs, chat conversation variables, task-detail variable consolidation and
 reference-file restoration.
+
+## 2026-07-29 Night Pass
+
+Rechecked from canonical checkout `X:\Projects\4-ai-secretary\app` on branch
+`feat/admin-tariff-api`.
+
+Reference status remains `NEED-REFERENCE` for new pixel-level work:
+
+- `pm/design-references/` is still absent locally;
+- `pm/design-references/glass-card-reference.png` is not available in this
+  checkout;
+- `pm/design-references/glass-card-reference-spec.md` is not available in this
+  checkout.
+
+No runtime UI migration was attempted in this pass. The current checked-out
+branch already contains package 2 completion evidence, so the safe action was
+to refresh the component map and stop before package 3 implementation.
+
+Current foundation map verified:
+
+- source tokens: `styles/variables.less:17`, `styles/variables.less:49`;
+- primitive family: `styles/variables.less:65`;
+- reduced-transparency fallback: `styles/variables.less:131`;
+- built CSS still contains the same token and primitive family in
+  `styles.css` and `styles.min.css`.
+
+Completed glass families now observed in this checkout:
+
+- package 1 foundation: shared `--glass-*` tokens and `.ui-glass-*`
+  primitives;
+- notifications: `DONE`, report
+  `pm/outbox/REPORT-BRIEF-2026-07-24-50-glass-notification-card-slice.md`;
+- task detail reference slice and layout restore: `DONE`, reports
+  `pm/outbox/REPORT-BRIEF-2026-07-24-51-glass-task-detail-reference-slice.md`
+  and
+  `pm/outbox/REPORT-BRIEF-2026-07-25-73-task-detail-glass-layout-restore.md`;
+- home/focus dashboard: `DONE`, commit
+  `60dd5979d8e9a2859c2acbf73e31733afb669afd`;
+- Telegram task-list cards: `DONE`, commit
+  `a839a26d9b88c985f223de4cc4ca291d0b78158a`;
+- safe Telegram profile/menu surfaces: `DONE`, commit
+  `2fa8e39da4dd1e3f126d8f932a1f050d8ad9f007`;
+- package 2 visual QA handoff: `DONE`, report
+  `pm/outbox/REPORT-BRIEF-2026-07-24-56-glass-package2-visual-qa-handoff.md`.
+
+Remaining component families for package 3 or Claude-reviewed briefs:
+
+- global forms and dialog/sheet controls, especially shared field, popup and
+  button states across auth/settings/support/task flows;
+- Telegram chat conversation and composer surfaces, including consolidation of
+  separate `--conv-*` variables into shared glass tokens;
+- VK parity surfaces after Telegram package 3 decisions are stable;
+- task-detail variable consolidation where local `--detail-*` tokens still
+  duplicate shared glass primitives;
+- final visual QA matrix with restored reference image/spec, 390x844 mobile,
+  desktop viewport, reduced-transparency fallback and light/dark screenshots.
+
+Current stop reason:
+
+- the approved reference image/spec are not present in the canonical checkout;
+- package 3 would touch multiple interactive families and should be handled as
+  one atomic brief at a time after the missing reference is restored or
+  explicitly archived;
+- this worktree has unrelated dirty screenshot work in
+  `docs/tasks/assets/BRIEF-2026-07-27-96-telegram-bottom-menu-dark.png`, so
+  the pass avoided broad runtime edits.

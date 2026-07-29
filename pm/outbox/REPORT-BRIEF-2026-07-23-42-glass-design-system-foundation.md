@@ -172,3 +172,115 @@ Next step:
 
 - Alexey/Yuri: restore or intentionally archive `pm/design-references/glass-card-reference.png` and `pm/design-references/glass-card-reference-spec.md` in the canonical PM location.
 - Claude: after reference restoration, issue one atomic brief for the next low-risk family, preferably chat `--conv-*` consolidation or a single dialog/field family migration with mobile and desktop visual evidence.
+
+## 2026-07-29 Night Pass Addendum
+
+Outcome for this pass: `NEED-REFERENCE` for new visual implementation; existing
+foundation and package 2 slices remain present.
+
+Current canonical checkout audited: `X:\Projects\4-ai-secretary\app`.
+
+Branch: `feat/admin-tariff-api`.
+
+Reference status:
+
+- `pm/design-references/` is absent in this checkout.
+- `pm/design-references/glass-card-reference.png` was not found.
+- `pm/design-references/glass-card-reference-spec.md` was not found.
+- Existing screenshot evidence is still available under `docs/tasks/assets/`,
+  but those screenshots are not a substitute for the approved reference asset.
+
+Glass token/component map refreshed:
+
+- shared token source: `styles/variables.less`;
+- token anchors verified: `--glass-surface`, `--glass-surface-strong`,
+  `--glass-surface-muted`, `--glass-stroke`, `--glass-stroke-strong`,
+  `--glass-highlight`, `--glass-shadow`, `--glass-inset-shadow`,
+  `--glass-blur`, `--glass-saturate`, `--glass-radius-card`,
+  `--glass-radius-control`, `--glass-active-glow`, `--glass-danger-glow`,
+  `--glass-reduced-surface`;
+- primitive family verified: `.ui-glass-card`, `.ui-glass-row`,
+  `.ui-glass-button`, `.ui-glass-icon-button`, `.ui-glass-field`,
+  `.ui-glass-sheet`, `.ui-glass-popover`, `.ui-glass-status`;
+- package 2 state updated in
+  `pm/design-system-glass-inventory-2026-07-27.md`: home/focus, task-list
+  cards, profile/menu and package 2 visual handoff are now recorded as `DONE`.
+
+Implemented in this pass:
+
+- no runtime UI code changed;
+- no `index.html` edit was made, so the mandatory Step 0 encoding ritual did
+  not apply;
+- no production deploy, merge, pricing, payment, entitlement, auth-security,
+  CAL or secrets work.
+
+Changed files in this pass:
+
+- `pm/design-system-glass-inventory-2026-07-27.md`;
+- `pm/outbox/REPORT-BRIEF-2026-07-23-42-glass-design-system-foundation.md`;
+- `DEVELOPMENT_LOG.md`.
+
+Commit status:
+
+- current pass left uncommitted because the direct UI architecture guard is red
+  on the current branch state;
+- existing foundation commit remains
+  `0a538fe5dfd5623e1fbc6d5ce3e653a218ef5545`;
+- latest branch head observed before edits: `9051cf4 fix(ui): repair light
+  telegram dashboard and task detail`.
+
+Raw evidence:
+
+```text
+git branch --show-current
+feat/admin-tariff-api
+
+git status --short
+ M docs/tasks/assets/BRIEF-2026-07-27-96-telegram-bottom-menu-dark.png
+
+Get-ChildItem pm\design-references
+MISSING_DESIGN_REFERENCES_DIR
+
+rg --line-number -- "--glass-surface|--glass-radius-card|ui-glass-card|prefers-reduced-transparency" styles\variables.less
+styles\variables.less:17:  --glass-surface:rgba(28,42,30,0.58);
+styles\variables.less:49:  --glass-surface:rgba(255,255,255,0.58);
+styles\variables.less:65:.ui-glass-card,
+styles\variables.less:131:@media (prefers-reduced-transparency: reduce){
+
+node scripts/check-cp1251-mojibake.mjs
+CP1251 mojibake check passed: 0 suspicious tokens
+
+git diff --check
+exit 0
+
+npm run check:portable-paths
+Unable to run scripts/check-portable-paths.sh: spawnSync bash ENOENT
+
+npm run check:ui-architecture
+Unable to run scripts/check-ui-architecture.sh: spawnSync bash ENOENT
+
+C:\Program Files\Git\bin\bash.exe scripts/check-portable-paths.sh
+Portable path check passed.
+
+C:\Program Files\Git\bin\bash.exe scripts/check-ui-architecture.sh
+UI architecture guard: inline style attributes = 292 / 465
+UI architecture guard: style tags = 0 / 0
+UI architecture guard: inline script tags = 3 / 3
+UI architecture guard failed: inline event handlers = 403, allowed max = 402
+```
+
+Why the runner stopped:
+
+- the approved reference image/spec are missing from the canonical checkout;
+- package 3 requires interactive forms/dialog/chat/VK family decisions across
+  several screens and is too broad for a blind autonomous visual migration;
+- the current branch is not commit-ready under the UI architecture guard
+  because it has 403 inline event handlers against the 402 limit;
+- unrelated dirty screenshot work was already present and left untouched.
+
+Next step:
+
+- Alexey/Yuri: restore or explicitly retire the reference files in
+  `pm/design-references/`.
+- Claude: issue the next atomic package 3 brief only after that decision,
+  starting with either forms/dialogs/controls or chat `--conv-*` consolidation.
