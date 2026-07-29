@@ -55,7 +55,7 @@
         "test:e2e:telegram": "playwright test autotests/tests/telegram-app",
         "test:e2e:vk": "playwright test autotests/tests/vk-app",
         "test:e2e:report": "playwright show-report",
-        "load:smoke": "k6 run autotests/load/smoke-load.js",
+        "load:smoke": "node scripts/run-load-smoke.mjs",
         "qa:prebeta": "npm run check:js-syntax && npm run check:cp1251-mojibake && npm run check:portable-paths && npm run check:ui-architecture && npm run test:e2e && npm run smoke:home001 && npm run smoke:back050 && npm run smoke:back055 && npm run smoke:privacy-surface && npm run smoke:viral-share",
         "deploy:worker-assets": "npm run build:worker-assets && wrangler deploy",
         "deploy:vk-hosting": "npm run build:vk-hosting && vk-miniapps-deploy",
