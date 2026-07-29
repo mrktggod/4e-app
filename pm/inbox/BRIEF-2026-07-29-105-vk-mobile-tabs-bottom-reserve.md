@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-29-105-vk-mobile-tabs-bottom-reserve
 
