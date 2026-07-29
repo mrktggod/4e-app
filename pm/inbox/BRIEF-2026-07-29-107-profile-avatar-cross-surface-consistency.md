@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-07-29-107-profile-avatar-cross-surface-consistency
 
