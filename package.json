@@ -36,6 +36,7 @@
         "smoke:vk-task-actions": "node scripts/vk-task-actions-parity-smoke.mjs",
         "smoke:profile-premium-banner": "node scripts/profile-premium-banner-smoke.mjs",
         "smoke:profile-glass": "node scripts/profile-glass-smoke.mjs",
+        "smoke:profile-referral-link": "node scripts/profile-referral-link-smoke.mjs",
         "smoke:premium-task-denial": "node scripts/premium-task-action-denial-smoke.mjs",
         "smoke:task-action-feedback": "node scripts/task-action-feedback-smoke.mjs",
         "smoke:task-advice-manual": "node scripts/task-advice-manual-smoke.mjs",

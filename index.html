@@ -2191,7 +2191,7 @@ function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();r
 function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();const img=el.querySelector?.('img');if(draft.photoDataUrl){el.classList.remove('profile-avatar--orb');el.textContent='';if(img)img.style.display='none';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';if(img)img.style.display='';if(el.id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent=initials;}}}
 function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
 function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
-function getProfileReferralLink(){return PLATFORM?.buildReferralLink?PLATFORM.buildReferralLink(currentUser?.referralCode||''):(window.buildReferralLink?window.buildReferralLink():'');}
+function getProfileReferralLink(){const code=String(currentUser?.referralCode||'').trim();return code&&PLATFORM?.buildReferralLink?PLATFORM.buildReferralLink(code):(window.buildReferralLink?window.buildReferralLink():'');}
 function setProfileVerifiedBadge(id,verified,connectedText){const el=document.getElementById(id);if(!el)return;el.textContent=connectedText||(verified?'Подтверждён':'Не подтверждён');el.classList.toggle('verified',!!verified);}
 function isCurrentProfileEmailVerified(email){return !!currentUser?.emailVerified&&String(email||'').trim().toLowerCase()===String(currentUser.email||'').trim().toLowerCase();}
 function setProfileEmailBadge(verified,stateText){const el=document.getElementById('profile-email-status');if(!el)return;el.textContent=stateText||(verified?'Подтверждён ✅':'Не подтверждён');el.classList.toggle('verified',!!verified);el.disabled=!!verified;}
@@ -2218,7 +2218,8 @@ function renderExtendedProfile(){
   setProfileVerifiedBadge('profile-telegram-status',!!currentUser.telegramId,currentUser.telegramId?'Привязан':'Не привязан');
   setProfileVerifiedBadge('profile-phone-status',draft.phoneVerified??!!currentUser.phoneVerified);
   setProfileEmailBadge(isCurrentProfileEmailVerified(profileEmail));
-  setProfileFieldValue('profile-ref-link',getProfileReferralLink());
+  const referralLink=getProfileReferralLink();
+  setProfileFieldValue('profile-ref-link',referralLink||'Ссылка появится после синхронизации профиля');
   setProfileText('profile-ref-count','Приглашено: '+Number(currentUser.referralCount||0));
 }
 function updateProfileAboutCounter(){const el=document.getElementById('profile-field-about');const counter=document.getElementById('profile-about-counter');if(counter)counter.textContent=((el?.value||'').length)+' / 200';}
