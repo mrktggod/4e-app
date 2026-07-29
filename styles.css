@@ -12935,6 +12935,7 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
 .ask-bar--keyboard-open {
   position: sticky;
   bottom: 0;
+  padding-bottom: calc(var(--app-viewport-bottom-reserve) + var(--app-keyboard-offset));
 }
 @media (max-width: 390px) {
   .ask-soft-header {
@@ -13284,6 +13285,9 @@ body:has(#ask.active) #global-nav,
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
   padding: 0 !important;
+}
+#ask .ask-input-shell.ask-bar--keyboard-open {
+  padding-bottom: calc(var(--app-viewport-bottom-reserve) + var(--app-keyboard-offset)) !important;
 }
 #ask .ask-field {
   border: 1px solid var(--glass-stroke) !important;
@@ -15005,6 +15009,9 @@ html[data-theme="light"] #ask .ask-bar {
   padding: 0 !important;
   gap: 10px !important;
   overflow: visible !important;
+}
+html[data-theme="light"] #ask .ask-bar.ask-bar--keyboard-open {
+  padding-bottom: calc(var(--app-viewport-bottom-reserve) + var(--app-keyboard-offset)) !important;
 }
 html[data-theme="light"] #ask .ask-field {
   border-radius: 22px !important;

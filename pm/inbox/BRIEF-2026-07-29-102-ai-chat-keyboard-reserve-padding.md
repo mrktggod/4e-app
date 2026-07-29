@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-07-29-102-ai-chat-keyboard-reserve-padding
 

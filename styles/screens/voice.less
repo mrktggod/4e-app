@@ -1151,6 +1151,7 @@ body:has(#chat-conv.active) .bottom-nav-v2 {
 .ask-bar--keyboard-open {
   position: sticky;
   bottom: 0;
+  padding-bottom: calc(@app-viewport-bottom-reserve + var(--app-keyboard-offset));
 }
 
 @media (max-width: 390px) {
@@ -1540,6 +1541,10 @@ body:has(#ask.active) #global-nav,
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
   padding: 0 !important;
+}
+
+#ask .ask-input-shell.ask-bar--keyboard-open {
+  padding-bottom: calc(@app-viewport-bottom-reserve + var(--app-keyboard-offset)) !important;
 }
 
 #ask .ask-field {

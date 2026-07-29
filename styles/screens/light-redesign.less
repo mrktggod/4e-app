@@ -1947,6 +1947,11 @@ html[data-theme="light"] #ask .ask-bar {
   gap: 10px !important;
   overflow: visible !important;
 }
+
+html[data-theme="light"] #ask .ask-bar.ask-bar--keyboard-open {
+  padding-bottom: calc(@app-viewport-bottom-reserve + var(--app-keyboard-offset)) !important;
+}
+
 html[data-theme="light"] #ask .ask-field {
   border-radius: 22px !important;
   overflow: hidden !important;
