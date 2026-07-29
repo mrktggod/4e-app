@@ -7859,6 +7859,116 @@ body:has(#calendar.active) #global-nav,
     max-width: calc(100vw - 24px) !important;
   }
 }
+/* ===== DESIGN-GLASS-001: package 3 safe controls and popovers ===== */
+.quick-add-sheet,
+#focus-panel-overlay .quick-add-sheet {
+  border: 1px solid var(--glass-stroke) !important;
+  border-bottom: 0 !important;
+  background: var(--glass-surface-strong) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+.quick-add-text,
+.quick-add-person,
+#task-detail .tag-input,
+#task-detail .detail-control,
+#task-detail .detail-info-input,
+#task-detail .detail-info-select {
+  min-height: 44px !important;
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-control) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  color: var(--text) !important;
+}
+.quick-add-text:focus,
+.quick-add-person:focus,
+#task-detail .tag-input:focus,
+#task-detail .detail-control:focus,
+#task-detail .detail-info-input:focus,
+#task-detail .detail-info-select:focus {
+  border-color: var(--glass-stroke-strong) !important;
+  outline: 2px solid var(--green) !important;
+  outline-offset: 3px !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+.quick-add-submit,
+.quick-add-cancel,
+#task-detail .detail-quick-btn,
+#task-detail .detail-tag-plus,
+#task-detail .detail-redesign-bell {
+  min-height: 44px !important;
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-control) !important;
+  background: var(--glass-surface-muted) !important;
+  color: var(--text) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease, background 0.16s ease !important;
+}
+.quick-add-submit,
+#task-detail .detail-quick-btn[data-detail-deadline-action="confirm"] {
+  border-color: var(--glass-stroke-strong) !important;
+  color: var(--green) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+.quick-add-submit:hover,
+.quick-add-cancel:hover,
+#task-detail .detail-quick-btn:hover,
+#task-detail .detail-tag-plus:hover,
+#task-detail .detail-redesign-bell:hover {
+  border-color: var(--glass-stroke-strong) !important;
+}
+.quick-add-submit:active,
+.quick-add-cancel:active,
+#task-detail .detail-quick-btn:active,
+#task-detail .detail-tag-plus:active,
+#task-detail .detail-redesign-bell:active {
+  transform: translateY(1px) scale(0.99) !important;
+}
+#task-detail .detail-date-popover,
+#task-detail .detail-priority-popover,
+#task-detail .detail-reminder-popover,
+#task-detail .detail-tag-options,
+#task-detail .detail-top-tag-input {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-control) !important;
+  background: var(--glass-surface-strong) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+#task-detail .detail-date-popover button,
+#task-detail .detail-priority-popover button,
+#task-detail .detail-reminder-popover button,
+#task-detail .detail-tag-options button {
+  min-height: 44px !important;
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: calc(var(--glass-radius-control) - 8px) !important;
+  background: var(--glass-surface-muted) !important;
+  color: var(--text) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+}
+#task-detail .detail-date-popover button:hover,
+#task-detail .detail-priority-popover button:hover,
+#task-detail .detail-reminder-popover button:hover,
+#task-detail .detail-tag-options button:hover,
+#task-detail .detail-date-popover button:focus-visible,
+#task-detail .detail-priority-popover button:focus-visible,
+#task-detail .detail-reminder-popover button:focus-visible,
+#task-detail .detail-tag-options button:focus-visible {
+  border-color: var(--glass-stroke-strong) !important;
+  outline: 2px solid var(--green) !important;
+  outline-offset: 2px !important;
+}
+#task-detail .detail-date-popover button.active,
+#task-detail .detail-priority-popover button.active,
+#task-detail .detail-reminder-popover button.active,
+#task-detail .detail-tag-options button.active {
+  border-color: var(--glass-stroke-strong) !important;
+  color: var(--green) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
 .profile-stage {
   min-height: 100%;
   background: radial-gradient(circle at 50% -6%, rgba(171, 220, 72, 0.15), transparent 30%), linear-gradient(180deg, rgba(16, 30, 16, 0.95), rgba(3, 15, 8, 0.98) 58%, #020a05);
@@ -13167,6 +13277,57 @@ body:has(#ask.active) #global-nav,
 #ask hr,
 #ask .ask-action-row hr {
   display: none !important;
+}
+/* ===== DESIGN-GLASS-001: package 3 safe chat controls ===== */
+#ask .ask-input-shell {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-card) !important;
+  background: var(--glass-surface) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  padding: 0 !important;
+}
+#ask .ask-field {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-control) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  color: var(--text) !important;
+}
+#ask .ask-field:focus {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+#ask .ask-voice,
+#ask .ask-send,
+#ask .ask-action-btn,
+#ask .ask-action-row {
+  border: 1px solid var(--glass-stroke) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease, background 0.16s ease !important;
+}
+#ask .ask-send,
+#ask .ask-action-btn--primary {
+  border-color: var(--glass-stroke-strong) !important;
+  color: var(--green) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+#ask .ask-voice:hover,
+#ask .ask-send:hover,
+#ask .ask-action-btn:hover,
+#ask .ask-action-row:hover {
+  border-color: var(--glass-stroke-strong) !important;
+}
+#ask .ask-action-card {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-control) !important;
+  background: var(--glass-surface-strong) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  padding: 10px 12px !important;
 }
 /* Light redesign handoff mapping.
    Source: light redesign handoff extract, 2026-07-19

@@ -1,35 +1,43 @@
 # REPORT-BRIEF-2026-07-24-57-glass-forms-dialogs-controls-package3
 
-Outcome: `BLOCKED-DEPENDENCY`
+Outcome: `DONE`
 
-## Dependency Gate
+## What changed
 
-Brief 57 requires package 1 and package 2 to be `DONE`.
+- Applied existing shared glass tokens to safe quick-add dialog fields and actions.
+- Applied shared glass treatment to safe task-detail tag, date, priority and reminder controls/popovers.
+- Applied shared glass treatment to AI-chat composer, voice/send controls and suggested-action cards.
+- Left auth, password reset, payment, subscription, entitlement, price and live platform areas untouched.
 
-Current state:
+## Changed selectors/files
 
-- Package 1: partial; runtime slices 42, 50 and 51 are `DONE`, but handoff 52 is `NEED-CLAUDE`
-- Package 2: blocked; briefs 53-56 are `BLOCKED-DEPENDENCY`
-
-Because package 2 is not `DONE`, package 3 controls/dialogs work did not start.
-
-## Root Cause
-
-Dependency gate in `pm/inbox/BRIEF-2026-07-24-57-glass-forms-dialogs-controls-package3.md:10` requires package 1 and package 2 `DONE`. Package 2 is blocked by the brief 52 QA gate.
-
-## Changed Files
-
-- `pm/inbox/BRIEF-2026-07-24-57-glass-forms-dialogs-controls-package3.md`
-- `pm/outbox/REPORT-BRIEF-2026-07-24-57-glass-forms-dialogs-controls-package3.md`
-- `shared/WORK_LOG.md`
-- `DEVELOPMENT_LOG.md`
+- `styles/screens/tasks.less`: `.quick-add-*`, `#task-detail .tag-input`, `.detail-control`, `.detail-quick-btn`, `.detail-date-popover`, `.detail-priority-popover`, `.detail-reminder-popover`, `.detail-tag-options`.
+- `styles/screens/voice.less`: `#ask .ask-input-shell`, `.ask-field`, `.ask-voice`, `.ask-send`, `.ask-action-btn`, `.ask-action-card`.
+- `styles.css` and `styles.min.css`: regenerated from LESS.
+- `pm/inbox/BRIEF-2026-07-24-57-glass-forms-dialogs-controls-package3.md`: status set to `DONE`.
 
 ## Verification
 
-- Runtime files were not changed.
-- `index.html` was not edited; Step 0 was not applicable.
-- Guard commands are run before commit: `node scripts/check-cp1251-mojibake.mjs`, `npm run check:portable-paths`, `git diff --check`.
+- `npm run build:css` -> passed.
+- `node scripts/check-cp1251-mojibake.mjs` -> passed, `0 suspicious tokens`.
+- `npm run smoke:back050` -> passed, `ok: true`, viewport `390`.
+- `npm run smoke:back067-reminder` -> passed, trigger `44x44`, selected `1hour`.
+- `npm run smoke:back068-tag-popup` -> passed, popup right edge `389`, date popover width `240`, `mutationCount: 1`.
+- `npm run check:portable-paths` -> could not start because `bash` is not in PATH; direct PowerShell/git-grep equivalent passed.
+- `npm run check:ui-architecture` -> could not start because `bash` is not in PATH; direct PowerShell equivalent found a pre-existing inline handler count `403 / 402`, so this remains a residual repo guard issue. This task did not edit `index.html` or add inline handlers.
+- `git diff --check` -> passed.
 
-## Next Step
+## Screenshots
 
-Complete or explicitly unblock package 2 before attempting package 3 controls.
+- `docs/tasks/assets/BRIEF-2026-07-24-57-glass-controls-dark.png`
+- `docs/tasks/assets/BRIEF-2026-07-24-57-glass-controls-light.png`
+
+## Runner final
+
+- Tasks completed this run: `1`.
+- `docs-private` read/update: successful.
+- Stop reason: one safe whitelist task completed; remaining candidate briefs `58-60` are package-3 follow-ups but local run limit is reached after implementation, screenshots, checks and push.
+
+## Commit
+
+- App commit: this commit.

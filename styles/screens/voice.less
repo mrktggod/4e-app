@@ -1530,3 +1530,61 @@ body:has(#ask.active) #global-nav,
 #ask .ask-action-row hr {
   display: none !important;
 }
+
+/* ===== DESIGN-GLASS-001: package 3 safe chat controls ===== */
+#ask .ask-input-shell {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-card) !important;
+  background: var(--glass-surface) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  padding: 0 !important;
+}
+
+#ask .ask-field {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-control) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  color: var(--text) !important;
+}
+
+#ask .ask-field:focus {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+
+#ask .ask-voice,
+#ask .ask-send,
+#ask .ask-action-btn,
+#ask .ask-action-row {
+  border: 1px solid var(--glass-stroke) !important;
+  background: var(--glass-surface-muted) !important;
+  box-shadow: var(--glass-inset-shadow) !important;
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease, background .16s ease !important;
+}
+
+#ask .ask-send,
+#ask .ask-action-btn--primary {
+  border-color: var(--glass-stroke-strong) !important;
+  color: var(--green) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+
+#ask .ask-voice:hover,
+#ask .ask-send:hover,
+#ask .ask-action-btn:hover,
+#ask .ask-action-row:hover {
+  border-color: var(--glass-stroke-strong) !important;
+}
+
+#ask .ask-action-card {
+  border: 1px solid var(--glass-stroke) !important;
+  border-radius: var(--glass-radius-control) !important;
+  background: var(--glass-surface-strong) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  padding: 10px 12px !important;
+}
