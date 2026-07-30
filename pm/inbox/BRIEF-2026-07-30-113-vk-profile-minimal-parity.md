@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 priority: P2
 
 # BRIEF-2026-07-30-113 — VK: минимальный паритет профиля (BACK-066E) (P2)

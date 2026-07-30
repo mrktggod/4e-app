@@ -1,5 +1,22 @@
 ## 2026-07-30
 
+### VK profile minimal parity
+
+**What changed:** VK profile now has explicit privacy and support surfaces:
+privacy opens `privacy.html`, support opens the configured Telegram support
+contact, and security/sessions plus AI-memory are shown as honest pointers to
+the main profile instead of inventing new APIs. No auth/session logic, payment,
+entitlement, production deploy, or main merge work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-profile-parity`; `npm run test:e2e:vk`; `node
+--check scripts/vk-profile-parity-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ### VK calendar deadline parity
 
 **What changed:** VK calendar deadline normalization now recognizes relative
