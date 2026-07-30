@@ -588,6 +588,14 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
         <span class="detail-edit-label">Срок</span>
         <input class="detail-edit-input" id="detailEditDeadline" type="date">
       </label>
+      <label class="detail-edit-field">
+        <span class="detail-edit-label">Исполнитель</span>
+        <input class="detail-edit-input" id="detailEditPerson" maxlength="80">
+      </label>
+      <label class="detail-edit-field detail-edit-field--wide">
+        <span class="detail-edit-label">Описание</span>
+        <textarea class="detail-edit-input" id="detailEditDescription" rows="3" maxlength="1200"></textarea>
+      </label>
       <div class="detail-edit-actions">
         <button class="btn btn-primary" id="detailSaveBtn" type="button">Сохранить</button>
         <button class="btn btn-secondary" id="detailCancelBtn" type="button">Отмена</button>
@@ -1855,10 +1863,14 @@ function syncTaskDetailEditFields(task) {
   const status = document.getElementById('detailEditStatus');
   const priority = document.getElementById('detailEditPriority');
   const deadline = document.getElementById('detailEditDeadline');
+  const person = document.getElementById('detailEditPerson');
+  const description = document.getElementById('detailEditDescription');
   if (title) title.value = taskDisplayTitle(task);
   if (status) status.value = getTaskDetailStatus(task);
   if (priority) priority.value = getTaskDetailPriority(task);
   if (deadline) deadline.value = taskDeadlineInputValue(task);
+  if (person) person.value = String(task?.person || '').trim();
+  if (description) description.value = String(task?.description || task?.originalMsg || '').trim();
   setDetailEditError('');
 }
 
@@ -1867,10 +1879,15 @@ function collectTaskDetailUpdates() {
   const status = document.getElementById('detailEditStatus')?.value || 'active';
   const priority = document.getElementById('detailEditPriority')?.value || 'normal';
   const deadline = document.getElementById('detailEditDeadline')?.value || '';
+  const person = (document.getElementById('detailEditPerson')?.value || '').trim();
+  const description = (document.getElementById('detailEditDescription')?.value || '').trim();
   if (title.length < 2) throw new Error('Название слишком короткое');
   return {
     text: title,
     title,
+    person,
+    description,
+    originalMsg: description,
     status,
     priority,
     deadline,

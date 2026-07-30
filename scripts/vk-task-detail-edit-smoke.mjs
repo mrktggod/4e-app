@@ -44,6 +44,8 @@ const makeElement = (id) => {
   'detailEditStatus',
   'detailEditPriority',
   'detailEditDeadline',
+  'detailEditPerson',
+  'detailEditDescription',
   'detailEditError',
   'detailSaveBtn',
   'detailCancelBtn',
@@ -62,10 +64,12 @@ const task = {
   title: 'Старое название',
   status: 'active',
   priority: 'normal',
+  person: 'Юрий',
   deadline: '2026-07-25',
   done: false,
   type: 'task',
   createdAt: Date.now(),
+  description: 'Старое описание',
   originalMsg: 'Исходная формулировка задачи'
 };
 
@@ -160,6 +164,8 @@ sandbox.openTaskDetail('vk-detail-1');
 assertEqual(elements.get('detailEditTitle').value, 'Старое название', 'initial title field');
 assertEqual(elements.get('detailEditDeadline').value, '2026-07-25', 'initial deadline field');
 assertEqual(elements.get('detailEditPriority').value, 'normal', 'initial priority field');
+assertEqual(elements.get('detailEditPerson').value, 'Юрий', 'initial person field');
+assertEqual(elements.get('detailEditDescription').value, 'Старое описание', 'initial description field');
 assertEqual(elements.get('detailReturnHint').textContent, 'Вернемся в календарь', 'return hint follows source screen');
 assertEqual(elements.get('detailTaskStatusPill').textContent, 'В работе', 'active status pill');
 assertEqual(elements.get('detailTaskStatusPill').dataset.status, 'active', 'active status data attribute');
@@ -171,6 +177,8 @@ elements.get('detailEditTitle').value = 'Обновить договор';
 elements.get('detailEditStatus').value = 'waiting';
 elements.get('detailEditPriority').value = 'high';
 elements.get('detailEditDeadline').value = '2026-07-30';
+elements.get('detailEditPerson').value = 'Алексей';
+elements.get('detailEditDescription').value = 'Обсудить правки и отправить итоговый текст';
 
 await sandbox.saveTaskDetailEdits();
 
@@ -181,11 +189,17 @@ assertEqual(updatePayload.headers['x-token'], 'test-token', 'worker token header
 assertEqual(updatePayload.body.taskId, 'vk-detail-1', 'task id payload');
 assertEqual(updatePayload.body.updates.text, 'Обновить договор', 'updated text payload');
 assertEqual(updatePayload.body.updates.title, 'Обновить договор', 'updated title payload');
+assertEqual(updatePayload.body.updates.person, 'Алексей', 'updated person payload');
+assertEqual(updatePayload.body.updates.description, 'Обсудить правки и отправить итоговый текст', 'updated description payload');
+assertEqual(updatePayload.body.updates.originalMsg, 'Обсудить правки и отправить итоговый текст', 'updated originalMsg payload');
 assertEqual(updatePayload.body.updates.status, 'waiting', 'updated status payload');
 assertEqual(updatePayload.body.updates.priority, 'high', 'updated priority payload');
 assertEqual(updatePayload.body.updates.deadline, '2026-07-30', 'updated deadline payload');
 assertEqual(updatePayload.body.updates.done, false, 'waiting status is not done');
 assertEqual(sandbox.state.tasks[0].text, 'Обновить договор', 'local task text persisted');
+assertEqual(sandbox.state.tasks[0].person, 'Алексей', 'local task person persisted');
+assertEqual(sandbox.state.tasks[0].description, 'Обсудить правки и отправить итоговый текст', 'local task description persisted');
+assertEqual(sandbox.state.tasks[0].originalMsg, 'Обсудить правки и отправить итоговый текст', 'local task originalMsg persisted');
 assertEqual(sandbox.state.tasks[0].status, 'waiting', 'local task status persisted');
 assertEqual(sandbox.state.tasks[0].priority, 'high', 'local task priority persisted');
 assertEqual(sandbox.state.tasks[0].deadline, '2026-07-30', 'local task deadline persisted');
@@ -194,6 +208,8 @@ assert(sandbox.statsBuilt, 'stats rebuilt');
 assertEqual(elements.get('detailEditTitle').value, 'Обновить договор', 'reopened title field');
 assertEqual(elements.get('detailEditPriority').value, 'high', 'reopened priority field');
 assertEqual(elements.get('detailEditDeadline').value, '2026-07-30', 'reopened deadline field');
+assertEqual(elements.get('detailEditPerson').value, 'Алексей', 'reopened person field');
+assertEqual(elements.get('detailEditDescription').value, 'Обсудить правки и отправить итоговый текст', 'reopened description field');
 assertEqual(elements.get('detailEditError').textContent, '', 'no edit error shown');
 
 console.log('VK task detail edit smoke: PASS');

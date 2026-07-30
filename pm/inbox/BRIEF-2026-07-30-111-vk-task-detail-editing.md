@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 priority: P1
 
 # BRIEF-2026-07-30-111 — VK: полное редактирование задачи (BACK-066B) (P1)

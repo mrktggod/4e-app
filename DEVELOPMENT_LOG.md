@@ -1,5 +1,21 @@
 ## 2026-07-30
 
+### VK task detail full editing
+
+**What changed:** Extended the existing VK task detail editor to include real
+person and description fields. Saves still use the existing `x-action:
+update-task` Worker path and now send `person`, `description`, and `originalMsg`
+alongside title/status/priority/deadline/done. No VK Pay, payment, entitlement,
+backend contract, production deploy, or live VK account work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-task-detail-edit`; `npm run test:e2e:vk`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ### VK saved session network recovery
 
 **What changed:** `vk.html` now preserves the saved `vk4_token` when `/auth/me`
