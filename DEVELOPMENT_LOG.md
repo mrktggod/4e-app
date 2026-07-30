@@ -1,5 +1,21 @@
 ## 2026-07-30
 
+### UI architecture inline script guard
+
+**What changed:** Moved the small QA press feedback helper from an inline
+`index.html` block to `scripts/qa-press-feedback.js`, then added that runtime
+asset to both `scripts/build-pages-whitelist.mjs` and the PWA shell cache in
+`sw.js`. This reduces the `index.html` inline script tag count from 4 to 3
+without product behavior changes.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run check:ui-architecture`; `npm run test:e2e:web`; `npm run
+check:pages-script-assets`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ### AI task decomposition preview
 
 **What changed:** Web/PWA task detail AI decomposition now uses the existing

@@ -20,7 +20,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 9329 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 9307 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 2028 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
@@ -33,10 +33,13 @@
 | `AGENTS.md` | 312 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
 | `COWORK_INSTRUCTIONS.md` | 149 | Инструкции наблюдателя/координатора | Читать при планировании |
-| `DEVELOPMENT_LOG.md` | 3377 | Канонический технический лог | Обновлять после значимых правок |
+| `DEVELOPMENT_LOG.md` | 3622 | Канонический технический лог | Обновлять после значимых правок |
 | `https://github.com/mrktggod/4pm` | n/a | Приватные roadmap, work log, commit convention, PM/QA, team sync и бизнес-документация | Читать при планировании и PM/QA задачах |
 | `scripts/platform-adapter.js` | 1235 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, task-detail return/date confirm/reminder-card dispatch, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
+| `scripts/qa-press-feedback.js` | 39 | Shared QA press feedback installer for button glow, light haptics/vibration and textarea autoresize delegation previously held in inline `index.html` script | Read whole file before changing QA press feedback or keyboard enter hints |
 | `scripts/task-ui-renderers.js` | 793 | Shared task/notification renderers and task card helpers, including swipe actions, inline completion feedback, active-card reminder entrypoint, calendar/task row click-through, and task-detail return-screen fallback helpers | Read narrow task renderer ranges before changing task cards, task completion controls, notification cards, calendar rows, reminders, or task-detail return behavior |
+| `scripts/build-pages-whitelist.mjs` | 139 | Pages Static Assets artifact builder and whitelist copier for deployable frontend files | Update when adding new runtime assets referenced by `index.html` |
+| `sw.js` | 111 | PWA service worker shell cache and network-first routing for app HTML/CSS/JS assets | Update shell asset list when adding new runtime scripts needed offline |
 | `scripts/auth-handlers.js` | 696 | Auth and preview-demo handlers: login/register flows, dashboard preview routing, and preview-only state flags for visual QA | Read narrow preview/auth ranges before changing login or preview behavior |
 | `scripts/check-portable-paths.sh` | 24 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
 | `scripts/check-ui-architecture.sh` | 78 | Guard против роста inline UI-долга в `index.html` | Запускать перед UI-коммитом |
