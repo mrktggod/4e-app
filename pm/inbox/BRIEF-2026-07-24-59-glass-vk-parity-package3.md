@@ -1,4 +1,4 @@
-status: BLOCKED-DEPENDENCY
+status: DONE
 
 # BRIEF-2026-07-24-59-glass-vk-parity-package3
 

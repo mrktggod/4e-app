@@ -27,6 +27,19 @@
   --nav-h: 72px;
   --bottom-content-reserve: calc(var(--nav-h) + 32px + env(safe-area-inset-bottom, 0px));
   --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --glass-surface: linear-gradient(145deg, rgba(242,245,233,0.105), rgba(242,245,233,0.035));
+  --glass-surface-strong: linear-gradient(145deg, rgba(242,245,233,0.14), rgba(242,245,233,0.055));
+  --glass-surface-muted: linear-gradient(145deg, rgba(242,245,233,0.08), rgba(242,245,233,0.025));
+  --glass-stroke: rgba(242,245,233,0.15);
+  --glass-stroke-strong: rgba(154,194,60,0.34);
+  --glass-shadow: 0 18px 50px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.08);
+  --glass-inset-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+  --glass-blur: blur(18px);
+  --glass-saturate: saturate(1.25);
+  --glass-active-glow: 0 0 0 1px rgba(154,194,60,0.28), 0 16px 34px rgba(154,194,60,0.12);
+  --glass-radius-card: 24px;
+  --glass-radius-control: 16px;
+  --glass-reduced-surface: #17200f;
 }
 html[data-theme="light"] {
   --bg: #FFFFFF;
@@ -42,6 +55,15 @@ html[data-theme="light"] {
   --card: #FFFFFF;
   --card2: #F7FAF0;
   --shadow: 0 10px 30px rgba(26,34,16,0.08);
+  --glass-surface: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(247,250,240,0.76));
+  --glass-surface-strong: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(240,247,224,0.84));
+  --glass-surface-muted: linear-gradient(145deg, rgba(255,255,255,0.82), rgba(247,250,240,0.62));
+  --glass-stroke: rgba(26,34,16,0.13);
+  --glass-stroke-strong: rgba(143,197,30,0.32);
+  --glass-shadow: 0 18px 46px rgba(26,34,16,0.10), inset 0 1px 0 rgba(255,255,255,0.84);
+  --glass-inset-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+  --glass-active-glow: 0 0 0 1px rgba(143,197,30,0.22), 0 16px 32px rgba(143,197,30,0.12);
+  --glass-reduced-surface: #FFFFFF;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -78,7 +100,7 @@ html[data-theme="light"] .home-pill { background: rgba(255,255,255,0.92); box-sh
   .home-filter-tabs { gap: 6px; }
   .home-pill { gap: 4px; padding: 9px 6px; font-size: 12px; }
 }
-.focus-card-vk { display: grid; grid-template-columns: 58px 1fr 112px; gap: 12px; align-items: center; min-height: 124px; border-radius: 24px; padding: 16px; margin-bottom: 12px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.focus-card-vk { position: relative; display: grid; grid-template-columns: 58px 1fr 112px; gap: 12px; align-items: center; min-height: 124px; border-radius: 24px; padding: 16px; margin-bottom: 12px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
 .focus-orb { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--green); border: 1px solid rgba(154,194,60,0.32); background: radial-gradient(circle, rgba(154,194,60,0.16), transparent 68%); font-size: 28px; }
 .focus-kicker { font-size: 12px; font-weight: 800; letter-spacing: 0.16em; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
 .focus-title { font-size: 22px; line-height: 1.24; font-weight: 700; color: var(--text); }
@@ -283,6 +305,119 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
 .text-sm { font-size: 13px; }
 .text-xs { font-size: 11px; }
 .mt-16 { margin-top: 16px; }
+
+/* DESIGN-GLASS-001: package 3 VK safe parity surfaces */
+.focus-card-vk,
+.home-priority-row,
+.home-stat,
+.task-card.task-card-v2,
+#calTaskList .task-card,
+.detail-card,
+.profile-legal-card {
+  background: var(--glass-surface);
+  border-color: var(--glass-stroke);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur) var(--glass-saturate);
+  -webkit-backdrop-filter: var(--glass-blur) var(--glass-saturate);
+}
+.focus-card-vk,
+.detail-card {
+  border-radius: var(--glass-radius-card);
+}
+.focus-card-vk::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 15% 0%, rgba(154,194,60,0.16), transparent 34%);
+}
+.focus-card-vk > * {
+  position: relative;
+  z-index: 1;
+}
+.focus-meta-chip,
+.profile-chip,
+.detail-status-pill,
+.tag,
+.task-done-action-vk {
+  border: 1px solid var(--glass-stroke-strong);
+  background: rgba(154,194,60,0.12);
+  box-shadow: var(--glass-inset-shadow);
+}
+.profile-chip.secondary,
+.identity-status {
+  border: 1px solid var(--glass-stroke);
+  background: var(--glass-surface-muted);
+  box-shadow: var(--glass-inset-shadow);
+}
+.home-priority-row,
+.task-card.task-card-v2,
+#calTaskList .task-card,
+.detail-meta-tile,
+.detail-edit-input,
+.detail-edit-select,
+.detail-tab,
+.discussion-msg.ai,
+.discussion-input,
+.cal-day {
+  background: var(--glass-surface-muted);
+  border-color: var(--glass-stroke);
+  box-shadow: var(--glass-inset-shadow);
+}
+.detail-meta-tile,
+.detail-edit-input,
+.detail-edit-select,
+.discussion-msg,
+.discussion-input {
+  backdrop-filter: blur(12px) saturate(1.18);
+  -webkit-backdrop-filter: blur(12px) saturate(1.18);
+}
+.detail-edit-input:focus,
+.detail-edit-select:focus,
+.discussion-input:focus {
+  border-color: var(--glass-stroke-strong);
+  box-shadow: var(--glass-active-glow);
+}
+.detail-tab.active {
+  background: var(--glass-surface);
+  border-color: var(--glass-stroke-strong);
+  border-bottom-color: var(--green);
+  box-shadow: var(--glass-inset-shadow);
+}
+.cal-day {
+  border: 1px solid transparent;
+}
+.cal-day:hover,
+.cal-day.has-task {
+  border-color: var(--glass-stroke);
+  background: var(--glass-surface);
+}
+.cal-day.today {
+  border-color: var(--green);
+  box-shadow: var(--glass-active-glow);
+}
+.profile-header {
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--glass-radius-card);
+  background: var(--glass-surface);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur) var(--glass-saturate);
+  -webkit-backdrop-filter: var(--glass-blur) var(--glass-saturate);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .focus-card-vk,
+  .home-priority-row,
+  .home-stat,
+  .task-card.task-card-v2,
+  #calTaskList .task-card,
+  .detail-card,
+  .profile-header,
+  .profile-legal-card {
+    background: var(--glass-reduced-surface);
+  }
+}
 </style>
 </head>
 <body>
