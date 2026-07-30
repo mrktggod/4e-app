@@ -46,7 +46,7 @@ const taskUiRenderedCountIfSupplied = taskMessages.map(message => message.conten
 
 assert(source.includes("'/messages/task?taskId='+encodeURIComponent(currentTaskId)+'&limit=40'"), 'Task chat load request does not use limit=40');
 assert(source.includes('currentTaskMessages=d.messages.filter(function(message){'), 'Task chat loader no longer maps d.messages into currentTaskMessages');
-assert(source.includes('list.innerHTML=currentTaskMessages.map(function(message){'), 'Task chat UI render no longer maps all currentTaskMessages');
+assert(/list\.innerHTML\s*=\s*currentTaskMessages\.map\(function\(message(?:,\s*index)?\)\{/.test(source), 'Task chat UI render no longer maps all currentTaskMessages');
 assert(source.includes('const history=currentTaskMessages.slice(-6).map(function(message){'), 'Task chat AI prompt context no longer uses last 6 messages');
 assert(taskApiWindow.length === 40, `Task API fixture window expected 40, got ${taskApiWindow.length}`);
 assert(taskApiWindow[0]?.content === 'task-message-21', `Task API first visible should be task-message-21, got ${taskApiWindow[0]?.content}`);

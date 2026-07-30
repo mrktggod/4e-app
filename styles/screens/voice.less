@@ -1593,3 +1593,141 @@ body:has(#ask.active) #global-nav,
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
   padding: 10px 12px !important;
 }
+
+/* ===== DESIGN-GLASS-001: package 3 chat conversation surfaces ===== */
+#ask .ask-conversation {
+  padding: 12px 4px calc(24px + @app-viewport-bottom-reserve) !important;
+}
+
+#ask .bubble-ai,
+#ask .bubble-user,
+#ask .ask-action-preview,
+#ask .ask-action-card {
+  border: 1px solid var(--glass-stroke) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+
+#ask .bubble-ai {
+  color: var(--text) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02) 42%),
+    var(--glass-surface-strong) !important;
+}
+
+#ask .bubble-user {
+  color: #172208 !important;
+  border-color: rgba(223,247,158,.42) !important;
+  background: linear-gradient(180deg, rgba(190,231,78,.94), rgba(135,184,48,.84)) !important;
+  box-shadow: 0 16px 30px rgba(116,166,42,.22), inset 0 1px 0 rgba(255,255,255,.34) !important;
+}
+
+#ask .bubble-ai .dots {
+  min-width: 48px;
+  justify-content: center;
+}
+
+#chat-conv {
+  --conv-glass: var(--glass-surface);
+  --conv-glass-strong: var(--glass-surface-strong);
+  --conv-stroke: var(--glass-stroke);
+  --conv-shadow: var(--glass-shadow), var(--glass-inset-shadow);
+}
+
+#chat-conv .conv-nav,
+#chat-conv .conv-inp-wrap {
+  border-color: var(--glass-stroke);
+  border-radius: var(--glass-radius-card);
+  background: var(--glass-surface);
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+#chat-conv .conv-back,
+#chat-conv .conv-act,
+#chat-conv .conv-day,
+#chat-conv .conv-chip,
+#chat-conv .conv-task-pill {
+  border: 1px solid var(--glass-stroke);
+  background: var(--glass-surface-muted);
+  box-shadow: var(--glass-inset-shadow);
+}
+
+#chat-conv .conv-back,
+#chat-conv .conv-act {
+  border-radius: 14px;
+}
+
+#chat-conv .conv-msgs {
+  gap: 10px;
+  padding-inline: 14px;
+}
+
+#chat-conv .conv-bub {
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+#chat-conv .conv-bub.them {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.02) 44%),
+    var(--glass-surface-strong);
+}
+
+#chat-conv .conv-bub.me {
+  border-color: rgba(223,247,158,.42);
+  background: linear-gradient(180deg, rgba(190,231,78,.94), rgba(135,184,48,.84));
+}
+
+#chat-conv .conv-inp {
+  border-color: var(--glass-stroke);
+  border-radius: var(--glass-radius-control);
+  background: var(--glass-surface-muted);
+  box-shadow: var(--glass-inset-shadow);
+}
+
+#chat-conv .conv-inp:focus-within {
+  border-color: var(--glass-stroke-strong);
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow);
+}
+
+#chat-conv .conv-send,
+#chat-conv .conv-voice-btn {
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--glass-inset-shadow);
+}
+
+#chat-conv .conv-voice-btn {
+  border-radius: 14px;
+  background: var(--glass-surface-muted);
+}
+
+#chat-conv .conv-send {
+  border-color: var(--glass-stroke-strong);
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow);
+}
+
+[data-theme="light"] #ask .bubble-ai,
+[data-theme="light"] #ask .ask-action-preview,
+[data-theme="light"] #ask .ask-action-card,
+[data-theme="light"] #chat-conv .conv-nav,
+[data-theme="light"] #chat-conv .conv-inp-wrap,
+[data-theme="light"] #chat-conv .conv-bub.them {
+  background: linear-gradient(180deg, rgba(255,255,255,.64), rgba(246,246,241,.30)) !important;
+  border-color: rgba(255,255,255,.86) !important;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #ask .bubble-ai,
+  #ask .ask-action-preview,
+  #ask .ask-action-card,
+  #chat-conv .conv-nav,
+  #chat-conv .conv-inp-wrap,
+  #chat-conv .conv-bub.them {
+    background: var(--glass-reduced-surface) !important;
+  }
+}
