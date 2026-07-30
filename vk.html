@@ -655,6 +655,8 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
   <div class="cal-grid" id="calGrid"></div>
   <div class="section-label">Задачи на день</div>
   <div id="calTaskList"><div class="text-muted text-sm" style="padding:12px 0">Выберите дату</div></div>
+  <div class="section-label">Все сроки</div>
+  <div id="calDeadlineList"><div class="text-muted text-sm" style="padding:12px 0">Сроков пока нет</div></div>
 </div>
 
 <!-- STATS -->
@@ -1741,7 +1743,25 @@ function taskDeadlineDateKey(deadline) {
   if (!raw) return '';
   const direct = raw.match(/^(\d{4}-\d{2}-\d{2})/);
   if (direct) return direct[1];
+  const relative = relativeDeadlineDateKey(raw);
+  if (relative) return relative;
   return localDateKey(raw);
+}
+
+function relativeDeadlineDateKey(value, baseDate = new Date()) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+  const date = new Date(baseDate);
+  if (/(^|\s)сегодня(?=\s|$)/i.test(raw)) return localDateKey(date);
+  if (/(^|\s)завтра(?=\s|$)/i.test(raw)) {
+    date.setDate(date.getDate() + 1);
+    return localDateKey(date);
+  }
+  if (/(^|\s)послезавтра(?=\s|$)/i.test(raw)) {
+    date.setDate(date.getDate() + 2);
+    return localDateKey(date);
+  }
+  return '';
 }
 
 function formatDate(d) {
@@ -2159,11 +2179,26 @@ function buildCalendar() {
     html += `<div class="cal-day ${isToday?'today':''} ${hasTask?'has-task':''}" onclick="showDayTasks('${iso}')">${i}</div>`;
   }
   grid.innerHTML = html;
+  renderCalendarDeadlineList();
 }
 function showDayTasks(dateStr) {
   const tasks = state.tasks.filter(t => taskDeadlineDateKey(t.deadline) === dateStr);
   const list = document.getElementById('calTaskList');
   list.innerHTML = tasks.length ? tasks.map(t => taskHTML(t)).join('') : `<div class="text-muted text-sm" style="padding:12px 0">Нет задач на ${formatDate(dateStr)}</div>`;
+}
+
+function renderCalendarDeadlineList() {
+  const list = document.getElementById('calDeadlineList');
+  if (!list) return;
+  const tasks = state.tasks
+    .filter(t => taskDeadlineDateKey(t.deadline))
+    .sort((a, b) => taskDateValue(a) - taskDateValue(b));
+  list.innerHTML = tasks.length
+    ? tasks.map(t => `<div class="cal-deadline-item">
+        <div class="text-xs text-muted">${formatDate(t.deadline)}</div>
+        ${taskHTML(t)}
+      </div>`).join('')
+    : '<div class="text-muted text-sm" style="padding:12px 0">Сроков пока нет</div>';
 }
 
 // ── STATS ──

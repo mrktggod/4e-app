@@ -1,5 +1,22 @@
 ## 2026-07-30
 
+### VK calendar deadline parity
+
+**What changed:** VK calendar deadline normalization now recognizes relative
+Russian deadlines (`сегодня`, `завтра`, `послезавтра`) in addition to ISO date
+strings. The VK calendar also renders an all-deadlines list below the selected
+day list. No external calendar, CAL-002/003, production deploy, or main merge
+work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-calendar-date-key`; `npm run test:e2e:vk`; `node
+--check scripts/vk-calendar-date-key-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ### VK task detail full editing
 
 **What changed:** Extended the existing VK task detail editor to include real

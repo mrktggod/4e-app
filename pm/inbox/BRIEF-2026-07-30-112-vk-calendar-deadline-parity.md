@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 priority: P2
 
 # BRIEF-2026-07-30-112 — VK: паритет календаря по срокам (BACK-066D) (P2)
