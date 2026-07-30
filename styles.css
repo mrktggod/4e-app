@@ -4410,6 +4410,11 @@ body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
   padding: 7px 10px;
   cursor: pointer;
 }
+.detail-quick-btn--primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: #0b1203;
+}
 .detail-quick-btn:active {
   background: var(--green3);
   color: var(--green);
@@ -4423,6 +4428,18 @@ body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
   flex-direction: column;
   gap: 8px;
   margin-top: 10px;
+}
+.detail-check-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 4px 0;
+}
+.detail-check-empty strong {
+  color: var(--text);
+  font-size: 13px;
 }
 .detail-check-item {
   display: flex;
@@ -4466,6 +4483,44 @@ body:has(#home.active .dash-artboard) .bottom-nav:not(.dash-bottom-nav) {
   justify-content: center;
   font-size: 14px;
   line-height: 1;
+}
+.detail-decompose-preview {
+  margin-top: 10px;
+  border: 1px solid rgba(154, 194, 60, 0.28);
+  background: rgba(154, 194, 60, 0.08);
+  border-radius: 14px;
+  padding: 12px;
+}
+.detail-decompose-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.detail-decompose-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.detail-decompose-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.detail-decompose-item input {
+  margin-top: 2px;
+  accent-color: var(--green);
+  flex-shrink: 0;
+}
+.detail-decompose-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 12px;
 }
 .detail-check-add {
   display: flex;

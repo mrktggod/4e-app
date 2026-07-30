@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 priority: P2
 
 # BRIEF-2026-07-30-116 — AI-декомпозиция задачи на этапы (SMART-013) (P2)

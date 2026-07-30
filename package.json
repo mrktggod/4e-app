@@ -47,6 +47,7 @@
         "smoke:telegram-bottom-menu": "node scripts/telegram-bottom-menu-diagnostic-smoke.mjs",
         "smoke:telegram-notification-contract": "node scripts/telegram-notification-delivery-contract-smoke.mjs",
         "smoke:task-chat-confirm": "node scripts/task-chat-confirm-action-smoke.mjs",
+        "smoke:task-decomposition": "node scripts/task-decomposition-preview-smoke.mjs",
         "smoke:task-toast-lifecycle": "node scripts/task-toast-lifecycle-smoke.mjs",
         "smoke:premium-voice-gate": "node scripts/premium-voice-gate-smoke.mjs",
         "smoke:voice-consent-checkbox": "node scripts/voice-consent-checkbox-smoke.mjs",

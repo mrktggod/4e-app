@@ -1,5 +1,24 @@
 ## 2026-07-30
 
+### AI task decomposition preview
+
+**What changed:** Web/PWA task detail AI decomposition now uses the existing
+`/anthropic` path to produce 3-7 checklist steps into a preview panel. The
+task checklist is not written until the user explicitly confirms; cancel clears
+the pending preview without mutation. Existing checklist tasks show the
+secondary "add steps with AI" affordance, and strict JSON `steps` arrays now
+parse correctly. No backend endpoint, payment, entitlement, production deploy,
+main merge, VK, or Telegram surface work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:task-decomposition`; `npm run build:css`; `node
+--check scripts/task-decomposition-preview-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ### VK AI chat main parity
 
 **What changed:** VK AI chat now preserves `originalMsg` and `description` for

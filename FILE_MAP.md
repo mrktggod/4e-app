@@ -20,12 +20,12 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 9249 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 9329 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 2028 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
-| `styles/screens/tasks.less` | 2988 | Source LESS for main task, home, task-detail, popover and chat/task UI surfaces | Edit source task UI styles here, then run `npm run build:css` |
-| `styles.css` | 16127 | Built readable CSS from `styles/main.less`; consumed by local visual/smoke tooling | Regenerate with `npm run build:css`, do not hand-edit |
+| `styles/screens/tasks.less` | 3221 | Source LESS for main task, home, task-detail, popover and chat/task UI surfaces | Edit source task UI styles here, then run `npm run build:css` |
+| `styles.css` | 17318 | Built readable CSS from `styles/main.less`; consumed by local visual/smoke tooling | Regenerate with `npm run build:css`, do not hand-edit |
 | `styles.min.css` | 1 | Minified CSS loaded by `index.html` in production/static app shell | Regenerate with `npm run build:css`, do not hand-edit |
 | `privacy.html` | 240 | Политика конфиденциальности | Можно читать целиком при правовых правках |
 | `worker-static.js` | 301 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets, маршрутизирует VK launch на `vk.html` и принимает `/support` для Telegram-доставки через env `SUPPORT_BOT_TOKEN` / `SUPPORT_CHAT_ID` | Можно читать целиком; точка входа инфраструктуры INFRA-001 и support intake |
@@ -68,6 +68,7 @@
 | `scripts/telegram-bottom-menu-diagnostic-smoke.mjs` | 131 | Playwright diagnostic for Telegram bottom menu behavior: verifies dark dashboard nav visibility, legacy global nav absence on inner pages, source nav counts, and captures a dark screenshot | Run with `npm run smoke:telegram-bottom-menu` before changing dashboard or legacy bottom navigation behavior |
 | `scripts/telegram-notification-delivery-contract-smoke.mjs` | 131 | Static/mock preflight for worker Telegram notification delivery: extracts sibling worker briefing/send helpers, mocks Telegram `sendMessage`, and checks recipient, copy, parse mode and app button without live API calls | Run with `npm run smoke:telegram-notification-contract` before claiming BACK-017 briefing delivery contract evidence |
 | `scripts/task-chat-confirm-action-smoke.mjs` | 86 | Browser smoke for task-detail chat suggested-action confirm at 390x844: verifies fallback message id, one update mutation, hidden preview after confirm and updated description | Run with `npm run smoke:task-chat-confirm` before changing task-detail chat suggested actions |
+| `scripts/task-decomposition-preview-smoke.mjs` | 143 | Static VM smoke for SMART-013 task-detail AI decomposition: verifies strict JSON step parsing, preview-before-save, cancel without mutation, confirm saves once, and 7-step cap | Run with `npm run smoke:task-decomposition` before changing task-detail checklist decomposition |
 | `scripts/ai-delete-intent-safety-smoke.mjs` | 90 | Playwright smoke for AI chat delete-intent safety: verifies `удали все задачи` does not call `/anthropic`, does not send `done-task`, and old complete action cards from delete requests are blocked | Run with `node scripts/ai-delete-intent-safety-smoke.mjs` before changing AI chat task-action execution |
 | `scripts/support-form-smoke.mjs` | 69 | Playwright smoke for app support form: verifies topic/message validation path posts structured support payload and clears the form on success | Run with `node scripts/support-form-smoke.mjs` before changing support intake UI |
 | `scripts/worker-static-support-smoke.mjs` | 71 | Source smoke for frontend static Worker `/support`: mocks Telegram `sendMessage`, verifies env-driven chat delivery and missing-config 503 | Run with `node scripts/worker-static-support-smoke.mjs` before changing `worker-static.js` support route |
@@ -88,7 +89,7 @@
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 70 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `package.json` | 75 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
 | `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
 | `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |
