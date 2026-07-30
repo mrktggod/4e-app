@@ -182,8 +182,95 @@ function renderDiagnostic404(request, diagnostics) {
   return html;
 }
 
+function jsonResponse(body, status = 200, extraHeaders = {}) {
+  const headers = new Headers(extraHeaders);
+  headers.set('Content-Type', 'application/json; charset=UTF-8');
+  headers.set('Cache-Control', 'no-store');
+  return new Response(JSON.stringify(body), { status, headers });
+}
+
+function getCorsHeaders(request) {
+  const origin = request.headers.get('Origin') || '*';
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-token',
+    'Vary': 'Origin',
+  };
+}
+
+function trimSupportField(value, limit) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, limit);
+}
+
+function formatSupportMessage(payload, request) {
+  const user = payload.user || {};
+  const app = payload.app || {};
+  const lines = [
+    'Новая заявка в поддержку 4',
+    '',
+    `Тема: ${trimSupportField(payload.topic, 120)}`,
+    `Сообщение: ${trimSupportField(payload.message, 1800)}`,
+    '',
+    `User ID: ${trimSupportField(user.id, 80) || 'n/a'}`,
+    `Имя: ${trimSupportField(user.name, 120) || 'n/a'}`,
+    `Email: ${trimSupportField(user.email, 160) || 'n/a'}`,
+    `Telegram: ${trimSupportField(user.telegramUsername || user.telegramId, 120) || 'n/a'}`,
+    `Платформа: ${trimSupportField(payload.platform, 80) || 'n/a'}`,
+    `Host: ${trimSupportField(app.host, 120) || new URL(request.url).hostname}`,
+    `Страница: ${trimSupportField(payload.page, 240) || request.url}`,
+    `Время: ${trimSupportField(payload.createdAt, 80) || new Date().toISOString()}`,
+  ];
+  return lines.join('\n');
+}
+
+async function handleSupportRequest(request, env) {
+  const corsHeaders = getCorsHeaders(request);
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
+  if (request.method !== 'POST') return jsonResponse({ ok: false, error: 'method_not_allowed' }, 405, corsHeaders);
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return jsonResponse({ ok: false, error: 'invalid_json' }, 400, corsHeaders);
+  }
+
+  const topic = trimSupportField(payload.topic, 120);
+  const message = trimSupportField(payload.message, 1800);
+  if (!topic) return jsonResponse({ ok: false, error: 'topic_required' }, 400, corsHeaders);
+  if (message.length < 10) return jsonResponse({ ok: false, error: 'message_too_short' }, 400, corsHeaders);
+
+  const botToken = env.SUPPORT_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN || '';
+  const chatId = env.SUPPORT_CHAT_ID || '';
+  if (!botToken || !chatId) {
+    return jsonResponse({ ok: false, error: 'support_telegram_not_configured' }, 503, corsHeaders);
+  }
+
+  const telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: formatSupportMessage({ ...payload, topic, message }, request),
+      disable_web_page_preview: true,
+    }),
+  });
+  const telegramData = await telegramResponse.json().catch(() => ({}));
+  if (!telegramResponse.ok || telegramData.ok === false) {
+    return jsonResponse({ ok: false, error: 'telegram_send_failed' }, 502, corsHeaders);
+  }
+
+  return jsonResponse({ ok: true }, 200, corsHeaders);
+}
+
 export default {
   async fetch(request, env) {
+    const requestUrl = new URL(request.url);
+    if (requestUrl.pathname === '/support') {
+      return handleSupportRequest(request, env);
+    }
+
     const rewritten = rewriteAssetRequest(request);
     const response = await env.ASSETS.fetch(rewritten.assetRequest);
     if (response.status !== 404) return withAssetHeaders(response, rewritten.targetPath);

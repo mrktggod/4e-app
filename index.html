@@ -19,6 +19,29 @@
 <script src="scripts/auth.js?v=dashboard-handoff-20260718-7"></script>
 <script src="scripts/auth-handlers.js?v=redesign-staging-qa-20260719-1"></script>
 <script src="scripts/task-ui-renderers.js?v=dashboard-handoff-20260718-7"></script>
+<script>
+function installQaPressFeedback(){
+  if(window.__qaPressFeedbackInstalled)return;
+  window.__qaPressFeedbackInstalled=true;
+  document.addEventListener('pointerdown',function(event){
+    const target=event.target.closest('button,[role="button"],.profile-menu-row,.sub-row,.task-row');
+    if(!target||target.disabled||target.getAttribute('aria-disabled')==='true')return;
+    target.classList.remove('qa-press-glow');
+    void target.offsetWidth;
+    target.classList.add('qa-press-glow');
+    setTimeout(function(){target.classList.remove('qa-press-glow');},220);
+    try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred?.('light');}catch(e){}
+    if(navigator.vibrate)navigator.vibrate(8);
+  },{passive:true});
+  document.addEventListener('input',function(event){
+    if(typeof autoResizeField==='function'&&event.target.matches('#detail-description,.detail-check-text,textarea.profile-input,textarea.detail-control'))autoResizeField(event.target);
+  });
+  document.addEventListener('focusin',function(event){
+    if(event.target.matches('input,textarea'))event.target.setAttribute('enterkeyhint','done');
+  });
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installQaPressFeedback);else installQaPressFeedback();
+</script>
 <script src="assets/vendor/marked.min.js"></script>
 <link rel="stylesheet" href="styles.min.css">
 <script>
@@ -537,7 +560,7 @@ if('serviceWorker' in navigator){
     </div>
 
   </div>
-  <div class="cal-footer"><button class="cal-add-btn" onclick="openAsk()">+ Новое событие</button></div>
+  <div class="cal-footer"><button class="cal-add-btn" onclick="showScreen('new-task')">+ Новое событие</button></div>
 </div>
 
 <!-- STATISTICS -->
@@ -1369,7 +1392,7 @@ if('serviceWorker' in navigator){
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></div><span class="sub-row-text">Выбрать файл</span></div>
       </div>
     </div>
-    <button class="cal-add-btn" onclick="sendSupportMsg()" style="margin-top:8px">Отправить сообщение</button>
+    <button class="cal-add-btn" id="support-submit-btn" onclick="sendSupportMsg()" style="margin-top:8px">Отправить сообщение</button>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px">Обычно отвечаем в течение 24 часов</div>
   </div>
 </div>
@@ -2190,7 +2213,7 @@ function getExtendedProfileDraft(){dropLegacyExtendedProfileDraft();const key=ge
 function saveExtendedProfileDraft(draft){dropLegacyExtendedProfileDraft();const key=getExtendedProfileUserKey();if(key)localStorage.setItem(key,JSON.stringify(draft));}
 function clearExtendedProfileUi(){['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.style.backgroundImage='';el.style.backgroundSize='';el.style.backgroundPosition='';const img=el.querySelector?.('img');if(img)img.style.display='';if(id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent='';}});}
 function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'Пользователь').trim();}
-function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();const img=el.querySelector?.('img');if(draft.photoDataUrl){el.classList.remove('profile-avatar--orb');el.textContent='';if(img)img.style.display='none';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';if(img)img.style.display='';if(el.id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent=initials;}}}
+function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();const img=el.querySelector?.('img');const avatarUrl=draft.photoDataUrl||currentUser?.photoDataUrl||currentUser?.photoUrl||currentUser?.avatarUrl||currentUser?.avatar||currentUser?.picture||currentUser?.vkPhoto||currentUser?.yandexAvatar||'';if(avatarUrl){el.classList.remove('profile-avatar--orb');el.textContent='';if(img)img.style.display='none';el.style.backgroundImage='url("'+String(avatarUrl).replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';if(img)img.style.display='';if(el.id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent=initials;}}}
 function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
 function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
 function getProfileReferralLink(){const code=String(currentUser?.referralCode||'').trim();return code&&PLATFORM?.buildReferralLink?PLATFORM.buildReferralLink(code):(window.buildReferralLink?window.buildReferralLink():'');}
@@ -5261,11 +5284,13 @@ async function decomposeCurrentTask(){
     });
     currentDetailChecklist = pickChecklistSteps(aiResp, currentDetailTask.text || '');
     renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
     await saveTaskEdits();
     showToast('Этапы обновлены');
   } catch (e) {
     currentDetailChecklist = pickChecklistSteps([], currentDetailTask.text || '').map((item) => ({text:item.text, done:false}));
     renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
     await saveTaskEdits();
     showToast('Пока добавил шаблонные этапы');
   } finally {
@@ -5416,18 +5441,23 @@ function setDetailReminder(value){
   });
 }
 
+function autoResizeField(el){
+  if(!el)return;
+  el.style.height='auto';
+  el.style.height=Math.max(42, el.scrollHeight)+'px';
+}
 function renderDetailChecklist(){
   const wrap = document.getElementById('detail-checklist');
   if(!wrap) return;
   if(!currentDetailChecklist.length){
-    wrap.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:4px 0">Пунктов пока нет</div>';
+    wrap.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:4px 0">\u041f\u0443\u043d\u043a\u0442\u043e\u0432 \u043f\u043e\u043a\u0430 \u043d\u0435\u0442</div>';
     return;
   }
   wrap.innerHTML = currentDetailChecklist.map(function(item,i){
-    const checked = item.done ? ' checked' : '';
     const doneClass = item.done ? ' done' : '';
-    return '<div class="detail-check-item' + doneClass + '"><input type="checkbox"' + checked + ' onchange="toggleDetailChecklistItem(' + i + ',this.checked)"><input class="detail-check-text" value="' + e2(item.text || '') + '" oninput="updateDetailChecklistText(' + i + ',this.value)" onblur="commitDetailChecklistText(' + i + ',this.value)"><button class="detail-check-remove" onclick="removeDetailChecklistItem(' + i + ')">Г—</button></div>';
+    return '<div class="detail-check-item' + doneClass + '"><button type="button" class="detail-check-toggle" aria-label="\u041e\u0442\u043c\u0435\u0442\u0438\u0442\u044c \u043f\u0443\u043d\u043a\u0442" onclick="toggleDetailChecklistItem(' + i + ',!currentDetailChecklist[' + i + '].done)">\u2713</button><textarea rows="1" class="detail-check-text" oninput="autoResizeField(this);updateDetailChecklistText(' + i + ',this.value)" onblur="commitDetailChecklistText(' + i + ',this.value)">' + e2(item.text || '') + '</textarea></div>';
   }).join('');
+  requestAnimationFrame(function(){wrap.querySelectorAll('.detail-check-text').forEach(autoResizeField);});
 }
 
 function addDetailChecklistItem(){
@@ -5437,6 +5467,7 @@ function addDetailChecklistItem(){
   currentDetailChecklist.push({text, done:false});
   if(inp) inp.value = '';
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
@@ -5444,6 +5475,7 @@ function toggleDetailChecklistItem(idx, done){
   if(!currentDetailChecklist[idx]) return;
   currentDetailChecklist[idx].done = !!done;
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
@@ -5461,12 +5493,14 @@ function commitDetailChecklistText(idx, text){
     currentDetailChecklist[idx].text = trimmed;
   }
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
 function removeDetailChecklistItem(idx){
   currentDetailChecklist.splice(idx, 1);
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
@@ -5907,6 +5941,7 @@ function openTask(t,idx){
   renderDetailTags();
   renderDetailTagOptions();
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
 
   // Описание
   const descEl = document.getElementById('detail-description');
@@ -6748,6 +6783,36 @@ function getTaskById(taskId){
   return (allTasksCache||[]).find(function(task){return String(task.id||'')===String(taskId||'');})||null;
 }
 
+function normalizeAskIntentText(value){
+  return String(value||'')
+    .toLowerCase()
+    .replace(/\u0451/g,'\u0435')
+    .replace(/[^a-z0-9\u0430-\u044f\s-]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function isAskDestructiveTaskIntent(value){
+  const text=normalizeAskIntentText(value);
+  if(!text) return false;
+  const hasDestructiveVerb=/(^|\s)(\u0443\u0434\u0430\u043b\u0438|\u0443\u0434\u0430\u043b\u0438\u0442\u044c|\u0443\u0434\u0430\u043b\u0438\u0442\u0435|\u0443\u0431\u0435\u0440\u0438|\u0443\u0431\u0440\u0430\u0442\u044c|\u0441\u043e\u0442\u0440\u0438|\u0441\u0442\u0435\u0440\u0435\u0442\u044c|\u043e\u0447\u0438\u0441\u0442\u0438|\u043e\u0447\u0438\u0441\u0442\u0438\u0442\u044c|\u0441\u043d\u0435\u0441\u0438|delete|remove|erase|clear)(\s|$)/.test(text);
+  const hasTaskTarget=/(^|\s)(\u0437\u0430\u0434\u0430\u0447\u0430|\u0437\u0430\u0434\u0430\u0447\u0443|\u0437\u0430\u0434\u0430\u0447\u0438|\u0437\u0430\u0434\u0430\u0447\u0438\u0439|\u0437\u0430\u0434\u0430\u0447\u0435\u0439|\u0437\u0430\u0434\u0430\u0447\u0430\u043c\u0438|task|tasks)(\s|$)/.test(text);
+  return hasDestructiveVerb&&hasTaskTarget;
+}
+
+function getAskDeleteConfirmationText(){
+  return '\u041f\u043e\u0445\u043e\u0436\u0435, \u0432\u044b \u0445\u043e\u0442\u0438\u0442\u0435 \u0443\u0434\u0430\u043b\u0438\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443. \u042f \u043d\u0435 \u0431\u0443\u0434\u0443 \u0443\u0434\u0430\u043b\u044f\u0442\u044c \u0438\u043b\u0438 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0438 \u0431\u0435\u0437 \u044f\u0432\u043d\u043e\u0433\u043e \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f. \u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 \u0442\u043e\u0447\u043d\u043e: \u043a\u0430\u043a\u0443\u044e \u0437\u0430\u0434\u0430\u0447\u0443 \u043d\u0443\u0436\u043d\u043e \u0443\u0434\u0430\u043b\u0438\u0442\u044c? \u041f\u043e\u043a\u0430 \u0447\u0435\u0440\u0435\u0437 AI-\u0447\u0430\u0442 \u044f \u043d\u0435 \u0432\u044b\u043f\u043e\u043b\u043d\u044f\u044e \u0443\u0434\u0430\u043b\u0435\u043d\u0438\u0435.';
+}
+
+function getAskMessageSourceUserText(message){
+  if(message?.sourceUserText) return message.sourceUserText;
+  const index=askHistory.findIndex(function(item){return String(item.id||'')===String(message?.id||'');});
+  for(let i=index-1;i>=0;i--){
+    if(askHistory[i]?.role==='user') return askHistory[i].content||'';
+  }
+  return message?.content||'';
+}
+
 function normalizeAskActions(actions){
   if(!Array.isArray(actions)) return [];
   return actions.map(function(item){
@@ -6984,6 +7049,12 @@ async function confirmAskActions(messageId){
   const message=findAskMessage(messageId);
   const actions=normalizeAskActions(message?.actions);
   if(!message||!actions.length) return;
+  if(isAskDestructiveTaskIntent(getAskMessageSourceUserText(message))){
+    dismissedAskActionMessageIds.add(String(messageId||''));
+    renderAskHistory();
+    showToast(getAskDeleteConfirmationText());
+    return;
+  }
   if(askActionsAlreadyApplied(actions)){
     dismissedAskActionMessageIds.add(String(messageId||''));
     renderAskHistory();
@@ -7004,13 +7075,16 @@ async function confirmAskActions(messageId){
   }
 }
 
-function parseAskActionsFromText(text){
+function parseAskActionsFromText(text, sourceText){
   const match=String(text||'').match(/<task_actions>([\s\S]*?)<\/task_actions>/);
   if(!match) return {cleanText:String(text||''),actions:[]};
   let actions=[];
   try{
     actions=normalizeAskActions(JSON.parse(match[1]));
   }catch(e){}
+  if(isAskDestructiveTaskIntent(sourceText)){
+    actions=[];
+  }
   return {cleanText:String(text||'').replace(/<task_actions>[\s\S]*?<\/task_actions>/g,'').trim(),actions};
 }
 
@@ -7028,6 +7102,17 @@ async function sendAsk(){
   askHistory.push({id:crypto?.randomUUID?.()||('ask_'+Date.now()),role:'user', content:v});
   saveAskHistoryLocal();
   saveAskMessageRemote('user', v);
+
+  if(isAskDestructiveTaskIntent(v)){
+    const confirmationText=getAskDeleteConfirmationText();
+    const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_delete_confirm');
+    appendMsg(confirmationText,'ai',{messageId:assistantMessageId});
+    askHistory.push({id:assistantMessageId,role:'assistant',content:confirmationText,actions:[],sourceUserText:v});
+    saveAskHistoryLocal();
+    saveAskMessageRemote('assistant',confirmationText);
+    document.getElementById('ask-msgs').scrollTop=9999;
+    return;
+  }
 
   isGenerating=true;
   const lb=appendMsg('','ai');
@@ -7109,7 +7194,7 @@ async function sendAsk(){
       return;
     }
 
-    const parsedActions=parseAskActionsFromText(text);
+    const parsedActions=parseAskActionsFromText(text,v);
     text=parsedActions.cleanText;
     if(createdTaskText && !/задач[ауы]?\s+(создан|добавлен|поставлен|сохран|объедин)/i.test(text)) {
       const mergedCreated=String(createdTaskText).startsWith('merged:');
@@ -7122,7 +7207,7 @@ async function sendAsk(){
 
     const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_ai');
     lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskActionPreview(assistantMessageId,parsedActions.actions);
-    askHistory.push({id:assistantMessageId,role:'assistant', content:text, actions:parsedActions.actions});
+    askHistory.push({id:assistantMessageId,role:'assistant', content:text, actions:parsedActions.actions, sourceUserText:v});
     saveAskHistoryLocal();
     await saveAskMessageRemote('assistant', text);
     recordAdaptiveActivity('ai_chat',1.5);
@@ -8453,17 +8538,77 @@ async function doResetPassword(){
 }
 
 // ===== SUPPORT =====
-function sendSupportMsg(){
+function buildSupportPayload(topic,msg){
+  const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user||null;
+  return {
+    topic,
+    message:msg,
+    source:'app_support_form',
+    page:location.href,
+    platform:getSupportLaunchPlatform(),
+    createdAt:new Date().toISOString(),
+    user:{
+      id:currentUser?.id||'',
+      name:currentUser?.name||'',
+      email:currentUser?.email||'',
+      telegramId:currentUser?.telegramId||tgUser?.id||'',
+      telegramUsername:currentUser?.telegramUsername||tgUser?.username||''
+    },
+    app:{
+      host:location.hostname,
+      theme:document.documentElement.getAttribute('data-theme')||'',
+      userAgent:navigator.userAgent
+    }
+  };
+}
+
+function getSupportLaunchPlatform(){
+  if(PLATFORM?.isTelegram?.()) return 'telegram';
+  if(PLATFORM?.isVk?.()) return 'vk';
+  return 'web';
+}
+
+async function postSupportRequest(payload){
+  const endpoints=[WORKER + '/support'];
+  if(location.origin&&location.origin!=='null') endpoints.push(location.origin + '/support');
+  let lastError=null;
+  for(const endpoint of [...new Set(endpoints)]){
+    try{
+      const response=await fetch(endpoint,{
+        method:'POST',
+        headers:{...authHeaders(),'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      const data=await readJsonSafe(response);
+      if(response.ok&&data?.ok) return {ok:true,endpoint,data};
+      lastError=new Error(data?.error||('support endpoint '+response.status));
+      if(response.status!==404&&response.status!==405) break;
+    }catch(e){
+      lastError=e;
+    }
+  }
+  throw lastError||new Error('support unavailable');
+}
+
+async function sendSupportMsg(){
   const topic=document.getElementById('support-topic')?.value||'';
-  const msg=document.getElementById('support-msg')?.value||'';
+  const msg=(document.getElementById('support-msg')?.value||'').trim();
+  const btn=document.getElementById('support-submit-btn');
   if(!topic){showToast('Выберите тему');return;}
   if(msg.length<10){showToast('Опишите проблему подробнее');return;}
-  showToast('Сообщение отправлено ✓');
-  setTimeout(()=>{
+  if(btn){btn.disabled=true;btn.textContent='Отправляем...';}
+  try{
+    await postSupportRequest(buildSupportPayload(topic,msg));
     document.getElementById('support-msg').value='';
     document.getElementById('support-char').textContent='0/1000';
+    showToast('Сообщение отправлено в поддержку ✓');
     showSubScreen('support');
-  },800);
+  }catch(e){
+    console.error('sendSupportMsg:',e);
+    showToast('Не удалось отправить. Напишите в Telegram или попробуйте позже.');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Отправить сообщение';}
+  }
 }
 
 

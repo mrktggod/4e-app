@@ -13,6 +13,11 @@ Cloudflare Worker не находится в текущем checkout `4e-app`.
 
 ## Что известно из документации
 
+- `worker-static.js` в этом app checkout не является основным backend Worker,
+  но содержит фронтовый Static Assets Worker. В нём есть `POST /support`:
+  принимает support payload из app form и отправляет сообщение в Telegram через
+  env `SUPPORT_BOT_TOKEN` / `SUPPORT_CHAT_ID`; без env возвращает
+  `503 support_telegram_not_configured`.
 - `/anthropic` — прокси к Claude, требует `x-token`.
 - `/transcribe` — принимает multipart audio с `x-token`, отправляет в OpenAI Whisper через `OPENAI_KEY`, возвращает `{ text }`.
 - `/tasks` — задачи по токену без `chatId`.

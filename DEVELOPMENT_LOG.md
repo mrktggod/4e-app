@@ -10,6 +10,78 @@
 
 **Commit:** this commit
 
+## 2026-07-29
+
+### FEEDBACK-001 support intake
+
+**What changed:** Reused the existing in-app support form as a simple feedback
+intake. The form now posts a structured support payload with topic, message,
+user and platform context. `worker-static.js` now exposes `POST /support`,
+which sends the request to a Telegram chat when `SUPPORT_BOT_TOKEN` and
+`SUPPORT_CHAT_ID` are configured. No bot token, chat id, production deploy,
+payment, entitlement, auth-security, CAL or secret work was added.
+
+**Encoding check:** `index.html` was edited after creating
+`index.backup_20260729_2142_support.html`; Step 0 marker count stayed stable
+at `45 / 45`; `node scripts/check-cp1251-mojibake.mjs` passed with
+`0 suspicious tokens`.
+
+**Test:** `node scripts/support-form-smoke.mjs`; `node
+scripts/worker-static-support-smoke.mjs`; `node --check
+scripts/support-form-smoke.mjs`; `node --check
+scripts/worker-static-support-smoke.mjs`; `node --check worker-static.js`;
+`node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; direct Git Bash
+`scripts/check-portable-paths.sh`; direct Git Bash
+`scripts/check-ui-architecture.sh`. `npm run check:portable-paths` and
+`npm run check:ui-architecture` still cannot start because `bash` is not on
+PATH; direct Git Bash guards passed.
+
+**Commit:** not committed because the worktree already contains unrelated dirty
+runtime/docs/screenshot changes
+
+### AI chat delete intent safety
+
+**What changed:** Added a local AI-chat guard for destructive task delete
+intent. Requests such as `удали все задачи` now stop before the Claude request
+and show explicit confirmation text; saved suggested-action cards tied to a
+delete request are blocked before `done-task` can run. No real delete action,
+bulk mutation, payment, entitlement, auth, CAL, secret, deploy or main-merge
+work was added.
+
+**Encoding check:** `index.html` was edited after creating
+`index.backup_20260729_2133.html`; final `node scripts/check-cp1251-mojibake.mjs`
+is required before commit.
+
+**Test:** `node scripts/ai-delete-intent-safety-smoke.mjs`; `npm run
+smoke:task-chat-confirm`; `node --check
+scripts/ai-delete-intent-safety-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`; `git diff --check`; direct Git Bash
+`scripts/check-portable-paths.sh`; direct Git Bash
+`scripts/check-ui-architecture.sh`. `npm run check:portable-paths` and
+`npm run check:ui-architecture` still cannot start because `bash` is not on
+PATH.
+
+**Commit:** not committed because the worktree already contains unrelated dirty
+runtime/docs/screenshot changes
+
+### DESIGN-GLASS-001 current-pass inventory refresh
+
+**What changed:** No runtime UI code changed. Rechecked the canonical
+`X:\Projects\4-ai-secretary\app` checkout on `feat/admin-tariff-api`, confirmed
+the local reference directory `pm/design-references/` is still missing, and
+updated the glass inventory/report with current package 2 completion status and
+remaining package 3 component families.
+
+**Encoding check:** `index.html` was not edited, so Step 0 did not apply.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious
+tokens; `git diff --check` passed; direct Git Bash portable-path guard passed.
+The npm guard wrappers could not start because `bash` is not on PATH. Direct
+Git Bash UI architecture guard failed on existing branch state:
+`inline event handlers = 403`, allowed max `402`.
+
+**Commit:** not committed because UI architecture guard is red
+
 ### DESIGN-GLASS-001 current-pass audit
 
 **What changed:** No runtime UI code changed. Rechecked the glass foundation in the canonical checkout, confirmed `styles/variables.less` still contains the shared `--glass-*` token family and `.ui-glass-*` primitives, and appended current-pass notes to `pm/outbox/REPORT-BRIEF-2026-07-23-42-glass-design-system-foundation.md` plus `pm/design-system-glass-inventory-2026-07-27.md`.
@@ -129,6 +201,18 @@
 **Encoding check:** `index.html` was not edited; Step 0 did not apply. `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
 
 **Test:** `git diff --check`; direct Git Bash `scripts/check-portable-paths.sh`; direct Git Bash `scripts/check-ui-architecture.sh`. `npm run check:portable-paths` and `npm run check:ui-architecture` could not start because `bash` is not on PATH in this shell.
+
+**Commit:** pending
+
+## 2026-07-29
+
+### DESIGN-GLASS-001 package 3 safe controls
+
+**What changed:** Brief 57 moved safe quick-add, task-detail popup/control, and AI-chat composer/action controls onto the shared glass tokens. Auth, payment, subscription, entitlement, price, production and live platform surfaces were not touched.
+
+**Encoding check:** `index.html` was not edited. `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `npm run smoke:back050`; `npm run smoke:back067-reminder`; `npm run smoke:back068-tag-popup`; `git diff --check`; direct PowerShell equivalents for portable path and UI architecture guards because `bash` was not available in PATH. UI architecture equivalent still reports pre-existing inline handler count `403 / 402`; this task added no inline handlers.
 
 **Commit:** pending
 

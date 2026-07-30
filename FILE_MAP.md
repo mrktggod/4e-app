@@ -20,7 +20,7 @@
 
 | Файл | Строк | Назначение | Как читать |
 | --- | ---: | --- | --- |
-| `index.html` | 9071 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
+| `index.html` | 9249 | Telegram Mini App: HTML-экраны, JS-логика; CSS подключён из `styles.min.css` | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `vk.html` | 2028 | VK Mini App: отдельная версия без Telegram SDK | Через `FILE_MAP_UI.md`, только нужный диапазон |
 | `landing.html` | 195 | Static sales landing preview for the main-domain path decision; does not replace app routing | Можно читать целиком при правках landing preview |
 | `landing.css` | 535 | Green-glass landing styles and responsive product preview layout | Можно читать целиком при правках landing preview |
@@ -28,7 +28,7 @@
 | `styles.css` | 16127 | Built readable CSS from `styles/main.less`; consumed by local visual/smoke tooling | Regenerate with `npm run build:css`, do not hand-edit |
 | `styles.min.css` | 1 | Minified CSS loaded by `index.html` in production/static app shell | Regenerate with `npm run build:css`, do not hand-edit |
 | `privacy.html` | 240 | Политика конфиденциальности | Можно читать целиком при правовых правках |
-| `worker-static.js` | 187 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets и маршрутизирует VK launch на `vk.html` без внешнего редиректа | Можно читать целиком; точка входа инфраструктуры INFRA-001 |
+| `worker-static.js` | 301 | Лёгкий фронтовый Worker: раздаёт whitelist-сборку из Static Assets, маршрутизирует VK launch на `vk.html` и принимает `/support` для Telegram-доставки через env `SUPPORT_BOT_TOKEN` / `SUPPORT_CHAT_ID` | Можно читать целиком; точка входа инфраструктуры INFRA-001 и support intake |
 | `wrangler.toml` | 15 | Конфиг фронтового Worker и Static Assets для `app.4-ai.site/*` | Можно читать целиком при infra/deploy правках |
 | `AGENTS.md` | 312 | Правила для Codex и агентов | Читать перед задачей |
 | `CLAUDE.md` | 130 | Контекст проекта для Claude/Cowork | Читать при координации |
@@ -65,6 +65,9 @@
 | `scripts/telegram-bottom-menu-diagnostic-smoke.mjs` | 131 | Playwright diagnostic for Telegram bottom menu behavior: verifies dark dashboard nav visibility, legacy global nav absence on inner pages, source nav counts, and captures a dark screenshot | Run with `npm run smoke:telegram-bottom-menu` before changing dashboard or legacy bottom navigation behavior |
 | `scripts/telegram-notification-delivery-contract-smoke.mjs` | 131 | Static/mock preflight for worker Telegram notification delivery: extracts sibling worker briefing/send helpers, mocks Telegram `sendMessage`, and checks recipient, copy, parse mode and app button without live API calls | Run with `npm run smoke:telegram-notification-contract` before claiming BACK-017 briefing delivery contract evidence |
 | `scripts/task-chat-confirm-action-smoke.mjs` | 86 | Browser smoke for task-detail chat suggested-action confirm at 390x844: verifies fallback message id, one update mutation, hidden preview after confirm and updated description | Run with `npm run smoke:task-chat-confirm` before changing task-detail chat suggested actions |
+| `scripts/ai-delete-intent-safety-smoke.mjs` | 90 | Playwright smoke for AI chat delete-intent safety: verifies `удали все задачи` does not call `/anthropic`, does not send `done-task`, and old complete action cards from delete requests are blocked | Run with `node scripts/ai-delete-intent-safety-smoke.mjs` before changing AI chat task-action execution |
+| `scripts/support-form-smoke.mjs` | 69 | Playwright smoke for app support form: verifies topic/message validation path posts structured support payload and clears the form on success | Run with `node scripts/support-form-smoke.mjs` before changing support intake UI |
+| `scripts/worker-static-support-smoke.mjs` | 71 | Source smoke for frontend static Worker `/support`: mocks Telegram `sendMessage`, verifies env-driven chat delivery and missing-config 503 | Run with `node scripts/worker-static-support-smoke.mjs` before changing `worker-static.js` support route |
 | `scripts/task-toast-lifecycle-smoke.mjs` | 53 | Playwright smoke for task-detail toast lifecycle at 390x844: verifies success auto-hide, success dismiss-on-scroll and longer error readability | Run with `npm run smoke:task-toast-lifecycle` before changing toast behavior or task-detail success feedback |
 | `scripts/premium-voice-gate-smoke.mjs` | 81 | Static smoke for expired-Premium voice gate: verifies voice opens subscription before listening and handles premium Worker-style errors | Run with `npm run smoke:premium-voice-gate` before changing voice Premium gate behavior |
 | `scripts/voice-consent-checkbox-smoke.mjs` | 52 | Static smoke for biometric voice-consent checkbox visibility, 44px target, checked/focus state and unchanged legal copy | Run with `npm run smoke:voice-consent-checkbox` before changing voice consent checkbox behavior |
