@@ -1,5 +1,23 @@
 ## 2026-07-30
 
+### VK AI chat honest errors
+
+**What changed:** VK `/anthropic` calls now go through a shared frontend helper
+that checks HTTP status before treating a response as successful, classifies
+auth, entitlement, rate-limit, server, network, and malformed errors, retries
+only network/5xx once, keeps `x-token`, and records safe local diagnostics with
+status/request id only. No backend auth, payment, entitlement, production deploy,
+main merge, CAL, or secret work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-ai-chat-errors`; `npm run test:e2e:vk`; `node
+--check scripts/vk-ai-chat-errors-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ### VK profile minimal parity
 
 **What changed:** VK profile now has explicit privacy and support surfaces:

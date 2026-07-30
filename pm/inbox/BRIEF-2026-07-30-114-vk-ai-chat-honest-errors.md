@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 priority: P0
 
 # BRIEF-2026-07-30-114 — VK AI-чат: честные ошибки вместо общей заглушки (P0)

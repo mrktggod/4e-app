@@ -2058,6 +2058,86 @@ function switchTaskDetailTab(id, el) {
   });
 }
 
+function responseRequestId(response) {
+  try {
+    return response?.headers?.get?.('x-request-id') || response?.headers?.get?.('cf-ray') || '';
+  } catch(e) {
+    return '';
+  }
+}
+
+function createVkAiError(type, message, response, data = {}) {
+  const error = new Error(message);
+  error.type = type;
+  error.status = response?.status || 0;
+  error.requestId = responseRequestId(response);
+  error.code = data?.code || data?.error || '';
+  return error;
+}
+
+function classifyVkAiStatus(response, data = {}) {
+  const status = response?.status || 0;
+  if (status === 401) return createVkAiError('auth', 'Нужно снова войти, чтобы пользоваться AI-чатом.', response, data);
+  if (status === 402 || status === 403) return createVkAiError('entitlement', 'Доступ к AI сейчас ограничен. Проверьте подписку или права аккаунта.', response, data);
+  if (status === 429) return createVkAiError('rate_limit', 'Слишком много запросов к AI. Попробуйте чуть позже.', response, data);
+  if (status >= 500) return createVkAiError('server', 'AI временно недоступен. Мы сохранили сообщение, попробуйте позже.', response, data);
+  return createVkAiError('bad_response', data?.error || 'AI вернул неожиданный ответ.', response, data);
+}
+
+function recordVkAiDiagnostic(error) {
+  state.aiLastDiagnostic = {
+    status: error?.status || 0,
+    requestId: error?.requestId || '',
+    type: error?.type || 'unknown'
+  };
+  console.warn('vk_ai_chat_error', state.aiLastDiagnostic);
+}
+
+function vkAiUserMessage(error, fallback) {
+  if (!error) return fallback;
+  if (error.type === 'network') return 'Нет соединения с AI. Проверьте сеть и попробуйте ещё раз.';
+  if (error.type === 'malformed') return 'AI вернул некорректный формат ответа. Попробуйте повторить запрос.';
+  return error.message || fallback;
+}
+
+async function readVkAiResponse(response) {
+  if (!response?.ok) {
+    const data = await readJsonSafe(response);
+    throw classifyVkAiStatus(response, data);
+  }
+  const data = await readJsonSafe(response);
+  const reply = data?.content?.[0]?.text;
+  if (!reply) throw createVkAiError('malformed', 'AI вернул некорректный формат ответа.', response, data);
+  return reply;
+}
+
+async function requestVkAi(payload, retries = 1) {
+  let lastError = null;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const response = await fetch(WORKER + '/anthropic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
+        body: JSON.stringify(payload)
+      });
+      try {
+        return await readVkAiResponse(response);
+      } catch (error) {
+        lastError = error;
+        if (error.type === 'server' && attempt < retries) continue;
+        throw error;
+      }
+    } catch(error) {
+      lastError = error?.type ? error : createVkAiError('network', 'Нет соединения с AI.', null, {});
+      if (lastError.type === 'network' && attempt < retries) continue;
+      recordVkAiDiagnostic(lastError);
+      throw lastError;
+    }
+  }
+  recordVkAiDiagnostic(lastError);
+  throw lastError;
+}
+
 async function doneCurrentTask() {
   if (!state.currentTask) return;
   const completed = await doneTask(state.currentTask.id);
@@ -2075,27 +2155,21 @@ async function sendTaskDiscussion() {
   saveTaskDiscussion(task, items);
   renderTaskDiscussion(task);
   try {
-    const res = await fetch(WORKER + '/anthropic', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 700,
-        system: 'Ты 4 — AI-секретарь. Пользователь обсуждает конкретную задачу. Отвечай кратко, практично, по-русски. Дай следующий шаг, риски или короткий план.',
-        messages: [
-          { role: 'user', content: 'Задача: ' + taskDisplayTitle(task) + '\nВопрос: ' + text }
-        ]
-      })
+    const reply = await requestVkAi({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 700,
+      system: 'Ты 4 — AI-секретарь. Пользователь обсуждает конкретную задачу. Отвечай кратко, практично, по-русски. Дай следующий шаг, риски или короткий план.',
+      messages: [
+        { role: 'user', content: 'Задача: ' + taskDisplayTitle(task) + '\nВопрос: ' + text }
+      ]
     });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text || 'Я зафиксировал мысль. Следующий шаг — уточнить действие и срок.';
     const fresh = readTaskDiscussion(task);
     fresh.push({ role: 'ai', text: reply, at: Date.now() });
     saveTaskDiscussion(task, fresh);
     renderTaskDiscussion(task);
   } catch(e) {
     const fresh = readTaskDiscussion(task);
-    fresh.push({ role: 'ai', text: 'Не смог связаться с AI, но заметка по задаче сохранена локально.', at: Date.now() });
+    fresh.push({ role: 'ai', text: vkAiUserMessage(e, 'Не смог связаться с AI, но заметка по задаче сохранена локально.'), at: Date.now() });
     saveTaskDiscussion(task, fresh);
     renderTaskDiscussion(task);
   }
@@ -2131,17 +2205,19 @@ async function sendMessage() {
     showToast('Не удалось добавить задачу');
   }
   try {
-    const res = await fetch(WORKER + '/anthropic', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу. Не задавай уточняющих вопросов — сразу давай конкретный ответ. Текущие задачи пользователя: ' + JSON.stringify(state.tasks.slice(0,10).map(t=>({text:t.text||t.title,done:t.done,deadline:t.deadline}))) + '.', messages: state.chatHistory })
+    const reply = await requestVkAi({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1000,
+      system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу. Не задавай уточняющих вопросов — сразу давай конкретный ответ. Текущие задачи пользователя: ' + JSON.stringify(state.tasks.slice(0,10).map(t=>({text:t.text||t.title,done:t.done,deadline:t.deadline}))) + '.',
+      messages: state.chatHistory
     });
-    const data = await res.json();
     removeTyping(typingId);
-    const reply = data.content?.[0]?.text || 'Не смог получить ответ.';
     state.chatHistory.push({ role: 'assistant', content: reply }); localStorage.setItem('vk4_chat_'+state.user?.id, JSON.stringify(state.chatHistory.slice(-20)));
     appendMsg('ai', reply); if (!taskSaved) loadTasks();
-  } catch(e) { removeTyping(typingId); appendMsg('ai', 'Ошибка соединения. Попробуйте ещё раз.'); }
+  } catch(e) {
+    removeTyping(typingId);
+    appendMsg('ai', vkAiUserMessage(e, 'Ошибка соединения. Попробуйте ещё раз.'));
+  }
 }
 
 function appendMsg(role, text) {
