@@ -55,8 +55,8 @@ const before = await page.evaluate(() => ({
 if (before.phoneClick.includes('toggleProfileVerified')) {
   throw new Error('phone profile button still uses fake toggleProfileVerified');
 }
-if (before.vkText !== 'Привязать') throw new Error(`expected VK action button, got ${before.vkText}`);
-if (before.yandexText !== 'Привязать') throw new Error(`expected Yandex action button, got ${before.yandexText}`);
+if (before.vkText !== 'Привязать VK ID') throw new Error(`expected VK action button, got ${before.vkText}`);
+if (before.yandexText !== 'Привязать Яндекс ID') throw new Error(`expected Yandex action button, got ${before.yandexText}`);
 
 await page.click('#profile-vk-status');
 const vkProvider = await page.evaluate(() => window.__oauthProvider);
