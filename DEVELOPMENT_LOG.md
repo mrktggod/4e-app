@@ -1,5 +1,25 @@
 ## 2026-07-30
 
+### VK AI chat main parity
+
+**What changed:** VK AI chat now preserves `originalMsg` and `description` for
+chat-created tasks, prompts the existing `/anthropic` backend to use the same
+`<create_task>` and `<task_actions>` tags as the main app, strips those tags
+from visible assistant text, and executes safe structured task operations
+through existing `save-task`, `update-task`, `doneTask`, and `openTaskDetail`
+paths. No backend contract, full profile memory, production deploy, main merge,
+or live VK account work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-ai-chat-parity`; `npm run smoke:vk-ai-chat-errors`;
+`npm run test:e2e:vk`; `node --check
+scripts/vk-ai-chat-main-parity-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ### VK AI chat honest errors
 
 **What changed:** VK `/anthropic` calls now go through a shared frontend helper

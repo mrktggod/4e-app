@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 priority: P1
 
 # BRIEF-2026-07-30-115 — VK AI-чат: паритет с основным (BACK-066C) (P1)
