@@ -229,3 +229,39 @@ Current stop reason:
 - this worktree has unrelated dirty screenshot work in
   `docs/tasks/assets/BRIEF-2026-07-27-96-telegram-bottom-menu-dark.png`, so
   the pass avoided broad runtime edits.
+
+## 2026-07-30 Package 3 Final QA Handoff
+
+Rechecked from canonical checkout `X:\Projects\4-ai-secretary\app` on branch
+`feat/admin-tariff-api`.
+
+Package 3 families now marked complete:
+
+- Safe forms/dialogs/controls: `DONE`, commit
+  `ced8fd6b6e4fec819e487a4fb2c3fc9eab714657`.
+- Telegram chat/conversation surfaces: `DONE`, commit
+  `e0ade28a5efe901dfc6b91a5f8a5812aa6ce8d8c`.
+- Safe VK parity surfaces: `DONE`, commit
+  `6bf6ab32b3f5e5014c16e8bf8b294b6e9d4d5e39`.
+
+Final gate:
+
+- `npm run qa:prebeta` passed: `check:js-syntax`,
+  `check:cp1251-mojibake`, `check:portable-paths`,
+  `check:ui-architecture`, `test:e2e` (`22 passed`), `smoke:home001`,
+  `smoke:back050`, `smoke:back055`, `smoke:privacy-surface` and
+  `smoke:viral-share`.
+- `node scripts/check-cp1251-mojibake.mjs` passed with
+  `0 suspicious tokens`.
+- `npm run check:portable-paths` passed.
+- `git diff --check` passed.
+
+Evidence set now covers package 1 foundation, notifications, task detail,
+home/focus dashboard, task-list cards, profile/menu, controls/popups,
+chat/conversation and safe VK surfaces. Pixel-level matching against
+`pm/design-references/glass-card-reference.png` remains deferred because that
+file and the matching spec are still absent in this checkout.
+
+No production deploy, `main` merge, CAL, price, payment, entitlement,
+auth-security, secret, VK AI backend, `/anthropic` or live platform action was
+performed.
