@@ -1,3 +1,21 @@
+## 2026-07-30
+
+### VK saved session network recovery
+
+**What changed:** `vk.html` now preserves the saved `vk4_token` when `/auth/me`
+fails with a temporary condition: timeout, network rejection, 429, 5xx, or
+invalid/empty JSON. The saved token is removed only for confirmed 401/403 or an
+explicit invalid-token style Worker response. Explicit logout still removes the
+token.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-auth-session`; `node --check
+scripts/vk-auth-session-smoke.mjs`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ## 2026-07-28
 
 ### BRIEF-2026-07-24-55 profile menu glass package 2

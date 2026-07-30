@@ -926,6 +926,12 @@ async function readJsonSafe(response) {
   }
 }
 
+function isInvalidSavedTokenResponse(response, data = {}) {
+  if (response?.status === 401 || response?.status === 403) return true;
+  const error = String(data.error || data.code || data.reason || '').toLowerCase();
+  return /invalid[_ -]?token|token[_ -]?(invalid|revoked)|unauthorized[_ -]?token/.test(error);
+}
+
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;',
@@ -1184,9 +1190,10 @@ async function bootstrapAuth() {
 
   const savedToken = localStorage.getItem(TOKEN_K);
   if (savedToken) {
+    let shouldDropSavedToken = false;
     try {
       const r = await withTimeout(fetch(WORKER + '/auth/me', { headers: { 'x-token': savedToken } }), 2500);
-      const d = await r.json();
+      const d = await readJsonSafe(r);
       if (d.ok) {
         state.token = savedToken;
         state.d1Token = null;
@@ -1194,8 +1201,13 @@ async function bootstrapAuth() {
         enterApp();
         return;
       }
+      shouldDropSavedToken = isInvalidSavedTokenResponse(r, d);
     } catch(e) {}
-    if (localStorage.getItem(TOKEN_K) === savedToken) localStorage.removeItem(TOKEN_K);
+    if (shouldDropSavedToken && localStorage.getItem(TOKEN_K) === savedToken) {
+      localStorage.removeItem(TOKEN_K);
+    } else if (!shouldDropSavedToken) {
+      showToast('Сессия сохранена, связь восстанавливается');
+    }
   }
 
   startVKAutoLogin(vkReadyPromise);

@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 priority: P0
 
 # BRIEF-2026-07-30-110 — VK: не терять сессию при сетевом сбое (P0)

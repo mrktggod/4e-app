@@ -33,6 +33,7 @@
         "smoke:vk-calendar-date-key": "node scripts/vk-calendar-date-key-smoke.mjs",
         "smoke:vk-header-logo": "node scripts/vk-header-logo-smoke.mjs",
         "smoke:vk-task-complete": "node scripts/vk-task-complete-smoke.mjs",
+        "smoke:vk-auth-session": "node scripts/vk-auth-session-smoke.mjs",
         "smoke:vk-task-actions": "node scripts/vk-task-actions-parity-smoke.mjs",
         "smoke:profile-premium-banner": "node scripts/profile-premium-banner-smoke.mjs",
         "smoke:profile-glass": "node scripts/profile-glass-smoke.mjs",
