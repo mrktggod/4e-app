@@ -1,3 +1,20 @@
+## 2026-07-31
+
+### BACK-012 Telegram manual start BEM island
+
+**What changed:** Moved the Telegram manual `/start auth_*` fallback panel styles
+from generated inline HTML in `scripts/auth-handlers.js` into
+`styles/layout.less` classes. Runtime behavior, auth flow, Telegram links,
+payment, entitlement, production, and main branch were not changed.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run build:css`; `npm run check:ui-architecture`; `npm run
+test:e2e:web -- --grep auth`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ## 2026-07-30
 
 ### UI architecture inline script guard
