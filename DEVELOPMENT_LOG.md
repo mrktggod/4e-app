@@ -1165,7 +1165,7 @@ Git Bash UI architecture guard failed on existing branch state:
 
 **Encoding check:** `index.html` was not edited in this final report task; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
 
-**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; portable-paths `git grep` equivalent because `bash` was unavailable in PATH.
 
 **Commit:** this commit
 
@@ -3637,3 +3637,15 @@ Git Bash UI architecture guard failed on existing branch state:
 **Тест:** `npm run smoke:relative-time-copy`; `node scripts/check-cp1251-mojibake.mjs`; staged JS syntax, portable path equivalent, UI architecture equivalent and `git diff --cached --check` before commit.
 
 **Коммит:** pending
+
+## 2026-08-01
+
+### Morning acceptance and process review
+
+**What changed:** added the morning acceptance report and simple manual-actions checklist for 2026-08-01. No runtime product code was changed.
+
+**Encoding check:** `index.html` was not changed; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** pending
