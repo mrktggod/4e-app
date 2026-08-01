@@ -3322,7 +3322,9 @@ async function loadTasks(){
     // Show-all button visibility
     const showAllBtn = document.getElementById('home-show-all-btn');
     const allHome = [...outgoing, ...incoming];
-    const visibleHomeCount = document.querySelectorAll('#home-task-list .task-card-shell').length;
+    const homeRows = document.querySelectorAll('#home-task-list .home-ai-row');
+    const taskShells = document.querySelectorAll('#home-task-list .task-card-shell');
+    const visibleHomeCount = homeRows.length || taskShells.length;
     if(showAllBtn) showAllBtn.style.display = allHome.length > visibleHomeCount ? 'flex' : 'none';
 
   selectedMonth = new Date().getMonth();

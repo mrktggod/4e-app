@@ -17056,9 +17056,6 @@ html[data-theme="light"] #task-detail .detail-status-node--active .detail-node-c
   overflow: auto !important;
   padding: 0 24px 22px !important;
 }
-#home-show-all-btn {
-  display: none !important;
-}
 #home .dash-bottom-nav {
   height: 58px !important;
   min-height: 58px !important;
