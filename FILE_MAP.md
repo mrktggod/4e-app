@@ -77,15 +77,17 @@
 | `scripts/back-069-task-detail-hero-overflow-smoke.mjs` | 194 | Headless Chrome/CDP smoke for task-detail hero at 390x844: verifies long tag ellipsis, no title/description overlap with meta cards, bounded hero growth, and no horizontal overflow | Run with `npm run smoke:back069-hero` before changing task-detail hero layout |
 | `scripts/viral-share-card-smoke.mjs` | 126 | Static smoke for VIRAL-001/004/006 share-card runtime: validates canvas PNG builders, streak/weekly helpers, native share, download fallback and lite analytics hooks | Run with `npm run smoke:viral-share` before promoting share-card evidence beyond source-only |
 | `.githooks/pre-commit` | 5 | Локальный hook для запуска path guard и UI architecture guard перед commit | Активировать через `git config core.hooksPath .githooks` |
-| `.github/workflows/path-guard.yml` | 34 | GitHub Actions quality guard: переносимые пути + UI architecture debt | Срабатывает на push и PR |
+| `.github/workflows/path-guard.yml` | 37 | Быстрый GitHub Actions quality gate для переносимых guards, encoding, syntax, CSS и Pages assets | Срабатывает на Pull Request и push в `main` |
+| `.github/workflows/nightly-playwright.yml` | 51 | Неблокирующий nightly/manual Playwright для Web, Telegram и VK с артефактами ошибок | После merge наблюдать пять последовательных зелёных запусков до усиления gate |
 
 ## Autotests
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 70 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
-| `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
-| `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
+| `package.json` | 73 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `playwright.config.ts` | 47 | Playwright config for portable Node static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
+| `scripts/serve-autotest-static.mjs` | 79 | Dependency-free local static server shared by Playwright on macOS, Windows and CI | Started automatically by `playwright.config.ts`; supports only safe GET/HEAD file access |
+| `autotests/README.md` | 54 | Autotest runbook for Web, Telegram, VK, k6 and the nonblocking nightly pilot | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |
 | `autotests/tests/web/auth-legal.spec.ts` | 61 | Playwright auth/legal smoke: onboarding/login privacy links, login/register privacy opening, auth legal/tabs/password/forgot 44px targets | Run with `npm run test:e2e:web` before changing auth legal/accessibility UI |
 | `autotests/tests/web/navigation-safe-area.spec.ts` | 76 | Playwright nav/safe-area smoke: synthetic auth shell, home/global nav inside viewport, no horizontal overflow on mobile and desktop projects | Run with `npm run test:e2e:web` before changing navigation, safe-area, or app shell layout |
