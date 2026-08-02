@@ -709,9 +709,6 @@
             openStatistics();
             return;
           }
-          if (action === 'toggle-all-tasks' && typeof toggleAllTasks === 'function') {
-            toggleAllTasks();
-          }
           return;
         }
 

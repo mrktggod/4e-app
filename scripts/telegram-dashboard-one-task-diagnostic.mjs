@@ -75,7 +75,6 @@ async function runSurface(browser, surface) {
 
     return await page.evaluate(() => {
       const rowTitles = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-title')).map((el) => el.textContent.trim());
-      const showAll = document.getElementById('home-show-all-btn');
       return {
         surface: window.__dashboardSurface,
         apiHits: window.__dashboardTaskApiHits,
@@ -84,7 +83,7 @@ async function runSurface(browser, surface) {
         activeCount: Array.isArray(allTasksCache) ? allTasksCache.filter((task) => !task.done).length : -1,
         dashboardRows: document.querySelectorAll('#home-task-list .task-card-shell').length,
         rowTitles,
-        showAllDisplay: showAll ? getComputedStyle(showAll).display : '',
+        showAllRemoved: !document.getElementById('home-show-all-btn'),
         focusCount: document.getElementById('focus-day-count')?.textContent || ''
       };
     });
@@ -106,7 +105,7 @@ try {
     if (result.activeCount !== 4) throw new Error(`${result.surface}: expected active count 4, got ${result.activeCount}`);
     if (result.dashboardRows !== 3) throw new Error(`${result.surface}: expected dashboard top-3 rows, got ${result.dashboardRows}`);
     if (result.rowTitles.length !== 3) throw new Error(`${result.surface}: expected three rendered row titles`);
-    if (result.showAllDisplay === 'none') throw new Error(`${result.surface}: show-all should be visible when active tasks exceed dashboard rows`);
+    if (!result.showAllRemoved) throw new Error(`${result.surface}: retired show-all action is still present`);
   }
 
   console.log('telegram dashboard one-task diagnostic: PASS', JSON.stringify(results));
