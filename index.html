@@ -366,8 +366,6 @@ if('serviceWorker' in navigator){
       <article class="dash-empty-card dash-glass"><h2>Первый AI-план за 60 секунд</h2><p>Добавь 3 задачи любым удобным способом, и 4 сразу соберёт понятный фокус дня без пустого экрана.</p></article>
     </section>
 
-    <div id="home-show-all-btn" data-home-action="open-active-list" style="display:none"><span id="home-show-all-label">Смотреть все задачи</span><svg id="home-show-all-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-
     <nav class="dash-bottom-nav dash-glass" aria-label="Нижняя навигация">
       <button class="dash-nav-item active" id="home-nav-today" data-nav="today" data-home-nav-action="today" type="button" aria-label="Сегодня"><svg viewBox="0 0 24 24"><defs><linearGradient id="homeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#85aa50"/><stop offset="1" stop-color="#5f7f35"/></linearGradient></defs><path d="m3 10 9-7 9 7v10H14v-6h-4v6H3Z"/></svg><span>Сегодня</span></button>
       <button class="dash-center-button" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" type="button" aria-label="Открыть чат с 4; удерживать для голосового ввода" aria-describedby="home-voice-hold-hint"><span class="dash-brand-orb-grid"><i></i><i></i><i></i><i></i></span></button>
@@ -3319,14 +3317,6 @@ async function loadTasks(){
     updateHomeDashboardList({outgoing,incoming});
     trackLiteEvent('plan-view', { surface: 'home' });
 
-    // Show-all button visibility
-    const showAllBtn = document.getElementById('home-show-all-btn');
-    const allHome = [...outgoing, ...incoming];
-    const homeRows = document.querySelectorAll('#home-task-list .home-ai-row');
-    const taskShells = document.querySelectorAll('#home-task-list .task-card-shell');
-    const visibleHomeCount = homeRows.length || taskShells.length;
-    if(showAllBtn) showAllBtn.style.display = allHome.length > visibleHomeCount ? 'flex' : 'none';
-
   selectedMonth = new Date().getMonth();
   loadStats(outgoing, done, tasks);
     setTimeout(function(){if(typeof _addCheckboxesToTaskRows==='function')_addCheckboxesToTaskRows();},150);
@@ -4776,12 +4766,6 @@ function openHomePlannerSection(sectionKey){
     ? sectionTasks.map((t, i) => renderTaskCard(t, i)).join('')
     : '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Задач в этой секции нет</div>';
 
-  const homeShowAllBtn = document.getElementById('home-show-all-btn');
-  const arrow = document.getElementById('home-show-all-arrow');
-  const label = document.getElementById('home-show-all-label');
-  if(homeShowAllBtn){ homeShowAllBtn.style.display = 'none'; }
-  if(arrow) arrow.style.transform = '';
-  if(label) label.textContent = 'Смотреть все дела';
 }
 
 function plannerCompleteTask(buttonEl){
@@ -8040,25 +8024,6 @@ function setThemeChoice(theme, el){
   applyTheme(theme);
   localStorage.setItem('theme', theme);
   showToast('Тема изменена');
-}
-
-// ===== HOME FILTER (Patch 02) =====
-function toggleAllTasks(){
-  const homeList = document.getElementById('home-task-list');
-  const label = document.getElementById('home-show-all-label');
-  const arrow = document.getElementById('home-show-all-arrow');
-  if(!homeList) return;
-  const isExpanded = homeList.dataset.showAll === '1';
-  homeList.dataset.showAll = isExpanded ? '0' : '1';
-  if(label) label.textContent = isExpanded ? 'Смотреть все дела' : 'Свернуть';
-  if(arrow) arrow.style.transform = isExpanded ? '' : 'rotate(180deg)';
-  // Re-render with all tasks
-  const tasks = allTasksCache || [];
-  const outgoing = tasks.filter(t=>!t.done && t.direction!=='incoming');
-  const incoming = tasks.filter(t=>!t.done && t.direction==='incoming');
-  const allTasks = [...outgoing, ...incoming];
-  const slice = homeList.dataset.showAll === '1' ? allTasks : allTasks.slice(0,6);
-  homeList.innerHTML = slice.map((t,i)=>renderTaskCard(t,i)).join('');
 }
 
 function setHomeFilter(filter, el){
