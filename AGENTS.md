@@ -162,7 +162,7 @@ Merge в `main` не является частью автоматическог�
 Исключение: срочный P0/P1 инцидент можно решать быстрее, но всё равно с явным подтверждением человека и записью в лог после факта.
 
 ### Остальные правила Git
-- Перед коммитом запустить `bash scripts/check-portable-paths.sh`; локально это также делает `.githooks/pre-commit`
+- Перед коммитом запустить `npm run check:portable-paths`; локально это также делает `.githooks/pre-commit`
 - После `git reset --hard` нужен `git push --force`
 - Конфликты при `git revert` → `git revert --abort` + `git reset --hard <hash>`
 - Перед правкой `index.html` — резервная копия: `Copy-Item "index.html" "index.backup_$(Get-Date -f yyyyMMdd_HHmm).html"`

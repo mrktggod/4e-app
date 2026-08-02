@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-scripts/check-portable-paths.sh
-bash scripts/check-ui-architecture.sh
+node scripts/check-portable-paths.mjs
+node scripts/check-ui-architecture.mjs
 node scripts/check-cp1251-mojibake.mjs
 node scripts/check-js-syntax.mjs

@@ -38,8 +38,9 @@
 | `scripts/platform-adapter.js` | 1235 | Shared frontend platform adapter: app/environment helpers, event binding utilities, auth UI helpers, calendar/statistics/home delegated actions, task-detail return/date confirm/reminder-card dispatch, and inline-handler value escaping | Read narrow helper/export ranges before moving inline JS from `index.html` or changing delegated screen actions |
 | `scripts/task-ui-renderers.js` | 793 | Shared task/notification renderers and task card helpers, including swipe actions, inline completion feedback, active-card reminder entrypoint, calendar/task row click-through, and task-detail return-screen fallback helpers | Read narrow task renderer ranges before changing task cards, task completion controls, notification cards, calendar rows, reminders, or task-detail return behavior |
 | `scripts/auth-handlers.js` | 696 | Auth and preview-demo handlers: login/register flows, dashboard preview routing, and preview-only state flags for visual QA | Read narrow preview/auth ranges before changing login or preview behavior |
-| `scripts/check-portable-paths.sh` | 24 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
-| `scripts/check-ui-architecture.sh` | 78 | Guard против роста inline UI-долга в `index.html` | Запускать перед UI-коммитом |
+| `scripts/check-js-syntax.mjs` | 112 | Проверка синтаксиса staged-файлов локально или всех tracked JS и inline-скриптов в CI через `--all`; проверки распараллелены | `npm run check:js-syntax`; режим `--all` входит в `qa:quick` |
+| `scripts/check-portable-paths.mjs` | 60 | Кроссплатформенная проверка, что в репозитории нет локальных абсолютных user-путей | `npm run check:portable-paths`; входит в `qa:quick` |
+| `scripts/check-ui-architecture.mjs` | 65 | Кроссплатформенный guard против роста inline UI-долга в `index.html` | `npm run check:ui-architecture`; входит в `qa:quick` |
 | `scripts/back-019-task-card-smoke.mjs` | 526 | Headless Chrome/CDP smoke for BACK-019 task cards on 390x844 viewport: overflow, 2-line title clamp, tap/swipe actions, active-card reminder entrypoint, inline completion loading/success/failure state and duplicate-tap protection | Run with `npm run smoke:back019` before changing task-card renderer, card reminder action, or task completion controls |
 | `scripts/back-055-notifications-smoke.mjs` | 340 | Headless Chrome/CDP smoke for BACK-055 notification action cards on 390x844 viewport: empty state, filters, unread badge, expand, snooze, go-to-task, done and write actions | Run with `npm run smoke:back055` before changing notification action-card renderer |
 | `scripts/home-001-dashboard-smoke.mjs` | 630 | Headless Chrome/CDP smoke for HOME-001 dashboard: top-3 rows, metrics, nav routes, home/statistics/calendar task-detail return routes, focus card/popup counter consistency, statistics active-task empty-state clarity, dark/light screenshots, and 390/360/320 viewport edge geometry | Run with `npm run smoke:home001` before changing dashboard/home routing, task-detail return routing, calendar task rows, focus counters, statistics active-task copy, or visual shell |
@@ -93,7 +94,7 @@
 | `autotests/tests/vk-app/basic.spec.ts` | 168 | Playwright VK Mini App smoke with mocked `window.vkBridge`, saved token, mocked Worker auth/tasks/identities, and home/detail/ask/calendar/stats/profile navigation parity | Run with `npm run test:e2e:vk` before changing VK shell, task rendering, or safe VK navigation |
 | `autotests/load/smoke-load.js` | 20 | k6 local/static load smoke for `/index.html`, `/vk.html`, `/privacy.html` | Run with `npm run load:smoke`; set `BASE_URL`, `K6_VUS`, `K6_DURATION` explicitly for staging |
 | `https://github.com/mrktggod/4pm` | n/a | Приватные QA playbook и backlog coverage docs | Read before UI/QA/night automation work |
-| `scripts/run-bash-script.mjs` | 29 | Cross-Windows npm wrapper for Git Bash based shell guards | Used by `npm run check:portable-paths` and `npm run check:ui-architecture` |
+| `scripts/run-bash-script.mjs` | 59 | Legacy wrapper for invoking an explicitly requested Bash script on Windows | Current quality guards use portable Node scripts and do not depend on this wrapper |
 
 ## PM / QA
 
@@ -120,7 +121,7 @@
 | Git-статус | `git status --short` |
 | Текущая ветка | `git branch --show-current` |
 | Remote | `git remote -v` |
-| UI-архитектура | `bash scripts/check-ui-architecture.sh` |
+| UI-архитектура | `npm run check:ui-architecture` |
 | Локальная раздача | `python3 -m http.server 8000` |
 | Smoke URL | `http://127.0.0.1:8000/index.html`, `/vk.html`, `/privacy.html` |
 

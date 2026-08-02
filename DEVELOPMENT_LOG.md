@@ -1,3 +1,19 @@
+## 2026-08-02
+
+### Fast cross-platform quality gate
+
+**What changed:** Added one local/CI entrypoint `npm run qa:quick` for portable-path, Markdown encoding, full tracked JS/HTML syntax, CP1251 mojibake, CSS build, Pages asset and UI architecture checks. Replaced the two duplicate GitHub workflows with one `Fast quality gate`, npm cache and stale-run cancellation. The CI and pre-commit guards now call portable Node scripts instead of requiring Bash, `ripgrep` or `apt`. Updated operational commands in `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` and `FILE_MAP.md`.
+
+**Why:** The old CI installed `ripgrep`, ran the portable-path guard twice and duplicated checkout/Node setup in a separate mojibake workflow. Its syntax step used staged-only mode, so a clean GitHub checkout reported that there were no files to check. The new `--all` mode checks tracked sources in CI; eight concurrent workers reduced this local syntax phase from `23.44 s` to `5.86 s`.
+
+**Encoding check:** Runtime HTML was not edited. `npm run qa:quick` included both Markdown encoding and CP1251 mojibake guards; both passed.
+
+**Test:** `npm run qa:quick` passed locally in `38.78 s`; 65 tracked JS files, 28 HTML files and 92 JavaScript bodies were syntax-checked. A temporary staged invalid-JS fixture was rejected with exit code `1` and removed. Old and new portable-path guards both passed. Old and new UI architecture guards returned identical baselines: inline styles `284 / 465`, event handlers `397 / 402`, style tags `0 / 0`, inline scripts `3 / 3`. Workflow YAML parsing and `git diff --check` passed. Remote GitHub timing and checks are recorded after push in the canonical `4pm` report.
+
+**Boundary:** No runtime UI, API, authentication, payment, deploy or production behavior changed. Playwright, external staging smoke and live Telegram/VK checks are intentionally outside this fast gate.
+
+**Commit:** included in this task commit
+
 ## 2026-07-28
 
 ### BRIEF-2026-07-24-55 profile menu glass package 2

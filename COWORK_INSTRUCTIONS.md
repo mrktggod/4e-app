@@ -125,7 +125,7 @@ git log --oneline -10
 - Не добавлять новые `style=""` и inline-обработчики `onclick`/`oninput`/`onchange`.
 - Если видишь новый inline UI-код в diff, фиксируй как процессную ошибку и проси переделать через LESS + JS.
 - Если видишь новый UI без доступных подписей, фокуса, клавиатурного пути, status/alert или нормальных touch-targets, фиксируй как QA/process gap и отправляй на доработку.
-- Проверка для Codex/Юры: `bash scripts/check-ui-architecture.sh`.
+- Проверка для Codex/Юры: `npm run check:ui-architecture`.
 - Ручная проверка для UI-задач: accessibility smoke в приватном `4pm`.
 - Подробности по UI-архитектуре хранятся в приватном `4pm`.
 
