@@ -16,6 +16,19 @@
 5. Не удалять строки `BLOCKED` или `NEED-YURI`: указывать конкретное следующее
    действие и владельца.
 
+## Порядок ночи 2026-08-02
+
+1. `BRIEF-2026-08-02-119-remove-home-show-all-button`
+2. `BRIEF-2026-08-02-120-telegram-web-menu-and-voice-buttons-regression`
+3. `BRIEF-2026-08-02-126-vk-chat-created-task-not-on-dashboard`
+4. `BRIEF-2026-08-02-125-vk-dashboard-profile-parity-audit`
+5. `MAN-013` / `BRIEF-2026-08-02-evening-05-old-clone-reconciliation`
+6. `BRIEF-2026-08-02-122-notifications-functional-audit`
+
+`BRIEF-2026-08-02-121-web-oauth-route-and-test-link-popup` и
+`BRIEF-2026-08-02-124-vk-auth-session-persistence` допускаются только как
+диагностика с точным ручным/Claude хвостом; автономно не менять auth-код.
+
 ## Текущая очередь app
 
 | Brief | Поверхность | Состояние выпуска | Что есть сейчас | Следующее действие |
