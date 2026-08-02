@@ -3616,32 +3616,12 @@ html:not([data-theme="light"]) #home#home .dash-center-button .dash-brand-orb-gr
 
 body #home#home #home-task-list:has(.home-ai-row) {
   height: auto !important;
-  bottom: calc(@app-viewport-bottom-reserve + 84px) !important;
-}
-
-body #home#home #home-show-all-btn {
-  position: absolute !important;
-  left: 18px !important;
-  right: 18px !important;
   bottom: calc(@app-viewport-bottom-reserve + 32px) !important;
-  z-index: 14 !important;
-  margin: 0 !important;
-  display: flex;
-  border-color: var(--glass-stroke) !important;
-  background: var(--glass-surface-muted) !important;
-  box-shadow: var(--glass-inset-shadow) !important;
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
-}
-
-html[data-theme="light"] #home#home #home-show-all-btn,
-body #home#home.soft-light #home-show-all-btn {
-  color: #172113 !important;
 }
 
 html[data-theme="light"] body #home#home #home-task-list:has(.home-ai-row),
 body #home#home.soft-light #home-task-list:has(.home-ai-row) {
-  bottom: calc(@app-viewport-bottom-reserve + 84px) !important;
+  bottom: calc(@app-viewport-bottom-reserve + 32px) !important;
 }
 
 html[data-theme="light"] #home#home #home-task-list .task-card-shell,
