@@ -34,7 +34,7 @@
 | Brief | Поверхность | Состояние выпуска | Что есть сейчас | Следующее действие |
 | --- | --- | --- | --- | --- |
 | BRIEF-2026-08-02-119-remove-home-show-all-button | Telegram Mini App dashboard | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR с обновлённым smoke; затем человек решает merge |
-| BRIEF-2026-08-02-120-telegram-web-menu-and-voice-buttons-regression | Telegram Mini App и web/PWA | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR с раздельной проверкой двух поверхностей; затем человек решает merge |
+| BRIEF-2026-08-02-120-telegram-web-menu-and-voice-buttons-regression | Telegram Mini App и web/PWA | BLOCKED / NEED-YURI | Локальный Telegram mock и web/PWA проверки зелёные; canonical theme classes/assets найдены, но ручной дефект не воспроизведён | Юрию: приложить dark screenshots + устройство/viewport для живих Telegram и web/PWA; затем новый узкий brief, без blind CSS fix |
 | BRIEF-2026-08-02-121-web-oauth-route-and-test-link-popup | web/PWA OAuth | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: сначала узкая диагностика; live OAuth остаётся ручным хвостом |
 | BRIEF-2026-08-02-122-notifications-functional-audit | Telegram Mini App / web notifications | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: диагностика и evidence без догадок о runtime-контракте |
 | BRIEF-2026-08-02-123-telegram-group-bot-no-response | Telegram bot | NEED-YURI | Brief уже помечен NEED-YURI | Отдельная bot-сессия после доступной live-group проверки |
