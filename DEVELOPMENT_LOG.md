@@ -3651,6 +3651,16 @@ Git Bash UI architecture guard failed on existing branch state:
 **Commit:** pending
 ## 2026-08-02
 
+### Ручная проверка Алексея после утреннего acceptance
+
+**Что сделано:** ручные результаты Алексея разложены в `pm/outbox/REPORT-MANUAL-QA-2026-08-02-alexey.md` и новые briefs `119-126`: убрать кнопку "Смотреть все задачи", разнести Telegram/web menu regression, web OAuth/test popup, уведомления, Telegram group bot, VK auth/session, VK dashboard/profile parity audit и VK chat-created task dashboard gap.
+
+**Проверка кодировки:** `node scripts/check-cp1251-mojibake.mjs` перед коммитом.
+
+**Тест:** docs/pm-only intake; runtime-код не менялся.
+
+**Коммит:** pending
+
 ### Утренний приём ночной сессии
 
 **Что сделано:** принят ночной цикл 2026-08-01 20:00 — 2026-08-02 08:30 MSK. Подтверждены app-коммиты `37ddd5005`, `91ed9b9c`, `11221828`, `9de2e969`, `419786b4`, зелёные GitHub Actions и отсутствие новых `status: NEW` brief-файлов. Созданы `pm/outbox/REPORT-MORNING-ACCEPTANCE-2026-08-02.md` и `pm/outbox/MANUAL-ACTIONS-2026-08-02-morning.md`.
