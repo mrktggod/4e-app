@@ -338,3 +338,18 @@ Yuri-only `NEED-YURI` work:
 - CAL tasks, major architecture work such as ARCH-001, integration of a new redesign, or next-horizon roadmap work before P0/P1 closure.
 
 When in doubt, do not guess. If a task is not clearly whitelisted, classify it at least as `NEED-CLAUDE`; if it involves money, access, product decisions, production, `main`, secrets, or CAL, classify it as `NEED-YURI`.
+
+## Release handoff
+
+`DONE` в brief не означает, что пользователь уже получил правку. После каждой
+ночной задачи с кодом исполнитель обновляет `pm/release-queue.md` и указывает
+`release_state: PR_READY`, точный PR/SHA, целевую ветку, нужные проверки и
+неавтоматизируемый ручной хвост. Он не делает merge или deploy.
+
+Утренний приёмщик обязан сверить `PR_READY` с GitHub и добавить каждый готовый
+кандидат в раздел «Кандидаты на merge» файла
+`pm/outbox/MANUAL-ACTIONS-YYYY-MM-DD-morning.md`: ссылка на PR, одна строка о
+правке, проверки, целевая ветка и ожидаемый результат после deployment. После
+явно зафиксированного человеком merge он проверяет попадание SHA в `main`,
+deployment нужной поверхности и ручный verdict, затем обновляет `release_state`
+на `DEPLOYED` или `MANUAL_ACCEPTED`. Заблокированные строки не удаляются.
