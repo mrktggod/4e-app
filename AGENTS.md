@@ -289,6 +289,14 @@ PM file protocol:
 
 If a brief conflicts with `AGENTS.md`, set the brief to `BLOCKED`, explain the conflict in the report, and ask for a decision.
 
+## Ночные сессии: обязательные уроки
+
+До выбора любой ночной задачи сессия читает `LESSONS.md` в корне app-репозитория.
+Это обязательный первый входной материал перед inbox, backlog, roadmap, тестами и
+выбором работы; уроки не заменяются памятью агента или старым отчётом. В каждом
+ночном `pm/outbox/REPORT-*.md` должна быть отдельная строка в точном формате
+`lessons_read: <число строк>`, включая `lessons_read: 0`, если файл пуст.
+
 ## Autonomous Night Backlog - Selection Rules
 
 At the 23:00 autonomous run, use this order of work:
