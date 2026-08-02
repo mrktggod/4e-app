@@ -1,3 +1,33 @@
+## 2026-08-02
+
+### Nonblocking nightly Playwright pilot
+
+**What changed:** Added `.github/workflows/nightly-playwright.yml` for the complete Web, mocked Telegram and mocked VK Playwright suite at `23:17 UTC` plus manual dispatch. The workflow has read-only permissions, no `pull_request`/`push` trigger, a 20-minute timeout, stale-run cancellation and a 14-day HTML/trace/screenshot/video artifact uploaded even after test failure. Replaced the Python-based Playwright web server with dependency-free `scripts/serve-autotest-static.mjs`, so local macOS/Windows and GitHub use the same Node server. Updated the autotest runbook and `FILE_MAP.md`.
+
+**Why:** The approved package requires deep regression evidence without delaying ordinary Pull Requests. The pre-change local baseline failed before any browser test with `/bin/sh: python: command not found`; relying on runner-specific Python would make local and CI evidence inconsistent. A red nightly remains visible and is not converted to success, but it cannot block a PR because it is not triggered by PRs.
+
+**Encoding check:** Runtime HTML was not edited. `npm run qa:quick` included Markdown encoding and CP1251 mojibake checks; both passed with `0 suspicious tokens`.
+
+**Test integrity:** No Playwright test, assertion, timeout, retry or expected result was weakened. Server checks returned `200` for GET/HEAD, `405` for POST, `404` for a missing file and `403` for encoded path traversal; invalid `AUTOTEST_PORT` failed as expected. After the server fix, the unchanged full suite passed `22/22` in `68.98 s`; the final `CI=true` run passed `22/22` in `46.86 s`. The generated HTML report exists. `npm run qa:quick`, workflow YAML parsing, trigger/permission assertions and `git diff --check` passed. Confirmed flaky/retried tests: none. Scheduled GitHub evidence and the five-green-run pilot remain unavailable until merge because scheduled/manual workflows are registered from the default branch.
+
+**Boundary:** This is test infrastructure only. Runtime UI/API/auth/payments, external staging, load tests, real Telegram/VK devices, deploy, production, branch protection and merge to `main` were not changed. The nightly pilot must not become a required gate before five consecutive green runs and a separate owner decision.
+
+**Commit:** included in this task commit
+
+### Fast cross-platform quality gate
+
+**What changed:** Added one local/CI entrypoint `npm run qa:quick` for portable-path, Markdown encoding, full tracked JS/HTML syntax, CP1251 mojibake, CSS build, Pages asset and UI architecture checks. Replaced the two duplicate GitHub workflows with one `Fast quality gate`, npm cache and stale-run cancellation. The CI and pre-commit guards now call portable Node scripts instead of requiring Bash, `ripgrep` or `apt`. Updated operational commands in `AGENTS.md`, `CLAUDE.md`, `COWORK_INSTRUCTIONS.md` and `FILE_MAP.md`.
+
+**Why:** The old CI installed `ripgrep`, ran the portable-path guard twice and duplicated checkout/Node setup in a separate mojibake workflow. Its syntax step used staged-only mode, so a clean GitHub checkout reported that there were no files to check. The new `--all` mode checks tracked sources in CI; eight concurrent workers reduced this local syntax phase from `23.44 s` to `5.86 s`.
+
+**Encoding check:** Runtime HTML was not edited. `npm run qa:quick` included both Markdown encoding and CP1251 mojibake guards; both passed.
+
+**Test:** `npm run qa:quick` passed locally in `38.78 s`; 65 tracked JS files, 28 HTML files and 92 JavaScript bodies were syntax-checked. A temporary staged invalid-JS fixture was rejected with exit code `1` and removed. Old and new portable-path guards both passed. Old and new UI architecture guards returned identical baselines: inline styles `284 / 465`, event handlers `397 / 402`, style tags `0 / 0`, inline scripts `3 / 3`. Workflow YAML parsing and `git diff --check` passed. Remote GitHub timing and checks are recorded after push in the canonical `4pm` report.
+
+**Boundary:** No runtime UI, API, authentication, payment, deploy or production behavior changed. Playwright, external staging smoke and live Telegram/VK checks are intentionally outside this fast gate.
+
+**Commit:** included in this task commit
+
 ## 2026-07-31
 
 ### BACK-012 Telegram manual start BEM island

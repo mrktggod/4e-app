@@ -41,8 +41,9 @@
 | `scripts/build-pages-whitelist.mjs` | 139 | Pages Static Assets artifact builder and whitelist copier for deployable frontend files | Update when adding new runtime assets referenced by `index.html` |
 | `sw.js` | 111 | PWA service worker shell cache and network-first routing for app HTML/CSS/JS assets | Update shell asset list when adding new runtime scripts needed offline |
 | `scripts/auth-handlers.js` | 696 | Auth and preview-demo handlers: login/register flows, dashboard preview routing, and preview-only state flags for visual QA | Read narrow preview/auth ranges before changing login or preview behavior |
-| `scripts/check-portable-paths.sh` | 24 | Проверка, что в репозитории нет локальных абсолютных user-путей | Запускать перед коммитом |
-| `scripts/check-ui-architecture.sh` | 78 | Guard против роста inline UI-долга в `index.html` | Запускать перед UI-коммитом |
+| `scripts/check-js-syntax.mjs` | 112 | Проверка синтаксиса staged-файлов локально или всех tracked JS и inline-скриптов в CI через `--all`; проверки распараллелены | `npm run check:js-syntax`; режим `--all` входит в `qa:quick` |
+| `scripts/check-portable-paths.mjs` | 60 | Кроссплатформенная проверка, что в репозитории нет локальных абсолютных user-путей | `npm run check:portable-paths`; входит в `qa:quick` |
+| `scripts/check-ui-architecture.mjs` | 65 | Кроссплатформенный guard против роста inline UI-долга в `index.html` | `npm run check:ui-architecture`; входит в `qa:quick` |
 | `scripts/back-019-task-card-smoke.mjs` | 526 | Headless Chrome/CDP smoke for BACK-019 task cards on 390x844 viewport: overflow, 2-line title clamp, tap/swipe actions, active-card reminder entrypoint, inline completion loading/success/failure state and duplicate-tap protection | Run with `npm run smoke:back019` before changing task-card renderer, card reminder action, or task completion controls |
 | `scripts/back-055-notifications-smoke.mjs` | 340 | Headless Chrome/CDP smoke for BACK-055 notification action cards on 390x844 viewport: empty state, filters, unread badge, expand, snooze, go-to-task, done and write actions | Run with `npm run smoke:back055` before changing notification action-card renderer |
 | `scripts/home-001-dashboard-smoke.mjs` | 630 | Headless Chrome/CDP smoke for HOME-001 dashboard: top-3 rows, metrics, nav routes, home/statistics/calendar task-detail return routes, focus card/popup counter consistency, statistics active-task empty-state clarity, dark/light screenshots, and 390/360/320 viewport edge geometry | Run with `npm run smoke:home001` before changing dashboard/home routing, task-detail return routing, calendar task rows, focus counters, statistics active-task copy, or visual shell |
@@ -86,15 +87,17 @@
 | `scripts/back-069-task-detail-hero-overflow-smoke.mjs` | 194 | Headless Chrome/CDP smoke for task-detail hero at 390x844: verifies long tag ellipsis, no title/description overlap with meta cards, bounded hero growth, and no horizontal overflow | Run with `npm run smoke:back069-hero` before changing task-detail hero layout |
 | `scripts/viral-share-card-smoke.mjs` | 126 | Static smoke for VIRAL-001/004/006 share-card runtime: validates canvas PNG builders, streak/weekly helpers, native share, download fallback and lite analytics hooks | Run with `npm run smoke:viral-share` before promoting share-card evidence beyond source-only |
 | `.githooks/pre-commit` | 5 | Локальный hook для запуска path guard и UI architecture guard перед commit | Активировать через `git config core.hooksPath .githooks` |
-| `.github/workflows/path-guard.yml` | 34 | GitHub Actions quality guard: переносимые пути + UI architecture debt | Срабатывает на push и PR |
+| `.github/workflows/path-guard.yml` | 37 | Быстрый GitHub Actions quality gate для переносимых guards, encoding, syntax, CSS и Pages assets | Срабатывает на Pull Request и push в `main` |
+| `.github/workflows/nightly-playwright.yml` | 51 | Неблокирующий nightly/manual Playwright для Web, Telegram и VK с артефактами ошибок | После merge наблюдать пять последовательных зелёных запусков до усиления gate |
 
 ## Autotests
 
 | File | Lines | Purpose | How to use |
 | --- | ---: | --- | --- |
-| `package.json` | 75 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
-| `playwright.config.ts` | 45 | Playwright config for local static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
-| `autotests/README.md` | 28 | Autotest runbook for web, Telegram Mini App, VK Mini App and k6 load smoke | Read whole file when using or extending autotests |
+| `package.json` | 73 | npm scripts and dev dependencies, including Playwright e2e, k6 smoke and `qa:prebeta` commands | Read whole file when changing project tooling |
+| `playwright.config.ts` | 47 | Playwright config for portable Node static server, mobile/desktop Chromium projects and reports | Read whole file before changing e2e behavior |
+| `scripts/serve-autotest-static.mjs` | 79 | Dependency-free local static server shared by Playwright on macOS, Windows and CI | Started automatically by `playwright.config.ts`; supports only safe GET/HEAD file access |
+| `autotests/README.md` | 54 | Autotest runbook for Web, Telegram, VK, k6 and the nonblocking nightly pilot | Read whole file when using or extending autotests |
 | `autotests/tests/web/basic.spec.ts` | 12 | Playwright web smoke: app shell and privacy page | Run with `npm run test:e2e:web` |
 | `autotests/tests/web/auth-legal.spec.ts` | 61 | Playwright auth/legal smoke: onboarding/login privacy links, login/register privacy opening, auth legal/tabs/password/forgot 44px targets | Run with `npm run test:e2e:web` before changing auth legal/accessibility UI |
 | `autotests/tests/web/navigation-safe-area.spec.ts` | 76 | Playwright nav/safe-area smoke: synthetic auth shell, home/global nav inside viewport, no horizontal overflow on mobile and desktop projects | Run with `npm run test:e2e:web` before changing navigation, safe-area, or app shell layout |
@@ -103,7 +106,7 @@
 | `autotests/tests/vk-app/basic.spec.ts` | 168 | Playwright VK Mini App smoke with mocked `window.vkBridge`, saved token, mocked Worker auth/tasks/identities, and home/detail/ask/calendar/stats/profile navigation parity | Run with `npm run test:e2e:vk` before changing VK shell, task rendering, or safe VK navigation |
 | `autotests/load/smoke-load.js` | 20 | k6 local/static load smoke for `/index.html`, `/vk.html`, `/privacy.html` | Run with `npm run load:smoke`; set `BASE_URL`, `K6_VUS`, `K6_DURATION` explicitly for staging |
 | `https://github.com/mrktggod/4pm` | n/a | Приватные QA playbook и backlog coverage docs | Read before UI/QA/night automation work |
-| `scripts/run-bash-script.mjs` | 29 | Cross-Windows npm wrapper for Git Bash based shell guards | Used by `npm run check:portable-paths` and `npm run check:ui-architecture` |
+| `scripts/run-bash-script.mjs` | 59 | Legacy wrapper for invoking an explicitly requested Bash script on Windows | Current quality guards use portable Node scripts and do not depend on this wrapper |
 
 ## PM / QA
 
@@ -130,7 +133,7 @@
 | Git-статус | `git status --short` |
 | Текущая ветка | `git branch --show-current` |
 | Remote | `git remote -v` |
-| UI-архитектура | `bash scripts/check-ui-architecture.sh` |
+| UI-архитектура | `npm run check:ui-architecture` |
 | Локальная раздача | `python3 -m http.server 8000` |
 | Smoke URL | `http://127.0.0.1:8000/index.html`, `/vk.html`, `/privacy.html` |
 

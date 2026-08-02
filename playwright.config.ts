@@ -37,7 +37,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `python -m http.server ${PORT}`,
+    command: 'node scripts/serve-autotest-static.mjs',
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     stdout: 'pipe',
