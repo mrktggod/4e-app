@@ -369,8 +369,8 @@ async function runSmoke(ws) {
     const secondCard = second.querySelector('.task-card');
     const secondRect = secondCard.getBoundingClientRect();
     pointer(secondCard, 'pointerdown', secondRect.left + 80, secondRect.top + 20);
-    pointer(secondCard, 'pointermove', secondRect.left + 180, secondRect.top + 22);
-    pointer(secondCard, 'pointerup', secondRect.left + 180, secondRect.top + 22);
+    pointer(secondCard, 'pointermove', secondRect.left + 220, secondRect.top + 22);
+    pointer(secondCard, 'pointerup', secondRect.left + 220, secondRect.top + 22);
     await wait(30);
     if (!second.classList.contains('swipe-right')) failures.push('right swipe did not reveal done action');
     const doneButton = second.querySelector('.task-swipe-done');

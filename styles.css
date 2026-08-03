@@ -1669,6 +1669,7 @@ body:has(#reset-password.active) .bottom-nav-v2 {
 .task-card-shell .task-swipe-actions-right {
   justify-content: flex-start;
   transform: translateX(-100%);
+  background: linear-gradient(90deg, rgba(77, 175, 90, 0.96), rgba(77, 175, 90, 0.62) 78%, transparent);
 }
 .task-card-shell.swipe-left .task-swipe-actions-left,
 .task-card-shell.swiping-left .task-swipe-actions-left,
@@ -1683,8 +1684,8 @@ body:has(#reset-password.active) .bottom-nav-v2 {
 .task-card-shell .task-swipe-btn {
   position: relative;
   z-index: 6;
-  flex: 0 0 72px;
-  min-width: 72px;
+  flex: 0 0 112px;
+  min-width: 112px;
   height: 100%;
   border: 0;
   padding: 0 12px;
@@ -1712,6 +1713,10 @@ body:has(#reset-password.active) .bottom-nav-v2 {
 .task-card-shell .task-swipe-done {
   background: #4DAF5A;
   color: #071107;
+}
+.task-card-shell.swipe-committing .task-row.task-card {
+  opacity: 0;
+  transform: translateX(18px) scale(0.985);
 }
 .task-card-shell .task-row.task-card {
   position: relative;

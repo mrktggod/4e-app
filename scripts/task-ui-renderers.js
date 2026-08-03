@@ -128,9 +128,12 @@ function taskSwipeStart(event,card){
   if(event.pointerType==='mouse'&&event.button!==0)return;
   const shell=card.closest('.task-card-shell');
   if(!shell)return;
-  taskSwipeState={shell,card,startX:event.clientX,startY:event.clientY,dx:0,locked:false,vibrated:false};
+  taskSwipeState={shell,card,startX:event.clientX,startY:event.clientY,dx:0,locked:false,vibrated:false,pointerId:event.pointerId,maxRight:Math.max(112,(shell.clientWidth||320)-8)};
   resetAllTaskSwipes(shell);
   card.style.transition='none';
+  if(event.pointerId!==undefined&&card.setPointerCapture){
+    try{card.setPointerCapture(event.pointerId);}catch(e){}
+  }
 }
 function taskSwipeMove(event,card){
   if(!taskSwipeState||taskSwipeState.card!==card)return;
@@ -138,9 +141,9 @@ function taskSwipeMove(event,card){
   const dy=event.clientY-taskSwipeState.startY;
   if(!taskSwipeState.locked&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>10)return;
   if(Math.abs(dx)>8){taskSwipeState.locked=true;event.preventDefault();}
-  const limited=Math.max(-144,Math.min(96,dx));
+  const limited=Math.max(-144,Math.min(taskSwipeState.maxRight,dx));
   taskSwipeState.dx=limited;
-  if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10,'medium');}
+  if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10,'light');}
   taskSwipeState.shell.classList.toggle('swiping-left',limited<-12);
   taskSwipeState.shell.classList.toggle('swiping-right',limited>12);
   card.style.transform='translateX('+limited+'px)';
@@ -149,24 +152,40 @@ function taskSwipeEnd(event,card){
   if(!taskSwipeState||taskSwipeState.card!==card)return;
   const shell=taskSwipeState.shell;
   const dx=taskSwipeState.dx;
+  const maxRight=taskSwipeState.maxRight;
+  const revealThreshold=104;
+  const completeThreshold=Math.max(revealThreshold+36,Math.round(maxRight*.72));
   card.style.transition='';
   shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
-  if(Math.abs(dx)>=88&&!taskSwipeState.vibrated)vibrateTaskCard(12,'medium');
+  if(Math.abs(dx)>=56&&!taskSwipeState.vibrated)vibrateTaskCard(10,'light');
   if(dx<-88){
     resetTaskSwipe(shell);
     const moveBtn=shell.querySelector('.task-swipe-move');
-    if(moveBtn)triggerTaskActionFeedback(moveBtn,{ms:20,style:'medium'});
+    if(moveBtn)triggerTaskActionFeedback(moveBtn,{ms:20,style:'light'});
     openTaskReschedule(shell.dataset.taskId);
-  }else if(dx>88){
-    resetTaskSwipe(shell);
+  }else if(dx>=completeThreshold){
     const doneBtn=shell.querySelector('.task-swipe-done');
-    if(doneBtn)quickDoneTask(shell.dataset.taskId,doneBtn);
-  }else resetTaskSwipe(shell);
+    card.style.transition='transform .22s cubic-bezier(.23,1,.32,1), opacity .18s ease';
+    card.style.transform='translateX('+maxRight+'px)';
+    shell.classList.add('swipe-committing');
+    vibrateTaskCard(18,'medium');
+    setTimeout(()=>{
+      shell.classList.remove('swipe-committing');
+      if(doneBtn)quickDoneTask(shell.dataset.taskId,doneBtn);
+    },140);
+  }else if(dx>=revealThreshold){
+    setTaskSwipe(shell,'right');
+  }else{
+    resetTaskSwipe(shell);
+  }
+  if(taskSwipeState?.pointerId!==undefined&&card.releasePointerCapture){
+    try{card.releasePointerCapture(taskSwipeState.pointerId);}catch(e){}
+  }
   taskSwipeState=null;
 }
 function setTaskSwipe(shell,state){
-  const card=shell?.querySelector('.task-card');
+  const card=shell?.querySelector?.('.task-card');
   if(!card)return;
   const leftActions=shell.querySelector('.task-swipe-actions-left');
   const rightActions=shell.querySelector('.task-swipe-actions-right');
@@ -175,7 +194,7 @@ function setTaskSwipe(shell,state){
   shell.classList.remove('swiping-left','swiping-right');
   shell.classList.toggle('swipe-left',state==='left');
   shell.classList.toggle('swipe-right',state==='right');
-  card.style.transform=state==='left'?'translateX(-144px)':(state==='right'?'translateX(96px)':'');
+  card.style.transform=state==='left'?'translateX(-144px)':(state==='right'?'translateX(112px)':'');
   card.style.pointerEvents='none';
   const activeActions = state==='left' ? leftActions : rightActions;
   if(activeActions){
@@ -190,8 +209,8 @@ function resetTaskSwipe(el){
   if(leftActions)leftActions.style.pointerEvents='none';
   if(rightActions)rightActions.style.pointerEvents='none';
   const card=shell.querySelector('.task-card');
-  shell.classList.remove('swipe-left','swipe-right','swiping-left','swiping-right');
-  if(card)card.style.transition='transform .18s ease';
+  shell.classList.remove('swipe-left','swipe-right','swiping-left','swiping-right','swipe-committing');
+  if(card)card.style.transition='transform .22s cubic-bezier(.23,1,.32,1)';
   if(card)card.style.transform='';
   if(card)card.style.pointerEvents='';
   shell.querySelectorAll('.task-swipe-btn').forEach(btn=>{btn.style.pointerEvents='';});
