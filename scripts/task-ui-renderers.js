@@ -146,7 +146,7 @@ function taskSwipeMove(event,card){
   if(Math.abs(limited)>=56&&!taskSwipeState.vibrated){taskSwipeState.vibrated=true;vibrateTaskCard(10,'light');}
   taskSwipeState.shell.classList.toggle('swiping-left',limited<-12);
   taskSwipeState.shell.classList.toggle('swiping-right',limited>12);
-  card.style.transform='translateX('+limited+'px)';
+  card.style.setProperty('transform','translateX('+limited+'px)','important');
 }
 function taskSwipeEnd(event,card){
   if(!taskSwipeState||taskSwipeState.card!==card)return;
@@ -167,7 +167,7 @@ function taskSwipeEnd(event,card){
   }else if(dx>=completeThreshold){
     const doneBtn=shell.querySelector('.task-swipe-done');
     card.style.transition='transform .22s cubic-bezier(.23,1,.32,1), opacity .18s ease';
-    card.style.transform='translateX('+maxRight+'px)';
+    card.style.setProperty('transform','translateX('+maxRight+'px)','important');
     shell.classList.add('swipe-committing');
     vibrateTaskCard(18,'medium');
     setTimeout(()=>{
@@ -194,7 +194,7 @@ function setTaskSwipe(shell,state){
   shell.classList.remove('swiping-left','swiping-right');
   shell.classList.toggle('swipe-left',state==='left');
   shell.classList.toggle('swipe-right',state==='right');
-  card.style.transform=state==='left'?'translateX(-144px)':(state==='right'?'translateX(112px)':'');
+  card.style.setProperty('transform',state==='left'?'translateX(-144px)':(state==='right'?'translateX(112px)':'none'),'important');
   card.style.pointerEvents='none';
   const activeActions = state==='left' ? leftActions : rightActions;
   if(activeActions){
@@ -211,7 +211,7 @@ function resetTaskSwipe(el){
   const card=shell.querySelector('.task-card');
   shell.classList.remove('swipe-left','swipe-right','swiping-left','swiping-right','swipe-committing');
   if(card)card.style.transition='transform .22s cubic-bezier(.23,1,.32,1)';
-  if(card)card.style.transform='';
+  if(card)card.style.removeProperty('transform');
   if(card)card.style.pointerEvents='';
   shell.querySelectorAll('.task-swipe-btn').forEach(btn=>{btn.style.pointerEvents='';});
 }

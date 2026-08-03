@@ -3731,3 +3731,12 @@ Git Bash UI architecture guard failed on existing branch state:
 **Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `npm run check:ui-architecture`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
 
 **Commit:** pending
+## 2026-08-03
+
+### Swipe follow-up: override dashboard transform lock
+
+**What changed:** Applied the active swipe transform as an inline important style so the dashboard's legacy visibility rule cannot cancel the card movement. The existing full-swipe completion and standard deadline picker remain unchanged.
+
+**Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
+
+**Commit:** pending
