@@ -289,6 +289,14 @@ PM file protocol:
 
 If a brief conflicts with `AGENTS.md`, set the brief to `BLOCKED`, explain the conflict in the report, and ask for a decision.
 
+## Ночные сессии: обязательные уроки
+
+До выбора любой ночной задачи сессия читает `LESSONS.md` в корне app-репозитория.
+Это обязательный первый входной материал перед inbox, backlog, roadmap, тестами и
+выбором работы; уроки не заменяются памятью агента или старым отчётом. В каждом
+ночном `pm/outbox/REPORT-*.md` должна быть отдельная строка в точном формате
+`lessons_read: <число строк>`, включая `lessons_read: 0`, если файл пуст.
+
 ## Autonomous Night Backlog - Selection Rules
 
 At the 23:00 autonomous run, use this order of work:
@@ -330,3 +338,32 @@ Yuri-only `NEED-YURI` work:
 - CAL tasks, major architecture work such as ARCH-001, integration of a new redesign, or next-horizon roadmap work before P0/P1 closure.
 
 When in doubt, do not guess. If a task is not clearly whitelisted, classify it at least as `NEED-CLAUDE`; if it involves money, access, product decisions, production, `main`, secrets, or CAL, classify it as `NEED-YURI`.
+
+## Release handoff
+
+`DONE` в brief не означает, что пользователь уже получил правку. После каждой
+ночной задачи с кодом исполнитель обновляет `pm/release-queue.md` и указывает
+`release_state: PR_READY`, точный PR/SHA, целевую ветку, нужные проверки и
+неавтоматизируемый ручной хвост. Он не делает merge или deploy.
+
+Утренний приёмщик обязан сверить `PR_READY` с GitHub и добавить каждый готовый
+кандидат в раздел «Кандидаты на merge» файла
+`pm/outbox/MANUAL-ACTIONS-YYYY-MM-DD-morning.md`: ссылка на PR, одна строка о
+правке, проверки, целевая ветка и ожидаемый результат после deployment. После
+явно зафиксированного человеком merge он проверяет попадание SHA в `main`,
+deployment нужной поверхности и ручный verdict, затем обновляет `release_state`
+на `DEPLOYED` или `MANUAL_ACCEPTED`. Заблокированные строки не удаляются.
+
+## Ночная непрерывность и процессный ремонт
+
+Ночная цепочка состоит из исполнителя, независимого проверяющего и утреннего
+финализатора. Исполнитель оставляет краткий handoff: brief, PR/SHA, проверки,
+`release_state`, что осталось сделать и кому. Проверяющий не переписывает код
+исполнителя в его ветке: он либо принимает доказательства, либо создаёт точный
+follow-up/handoff для отдельной ветки.
+
+Утренний финализатор проверяет, что ни одна начатая задача не исчезла между
+отчётом, PR и `pm/release-queue.md`. При доказанном сбое он может исправлять
+только процессные документы, очередь и тексты автоматизаций, чтобы следующая
+ночь не повторила сбой. Он не меняет runtime-код, не делает merge/deploy и не
+подменяет ручную проверку человека.

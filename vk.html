@@ -588,6 +588,14 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
         <span class="detail-edit-label">Срок</span>
         <input class="detail-edit-input" id="detailEditDeadline" type="date">
       </label>
+      <label class="detail-edit-field">
+        <span class="detail-edit-label">Исполнитель</span>
+        <input class="detail-edit-input" id="detailEditPerson" maxlength="80">
+      </label>
+      <label class="detail-edit-field detail-edit-field--wide">
+        <span class="detail-edit-label">Описание</span>
+        <textarea class="detail-edit-input" id="detailEditDescription" rows="3" maxlength="1200"></textarea>
+      </label>
       <div class="detail-edit-actions">
         <button class="btn btn-primary" id="detailSaveBtn" type="button">Сохранить</button>
         <button class="btn btn-secondary" id="detailCancelBtn" type="button">Отмена</button>
@@ -647,6 +655,8 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
   <div class="cal-grid" id="calGrid"></div>
   <div class="section-label">Задачи на день</div>
   <div id="calTaskList"><div class="text-muted text-sm" style="padding:12px 0">Выберите дату</div></div>
+  <div class="section-label">Все сроки</div>
+  <div id="calDeadlineList"><div class="text-muted text-sm" style="padding:12px 0">Сроков пока нет</div></div>
 </div>
 
 <!-- STATS -->
@@ -697,6 +707,18 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
       <span class="label">Политика конфиденциальности</span>
       <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     </a>
+    <a class="setting-row profile-support-link" href="https://t.me/Denzel89bot" target="_blank" rel="noopener">
+      <span class="label">Поддержка</span>
+      <span class="value">@Denzel89bot</span>
+    </a>
+    <div class="setting-row" onclick="showToast('Безопасность, сессии и устройства доступны в основном профиле 4')">
+      <span class="label">Безопасность и сессии</span>
+      <span class="value">В основном приложении</span>
+    </div>
+    <div class="setting-row" onclick="showToast('AI-память доступна в основном профиле 4')">
+      <span class="label">AI-память</span>
+      <span class="value">Read-only позже</span>
+    </div>
     <div class="setting-row" onclick="showToast('Настройки уведомлений пока локальные')">
       <span class="label">Уведомления</span>
       <span class="value">Локально</span>
@@ -709,10 +731,6 @@ html[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.90); box-s
     </div>
     <div class="setting-row" onclick="showToast('Скоро')">
       <span class="label">Подписка</span>
-      <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="setting-row" onclick="showToast('Поддержка: @Denzel89bot')">
-      <span class="label">Поддержка</span>
       <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
   </div>
@@ -924,6 +942,12 @@ async function readJsonSafe(response) {
   } catch(e) {
     return { ok: false, error: response?.ok ? 'Некорректный ответ сервера' : 'Сервер временно недоступен' };
   }
+}
+
+function isInvalidSavedTokenResponse(response, data = {}) {
+  if (response?.status === 401 || response?.status === 403) return true;
+  const error = String(data.error || data.code || data.reason || '').toLowerCase();
+  return /invalid[_ -]?token|token[_ -]?(invalid|revoked)|unauthorized[_ -]?token/.test(error);
 }
 
 function escapeHtml(value) {
@@ -1184,9 +1208,10 @@ async function bootstrapAuth() {
 
   const savedToken = localStorage.getItem(TOKEN_K);
   if (savedToken) {
+    let shouldDropSavedToken = false;
     try {
       const r = await withTimeout(fetch(WORKER + '/auth/me', { headers: { 'x-token': savedToken } }), 2500);
-      const d = await r.json();
+      const d = await readJsonSafe(r);
       if (d.ok) {
         state.token = savedToken;
         state.d1Token = null;
@@ -1194,8 +1219,13 @@ async function bootstrapAuth() {
         enterApp();
         return;
       }
+      shouldDropSavedToken = isInvalidSavedTokenResponse(r, d);
     } catch(e) {}
-    if (localStorage.getItem(TOKEN_K) === savedToken) localStorage.removeItem(TOKEN_K);
+    if (shouldDropSavedToken && localStorage.getItem(TOKEN_K) === savedToken) {
+      localStorage.removeItem(TOKEN_K);
+    } else if (!shouldDropSavedToken) {
+      showToast('Сессия сохранена, связь восстанавливается');
+    }
   }
 
   startVKAutoLogin(vkReadyPromise);
@@ -1721,7 +1751,25 @@ function taskDeadlineDateKey(deadline) {
   if (!raw) return '';
   const direct = raw.match(/^(\d{4}-\d{2}-\d{2})/);
   if (direct) return direct[1];
+  const relative = relativeDeadlineDateKey(raw);
+  if (relative) return relative;
   return localDateKey(raw);
+}
+
+function relativeDeadlineDateKey(value, baseDate = new Date()) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+  const date = new Date(baseDate);
+  if (/(^|\s)сегодня(?=\s|$)/i.test(raw)) return localDateKey(date);
+  if (/(^|\s)завтра(?=\s|$)/i.test(raw)) {
+    date.setDate(date.getDate() + 1);
+    return localDateKey(date);
+  }
+  if (/(^|\s)послезавтра(?=\s|$)/i.test(raw)) {
+    date.setDate(date.getDate() + 2);
+    return localDateKey(date);
+  }
+  return '';
 }
 
 function formatDate(d) {
@@ -1779,7 +1827,8 @@ async function maybeSaveTaskFromChat(text) {
     date: new Date().toISOString().slice(0, 10),
     createdAt: Date.now(),
     source: 'vk_chat',
-    originalMsg: text
+    originalMsg: text,
+    description: text !== taskText ? text : ''
   };
   if (deadline) task.deadline = deadline;
   const res = await fetch(WORKER, {
@@ -1791,6 +1840,119 @@ async function maybeSaveTaskFromChat(text) {
   if (!data.ok) throw new Error(data.error || 'task_save_failed');
   await loadTasks();
   return true;
+}
+
+function extractVkAiJsonTag(text, tagName) {
+  const pattern = new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, 'i');
+  const match = String(text || '').match(pattern);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1]);
+  } catch(e) {
+    return null;
+  }
+}
+
+function stripVkAiActionTags(text) {
+  return String(text || '')
+    .replace(/<create_task>[\s\S]*?<\/create_task>/gi, '')
+    .replace(/<task_actions>[\s\S]*?<\/task_actions>/gi, '')
+    .trim();
+}
+
+function normalizeVkAiTaskDraft(rawDraft, sourceText) {
+  const draft = rawDraft && typeof rawDraft === 'object' ? rawDraft : {};
+  const text = String(draft.text || draft.title || normalizeTaskText(sourceText || '')).trim();
+  if (!text || text.length < 2) return null;
+  const originalMsg = String(draft.originalMsg || sourceText || draft.description || text).trim();
+  const description = String(draft.description || '').trim();
+  return {
+    id: 'vk_ai_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    text,
+    title: text,
+    person: String(draft.person || '').trim(),
+    deadline: draft.deadline || inferTaskDeadline(sourceText || ''),
+    type: 'task',
+    done: false,
+    date: new Date().toISOString().slice(0, 10),
+    createdAt: Date.now(),
+    source: 'vk_ai_chat',
+    originalMsg,
+    description
+  };
+}
+
+async function saveVkAiCreatedTask(rawDraft, sourceText) {
+  if (!state.token) return false;
+  const task = normalizeVkAiTaskDraft(rawDraft, sourceText);
+  if (!task) return false;
+  const res = await fetch(WORKER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-action': 'save-task', 'x-token': state.token },
+    body: JSON.stringify({ task })
+  });
+  const data = await readJsonSafe(res);
+  if (!res.ok || data?.ok === false) throw new Error(data?.error || 'task_save_failed');
+  await loadTasks();
+  return true;
+}
+
+function normalizeVkTaskActionField(field) {
+  const key = String(field || '').toLowerCase();
+  if (['text', 'person', 'priority', 'status'].includes(key)) return key;
+  if (['originalmsg', 'original_msg', 'description', 'desc'].includes(key)) return 'originalMsg';
+  return '';
+}
+
+async function applyVkAiTaskActions(actions) {
+  const list = Array.isArray(actions) ? actions.slice(0, 5) : [];
+  let applied = 0;
+  for (const action of list) {
+    if (!action || typeof action !== 'object') continue;
+    const type = String(action.type || '').toLowerCase();
+    const taskId = String(action.taskId || action.id || '').trim();
+    const task = state.tasks.find((item) => String(item.id) === taskId);
+    if (type === 'show' && task) {
+      openTaskDetail(task.id);
+      applied += 1;
+      continue;
+    }
+    if (type === 'complete' && task) {
+      if (await doneTask(task.id)) applied += 1;
+      continue;
+    }
+    if ((type === 'reschedule' || type === 'edit') && task && state.token) {
+      const updates = {};
+      if (type === 'reschedule' && action.deadline) updates.deadline = action.deadline;
+      if (type === 'edit') {
+        const field = normalizeVkTaskActionField(action.field);
+        if (field) updates[field] = String(action.value ?? '').trim();
+        if (field === 'originalMsg') updates.description = String(action.value ?? '').trim();
+      }
+      if (Object.keys(updates).length) {
+        await updateTaskOnWorker(task.id, updates);
+        applyTaskDetailUpdates(task, updates);
+        applied += 1;
+      }
+    }
+  }
+  if (applied) {
+    renderTasks();
+    buildStats();
+    buildCalendar();
+  }
+  return applied;
+}
+
+async function handleVkAiStructuredTags(reply, sourceUserText, taskAlreadySaved) {
+  const createTask = extractVkAiJsonTag(reply, 'create_task');
+  const actions = extractVkAiJsonTag(reply, 'task_actions');
+  const cleanText = stripVkAiActionTags(reply) || 'Готово.';
+  let created = false;
+  let appliedActions = 0;
+  if (createTask && !taskAlreadySaved) created = await saveVkAiCreatedTask(createTask, sourceUserText);
+  if (actions) appliedActions = await applyVkAiTaskActions(actions);
+  return { cleanText, created, appliedActions };
 }
 
 // ── NAVIGATION ──
@@ -1843,10 +2005,14 @@ function syncTaskDetailEditFields(task) {
   const status = document.getElementById('detailEditStatus');
   const priority = document.getElementById('detailEditPriority');
   const deadline = document.getElementById('detailEditDeadline');
+  const person = document.getElementById('detailEditPerson');
+  const description = document.getElementById('detailEditDescription');
   if (title) title.value = taskDisplayTitle(task);
   if (status) status.value = getTaskDetailStatus(task);
   if (priority) priority.value = getTaskDetailPriority(task);
   if (deadline) deadline.value = taskDeadlineInputValue(task);
+  if (person) person.value = String(task?.person || '').trim();
+  if (description) description.value = String(task?.description || task?.originalMsg || '').trim();
   setDetailEditError('');
 }
 
@@ -1855,10 +2021,15 @@ function collectTaskDetailUpdates() {
   const status = document.getElementById('detailEditStatus')?.value || 'active';
   const priority = document.getElementById('detailEditPriority')?.value || 'normal';
   const deadline = document.getElementById('detailEditDeadline')?.value || '';
+  const person = (document.getElementById('detailEditPerson')?.value || '').trim();
+  const description = (document.getElementById('detailEditDescription')?.value || '').trim();
   if (title.length < 2) throw new Error('Название слишком короткое');
   return {
     text: title,
     title,
+    person,
+    description,
+    originalMsg: description,
     status,
     priority,
     deadline,
@@ -2001,6 +2172,86 @@ function switchTaskDetailTab(id, el) {
   });
 }
 
+function responseRequestId(response) {
+  try {
+    return response?.headers?.get?.('x-request-id') || response?.headers?.get?.('cf-ray') || '';
+  } catch(e) {
+    return '';
+  }
+}
+
+function createVkAiError(type, message, response, data = {}) {
+  const error = new Error(message);
+  error.type = type;
+  error.status = response?.status || 0;
+  error.requestId = responseRequestId(response);
+  error.code = data?.code || data?.error || '';
+  return error;
+}
+
+function classifyVkAiStatus(response, data = {}) {
+  const status = response?.status || 0;
+  if (status === 401) return createVkAiError('auth', 'Нужно снова войти, чтобы пользоваться AI-чатом.', response, data);
+  if (status === 402 || status === 403) return createVkAiError('entitlement', 'Доступ к AI сейчас ограничен. Проверьте подписку или права аккаунта.', response, data);
+  if (status === 429) return createVkAiError('rate_limit', 'Слишком много запросов к AI. Попробуйте чуть позже.', response, data);
+  if (status >= 500) return createVkAiError('server', 'AI временно недоступен. Мы сохранили сообщение, попробуйте позже.', response, data);
+  return createVkAiError('bad_response', data?.error || 'AI вернул неожиданный ответ.', response, data);
+}
+
+function recordVkAiDiagnostic(error) {
+  state.aiLastDiagnostic = {
+    status: error?.status || 0,
+    requestId: error?.requestId || '',
+    type: error?.type || 'unknown'
+  };
+  console.warn('vk_ai_chat_error', state.aiLastDiagnostic);
+}
+
+function vkAiUserMessage(error, fallback) {
+  if (!error) return fallback;
+  if (error.type === 'network') return 'Нет соединения с AI. Проверьте сеть и попробуйте ещё раз.';
+  if (error.type === 'malformed') return 'AI вернул некорректный формат ответа. Попробуйте повторить запрос.';
+  return error.message || fallback;
+}
+
+async function readVkAiResponse(response) {
+  if (!response?.ok) {
+    const data = await readJsonSafe(response);
+    throw classifyVkAiStatus(response, data);
+  }
+  const data = await readJsonSafe(response);
+  const reply = data?.content?.[0]?.text;
+  if (!reply) throw createVkAiError('malformed', 'AI вернул некорректный формат ответа.', response, data);
+  return reply;
+}
+
+async function requestVkAi(payload, retries = 1) {
+  let lastError = null;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const response = await fetch(WORKER + '/anthropic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
+        body: JSON.stringify(payload)
+      });
+      try {
+        return await readVkAiResponse(response);
+      } catch (error) {
+        lastError = error;
+        if (error.type === 'server' && attempt < retries) continue;
+        throw error;
+      }
+    } catch(error) {
+      lastError = error?.type ? error : createVkAiError('network', 'Нет соединения с AI.', null, {});
+      if (lastError.type === 'network' && attempt < retries) continue;
+      recordVkAiDiagnostic(lastError);
+      throw lastError;
+    }
+  }
+  recordVkAiDiagnostic(lastError);
+  throw lastError;
+}
+
 async function doneCurrentTask() {
   if (!state.currentTask) return;
   const completed = await doneTask(state.currentTask.id);
@@ -2018,27 +2269,21 @@ async function sendTaskDiscussion() {
   saveTaskDiscussion(task, items);
   renderTaskDiscussion(task);
   try {
-    const res = await fetch(WORKER + '/anthropic', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 700,
-        system: 'Ты 4 — AI-секретарь. Пользователь обсуждает конкретную задачу. Отвечай кратко, практично, по-русски. Дай следующий шаг, риски или короткий план.',
-        messages: [
-          { role: 'user', content: 'Задача: ' + taskDisplayTitle(task) + '\nВопрос: ' + text }
-        ]
-      })
+    const reply = await requestVkAi({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 700,
+      system: 'Ты 4 — AI-секретарь. Пользователь обсуждает конкретную задачу. Отвечай кратко, практично, по-русски. Дай следующий шаг, риски или короткий план.',
+      messages: [
+        { role: 'user', content: 'Задача: ' + taskDisplayTitle(task) + '\nВопрос: ' + text }
+      ]
     });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text || 'Я зафиксировал мысль. Следующий шаг — уточнить действие и срок.';
     const fresh = readTaskDiscussion(task);
     fresh.push({ role: 'ai', text: reply, at: Date.now() });
     saveTaskDiscussion(task, fresh);
     renderTaskDiscussion(task);
   } catch(e) {
     const fresh = readTaskDiscussion(task);
-    fresh.push({ role: 'ai', text: 'Не смог связаться с AI, но заметка по задаче сохранена локально.', at: Date.now() });
+    fresh.push({ role: 'ai', text: vkAiUserMessage(e, 'Не смог связаться с AI, но заметка по задаче сохранена локально.'), at: Date.now() });
     saveTaskDiscussion(task, fresh);
     renderTaskDiscussion(task);
   }
@@ -2074,17 +2319,24 @@ async function sendMessage() {
     showToast('Не удалось добавить задачу');
   }
   try {
-    const res = await fetch(WORKER + '/anthropic', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(state.token ? { 'x-token': state.token } : {}) },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу. Не задавай уточняющих вопросов — сразу давай конкретный ответ. Текущие задачи пользователя: ' + JSON.stringify(state.tasks.slice(0,10).map(t=>({text:t.text||t.title,done:t.done,deadline:t.deadline}))) + '.', messages: state.chatHistory })
+    const reply = await requestVkAi({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1000,
+      system: 'Ты 4 — AI-секретарь для деловых чатов. Помогаешь управлять задачами, составлять деловые сообщения, давать советы. Отвечай по-русски, кратко и по делу. Не задавай уточняющих вопросов — сразу давай конкретный ответ. Текущие задачи пользователя: ' + JSON.stringify(state.tasks.slice(0,10).map(t=>({id:t.id,text:t.text||t.title,done:t.done,deadline:t.deadline,person:t.person||'',priority:t.priority||''}))) + '. Если создаёшь задачу, добавь тег <create_task>{"text":"короткий заголовок","person":"исполнитель","deadline":null,"description":"детали","originalMsg":"полная фраза пользователя"}</create_task>. Если пользователь просит изменить существующую задачу, добавь <task_actions>[{"type":"complete|reschedule|edit|show","taskId":"id","deadline":"2026-07-08","field":"text|person|priority|originalMsg|status","value":"..."}]</task_actions>.',
+      messages: state.chatHistory
     });
-    const data = await res.json();
     removeTyping(typingId);
-    const reply = data.content?.[0]?.text || 'Не смог получить ответ.';
-    state.chatHistory.push({ role: 'assistant', content: reply }); localStorage.setItem('vk4_chat_'+state.user?.id, JSON.stringify(state.chatHistory.slice(-20)));
-    appendMsg('ai', reply); if (!taskSaved) loadTasks();
-  } catch(e) { removeTyping(typingId); appendMsg('ai', 'Ошибка соединения. Попробуйте ещё раз.'); }
+    const structured = await handleVkAiStructuredTags(reply, text, taskSaved);
+    state.chatHistory.push({ role: 'assistant', content: structured.cleanText });
+    localStorage.setItem('vk4_chat_'+state.user?.id, JSON.stringify(state.chatHistory.slice(-20)));
+    appendMsg('ai', structured.cleanText);
+    if (!taskSaved && !structured.created) loadTasks();
+    if (structured.created) showToast('Задача добавлена');
+    if (structured.appliedActions) showToast('Действие выполнено');
+  } catch(e) {
+    removeTyping(typingId);
+    appendMsg('ai', vkAiUserMessage(e, 'Ошибка соединения. Попробуйте ещё раз.'));
+  }
 }
 
 function appendMsg(role, text) {
@@ -2130,11 +2382,26 @@ function buildCalendar() {
     html += `<div class="cal-day ${isToday?'today':''} ${hasTask?'has-task':''}" onclick="showDayTasks('${iso}')">${i}</div>`;
   }
   grid.innerHTML = html;
+  renderCalendarDeadlineList();
 }
 function showDayTasks(dateStr) {
   const tasks = state.tasks.filter(t => taskDeadlineDateKey(t.deadline) === dateStr);
   const list = document.getElementById('calTaskList');
   list.innerHTML = tasks.length ? tasks.map(t => taskHTML(t)).join('') : `<div class="text-muted text-sm" style="padding:12px 0">Нет задач на ${formatDate(dateStr)}</div>`;
+}
+
+function renderCalendarDeadlineList() {
+  const list = document.getElementById('calDeadlineList');
+  if (!list) return;
+  const tasks = state.tasks
+    .filter(t => taskDeadlineDateKey(t.deadline))
+    .sort((a, b) => taskDateValue(a) - taskDateValue(b));
+  list.innerHTML = tasks.length
+    ? tasks.map(t => `<div class="cal-deadline-item">
+        <div class="text-xs text-muted">${formatDate(t.deadline)}</div>
+        ${taskHTML(t)}
+      </div>`).join('')
+    : '<div class="text-muted text-sm" style="padding:12px 0">Сроков пока нет</div>';
 }
 
 // ── STATS ──

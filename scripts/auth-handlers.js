@@ -467,15 +467,15 @@ function getTelegramManualStartPanel(){
   panel.id='telegram-manual-start-panel';
   panel.hidden=true;
   panel.setAttribute('aria-live','polite');
-  panel.style.cssText='margin:12px 0 0;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);display:flex;flex-direction:column;gap:10px;';
+  panel.className='telegram-manual-start-panel';
   panel.innerHTML=`
-    <div style="font-size:13px;line-height:1.45;opacity:.92;">Если Telegram просто открыл чат с ботом и не отправил команду сам, отправьте её вручную:</div>
-    <code data-telegram-start-command style="display:block;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.24);font-size:14px;word-break:break-all;">/start</code>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="telegram-manual-start-panel__text">Если Telegram просто открыл чат с ботом и не отправил команду сам, отправьте её вручную:</div>
+    <code data-telegram-start-command class="telegram-manual-start-panel__command">/start</code>
+    <div class="telegram-manual-start-panel__actions">
       <button type="button" data-telegram-start-copy class="chip-btn">Скопировать команду</button>
       <button type="button" data-telegram-start-open class="chip-btn">Открыть Telegram ещё раз</button>
     </div>
-    <div style="font-size:12px;line-height:1.45;opacity:.75;">Если бот сам не ответил, отправьте эту команду вручную в текущий чат с ботом.</div>
+    <div class="telegram-manual-start-panel__hint">Если бот сам не ответил, отправьте эту команду вручную в текущий чат с ботом.</div>
   `;
 
   const loginForm=document.getElementById('form-login');

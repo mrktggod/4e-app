@@ -11,6 +11,7 @@ const SHELL_ASSETS = [
   "/scripts/tma-diagnostics.js",
   "/scripts/platform-adapter.js",
   "/scripts/auth.js",
+  "/scripts/qa-press-feedback.js",
   "/scripts/auth-handlers.js",
   "/scripts/task-ui-renderers.js",
   "/assets/vendor/telegram-web-app.js",

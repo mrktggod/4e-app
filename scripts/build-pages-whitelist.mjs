@@ -14,6 +14,7 @@ const requiredFiles = [
   "scripts/tma-diagnostics.js",
   "scripts/platform-adapter.js",
   "scripts/auth.js",
+  "scripts/qa-press-feedback.js",
   "scripts/task-ui-renderers.js",
   "scripts/auth-handlers.js",
 ];

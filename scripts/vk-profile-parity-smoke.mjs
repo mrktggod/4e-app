@@ -4,6 +4,9 @@ import vm from 'node:vm';
 
 const source = fs.readFileSync('vk.html', 'utf8');
 assert.match(source, /href="privacy\.html"/, 'profile privacy link is missing');
+assert.match(source, /href="https:\/\/t\.me\/Denzel89bot"/, 'profile support link is missing');
+assert.match(source, /Безопасность и сессии/, 'profile security/sessions pointer is missing');
+assert.match(source, /AI-память/, 'profile AI memory pointer is missing');
 assert.match(source, /id="profileAccountSummary"/, 'profile account summary is missing');
 assert.match(source, /id="profileIdentitySummary"/, 'profile identity summary is missing');
 assert.doesNotMatch(source, /<span class="label">Уведомления<\/span>\s*<svg[\s\S]{0,160}Скоро/, 'legacy notifications soon row should not remain');

@@ -28,6 +28,164 @@
 
 **Commit:** included in this task commit
 
+## 2026-07-31
+
+### BACK-012 Telegram manual start BEM island
+
+**What changed:** Moved the Telegram manual `/start auth_*` fallback panel styles
+from generated inline HTML in `scripts/auth-handlers.js` into
+`styles/layout.less` classes. Runtime behavior, auth flow, Telegram links,
+payment, entitlement, production, and main branch were not changed.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run build:css`; `npm run check:ui-architecture`; `npm run
+test:e2e:web -- --grep auth`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+## 2026-07-30
+
+### UI architecture inline script guard
+
+**What changed:** Moved the small QA press feedback helper from an inline
+`index.html` block to `scripts/qa-press-feedback.js`, then added that runtime
+asset to both `scripts/build-pages-whitelist.mjs` and the PWA shell cache in
+`sw.js`. This reduces the `index.html` inline script tag count from 4 to 3
+without product behavior changes.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run check:ui-architecture`; `npm run test:e2e:web`; `npm run
+check:pages-script-assets`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+### AI task decomposition preview
+
+**What changed:** Web/PWA task detail AI decomposition now uses the existing
+`/anthropic` path to produce 3-7 checklist steps into a preview panel. The
+task checklist is not written until the user explicitly confirms; cancel clears
+the pending preview without mutation. Existing checklist tasks show the
+secondary "add steps with AI" affordance, and strict JSON `steps` arrays now
+parse correctly. No backend endpoint, payment, entitlement, production deploy,
+main merge, VK, or Telegram surface work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:task-decomposition`; `npm run build:css`; `node
+--check scripts/task-decomposition-preview-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+### VK AI chat main parity
+
+**What changed:** VK AI chat now preserves `originalMsg` and `description` for
+chat-created tasks, prompts the existing `/anthropic` backend to use the same
+`<create_task>` and `<task_actions>` tags as the main app, strips those tags
+from visible assistant text, and executes safe structured task operations
+through existing `save-task`, `update-task`, `doneTask`, and `openTaskDetail`
+paths. No backend contract, full profile memory, production deploy, main merge,
+or live VK account work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-ai-chat-parity`; `npm run smoke:vk-ai-chat-errors`;
+`npm run test:e2e:vk`; `node --check
+scripts/vk-ai-chat-main-parity-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+### VK AI chat honest errors
+
+**What changed:** VK `/anthropic` calls now go through a shared frontend helper
+that checks HTTP status before treating a response as successful, classifies
+auth, entitlement, rate-limit, server, network, and malformed errors, retries
+only network/5xx once, keeps `x-token`, and records safe local diagnostics with
+status/request id only. No backend auth, payment, entitlement, production deploy,
+main merge, CAL, or secret work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-ai-chat-errors`; `npm run test:e2e:vk`; `node
+--check scripts/vk-ai-chat-errors-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+### VK profile minimal parity
+
+**What changed:** VK profile now has explicit privacy and support surfaces:
+privacy opens `privacy.html`, support opens the configured Telegram support
+contact, and security/sessions plus AI-memory are shown as honest pointers to
+the main profile instead of inventing new APIs. No auth/session logic, payment,
+entitlement, production deploy, or main merge work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-profile-parity`; `npm run test:e2e:vk`; `node
+--check scripts/vk-profile-parity-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+### VK calendar deadline parity
+
+**What changed:** VK calendar deadline normalization now recognizes relative
+Russian deadlines (`сегодня`, `завтра`, `послезавтра`) in addition to ISO date
+strings. The VK calendar also renders an all-deadlines list below the selected
+day list. No external calendar, CAL-002/003, production deploy, or main merge
+work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-calendar-date-key`; `npm run test:e2e:vk`; `node
+--check scripts/vk-calendar-date-key-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+### VK task detail full editing
+
+**What changed:** Extended the existing VK task detail editor to include real
+person and description fields. Saves still use the existing `x-action:
+update-task` Worker path and now send `person`, `description`, and `originalMsg`
+alongside title/status/priority/deadline/done. No VK Pay, payment, entitlement,
+backend contract, production deploy, or live VK account work was added.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-task-detail-edit`; `npm run test:e2e:vk`; `node
+scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
+### VK saved session network recovery
+
+**What changed:** `vk.html` now preserves the saved `vk4_token` when `/auth/me`
+fails with a temporary condition: timeout, network rejection, 429, 5xx, or
+invalid/empty JSON. The saved token is removed only for confirmed 401/403 or an
+explicit invalid-token style Worker response. Explicit logout still removes the
+token.
+
+**Encoding check:** `node scripts/check-cp1251-mojibake.mjs` passed with 0
+suspicious tokens.
+
+**Test:** `npm run smoke:vk-auth-session`; `node --check
+scripts/vk-auth-session-smoke.mjs`; `node scripts/check-cp1251-mojibake.mjs`.
+
+**Commit:** this commit
+
 ## 2026-07-28
 
 ### BRIEF-2026-07-24-55 profile menu glass package 2
@@ -39,6 +197,78 @@
 **Test:** `npm run build:css`; `npm run smoke:profile-glass`; `npm run test:e2e:web`; PowerShell equivalents of `check:portable-paths` and `check:ui-architecture`; `git diff --check`. `npm run smoke:back050` timed out locally without assertion output.
 
 **Commit:** this commit
+
+## 2026-07-29
+
+### FEEDBACK-001 support intake
+
+**What changed:** Reused the existing in-app support form as a simple feedback
+intake. The form now posts a structured support payload with topic, message,
+user and platform context. `worker-static.js` now exposes `POST /support`,
+which sends the request to a Telegram chat when `SUPPORT_BOT_TOKEN` and
+`SUPPORT_CHAT_ID` are configured. No bot token, chat id, production deploy,
+payment, entitlement, auth-security, CAL or secret work was added.
+
+**Encoding check:** `index.html` was edited after creating
+`index.backup_20260729_2142_support.html`; Step 0 marker count stayed stable
+at `45 / 45`; `node scripts/check-cp1251-mojibake.mjs` passed with
+`0 suspicious tokens`.
+
+**Test:** `node scripts/support-form-smoke.mjs`; `node
+scripts/worker-static-support-smoke.mjs`; `node --check
+scripts/support-form-smoke.mjs`; `node --check
+scripts/worker-static-support-smoke.mjs`; `node --check worker-static.js`;
+`node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; direct Git Bash
+`scripts/check-portable-paths.sh`; direct Git Bash
+`scripts/check-ui-architecture.sh`. `npm run check:portable-paths` and
+`npm run check:ui-architecture` still cannot start because `bash` is not on
+PATH; direct Git Bash guards passed.
+
+**Commit:** not committed because the worktree already contains unrelated dirty
+runtime/docs/screenshot changes
+
+### AI chat delete intent safety
+
+**What changed:** Added a local AI-chat guard for destructive task delete
+intent. Requests such as `удали все задачи` now stop before the Claude request
+and show explicit confirmation text; saved suggested-action cards tied to a
+delete request are blocked before `done-task` can run. No real delete action,
+bulk mutation, payment, entitlement, auth, CAL, secret, deploy or main-merge
+work was added.
+
+**Encoding check:** `index.html` was edited after creating
+`index.backup_20260729_2133.html`; final `node scripts/check-cp1251-mojibake.mjs`
+is required before commit.
+
+**Test:** `node scripts/ai-delete-intent-safety-smoke.mjs`; `npm run
+smoke:task-chat-confirm`; `node --check
+scripts/ai-delete-intent-safety-smoke.mjs`; `node
+scripts/check-cp1251-mojibake.mjs`; `git diff --check`; direct Git Bash
+`scripts/check-portable-paths.sh`; direct Git Bash
+`scripts/check-ui-architecture.sh`. `npm run check:portable-paths` and
+`npm run check:ui-architecture` still cannot start because `bash` is not on
+PATH.
+
+**Commit:** not committed because the worktree already contains unrelated dirty
+runtime/docs/screenshot changes
+
+### DESIGN-GLASS-001 current-pass inventory refresh
+
+**What changed:** No runtime UI code changed. Rechecked the canonical
+`X:\Projects\4-ai-secretary\app` checkout on `feat/admin-tariff-api`, confirmed
+the local reference directory `pm/design-references/` is still missing, and
+updated the glass inventory/report with current package 2 completion status and
+remaining package 3 component families.
+
+**Encoding check:** `index.html` was not edited, so Step 0 did not apply.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious
+tokens; `git diff --check` passed; direct Git Bash portable-path guard passed.
+The npm guard wrappers could not start because `bash` is not on PATH. Direct
+Git Bash UI architecture guard failed on existing branch state:
+`inline event handlers = 403`, allowed max `402`.
+
+**Commit:** not committed because UI architecture guard is red
 
 ### DESIGN-GLASS-001 current-pass audit
 
@@ -159,6 +389,18 @@
 **Encoding check:** `index.html` was not edited; Step 0 did not apply. `node scripts/check-cp1251-mojibake.mjs` passed with 0 suspicious tokens.
 
 **Test:** `git diff --check`; direct Git Bash `scripts/check-portable-paths.sh`; direct Git Bash `scripts/check-ui-architecture.sh`. `npm run check:portable-paths` and `npm run check:ui-architecture` could not start because `bash` is not on PATH in this shell.
+
+**Commit:** pending
+
+## 2026-07-29
+
+### DESIGN-GLASS-001 package 3 safe controls
+
+**What changed:** Brief 57 moved safe quick-add, task-detail popup/control, and AI-chat composer/action controls onto the shared glass tokens. Auth, payment, subscription, entitlement, price, production and live platform surfaces were not touched.
+
+**Encoding check:** `index.html` was not edited. `node scripts/check-cp1251-mojibake.mjs` passed with `0 suspicious tokens`.
+
+**Test:** `npm run build:css`; `npm run smoke:back050`; `npm run smoke:back067-reminder`; `npm run smoke:back068-tag-popup`; `git diff --check`; direct PowerShell equivalents for portable path and UI architecture guards because `bash` was not available in PATH. UI architecture equivalent still reports pre-existing inline handler count `403 / 402`; this task added no inline handlers.
 
 **Commit:** pending
 
@@ -953,7 +1195,7 @@
 
 **Encoding check:** `index.html` was not edited in this final report task; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
 
-**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; portable-paths `git grep` equivalent because `bash` was unavailable in PATH.
 
 **Commit:** this commit
 
@@ -3423,5 +3665,38 @@
 **Проверка кодировки:** `index.html` markers before / after = 112 / 112.
 
 **Тест:** `npm run smoke:relative-time-copy`; `node scripts/check-cp1251-mojibake.mjs`; staged JS syntax, portable path equivalent, UI architecture equivalent and `git diff --cached --check` before commit.
+
+**Коммит:** pending
+
+## 2026-08-01
+
+### Morning acceptance and process review
+
+**What changed:** added the morning acceptance report and simple manual-actions checklist for 2026-08-01. No runtime product code was changed.
+
+**Encoding check:** `index.html` was not changed; `node scripts/check-cp1251-mojibake.mjs` is required before commit.
+
+**Test:** `node scripts/check-cp1251-mojibake.mjs`; `git diff --check`; `bash scripts/check-portable-paths.sh`.
+
+**Commit:** pending
+## 2026-08-02
+
+### Ручная проверка Алексея после утреннего acceptance
+
+**Что сделано:** ручные результаты Алексея разложены в `pm/outbox/REPORT-MANUAL-QA-2026-08-02-alexey.md` и новые briefs `119-126`: убрать кнопку "Смотреть все задачи", разнести Telegram/web menu regression, web OAuth/test popup, уведомления, Telegram group bot, VK auth/session, VK dashboard/profile parity audit и VK chat-created task dashboard gap.
+
+**Проверка кодировки:** `node scripts/check-cp1251-mojibake.mjs` перед коммитом.
+
+**Тест:** docs/pm-only intake; runtime-код не менялся.
+
+**Коммит:** pending
+
+### Утренний приём ночной сессии
+
+**Что сделано:** принят ночной цикл 2026-08-01 20:00 — 2026-08-02 08:30 MSK. Подтверждены app-коммиты `37ddd5005`, `91ed9b9c`, `11221828`, `9de2e969`, `419786b4`, зелёные GitHub Actions и отсутствие новых `status: NEW` brief-файлов. Созданы `pm/outbox/REPORT-MORNING-ACCEPTANCE-2026-08-02.md` и `pm/outbox/MANUAL-ACTIONS-2026-08-02-morning.md`.
+
+**Проверка кодировки:** `node scripts/check-cp1251-mojibake.mjs` перед коммитом.
+
+**Тест:** docs-only acceptance; runtime-код не менялся.
 
 **Коммит:** pending

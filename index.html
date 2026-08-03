@@ -19,6 +19,7 @@
 <script src="scripts/auth.js?v=dashboard-handoff-20260718-7"></script>
 <script src="scripts/auth-handlers.js?v=redesign-staging-qa-20260719-1"></script>
 <script src="scripts/task-ui-renderers.js?v=dashboard-handoff-20260718-7"></script>
+<script src="scripts/qa-press-feedback.js"></script>
 <script src="assets/vendor/marked.min.js"></script>
 <link rel="stylesheet" href="styles.min.css">
 <script>
@@ -365,8 +366,6 @@ if('serviceWorker' in navigator){
       <article class="dash-empty-card dash-glass"><h2>Первый AI-план за 60 секунд</h2><p>Добавь 3 задачи любым удобным способом, и 4 сразу соберёт понятный фокус дня без пустого экрана.</p></article>
     </section>
 
-    <div id="home-show-all-btn" data-home-action="open-active-list" style="display:none"><span id="home-show-all-label">Смотреть все задачи</span><svg id="home-show-all-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-
     <nav class="dash-bottom-nav dash-glass" aria-label="Нижняя навигация">
       <button class="dash-nav-item active" id="home-nav-today" data-nav="today" data-home-nav-action="today" type="button" aria-label="Сегодня"><svg viewBox="0 0 24 24"><defs><linearGradient id="homeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#85aa50"/><stop offset="1" stop-color="#5f7f35"/></linearGradient></defs><path d="m3 10 9-7 9 7v10H14v-6h-4v6H3Z"/></svg><span>Сегодня</span></button>
       <button class="dash-center-button" id="home-nav-voice" data-nav="brain" data-home-nav-action="brain" type="button" aria-label="Открыть чат с 4; удерживать для голосового ввода" aria-describedby="home-voice-hold-hint"><span class="dash-brand-orb-grid"><i></i><i></i><i></i><i></i></span></button>
@@ -493,7 +492,7 @@ if('serviceWorker' in navigator){
 
       <section class="detail-chat-card detail-glass-panel">
         <div class="detail-chat-head"><div id="task-detail-tabs" class="detail-tabs"><button class="detail-tab active" id="tab-comments" data-detail-tab="comments">Чат</button></div><button id="detail-load-advice-btn" class="detail-ai-refresh detail-ai-refresh--chat" type="button">Совет 4</button><div class="detail-chat-tools"><button class="detail-chat-tool" type="button" onclick="toggleDetailChecklistPanel(event)" aria-label="Чек-лист"><svg viewBox="0 0 24 24"><path d="M9 11l2 2 4-4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></button><button class="detail-chat-tool" type="button" onclick="toggleDetailChecklistPanel(event)" aria-label="Открыть чек-лист"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div>
-        <div class="detail-checklist-panel"><div class="detail-check-head"><span>Чек-лист</span><button id="detail-split-btn" class="detail-quick-btn" data-detail-action="decompose-task">Разбить на этапы</button></div><div id="detail-checklist" class="detail-checklist"></div><div class="detail-check-add"><input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт"><button id="detail-checklist-add-btn" class="detail-quick-btn" data-detail-action="add-checklist-item">Добавить</button></div></div>
+        <div class="detail-checklist-panel"><div class="detail-check-head"><span>Чек-лист</span><button id="detail-split-btn" class="detail-quick-btn" data-detail-action="decompose-task">Разбить на этапы</button></div><div id="detail-checklist" class="detail-checklist"></div><div id="detail-decompose-preview" class="detail-decompose-preview" hidden></div><div class="detail-check-add"><input id="detail-checklist-input" class="detail-control" placeholder="Добавить пункт"><button id="detail-checklist-add-btn" class="detail-quick-btn" data-detail-action="add-checklist-item">Добавить</button></div></div>
         <div id="detail-tab-comments" class="detail-tab-panel"><div class="detail-advice-message"><div class="detail-advice-avatar">4</div><div id="detail-ai-advice" class="detail-ai-card detail-ai-card--chat">Нажми «Совет 4», чтобы получить первый совет по задаче.</div></div><div id="detail-comments-list" class="detail-comments-list">Обсуждения пока нет</div><div class="detail-comment-compose"><input id="detail-comment-input" class="detail-comment-input" placeholder="Напишите сообщение..."><button id="detail-comment-voice-btn" class="detail-comment-voice-btn" type="button" onclick="openVoice()" aria-label="Голосовой ввод"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/></svg></button><button id="detail-comment-send-btn" class="detail-comment-send-btn" aria-label="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg></button></div></div>
         <div id="detail-tab-history" class="detail-tab-panel detail-tab-panel--hidden"><div id="detail-history-list" class="detail-history-list">История изменений пуста</div></div>
       </section>
@@ -537,7 +536,7 @@ if('serviceWorker' in navigator){
     </div>
 
   </div>
-  <div class="cal-footer"><button class="cal-add-btn" onclick="openAsk()">+ Новое событие</button></div>
+  <div class="cal-footer"><button class="cal-add-btn" onclick="showScreen('new-task')">+ Новое событие</button></div>
 </div>
 
 <!-- STATISTICS -->
@@ -1369,7 +1368,7 @@ if('serviceWorker' in navigator){
         <div class="sub-row-left"><div class="sub-row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></div><span class="sub-row-text">Выбрать файл</span></div>
       </div>
     </div>
-    <button class="cal-add-btn" onclick="sendSupportMsg()" style="margin-top:8px">Отправить сообщение</button>
+    <button class="cal-add-btn" id="support-submit-btn" onclick="sendSupportMsg()" style="margin-top:8px">Отправить сообщение</button>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px">Обычно отвечаем в течение 24 часов</div>
   </div>
 </div>
@@ -2190,7 +2189,7 @@ function getExtendedProfileDraft(){dropLegacyExtendedProfileDraft();const key=ge
 function saveExtendedProfileDraft(draft){dropLegacyExtendedProfileDraft();const key=getExtendedProfileUserKey();if(key)localStorage.setItem(key,JSON.stringify(draft));}
 function clearExtendedProfileUi(){['user-avatar-small','profile-avatar'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.style.backgroundImage='';el.style.backgroundSize='';el.style.backgroundPosition='';const img=el.querySelector?.('img');if(img)img.style.display='';if(id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent='';}});}
 function getExtendedProfileDisplayName(){const draft=getExtendedProfileDraft();return (draft.name||currentUser?.name||currentUser?.email||'Пользователь').trim();}
-function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();const img=el.querySelector?.('img');if(draft.photoDataUrl){el.classList.remove('profile-avatar--orb');el.textContent='';if(img)img.style.display='none';el.style.backgroundImage='url("'+draft.photoDataUrl.replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';if(img)img.style.display='';if(el.id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent=initials;}}}
+function setProfileAvatarElement(el,initials){const draft=getExtendedProfileDraft();const img=el.querySelector?.('img');const avatarUrl=draft.photoDataUrl||currentUser?.photoDataUrl||currentUser?.photoUrl||currentUser?.avatarUrl||currentUser?.avatar||currentUser?.picture||currentUser?.vkPhoto||currentUser?.yandexAvatar||'';if(avatarUrl){el.classList.remove('profile-avatar--orb');el.textContent='';if(img)img.style.display='none';el.style.backgroundImage='url("'+String(avatarUrl).replace(/"/g,'%22')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}else{el.style.backgroundImage='';if(img)img.style.display='';if(el.id==='profile-avatar'){el.classList.add('profile-avatar--orb');el.textContent='';}else{el.textContent=initials;}}}
 function setProfileFieldValue(id,value){const el=document.getElementById(id);if(el)el.value=value||'';}
 function setProfileText(id,value){const el=document.getElementById(id);if(el)el.textContent=value||'';}
 function getProfileReferralLink(){const code=String(currentUser?.referralCode||'').trim();return code&&PLATFORM?.buildReferralLink?PLATFORM.buildReferralLink(code):(window.buildReferralLink?window.buildReferralLink():'');}
@@ -3317,12 +3316,6 @@ async function loadTasks(){
 
     updateHomeDashboardList({outgoing,incoming});
     trackLiteEvent('plan-view', { surface: 'home' });
-
-    // Show-all button visibility
-    const showAllBtn = document.getElementById('home-show-all-btn');
-    const allHome = [...outgoing, ...incoming];
-    const visibleHomeCount = document.querySelectorAll('#home-task-list .task-card-shell').length;
-    if(showAllBtn) showAllBtn.style.display = allHome.length > visibleHomeCount ? 'flex' : 'none';
 
   selectedMonth = new Date().getMonth();
   loadStats(outgoing, done, tasks);
@@ -4773,12 +4766,6 @@ function openHomePlannerSection(sectionKey){
     ? sectionTasks.map((t, i) => renderTaskCard(t, i)).join('')
     : '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">Задач в этой секции нет</div>';
 
-  const homeShowAllBtn = document.getElementById('home-show-all-btn');
-  const arrow = document.getElementById('home-show-all-arrow');
-  const label = document.getElementById('home-show-all-label');
-  if(homeShowAllBtn){ homeShowAllBtn.style.display = 'none'; }
-  if(arrow) arrow.style.transform = '';
-  if(label) label.textContent = 'Смотреть все дела';
 }
 
 function plannerCompleteTask(buttonEl){
@@ -5124,8 +5111,8 @@ function sanitizeTaskForPrompt(value){
 }
 
 function toStepList(text){
-  return (text || '')
-    .split(/\r?\n+/)
+  const lines = Array.isArray(text) ? text : String(text || '').split(/\r?\n+/);
+  return lines
     .map((line) => String(line || '')
       .replace(/^\s*[-*•]\s*/, '')
       .replace(/^\s*\d+[.)]\s*/, '')
@@ -5228,7 +5215,7 @@ function pickChecklistSteps(payload, taskText){
   const fallback = getSmart013FallbackSteps(taskText);
   const result = parsed.length ? parsed : fallback;
   return result
-    .slice(0, 8)
+    .slice(0, 7)
     .map((text) => ({ text: String(text || '').trim(), done: false }))
     .filter((item) => item.text.length > 2);
 }
@@ -5250,7 +5237,7 @@ async function decomposeCurrentTask(){
   try {
     const prompt = [
       'Ты — эксперт по управлению задачами.',
-      'Нужно разложить задачу в 4–8 коротких конкретных шагов.',
+      'Нужно разложить задачу в 3-7 коротких конкретных шагов.',
       'Верни строго JSON-формат без пояснений: {"steps":["...", "..."]}.',
       'Текст задачи: ' + sanitizeTaskForPrompt(currentDetailTask.text || ''),
     ].join('\n');
@@ -5259,15 +5246,15 @@ async function decomposeCurrentTask(){
       max_tokens:500,
       messages:[{role:'user',content:prompt}]
     });
-    currentDetailChecklist = pickChecklistSteps(aiResp, currentDetailTask.text || '');
-    renderDetailChecklist();
-    await saveTaskEdits();
-    showToast('Этапы обновлены');
+    pendingDetailChecklistSteps = pickChecklistSteps(aiResp, currentDetailTask.text || '');
+    renderDetailDecomposePreview();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
+    showToast('Проверьте этапы перед добавлением');
   } catch (e) {
-    currentDetailChecklist = pickChecklistSteps([], currentDetailTask.text || '').map((item) => ({text:item.text, done:false}));
-    renderDetailChecklist();
-    await saveTaskEdits();
-    showToast('Пока добавил шаблонные этапы');
+    pendingDetailChecklistSteps = pickChecklistSteps([], currentDetailTask.text || '').map((item) => ({text:item.text, done:false}));
+    renderDetailDecomposePreview();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
+    showToast('Проверьте шаблонные этапы перед добавлением');
   } finally {
     if (btn){
       btn.disabled = false;
@@ -5293,6 +5280,7 @@ let currentDetailStatus = 'active';
 let currentDetailPriority = 'normal';
 let currentDetailTime = '';
 let currentDetailChecklist = [];
+let pendingDetailChecklistSteps = [];
 let currentDetailDirectionLabel = '';
 
 const DETAIL_STATUS_LABELS = {active:'Активная',burning:'Горит',paused:'Пауза',done:'Готово'};
@@ -5416,18 +5404,61 @@ function setDetailReminder(value){
   });
 }
 
+function autoResizeField(el){
+  if(!el)return;
+  el.style.height='auto';
+  el.style.height=Math.max(42, el.scrollHeight)+'px';
+}
 function renderDetailChecklist(){
   const wrap = document.getElementById('detail-checklist');
   if(!wrap) return;
+  const splitBtn = document.getElementById('detail-split-btn');
+  if(splitBtn) splitBtn.textContent = currentDetailChecklist.length ? 'Добавить этапы с AI' : 'Разбить на этапы';
   if(!currentDetailChecklist.length){
-    wrap.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:4px 0">Пунктов пока нет</div>';
+    wrap.innerHTML = '<div class="detail-check-empty"><strong>Пока нет этапов</strong><span>4 может разложить задачу на понятные шаги.</span></div>';
     return;
   }
   wrap.innerHTML = currentDetailChecklist.map(function(item,i){
-    const checked = item.done ? ' checked' : '';
     const doneClass = item.done ? ' done' : '';
-    return '<div class="detail-check-item' + doneClass + '"><input type="checkbox"' + checked + ' onchange="toggleDetailChecklistItem(' + i + ',this.checked)"><input class="detail-check-text" value="' + e2(item.text || '') + '" oninput="updateDetailChecklistText(' + i + ',this.value)" onblur="commitDetailChecklistText(' + i + ',this.value)"><button class="detail-check-remove" onclick="removeDetailChecklistItem(' + i + ')">Г—</button></div>';
+    return '<div class="detail-check-item' + doneClass + '"><button type="button" class="detail-check-toggle" aria-label="\u041e\u0442\u043c\u0435\u0442\u0438\u0442\u044c \u043f\u0443\u043d\u043a\u0442" onclick="toggleDetailChecklistItem(' + i + ',!currentDetailChecklist[' + i + '].done)">\u2713</button><textarea rows="1" class="detail-check-text" oninput="autoResizeField(this);updateDetailChecklistText(' + i + ',this.value)" onblur="commitDetailChecklistText(' + i + ',this.value)">' + e2(item.text || '') + '</textarea></div>';
   }).join('');
+  requestAnimationFrame(function(){wrap.querySelectorAll('.detail-check-text').forEach(autoResizeField);});
+}
+
+function renderDetailDecomposePreview(){
+  const box = document.getElementById('detail-decompose-preview');
+  if(!box) return;
+  if(!pendingDetailChecklistSteps.length){
+    box.hidden = true;
+    box.innerHTML = '';
+    return;
+  }
+  box.hidden = false;
+  box.innerHTML = '<div class="detail-decompose-title">Предложенные этапы</div>'
+    + '<div class="detail-decompose-list">'
+    + pendingDetailChecklistSteps.map(function(item){
+      return '<label class="detail-decompose-item"><input type="checkbox" checked disabled><span>' + e2(item.text || '') + '</span></label>';
+    }).join('')
+    + '</div><div class="detail-decompose-actions"><button class="detail-quick-btn" type="button" onclick="cancelDetailDecomposition()">Отмена</button><button class="detail-quick-btn detail-quick-btn--primary" type="button" onclick="confirmDetailDecomposition()">Добавить этапы</button></div>';
+}
+
+function cancelDetailDecomposition(){
+  pendingDetailChecklistSteps = [];
+  renderDetailDecomposePreview();
+  showToast('Этапы не добавлены');
+}
+
+async function confirmDetailDecomposition(){
+  if(!pendingDetailChecklistSteps.length) return;
+  currentDetailChecklist = currentDetailChecklist.concat(pendingDetailChecklistSteps.map(function(item){
+    return {text:String(item.text || '').trim(), done:false};
+  }).filter(function(item){return item.text.length > 2;}));
+  pendingDetailChecklistSteps = [];
+  renderDetailChecklist();
+  renderDetailDecomposePreview();
+  requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
+  await saveTaskEdits();
+  showToast('Этапы добавлены');
 }
 
 function addDetailChecklistItem(){
@@ -5437,6 +5468,7 @@ function addDetailChecklistItem(){
   currentDetailChecklist.push({text, done:false});
   if(inp) inp.value = '';
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
@@ -5444,6 +5476,7 @@ function toggleDetailChecklistItem(idx, done){
   if(!currentDetailChecklist[idx]) return;
   currentDetailChecklist[idx].done = !!done;
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
@@ -5461,12 +5494,14 @@ function commitDetailChecklistText(idx, text){
     currentDetailChecklist[idx].text = trimmed;
   }
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
 function removeDetailChecklistItem(idx){
   currentDetailChecklist.splice(idx, 1);
   renderDetailChecklist();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
   saveTaskEdits();
 }
 
@@ -5884,6 +5919,7 @@ function openTask(t,idx){
   currentDetailChecklist = Array.isArray(t.checklist) ? t.checklist.map(function(item){
     return typeof item === 'string' ? {text:item, done:false} : {text:item.text || '', done:!!item.done};
   }) : [];
+  pendingDetailChecklistSteps = [];
   currentDetailDirectionLabel = t.directionLabel || t.direction || '';
 
   // Заголовок
@@ -5907,6 +5943,8 @@ function openTask(t,idx){
   renderDetailTags();
   renderDetailTagOptions();
   renderDetailChecklist();
+  renderDetailDecomposePreview();
+    requestAnimationFrame(function(){autoResizeField(document.getElementById('detail-description'));});
 
   // Описание
   const descEl = document.getElementById('detail-description');
@@ -6748,6 +6786,36 @@ function getTaskById(taskId){
   return (allTasksCache||[]).find(function(task){return String(task.id||'')===String(taskId||'');})||null;
 }
 
+function normalizeAskIntentText(value){
+  return String(value||'')
+    .toLowerCase()
+    .replace(/\u0451/g,'\u0435')
+    .replace(/[^a-z0-9\u0430-\u044f\s-]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function isAskDestructiveTaskIntent(value){
+  const text=normalizeAskIntentText(value);
+  if(!text) return false;
+  const hasDestructiveVerb=/(^|\s)(\u0443\u0434\u0430\u043b\u0438|\u0443\u0434\u0430\u043b\u0438\u0442\u044c|\u0443\u0434\u0430\u043b\u0438\u0442\u0435|\u0443\u0431\u0435\u0440\u0438|\u0443\u0431\u0440\u0430\u0442\u044c|\u0441\u043e\u0442\u0440\u0438|\u0441\u0442\u0435\u0440\u0435\u0442\u044c|\u043e\u0447\u0438\u0441\u0442\u0438|\u043e\u0447\u0438\u0441\u0442\u0438\u0442\u044c|\u0441\u043d\u0435\u0441\u0438|delete|remove|erase|clear)(\s|$)/.test(text);
+  const hasTaskTarget=/(^|\s)(\u0437\u0430\u0434\u0430\u0447\u0430|\u0437\u0430\u0434\u0430\u0447\u0443|\u0437\u0430\u0434\u0430\u0447\u0438|\u0437\u0430\u0434\u0430\u0447\u0438\u0439|\u0437\u0430\u0434\u0430\u0447\u0435\u0439|\u0437\u0430\u0434\u0430\u0447\u0430\u043c\u0438|task|tasks)(\s|$)/.test(text);
+  return hasDestructiveVerb&&hasTaskTarget;
+}
+
+function getAskDeleteConfirmationText(){
+  return '\u041f\u043e\u0445\u043e\u0436\u0435, \u0432\u044b \u0445\u043e\u0442\u0438\u0442\u0435 \u0443\u0434\u0430\u043b\u0438\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443. \u042f \u043d\u0435 \u0431\u0443\u0434\u0443 \u0443\u0434\u0430\u043b\u044f\u0442\u044c \u0438\u043b\u0438 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0438 \u0431\u0435\u0437 \u044f\u0432\u043d\u043e\u0433\u043e \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f. \u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 \u0442\u043e\u0447\u043d\u043e: \u043a\u0430\u043a\u0443\u044e \u0437\u0430\u0434\u0430\u0447\u0443 \u043d\u0443\u0436\u043d\u043e \u0443\u0434\u0430\u043b\u0438\u0442\u044c? \u041f\u043e\u043a\u0430 \u0447\u0435\u0440\u0435\u0437 AI-\u0447\u0430\u0442 \u044f \u043d\u0435 \u0432\u044b\u043f\u043e\u043b\u043d\u044f\u044e \u0443\u0434\u0430\u043b\u0435\u043d\u0438\u0435.';
+}
+
+function getAskMessageSourceUserText(message){
+  if(message?.sourceUserText) return message.sourceUserText;
+  const index=askHistory.findIndex(function(item){return String(item.id||'')===String(message?.id||'');});
+  for(let i=index-1;i>=0;i--){
+    if(askHistory[i]?.role==='user') return askHistory[i].content||'';
+  }
+  return message?.content||'';
+}
+
 function normalizeAskActions(actions){
   if(!Array.isArray(actions)) return [];
   return actions.map(function(item){
@@ -6984,6 +7052,12 @@ async function confirmAskActions(messageId){
   const message=findAskMessage(messageId);
   const actions=normalizeAskActions(message?.actions);
   if(!message||!actions.length) return;
+  if(isAskDestructiveTaskIntent(getAskMessageSourceUserText(message))){
+    dismissedAskActionMessageIds.add(String(messageId||''));
+    renderAskHistory();
+    showToast(getAskDeleteConfirmationText());
+    return;
+  }
   if(askActionsAlreadyApplied(actions)){
     dismissedAskActionMessageIds.add(String(messageId||''));
     renderAskHistory();
@@ -7004,13 +7078,16 @@ async function confirmAskActions(messageId){
   }
 }
 
-function parseAskActionsFromText(text){
+function parseAskActionsFromText(text, sourceText){
   const match=String(text||'').match(/<task_actions>([\s\S]*?)<\/task_actions>/);
   if(!match) return {cleanText:String(text||''),actions:[]};
   let actions=[];
   try{
     actions=normalizeAskActions(JSON.parse(match[1]));
   }catch(e){}
+  if(isAskDestructiveTaskIntent(sourceText)){
+    actions=[];
+  }
   return {cleanText:String(text||'').replace(/<task_actions>[\s\S]*?<\/task_actions>/g,'').trim(),actions};
 }
 
@@ -7028,6 +7105,17 @@ async function sendAsk(){
   askHistory.push({id:crypto?.randomUUID?.()||('ask_'+Date.now()),role:'user', content:v});
   saveAskHistoryLocal();
   saveAskMessageRemote('user', v);
+
+  if(isAskDestructiveTaskIntent(v)){
+    const confirmationText=getAskDeleteConfirmationText();
+    const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_delete_confirm');
+    appendMsg(confirmationText,'ai',{messageId:assistantMessageId});
+    askHistory.push({id:assistantMessageId,role:'assistant',content:confirmationText,actions:[],sourceUserText:v});
+    saveAskHistoryLocal();
+    saveAskMessageRemote('assistant',confirmationText);
+    document.getElementById('ask-msgs').scrollTop=9999;
+    return;
+  }
 
   isGenerating=true;
   const lb=appendMsg('','ai');
@@ -7109,7 +7197,7 @@ async function sendAsk(){
       return;
     }
 
-    const parsedActions=parseAskActionsFromText(text);
+    const parsedActions=parseAskActionsFromText(text,v);
     text=parsedActions.cleanText;
     if(createdTaskText && !/задач[ауы]?\s+(создан|добавлен|поставлен|сохран|объедин)/i.test(text)) {
       const mergedCreated=String(createdTaskText).startsWith('merged:');
@@ -7122,7 +7210,7 @@ async function sendAsk(){
 
     const assistantMessageId=crypto?.randomUUID?.()||('ask_'+Date.now()+'_ai');
     lb.innerHTML='<div class="md-body">'+parseMarkdown(text)+'</div>'+renderAskActionPreview(assistantMessageId,parsedActions.actions);
-    askHistory.push({id:assistantMessageId,role:'assistant', content:text, actions:parsedActions.actions});
+    askHistory.push({id:assistantMessageId,role:'assistant', content:text, actions:parsedActions.actions, sourceUserText:v});
     saveAskHistoryLocal();
     await saveAskMessageRemote('assistant', text);
     recordAdaptiveActivity('ai_chat',1.5);
@@ -7938,25 +8026,6 @@ function setThemeChoice(theme, el){
   showToast('Тема изменена');
 }
 
-// ===== HOME FILTER (Patch 02) =====
-function toggleAllTasks(){
-  const homeList = document.getElementById('home-task-list');
-  const label = document.getElementById('home-show-all-label');
-  const arrow = document.getElementById('home-show-all-arrow');
-  if(!homeList) return;
-  const isExpanded = homeList.dataset.showAll === '1';
-  homeList.dataset.showAll = isExpanded ? '0' : '1';
-  if(label) label.textContent = isExpanded ? 'Смотреть все дела' : 'Свернуть';
-  if(arrow) arrow.style.transform = isExpanded ? '' : 'rotate(180deg)';
-  // Re-render with all tasks
-  const tasks = allTasksCache || [];
-  const outgoing = tasks.filter(t=>!t.done && t.direction!=='incoming');
-  const incoming = tasks.filter(t=>!t.done && t.direction==='incoming');
-  const allTasks = [...outgoing, ...incoming];
-  const slice = homeList.dataset.showAll === '1' ? allTasks : allTasks.slice(0,6);
-  homeList.innerHTML = slice.map((t,i)=>renderTaskCard(t,i)).join('');
-}
-
 function setHomeFilter(filter, el){
   document.querySelectorAll('.home-tab').forEach(t=>t.classList.remove('active'));
   if(el) el.classList.add('active');
@@ -8453,17 +8522,77 @@ async function doResetPassword(){
 }
 
 // ===== SUPPORT =====
-function sendSupportMsg(){
+function buildSupportPayload(topic,msg){
+  const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user||null;
+  return {
+    topic,
+    message:msg,
+    source:'app_support_form',
+    page:location.href,
+    platform:getSupportLaunchPlatform(),
+    createdAt:new Date().toISOString(),
+    user:{
+      id:currentUser?.id||'',
+      name:currentUser?.name||'',
+      email:currentUser?.email||'',
+      telegramId:currentUser?.telegramId||tgUser?.id||'',
+      telegramUsername:currentUser?.telegramUsername||tgUser?.username||''
+    },
+    app:{
+      host:location.hostname,
+      theme:document.documentElement.getAttribute('data-theme')||'',
+      userAgent:navigator.userAgent
+    }
+  };
+}
+
+function getSupportLaunchPlatform(){
+  if(PLATFORM?.isTelegram?.()) return 'telegram';
+  if(PLATFORM?.isVk?.()) return 'vk';
+  return 'web';
+}
+
+async function postSupportRequest(payload){
+  const endpoints=[WORKER + '/support'];
+  if(location.origin&&location.origin!=='null') endpoints.push(location.origin + '/support');
+  let lastError=null;
+  for(const endpoint of [...new Set(endpoints)]){
+    try{
+      const response=await fetch(endpoint,{
+        method:'POST',
+        headers:{...authHeaders(),'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      const data=await readJsonSafe(response);
+      if(response.ok&&data?.ok) return {ok:true,endpoint,data};
+      lastError=new Error(data?.error||('support endpoint '+response.status));
+      if(response.status!==404&&response.status!==405) break;
+    }catch(e){
+      lastError=e;
+    }
+  }
+  throw lastError||new Error('support unavailable');
+}
+
+async function sendSupportMsg(){
   const topic=document.getElementById('support-topic')?.value||'';
-  const msg=document.getElementById('support-msg')?.value||'';
+  const msg=(document.getElementById('support-msg')?.value||'').trim();
+  const btn=document.getElementById('support-submit-btn');
   if(!topic){showToast('Выберите тему');return;}
   if(msg.length<10){showToast('Опишите проблему подробнее');return;}
-  showToast('Сообщение отправлено ✓');
-  setTimeout(()=>{
+  if(btn){btn.disabled=true;btn.textContent='Отправляем...';}
+  try{
+    await postSupportRequest(buildSupportPayload(topic,msg));
     document.getElementById('support-msg').value='';
     document.getElementById('support-char').textContent='0/1000';
+    showToast('Сообщение отправлено в поддержку ✓');
     showSubScreen('support');
-  },800);
+  }catch(e){
+    console.error('sendSupportMsg:',e);
+    showToast('Не удалось отправить. Напишите в Telegram или попробуйте позже.');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Отправить сообщение';}
+  }
 }
 
 

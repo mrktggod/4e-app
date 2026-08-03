@@ -22,21 +22,25 @@ function getTaskCardCategory(t){
   const directionLabel=getDirectionLabel(t?.directionLabel || t?.direction || '');
   return{label:directionLabel,cls:t?.deadline?'cat-badge-work':'cat-badge-personal'};
 }
-function getTaskCardTitle(t){return(t?.person?(t.person+' — '):'')+(t?.text||'Задача');}
+function getTaskCardTitle(t){return(t?.text||'\u0417\u0430\u0434\u0430\u0447\u0430');}
+function getTaskCardAssignee(t){
+  const raw=String(t?.person||t?.assignee||t?.owner||'\u042e\u0440\u0438\u0439').trim();
+  const initial=(raw||'\u042e').slice(0,1).toUpperCase();
+  return {name:raw,initial};
+}
 function renderTaskCard(t,i){
   const id=e2(String(t?.id||''));
   const priority=getTaskCardPriority(t);
   const cat=getTaskCardCategory(t);
   const deadline=formatTaskCardDeadline(t);
-  const number=String(i+1).padStart(2,'0');
+  const assignee=getTaskCardAssignee(t);
   const overdueClass=deadline.overdue?' is-overdue':'';
-  const syncBadge=t?._offlineQueued?'<span class="task-card-tag tag-med">ждёт синхр.</span>':'';
+  const syncBadge=t?._offlineQueued?'<span class="task-card-tag tag-med">\u0436\u0434\u0451\u0442 \u0441\u0438\u043d\u0445\u0440.</span>':'';
   return '<div class="task-card-shell priority-'+priority+overdueClass+'" data-task-id="'+id+'">'+
-    '<div class="task-swipe-actions task-swipe-actions-right" ><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">Завершить</button></div>'+
-    '<div class="task-swipe-actions task-swipe-actions-left" ><button type="button" class="task-swipe-btn task-swipe-cancel" data-task-action="cancel" onclick="handleTaskSwipeButton(this,event)">Отменить</button><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">Перенести</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-right"><button type="button" class="task-swipe-btn task-swipe-done" data-task-action="done" onclick="handleTaskSwipeButton(this,event)">\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044c</button></div>'+
+    '<div class="task-swipe-actions task-swipe-actions-left"><button type="button" class="task-swipe-btn task-swipe-move" data-task-action="move" onclick="handleTaskSwipeButton(this,event)">\u041f\u0435\u0440\u0435\u043d\u0435\u0441\u0442\u0438</button></div>'+
     '<div class="task-row task-card" onclick="openTaskCard(\''+id+'\','+i+',this)" onpointerdown="taskSwipeStart(event,this)" onpointermove="taskSwipeMove(event,this)" onpointerup="taskSwipeEnd(event,this)" onpointercancel="taskSwipeEnd(event,this)">'+
-      '<div class="task-card-head"><div class="task-num-badge priority-'+priority+'"><span class="task-priority-dot"></span>'+number+'</div><div class="task-card-tags"><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span>'+syncBadge+'</div><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
-      '<div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div>'+
+      '<div class="task-card-head"><div class="task-assignee-avatar" title="'+e2(assignee.name)+'">'+e2(assignee.initial)+'</div><div class="task-card-main"><div class="task-row-title task-card-title">'+e2(getTaskCardTitle(t))+'</div><div class="task-card-tags"><span class="task-card-tag '+cat.cls+'">'+e2(cat.label)+'</span>'+syncBadge+'</div></div><span class="task-card-deadline '+deadline.cls+'">'+e2(deadline.text)+'</span></div>'+
     '</div>'+
   '</div>';
 }
@@ -148,10 +152,17 @@ function taskSwipeEnd(event,card){
   card.style.transition='';
   shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
-  if(Math.abs(dx)>=56&&!taskSwipeState.vibrated)vibrateTaskCard(10,'medium');
-  if(dx<-56)setTaskSwipe(shell,'left');
-  else if(dx>56)setTaskSwipe(shell,'right');
-  else resetTaskSwipe(shell);
+  if(Math.abs(dx)>=88&&!taskSwipeState.vibrated)vibrateTaskCard(12,'medium');
+  if(dx<-88){
+    resetTaskSwipe(shell);
+    const moveBtn=shell.querySelector('.task-swipe-move');
+    if(moveBtn)triggerTaskActionFeedback(moveBtn,{ms:20,style:'medium'});
+    openTaskReschedule(shell.dataset.taskId);
+  }else if(dx>88){
+    resetTaskSwipe(shell);
+    const doneBtn=shell.querySelector('.task-swipe-done');
+    if(doneBtn)quickDoneTask(shell.dataset.taskId,doneBtn);
+  }else resetTaskSwipe(shell);
   taskSwipeState=null;
 }
 function setTaskSwipe(shell,state){
