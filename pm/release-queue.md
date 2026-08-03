@@ -41,3 +41,4 @@
 | BRIEF-2026-08-02-124-vk-auth-session-persistence | VK Mini App / web | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR, live VK login остаётся ручным хвостом |
 | BRIEF-2026-08-02-125-vk-dashboard-profile-parity-audit | VK Mini App | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: audit/атомарные follow-up briefs, не широкий редизайн |
 | BRIEF-2026-08-02-126-vk-chat-created-task-not-on-dashboard | VK Mini App | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR с mock evidence; live VK хвост вручную |
+| MAN-013 / BRIEF-2026-08-02-evening-05-old-clone-reconciliation | Workspace process | PR_READY | PR #65, audit `22c7ab4`, target `main`; `git diff --check` and CP1251 guard green | Юрий отдельно решает архивирование; до решения не использовать, не переименовывать и не удалять `Documents\4` |
