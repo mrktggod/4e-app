@@ -3740,3 +3740,12 @@ Git Bash UI architecture guard failed on existing branch state:
 **Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
 
 **Commit:** pending
+## 2026-08-03
+
+### Swipe follow-up: actions stay under the card
+
+**What changed:** Moved the swipe action layer below the task card in the stacking order. The action button is now revealed only where the card has moved away, instead of drawing over the task text.
+
+**Checks:** `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
+
+**Commit:** pending
