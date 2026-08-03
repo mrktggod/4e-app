@@ -39,5 +39,5 @@
 | BRIEF-2026-08-02-122-notifications-functional-audit | Telegram Mini App / web notifications | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: диагностика и evidence без догадок о runtime-контракте |
 | BRIEF-2026-08-02-123-telegram-group-bot-no-response | Telegram bot | NEED-YURI | Brief уже помечен NEED-YURI | Отдельная bot-сессия после доступной live-group проверки |
 | BRIEF-2026-08-02-124-vk-auth-session-persistence | VK Mini App / web | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR, live VK login остаётся ручным хвостом |
-| BRIEF-2026-08-02-125-vk-dashboard-profile-parity-audit | VK Mini App | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: audit/атомарные follow-up briefs, не широкий редизайн |
+| BRIEF-2026-08-02-125-vk-dashboard-profile-parity-audit | VK Mini App dashboard/profile | PR_READY | PR #64, audit `3f78429`, target `feat/admin-tariff-api`; 10 targeted VK smokes and `test:e2e:vk` 4/4 green | Юрий выбирает shell/click contract; QA даёт live VK screenshots/viewport; только затем отдельные approved briefs |
 | BRIEF-2026-08-02-126-vk-chat-created-task-not-on-dashboard | VK Mini App | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR с mock evidence; live VK хвост вручную |
