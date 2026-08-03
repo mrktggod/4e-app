@@ -3771,3 +3771,14 @@ Git Bash UI architecture guard failed on existing branch state:
 **Checks:** `node --check scripts/task-ui-renderers.js`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
 
 **Commit:** pending
+## 2026-08-03
+
+### Swipe runtime layering and commit threshold
+
+**What changed:** Isolated each task card as its own stacking context, forced the action layer below the card and the card content above it, and set completion to trigger after 128px of rightward travel.
+
+**Why:** The live behavior still showed the action over the card and did not reliably reach the completion branch on a normal phone gesture.
+
+**Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
+
+**Commit:** pending
