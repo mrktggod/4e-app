@@ -91,6 +91,9 @@ assert.equal(sandbox.triggerTaskActionFeedback(loading), false, 'loading task ac
 const handlerSource = extractFunction('handleTaskSwipeButton');
 assert.ok(handlerSource.includes("btn.matches('.task-swipe-btn')"), 'feedback pilot stays scoped to task swipe buttons');
 assert.ok(handlerSource.indexOf('triggerTaskActionFeedback') < handlerSource.indexOf("btn.dataset.taskAction==='cancel'"), 'feedback guard runs before task actions');
+assert.ok(source.includes('completeThreshold'), 'full right swipe has a separate completion threshold');
+assert.ok(source.includes("shell.classList.add('swipe-committing')"), 'full right swipe has a committed exit state');
+assert.ok(source.includes("setTaskSwipe(shell,'right')"), 'partial right swipe settles with the done action revealed');
 assert.ok(homeLess.includes('.task-card-shell .task-swipe-btn--pressed'), 'pressed visual modifier is present');
 
 console.log('task-action-feedback smoke: PASS');

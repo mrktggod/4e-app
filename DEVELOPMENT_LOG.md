@@ -3711,3 +3711,14 @@ Git Bash UI architecture guard failed on existing branch state:
 **Checks:** `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `npm run check:ui-architecture`, and `git diff --check` passed.
 
 **Commit:** pending
+## 2026-08-03
+
+### Dashboard task swipe completion
+
+**What changed:** Reworked the dashboard task-card gesture so the card tracks the finger, reveals the green completion action underneath, settles into a tappable reveal state for a partial swipe, and completes only after a full right swipe to the edge. Added a short haptic threshold cue and a completion exit transition.
+
+**Why:** The previous gesture had a short fixed right limit and completed at the same small threshold used to reveal the action, so it did not feel like a deliberate full-swipe action.
+
+**Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `npm run check:ui-architecture`, and `git diff --check`.
+
+**Commit:** pending
