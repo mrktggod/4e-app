@@ -3749,3 +3749,14 @@ Git Bash UI architecture guard failed on existing branch state:
 **Checks:** `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
 
 **Commit:** pending
+## 2026-08-03
+
+### Swipe behavior final alignment
+
+**What changed:** Removed the remaining active-action `z-index` override that placed buttons above the task card, kept swipe actions visible on fine-pointer WebViews, and connected the left swipe to the existing task detail date/time popover.
+
+**Why:** The previous merged version still had one late CSS rule with `z-index: 5`, hid the action layer for `pointer:fine`, and retained a hidden native date input fallback.
+
+**Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
+
+**Commit:** pending

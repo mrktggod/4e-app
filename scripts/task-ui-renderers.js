@@ -229,7 +229,18 @@ function getTaskRescheduleInput(){
   return input;
 }
 function openTaskReschedule(taskId){
-  const task=(allTasksCache||[]).find(t=>String(t.id)===String(taskId));
+  const tasks=Array.isArray(allTasksCache)?allTasksCache:[];
+  const task=tasks.find(t=>String(t.id)===String(taskId));
+  const taskIndex=task?tasks.indexOf(task):-1;
+  if(task&&typeof openTaskById==='function'){
+    openTaskById(taskId,taskIndex,'home');
+    setTimeout(()=>{
+      const dateTrigger=document.querySelector('#task-detail .detail-info-card--date');
+      if(dateTrigger){dateTrigger.click();return;}
+      if(typeof toggleDetailDatePopover==='function')toggleDetailDatePopover({preventDefault(){},stopPropagation(){}});
+    },120);
+    return;
+  }
   const input=getTaskRescheduleInput();
   const d=parseTaskDate(task?.deadline||task?.date);
   input.dataset.taskId=taskId;
