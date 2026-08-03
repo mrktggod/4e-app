@@ -3700,3 +3700,14 @@ Git Bash UI architecture guard failed on existing branch state:
 **Тест:** docs-only acceptance; runtime-код не менялся.
 
 **Коммит:** pending
+## 2026-08-03
+
+### Shared glass surfaces
+
+**What changed:** Extended the existing dashboard glass tokens to shared cards, fields, navigation controls and secondary buttons across the app. The same variable-based layer covers dark and light themes; primary green actions keep their visual priority.
+
+**Why:** Screenshots showed the dashboard using the intended glass treatment while many Telegram/Web screens still looked flat. The change makes the visual language consistent without changing runtime behavior or product rules.
+
+**Checks:** `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `npm run check:ui-architecture`, and `git diff --check` passed.
+
+**Commit:** pending
