@@ -3722,3 +3722,12 @@ Git Bash UI architecture guard failed on existing branch state:
 **Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `npm run check:ui-architecture`, and `git diff --check`.
 
 **Commit:** pending
+## 2026-08-03
+
+### Swipe follow-up: visible drag and standard deadline picker
+
+**What changed:** Removed the desktop-pointer CSS override that could cancel the inline card transform during a gesture. The left swipe now opens the task detail screen and the existing date/time deadline popover instead of a hidden native date input.
+
+**Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `npm run check:ui-architecture`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
+
+**Commit:** pending

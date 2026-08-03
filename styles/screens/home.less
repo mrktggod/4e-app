@@ -508,7 +508,7 @@
 .task-card-shell .task-card-deadline.deadline-overdue{color:#ff7f7f}
 .task-card-shell .task-row-title.task-card-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;margin:0;color:var(--text);font-size:14px;font-weight:650;line-height:1.35;letter-spacing:0}
 @media (hover:hover){.task-card-shell:hover{border-color:var(--glass-stroke-strong);box-shadow:var(--glass-shadow),var(--glass-inset-shadow),var(--glass-active-glow)}}
-@media (pointer:fine){.task-card-shell{touch-action:auto}.task-card-shell .task-swipe-actions{display:none!important}.task-card-shell .task-row.task-card{transform:none!important}}
+@media (pointer:fine){.task-card-shell{touch-action:auto}.task-card-shell .task-swipe-actions{display:flex}.task-card-shell:not(.swiping-left):not(.swiping-right):not(.swipe-left):not(.swipe-right):not(.swipe-committing) .task-row.task-card{transform:none!important}}
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {.task-card-shell{background:var(--glass-reduced-surface)}}
 
 

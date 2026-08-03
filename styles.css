@@ -1868,9 +1868,9 @@ body:has(#reset-password.active) .bottom-nav-v2 {
     touch-action: auto;
   }
   .task-card-shell .task-swipe-actions {
-    display: none !important;
+    display: flex;
   }
-  .task-card-shell .task-row.task-card {
+  .task-card-shell:not(.swiping-left):not(.swiping-right):not(.swipe-left):not(.swipe-right):not(.swipe-committing) .task-row.task-card {
     transform: none !important;
   }
 }
