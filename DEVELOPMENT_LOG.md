@@ -3760,3 +3760,14 @@ Git Bash UI architecture guard failed on existing branch state:
 **Checks:** `node --check scripts/task-ui-renderers.js`, `npm run build:css`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
 
 **Commit:** pending
+## 2026-08-03
+
+### Swipe completion threshold
+
+**What changed:** Reduced the full-right-swipe threshold to a practical 140–180px range, capped by the card width. The left swipe keeps using the standard task deadline date/time popover.
+
+**Why:** A 72% card-width threshold was too far for a normal Telegram finger gesture, so the card moved but the completion action did not fire.
+
+**Checks:** `node --check scripts/task-ui-renderers.js`, `npm run check:portable-paths`, `npm run check:cp1251-mojibake`, `node scripts/task-action-feedback-smoke.mjs`, and `git diff --check`.
+
+**Commit:** pending
