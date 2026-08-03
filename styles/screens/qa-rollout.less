@@ -361,3 +361,203 @@ html[data-theme="light"] .sub-row {
     0 18px 34px rgba(72,91,44,.16),
     0 0 20px rgba(135,183,69,.16) !important;
 }
+
+/* DESIGN-GLASS-002: extend the dashboard glass language to shared surfaces. */
+.glass,
+.glass-green,
+.glass-nav,
+.sub-card,
+.support-hero,
+.faq-help-card,
+.pricing-card,
+.order-summary,
+.progress-card,
+.nt-field-card,
+.nt-fields,
+.task-move-panel,
+.contact-panel,
+.chats-list,
+.chat-row-item,
+.conv-nav,
+.msng-set-item,
+.settings-row,
+.profile-menu-row,
+.privacy-action-btn,
+.ai-memory-row,
+.ai-memory-summary-card {
+  border: 1px solid var(--glass-stroke) !important;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--glass-surface) 90%, transparent),
+      color-mix(in srgb, var(--glass-surface-strong) 76%, transparent)
+    ) !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 18%, transparent),
+    0 16px 36px color-mix(in srgb, #000 24%, transparent),
+    0 0 22px color-mix(in srgb, var(--green) 12%, transparent) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+}
+
+.back-btn,
+.cal-nav-btn,
+.stats-period-pill,
+.notif-filter,
+.chats-gear,
+.msng-icon-btn,
+.detail-round-btn,
+.detail-quick-btn,
+.detail-comment-voice-btn,
+.detail-comment-send-btn,
+.ask-action-btn,
+.nt-btn,
+.privacy-action-btn,
+.contact-panel-btn,
+.tone-btn,
+.month-btn,
+.login-oauth-btn,
+.login-tg-btn,
+.faq-search-input,
+.support-textarea,
+.support-select,
+.chats-srch,
+.detail-comment-input,
+.nt-field-input,
+.detail-info-input,
+.ask-input-shell,
+.tag-input,
+.profile-save-btn,
+.cal-add-btn {
+  border: 1px solid var(--glass-stroke) !important;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--glass-surface) 88%, transparent),
+      color-mix(in srgb, var(--glass-surface-strong) 72%, transparent)
+    ) !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 16%, transparent),
+    0 10px 24px color-mix(in srgb, #000 18%, transparent) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease, background .16s ease !important;
+}
+
+.back-btn:hover,
+.cal-nav-btn:hover,
+.stats-period-pill:hover,
+.notif-filter:hover,
+.chats-gear:hover,
+.msng-icon-btn:hover,
+.detail-round-btn:hover,
+.detail-quick-btn:hover,
+.detail-comment-voice-btn:hover,
+.detail-comment-send-btn:hover,
+.ask-action-btn:hover,
+.nt-btn:hover,
+.privacy-action-btn:hover,
+.contact-panel-btn:hover,
+.tone-btn:hover,
+.month-btn:hover,
+.login-oauth-btn:hover,
+.login-tg-btn:hover,
+.profile-save-btn:hover,
+.cal-add-btn:hover {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+
+.back-btn:active,
+.cal-nav-btn:active,
+.stats-period-pill:active,
+.notif-filter:active,
+.chats-gear:active,
+.msng-icon-btn:active,
+.detail-round-btn:active,
+.detail-quick-btn:active,
+.detail-comment-voice-btn:active,
+.detail-comment-send-btn:active,
+.ask-action-btn:active,
+.nt-btn:active,
+.privacy-action-btn:active,
+.contact-panel-btn:active,
+.tone-btn:active,
+.month-btn:active,
+.login-oauth-btn:active,
+.login-tg-btn:active,
+.profile-save-btn:active,
+.cal-add-btn:active {
+  transform: scale(.98) !important;
+}
+
+.login-btn,
+.profile-save-btn--primary,
+.nt-btn-primary,
+.ob-btn,
+.detail-action-btn--complete,
+.t-done,
+.p-got {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-active-glow), var(--glass-inset-shadow) !important;
+}
+
+html[data-theme="light"] .glass,
+html[data-theme="light"] .glass-green,
+html[data-theme="light"] .glass-nav,
+html[data-theme="light"] .sub-card,
+html[data-theme="light"] .support-hero,
+html[data-theme="light"] .faq-help-card,
+html[data-theme="light"] .pricing-card,
+html[data-theme="light"] .order-summary,
+html[data-theme="light"] .progress-card,
+html[data-theme="light"] .nt-field-card,
+html[data-theme="light"] .nt-fields,
+html[data-theme="light"] .task-move-panel,
+html[data-theme="light"] .contact-panel,
+html[data-theme="light"] .chats-list,
+html[data-theme="light"] .chat-row-item,
+html[data-theme="light"] .conv-nav,
+html[data-theme="light"] .msng-set-item,
+html[data-theme="light"] .settings-row,
+html[data-theme="light"] .profile-menu-row,
+html[data-theme="light"] .privacy-action-btn,
+html[data-theme="light"] .ai-memory-row,
+html[data-theme="light"] .ai-memory-summary-card,
+html[data-theme="light"] .back-btn,
+html[data-theme="light"] .cal-nav-btn,
+html[data-theme="light"] .stats-period-pill,
+html[data-theme="light"] .notif-filter,
+html[data-theme="light"] .chats-gear,
+html[data-theme="light"] .msng-icon-btn,
+html[data-theme="light"] .detail-round-btn,
+html[data-theme="light"] .detail-quick-btn,
+html[data-theme="light"] .ask-action-btn,
+html[data-theme="light"] .nt-btn,
+html[data-theme="light"] .contact-panel-btn,
+html[data-theme="light"] .tone-btn,
+html[data-theme="light"] .month-btn,
+html[data-theme="light"] .login-oauth-btn,
+html[data-theme="light"] .login-tg-btn,
+html[data-theme="light"] .faq-search-input,
+html[data-theme="light"] .support-textarea,
+html[data-theme="light"] .support-select,
+html[data-theme="light"] .chats-srch,
+html[data-theme="light"] .detail-comment-input,
+html[data-theme="light"] .nt-field-input,
+html[data-theme="light"] .detail-info-input,
+html[data-theme="light"] .ask-input-shell,
+html[data-theme="light"] .tag-input,
+html[data-theme="light"] .profile-save-btn,
+html[data-theme="light"] .cal-add-btn {
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--glass-surface) 94%, transparent),
+      color-mix(in srgb, var(--glass-surface-strong) 82%, transparent)
+    ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .86),
+    0 14px 30px rgba(72, 91, 44, .14),
+    0 0 20px rgba(135, 183, 69, .12) !important;
+}
