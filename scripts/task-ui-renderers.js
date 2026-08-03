@@ -154,7 +154,7 @@ function taskSwipeEnd(event,card){
   const dx=taskSwipeState.dx;
   const maxRight=taskSwipeState.maxRight;
   const revealThreshold=104;
-  const completeThreshold=Math.min(maxRight-8,Math.max(140,Math.min(180,Math.round(maxRight*.6))));
+  const completeThreshold=Math.min(maxRight-8,128);
   card.style.transition='';
   shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
