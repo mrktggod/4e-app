@@ -17343,9 +17343,6 @@ html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-botto
     position: fixed !important;
     z-index: 70 !important;
   }
-  html[data-app-surface] body #home#home.dashboard-list-collapsed #home-task-list {
-    top: 72px !important;
-  }
   body #home#home.dashboard-list-scrolled .dash-hero {
     pointer-events: none;
   }

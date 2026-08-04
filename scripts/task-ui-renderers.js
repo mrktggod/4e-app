@@ -323,7 +323,7 @@ function initHomeDashboardScrollCollapse(){
   taskList.dataset.dashboardCollapseBound='1';
   let frame=0;
   let metricsLift=0;
-  let taskListLift=0;
+  let taskListTop=0;
   let progress=0;
   let pointerId=null;
   let pointerStartY=0;
@@ -346,26 +346,26 @@ function initHomeDashboardScrollCollapse(){
     metricsLift=Math.min(0,(stickyTop-rect.top)/scale);
   }
 
-  function measureTaskListLift(){
-    const rect=taskList.getBoundingClientRect();
-    const layoutWidth=taskList.offsetWidth||rect.width||1;
-    const scale=rect.width/layoutWidth||1;
-    const stickyTop=72;
-    taskListLift=Math.min(0,(stickyTop-rect.top)/scale);
+  function measureTaskListTop(){
+    const top=Number.parseFloat(getComputedStyle(taskList).top);
+    taskListTop=Number.isFinite(top)?top:385;
+  }
+
+  function setTaskListTop(nextTop){
+    taskList.style.setProperty('top',nextTop.toFixed(2)+'px','important');
+    taskList.style.setProperty('transform','translate3d(0,0,0)','important');
   }
 
   function render(){
     frame=0;
     progress=Math.max(0,Math.min(1,progress));
     if(!metricsLift)measureMetricsLift();
-    if(!taskListLift)measureTaskListLift();
-    const isCollapsed=progress>=.999;
-    home.classList.toggle('dashboard-list-collapsed',isCollapsed);
+    if(!taskListTop)measureTaskListTop();
     setMotion(header,-88*progress,1-Math.min(1,progress*1.25));
     setMotion(hero,-292*progress,1-progress);
     setMotion(monthTitle,-322*progress,1-Math.min(1,progress*1.15));
     setMotion(metrics,metricsLift*progress,1);
-    setMotion(taskList,isCollapsed?0:taskListLift*progress,1);
+    setTaskListTop(taskListTop+(72-taskListTop)*progress);
     home.classList.toggle('dashboard-list-scrolled',progress>.02);
   }
 
@@ -435,7 +435,6 @@ function initHomeDashboardScrollCollapse(){
   taskList.addEventListener('pointercancel',endPointer,{passive:true});
   window.addEventListener('resize',()=>{
     metricsLift=0;
-    taskListLift=0;
     sync();
   },{passive:true});
   progress=Math.max(0,Math.min(1,taskList.scrollTop/collapseDistance));

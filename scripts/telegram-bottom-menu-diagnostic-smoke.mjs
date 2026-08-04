@@ -162,30 +162,35 @@ try {
     dispatchTouch('pointermove', 224);
     dispatchTouch('pointerup', 224);
     await new Promise((resolve) => requestAnimationFrame(resolve));
+    const returningListRect = list.getBoundingClientRect();
     const returning = {
       heroOpacity: Number(getComputedStyle(hero).opacity),
-      taskListTop: list.getBoundingClientRect().top
+      taskListTop: returningListRect.top,
+      taskListBottom: returningListRect.bottom
     };
     await new Promise((resolve) => setTimeout(resolve, 220));
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const expandedListRect = list.getBoundingClientRect();
     const expanded = {
       heroTop: hero.getBoundingClientRect().top,
       heroOpacity: Number(getComputedStyle(hero).opacity),
       metricsTop: metrics.getBoundingClientRect().top,
-      taskListTop: list.getBoundingClientRect().top
+      taskListTop: expandedListRect.top,
+      taskListBottom: expandedListRect.bottom
     };
     list.scrollTop = 160;
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const collapsedListRect = list.getBoundingClientRect();
     const collapsed = {
       heroBottom: hero.getBoundingClientRect().bottom,
       heroOpacity: Number(getComputedStyle(hero).opacity),
       metricsTop: metrics.getBoundingClientRect().top,
-      taskListTop: list.getBoundingClientRect().top,
+      taskListTop: collapsedListRect.top,
+      taskListBottom: collapsedListRect.bottom,
       classApplied: document.getElementById('home')?.classList.contains('dashboard-list-scrolled') || false
     };
     return { returning, expanded, collapsed };
   });
-
   const swipeMetrics = await page.evaluate(() => {
     const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'showPicker');
     let pickerRequests = 0;
@@ -257,6 +262,9 @@ try {
   }
   if (dashboardCollapse.returning.heroOpacity <= .05 || dashboardCollapse.returning.heroOpacity >= .95 || dashboardCollapse.returning.taskListTop <= 80 || dashboardCollapse.returning.taskListTop >= 300) {
     throw new Error(`Telegram dashboard scroll should animate the return instead of jumping open: ${JSON.stringify(dashboardCollapse)}`);
+  }
+  if (Math.abs(dashboardCollapse.returning.taskListBottom-dashboardCollapse.expanded.taskListBottom) > 1 || Math.abs(dashboardCollapse.collapsed.taskListBottom-dashboardCollapse.expanded.taskListBottom) > 1) {
+    throw new Error(`Telegram dashboard task lane bottom edge should stay stable during the scroll transition: ${JSON.stringify(dashboardCollapse)}`);
   }
   if (swipeMetrics.pickerRequests < 2 || swipeMetrics.taskId !== 'bottom-nav-1' || !swipeMetrics.moveActionOpenedPicker) {
     throw new Error(`Telegram left swipe should open the date picker for its task: ${JSON.stringify(swipeMetrics)}`);
