@@ -391,3 +391,27 @@ html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-botto
   height: 58px !important;
   transform: translateY(-3px) !important;
 }
+
+/* A task-list scroll collapses the dashboard context: the focus card exits and
+   the metrics become a compact sticky filter row above the continuing list. */
+@media (max-width: 430px) {
+  body #home#home .dash-header,
+  body #home#home .dash-hero,
+  body #home#home .dash-month-title,
+  body #home#home .dash-metrics {
+    will-change: transform, opacity;
+  }
+
+  body #home#home .dash-metrics {
+    position: fixed !important;
+    z-index: 70 !important;
+  }
+
+  html[data-app-surface] body #home#home.dashboard-list-collapsed #home-task-list {
+    top: 72px !important;
+  }
+
+  body #home#home.dashboard-list-scrolled .dash-hero {
+    pointer-events: none;
+  }
+}

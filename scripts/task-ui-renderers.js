@@ -307,6 +307,118 @@ function showScreen(id){
   const hs=document.querySelector('.scroll-body');
   if(hs)hs.classList.toggle('scroll-body--home', id==='home');
 }
+
+// The task lane is the dashboard's scroll surface on mobile. Keep the header
+// visually attached to that gesture, so the focus card makes room for a
+// compact, sticky metrics row instead of leaving a dead area above tasks.
+function initHomeDashboardScrollCollapse(){
+  const home=document.getElementById('home');
+  const taskList=document.getElementById('home-task-list');
+  const header=home?.querySelector('.dash-header');
+  const hero=home?.querySelector('.dash-hero');
+  const monthTitle=home?.querySelector('.dash-month-title');
+  const metrics=home?.querySelector('.dash-metrics');
+  if(!home||!taskList||!header||!hero||!monthTitle||!metrics||taskList.dataset.dashboardCollapseBound==='1')return;
+
+  taskList.dataset.dashboardCollapseBound='1';
+  let frame=0;
+  let metricsLift=0;
+  let taskListLift=0;
+  let progress=0;
+  let pointerId=null;
+  let pointerStartY=0;
+  let pointerStartProgress=0;
+
+  function setMotion(el, translateY, opacity){
+    el.style.setProperty('transform','translate3d(0,'+translateY.toFixed(2)+'px,0)','important');
+    el.style.setProperty('opacity',opacity.toFixed(3),'important');
+  }
+
+  function measureMetricsLift(){
+    const rect=metrics.getBoundingClientRect();
+    const layoutWidth=metrics.offsetWidth||rect.width||1;
+    const scale=rect.width/layoutWidth||1;
+    const stickyTop=14;
+    metricsLift=Math.min(0,(stickyTop-rect.top)/scale);
+  }
+
+  function measureTaskListLift(){
+    const rect=taskList.getBoundingClientRect();
+    const layoutWidth=taskList.offsetWidth||rect.width||1;
+    const scale=rect.width/layoutWidth||1;
+    const stickyTop=72;
+    taskListLift=Math.min(0,(stickyTop-rect.top)/scale);
+  }
+
+  function render(){
+    frame=0;
+    progress=Math.max(0,Math.min(1,progress));
+    if(!metricsLift)measureMetricsLift();
+    if(!taskListLift)measureTaskListLift();
+    const isCollapsed=progress>=.999;
+    home.classList.toggle('dashboard-list-collapsed',isCollapsed);
+    setMotion(header,-88*progress,1-Math.min(1,progress*1.25));
+    setMotion(hero,-292*progress,1-progress);
+    setMotion(monthTitle,-322*progress,1-Math.min(1,progress*1.15));
+    setMotion(metrics,metricsLift*progress,1);
+    setMotion(taskList,isCollapsed?0:taskListLift*progress,1);
+    home.classList.toggle('dashboard-list-scrolled',progress>.02);
+  }
+
+  function sync(){
+    if(progress>=.999)return;
+    progress=Math.max(0,Math.min(1,taskList.scrollTop/132));
+    if(!frame)frame=requestAnimationFrame(render);
+  }
+
+  function beginPointer(event){
+    if(event.pointerType==='mouse')return;
+    pointerId=event.pointerId;
+    pointerStartY=event.clientY;
+    pointerStartProgress=progress;
+  }
+
+  function movePointer(event){
+    if(pointerId!==event.pointerId||taskList.scrollTop>1)return;
+    const deltaY=event.clientY-pointerStartY;
+    const pullDown=Math.max(0,deltaY);
+    const pushUp=Math.max(0,-deltaY);
+    const isPullingOpen=pointerStartProgress>=.999&&pullDown>=6;
+    const isPushingClosed=pointerStartProgress<=.001&&pushUp>=6;
+    if(!isPullingOpen&&!isPushingClosed)return;
+    event.preventDefault();
+    progress=isPullingOpen
+      ?Math.max(0,1-pullDown/132)
+      :Math.min(1,pushUp/132);
+    render();
+  }
+
+  function endPointer(event){
+    if(pointerId!==event.pointerId)return;
+    pointerId=null;
+    if(progress>0&&progress<.999){
+      progress=progress>=.65?1:0;
+      render();
+    }
+  }
+
+  taskList.addEventListener('scroll',sync,{passive:true});
+  taskList.addEventListener('pointerdown',beginPointer,{passive:true});
+  taskList.addEventListener('pointermove',movePointer,{passive:false});
+  taskList.addEventListener('pointerup',endPointer,{passive:true});
+  taskList.addEventListener('pointercancel',endPointer,{passive:true});
+  window.addEventListener('resize',()=>{
+    metricsLift=0;
+    taskListLift=0;
+    sync();
+  },{passive:true});
+  progress=Math.max(0,Math.min(1,taskList.scrollTop/132));
+  render();
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initHomeDashboardScrollCollapse,{once:true});
+else initHomeDashboardScrollCollapse();
+
 function goHome(){showScreen('home');setNavActive('tasks');loadTasks();}
 let taskDetailReturnScreen='home';
 const TASK_DETAIL_RETURN_SCREENS=new Set(['home','calendar','statistics','profile','chats','chat-conv']);
