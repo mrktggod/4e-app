@@ -362,15 +362,21 @@ html[data-theme="light"] .sub-row {
     0 0 20px rgba(135,183,69,.16) !important;
 }
 
-/* Telegram dark mode owns a bottom system zone even when env(safe-area-inset-bottom) is 0. */
+/* Telegram dark mode owns a bottom system zone even when env(safe-area-inset-bottom) is 0.
+   Keep every control inside the visual menu, rather than letting the centre control overlap its rim. */
 html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav {
-  bottom: max(24px, calc(var(--safe-area-bottom) + 8px)) !important;
+  bottom: max(32px, calc(var(--safe-area-bottom) + 16px)) !important;
+  height: 66px !important;
+  min-height: 66px !important;
+  max-height: 66px !important;
 }
 
 html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav .dash-nav-item {
-  transform: translateY(-4px) !important;
+  transform: translateY(-3px) !important;
 }
 
 html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav .dash-center-button {
-  transform: translateY(-17px) !important;
+  width: 58px !important;
+  height: 58px !important;
+  transform: translateY(-3px) !important;
 }
