@@ -80,6 +80,10 @@ try {
   const homeMetrics = await page.evaluate(({ homeNav, globalNav }) => {
     const nav = document.querySelector('#home .dash-bottom-nav');
     const navRect = nav?.getBoundingClientRect();
+    const bottomGap = selector => {
+      const rect = document.querySelector(selector)?.getBoundingClientRect();
+      return rect ? window.innerHeight - rect.bottom : -1;
+    };
     return {
       theme: document.documentElement.getAttribute('data-theme') || '',
       surface: document.documentElement.getAttribute('data-app-surface') || '',
@@ -88,7 +92,10 @@ try {
       dashNavButtons: document.querySelectorAll('#home .dash-bottom-nav button').length,
       globalNavCount: document.querySelectorAll('#global-nav').length,
       dashBottomNavCount: document.querySelectorAll('#home .dash-bottom-nav').length,
-      navBottomGap: navRect ? window.innerHeight - navRect.bottom : -1
+      navBottomGap: navRect ? window.innerHeight - navRect.bottom : -1,
+      todayBottomGap: bottomGap('#home-nav-today'),
+      voiceBottomGap: bottomGap('#home-nav-voice'),
+      calendarBottomGap: bottomGap('#home-nav-cal')
     };
   }, {
     homeNav: readVisibility('#home .dash-bottom-nav'),
@@ -120,6 +127,9 @@ try {
   if (homeMetrics.globalNavCount !== 1) throw new Error(`expected one legacy global nav source node, got ${homeMetrics.globalNavCount}`);
   if (homeMetrics.dashBottomNavCount !== 1) throw new Error(`expected one dashboard bottom nav source node, got ${homeMetrics.dashBottomNavCount}`);
   if (homeMetrics.navBottomGap < 24) throw new Error(`Telegram bottom nav should keep a 24px system-zone gap, got ${homeMetrics.navBottomGap}`);
+  if (homeMetrics.todayBottomGap < 24) throw new Error(`Telegram today button should keep a 24px system-zone gap, got ${homeMetrics.todayBottomGap}`);
+  if (homeMetrics.voiceBottomGap < 24) throw new Error(`Telegram voice button should keep a 24px system-zone gap, got ${homeMetrics.voiceBottomGap}`);
+  if (homeMetrics.calendarBottomGap < 24) throw new Error(`Telegram calendar button should keep a 24px system-zone gap, got ${homeMetrics.calendarBottomGap}`);
 
   const visibleInnerGlobal = pageMetrics.filter((item) => item.globalNavVisible || !item.globalNavHiddenClass);
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);

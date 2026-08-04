@@ -641,6 +641,14 @@ Git Bash UI architecture guard failed on existing branch state:
 
 **Коммит:** pending
 
+### Telegram dark dashboard navigation control alignment
+
+**Что сделано:** В тёмной Telegram-версии боковые пункты навигации и центральная кнопка подняты вместе с нижней панелью. Центральная кнопка больше не выступает ниже её края.
+
+**Тест:** `npm run smoke:telegram-bottom-menu` подтвердил по 24 px до нижней системной зоны у рамки, кнопок «Сегодня» и «Календарь», а также у центральной кнопки.
+
+**Коммит:** pending
+
 ## 2026-07-26
 
 ### Expired Premium voice gate

@@ -17309,3 +17309,9 @@ html[data-theme="light"] .sub-row {
 html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav {
   bottom: max(24px, calc(var(--safe-area-bottom) + 8px)) !important;
 }
+html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav .dash-nav-item {
+  transform: translateY(-4px) !important;
+}
+html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav .dash-center-button {
+  transform: translateY(-17px) !important;
+}
