@@ -33,7 +33,7 @@
 
 | Brief | Поверхность | Состояние выпуска | Что есть сейчас | Следующее действие |
 | --- | --- | --- | --- | --- |
-| BRIEF-2026-08-02-119-remove-home-show-all-button | Telegram Mini App dashboard | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR с обновлённым smoke; затем человек решает merge |
+| BRIEF-2026-08-02-119-remove-home-show-all-button | Telegram Mini App dashboard | PR_READY | PR #53, `ac59acc`; target: `feat/admin-tariff-api`; `npm run build:css`, `npm run smoke:home001`, `npm run smoke:telegram-dashboard-one-task`, encoding/path/syntax checks | Человеку: review и merge PR #53; затем ручная проверка Telegram Mini App, deploy не выполнялся |
 | BRIEF-2026-08-02-120-telegram-web-menu-and-voice-buttons-regression | Telegram Mini App и web/PWA | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR с раздельной проверкой двух поверхностей; затем человек решает merge |
 | BRIEF-2026-08-02-121-web-oauth-route-and-test-link-popup | web/PWA OAuth | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: сначала узкая диагностика; live OAuth остаётся ручным хвостом |
 | BRIEF-2026-08-02-122-notifications-functional-audit | Telegram Mini App / web notifications | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: диагностика и evidence без догадок о runtime-контракте |
