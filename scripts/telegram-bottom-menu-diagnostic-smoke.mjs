@@ -159,8 +159,8 @@ try {
       clientY: y
     }));
     dispatchTouch('pointerdown', 200);
-    dispatchTouch('pointermove', 380);
-    dispatchTouch('pointerup', 380);
+    dispatchTouch('pointermove', 224);
+    dispatchTouch('pointerup', 224);
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const expanded = {
       heroTop: hero.getBoundingClientRect().top,

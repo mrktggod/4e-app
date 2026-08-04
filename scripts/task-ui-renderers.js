@@ -328,6 +328,8 @@ function initHomeDashboardScrollCollapse(){
   let pointerId=null;
   let pointerStartY=0;
   let pointerStartProgress=0;
+  const collapseDistance=132;
+  const expandDistance=72;
 
   function setMotion(el, translateY, opacity){
     el.style.setProperty('transform','translate3d(0,'+translateY.toFixed(2)+'px,0)','important');
@@ -367,7 +369,7 @@ function initHomeDashboardScrollCollapse(){
 
   function sync(){
     if(progress>=.999)return;
-    progress=Math.max(0,Math.min(1,taskList.scrollTop/132));
+    progress=Math.max(0,Math.min(1,taskList.scrollTop/collapseDistance));
     if(!frame)frame=requestAnimationFrame(render);
   }
 
@@ -388,8 +390,8 @@ function initHomeDashboardScrollCollapse(){
     if(!isPullingOpen&&!isPushingClosed)return;
     event.preventDefault();
     progress=isPullingOpen
-      ?Math.max(0,1-pullDown/132)
-      :Math.min(1,pushUp/132);
+      ?Math.max(0,1-pullDown/expandDistance)
+      :Math.min(1,pushUp/collapseDistance);
     render();
   }
 
@@ -397,7 +399,8 @@ function initHomeDashboardScrollCollapse(){
     if(pointerId!==event.pointerId)return;
     pointerId=null;
     if(progress>0&&progress<.999){
-      progress=progress>=.65?1:0;
+      const releaseThreshold=pointerStartProgress>=.999?.82:.65;
+      progress=progress>=releaseThreshold?1:0;
       render();
     }
   }
@@ -412,7 +415,7 @@ function initHomeDashboardScrollCollapse(){
     taskListLift=0;
     sync();
   },{passive:true});
-  progress=Math.max(0,Math.min(1,taskList.scrollTop/132));
+  progress=Math.max(0,Math.min(1,taskList.scrollTop/collapseDistance));
   render();
 }
 
