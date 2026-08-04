@@ -392,6 +392,16 @@ Git Bash UI architecture guard failed on existing branch state:
 
 **Commit:** pending
 
+## 2026-08-04
+
+### Morning acceptance and process review
+
+**What changed:** added the morning acceptance report and manual-actions checklist for 2026-08-04. No runtime product code was changed. Today's Cowork handoff was absent, so no night result was accepted.
+
+**Test:** docs-only review; no night browser or load tests repeated.
+
+**Commit:** pending
+
 ## 2026-07-29
 
 ### DESIGN-GLASS-001 package 3 safe controls
