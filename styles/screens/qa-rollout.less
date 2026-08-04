@@ -361,3 +361,8 @@ html[data-theme="light"] .sub-row {
     0 18px 34px rgba(72,91,44,.16),
     0 0 20px rgba(135,183,69,.16) !important;
 }
+
+/* Telegram dark mode owns a bottom system zone even when env(safe-area-inset-bottom) is 0. */
+html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav {
+  bottom: max(24px, calc(var(--safe-area-bottom) + 8px)) !important;
+}

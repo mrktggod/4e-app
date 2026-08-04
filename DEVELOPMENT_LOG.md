@@ -3700,3 +3700,15 @@ Git Bash UI architecture guard failed on existing branch state:
 **Тест:** docs-only acceptance; runtime-код не менялся.
 
 **Коммит:** pending
+
+## 2026-08-04
+
+### Telegram dark dashboard navigation safe-area lift
+
+**Что сделано:** Для тёмной темы Telegram Mini App нижнее меню главного экрана теперь оставляет минимум 24 px до нижней системной зоны. Платформа явно помечается атрибутом `data-app-surface`, поэтому веб/PWA-меню не получает Telegram-отступ. Обновлён проверочный сценарий: он запускается через официальный Telegram SDK fixture и проверяет тип поверхности и фактический отступ меню.
+
+**Проверка кодировки:** `index.html` markers до/после: 114 / 114; `node scripts/check-cp1251-mojibake.mjs` → 0 suspicious tokens.
+
+**Тест:** `npm run build:css`; `npm run smoke:telegram-bottom-menu` → `navBottomGap: 24`; `npx playwright test autotests/tests/web/navigation-safe-area.spec.ts --project=mobile-chromium` → 2 passed; `npm run check:js-syntax -- --all`; `npm run check:portable-paths`; `git diff --check`.
+
+**Коммит:** pending

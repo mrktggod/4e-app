@@ -41,14 +41,16 @@
   }
 
   function getTelegramInitData() {
-    return safeTelegram('read initData', () => telegramApp?.initData || '', '');
+    return safeTelegram('read initData', () => readTelegramApp()?.initData || '', '');
   }
 
   function initTelegram() {
-    if (!telegramApp) return;
-    safeTelegram('ready', () => { telegramApp.ready?.(); });
-    safeTelegram('expand', () => { telegramApp.expand?.(); });
-    safeTelegram('disableVerticalSwipes', () => { telegramApp.disableVerticalSwipes?.(); });
+    const app = readTelegramApp();
+    document.documentElement.setAttribute('data-app-surface', getSurface());
+    if (!app) return;
+    safeTelegram('ready', () => { app.ready?.(); });
+    safeTelegram('expand', () => { app.expand?.(); });
+    safeTelegram('disableVerticalSwipes', () => { app.disableVerticalSwipes?.(); });
   }
 
   function isVkMiniAppContext() {

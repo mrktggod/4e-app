@@ -20,16 +20,9 @@ await page.addInitScript(({ tasks }) => {
   localStorage.setItem('chetam_onboarded', '1');
   localStorage.setItem('chetam_token', 'telegram-bottom-menu-smoke-token');
   localStorage.setItem('chetam_theme', 'dark');
-  window.Telegram = {
-    WebApp: {
-      initData: 'query_id=bottom-menu-diagnostic',
-      initDataUnsafe: { user: { id: 9696, first_name: 'Telegram' } },
-      ready() {},
-      expand() {},
-      disableVerticalSwipes() {},
-      HapticFeedback: { impactOccurred() {} }
-    }
-  };
+  sessionStorage.setItem('__telegram__initParams', JSON.stringify({
+    tgWebAppData: 'query_id=bottom-menu-diagnostic&user=%7B%22id%22%3A9696%2C%22first_name%22%3A%22Telegram%22%7D'
+  }));
   window.fetch = async (url) => {
     const href = String(url || '');
     if (href.includes('/tasks')) {
@@ -84,14 +77,20 @@ try {
   await fs.mkdir(path.dirname(screenshotPath), { recursive: true });
   await page.screenshot({ path: screenshotPath, fullPage: false });
 
-  const homeMetrics = await page.evaluate(({ homeNav, globalNav }) => ({
-    theme: document.documentElement.getAttribute('data-theme') || '',
-    homeNavVisible: eval(homeNav.expression),
-    globalNavVisible: eval(globalNav.expression),
-    dashNavButtons: document.querySelectorAll('#home .dash-bottom-nav button').length,
-    globalNavCount: document.querySelectorAll('#global-nav').length,
-    dashBottomNavCount: document.querySelectorAll('#home .dash-bottom-nav').length
-  }), {
+  const homeMetrics = await page.evaluate(({ homeNav, globalNav }) => {
+    const nav = document.querySelector('#home .dash-bottom-nav');
+    const navRect = nav?.getBoundingClientRect();
+    return {
+      theme: document.documentElement.getAttribute('data-theme') || '',
+      surface: document.documentElement.getAttribute('data-app-surface') || '',
+      homeNavVisible: eval(homeNav.expression),
+      globalNavVisible: eval(globalNav.expression),
+      dashNavButtons: document.querySelectorAll('#home .dash-bottom-nav button').length,
+      globalNavCount: document.querySelectorAll('#global-nav').length,
+      dashBottomNavCount: document.querySelectorAll('#home .dash-bottom-nav').length,
+      navBottomGap: navRect ? window.innerHeight - navRect.bottom : -1
+    };
+  }, {
     homeNav: readVisibility('#home .dash-bottom-nav'),
     globalNav: readVisibility('#global-nav')
   });
@@ -114,11 +113,13 @@ try {
   }
 
   if (homeMetrics.theme !== 'dark') throw new Error(`expected dark theme, got ${homeMetrics.theme}`);
+  if (homeMetrics.surface !== 'telegram') throw new Error(`expected Telegram surface, got ${homeMetrics.surface}`);
   if (!homeMetrics.homeNavVisible) throw new Error('dashboard dark bottom nav is not visible');
   if (homeMetrics.globalNavVisible) throw new Error('legacy global nav is visible on dashboard');
   if (homeMetrics.dashNavButtons !== 3) throw new Error(`dashboard bottom nav should have 3 buttons, got ${homeMetrics.dashNavButtons}`);
   if (homeMetrics.globalNavCount !== 1) throw new Error(`expected one legacy global nav source node, got ${homeMetrics.globalNavCount}`);
   if (homeMetrics.dashBottomNavCount !== 1) throw new Error(`expected one dashboard bottom nav source node, got ${homeMetrics.dashBottomNavCount}`);
+  if (homeMetrics.navBottomGap < 24) throw new Error(`Telegram bottom nav should keep a 24px system-zone gap, got ${homeMetrics.navBottomGap}`);
 
   const visibleInnerGlobal = pageMetrics.filter((item) => item.globalNavVisible || !item.globalNavHiddenClass);
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);
