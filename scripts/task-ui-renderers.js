@@ -328,8 +328,10 @@ function initHomeDashboardScrollCollapse(){
   let pointerId=null;
   let pointerStartY=0;
   let pointerStartProgress=0;
+  let settleFrame=0;
   const collapseDistance=132;
   const expandDistance=72;
+  const settleDuration=180;
 
   function setMotion(el, translateY, opacity){
     el.style.setProperty('transform','translate3d(0,'+translateY.toFixed(2)+'px,0)','important');
@@ -368,13 +370,35 @@ function initHomeDashboardScrollCollapse(){
   }
 
   function sync(){
-    if(progress>=.999)return;
+    if(progress>=.999||settleFrame)return;
     progress=Math.max(0,Math.min(1,taskList.scrollTop/collapseDistance));
     if(!frame)frame=requestAnimationFrame(render);
   }
 
+  function cancelSettle(){
+    if(!settleFrame)return;
+    cancelAnimationFrame(settleFrame);
+    settleFrame=0;
+  }
+
+  function settleProgress(target){
+    cancelSettle();
+    const from=progress;
+    const startedAt=performance.now();
+    function step(now){
+      const elapsed=Math.min(1,(now-startedAt)/settleDuration);
+      const eased=1-Math.pow(1-elapsed,3);
+      progress=from+(target-from)*eased;
+      render();
+      if(elapsed<1)settleFrame=requestAnimationFrame(step);
+      else settleFrame=0;
+    }
+    settleFrame=requestAnimationFrame(step);
+  }
+
   function beginPointer(event){
     if(event.pointerType==='mouse')return;
+    cancelSettle();
     pointerId=event.pointerId;
     pointerStartY=event.clientY;
     pointerStartProgress=progress;
@@ -400,8 +424,7 @@ function initHomeDashboardScrollCollapse(){
     pointerId=null;
     if(progress>0&&progress<.999){
       const releaseThreshold=pointerStartProgress>=.999?.82:.65;
-      progress=progress>=releaseThreshold?1:0;
-      render();
+      settleProgress(progress>=releaseThreshold?1:0);
     }
   }
 

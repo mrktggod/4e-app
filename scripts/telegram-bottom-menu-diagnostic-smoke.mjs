@@ -161,6 +161,12 @@ try {
     dispatchTouch('pointerdown', 200);
     dispatchTouch('pointermove', 224);
     dispatchTouch('pointerup', 224);
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    const returning = {
+      heroOpacity: Number(getComputedStyle(hero).opacity),
+      taskListTop: list.getBoundingClientRect().top
+    };
+    await new Promise((resolve) => setTimeout(resolve, 220));
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const expanded = {
       heroTop: hero.getBoundingClientRect().top,
@@ -177,7 +183,7 @@ try {
       taskListTop: list.getBoundingClientRect().top,
       classApplied: document.getElementById('home')?.classList.contains('dashboard-list-scrolled') || false
     };
-    return { expanded, collapsed };
+    return { returning, expanded, collapsed };
   });
 
   const swipeMetrics = await page.evaluate(() => {
@@ -248,6 +254,9 @@ try {
   }
   if (dashboardCollapse.expanded.heroOpacity < .95 || dashboardCollapse.expanded.metricsTop < 200 || dashboardCollapse.expanded.taskListTop < 300) {
     throw new Error(`Telegram dashboard scroll should restore the focus card at the top of the task list: ${JSON.stringify(dashboardCollapse)}`);
+  }
+  if (dashboardCollapse.returning.heroOpacity <= .05 || dashboardCollapse.returning.heroOpacity >= .95 || dashboardCollapse.returning.taskListTop <= 80 || dashboardCollapse.returning.taskListTop >= 300) {
+    throw new Error(`Telegram dashboard scroll should animate the return instead of jumping open: ${JSON.stringify(dashboardCollapse)}`);
   }
   if (swipeMetrics.pickerRequests < 2 || swipeMetrics.taskId !== 'bottom-nav-1' || !swipeMetrics.moveActionOpenedPicker) {
     throw new Error(`Telegram left swipe should open the date picker for its task: ${JSON.stringify(swipeMetrics)}`);
