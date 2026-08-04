@@ -11,7 +11,10 @@ function taskFixture() {
   return [
     { id: 'bottom-nav-1', text: 'Check Telegram bottom nav', direction: 'outgoing', deadline: '2026-07-28T12:00:00' },
     { id: 'bottom-nav-2', text: 'Confirm inner pages hide old menu', direction: 'incoming', person: 'Yuri', deadline: '2026-07-28T18:00:00' },
-    { id: 'bottom-nav-3', text: 'Keep the third dashboard task visible', direction: 'outgoing', deadline: '2026-07-29T12:00:00' }
+    { id: 'bottom-nav-3', text: 'Keep the third dashboard task visible', direction: 'outgoing', deadline: '2026-07-29T12:00:00' },
+    { id: 'bottom-nav-4', text: 'Scroll to the fourth dashboard task', direction: 'incoming', person: 'Yuri', deadline: '2026-07-30T12:00:00' },
+    { id: 'bottom-nav-5', text: 'Scroll to the fifth dashboard task', direction: 'outgoing', deadline: '2026-07-31T12:00:00' },
+    { id: 'bottom-nav-6', text: 'Reach the final dashboard task', direction: 'incoming', person: 'Yuri', deadline: '2026-08-01T12:00:00' }
   ];
 }
 
@@ -75,7 +78,7 @@ try {
     await loadTasks();
   });
   await page.waitForFunction(() => document.querySelector('#home.active .dash-bottom-nav'));
-  await page.waitForFunction(() => document.querySelectorAll('#home-task-list .home-ai-row-main').length >= 3);
+  await page.waitForFunction(() => document.querySelectorAll('#home-task-list .home-ai-row-main').length >= 6);
   await fs.mkdir(path.dirname(screenshotPath), { recursive: true });
   await page.screenshot({ path: screenshotPath, fullPage: false });
 
@@ -84,7 +87,7 @@ try {
     const navRect = nav?.getBoundingClientRect();
     const taskListRect = document.querySelector('#home-task-list')?.getBoundingClientRect();
     const taskRows = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main'));
-    const lastTaskRect = taskRows.at(-1)?.getBoundingClientRect();
+    const thirdTaskRect = taskRows[2]?.getBoundingClientRect();
     const controlMetrics = selector => {
       const rect = document.querySelector(selector)?.getBoundingClientRect();
       return rect && navRect ? {
@@ -102,12 +105,14 @@ try {
       globalNavCount: document.querySelectorAll('#global-nav').length,
       dashBottomNavCount: document.querySelectorAll('#home .dash-bottom-nav').length,
       navBottomGap: navRect ? window.innerHeight - navRect.bottom : -1,
-      taskLane: taskListRect && lastTaskRect && navRect ? {
+      taskLane: taskListRect && thirdTaskRect && navRect ? {
         listTop: taskListRect.top,
         listBottom: taskListRect.bottom,
-        lastTaskTop: lastTaskRect.top,
-        lastTaskBottom: lastTaskRect.bottom,
-        gapBeforeMenu: navRect.top - lastTaskRect.bottom,
+        thirdTaskTop: thirdTaskRect.top,
+        thirdTaskBottom: thirdTaskRect.bottom,
+        gapBeforeMenu: navRect.top - thirdTaskRect.bottom,
+        scrollHeight: document.querySelector('#home-task-list')?.scrollHeight || 0,
+        clientHeight: document.querySelector('#home-task-list')?.clientHeight || 0,
         rowBounds: taskRows.map((row) => {
           const rect = row.getBoundingClientRect();
           return { top: rect.top, bottom: rect.bottom };
@@ -120,6 +125,22 @@ try {
   }, {
     homeNav: readVisibility('#home .dash-bottom-nav'),
     globalNav: readVisibility('#global-nav')
+  });
+
+  const scrollMetrics = await page.evaluate(() => {
+    const list = document.querySelector('#home-task-list');
+    const navRect = document.querySelector('#home .dash-bottom-nav')?.getBoundingClientRect();
+    const lastTaskRect = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main')).at(-1)?.getBoundingClientRect();
+    const listRect = list?.getBoundingClientRect();
+    if (list) list.scrollTop = list.scrollHeight;
+    const scrolledLastTaskRect = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main')).at(-1)?.getBoundingClientRect();
+    return {
+      scrollTop: list?.scrollTop || 0,
+      listTop: listRect?.top ?? -1,
+      listBottom: listRect?.bottom ?? -1,
+      lastTaskBottom: scrolledLastTaskRect?.bottom ?? lastTaskRect?.bottom ?? -1,
+      gapBeforeMenu: navRect && scrolledLastTaskRect ? navRect.top - scrolledLastTaskRect.bottom : -1
+    };
   });
 
   const innerPages = ['profile', 'task-detail', 'subscription', 'statistics'];
@@ -147,8 +168,14 @@ try {
   if (homeMetrics.globalNavCount !== 1) throw new Error(`expected one legacy global nav source node, got ${homeMetrics.globalNavCount}`);
   if (homeMetrics.dashBottomNavCount !== 1) throw new Error(`expected one dashboard bottom nav source node, got ${homeMetrics.dashBottomNavCount}`);
   if (homeMetrics.navBottomGap < 32) throw new Error(`Telegram bottom nav should keep a 32px system-zone gap, got ${homeMetrics.navBottomGap}`);
-  if (!homeMetrics.taskLane || homeMetrics.taskLane.lastTaskBottom > homeMetrics.taskLane.listBottom + 1 || homeMetrics.taskLane.gapBeforeMenu < 8) {
-    throw new Error(`Telegram dashboard task lane must not hide the final task behind the menu: ${JSON.stringify(homeMetrics.taskLane)}`);
+  if (!homeMetrics.taskLane || homeMetrics.taskLane.thirdTaskBottom > homeMetrics.taskLane.listBottom + 1 || homeMetrics.taskLane.gapBeforeMenu < 8) {
+    throw new Error(`Telegram dashboard task lane must keep the first three tasks clear of the menu: ${JSON.stringify(homeMetrics.taskLane)}`);
+  }
+  if (homeMetrics.taskLane.scrollHeight <= homeMetrics.taskLane.clientHeight) {
+    throw new Error(`Telegram dashboard task lane should scroll when there are six tasks: ${JSON.stringify(homeMetrics.taskLane)}`);
+  }
+  if (scrollMetrics.scrollTop <= 0 || scrollMetrics.lastTaskBottom > scrollMetrics.listBottom + 1 || scrollMetrics.gapBeforeMenu < 8) {
+    throw new Error(`Telegram dashboard task lane should reveal the final task after scrolling: ${JSON.stringify(scrollMetrics)}`);
   }
   for (const [name, control] of Object.entries({ today: homeMetrics.today, voice: homeMetrics.voice, calendar: homeMetrics.calendar })) {
     if (!control) throw new Error(`Telegram ${name} control is missing`);
@@ -161,7 +188,7 @@ try {
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
 
-  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, pageMetrics, screenshotPath }));
+  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, scrollMetrics, pageMetrics, screenshotPath }));
 } finally {
   await browser.close();
 }
