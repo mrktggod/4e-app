@@ -237,6 +237,28 @@ try {
     }));
   }
 
+  await page.evaluate(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
+    showScreen('home');
+  });
+  await page.waitForFunction(() => document.querySelector('#home.active .dash-bottom-nav'));
+  const lightTelegramMetrics = await page.evaluate(() => {
+    const rect = (selector) => document.querySelector(selector)?.getBoundingClientRect();
+    const nav = rect('#home .dash-bottom-nav');
+    const metrics = rect('#home .dash-metrics');
+    const center = rect('#home .dash-center-button');
+    const task = rect('#home-task-list .home-ai-row-main');
+    return {
+      theme: document.documentElement.getAttribute('data-theme') || '',
+      navHeight: nav?.height ?? -1,
+      navBottomGap: nav ? window.innerHeight-nav.bottom : -1,
+      metricsHeight: metrics?.height ?? -1,
+      centerWidth: center?.width ?? -1,
+      centerHeight: center?.height ?? -1,
+      taskHeight: task?.height ?? -1
+    };
+  });
+
   if (homeMetrics.theme !== 'dark') throw new Error(`expected dark theme, got ${homeMetrics.theme}`);
   if (homeMetrics.surface !== 'telegram') throw new Error(`expected Telegram surface, got ${homeMetrics.surface}`);
   if (!homeMetrics.homeNavVisible) throw new Error('dashboard dark bottom nav is not visible');
@@ -279,8 +301,11 @@ try {
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
+  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 58 || lightTelegramMetrics.centerHeight !== 58 || lightTelegramMetrics.taskHeight !== 72) {
+    throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
+  }
 
-  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, screenshotPath }));
+  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
 } finally {
   await browser.close();
 }
