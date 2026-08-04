@@ -329,9 +329,9 @@ function initHomeDashboardScrollCollapse(){
   let pointerStartY=0;
   let pointerStartProgress=0;
   let settleFrame=0;
-  const collapseDistance=132;
-  const expandDistance=72;
-  const settleDuration=180;
+  const collapseDistance=180;
+  const expandDistance=108;
+  const settleDuration=220;
 
   function setMotion(el, translateY, opacity){
     el.style.setProperty('transform','translate3d(0,'+translateY.toFixed(2)+'px,0)','important');
@@ -387,7 +387,7 @@ function initHomeDashboardScrollCollapse(){
     const startedAt=performance.now();
     function step(now){
       const elapsed=Math.min(1,(now-startedAt)/settleDuration);
-      const eased=1-Math.pow(1-elapsed,3);
+      const eased=elapsed*elapsed*(3-2*elapsed);
       progress=from+(target-from)*eased;
       render();
       if(elapsed<1)settleFrame=requestAnimationFrame(step);

@@ -168,7 +168,7 @@ try {
       taskListTop: returningListRect.top,
       taskListBottom: returningListRect.bottom
     };
-    await new Promise((resolve) => setTimeout(resolve, 220));
+    await new Promise((resolve) => setTimeout(resolve, 260));
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const expandedListRect = list.getBoundingClientRect();
     const expanded = {
@@ -178,7 +178,7 @@ try {
       taskListTop: expandedListRect.top,
       taskListBottom: expandedListRect.bottom
     };
-    list.scrollTop = 160;
+    list.scrollTop = 220;
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const collapsedListRect = list.getBoundingClientRect();
     const collapsed = {
