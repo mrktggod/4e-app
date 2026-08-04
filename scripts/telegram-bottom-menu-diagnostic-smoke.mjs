@@ -80,6 +80,7 @@ try {
   const homeMetrics = await page.evaluate(({ homeNav, globalNav }) => {
     const nav = document.querySelector('#home .dash-bottom-nav');
     const navRect = nav?.getBoundingClientRect();
+    const navStyle = nav ? getComputedStyle(nav) : null;
     const controlMetrics = selector => {
       const rect = document.querySelector(selector)?.getBoundingClientRect();
       return rect && navRect ? {
@@ -97,6 +98,11 @@ try {
       globalNavCount: document.querySelectorAll('#global-nav').length,
       dashBottomNavCount: document.querySelectorAll('#home .dash-bottom-nav').length,
       navBottomGap: navRect ? window.innerHeight - navRect.bottom : -1,
+      navFrame: navStyle ? {
+        backgroundImage: navStyle.backgroundImage,
+        borderTopWidth: navStyle.borderTopWidth,
+        boxShadow: navStyle.boxShadow
+      } : null,
       today: controlMetrics('#home-nav-today'),
       voice: controlMetrics('#home-nav-voice'),
       calendar: controlMetrics('#home-nav-cal')
@@ -131,6 +137,9 @@ try {
   if (homeMetrics.globalNavCount !== 1) throw new Error(`expected one legacy global nav source node, got ${homeMetrics.globalNavCount}`);
   if (homeMetrics.dashBottomNavCount !== 1) throw new Error(`expected one dashboard bottom nav source node, got ${homeMetrics.dashBottomNavCount}`);
   if (homeMetrics.navBottomGap < 32) throw new Error(`Telegram bottom nav should keep a 32px system-zone gap, got ${homeMetrics.navBottomGap}`);
+  if (!homeMetrics.navFrame || homeMetrics.navFrame.backgroundImage !== 'none' || homeMetrics.navFrame.borderTopWidth !== '0px' || homeMetrics.navFrame.boxShadow !== 'none') {
+    throw new Error(`Telegram dashboard menu frame should be transparent: ${JSON.stringify(homeMetrics.navFrame)}`);
+  }
   for (const [name, control] of Object.entries({ today: homeMetrics.today, voice: homeMetrics.voice, calendar: homeMetrics.calendar })) {
     if (!control) throw new Error(`Telegram ${name} control is missing`);
     if (control.bottomGap < 32) throw new Error(`Telegram ${name} control should keep a 32px system-zone gap, got ${control.bottomGap}`);

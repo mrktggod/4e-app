@@ -17306,12 +17306,17 @@ html[data-theme="light"] .sub-row {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86), 0 18px 34px rgba(72, 91, 44, 0.16), 0 0 20px rgba(135, 183, 69, 0.16) !important;
 }
 /* Telegram dark mode owns a bottom system zone even when env(safe-area-inset-bottom) is 0.
-   Keep every control inside the visual menu, rather than letting the centre control overlap its rim. */
+   Keep every control inside the layout lane while leaving the dashboard background unobstructed. */
 html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav {
   bottom: max(32px, calc(var(--safe-area-bottom) + 16px)) !important;
   height: 66px !important;
   min-height: 66px !important;
   max-height: 66px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 html[data-theme="dark"][data-app-surface="telegram"] body #home#home .dash-bottom-nav .dash-nav-item {
   transform: translateY(-3px) !important;

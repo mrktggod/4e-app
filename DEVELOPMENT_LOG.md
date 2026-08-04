@@ -538,9 +538,9 @@ Git Bash UI architecture guard failed on existing branch state:
 
 ### Telegram dashboard menu: controls contained in the menu
 
-**Что сделано:** Нижняя панель Telegram поднята до отступа 32 px и увеличена до 66 px. Боковые кнопки подняты внутри панели, а центральная кнопка уменьшена до 58 px, поэтому полностью остаётся в её контурах.
+**Что сделано:** Нижняя панель Telegram поднята до отступа 32 px и увеличена до 66 px. Боковые кнопки подняты внутри панели, центральная кнопка уменьшена до 58 px, а стеклянная подложка меню полностью убрана.
 
-**Тест:** `npm run build:css`; `npm run smoke:telegram-bottom-menu` подтверждает отступ 32 px и то, что все три кнопки находятся в пределах панели; `npx playwright test autotests/tests/web/navigation-safe-area.spec.ts --project=mobile-chromium` → 2 passed.
+**Тест:** `npm run build:css`; `npm run smoke:telegram-bottom-menu` подтверждает отступ 32 px, прозрачную подложку и то, что все три кнопки находятся в пределах панели; `npx playwright test autotests/tests/web/navigation-safe-area.spec.ts --project=mobile-chromium` → 2 passed.
 
 **Коммит:** pending
 
