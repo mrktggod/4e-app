@@ -83,7 +83,7 @@ function handleTaskSwipeButton(btn, event){
   if(btn.dataset.taskAction==='cancel'){resetTaskSwipe(shell);return;}
   if(btn.dataset.taskAction==='move'){
     resetTaskSwipe(shell);
-    openTaskMove(taskId);
+    openTaskReschedule(taskId);
     return;
   }
   if(btn.dataset.taskAction==='done'){quickDoneTask(taskId,btn);}
@@ -153,7 +153,7 @@ function taskSwipeEnd(event,card){
   shell.classList.remove('swiping-left','swiping-right');
   if(Math.abs(dx)>12)shell.dataset.swiped='1';
   if(Math.abs(dx)>=88&&!taskSwipeState.vibrated)vibrateTaskCard(12,'medium');
-  if(dx<-88){
+  if(dx<=-56){
     resetTaskSwipe(shell);
     const moveBtn=shell.querySelector('.task-swipe-move');
     if(moveBtn)triggerTaskActionFeedback(moveBtn,{ms:20,style:'medium'});
@@ -214,8 +214,18 @@ function openTaskReschedule(taskId){
   const input=getTaskRescheduleInput();
   const d=parseTaskDate(task?.deadline||task?.date);
   input.dataset.taskId=taskId;
+  input.dataset.pickerRequested='1';
   input.value=d?d.toISOString().slice(0,10):'';
-  if(input.showPicker)input.showPicker();else input.click();
+  if(input.showPicker){
+    try{
+      input.showPicker();
+      return;
+    }catch(_){
+      // Telegram WebViews can expose showPicker() but reject its activation.
+    }
+  }
+  input.focus({preventScroll:true});
+  input.click();
 }
 async function handleTaskReschedule(taskId,value){
   if(!taskId||!value)return;

@@ -143,6 +143,35 @@ try {
     };
   });
 
+  const swipeMetrics = await page.evaluate(() => {
+    const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'showPicker');
+    let pickerRequests = 0;
+    Object.defineProperty(HTMLInputElement.prototype, 'showPicker', {
+      configurable: true,
+      value() { pickerRequests += 1; }
+    });
+    try {
+      const card = document.querySelector('#home-task-list .home-ai-row');
+      const shell = card?.closest('.task-card-shell');
+      const rect = card?.getBoundingClientRect();
+      if (!card || !shell || !rect) return { pickerRequests, taskId: '', moveActionOpenedPicker: false };
+      const pointer = (x) => ({ pointerType: 'touch', clientX: x, clientY: rect.top + 20, preventDefault() {} });
+      taskSwipeStart(pointer(rect.left + 180), card);
+      taskSwipeMove(pointer(rect.left + 120), card);
+      taskSwipeEnd(pointer(rect.left + 120), card);
+      const input = document.getElementById('task-reschedule-picker');
+      const taskId = input?.dataset.taskId || '';
+      const beforeMoveAction = pickerRequests;
+      const moveButton = shell.querySelector('.task-swipe-move');
+      if (moveButton?.dataset.feedbackLocked === '1') delete moveButton.dataset.feedbackLocked;
+      moveButton?.click();
+      return { pickerRequests, taskId, moveActionOpenedPicker: pickerRequests > beforeMoveAction };
+    } finally {
+      if (descriptor) Object.defineProperty(HTMLInputElement.prototype, 'showPicker', descriptor);
+      else delete HTMLInputElement.prototype.showPicker;
+    }
+  });
+
   const innerPages = ['profile', 'task-detail', 'subscription', 'statistics'];
   const pageMetrics = [];
   for (const screen of innerPages) {
@@ -177,6 +206,9 @@ try {
   if (scrollMetrics.scrollTop <= 0 || scrollMetrics.lastTaskBottom > scrollMetrics.listBottom + 1 || scrollMetrics.gapBeforeMenu < 8) {
     throw new Error(`Telegram dashboard task lane should reveal the final task after scrolling: ${JSON.stringify(scrollMetrics)}`);
   }
+  if (swipeMetrics.pickerRequests < 2 || swipeMetrics.taskId !== 'bottom-nav-1' || !swipeMetrics.moveActionOpenedPicker) {
+    throw new Error(`Telegram left swipe should open the date picker for its task: ${JSON.stringify(swipeMetrics)}`);
+  }
   for (const [name, control] of Object.entries({ today: homeMetrics.today, voice: homeMetrics.voice, calendar: homeMetrics.calendar })) {
     if (!control) throw new Error(`Telegram ${name} control is missing`);
     if (control.bottomGap < 32) throw new Error(`Telegram ${name} control should keep a 32px system-zone gap, got ${control.bottomGap}`);
@@ -188,7 +220,7 @@ try {
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
 
-  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, scrollMetrics, pageMetrics, screenshotPath }));
+  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, scrollMetrics, swipeMetrics, pageMetrics, screenshotPath }));
 } finally {
   await browser.close();
 }
