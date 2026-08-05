@@ -127,48 +127,28 @@ try {
     globalNav: readVisibility('#global-nav')
   });
 
-  const scrollMetrics = await page.evaluate(() => {
-    const list = document.querySelector('#home-task-list');
+  const scrollMetrics = await page.evaluate(async () => {
+    const home = document.getElementById('home');
     const navRect = document.querySelector('#home .dash-bottom-nav')?.getBoundingClientRect();
-    const lastTaskRect = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main')).at(-1)?.getBoundingClientRect();
-    const listRect = list?.getBoundingClientRect();
-    if (list) list.scrollTop = list.scrollHeight;
+    if (home) home.scrollTop = home.scrollHeight;
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const scrolledLastTaskRect = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main')).at(-1)?.getBoundingClientRect();
     return {
-      scrollTop: list?.scrollTop || 0,
-      listTop: listRect?.top ?? -1,
-      listBottom: listRect?.bottom ?? -1,
-      lastTaskBottom: scrolledLastTaskRect?.bottom ?? lastTaskRect?.bottom ?? -1,
+      scrollTop: home?.scrollTop || 0,
+      scrollHeight: home?.scrollHeight || 0,
+      clientHeight: home?.clientHeight || 0,
+      lastTaskBottom: scrolledLastTaskRect?.bottom ?? -1,
       gapBeforeMenu: navRect && scrolledLastTaskRect ? navRect.top - scrolledLastTaskRect.bottom : -1
     };
   });
 
   const dashboardCollapse = await page.evaluate(async () => {
+    const home = document.getElementById('home');
     const list = document.querySelector('#home-task-list');
     const hero = document.querySelector('#home .dash-hero');
     const metrics = document.querySelector('#home .dash-metrics');
-    if (!list || !hero || !metrics) return null;
-    list.scrollTop = 0;
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    const dispatchTouch = (type, y) => list.dispatchEvent(new PointerEvent(type, {
-      bubbles: true,
-      cancelable: true,
-      pointerId: 414,
-      pointerType: 'touch',
-      clientX: 180,
-      clientY: y
-    }));
-    dispatchTouch('pointerdown', 200);
-    dispatchTouch('pointermove', 224);
-    dispatchTouch('pointerup', 224);
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-    const returningListRect = list.getBoundingClientRect();
-    const returning = {
-      heroOpacity: Number(getComputedStyle(hero).opacity),
-      taskListTop: returningListRect.top,
-      taskListBottom: returningListRect.bottom
-    };
-    await new Promise((resolve) => setTimeout(resolve, 260));
+    if (!home || !list || !hero || !metrics) return null;
+    home.scrollTop = 0;
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const expandedListRect = list.getBoundingClientRect();
     const expanded = {
@@ -178,7 +158,7 @@ try {
       taskListTop: expandedListRect.top,
       taskListBottom: expandedListRect.bottom
     };
-    list.scrollTop = 220;
+    home.scrollTop = 280;
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const collapsedListRect = list.getBoundingClientRect();
     const collapsed = {
@@ -187,9 +167,10 @@ try {
       metricsTop: metrics.getBoundingClientRect().top,
       taskListTop: collapsedListRect.top,
       taskListBottom: collapsedListRect.bottom,
-      classApplied: document.getElementById('home')?.classList.contains('dashboard-list-scrolled') || false
+      rootScrollTop: home.scrollTop
     };
-    return { returning, expanded, collapsed };
+    home.scrollTop = 0;
+    return { expanded, collapsed };
   });
   const swipeMetrics = await page.evaluate(() => {
     const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'showPicker');
@@ -270,23 +251,17 @@ try {
   if (!homeMetrics.taskLane || homeMetrics.taskLane.thirdTaskBottom > homeMetrics.taskLane.listBottom + 1 || homeMetrics.taskLane.gapBeforeMenu < 8) {
     throw new Error(`Telegram dashboard task lane must keep the first three tasks clear of the menu: ${JSON.stringify(homeMetrics.taskLane)}`);
   }
-  if (homeMetrics.taskLane.scrollHeight <= homeMetrics.taskLane.clientHeight) {
-    throw new Error(`Telegram dashboard task lane should scroll when there are six tasks: ${JSON.stringify(homeMetrics.taskLane)}`);
+  if (homeMetrics.taskLane.scrollHeight !== homeMetrics.taskLane.clientHeight) {
+    throw new Error(`Telegram dashboard task lane must not keep its own scroll surface: ${JSON.stringify(homeMetrics.taskLane)}`);
   }
-  if (scrollMetrics.scrollTop <= 0 || scrollMetrics.lastTaskBottom > scrollMetrics.listBottom + 1 || scrollMetrics.gapBeforeMenu < 8) {
-    throw new Error(`Telegram dashboard task lane should reveal the final task after scrolling: ${JSON.stringify(scrollMetrics)}`);
+  if (scrollMetrics.scrollTop <= 0 || scrollMetrics.scrollHeight <= scrollMetrics.clientHeight || scrollMetrics.gapBeforeMenu < 8) {
+    throw new Error(`Telegram dashboard root should reveal the final task after scrolling: ${JSON.stringify(scrollMetrics)}`);
   }
-  if (!dashboardCollapse || dashboardCollapse.collapsed.heroOpacity > .05 || dashboardCollapse.collapsed.heroBottom > 1 || dashboardCollapse.collapsed.metricsTop > 20 || dashboardCollapse.collapsed.taskListTop > 80 || !dashboardCollapse.collapsed.classApplied) {
-    throw new Error(`Telegram dashboard scroll should collapse the focus card and pin metrics: ${JSON.stringify(dashboardCollapse)}`);
+  if (!dashboardCollapse || dashboardCollapse.collapsed.heroOpacity < .95 || dashboardCollapse.collapsed.heroBottom > 1 || dashboardCollapse.collapsed.metricsTop > 20 || dashboardCollapse.collapsed.taskListTop > 80 || dashboardCollapse.collapsed.rootScrollTop <= 0) {
+    throw new Error(`Telegram dashboard root scroll should move the focus card out and pin metrics: ${JSON.stringify(dashboardCollapse)}`);
   }
   if (dashboardCollapse.expanded.heroOpacity < .95 || dashboardCollapse.expanded.metricsTop < 200 || dashboardCollapse.expanded.taskListTop < 300) {
     throw new Error(`Telegram dashboard scroll should restore the focus card at the top of the task list: ${JSON.stringify(dashboardCollapse)}`);
-  }
-  if (dashboardCollapse.returning.heroOpacity <= .05 || dashboardCollapse.returning.heroOpacity >= .95 || dashboardCollapse.returning.taskListTop <= 80 || dashboardCollapse.returning.taskListTop >= 300) {
-    throw new Error(`Telegram dashboard scroll should animate the return instead of jumping open: ${JSON.stringify(dashboardCollapse)}`);
-  }
-  if (Math.abs(dashboardCollapse.returning.taskListBottom-dashboardCollapse.expanded.taskListBottom) > 1 || Math.abs(dashboardCollapse.collapsed.taskListBottom-dashboardCollapse.expanded.taskListBottom) > 1) {
-    throw new Error(`Telegram dashboard task lane bottom edge should stay stable during the scroll transition: ${JSON.stringify(dashboardCollapse)}`);
   }
   if (swipeMetrics.pickerRequests < 2 || swipeMetrics.taskId !== 'bottom-nav-1' || !swipeMetrics.moveActionOpenedPicker) {
     throw new Error(`Telegram left swipe should open the date picker for its task: ${JSON.stringify(swipeMetrics)}`);

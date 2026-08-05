@@ -308,137 +308,15 @@ function showScreen(id){
   if(hs)hs.classList.toggle('scroll-body--home', id==='home');
 }
 
-// The task lane is the dashboard's scroll surface on mobile. Keep the header
-// visually attached to that gesture, so the focus card makes room for a
-// compact, sticky metrics row instead of leaving a dead area above tasks.
+// The dashboard itself is the only mobile scroll surface.  The layout is
+// deliberately left to native scrolling and CSS sticky positioning: moving
+// several absolute blocks from JavaScript caused visible jitter in Telegram.
 function initHomeDashboardScrollCollapse(){
   const home=document.getElementById('home');
   const taskList=document.getElementById('home-task-list');
-  const header=home?.querySelector('.dash-header');
-  const hero=home?.querySelector('.dash-hero');
-  const monthTitle=home?.querySelector('.dash-month-title');
-  const metrics=home?.querySelector('.dash-metrics');
-  if(!home||!taskList||!header||!hero||!monthTitle||!metrics||taskList.dataset.dashboardCollapseBound==='1')return;
-
-  taskList.dataset.dashboardCollapseBound='1';
-  let frame=0;
-  let metricsLift=0;
-  let taskListTop=0;
-  let progress=0;
-  let pointerId=null;
-  let pointerStartY=0;
-  let pointerStartProgress=0;
-  let settleFrame=0;
-  const collapseDistance=180;
-  const expandDistance=108;
-  const settleDuration=220;
-
-  function setMotion(el, translateY, opacity){
-    el.style.setProperty('transform','translate3d(0,'+translateY.toFixed(2)+'px,0)','important');
-    el.style.setProperty('opacity',opacity.toFixed(3),'important');
-  }
-
-  function measureMetricsLift(){
-    const rect=metrics.getBoundingClientRect();
-    const layoutWidth=metrics.offsetWidth||rect.width||1;
-    const scale=rect.width/layoutWidth||1;
-    const stickyTop=14;
-    metricsLift=Math.min(0,(stickyTop-rect.top)/scale);
-  }
-
-  function measureTaskListTop(){
-    const top=Number.parseFloat(getComputedStyle(taskList).top);
-    taskListTop=Number.isFinite(top)?top:385;
-  }
-
-  function setTaskListTop(nextTop){
-    taskList.style.setProperty('top',nextTop.toFixed(2)+'px','important');
-    taskList.style.setProperty('transform','translate3d(0,0,0)','important');
-  }
-
-  function render(){
-    frame=0;
-    progress=Math.max(0,Math.min(1,progress));
-    if(!metricsLift)measureMetricsLift();
-    if(!taskListTop)measureTaskListTop();
-    setMotion(header,-88*progress,1-Math.min(1,progress*1.25));
-    setMotion(hero,-292*progress,1-progress);
-    setMotion(monthTitle,-322*progress,1-Math.min(1,progress*1.15));
-    setMotion(metrics,metricsLift*progress,1);
-    setTaskListTop(taskListTop+(72-taskListTop)*progress);
-    home.classList.toggle('dashboard-list-scrolled',progress>.02);
-  }
-
-  function sync(){
-    if(progress>=.999||settleFrame)return;
-    progress=Math.max(0,Math.min(1,taskList.scrollTop/collapseDistance));
-    if(!frame)frame=requestAnimationFrame(render);
-  }
-
-  function cancelSettle(){
-    if(!settleFrame)return;
-    cancelAnimationFrame(settleFrame);
-    settleFrame=0;
-  }
-
-  function settleProgress(target){
-    cancelSettle();
-    const from=progress;
-    const startedAt=performance.now();
-    function step(now){
-      const elapsed=Math.min(1,(now-startedAt)/settleDuration);
-      const eased=elapsed*elapsed*(3-2*elapsed);
-      progress=from+(target-from)*eased;
-      render();
-      if(elapsed<1)settleFrame=requestAnimationFrame(step);
-      else settleFrame=0;
-    }
-    settleFrame=requestAnimationFrame(step);
-  }
-
-  function beginPointer(event){
-    if(event.pointerType==='mouse')return;
-    cancelSettle();
-    pointerId=event.pointerId;
-    pointerStartY=event.clientY;
-    pointerStartProgress=progress;
-  }
-
-  function movePointer(event){
-    if(pointerId!==event.pointerId||taskList.scrollTop>1)return;
-    const deltaY=event.clientY-pointerStartY;
-    const pullDown=Math.max(0,deltaY);
-    const pushUp=Math.max(0,-deltaY);
-    const isPullingOpen=pointerStartProgress>=.999&&pullDown>=6;
-    const isPushingClosed=pointerStartProgress<=.001&&pushUp>=6;
-    if(!isPullingOpen&&!isPushingClosed)return;
-    event.preventDefault();
-    progress=isPullingOpen
-      ?Math.max(0,1-pullDown/expandDistance)
-      :Math.min(1,pushUp/collapseDistance);
-    render();
-  }
-
-  function endPointer(event){
-    if(pointerId!==event.pointerId)return;
-    pointerId=null;
-    if(progress>0&&progress<.999){
-      const releaseThreshold=pointerStartProgress>=.999?.82:.65;
-      settleProgress(progress>=releaseThreshold?1:0);
-    }
-  }
-
-  taskList.addEventListener('scroll',sync,{passive:true});
-  taskList.addEventListener('pointerdown',beginPointer,{passive:true});
-  taskList.addEventListener('pointermove',movePointer,{passive:false});
-  taskList.addEventListener('pointerup',endPointer,{passive:true});
-  taskList.addEventListener('pointercancel',endPointer,{passive:true});
-  window.addEventListener('resize',()=>{
-    metricsLift=0;
-    sync();
-  },{passive:true});
-  progress=Math.max(0,Math.min(1,taskList.scrollTop/collapseDistance));
-  render();
+  if(!home||!taskList||taskList.dataset.dashboardCollapseBound==='native')return;
+  taskList.dataset.dashboardCollapseBound='native';
+  home.classList.remove('dashboard-list-scrolled');
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initHomeDashboardScrollCollapse,{once:true});

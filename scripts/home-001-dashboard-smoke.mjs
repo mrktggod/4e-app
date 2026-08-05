@@ -341,6 +341,18 @@ async function runSmoke(ws, appUrl) {
     metrics.focusText = byId('focus-day-text')?.textContent || '';
     metrics.heroImageReady = Boolean(document.querySelector('.dash-hero-orb')?.complete && document.querySelector('.dash-hero-orb')?.naturalWidth > 0);
     metrics.artboard = rectInfo(document.querySelector('#home .dash-artboard'));
+    const taskLane = document.getElementById('home-task-list');
+    const taskLaneStyle = taskLane ? getComputedStyle(taskLane) : null;
+    metrics.dashboardScrollSurface = {
+      homeScrollTop: document.getElementById('home')?.scrollTop || 0,
+      homeScrollHeight: document.getElementById('home')?.scrollHeight || 0,
+      homeClientHeight: document.getElementById('home')?.clientHeight || 0,
+      taskLaneOverflowY: taskLaneStyle?.overflowY || '',
+      taskLanePosition: taskLaneStyle?.position || '',
+      taskLaneTransform: taskLaneStyle?.transform || '',
+      taskLaneTop: taskLaneStyle?.top || '',
+      taskLaneInlineStyle: taskLane?.getAttribute('style') || ''
+    };
 
     assert(metrics.initialScreen === 'home', 'home is not the active screen after auth smoke');
     assert(metrics.homeRows === 3, 'home should render exactly top-3 priority rows');
@@ -351,6 +363,8 @@ async function runSmoke(ws, appUrl) {
     assert(Boolean(metrics.focusText), 'focus text should not be empty');
     assert(metrics.heroImageReady, 'dashboard hero image did not load');
     assert(metrics.documentScrollWidth <= metrics.viewportWidth + 1, 'home has horizontal document overflow');
+    assert(metrics.dashboardScrollSurface.taskLaneOverflowY === 'visible', 'dashboard should not keep a competing task-list scroller');
+    assert(metrics.dashboardScrollSurface.homeScrollHeight > metrics.dashboardScrollSurface.homeClientHeight, 'dashboard root should be the scroll surface');
 
     const overflowSelectors = [
       '#home .dash-header',

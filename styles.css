@@ -17405,3 +17405,109 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
 html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bottom-nav .dash-center-button {
   transform: translateY(-3px) !important;
 }
+/* Mobile dashboard: one native scroll surface.  Keeping the entire composition
+   in the home frame removes the competing inner scroller and per-frame JS
+   transforms that made Telegram's vertical gesture visibly shake. */
+@media (max-width: 430px) {
+  body #home#home {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  body #home#home .dash-artboard {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-height: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 14px 18px calc(var(--app-viewport-bottom-reserve) + 260px) !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    transform: none !important;
+    translate: none !important;
+  }
+  body #home#home .dash-header {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    flex: 0 0 48px !important;
+  }
+  body #home#home .dash-hero {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    height: 183px !important;
+    margin: 6px 0 0 !important;
+    flex: 0 0 183px !important;
+  }
+  body #home#home #home-section-title,
+  body #home#home .dash-month-title {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    height: 20px !important;
+    margin: 6px 0 0 !important;
+    flex: 0 0 20px !important;
+  }
+  body #home#home .dash-metrics {
+    position: sticky !important;
+    top: 10px !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    height: 48px !important;
+    margin: 2px 0 0 !important;
+    flex: 0 0 48px !important;
+    z-index: 70 !important;
+    will-change: auto !important;
+  }
+  body #home#home #home-task-list,
+  body #home#home .dash-tasks {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 12px 0 0 !important;
+    padding: 0 !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    z-index: 11 !important;
+  }
+  body #home#home .dash-notification {
+    width: 44px !important;
+    height: 44px !important;
+    border: 1px solid rgba(180, 211, 151, 0.24) !important;
+    background: radial-gradient(circle at 34% 22%, rgba(255, 255, 255, 0.2), transparent 30%), linear-gradient(145deg, rgba(42, 61, 47, 0.88), rgba(9, 18, 14, 0.92)) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.18), inset 0 -8px 13px rgba(0, 0, 0, 0.26) !important;
+    filter: none !important;
+  }
+  body #home#home .dash-notification svg {
+    display: block !important;
+    width: 21px !important;
+    height: 21px !important;
+    opacity: 1 !important;
+    stroke: #c6d6c3 !important;
+  }
+  html[data-theme="light"] body #home#home .dash-notification {
+    border-color: rgba(92, 124, 77, 0.22) !important;
+    background: radial-gradient(circle at 34% 22%, rgba(255, 255, 255, 0.94), transparent 31%), linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(220, 232, 210, 0.66)) !important;
+    box-shadow: 0 10px 20px rgba(72, 91, 44, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.92), inset 0 -8px 13px rgba(103, 130, 85, 0.09) !important;
+  }
+  html[data-theme="light"] body #home#home .dash-notification svg {
+    stroke: #527044 !important;
+  }
+  html[data-theme="light"] body #home#home .dash-metrics {
+    top: 10px !important;
+  }
+}
