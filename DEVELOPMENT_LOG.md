@@ -1,3 +1,27 @@
+## 2026-08-06
+
+### Telegram dashboard centre control inside bottom menu
+
+**What changed:** Consolidated the final mobile dashboard navigation rule so the centre
+control is a 58px grid item inside the 66px Telegram glass rail, without a theme-specific
+offset or transform. The dark control now explicitly uses the supplied
+`dark-chat-button-orb.png` asset; the new owner-supplied light control is stored as
+`assets/design/dashboard-light-center-20260806.png` and is selected only in the light
+theme. The Telegram diagnostic now asserts both asset choices and the control's top/bottom
+insets inside the rail. The PWA shell version was advanced so a released Telegram client
+cannot keep the preceding control CSS.
+
+**Why:** Earlier cascade layers contained competing centre-button sizes and transforms.
+On the light Telegram dashboard that could place the central glass orb below the menu
+instead of inside it.
+
+**Test:** `npm run build:css`; `npm run check:cp1251-mojibake`; `npm run check:js-syntax -- --all`;
+`npm run check:ui-architecture`; `npm run check:portable-paths`;
+`npm run smoke:telegram-bottom-menu`; `npm run smoke:home001`. Existing user screenshot
+artifacts were backed up and restored unchanged around the screenshot-producing tests.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface

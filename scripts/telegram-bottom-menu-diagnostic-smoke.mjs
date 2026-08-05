@@ -91,11 +91,13 @@ try {
     const taskRows = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main'));
     const thirdTaskRect = taskRows[2]?.getBoundingClientRect();
     const controlMetrics = selector => {
-      const rect = document.querySelector(selector)?.getBoundingClientRect();
+      const control = document.querySelector(selector);
+      const rect = control?.getBoundingClientRect();
       return rect && navRect ? {
         bottomGap: window.innerHeight - rect.bottom,
         topInset: rect.top - navRect.top,
-        bottomInset: navRect.bottom - rect.bottom
+        bottomInset: navRect.bottom - rect.bottom,
+        backgroundImage: getComputedStyle(control).backgroundImage
       } : null;
     };
     return {
@@ -234,7 +236,8 @@ try {
     const rect = (selector) => document.querySelector(selector)?.getBoundingClientRect();
     const nav = rect('#home .dash-bottom-nav');
     const metrics = rect('#home .dash-metrics');
-    const center = rect('#home .dash-center-button');
+    const centerNode = document.querySelector('#home .dash-center-button');
+    const center = centerNode?.getBoundingClientRect();
     const task = rect('#home-task-list .home-ai-row-main');
     return {
       theme: document.documentElement.getAttribute('data-theme') || '',
@@ -243,6 +246,9 @@ try {
       metricsHeight: metrics?.height ?? -1,
       centerWidth: center?.width ?? -1,
       centerHeight: center?.height ?? -1,
+      centerTopInset: nav && center ? center.top - nav.top : -1,
+      centerBottomInset: nav && center ? nav.bottom - center.bottom : -1,
+      centerBackgroundImage: centerNode ? getComputedStyle(centerNode).backgroundImage : '',
       taskHeight: task?.height ?? -1
     };
   });
@@ -255,6 +261,9 @@ try {
   if (homeMetrics.globalNavCount !== 1) throw new Error(`expected one legacy global nav source node, got ${homeMetrics.globalNavCount}`);
   if (homeMetrics.dashBottomNavCount !== 1) throw new Error(`expected one dashboard bottom nav source node, got ${homeMetrics.dashBottomNavCount}`);
   if (homeMetrics.navBottomGap < 32) throw new Error(`Telegram bottom nav should keep a 32px system-zone gap, got ${homeMetrics.navBottomGap}`);
+  if (!homeMetrics.voice?.backgroundImage.includes('dark-chat-button-orb.png')) {
+    throw new Error(`Telegram dark dashboard should use the supplied glass centre control: ${JSON.stringify(homeMetrics.voice)}`);
+  }
   if (!homeMetrics.taskLane || homeMetrics.taskLane.thirdTaskBottom > homeMetrics.taskLane.listBottom + 1 || homeMetrics.taskLane.gapBeforeMenu < 8) {
     throw new Error(`Telegram dashboard task lane must keep the first three tasks clear of the menu: ${JSON.stringify(homeMetrics.taskLane)}`);
   }
@@ -286,7 +295,7 @@ try {
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
-  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 58 || lightTelegramMetrics.centerHeight !== 58 || lightTelegramMetrics.taskHeight !== 72) {
+  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 58 || lightTelegramMetrics.centerHeight !== 58 || lightTelegramMetrics.centerTopInset < -1 || lightTelegramMetrics.centerBottomInset < -1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || lightTelegramMetrics.taskHeight !== 72) {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
 
