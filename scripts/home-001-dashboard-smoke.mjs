@@ -355,7 +355,7 @@ async function runSmoke(ws, appUrl) {
     };
 
     assert(metrics.initialScreen === 'home', 'home is not the active screen after auth smoke');
-    assert(metrics.homeRows === 3, 'home should render exactly top-3 priority rows');
+    assert(metrics.homeRows === 4, 'home should render every active dashboard row');
     assert(metrics.showAllRemoved, 'home should not expose the retired show-all task action');
     assert(metrics.metricCards === 4, 'home should render four metric cards');
     assert(metrics.bottomNavButtons === 3, 'home bottom nav should render three buttons');
@@ -470,7 +470,7 @@ async function runSmoke(ws, appUrl) {
 
     metrics.dark = await collectTheme('dark');
     assert(metrics.dark.theme === 'dark', 'dark theme did not apply');
-    assert(metrics.dark.rowCount === 3, 'dark theme lost priority rows');
+    assert(metrics.dark.rowCount === 4, 'dark theme lost dashboard rows');
     assert(metrics.dark.scrollWidth <= window.innerWidth + 1, 'dark theme has horizontal overflow');
 
     return { ok: failures.length === 0, failures, metrics, fetches: window.__homeSmokeFetches || [] };
@@ -495,7 +495,7 @@ async function runSmoke(ws, appUrl) {
       const theme = document.documentElement.getAttribute('data-theme');
       const scrollWidth = document.documentElement.scrollWidth;
       if (theme !== 'light') failures.push('light theme did not apply');
-      if (rows !== 3) failures.push('light theme lost priority rows');
+      if (rows !== 4) failures.push('light theme lost dashboard rows');
       if (!showAllRemoved) failures.push('light theme still exposes retired show-all task action');
       if (scrollWidth > window.innerWidth + 1) failures.push('light theme has horizontal overflow');
       return { ok: failures.length === 0, failures, metrics: { theme, rows, showAllRemoved, scrollWidth, viewportWidth: window.innerWidth } };

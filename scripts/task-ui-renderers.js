@@ -321,25 +321,23 @@ function initHomeDashboardScrollCollapse(){
   home.classList.remove('dashboard-list-scrolled');
   if(!window.matchMedia('(max-width: 430px)').matches)return;
 
-  let frame=0;
   function clipTaskLane(){
-    frame=0;
     const listRect=taskList.getBoundingClientRect();
     const metricsRect=metrics.getBoundingClientRect();
     const navRect=nav.getBoundingClientRect();
-    const topCut=Math.max(0,Math.min(listRect.height,metricsRect.bottom-listRect.top));
-    const bottomCut=Math.max(0,Math.min(listRect.height-topCut,listRect.bottom-navRect.top));
-    const clip='inset('+topCut.toFixed(1)+'px 0 '+bottomCut.toFixed(1)+'px 0)';
+    const topCut=Math.ceil(Math.max(0,Math.min(listRect.height,metricsRect.bottom-listRect.top)));
+    const bottomCut=Math.ceil(Math.max(0,Math.min(listRect.height-topCut,listRect.bottom-navRect.top)));
+    const clip='inset('+topCut+'px 0 '+bottomCut+'px 0)';
     if(taskList.dataset.taskLaneClip===clip)return;
     taskList.dataset.taskLaneClip=clip;
     taskList.style.setProperty('clip-path',clip,'important');
     taskList.style.setProperty('-webkit-clip-path',clip,'important');
   }
   function scheduleClip(){
-    if(!frame)frame=requestAnimationFrame(clipTaskLane);
+    requestAnimationFrame(clipTaskLane);
   }
 
-  home.addEventListener('scroll',scheduleClip,{passive:true});
+  home.addEventListener('scroll',clipTaskLane,{passive:true});
   window.addEventListener('resize',scheduleClip,{passive:true});
   if(typeof ResizeObserver==='function'){
     const observer=new ResizeObserver(scheduleClip);

@@ -103,8 +103,8 @@ try {
     if (result.apiCount !== 4) throw new Error(`${result.surface}: expected API count 4, got ${result.apiCount}`);
     if (result.localCount !== 4) throw new Error(`${result.surface}: expected local cache count 4, got ${result.localCount}`);
     if (result.activeCount !== 4) throw new Error(`${result.surface}: expected active count 4, got ${result.activeCount}`);
-    if (result.dashboardRows !== 3) throw new Error(`${result.surface}: expected dashboard top-3 rows, got ${result.dashboardRows}`);
-    if (result.rowTitles.length !== 3) throw new Error(`${result.surface}: expected three rendered row titles`);
+    if (result.dashboardRows !== 4) throw new Error(`${result.surface}: expected every active dashboard row, got ${result.dashboardRows}`);
+    if (result.rowTitles.length !== 4) throw new Error(`${result.surface}: expected four rendered row titles`);
     if (!result.showAllRemoved) throw new Error(`${result.surface}: retired show-all action is still present`);
   }
 
