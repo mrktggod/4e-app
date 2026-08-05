@@ -17483,10 +17483,10 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     flex: 0 0 auto !important;
     overflow: visible !important;
     z-index: 11 !important;
-    background: radial-gradient(ellipse 86% 32% at 50% 0%, rgba(89, 129, 70, 0.15), transparent 72%), linear-gradient(180deg, rgba(15, 34, 22, 0.58), rgba(4, 13, 8, 0.42) 100%) !important;
-    border-top: 1px solid rgba(151, 190, 122, 0.17) !important;
-    border-radius: 24px 24px 0 0 !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+    background: radial-gradient(ellipse 86% 30% at 50% 0%, rgba(105, 151, 77, 0.18), transparent 72%), linear-gradient(180deg, rgba(17, 40, 25, 0.76), rgba(5, 17, 10, 0.68) 100%) !important;
+    border: 1px solid rgba(151, 190, 122, 0.23) !important;
+    border-radius: 24px !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -18px 32px rgba(0, 0, 0, 0.13), 0 14px 30px rgba(0, 0, 0, 0.12) !important;
   }
   /* Telegram reserves a darker system zone below its 66px glass menu. */
   html[data-app-surface="telegram"] body #home#home #home-task-list {
@@ -17519,8 +17519,8 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     top: 10px !important;
   }
   html[data-theme="light"] body #home#home #home-task-list {
-    background: radial-gradient(ellipse 86% 32% at 50% 0%, rgba(147, 189, 91, 0.16), transparent 72%), linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(241, 245, 231, 0.34) 100%) !important;
-    border-top-color: rgba(116, 151, 84, 0.22) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+    background: radial-gradient(ellipse 86% 30% at 50% 0%, rgba(147, 189, 91, 0.18), transparent 72%), linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(235, 242, 224, 0.58) 100%) !important;
+    border-color: rgba(116, 151, 84, 0.28) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), inset 0 -18px 32px rgba(113, 139, 90, 0.07), 0 14px 30px rgba(86, 104, 62, 0.08) !important;
   }
 }
