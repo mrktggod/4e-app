@@ -2,7 +2,7 @@
 
 ### Native Telegram dashboard scroll surface
 
-**What changed:** Replaced the dashboard's inner task-lane scrolling and per-frame JavaScript block movement with one native scroll surface on `#home`. The focus card and header now move naturally with the page, while the compact metric row uses CSS sticky positioning. Tightened the mobile layout (less top space, metrics closer to the focus card, task cards closer to the metrics), added a dedicated task display lane from the metrics to the lower menu, and restored the notification button as a glass control with the existing inline SVG bell instead of theme PNG artwork.
+**What changed:** Replaced the dashboard's inner task-lane scrolling and per-frame JavaScript block movement with one native scroll surface on `#home`. The focus card and header now move naturally with the page, while the compact metric row uses CSS sticky positioning. Tightened the mobile layout (less top space, metrics closer to the focus card, task cards closer to the metrics), added opaque masks behind the sticky metrics and lower menu so scrolling cards disappear beneath controls rather than blending with them, and restored the notification button as a glass control with the existing inline SVG bell instead of theme PNG artwork.
 
 **Why:** Telegram's touch compositor was competing with the synthetic gesture animation, which produced visible shaking and a transient dark frame. A single scroll frame gives the platform full control of inertia and makes both upward and downward gestures continuous.
 
