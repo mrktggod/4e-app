@@ -3762,6 +3762,12 @@ Git Bash UI architecture guard failed on existing branch state:
 **Commit:** pending
 ## 2026-08-03
 
+## 2026-08-05
+
+### Morning acceptance and process review
+
+Recorded the missing 2026-08-05 Cowork handoff, stale release queue, open PR states, dirty local app checkout, seven-day metric, and manual acceptance actions. No runtime code or tests were changed.
+
 ### Swipe completion threshold
 
 **What changed:** Reduced the full-right-swipe threshold to a practical 140–180px range, capped by the card width. The left swipe keeps using the standard task deadline date/time popover.
