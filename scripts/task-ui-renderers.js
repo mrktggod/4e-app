@@ -321,12 +321,25 @@ function initHomeDashboardScrollCollapse(){
   home.classList.remove('dashboard-list-scrolled');
   if(!window.matchMedia('(max-width: 430px)').matches)return;
 
+  let clipGeometry=null;
+  let measureFrame=0;
+  function measureClipGeometry(){
+    measureFrame=0;
+    const homeTop=home.getBoundingClientRect().top;
+    const navTop=nav.getBoundingClientRect().top;
+    const stickyTop=Number.parseFloat(window.getComputedStyle(metrics).top)||0;
+    const listTop=taskList.offsetTop;
+    const listHeight=taskList.offsetHeight;
+    const topBoundary=stickyTop+metrics.offsetHeight;
+    clipGeometry={homeTop,navTop,listTop,listHeight,topScroll:listTop-topBoundary};
+    clipTaskLane();
+  }
   function clipTaskLane(){
-    const listRect=taskList.getBoundingClientRect();
-    const metricsRect=metrics.getBoundingClientRect();
-    const navRect=nav.getBoundingClientRect();
-    const topCut=Math.ceil(Math.max(0,Math.min(listRect.height,metricsRect.bottom-listRect.top)));
-    const bottomCut=Math.ceil(Math.max(0,Math.min(listRect.height-topCut,listRect.bottom-navRect.top)));
+    if(!clipGeometry) return;
+    const scrollTop=home.scrollTop;
+    const listTop=clipGeometry.homeTop+clipGeometry.listTop-scrollTop;
+    const topCut=Math.ceil(Math.max(0,Math.min(clipGeometry.listHeight,scrollTop-clipGeometry.topScroll)));
+    const bottomCut=Math.ceil(Math.max(0,Math.min(clipGeometry.listHeight-topCut,listTop+clipGeometry.listHeight-clipGeometry.navTop)));
     const clip='inset('+topCut+'px 0 '+bottomCut+'px 0)';
     if(taskList.dataset.taskLaneClip===clip)return;
     taskList.dataset.taskLaneClip=clip;
@@ -334,7 +347,7 @@ function initHomeDashboardScrollCollapse(){
     taskList.style.setProperty('-webkit-clip-path',clip,'important');
   }
   function scheduleClip(){
-    requestAnimationFrame(clipTaskLane);
+    if(!measureFrame) measureFrame=requestAnimationFrame(measureClipGeometry);
   }
 
   home.addEventListener('scroll',clipTaskLane,{passive:true});
