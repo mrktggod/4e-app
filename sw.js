@@ -1,4 +1,4 @@
-const PWA_VERSION = "prod-redesign-2026-07-21";
+const PWA_VERSION = "prod-dashboard-clip-sync-2026-08-05";
 const PWA_CACHE = `4-pwa-shell-${PWA_VERSION}`;
 
 const SHELL_ASSETS = [
