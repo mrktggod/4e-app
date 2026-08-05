@@ -553,6 +553,38 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     will-change: auto !important;
   }
 
+  body #home#home .dashboard-scroll-mask {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    pointer-events: none;
+    background: var(--home-glass-canvas-dark);
+  }
+
+  body #home#home .dashboard-scroll-mask--top {
+    top: 0;
+    height: var(--dashboard-top-mask-height, 0px);
+    display: none;
+  }
+
+  body #home#home.dashboard-list-scrolled .dashboard-scroll-mask--top {
+    display: block;
+  }
+
+  body #home#home .dashboard-scroll-mask--bottom {
+    top: var(--dashboard-bottom-mask-top, 100dvh);
+    bottom: 0;
+  }
+
+  html[data-theme="light"] body #home#home .dashboard-scroll-mask {
+    background: var(--home-glass-canvas-light);
+  }
+
+  body #home#home .dash-bottom-nav {
+    z-index: 80 !important;
+  }
+
   body #home#home #home-task-list,
   body #home#home .dash-tasks {
     position: static !important;
@@ -618,6 +650,8 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
   }
 
   body #home#home #home-task-list {
-    will-change: clip-path;
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+    will-change: auto;
   }
 }

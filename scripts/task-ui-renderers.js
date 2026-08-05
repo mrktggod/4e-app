@@ -316,50 +316,58 @@ function initHomeDashboardScrollCollapse(){
   const taskList=document.getElementById('home-task-list');
   const metrics=home?.querySelector('.dash-metrics');
   const nav=home?.querySelector('.dash-bottom-nav');
-  if(!home||!taskList||!metrics||!nav||taskList.dataset.dashboardCollapseBound==='native')return;
+  const artboard=home?.querySelector('.dash-artboard');
+  if(!home||!taskList||!metrics||!nav||!artboard||taskList.dataset.dashboardCollapseBound==='native')return;
   taskList.dataset.dashboardCollapseBound='native';
   home.classList.remove('dashboard-list-scrolled');
   if(!window.matchMedia('(max-width: 430px)').matches)return;
 
-  let clipGeometry=null;
   let measureFrame=0;
-  function measureClipGeometry(){
+  const addMask=(name)=>{
+    let mask=artboard.querySelector('.dashboard-scroll-mask--'+name);
+    if(!mask){
+      mask=document.createElement('div');
+      mask.className='dashboard-scroll-mask dashboard-scroll-mask--'+name;
+      mask.setAttribute('aria-hidden','true');
+      artboard.appendChild(mask);
+    }
+    return mask;
+  };
+  addMask('top');
+  addMask('bottom');
+
+  function measureMaskGeometry(){
     measureFrame=0;
-    const homeTop=home.getBoundingClientRect().top;
     const navTop=nav.getBoundingClientRect().top;
     const stickyTop=Number.parseFloat(window.getComputedStyle(metrics).top)||0;
     const listTop=taskList.offsetTop;
-    const listHeight=taskList.offsetHeight;
     const topBoundary=stickyTop+metrics.offsetHeight;
-    clipGeometry={homeTop,navTop,listTop,listHeight,topScroll:listTop-topBoundary};
-    clipTaskLane();
+    artboard.style.setProperty('--dashboard-top-mask-height',Math.ceil(topBoundary)+'px');
+    artboard.style.setProperty('--dashboard-bottom-mask-top',Math.floor(navTop)+'px');
+    artboard.style.setProperty('--dashboard-metrics-stick-scroll',String(Math.max(0,listTop-topBoundary)));
+    syncMaskState();
   }
-  function clipTaskLane(){
-    if(!clipGeometry) return;
-    const scrollTop=home.scrollTop;
-    const listTop=clipGeometry.homeTop+clipGeometry.listTop-scrollTop;
-    const topCut=Math.ceil(Math.max(0,Math.min(clipGeometry.listHeight,scrollTop-clipGeometry.topScroll)));
-    const bottomCut=Math.ceil(Math.max(0,Math.min(clipGeometry.listHeight-topCut,listTop+clipGeometry.listHeight-clipGeometry.navTop)));
-    const clip='inset('+topCut+'px 0 '+bottomCut+'px 0)';
-    if(taskList.dataset.taskLaneClip===clip)return;
-    taskList.dataset.taskLaneClip=clip;
-    taskList.style.setProperty('clip-path',clip,'important');
-    taskList.style.setProperty('-webkit-clip-path',clip,'important');
+  function syncMaskState(){
+    const stickAt=Number(artboard.style.getPropertyValue('--dashboard-metrics-stick-scroll'))||0;
+    home.classList.toggle('dashboard-list-scrolled',home.scrollTop>=stickAt);
   }
-  function scheduleClip(){
-    if(!measureFrame) measureFrame=requestAnimationFrame(measureClipGeometry);
+  function scheduleMeasure(){
+    if(!measureFrame) measureFrame=requestAnimationFrame(measureMaskGeometry);
   }
 
-  home.addEventListener('scroll',clipTaskLane,{passive:true});
-  window.addEventListener('resize',scheduleClip,{passive:true});
+  taskList.style.removeProperty('clip-path');
+  taskList.style.removeProperty('-webkit-clip-path');
+  delete taskList.dataset.taskLaneClip;
+  home.addEventListener('scroll',syncMaskState,{passive:true});
+  window.addEventListener('resize',scheduleMeasure,{passive:true});
   if(typeof ResizeObserver==='function'){
-    const observer=new ResizeObserver(scheduleClip);
+    const observer=new ResizeObserver(scheduleMeasure);
     observer.observe(home);
     observer.observe(taskList);
     observer.observe(metrics);
     observer.observe(nav);
   }
-  scheduleClip();
+  scheduleMeasure();
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initHomeDashboardScrollCollapse,{once:true});
