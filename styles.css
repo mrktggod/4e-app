@@ -17518,21 +17518,7 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
   html[data-theme="light"] body #home#home .dash-metrics {
     top: 10px !important;
   }
-  /* Opaque backplates keep moving cards from showing through sticky controls. */
-  body #home#home .dash-metrics {
-    background: #000 !important;
-    box-shadow: 0 8px 0 #000 !important;
-  }
-  body #home#home .dash-bottom-nav {
-    background: radial-gradient(circle at 50% -16%, rgba(126, 161, 76, 0.14), transparent 58%), linear-gradient(180deg, rgba(20, 34, 25, 0.98), rgba(5, 13, 9, 0.99)) !important;
-    box-shadow: 0 -8px 0 #000, 0 40px 0 #000 !important;
-  }
-  html[data-theme="light"] body #home#home .dash-metrics {
-    background: #f8f7ef !important;
-    box-shadow: 0 8px 0 #f8f7ef !important;
-  }
-  html[data-theme="light"] body #home#home .dash-bottom-nav {
-    background: radial-gradient(circle at 50% -16%, rgba(151, 192, 91, 0.15), transparent 58%), linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 244, 230, 0.99)) !important;
-    box-shadow: 0 -8px 0 #f8f7ef, 0 40px 0 #f8f7ef !important;
+  body #home#home #home-task-list {
+    will-change: clip-path;
   }
 }

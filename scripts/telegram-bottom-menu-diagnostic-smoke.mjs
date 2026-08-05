@@ -85,7 +85,9 @@ try {
   const homeMetrics = await page.evaluate(({ homeNav, globalNav }) => {
     const nav = document.querySelector('#home .dash-bottom-nav');
     const navRect = nav?.getBoundingClientRect();
-    const taskListRect = document.querySelector('#home-task-list')?.getBoundingClientRect();
+    const taskList = document.querySelector('#home-task-list');
+    const taskListRect = taskList?.getBoundingClientRect();
+    const taskListStyle = taskList ? getComputedStyle(taskList) : null;
     const taskRows = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main'));
     const thirdTaskRect = taskRows[2]?.getBoundingClientRect();
     const controlMetrics = selector => {
@@ -111,8 +113,9 @@ try {
         thirdTaskTop: thirdTaskRect.top,
         thirdTaskBottom: thirdTaskRect.bottom,
         gapBeforeMenu: navRect.top - thirdTaskRect.bottom,
-        scrollHeight: document.querySelector('#home-task-list')?.scrollHeight || 0,
-        clientHeight: document.querySelector('#home-task-list')?.clientHeight || 0,
+        scrollHeight: taskList?.scrollHeight || 0,
+        clientHeight: taskList?.clientHeight || 0,
+        clipPath: taskListStyle?.clipPath || taskListStyle?.webkitClipPath || '',
         rowBounds: taskRows.map((row) => {
           const rect = row.getBoundingClientRect();
           return { top: rect.top, bottom: rect.bottom };
@@ -167,7 +170,8 @@ try {
       metricsTop: metrics.getBoundingClientRect().top,
       taskListTop: collapsedListRect.top,
       taskListBottom: collapsedListRect.bottom,
-      rootScrollTop: home.scrollTop
+      rootScrollTop: home.scrollTop,
+      taskListClipPath: getComputedStyle(list).clipPath || getComputedStyle(list).webkitClipPath || ''
     };
     home.scrollTop = 0;
     return { expanded, collapsed };
@@ -254,10 +258,13 @@ try {
   if (homeMetrics.taskLane.scrollHeight !== homeMetrics.taskLane.clientHeight) {
     throw new Error(`Telegram dashboard task lane must not keep its own scroll surface: ${JSON.stringify(homeMetrics.taskLane)}`);
   }
+  if (!homeMetrics.taskLane.clipPath || homeMetrics.taskLane.clipPath === 'none' || homeMetrics.taskLane.clipPath === 'inset(0px)') {
+    throw new Error(`Telegram dashboard should clip cards under the lower menu: ${JSON.stringify(homeMetrics.taskLane)}`);
+  }
   if (scrollMetrics.scrollTop <= 0 || scrollMetrics.scrollHeight <= scrollMetrics.clientHeight || scrollMetrics.gapBeforeMenu < 8) {
     throw new Error(`Telegram dashboard root should reveal the final task after scrolling: ${JSON.stringify(scrollMetrics)}`);
   }
-  if (!dashboardCollapse || dashboardCollapse.collapsed.heroOpacity < .95 || dashboardCollapse.collapsed.heroBottom > 1 || dashboardCollapse.collapsed.metricsTop > 20 || dashboardCollapse.collapsed.taskListTop > 80 || dashboardCollapse.collapsed.rootScrollTop <= 0) {
+  if (!dashboardCollapse || dashboardCollapse.collapsed.heroOpacity < .95 || dashboardCollapse.collapsed.heroBottom > 1 || dashboardCollapse.collapsed.metricsTop > 20 || dashboardCollapse.collapsed.taskListTop > 80 || dashboardCollapse.collapsed.rootScrollTop <= 0 || !dashboardCollapse.collapsed.taskListClipPath || dashboardCollapse.collapsed.taskListClipPath === 'none' || dashboardCollapse.collapsed.taskListClipPath === 'inset(0px)') {
     throw new Error(`Telegram dashboard root scroll should move the focus card out and pin metrics: ${JSON.stringify(dashboardCollapse)}`);
   }
   if (dashboardCollapse.expanded.heroOpacity < .95 || dashboardCollapse.expanded.metricsTop < 200 || dashboardCollapse.expanded.taskListTop < 300) {

@@ -308,15 +308,47 @@ function showScreen(id){
   if(hs)hs.classList.toggle('scroll-body--home', id==='home');
 }
 
-// The dashboard itself is the only mobile scroll surface.  The layout is
-// deliberately left to native scrolling and CSS sticky positioning: moving
-// several absolute blocks from JavaScript caused visible jitter in Telegram.
+// The dashboard itself is the only mobile scroll surface. Native scrolling
+// stays untouched; this only clips task pixels once they pass behind the two
+// fixed control layers, so cards never show through glass while moving.
 function initHomeDashboardScrollCollapse(){
   const home=document.getElementById('home');
   const taskList=document.getElementById('home-task-list');
-  if(!home||!taskList||taskList.dataset.dashboardCollapseBound==='native')return;
+  const metrics=home?.querySelector('.dash-metrics');
+  const nav=home?.querySelector('.dash-bottom-nav');
+  if(!home||!taskList||!metrics||!nav||taskList.dataset.dashboardCollapseBound==='native')return;
   taskList.dataset.dashboardCollapseBound='native';
   home.classList.remove('dashboard-list-scrolled');
+  if(!window.matchMedia('(max-width: 430px)').matches)return;
+
+  let frame=0;
+  function clipTaskLane(){
+    frame=0;
+    const listRect=taskList.getBoundingClientRect();
+    const metricsRect=metrics.getBoundingClientRect();
+    const navRect=nav.getBoundingClientRect();
+    const topCut=Math.max(0,Math.min(listRect.height,metricsRect.bottom-listRect.top));
+    const bottomCut=Math.max(0,Math.min(listRect.height-topCut,listRect.bottom-navRect.top));
+    const clip='inset('+topCut.toFixed(1)+'px 0 '+bottomCut.toFixed(1)+'px 0)';
+    if(taskList.dataset.taskLaneClip===clip)return;
+    taskList.dataset.taskLaneClip=clip;
+    taskList.style.setProperty('clip-path',clip,'important');
+    taskList.style.setProperty('-webkit-clip-path',clip,'important');
+  }
+  function scheduleClip(){
+    if(!frame)frame=requestAnimationFrame(clipTaskLane);
+  }
+
+  home.addEventListener('scroll',scheduleClip,{passive:true});
+  window.addEventListener('resize',scheduleClip,{passive:true});
+  if(typeof ResizeObserver==='function'){
+    const observer=new ResizeObserver(scheduleClip);
+    observer.observe(home);
+    observer.observe(taskList);
+    observer.observe(metrics);
+    observer.observe(nav);
+  }
+  scheduleClip();
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initHomeDashboardScrollCollapse,{once:true});
