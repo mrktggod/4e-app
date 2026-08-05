@@ -22,6 +22,19 @@ artifacts were backed up and restored unchanged around the screenshot-producing 
 
 **Commit:** this commit
 
+### Telegram dashboard button visual follow-up
+
+**What changed:** After live owner feedback, increased both centre controls to 62px and
+added a lime rim shadow so the dark glass artwork stays visible against the dark rail. The
+light supplied control is larger than the preceding 58px version but remains inside the 66px rail. Light-theme side controls have an
+explicit in-rail position with all legacy offsets reset, so they align horizontally with
+each other.
+
+**Test:** Rebuilt CSS and extended `smoke:telegram-bottom-menu` to assert the dark 62px
+control, light 64px control and matching light side-button top insets.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface

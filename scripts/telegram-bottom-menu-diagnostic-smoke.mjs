@@ -97,6 +97,8 @@ try {
         bottomGap: window.innerHeight - rect.bottom,
         topInset: rect.top - navRect.top,
         bottomInset: navRect.bottom - rect.bottom,
+        width: rect.width,
+        height: rect.height,
         backgroundImage: getComputedStyle(control).backgroundImage
       } : null;
     };
@@ -238,6 +240,8 @@ try {
     const metrics = rect('#home .dash-metrics');
     const centerNode = document.querySelector('#home .dash-center-button');
     const center = centerNode?.getBoundingClientRect();
+    const today = rect('#home-nav-today');
+    const calendar = rect('#home-nav-cal');
     const task = rect('#home-task-list .home-ai-row-main');
     return {
       theme: document.documentElement.getAttribute('data-theme') || '',
@@ -249,6 +253,8 @@ try {
       centerTopInset: nav && center ? center.top - nav.top : -1,
       centerBottomInset: nav && center ? nav.bottom - center.bottom : -1,
       centerBackgroundImage: centerNode ? getComputedStyle(centerNode).backgroundImage : '',
+      todayTopInset: nav && today ? today.top - nav.top : -1,
+      calendarTopInset: nav && calendar ? calendar.top - nav.top : -1,
       taskHeight: task?.height ?? -1
     };
   });
@@ -263,6 +269,9 @@ try {
   if (homeMetrics.navBottomGap < 32) throw new Error(`Telegram bottom nav should keep a 32px system-zone gap, got ${homeMetrics.navBottomGap}`);
   if (!homeMetrics.voice?.backgroundImage.includes('dark-chat-button-orb.png')) {
     throw new Error(`Telegram dark dashboard should use the supplied glass centre control: ${JSON.stringify(homeMetrics.voice)}`);
+  }
+  if (homeMetrics.voice.width !== 62 || homeMetrics.voice.height !== 62) {
+    throw new Error(`Telegram dark dashboard centre control should be visibly sized inside the rail: ${JSON.stringify(homeMetrics.voice)}`);
   }
   if (!homeMetrics.taskLane || homeMetrics.taskLane.thirdTaskBottom > homeMetrics.taskLane.listBottom + 1 || homeMetrics.taskLane.gapBeforeMenu < 8) {
     throw new Error(`Telegram dashboard task lane must keep the first three tasks clear of the menu: ${JSON.stringify(homeMetrics.taskLane)}`);
@@ -295,7 +304,7 @@ try {
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
-  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 58 || lightTelegramMetrics.centerHeight !== 58 || lightTelegramMetrics.centerTopInset < -1 || lightTelegramMetrics.centerBottomInset < -1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || lightTelegramMetrics.taskHeight !== 72) {
+  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < -1 || lightTelegramMetrics.centerBottomInset < -1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || lightTelegramMetrics.taskHeight !== 72) {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
 

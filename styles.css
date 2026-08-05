@@ -17556,7 +17556,7 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
 @media (max-width: 430px) {
   body #home#home .dash-bottom-nav {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 58px minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr) !important;
     align-items: center !important;
   }
   body #home#home .dash-bottom-nav .dash-center-button {
@@ -17565,10 +17565,10 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     right: auto !important;
     top: auto !important;
     bottom: auto !important;
-    width: 58px !important;
-    min-width: 58px !important;
-    height: 58px !important;
-    min-height: 58px !important;
+    width: 62px !important;
+    min-width: 62px !important;
+    height: 62px !important;
+    min-height: 62px !important;
     margin: 0 !important;
     padding: 0 !important;
     align-self: center !important;
@@ -17579,7 +17579,7 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     background: url("../assets/design/dark-chat-button-orb.png?v=dashboard-center-20260806-1") center / contain no-repeat !important;
     box-shadow: none !important;
     overflow: visible !important;
-    filter: none !important;
+    filter: drop-shadow(0 0 8px rgba(181, 234, 78, 0.46)) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.56)) !important;
   }
   body #home#home .dash-bottom-nav .dash-center-button::before,
   body #home#home .dash-bottom-nav .dash-center-button::after,
@@ -17588,6 +17588,22 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     content: none !important;
   }
   html[data-theme="light"] body #home#home .dash-bottom-nav .dash-center-button {
+    width: 62px !important;
+    min-width: 62px !important;
+    height: 62px !important;
+    min-height: 62px !important;
     background-image: url("../assets/design/dashboard-light-center-20260806.png?v=dashboard-center-20260806-1") !important;
+    filter: drop-shadow(0 8px 14px rgba(101, 134, 57, 0.18)) !important;
+  }
+  html[data-theme="light"] body #home#home .dash-bottom-nav .dash-nav-item {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    margin: 0 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    transform: none !important;
   }
 }
