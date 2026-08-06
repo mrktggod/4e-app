@@ -79,6 +79,18 @@ try {
   });
   await page.waitForFunction(() => document.querySelector('#home.active .dash-bottom-nav'));
   await page.waitForFunction(() => document.querySelectorAll('#home-task-list .home-ai-row-main').length >= 6);
+  const largeAvatarMetrics = await page.evaluate(async () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 4;
+    canvas.height = 4;
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#6f9d3f';
+    context.fillRect(0, 0, 4, 4);
+    const imageBlob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    const oversizedFile = new File([imageBlob, new Uint8Array(1500001)], 'large-avatar.png', { type: 'image/png' });
+    const photoDataUrl = await readProfilePhotoData(oversizedFile);
+    return { sourceBytes: oversizedFile.size, photoDataUrl };
+  });
   await fs.mkdir(path.dirname(screenshotPath), { recursive: true });
   await page.screenshot({ path: screenshotPath, fullPage: false });
 
@@ -306,6 +318,9 @@ try {
   if (homeMetrics.voice.width !== 62 || homeMetrics.voice.height !== 62) {
     throw new Error(`Telegram dark dashboard centre control should be visibly sized inside the rail: ${JSON.stringify(homeMetrics.voice)}`);
   }
+  if (largeAvatarMetrics.sourceBytes <= 1500000 || !largeAvatarMetrics.photoDataUrl.startsWith('data:image/jpeg;base64,') || largeAvatarMetrics.photoDataUrl.length >= largeAvatarMetrics.sourceBytes) {
+    throw new Error(`Telegram should locally compress oversized selected avatars: ${JSON.stringify({ sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length })}`);
+  }
   if (!pressFeedbackMetrics || pressFeedbackMetrics.centerGlowAfterPress || pressFeedbackMetrics.todayGlowAfterPress || pressFeedbackMetrics.centerFilter !== 'none' || pressFeedbackMetrics.navFilter !== 'none') {
     throw new Error(`Telegram dashboard controls must never paint a rectangular press glow: ${JSON.stringify(pressFeedbackMetrics)}`);
   }
@@ -344,7 +359,7 @@ try {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
 
-  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, pressFeedbackMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
+  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, largeAvatarMetrics: { sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length }, pressFeedbackMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
 } finally {
   await browser.close();
 }

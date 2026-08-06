@@ -117,6 +117,23 @@ dashboard and profile avatar computed backgrounds to contain it.
 
 **Commit:** this commit
 
+### Telegram local avatar photo compression
+
+**What changed:** Oversized selected profile photos are now downscaled to a 720px JPEG
+avatar before local storage instead of being rejected at 1.5 MB. The saved result still
+feeds both the profile and dashboard avatar surfaces.
+
+**Why:** Typical mobile photos often exceed the former local-storage threshold, leaving a
+temporary preview but no persisted image to render after the screen refreshed.
+
+**Test:** Index UTF-8 control count stayed `114 → 114`; `npm run build:css`;
+`npm run check:cp1251-mojibake`; `npm run check:portable-paths`;
+`npm run check:js-syntax -- --all`; `npm run smoke:telegram-bottom-menu`. The smoke passes
+a valid image with more than 1.5 MB of trailing data, verifies JPEG compression and checks
+the saved photo in both light avatar locations.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface
