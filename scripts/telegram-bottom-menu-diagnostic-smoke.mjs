@@ -98,6 +98,7 @@ try {
     const avatar = document.querySelector('#user-avatar-small');
     return {
       backgroundImage: avatar ? getComputedStyle(avatar).backgroundImage : '',
+      backgroundSize: avatar ? getComputedStyle(avatar).backgroundSize : '',
       userPhoto: avatar?.dataset.userAvatar === 'true'
     };
   }, uploadedAvatarUrl);
@@ -330,7 +331,7 @@ try {
   if (largeAvatarMetrics.sourceBytes <= 1500000 || !largeAvatarMetrics.photoDataUrl.startsWith('data:image/jpeg;base64,') || largeAvatarMetrics.photoDataUrl.length >= largeAvatarMetrics.sourceBytes) {
     throw new Error(`Telegram should locally compress oversized selected avatars: ${JSON.stringify({ sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length })}`);
   }
-  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml')) {
+  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('contain')) {
     throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
   }
   if (!pressFeedbackMetrics || pressFeedbackMetrics.centerGlowAfterPress || pressFeedbackMetrics.todayGlowAfterPress || pressFeedbackMetrics.centerFilter !== 'none' || pressFeedbackMetrics.navFilter !== 'none') {
