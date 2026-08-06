@@ -398,28 +398,28 @@ async function runSmoke(ws, appUrl) {
     window.closeFocusPanel?.();
     await wait(50);
 
-    await click('[data-home-action="open-done-list"]', 'done metric action');
-    await waitFor(() => activeScreen() === 'statistics', 'done metric did not open statistics');
-    await goHomeNow();
+    const dashboardTaskIds = () => Array.from(document.querySelectorAll('#home-task-list .home-ai-row')).map(row => row.dataset.taskId);
+    await click('[data-dashboard-filter="done"]', 'done metric filter');
+    await waitFor(() => activeScreen() === 'home' && byId('home-task-list')?.dataset.dashboardFilter === 'done', 'done metric did not filter the dashboard');
+    metrics.doneFilterTaskIds = dashboardTaskIds();
+    assert(metrics.doneFilterTaskIds.length === 1 && metrics.doneFilterTaskIds[0] === 'home-smoke-done', 'done metric should show completed tasks below metrics');
 
-    await click('[data-home-action="open-active-list"]', 'active metric action');
-    await waitFor(() => activeScreen() === 'statistics', 'active metric did not open statistics');
-    metrics.statsActiveRows = document.querySelectorAll('#stats-custom-list > div:last-child > div').length;
-    assert(metrics.statsActiveRows >= 1, 'active metric list should render task rows');
-    await click('#stats-custom-list > div:last-child > div:first-child', 'active metric task row');
-    await waitFor(() => activeScreen() === 'task-detail', 'active metric task row did not open task detail');
-    await click('#task-detail [data-detail-action="back-to-home"]', 'task detail back from statistics');
-    await waitFor(() => activeScreen() === 'statistics', 'task detail back should return to statistics');
-    await goHomeNow();
+    await click('[data-dashboard-filter="active"]', 'active metric filter');
+    await waitFor(() => activeScreen() === 'home' && byId('home-task-list')?.dataset.dashboardFilter === 'active', 'active metric did not filter the dashboard');
+    metrics.activeFilterTaskIds = dashboardTaskIds();
+    assert(metrics.activeFilterTaskIds.length === 3 && metrics.activeFilterTaskIds.every(id => id !== 'home-smoke-done' && id !== 'home-smoke-incoming'), 'active metric should show only active outgoing tasks below metrics');
 
     await click('#home-task-list .home-ai-row', 'home task row');
     await waitFor(() => activeScreen() === 'task-detail', 'home task row did not open task detail');
     await click('#task-detail [data-detail-action="back-to-home"]', 'task detail back from home');
     await waitFor(() => activeScreen() === 'home', 'task detail back should return to home');
 
-    await click('[data-home-action="open-promise-list"]', 'promise metric action');
-    await waitFor(() => activeScreen() === 'statistics', 'promise metric did not open statistics');
-    await goHomeNow();
+    await click('[data-dashboard-filter="promises"]', 'promise metric filter');
+    await waitFor(() => activeScreen() === 'home' && byId('home-task-list')?.dataset.dashboardFilter === 'promises', 'promise metric did not filter the dashboard');
+    metrics.promiseFilterTaskIds = dashboardTaskIds();
+    assert(metrics.promiseFilterTaskIds.length === 1 && metrics.promiseFilterTaskIds[0] === 'home-smoke-incoming', 'promise metric should show only incoming tasks below metrics');
+    await click('[data-dashboard-filter="promises"]', 'clear promise metric filter');
+    await waitFor(() => byId('home-task-list')?.dataset.dashboardFilter === 'all', 'second metric tap did not restore the dashboard list');
 
     await click('[data-home-action="open-statistics"]', 'progress metric action');
     await waitFor(() => activeScreen() === 'statistics', 'progress metric did not open statistics');

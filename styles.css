@@ -17698,3 +17698,8 @@ html:not([data-theme="light"]) body #home#home #user-avatar-small[data-user-avat
   background-position: center !important;
   background-repeat: no-repeat !important;
 }
+/* A selected dashboard metric is a local list filter, not a navigation link. */
+body #home#home .dash-metric.is-active-filter {
+  outline: 1px solid rgba(169, 222, 104, 0.78) !important;
+  outline-offset: -1px !important;
+}

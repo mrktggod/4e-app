@@ -695,6 +695,10 @@
             togglePlannerCompact();
             return;
           }
+          if (action === 'filter-dashboard' && typeof setHomeDashboardMetricFilter === 'function') {
+            setHomeDashboardMetricFilter(actionBtn.dataset.dashboardFilter);
+            return;
+          }
           if (action === 'open-done-list' && typeof openDoneList === 'function') {
             openDoneList();
             return;
