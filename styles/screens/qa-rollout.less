@@ -650,6 +650,48 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     stroke: #527044 !important;
   }
 
+  /* The light dashboard avatar is a glass frame, not a fixed stock PNG.  A
+     uploaded profile photo fills the existing circle while this rim stays on
+     top, so its current position and hit area do not move. */
+  html[data-theme="light"] body #home#home #user-avatar-small {
+    position: relative !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(118, 153, 82, .30) !important;
+    background:
+      radial-gradient(circle at 32% 22%, rgba(255,255,255,.98), rgba(237,246,221,.78) 36%, rgba(176,205,133,.52) 100%) !important;
+    box-shadow:
+      0 8px 16px rgba(72,91,44,.14),
+      inset 0 1px 1px rgba(255,255,255,.94),
+      inset 0 -7px 12px rgba(101,134,57,.10) !important;
+    filter: none !important;
+    isolation: isolate;
+  }
+
+  html[data-theme="light"] body #home#home #user-avatar-small[data-user-avatar="true"] {
+    background: var(--dash-user-avatar-image) center / cover no-repeat !important;
+  }
+
+  html[data-theme="light"] body #home#home #user-avatar-small img {
+    display: none !important;
+  }
+
+  html[data-theme="light"] body #home#home #user-avatar-small::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  html[data-theme="light"] body #home#home #user-avatar-small::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: inherit;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.56), inset 0 -5px 9px rgba(53,76,39,.10);
+    pointer-events: none;
+  }
+
   html[data-theme="light"] body #home#home .dash-metrics {
     top: 64px !important;
   }

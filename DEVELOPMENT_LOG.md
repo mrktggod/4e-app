@@ -86,6 +86,22 @@ combined 112px control zone.
 
 **Commit:** this commit
 
+### Telegram light dashboard profile avatar
+
+**What changed:** Replaced the light dashboard's fixed `dashboard-light-avatar.png`
+appearance with a CSS glass frame. The header avatar now reads the same user-provided photo
+as the profile screen; the photo fills the existing circle and the glass rim stays above it.
+
+**Why:** The light-theme fallback asset had higher CSS priority than the user's uploaded
+avatar, so the dashboard did not show the actual profile photo.
+
+**Test:** `npm run build:css`; `npm run check:cp1251-mojibake`;
+`npm run smoke:telegram-bottom-menu`; `npm run smoke:home001`. The Telegram smoke seeds a
+profile photo, requires the light avatar to use that data URL and fails if the old PNG or
+fallback `<img>` is visible.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface
