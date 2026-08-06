@@ -68,6 +68,24 @@ rail and centre control both report `filter: none`.
 
 **Commit:** this commit
 
+### Telegram dashboard persistent header row
+
+**What changed:** Made the existing avatar/title/notification row sticky at its current
+horizontal position above the dashboard metrics. The metric row now sticks at `64px`,
+directly below the 48px header with the same 6px gap as the expanded dashboard. The fixed
+top mask covers both rows, so scrolling task cards remain hidden behind the controls.
+
+**Why:** The owner needs profile and notification actions available together with the
+compact metric filters while reviewing a long task list, without changing either control's
+left/right placement.
+
+**Test:** `npm run build:css`; `npm run check:cp1251-mojibake`;
+`npm run smoke:telegram-bottom-menu`; `npm run smoke:home001`. The Telegram smoke asserts
+the collapsed header stays at 10px, metrics stay beneath it at 64px and the mask covers the
+combined 112px control zone.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface

@@ -171,13 +171,15 @@ try {
   const dashboardCollapse = await page.evaluate(async () => {
     const home = document.getElementById('home');
     const list = document.querySelector('#home-task-list');
+    const header = document.querySelector('#home .dash-header');
     const hero = document.querySelector('#home .dash-hero');
     const metrics = document.querySelector('#home .dash-metrics');
-    if (!home || !list || !hero || !metrics) return null;
+    if (!home || !list || !header || !hero || !metrics) return null;
     home.scrollTop = 0;
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const expandedListRect = list.getBoundingClientRect();
     const expanded = {
+      headerTop: header.getBoundingClientRect().top,
       heroTop: hero.getBoundingClientRect().top,
       heroOpacity: Number(getComputedStyle(hero).opacity),
       metricsTop: metrics.getBoundingClientRect().top,
@@ -188,6 +190,8 @@ try {
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const collapsedListRect = list.getBoundingClientRect();
     const collapsed = {
+      headerTop: header.getBoundingClientRect().top,
+      headerBottom: header.getBoundingClientRect().bottom,
       heroBottom: hero.getBoundingClientRect().bottom,
       heroOpacity: Number(getComputedStyle(hero).opacity),
       metricsTop: metrics.getBoundingClientRect().top,
@@ -305,10 +309,10 @@ try {
   if (scrollMetrics.scrollTop <= 0 || scrollMetrics.scrollHeight <= scrollMetrics.clientHeight || scrollMetrics.gapBeforeMenu < 8 || scrollMetrics.gapBeforeMenu > 112) {
     throw new Error(`Telegram dashboard root should reveal the final task after scrolling: ${JSON.stringify(scrollMetrics)}`);
   }
-  if (!dashboardCollapse || dashboardCollapse.collapsed.heroOpacity < .95 || dashboardCollapse.collapsed.heroBottom > 1 || dashboardCollapse.collapsed.metricsTop > 20 || dashboardCollapse.collapsed.taskListTop > 80 || dashboardCollapse.collapsed.rootScrollTop <= 0 || dashboardCollapse.collapsed.topMaskHeight < 50 || dashboardCollapse.collapsed.bottomMaskTop < 0) {
-    throw new Error(`Telegram dashboard root scroll should move the focus card out and pin metrics: ${JSON.stringify(dashboardCollapse)}`);
+  if (!dashboardCollapse || dashboardCollapse.collapsed.heroOpacity < .95 || dashboardCollapse.collapsed.heroBottom > 1 || dashboardCollapse.collapsed.headerTop > 20 || dashboardCollapse.collapsed.headerBottom > dashboardCollapse.collapsed.metricsTop + 1 || dashboardCollapse.collapsed.metricsTop < 55 || dashboardCollapse.collapsed.metricsTop > 75 || dashboardCollapse.collapsed.taskListTop > 130 || dashboardCollapse.collapsed.rootScrollTop <= 0 || dashboardCollapse.collapsed.topMaskHeight < 100 || dashboardCollapse.collapsed.bottomMaskTop < 0) {
+    throw new Error(`Telegram dashboard root scroll should keep the header above pinned metrics: ${JSON.stringify(dashboardCollapse)}`);
   }
-  if (dashboardCollapse.expanded.heroOpacity < .95 || dashboardCollapse.expanded.metricsTop < 200 || dashboardCollapse.expanded.taskListTop < 300) {
+  if (dashboardCollapse.expanded.headerTop < 0 || dashboardCollapse.expanded.heroOpacity < .95 || dashboardCollapse.expanded.metricsTop < 200 || dashboardCollapse.expanded.taskListTop < 300) {
     throw new Error(`Telegram dashboard scroll should restore the focus card at the top of the task list: ${JSON.stringify(dashboardCollapse)}`);
   }
   if (swipeMetrics.pickerRequests < 2 || swipeMetrics.taskId !== 'bottom-nav-1' || !swipeMetrics.moveActionOpenedPicker) {
