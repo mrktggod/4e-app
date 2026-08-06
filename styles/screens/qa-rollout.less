@@ -666,6 +666,13 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     align-items: center !important;
   }
 
+  /* Defensive guard for an already queued press-feedback timer during a theme
+     change: no rectangular glow may be painted over the navigation rail. */
+  body #home#home .dash-bottom-nav .qa-press-glow {
+    animation: none !important;
+    box-shadow: none !important;
+  }
+
   body #home#home .dash-bottom-nav .dash-center-button {
     position: relative !important;
     left: auto !important;
@@ -686,7 +693,10 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     background: url("../assets/design/dark-chat-button-orb.png?v=dashboard-center-20260806-1") center / contain no-repeat !important;
     box-shadow: none !important;
     overflow: visible !important;
-    filter: drop-shadow(0 0 8px rgba(181, 234, 78, .46)) drop-shadow(0 10px 16px rgba(0, 0, 0, .56)) !important;
+    /* The PNG already contains its circular glass rim.  Do not apply a filter
+       to the rectangular hit area: Telegram's WebView occasionally composites
+       that filter as a square green layer during a tap or scroll repaint. */
+    filter: none !important;
   }
 
   body #home#home .dash-bottom-nav .dash-center-button::before,
@@ -705,7 +715,7 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     z-index: 2 !important;
     top: -2px !important;
     transform: none !important;
-    filter: drop-shadow(0 8px 14px rgba(101, 134, 57, .18)) !important;
+    filter: none !important;
   }
 
   html[data-theme="light"] body #home#home .dash-bottom-nav .dash-nav-item {

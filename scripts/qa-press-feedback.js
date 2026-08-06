@@ -7,12 +7,18 @@
     document.addEventListener('pointerdown', function (event) {
       const target = event.target.closest('button,[role="button"],.profile-menu-row,.sub-row,.task-row');
       if (!target || target.disabled || target.getAttribute('aria-disabled') === 'true') return;
-      target.classList.remove('qa-press-glow');
-      void target.offsetWidth;
-      target.classList.add('qa-press-glow');
-      setTimeout(function () {
+      // The lower dashboard rail uses circular artwork. Applying the generic
+      // box-shadow pulse to its rectangular button hit areas briefly paints a
+      // square green halo in Telegram WebView, so leave its visual feedback to
+      // the controls themselves while keeping the haptic response below.
+      if (!target.closest('#home .dash-bottom-nav')) {
         target.classList.remove('qa-press-glow');
-      }, 220);
+        void target.offsetWidth;
+        target.classList.add('qa-press-glow');
+        setTimeout(function () {
+          target.classList.remove('qa-press-glow');
+        }, 220);
+      }
       try {
         window.Telegram?.WebApp?.HapticFeedback?.impactOccurred?.('light');
       } catch (e) {}

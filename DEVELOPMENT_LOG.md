@@ -50,6 +50,24 @@ before the menu after root scrolling.
 
 **Commit:** this commit
 
+### Telegram dashboard press-glow hardening
+
+**What changed:** Excluded the dashboard's lower navigation rail from the generic
+`qa-press-glow` animation and removed the central artwork's CSS drop-shadow filter.
+The supplied circular PNG controls retain their own glass rim, while a defensive rail
+rule suppresses any already queued press glow during a Telegram theme or scroll repaint.
+
+**Why:** The generic press feedback animates a `box-shadow` around the rectangular button
+hit area. In Telegram WebView that could briefly composite as a square green halo under
+the central or side navigation buttons.
+
+**Test:** `npm run build:css`; `npm run check:cp1251-mojibake`;
+`npm run smoke:telegram-bottom-menu`. The Telegram smoke now dispatches a touch press to
+the centre and side controls and asserts that neither receives `qa-press-glow`, while the
+rail and centre control both report `filter: none`.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface

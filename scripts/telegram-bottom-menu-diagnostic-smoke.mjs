@@ -136,6 +136,23 @@ try {
     globalNav: readVisibility('#global-nav')
   });
 
+  const pressFeedbackMetrics = await page.evaluate(() => {
+    const nav = document.querySelector('#home .dash-bottom-nav');
+    const center = document.querySelector('#home-nav-voice');
+    const today = document.querySelector('#home-nav-today');
+    if (!nav || !center || !today) return null;
+    const press = (node) => {
+      node.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch' }));
+      return node.classList.contains('qa-press-glow');
+    };
+    return {
+      centerGlowAfterPress: press(center),
+      todayGlowAfterPress: press(today),
+      centerFilter: getComputedStyle(center).filter,
+      navFilter: getComputedStyle(nav).filter
+    };
+  });
+
   const scrollMetrics = await page.evaluate(async () => {
     const home = document.getElementById('home');
     const navRect = document.querySelector('#home .dash-bottom-nav')?.getBoundingClientRect();
@@ -273,6 +290,9 @@ try {
   if (homeMetrics.voice.width !== 62 || homeMetrics.voice.height !== 62) {
     throw new Error(`Telegram dark dashboard centre control should be visibly sized inside the rail: ${JSON.stringify(homeMetrics.voice)}`);
   }
+  if (!pressFeedbackMetrics || pressFeedbackMetrics.centerGlowAfterPress || pressFeedbackMetrics.todayGlowAfterPress || pressFeedbackMetrics.centerFilter !== 'none' || pressFeedbackMetrics.navFilter !== 'none') {
+    throw new Error(`Telegram dashboard controls must never paint a rectangular press glow: ${JSON.stringify(pressFeedbackMetrics)}`);
+  }
   if (!homeMetrics.taskLane || homeMetrics.taskLane.thirdTaskBottom > homeMetrics.taskLane.listBottom + 1 || homeMetrics.taskLane.gapBeforeMenu < 8) {
     throw new Error(`Telegram dashboard task lane must keep the first three tasks clear of the menu: ${JSON.stringify(homeMetrics.taskLane)}`);
   }
@@ -308,7 +328,7 @@ try {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
 
-  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
+  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, pressFeedbackMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
 } finally {
   await browser.close();
 }
