@@ -555,6 +555,16 @@ Git Bash UI architecture guard failed on existing branch state:
 
 **Commit:** pending
 
+## 2026-08-06
+
+### Telegram dark dashboard header control alignment
+
+**What changed:** the dashboard profile and notification controls now use the same 44px hit area in the dark Telegram theme. Their centres and the clearance before the Focus card are therefore identical; the light theme is unchanged.
+
+**Test:** `npm run build:css`; `npm run smoke:telegram-bottom-menu` verifies both controls are 44x44 with matching header insets and Focus-card gap; `npm run check:cp1251-mojibake`; `npm run check:portable-paths`; `git diff --check`.
+
+**Commit:** pending
+
 ## 2026-07-29
 
 ### DESIGN-GLASS-001 package 3 safe controls

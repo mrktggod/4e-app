@@ -786,6 +786,18 @@ html[data-theme="light"] body #profile .profile-avatar[data-user-avatar="true"] 
 
 /* Keep the same saved photo visible on the dark dashboard header.  This late
    explicit state wins over the legacy artwork that still styles the empty avatar. */
+/* The profile control shares its 48px header row with the notifications control.
+   Keep both hit areas at 44px so their centres and the gap before Focus align. */
+@media (max-width: 430px) {
+  html[data-theme="dark"] body #home#home #user-avatar-small,
+  html:not([data-theme="light"]) body #home#home #user-avatar-small {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}
+
 html[data-theme="dark"] body #home#home #user-avatar-small[data-user-avatar="true"],
 html:not([data-theme="light"]) body #home#home #user-avatar-small[data-user-avatar="true"] {
   /* Match the profile avatar exactly: one centred photo layer with the same

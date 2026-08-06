@@ -113,6 +113,9 @@ try {
     const taskListStyle = taskList ? getComputedStyle(taskList) : null;
     const taskRows = Array.from(document.querySelectorAll('#home-task-list .home-ai-row-main'));
     const thirdTaskRect = taskRows[2]?.getBoundingClientRect();
+    const header = document.querySelector('#home .dash-header');
+    const headerRect = header?.getBoundingClientRect();
+    const heroRect = document.querySelector('#home .dash-hero')?.getBoundingClientRect();
     const controlMetrics = selector => {
       const control = document.querySelector(selector);
       const rect = control?.getBoundingClientRect();
@@ -123,6 +126,17 @@ try {
         width: rect.width,
         height: rect.height,
         backgroundImage: getComputedStyle(control).backgroundImage
+      } : null;
+    };
+    const headerControlMetrics = selector => {
+      const control = document.querySelector(selector);
+      const rect = control?.getBoundingClientRect();
+      return rect && headerRect && heroRect ? {
+        width: rect.width,
+        height: rect.height,
+        topInset: rect.top - headerRect.top,
+        bottomInset: headerRect.bottom - rect.bottom,
+        focusGap: heroRect.top - rect.bottom
       } : null;
     };
     return {
@@ -150,6 +164,8 @@ try {
           return { top: rect.top, bottom: rect.bottom };
         })
       } : null,
+      avatar: headerControlMetrics('#user-avatar-small'),
+      notification: headerControlMetrics('#home .dash-notification'),
       today: controlMetrics('#home-nav-today'),
       voice: controlMetrics('#home-nav-voice'),
       calendar: controlMetrics('#home-nav-cal')
@@ -333,6 +349,10 @@ try {
   }
   if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('cover')) {
     throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
+  }
+  const { avatar, notification } = homeMetrics;
+  if (!avatar || !notification || avatar.width !== 44 || avatar.height !== 44 || notification.width !== 44 || notification.height !== 44 || Math.abs(avatar.topInset - notification.topInset) > 0.5 || Math.abs(avatar.bottomInset - notification.bottomInset) > 0.5 || Math.abs(avatar.focusGap - notification.focusGap) > 0.5) {
+    throw new Error(`Telegram dark dashboard profile and notification controls must share the same header geometry: ${JSON.stringify({ avatar, notification })}`);
   }
   if (!pressFeedbackMetrics || pressFeedbackMetrics.centerGlowAfterPress || pressFeedbackMetrics.todayGlowAfterPress || pressFeedbackMetrics.centerFilter !== 'none' || pressFeedbackMetrics.navFilter !== 'none') {
     throw new Error(`Telegram dashboard controls must never paint a rectangular press glow: ${JSON.stringify(pressFeedbackMetrics)}`);
