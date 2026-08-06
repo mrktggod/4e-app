@@ -17560,7 +17560,12 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     isolation: isolate;
   }
   html[data-theme="light"] body #home#home #user-avatar-small[data-user-avatar="true"] {
-    background: var(--dash-user-avatar-image) center / cover no-repeat !important;
+    /* Preserve the whole uploaded photo inside the small circular glass frame;
+       the existing light backing fills any space around a portrait or landscape. */
+    background-image: var(--dash-user-avatar-image), radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.98), rgba(237, 246, 221, 0.78) 36%, rgba(176, 205, 133, 0.52) 100%) !important;
+    background-size: contain, auto !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
   }
   html[data-theme="light"] body #home#home #user-avatar-small img {
     display: none !important;
@@ -17581,6 +17586,12 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
   }
   html[data-theme="light"] body #home#home .dash-metrics {
     top: 64px !important;
+  }
+  /* The light dashboard uses the compact metrics row directly after Focus;
+     the duplicate date label above it has no informational value there. */
+  html[data-theme="light"] body #home#home #home-section-title,
+  html[data-theme="light"] body #home#home .dash-month-title {
+    display: none !important;
   }
   body #home#home #home-task-list {
     clip-path: none !important;
