@@ -331,7 +331,7 @@ try {
   if (largeAvatarMetrics.sourceBytes <= 1500000 || !largeAvatarMetrics.photoDataUrl.startsWith('data:image/jpeg;base64,') || largeAvatarMetrics.photoDataUrl.length >= largeAvatarMetrics.sourceBytes) {
     throw new Error(`Telegram should locally compress oversized selected avatars: ${JSON.stringify({ sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length })}`);
   }
-  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('contain')) {
+  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('cover')) {
     throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
   }
   if (!pressFeedbackMetrics || pressFeedbackMetrics.centerGlowAfterPress || pressFeedbackMetrics.todayGlowAfterPress || pressFeedbackMetrics.centerFilter !== 'none' || pressFeedbackMetrics.navFilter !== 'none') {

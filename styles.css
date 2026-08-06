@@ -17666,5 +17666,10 @@ html[data-theme="light"] body #profile .profile-avatar[data-user-avatar="true"] 
    explicit state wins over the legacy artwork that still styles the empty avatar. */
 html[data-theme="dark"] body #home#home #user-avatar-small[data-user-avatar="true"],
 html:not([data-theme="light"]) body #home#home #user-avatar-small[data-user-avatar="true"] {
-  background: var(--dash-user-avatar-image) center / contain no-repeat, radial-gradient(circle at 42% 36%, rgba(255, 255, 255, 0.24), transparent 24%), linear-gradient(145deg, rgba(45, 71, 48, 0.92), rgba(4, 12, 8, 0.96)) !important;
+  /* Match the profile avatar exactly: one centred photo layer with the same
+     crop mode, so a person is framed consistently in both places. */
+  background-image: var(--dash-user-avatar-image) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
