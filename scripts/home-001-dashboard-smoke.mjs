@@ -411,11 +411,15 @@ async function runSmoke(ws, appUrl) {
       boxShadow: getComputedStyle(doneMetric).boxShadow,
       rimGradient: doneMetricRim.backgroundImage,
       rimShadow: doneMetricRim.boxShadow,
+      rimLeft: doneMetricRim.left,
+      rimRight: doneMetricRim.right,
+      rimBottom: doneMetricRim.bottom,
       inheritedFrame: doneMetricBaseFrame.content
     };
     assert(metrics.doneFilterTaskIds.length === 1 && metrics.doneFilterTaskIds[0] === 'home-smoke-done', 'done metric should show completed tasks below metrics');
     assert(metrics.doneFilterVisual.active && metrics.doneFilterVisual.pressed === 'true' && metrics.doneFilterVisual.boxShadow !== 'none', 'selected metric should use the active glass treatment');
     assert(metrics.doneFilterVisual.rimGradient.includes('linear-gradient') && metrics.doneFilterVisual.rimShadow !== 'none', 'selected metric should emit a gradient lower glass rim');
+    assert(metrics.doneFilterVisual.rimLeft === '-1px' && metrics.doneFilterVisual.rimRight === '-1px' && metrics.doneFilterVisual.rimBottom === '-1px', 'selected metric lower rim should meet the button boundary');
     assert(metrics.doneFilterVisual.inheritedFrame === 'none', 'selected metric should not keep the inherited glossy top frame');
 
     await click('[data-dashboard-filter="active"]', 'active metric filter');
