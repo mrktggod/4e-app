@@ -30,8 +30,12 @@ light supplied control is larger than the preceding 58px version but remains ins
 explicit in-rail position with all legacy offsets reset, so they align horizontally with
 each other.
 
-**Test:** Rebuilt CSS and extended `smoke:telegram-bottom-menu` to assert the dark 62px
-control, light 64px control and matching light side-button top insets.
+**Test:** Rebuilt CSS and extended `smoke:telegram-bottom-menu` to assert 62px dark/light
+controls and matching light side-button top insets.
+
+**Final light alignment:** lifted the 62px light control by 2px and placed it above the
+rail paint, giving it a 2px lower clearance instead of touching the edge. The diagnostic
+now requires at least 1px clearance above and below the light control.
 
 **Commit:** this commit
 
