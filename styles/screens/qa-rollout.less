@@ -777,3 +777,9 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     transform: none !important;
   }
 }
+
+/* The profile screen needs the same priority as the dashboard avatar: its
+   light fallback gradient must never cover a photo the user has selected. */
+html[data-theme="light"] body #profile .profile-avatar[data-user-avatar="true"] {
+  background: var(--dash-user-avatar-image) center / cover no-repeat !important;
+}

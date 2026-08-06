@@ -270,6 +270,7 @@ try {
     const calendar = rect('#home-nav-cal');
     const task = rect('#home-task-list .home-ai-row-main');
     const avatar = document.querySelector('#user-avatar-small');
+    const profileAvatar = document.querySelector('#profile .profile-avatar');
     return {
       theme: document.documentElement.getAttribute('data-theme') || '',
       navHeight: nav?.height ?? -1,
@@ -283,6 +284,8 @@ try {
       avatarBackgroundImage: avatar ? getComputedStyle(avatar).backgroundImage : '',
       avatarUserPhoto: avatar?.dataset.userAvatar === 'true',
       avatarFallbackImageVisible: avatar?.querySelector('img') ? getComputedStyle(avatar.querySelector('img')).display !== 'none' : false,
+      profileAvatarBackgroundImage: profileAvatar ? getComputedStyle(profileAvatar).backgroundImage : '',
+      profileAvatarUserPhoto: profileAvatar?.dataset.userAvatar === 'true',
       todayTopInset: nav && today ? today.top - nav.top : -1,
       calendarTopInset: nav && calendar ? calendar.top - nav.top : -1,
       taskHeight: task?.height ?? -1
@@ -337,7 +340,7 @@ try {
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
-  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < 1 || lightTelegramMetrics.centerBottomInset < 1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || !lightTelegramMetrics.avatarUserPhoto || !lightTelegramMetrics.avatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.avatarBackgroundImage.includes('dashboard-light-avatar.png') || lightTelegramMetrics.avatarFallbackImageVisible || lightTelegramMetrics.taskHeight !== 72) {
+  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < 1 || lightTelegramMetrics.centerBottomInset < 1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || !lightTelegramMetrics.avatarUserPhoto || !lightTelegramMetrics.avatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.avatarBackgroundImage.includes('dashboard-light-avatar.png') || lightTelegramMetrics.avatarFallbackImageVisible || !lightTelegramMetrics.profileAvatarUserPhoto || !lightTelegramMetrics.profileAvatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.taskHeight !== 72) {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
 

@@ -102,6 +102,21 @@ fallback `<img>` is visible.
 
 **Commit:** this commit
 
+### Telegram light profile photo visibility
+
+**What changed:** Added a final light-theme profile-avatar rule that lets the saved user
+photo win over the profile screen's fallback gradient. The large profile avatar and the
+compact dashboard avatar now share the same saved photo source and glass framing.
+
+**Why:** The previous change fixed the dashboard header, but the profile screen's own
+light-theme `!important` gradient was still painting over the selected image.
+
+**Test:** `npm run build:css`; `npm run check:cp1251-mojibake`;
+`npm run smoke:telegram-bottom-menu`. The smoke injects a photo and requires both the
+dashboard and profile avatar computed backgrounds to contain it.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface
