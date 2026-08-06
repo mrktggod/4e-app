@@ -867,6 +867,12 @@ body #home#home .dash-metric.is-active-filter::after {
     0 8px 15px rgba(75, 255, 165, .30);
 }
 
+/* The base glass uses a glossy top frame.  A selected metric has its own
+   lower-rim treatment, so suppress that inherited frame completely. */
+body #home#home .dash-metric.is-active-filter::before {
+  content: none !important;
+}
+
 body #home#home .dash-metric.is-active-filter > * {
   position: relative;
   z-index: 1;

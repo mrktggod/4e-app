@@ -404,16 +404,19 @@ async function runSmoke(ws, appUrl) {
     metrics.doneFilterTaskIds = dashboardTaskIds();
     const doneMetric = document.querySelector('[data-dashboard-filter="done"]');
     const doneMetricRim = getComputedStyle(doneMetric, '::after');
+    const doneMetricBaseFrame = getComputedStyle(doneMetric, '::before');
     metrics.doneFilterVisual = {
       active: doneMetric?.classList.contains('is-active-filter') || false,
       pressed: doneMetric?.getAttribute('aria-pressed') || '',
       boxShadow: getComputedStyle(doneMetric).boxShadow,
       rimGradient: doneMetricRim.backgroundImage,
-      rimShadow: doneMetricRim.boxShadow
+      rimShadow: doneMetricRim.boxShadow,
+      inheritedFrame: doneMetricBaseFrame.content
     };
     assert(metrics.doneFilterTaskIds.length === 1 && metrics.doneFilterTaskIds[0] === 'home-smoke-done', 'done metric should show completed tasks below metrics');
     assert(metrics.doneFilterVisual.active && metrics.doneFilterVisual.pressed === 'true' && metrics.doneFilterVisual.boxShadow !== 'none', 'selected metric should use the active glass treatment');
     assert(metrics.doneFilterVisual.rimGradient.includes('linear-gradient') && metrics.doneFilterVisual.rimShadow !== 'none', 'selected metric should emit a gradient lower glass rim');
+    assert(metrics.doneFilterVisual.inheritedFrame === 'none', 'selected metric should not keep the inherited glossy top frame');
 
     await click('[data-dashboard-filter="active"]', 'active metric filter');
     await waitFor(() => activeScreen() === 'home' && byId('home-task-list')?.dataset.dashboardFilter === 'active', 'active metric did not filter the dashboard');

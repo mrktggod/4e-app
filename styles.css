@@ -17724,6 +17724,11 @@ body #home#home .dash-metric.is-active-filter::after {
   background: linear-gradient(90deg, rgba(101, 255, 175, 0) 0%, rgba(117, 255, 175, 0.38) 19%, rgba(193, 255, 118, 0.94) 50%, rgba(102, 255, 185, 0.4) 81%, rgba(101, 255, 175, 0) 100%);
   box-shadow: 0 3px 7px rgba(181, 255, 128, 0.62), 0 8px 15px rgba(75, 255, 165, 0.3);
 }
+/* The base glass uses a glossy top frame.  A selected metric has its own
+   lower-rim treatment, so suppress that inherited frame completely. */
+body #home#home .dash-metric.is-active-filter::before {
+  content: none !important;
+}
 body #home#home .dash-metric.is-active-filter > * {
   position: relative;
   z-index: 1;
