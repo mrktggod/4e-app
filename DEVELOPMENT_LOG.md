@@ -559,9 +559,9 @@ Git Bash UI architecture guard failed on existing branch state:
 
 ### Telegram dark dashboard header control alignment
 
-**What changed:** the dashboard profile and notification controls now use the same 44px hit area in both Telegram themes. Their centres and the clearance before the Focus card are therefore identical. In both themes, a saved avatar uses `contain` over a glass backing so no side, top or bottom of the image is cropped. The redundant light-theme task-date label above the metrics row is hidden.
+**What changed:** the dashboard profile and notification controls now use the same 44px hit area in both Telegram themes. Their centres and the clearance before the Focus card are therefore identical. In both themes, a saved avatar uses `contain` over a glass backing so no side, top or bottom of the image is cropped. The redundant light-theme task-date label above the metrics row is hidden, while a fixed 24px gap remains between the Focus card and metrics.
 
-**Test:** `npm run build:css`; `npm run smoke:telegram-bottom-menu` verifies both themes use 44x44 header controls with matching insets and Focus-card gap, saved dashboard photos use `contain`, and the light task-date label is absent; `npm run check:cp1251-mojibake`; `npm run check:portable-paths`; `git diff --check`.
+**Test:** `npm run build:css`; `npm run smoke:telegram-bottom-menu` verifies both themes use 44x44 header controls with matching insets and Focus-card gap, saved dashboard photos use `contain`, and the light task-date label is absent while the Focus-to-metrics gap is 24px; `npm run check:cp1251-mojibake`; `npm run check:portable-paths`; `git diff --check`.
 
 **Commit:** pending
 

@@ -17586,6 +17586,8 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
   }
   html[data-theme="light"] body #home#home .dash-metrics {
     top: 64px !important;
+    /* Keep the breathing room that the removed task-date label used to occupy. */
+    margin-top: 24px !important;
   }
   /* The light dashboard uses the compact metrics row directly after Focus;
      the duplicate date label above it has no informational value there. */
