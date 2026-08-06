@@ -308,6 +308,9 @@ try {
     const calendar = rect('#home-nav-cal');
     const task = rect('#home-task-list .home-ai-row-main');
     const avatar = document.querySelector('#user-avatar-small');
+    const notification = document.querySelector('#home .dash-notification');
+    const header = rect('#home .dash-header');
+    const hero = rect('#home .dash-hero');
     const profileAvatar = document.querySelector('#profile .profile-avatar');
     return {
       theme: document.documentElement.getAttribute('data-theme') || '',
@@ -320,10 +323,19 @@ try {
       centerBottomInset: nav && center ? nav.bottom - center.bottom : -1,
       centerBackgroundImage: centerNode ? getComputedStyle(centerNode).backgroundImage : '',
       avatarBackgroundImage: avatar ? getComputedStyle(avatar).backgroundImage : '',
+      avatarBackgroundSize: avatar ? getComputedStyle(avatar).backgroundSize : '',
       avatarUserPhoto: avatar?.dataset.userAvatar === 'true',
       avatarFallbackImageVisible: avatar?.querySelector('img') ? getComputedStyle(avatar.querySelector('img')).display !== 'none' : false,
       profileAvatarBackgroundImage: profileAvatar ? getComputedStyle(profileAvatar).backgroundImage : '',
       profileAvatarUserPhoto: profileAvatar?.dataset.userAvatar === 'true',
+      avatarWidth: avatar?.getBoundingClientRect().width ?? -1,
+      avatarHeight: avatar?.getBoundingClientRect().height ?? -1,
+      notificationWidth: notification?.getBoundingClientRect().width ?? -1,
+      notificationHeight: notification?.getBoundingClientRect().height ?? -1,
+      avatarTopInset: header && avatar ? avatar.getBoundingClientRect().top - header.top : -1,
+      notificationTopInset: header && notification ? notification.getBoundingClientRect().top - header.top : -1,
+      avatarFocusGap: hero && avatar ? hero.top - avatar.getBoundingClientRect().bottom : -1,
+      notificationFocusGap: hero && notification ? hero.top - notification.getBoundingClientRect().bottom : -1,
       todayTopInset: nav && today ? today.top - nav.top : -1,
       calendarTopInset: nav && calendar ? calendar.top - nav.top : -1,
       taskHeight: task?.height ?? -1
@@ -347,7 +359,7 @@ try {
   if (largeAvatarMetrics.sourceBytes <= 1500000 || !largeAvatarMetrics.photoDataUrl.startsWith('data:image/jpeg;base64,') || largeAvatarMetrics.photoDataUrl.length >= largeAvatarMetrics.sourceBytes) {
     throw new Error(`Telegram should locally compress oversized selected avatars: ${JSON.stringify({ sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length })}`);
   }
-  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('cover')) {
+  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('contain')) {
     throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
   }
   const { avatar, notification } = homeMetrics;
@@ -390,6 +402,9 @@ try {
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
   if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < 1 || lightTelegramMetrics.centerBottomInset < 1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || !lightTelegramMetrics.avatarUserPhoto || !lightTelegramMetrics.avatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.avatarBackgroundImage.includes('dashboard-light-avatar.png') || lightTelegramMetrics.avatarFallbackImageVisible || !lightTelegramMetrics.profileAvatarUserPhoto || !lightTelegramMetrics.profileAvatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.taskHeight !== 72) {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
+  }
+  if (lightTelegramMetrics.avatarWidth !== 44 || lightTelegramMetrics.avatarHeight !== 44 || lightTelegramMetrics.notificationWidth !== 44 || lightTelegramMetrics.notificationHeight !== 44 || Math.abs(lightTelegramMetrics.avatarTopInset - lightTelegramMetrics.notificationTopInset) > 0.5 || Math.abs(lightTelegramMetrics.avatarFocusGap - lightTelegramMetrics.notificationFocusGap) > 0.5) {
+    throw new Error(`Telegram light dashboard profile and notification controls must share the same header geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
 
   console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, largeAvatarMetrics: { sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length }, darkAvatarMetrics, pressFeedbackMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
