@@ -134,6 +134,21 @@ the saved photo in both light avatar locations.
 
 **Commit:** this commit
 
+### Telegram dark dashboard avatar visibility
+
+**What changed:** Added an explicit dark-dashboard user-photo state so the saved avatar
+background has priority over legacy empty-avatar artwork on the home header.
+
+**Why:** The profile screen and light dashboard correctly used the saved image, but the
+dark dashboard lacked the corresponding final cascade rule and could leave the header
+avatar visually empty.
+
+**Test:** `npm run build:css`; `npm run check:cp1251-mojibake`;
+`npm run check:portable-paths`; `npm run smoke:telegram-bottom-menu`. The smoke now requires
+the photo fixture on dark dashboard, light dashboard and profile avatar surfaces.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface

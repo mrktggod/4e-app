@@ -91,6 +91,16 @@ try {
     const photoDataUrl = await readProfilePhotoData(oversizedFile);
     return { sourceBytes: oversizedFile.size, photoDataUrl };
   });
+  const uploadedAvatarUrl = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Crect width=%2210%22 height=%2210%22 fill=%22%236f9d3f%22/%3E%3C/svg%3E';
+  const darkAvatarMetrics = await page.evaluate((avatarUrl) => {
+    if (typeof currentUser !== 'undefined' && currentUser) currentUser.photoDataUrl = avatarUrl;
+    applyUserInfo();
+    const avatar = document.querySelector('#user-avatar-small');
+    return {
+      backgroundImage: avatar ? getComputedStyle(avatar).backgroundImage : '',
+      userPhoto: avatar?.dataset.userAvatar === 'true'
+    };
+  }, uploadedAvatarUrl);
   await fs.mkdir(path.dirname(screenshotPath), { recursive: true });
   await page.screenshot({ path: screenshotPath, fullPage: false });
 
@@ -267,7 +277,6 @@ try {
     showScreen('home');
   });
   await page.waitForFunction(() => document.querySelector('#home.active .dash-bottom-nav'));
-  const uploadedAvatarUrl = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Crect width=%2210%22 height=%2210%22 fill=%22%236f9d3f%22/%3E%3C/svg%3E';
   await page.evaluate((avatarUrl) => {
     if (typeof currentUser !== 'undefined' && currentUser) currentUser.photoDataUrl = avatarUrl;
     applyUserInfo();
@@ -321,6 +330,9 @@ try {
   if (largeAvatarMetrics.sourceBytes <= 1500000 || !largeAvatarMetrics.photoDataUrl.startsWith('data:image/jpeg;base64,') || largeAvatarMetrics.photoDataUrl.length >= largeAvatarMetrics.sourceBytes) {
     throw new Error(`Telegram should locally compress oversized selected avatars: ${JSON.stringify({ sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length })}`);
   }
+  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml')) {
+    throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
+  }
   if (!pressFeedbackMetrics || pressFeedbackMetrics.centerGlowAfterPress || pressFeedbackMetrics.todayGlowAfterPress || pressFeedbackMetrics.centerFilter !== 'none' || pressFeedbackMetrics.navFilter !== 'none') {
     throw new Error(`Telegram dashboard controls must never paint a rectangular press glow: ${JSON.stringify(pressFeedbackMetrics)}`);
   }
@@ -359,7 +371,7 @@ try {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
 
-  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, largeAvatarMetrics: { sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length }, pressFeedbackMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
+  console.log('telegram bottom menu diagnostic smoke: PASS', JSON.stringify({ homeMetrics, largeAvatarMetrics: { sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length }, darkAvatarMetrics, pressFeedbackMetrics, scrollMetrics, dashboardCollapse, swipeMetrics, pageMetrics, lightTelegramMetrics, screenshotPath }));
 } finally {
   await browser.close();
 }

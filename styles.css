@@ -17662,3 +17662,9 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
 html[data-theme="light"] body #profile .profile-avatar[data-user-avatar="true"] {
   background: var(--dash-user-avatar-image) center / cover no-repeat !important;
 }
+/* Keep the same saved photo visible on the dark dashboard header.  This late
+   explicit state wins over the legacy artwork that still styles the empty avatar. */
+html[data-theme="dark"] body #home#home #user-avatar-small[data-user-avatar="true"],
+html:not([data-theme="light"]) body #home#home #user-avatar-small[data-user-avatar="true"] {
+  background: var(--dash-user-avatar-image) center / cover no-repeat !important;
+}
