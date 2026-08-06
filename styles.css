@@ -17705,9 +17705,9 @@ body #home#home .dash-metric.is-active-filter {
   position: relative !important;
   z-index: 1 !important;
   isolation: isolate !important;
-  border-color: rgba(214, 249, 201, 0.62) !important;
+  border-color: rgba(222, 242, 224, 0.18) !important;
   outline: none !important;
-  box-shadow: 0 1px 0 rgba(250, 255, 245, 0.25), 0 7px 12px rgba(91, 255, 169, 0.16), 0 15px 24px rgba(39, 214, 109, 0.14), inset 0 1px 0 rgba(255, 255, 250, 0.38), inset 0 -1px 0 rgba(166, 255, 137, 0.48) !important;
+  box-shadow: 0 9px 8px rgba(91, 255, 169, 0.12), 0 18px 18px rgba(39, 214, 109, 0.1), inset 0 1px 0 rgba(255, 255, 250, 0.18), inset 0 -1px 0 rgba(166, 255, 137, 0.28) !important;
 }
 /* The bright, rounded lower edge is drawn independently of the content, so
    it can glow without creating a coloured rectangular fill or square shadow. */
@@ -17733,6 +17733,6 @@ body #home#home .dash-metric.is-active-filter > * {
 html[data-theme="dark"] body #home#home .dash-metric.is-active-filter,
 html:not([data-theme="light"]) body #home#home .dash-metric.is-active-filter {
   background: linear-gradient(180deg, rgba(14, 25, 18, 0.54) 0%, rgba(7, 16, 11, 0.47) 62%, rgba(3, 10, 7, 0.4) 100%) !important;
-  border-color: rgba(226, 255, 216, 0.56) !important;
-  box-shadow: 0 1px 0 rgba(255, 255, 252, 0.28), 0 6px 10px rgba(128, 255, 169, 0.2), 0 16px 26px rgba(59, 245, 126, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.34), inset 0 -1px 0 rgba(184, 255, 139, 0.62) !important;
+  border-color: rgba(232, 255, 235, 0.16) !important;
+  box-shadow: 0 9px 8px rgba(128, 255, 169, 0.16), 0 18px 18px rgba(59, 245, 126, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -1px 0 rgba(184, 255, 139, 0.34) !important;
 }

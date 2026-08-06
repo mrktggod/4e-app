@@ -26,10 +26,14 @@
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
     let reloadedForNewSw=false;
+    const hadServiceWorkerController=Boolean(navigator.serviceWorker.controller);
     navigator.serviceWorker.addEventListener('controllerchange',function(){
-      if(reloadedForNewSw)return;
+      if(!hadServiceWorkerController||reloadedForNewSw)return;
       reloadedForNewSw=true;
       window.FourTmaDiagnostics?.mark?.('sw-controllerchange');
+      // A newly claimed worker otherwise leaves this already-open Telegram
+      // WebView with the previous CSS until the user manually reopens it.
+      window.location.reload();
     });
     navigator.serviceWorker.register('/sw.js').then(function(registration){
       window.FourTmaDiagnostics?.mark?.('sw-registered');
