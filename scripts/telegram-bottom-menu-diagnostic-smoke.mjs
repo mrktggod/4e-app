@@ -282,7 +282,7 @@ try {
   if (homeMetrics.taskLane.bottomMaskTop < 0 || Math.abs(homeMetrics.taskLane.bottomMaskTop - homeMetrics.taskLane.navTop) > 2) {
     throw new Error(`Telegram dashboard should keep a fixed mask at the lower menu: ${JSON.stringify(homeMetrics.taskLane)}`);
   }
-  if (scrollMetrics.scrollTop <= 0 || scrollMetrics.scrollHeight <= scrollMetrics.clientHeight || scrollMetrics.gapBeforeMenu < 8) {
+  if (scrollMetrics.scrollTop <= 0 || scrollMetrics.scrollHeight <= scrollMetrics.clientHeight || scrollMetrics.gapBeforeMenu < 8 || scrollMetrics.gapBeforeMenu > 112) {
     throw new Error(`Telegram dashboard root should reveal the final task after scrolling: ${JSON.stringify(scrollMetrics)}`);
   }
   if (!dashboardCollapse || dashboardCollapse.collapsed.heroOpacity < .95 || dashboardCollapse.collapsed.heroBottom > 1 || dashboardCollapse.collapsed.metricsTop > 20 || dashboardCollapse.collapsed.taskListTop > 80 || dashboardCollapse.collapsed.rootScrollTop <= 0 || dashboardCollapse.collapsed.topMaskHeight < 50 || dashboardCollapse.collapsed.bottomMaskTop < 0) {

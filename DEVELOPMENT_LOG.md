@@ -39,6 +39,17 @@ now requires at least 1px clearance above and below the light control.
 
 **Commit:** this commit
 
+### Telegram dashboard task-list tail
+
+**What changed:** Removed the redundant task-list minimum height and reduced the root-scroll
+tail below the final task from 260px to an 88px menu-safe reserve. The final task can now
+settle close to the lower menu instead of leaving a large empty canvas below it.
+
+**Test:** `smoke:telegram-bottom-menu` now fails if the final task leaves more than 112px
+before the menu after root scrolling.
+
+**Commit:** this commit
+
 ## 2026-08-05
 
 ### Native Telegram dashboard scroll surface
