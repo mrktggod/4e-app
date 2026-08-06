@@ -402,7 +402,13 @@ async function runSmoke(ws, appUrl) {
     await click('[data-dashboard-filter="done"]', 'done metric filter');
     await waitFor(() => activeScreen() === 'home' && byId('home-task-list')?.dataset.dashboardFilter === 'done', 'done metric did not filter the dashboard');
     metrics.doneFilterTaskIds = dashboardTaskIds();
+    metrics.doneFilterVisual = {
+      active: document.querySelector('[data-dashboard-filter="done"]')?.classList.contains('is-active-filter') || false,
+      pressed: document.querySelector('[data-dashboard-filter="done"]')?.getAttribute('aria-pressed') || '',
+      boxShadow: getComputedStyle(document.querySelector('[data-dashboard-filter="done"]')).boxShadow
+    };
     assert(metrics.doneFilterTaskIds.length === 1 && metrics.doneFilterTaskIds[0] === 'home-smoke-done', 'done metric should show completed tasks below metrics');
+    assert(metrics.doneFilterVisual.active && metrics.doneFilterVisual.pressed === 'true' && metrics.doneFilterVisual.boxShadow !== 'none', 'selected metric should use the active glass treatment');
 
     await click('[data-dashboard-filter="active"]', 'active metric filter');
     await waitFor(() => activeScreen() === 'home' && byId('home-task-list')?.dataset.dashboardFilter === 'active', 'active metric did not filter the dashboard');

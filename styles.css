@@ -17698,8 +17698,13 @@ html:not([data-theme="light"]) body #home#home #user-avatar-small[data-user-avat
   background-position: center !important;
   background-repeat: no-repeat !important;
 }
-/* A selected dashboard metric is a local list filter, not a navigation link. */
+/* A selected dashboard metric is a local list filter, not a navigation link.
+   Its rim and low glow borrow the active-glass depth from the supplied reference. */
 body #home#home .dash-metric.is-active-filter {
-  outline: 1px solid rgba(169, 222, 104, 0.78) !important;
+  position: relative !important;
+  z-index: 1 !important;
+  border-color: rgba(202, 255, 170, 0.88) !important;
+  outline: 1px solid rgba(175, 247, 138, 0.82) !important;
   outline-offset: -1px !important;
+  box-shadow: 0 0 0 1px rgba(218, 255, 198, 0.28), 0 8px 18px rgba(95, 245, 162, 0.26), 0 0 16px rgba(111, 255, 181, 0.23), inset 0 1px 0 rgba(245, 255, 236, 0.52), inset 0 -6px 12px rgba(82, 232, 151, 0.15) !important;
 }
