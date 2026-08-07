@@ -19,20 +19,20 @@
   --card: #151c10;
   --card2: #1e2918;
   --shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
-  --glass-surface: rgba(28, 42, 30, 0.58);
-  --glass-surface-strong: rgba(32, 48, 34, 0.78);
-  --glass-surface-muted: rgba(242, 245, 233, 0.07);
-  --glass-stroke: rgba(242, 245, 233, 0.16);
-  --glass-stroke-strong: rgba(154, 194, 60, 0.36);
+  --glass-surface: rgba(18, 31, 23, 0.38);
+  --glass-surface-strong: rgba(20, 35, 25, 0.46);
+  --glass-surface-muted: rgba(102, 164, 104, 0.1);
+  --glass-stroke: rgba(230, 248, 231, 0.24);
+  --glass-stroke-strong: rgba(154, 230, 151, 0.46);
   --glass-highlight: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.035) 44%, rgba(154, 194, 60, 0.06));
-  --glass-shadow: 0 18px 48px rgba(0, 0, 0, 0.28), 0 8px 22px rgba(76, 108, 42, 0.14);
-  --glass-inset-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  --glass-blur: 24px;
+  --glass-shadow: inset 0 1px 0 rgba(255, 255, 250, 0.13), inset 0 -1px 0 rgba(166, 255, 137, 0.14);
+  --glass-inset-shadow: inset 0 -22px 30px rgba(57, 149, 83, 0.08);
+  --glass-blur: 0px;
   --glass-saturate: 125%;
   --glass-radius-card: 28px;
   --glass-radius-control: 22px;
-  --glass-active-glow: 0 0 0 1px rgba(154, 194, 60, 0.32), 0 10px 30px rgba(154, 194, 60, 0.18);
-  --glass-danger-glow: 0 0 0 1px rgba(255, 96, 96, 0.34), 0 10px 30px rgba(255, 96, 96, 0.14);
+  --glass-active-glow: inset 0 0 0 1px rgba(154, 230, 151, 0.42), inset 0 -22px 30px rgba(90, 210, 112, 0.22);
+  --glass-danger-glow: inset 0 0 0 1px rgba(255, 136, 136, 0.42), inset 0 -22px 30px rgba(214, 76, 76, 0.16);
   --glass-reduced-surface: #1f2b18;
 }
 [data-theme="light"] {
@@ -50,20 +50,20 @@
   --card: #FFFFFF;
   --card2: #F7FAF0;
   --shadow: 0 8px 28px rgba(26, 34, 16, 0.08);
-  --glass-surface: rgba(255, 255, 255, 0.58);
+  --glass-surface: rgba(255, 255, 255, 0.68);
   --glass-surface-strong: rgba(255, 255, 255, 0.76);
-  --glass-surface-muted: rgba(246, 250, 237, 0.54);
-  --glass-stroke: rgba(255, 255, 255, 0.86);
-  --glass-stroke-strong: rgba(126, 174, 48, 0.36);
+  --glass-surface-muted: rgba(246, 250, 237, 0.42);
+  --glass-stroke: rgba(255, 255, 255, 0.88);
+  --glass-stroke-strong: rgba(126, 174, 48, 0.46);
   --glass-highlight: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.28) 46%, rgba(126, 174, 48, 0.08));
-  --glass-shadow: 0 22px 62px rgba(33, 44, 20, 0.13), 0 8px 28px rgba(106, 158, 31, 0.12);
-  --glass-inset-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(106, 158, 31, 0.09);
-  --glass-blur: 26px;
+  --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.94), inset 0 -1px 0 rgba(106, 158, 31, 0.12);
+  --glass-inset-shadow: inset 0 -22px 30px rgba(126, 174, 48, 0.07);
+  --glass-blur: 0px;
   --glass-saturate: 128%;
   --glass-radius-card: 30px;
   --glass-radius-control: 24px;
-  --glass-active-glow: 0 0 0 1px rgba(106, 158, 31, 0.28), 0 12px 32px rgba(106, 158, 31, 0.16);
-  --glass-danger-glow: 0 0 0 1px rgba(195, 59, 59, 0.34), 0 12px 32px rgba(195, 59, 59, 0.13);
+  --glass-active-glow: inset 0 0 0 1px rgba(106, 158, 31, 0.34), inset 0 -22px 30px rgba(126, 174, 48, 0.16);
+  --glass-danger-glow: inset 0 0 0 1px rgba(195, 59, 59, 0.34), inset 0 -22px 30px rgba(195, 59, 59, 0.12);
   --glass-reduced-surface: #f7faf0;
 }
 .ui-glass-card,
@@ -17284,14 +17284,12 @@ body:has(#notifications.active) .bottom-nav {
   display: none !important;
 }
 @keyframes qa-press-glow {
-  0% {
-    box-shadow: 0 0 0 color-mix(in srgb, var(--green) 0%, transparent);
-  }
-  45% {
-    box-shadow: 0 0 24px color-mix(in srgb, var(--green) 34%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 26%, transparent);
-  }
+  0%,
   100% {
-    box-shadow: 0 0 0 color-mix(in srgb, var(--green) 0%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 13%, transparent), inset 0 -1px 0 color-mix(in srgb, var(--green) 14%, transparent);
+  }
+  48% {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--green) 42%, transparent), inset 0 -20px 28px color-mix(in srgb, var(--green) 25%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 18%, transparent);
   }
 }
 html[data-theme="light"] .task-card-shell .task-row.task-card,
@@ -17611,9 +17609,10 @@ html[data-theme="light"][data-app-surface="telegram"] body #home#home .dash-bott
     grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr) !important;
     align-items: center !important;
   }
-  /* Defensive guard for an already queued press-feedback timer during a theme
-     change: no rectangular glow may be painted over the navigation rail. */
-  body #home#home .dash-bottom-nav .qa-press-glow {
+  /* The centre control is artwork with its own circular rim.  Keep the
+     generic press layer off only that PNG; side controls can use the same
+     inset glow as every other button without producing a square halo. */
+  body #home#home .dash-bottom-nav .dash-center-button.qa-press-glow {
     animation: none !important;
     box-shadow: none !important;
   }
@@ -17792,4 +17791,67 @@ html:not([data-theme="light"]) body #home#home .dash-metric.is-active-filter {
     width: auto !important;
     max-width: none !important;
   }
+}
+/* One glass language for the whole application.  These are actual surfaces,
+   not floating shadows: low-alpha glass, a thin frame and a quiet lower
+   light contained by each component's own rounded boundary. */
+#app .screen :is(
+  .ui-glass-card, .ui-glass-row, .ui-glass-sheet, .ui-glass-popover, .ui-glass-status,
+  .task-card-shell .task-row.task-card, .drill-task-card, .stat-card, .notif-card,
+  .notif-empty--panel, .home-ai-row-main, .dash-empty-card, .focus-summary-card,
+  .focus-summary-pulse, .focus-summary-metric, .focus-summary-week, .ask-glass-card,
+  .ask-plan-card, .ask-input-shell, .detail-glass-panel, .detail-edit-card,
+  .detail-chat-card, .detail-ai-card, .detail-checklist-panel, .detail-participants-card,
+  .detail-tab-panel, .detail-date-popover, .detail-priority-popover,
+  .detail-reminder-popover, .detail-top-tag-input, .task-move-panel, .quick-add-sheet,
+  .contact-panel, .profile-handoff-hero, .profile-card, .profile-premium-card, .profile-ref-card,
+  .profile-referral-card, .pricing-card, .subscription-card, .subscription-feature-card,
+  .subscription-price-card, .plan-status-card, .sec-2fa-card, .lock-setup-card,
+  .faq-help-card, .faq-item, .nt-field-card, .sub-card, .sub-plan-card
+) {
+  background: radial-gradient(112% 66% at 58% 116%, color-mix(in srgb, var(--green) 22%, transparent) 0%, color-mix(in srgb, var(--green) 9%, transparent) 42%, transparent 78%), linear-gradient(180deg, color-mix(in srgb, var(--glass-surface) 92%, transparent), color-mix(in srgb, var(--glass-surface-strong) 62%, transparent)) !important;
+  border-color: var(--glass-stroke) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Controls inherit the same glass body. Native checks/radios stay native so
+   toggle semantics and platform affordances remain intact. */
+#app .screen button:not(.dash-avatar):not(.dash-title):not(.dash-notification):not(.dash-nav-item):not(.dash-center-button),
+#app .screen input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+#app .screen textarea,
+#app .screen select {
+  border: 1px solid var(--glass-stroke) !important;
+  background: radial-gradient(112% 66% at 58% 116%, color-mix(in srgb, var(--green) 16%, transparent) 0%, transparent 78%), linear-gradient(180deg, color-mix(in srgb, var(--glass-surface) 88%, transparent), color-mix(in srgb, var(--glass-surface-strong) 54%, transparent)) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Primary and destructive calls preserve their meaning while using the same
+   internal-light construction instead of an opaque fill or external glow. */
+#app .screen button:is(.ob-btn, .login-btn, .cal-add-btn, .nt-btn-primary, .quick-add-submit, .task-move-confirm, .pay-primary-btn, .ask-send, .ask-action-btn--primary, .detail-quick-btn--primary, .profile-save-btn--primary, .contact-panel-btn--telegram, .notif-act-task, [class*="primary"]) {
+  border-color: color-mix(in srgb, var(--green) 54%, var(--glass-stroke)) !important;
+  background: radial-gradient(112% 86% at 54% 118%, color-mix(in srgb, var(--green) 52%, transparent) 0%, color-mix(in srgb, var(--green) 20%, transparent) 53%, transparent 82%), linear-gradient(180deg, color-mix(in srgb, var(--glass-surface-strong) 84%, var(--green) 16%), color-mix(in srgb, var(--glass-surface) 66%, var(--green) 12%)) !important;
+}
+#app .screen button:is(.danger-btn, [class*="danger"]) {
+  border-color: color-mix(in srgb, #ff8c8c 44%, var(--glass-stroke)) !important;
+  background: radial-gradient(112% 86% at 54% 118%, rgba(224, 79, 79, 0.22), transparent 80%), linear-gradient(180deg, color-mix(in srgb, var(--glass-surface-strong) 88%, #b94b4b 12%), color-mix(in srgb, var(--glass-surface) 78%, #7e3030 10%)) !important;
+}
+/* Never reintroduce a floating glow on hover; the feedback lives inside the
+   clicked control and follows its own border radius. */
+#app .screen button:not(.dash-center-button):is(:hover, :focus-visible),
+#app .screen input:not([type="checkbox"]):not([type="radio"]):is(:hover, :focus),
+#app .screen textarea:is(:hover, :focus),
+#app .screen select:is(:hover, :focus) {
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset-shadow), inset 0 -16px 24px color-mix(in srgb, var(--green) 13%, transparent) !important;
+}
+/* `!important` is necessary for the legacy screen-specific controls above,
+   so a keyframe cannot reliably replace their shadow.  The feedback helper
+   owns this class for 220ms: the short, contained inset light is therefore
+   immediate and follows every button/frame border without a floating halo. */
+#app .screen .qa-press-glow {
+  animation: none !important;
+  border-color: var(--glass-stroke-strong) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--green) 42%, transparent), inset 0 -20px 28px color-mix(in srgb, var(--green) 25%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 18%, transparent) !important;
 }

@@ -95,10 +95,12 @@ async function inspect(page, theme) {
       heroBorderRadius: heroStyle.borderRadius,
       heroBackdropFilter: heroStyle.backdropFilter || heroStyle.webkitBackdropFilter || '',
       heroBoxShadow: heroStyle.boxShadow,
+      heroBackground: heroStyle.backgroundImage,
       cardBackground: cardStyle.backgroundColor,
       rowMinHeight: rowStyle.minHeight,
       rowBorderBottom: rowStyle.borderBottomColor,
       refInputBorderRadius: inputStyle.borderRadius,
+      refInputBoxShadow: inputStyle.boxShadow,
       scrollBottomPadding: scroll ? getComputedStyle(scroll).paddingBottom : '',
     };
   });
@@ -120,9 +122,11 @@ try {
     if (!metrics.profileVisible) throw new Error(`${theme}: profile screen is not visible`);
     if (metrics.documentScrollWidth > metrics.viewportWidth + 1) throw new Error(`${theme}: profile has horizontal overflow`);
     if (parseRadius(metrics.heroBorderRadius) < 24) throw new Error(`${theme}: hero does not use glass card radius`);
-    if (!String(metrics.heroBackdropFilter).includes('blur')) throw new Error(`${theme}: hero backdrop blur is missing`);
-    if (String(metrics.heroBoxShadow) === 'none') throw new Error(`${theme}: hero glass shadow is missing`);
+    if (String(metrics.heroBackdropFilter) !== 'none') throw new Error(`${theme}: hero must use clear glass without backdrop blur`);
+    if (!String(metrics.heroBackground).includes('linear-gradient')) throw new Error(`${theme}: hero does not use the unified transparent glass surface`);
+    if (!String(metrics.heroBoxShadow).includes('inset') || /\b(?:1[0-9]|[2-9][0-9])px\b(?![^,]*inset)/.test(String(metrics.heroBoxShadow))) throw new Error(`${theme}: hero retains an outer glass halo`);
     if (parseRadius(metrics.refInputBorderRadius) < 20) throw new Error(`${theme}: referral input does not use glass control radius`);
+    if (!String(metrics.refInputBoxShadow).includes('inset')) throw new Error(`${theme}: referral input does not use the unified internal glass frame`);
     if (Number.parseFloat(metrics.rowMinHeight) < 44) throw new Error(`${theme}: menu rows are below 44px touch target`);
   }
 
