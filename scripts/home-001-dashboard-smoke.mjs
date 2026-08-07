@@ -481,11 +481,21 @@ async function runSmoke(ws, appUrl) {
       await wait(120);
       const artboard = document.querySelector('#home .dash-artboard');
       const hero = document.querySelector('#home .dash-hero');
+      const heroStyle = hero ? getComputedStyle(hero) : null;
+      const heroGlow = hero ? getComputedStyle(hero, '::after') : null;
       const rows = Array.from(document.querySelectorAll('#home-task-list .home-ai-row'));
       return {
         theme: document.documentElement.getAttribute('data-theme'),
         artboard: rectInfo(artboard),
         hero: rectInfo(hero),
+        heroVisual: {
+          backgroundImage: heroStyle?.backgroundImage || '',
+          boxShadow: heroStyle?.boxShadow || '',
+          overflow: heroStyle?.overflow || '',
+          glowBackground: heroGlow?.backgroundImage || '',
+          glowShadow: heroGlow?.boxShadow || '',
+          glowInset: heroGlow?.inset || ''
+        },
         rowCount: rows.length,
         firstRow: rectInfo(rows[0]),
         scrollWidth: document.documentElement.scrollWidth
@@ -496,6 +506,9 @@ async function runSmoke(ws, appUrl) {
     assert(metrics.dark.theme === 'dark', 'dark theme did not apply');
     assert(metrics.dark.rowCount === 4, 'dark theme lost dashboard rows');
     assert(metrics.dark.scrollWidth <= window.innerWidth + 1, 'dark theme has horizontal overflow');
+    assert(metrics.dark.heroVisual.backgroundImage.includes('linear-gradient') && metrics.dark.heroVisual.glowBackground.includes('radial-gradient'), 'dark Focus card should retain its transparent glass body and internal lower light');
+    assert(metrics.dark.heroVisual.boxShadow.includes('inset') && !metrics.dark.heroVisual.boxShadow.includes('0px 18px'), 'dark Focus card must not cast an outer panel halo');
+    assert(metrics.dark.heroVisual.overflow === 'hidden' && metrics.dark.heroVisual.glowShadow === 'none' && metrics.dark.heroVisual.glowInset === '0px', 'dark Focus light must be clipped inside the rounded card');
 
     return { ok: failures.length === 0, failures, metrics, fetches: window.__homeSmokeFetches || [] };
   }})()`;
