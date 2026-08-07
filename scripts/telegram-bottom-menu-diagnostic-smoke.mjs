@@ -337,6 +337,7 @@ try {
       avatarUserPhoto: avatar?.dataset.userAvatar === 'true',
       avatarFallbackImageVisible: avatar?.querySelector('img') ? getComputedStyle(avatar.querySelector('img')).display !== 'none' : false,
       profileAvatarBackgroundImage: profileAvatar ? getComputedStyle(profileAvatar).backgroundImage : '',
+      profileAvatarBackgroundSize: profileAvatar ? getComputedStyle(profileAvatar).backgroundSize : '',
       profileAvatarUserPhoto: profileAvatar?.dataset.userAvatar === 'true',
       avatarWidth: avatar?.getBoundingClientRect().width ?? -1,
       avatarHeight: avatar?.getBoundingClientRect().height ?? -1,
@@ -369,7 +370,7 @@ try {
   if (largeAvatarMetrics.sourceBytes <= 1500000 || !largeAvatarMetrics.photoDataUrl.startsWith('data:image/jpeg;base64,') || largeAvatarMetrics.photoDataUrl.length >= largeAvatarMetrics.sourceBytes) {
     throw new Error(`Telegram should locally compress oversized selected avatars: ${JSON.stringify({ sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length })}`);
   }
-  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('84%')) {
+  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('cover')) {
     throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
   }
   if (!darkAvatarMetrics.heroOrbMask.includes('radial-gradient') || darkAvatarMetrics.heroOrbTop !== '14px' || darkAvatarMetrics.heroOrbRight !== '12px') {
@@ -413,7 +414,7 @@ try {
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
-  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.heroMetricsGap < 24 || lightTelegramMetrics.heroMetricsGap > 30 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < 1 || lightTelegramMetrics.centerBottomInset < 1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || !lightTelegramMetrics.avatarUserPhoto || !lightTelegramMetrics.avatarBackgroundImage.includes('data:image/svg+xml') || !lightTelegramMetrics.avatarBackgroundSize.startsWith('84%') || lightTelegramMetrics.sectionTitleDisplay !== 'none' || lightTelegramMetrics.avatarBackgroundImage.includes('dashboard-light-avatar.png') || lightTelegramMetrics.avatarFallbackImageVisible || !lightTelegramMetrics.profileAvatarUserPhoto || !lightTelegramMetrics.profileAvatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.taskHeight !== 72) {
+  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.heroMetricsGap < 24 || lightTelegramMetrics.heroMetricsGap > 30 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < 1 || lightTelegramMetrics.centerBottomInset < 1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || !lightTelegramMetrics.avatarUserPhoto || !lightTelegramMetrics.avatarBackgroundImage.includes('data:image/svg+xml') || !lightTelegramMetrics.avatarBackgroundSize.startsWith('cover') || lightTelegramMetrics.sectionTitleDisplay !== 'none' || lightTelegramMetrics.avatarBackgroundImage.includes('dashboard-light-avatar.png') || lightTelegramMetrics.avatarFallbackImageVisible || !lightTelegramMetrics.profileAvatarUserPhoto || !lightTelegramMetrics.profileAvatarBackgroundImage.includes('data:image/svg+xml') || !lightTelegramMetrics.profileAvatarBackgroundSize.startsWith('cover') || lightTelegramMetrics.taskHeight !== 72) {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
   if (lightTelegramMetrics.avatarWidth !== 44 || lightTelegramMetrics.avatarHeight !== 44 || lightTelegramMetrics.notificationWidth !== 44 || lightTelegramMetrics.notificationHeight !== 44 || Math.abs(lightTelegramMetrics.avatarTopInset - lightTelegramMetrics.notificationTopInset) > 0.5 || Math.abs(lightTelegramMetrics.avatarFocusGap - lightTelegramMetrics.notificationFocusGap) > 0.5) {
