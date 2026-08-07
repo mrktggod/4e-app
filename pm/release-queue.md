@@ -40,4 +40,4 @@
 | BRIEF-2026-08-02-123-telegram-group-bot-no-response | Telegram bot | NEED-YURI | Brief уже помечен NEED-YURI | Отдельная bot-сессия после доступной live-group проверки |
 | BRIEF-2026-08-02-124-vk-auth-session-persistence | VK Mini App / web | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR, live VK login остаётся ручным хвостом |
 | BRIEF-2026-08-02-125-vk-dashboard-profile-parity-audit | VK Mini App | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: audit/атомарные follow-up briefs, не широкий редизайн |
-| BRIEF-2026-08-02-126-vk-chat-created-task-not-on-dashboard | VK Mini App | IMPLEMENTATION_QUEUED | `status: NEW`, PR и отчёта нет | Ночной runner: отдельный PR с mock evidence; live VK хвост вручную |
+| BRIEF-2026-08-02-126-vk-chat-created-task-not-on-dashboard | VK Mini App chat → dashboard | PR_READY | PR #63, code `e82dad9`, target `feat/admin-tariff-api`; `smoke:vk-ai-chat-parity`, `smoke:vk-home-parity`, `test:e2e:vk` (4/4), encoding/path/syntax guards green | Человек: проверить создание и видимость задачи в живой VK Mini App-сессии; затем решить merge и deployment |

@@ -1839,6 +1839,21 @@ async function maybeSaveTaskFromChat(text) {
   const data = await readJsonSafe(res);
   if (!data.ok) throw new Error(data.error || 'task_save_failed');
   await loadTasks();
+  mergeSavedTaskIntoLocalState(data?.task || task);
+  return true;
+}
+
+function mergeSavedTaskIntoLocalState(savedTask) {
+  const task = savedTask && typeof savedTask === 'object' ? savedTask : null;
+  const taskId = String(task?.id || '').trim();
+  if (!taskId) return false;
+  const tasks = Array.isArray(state.tasks) ? state.tasks : [];
+  const index = tasks.findIndex((item) => String(item?.id || '').trim() === taskId);
+  state.tasks = index === -1
+    ? [task, ...tasks]
+    : tasks.map((item, itemIndex) => itemIndex === index ? { ...item, ...task } : item);
+  renderTasks();
+  buildStats();
   return true;
 }
 
@@ -1894,6 +1909,7 @@ async function saveVkAiCreatedTask(rawDraft, sourceText) {
   const data = await readJsonSafe(res);
   if (!res.ok || data?.ok === false) throw new Error(data?.error || 'task_save_failed');
   await loadTasks();
+  mergeSavedTaskIntoLocalState(data?.task || task);
   return true;
 }
 

@@ -61,7 +61,7 @@ const sandbox = {
   async fetch(url, options = {}) {
     const parsed = options.body ? JSON.parse(options.body) : {};
     calls.push({ url, options, body: parsed });
-    return { ok: true, status: 200, async json() { return { ok: true, tasks: sandbox.state.tasks }; } };
+    return { ok: true, status: 200, async json() { return { ok: true, task: parsed.task, tasks: sandbox.state.tasks }; } };
   },
   async readJsonSafe(response) {
     return response.json();
@@ -69,7 +69,7 @@ const sandbox = {
   renderTasks() { sandbox.rendered = true; },
   buildStats() { sandbox.statsBuilt = true; },
   buildCalendar() { sandbox.calendarBuilt = true; },
-  loadTasks() { sandbox.loaded = true; },
+  loadTasks() { sandbox.loaded = true; sandbox.state.tasks = [task]; },
   showToast(message) { sandbox.lastToast = message; },
   navigate(id) { sandbox.navigated = id; },
   setButtonBusy() {},
@@ -94,6 +94,7 @@ assert.equal(aiCreated.person, 'Алексей');
 assert.equal(aiCreated.deadline, '2026-08-01');
 assert.equal(aiCreated.description, 'Добавить финансы');
 assert.equal(aiCreated.originalMsg, 'Сделай презентацию для совета');
+assert.equal(sandbox.state.tasks.some((item) => item.id === aiCreated.id), true, 'saved AI task stays visible when the immediate task refresh is stale');
 
 const structured = await vm.runInContext(`handleVkAiStructuredTags('Исправил <task_actions>[{"type":"edit","taskId":"task-1","field":"originalMsg","value":"Новое описание"}]</task_actions>', 'измени описание', true)`, sandbox);
 const actionCall = calls.at(-1);
@@ -103,8 +104,9 @@ assert.equal(actionCall.options.headers['x-action'], 'update-task');
 assert.equal(actionCall.body.taskId, 'task-1');
 assert.equal(actionCall.body.updates.originalMsg, 'Новое описание');
 assert.equal(actionCall.body.updates.description, 'Новое описание');
-assert.equal(sandbox.state.tasks[0].originalMsg, 'Новое описание');
-assert.equal(sandbox.state.tasks[0].description, 'Новое описание');
+const updatedTask = sandbox.state.tasks.find((item) => item.id === 'task-1');
+assert.equal(updatedTask.originalMsg, 'Новое описание');
+assert.equal(updatedTask.description, 'Новое описание');
 assert.equal(sandbox.rendered, true);
 assert.equal(sandbox.statsBuilt, true);
 assert.equal(sandbox.calendarBuilt, true);
