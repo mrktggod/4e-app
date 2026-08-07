@@ -860,25 +860,19 @@ body #home#home .dash-metric.is-active-filter::after {
   content: '';
   position: absolute;
   z-index: 0;
-  /* `.dash-glass::after` sets `inset: 1px`; reset its top edge explicitly.
-     Leaving it in place over-constrains this 3px rim and the browser paints
-     it at the top instead of using the intended lower edge. */
-  top: auto;
-  right: -1px;
-  bottom: -2px;
-  left: -1px;
-  height: 4px;
+  /* Fill the selected glass, then cast the light from its lower edge.  A
+     separate 4px strip looked detached; the reference uses a continuous
+     bottom-up glow that follows the rounded sides of the frame. */
+  inset: 0;
+  height: auto;
   pointer-events: none;
-  border-radius: 0 0 999px 999px;
-  background: linear-gradient(90deg,
-    rgba(101, 255, 175, .10) 0%,
-    rgba(117, 255, 175, .32) 12%,
-    rgba(193, 255, 118, .76) 50%,
-    rgba(102, 255, 185, .34) 88%,
-    rgba(101, 255, 175, .10) 100%);
+  border-radius: inherit;
+  background:
+    radial-gradient(130% 74% at 50% 119%, rgba(101, 255, 158, .74) 0%, rgba(76, 255, 151, .38) 34%, rgba(49, 231, 124, .12) 56%, transparent 75%),
+    linear-gradient(180deg, transparent 35%, rgba(83, 255, 142, .05) 64%, rgba(102, 255, 155, .28) 100%);
   box-shadow:
-    0 3px 7px rgba(181, 255, 128, .48),
-    0 8px 16px rgba(75, 255, 165, .24);
+    0 7px 13px rgba(117, 255, 153, .34),
+    0 14px 23px rgba(63, 255, 145, .18);
 }
 
 /* The base glass uses a glossy top frame.  A selected metric has its own
