@@ -425,7 +425,7 @@ async function runSmoke(ws, appUrl) {
     assert(metrics.doneFilterVisual.rimGradient.includes('linear-gradient') && metrics.doneFilterVisual.rimShadow !== 'none', 'selected metric should emit a gradient lower glass rim');
     assert(metrics.doneFilterVisual.rimTop === '44px' && metrics.doneFilterVisual.rimLeft === '-1px' && metrics.doneFilterVisual.rimRight === '-1px' && metrics.doneFilterVisual.rimBottom === '-2px', 'selected metric lower rim should resolve at the lower button boundary');
     assert(metrics.doneFilterVisual.inheritedFrame === 'none', 'selected metric should not keep the inherited glossy top frame');
-    assert(metrics.doneFilterVisual.backgroundImage === 'none', 'selected metric should not place an opaque dark background over its lower glow');
+    assert(metrics.doneFilterVisual.backgroundImage.includes('linear-gradient'), 'selected metric should retain a faint transparent glass body above its lower glow');
     assert(metrics.doneFilterVisual.boxShadow === 'none' && metrics.doneFilterVisual.backdropFilter === 'none' && metrics.doneFilterVisual.overflow === 'visible', 'selected metric should expose only its lower glow outside the transparent hit area');
 
     await click('[data-dashboard-filter="active"]', 'active metric filter');

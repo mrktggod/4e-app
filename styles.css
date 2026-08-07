@@ -17755,9 +17755,10 @@ body #home#home .dash-metric.is-active-filter > * {
    behind an opaque surface, blur or inset shadow. */
 html[data-theme="dark"] body #home#home .dash-metric.is-active-filter,
 html:not([data-theme="light"]) body #home#home .dash-metric.is-active-filter {
-  background: none !important;
-  background-color: transparent !important;
-  border-color: transparent !important;
+  /* Restore the reference's faint glass body without bringing back the
+     opaque black capsule.  The glow remains outside this translucent frame. */
+  background: linear-gradient(180deg, rgba(18, 31, 23, 0.3), rgba(5, 13, 9, 0.18)) !important;
+  border-color: rgba(230, 248, 231, 0.24) !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
