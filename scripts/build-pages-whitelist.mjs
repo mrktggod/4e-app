@@ -82,8 +82,9 @@ function buildPwaVersion() {
 }
 
 const swPath = resolve(outDir, "sw.js");
+let pwaVersion = "";
 if (existsSync(swPath)) {
-  const pwaVersion = buildPwaVersion();
+  pwaVersion = buildPwaVersion();
   const swSource = readFileSync(swPath, "utf8");
   const patchedSw = swSource.replace(
     /const PWA_VERSION = "([^"]+)";/,
@@ -105,6 +106,13 @@ if (!workerResolverPattern.test(indexHtml)) {
   throw new Error("Unable to find WORKER resolver in index.html");
 }
 
+const publishedIndexHtml = pwaVersion
+  ? indexHtml.replace(
+    /href="styles\.min\.css(?:\?[^\"]*)?"/,
+    `href="styles.min.css?v=${pwaVersion}"`,
+  )
+  : indexHtml;
+
 function disableStagingHostMarkers(html) {
   return html.replaceAll("4-ai-staging.pages.dev", "staging-preview-disabled.invalid");
 }
@@ -113,12 +121,12 @@ const workerTarget = (process.env.PAGES_WORKER_TARGET || "production").trim().to
 if (workerTarget === "auto") {
   console.log("Pages worker target: auto resolver preserved");
 } else if (workerTarget === "staging") {
-  writeFileSync(indexPath, indexHtml.replace(workerResolverPattern, stagingWorkerResolver));
+  writeFileSync(indexPath, publishedIndexHtml.replace(workerResolverPattern, stagingWorkerResolver));
   console.log("Pages worker target: staging");
 } else if (workerTarget === "production") {
   writeFileSync(
     indexPath,
-    disableStagingHostMarkers(indexHtml.replace(workerResolverPattern, prodWorkerResolver)),
+    disableStagingHostMarkers(publishedIndexHtml.replace(workerResolverPattern, prodWorkerResolver)),
   );
   console.log("Pages worker target: production");
 } else {
