@@ -410,6 +410,8 @@ async function runSmoke(ws, appUrl) {
       pressed: doneMetric?.getAttribute('aria-pressed') || '',
       boxShadow: getComputedStyle(doneMetric).boxShadow,
       backgroundImage: getComputedStyle(doneMetric).backgroundImage,
+      backdropFilter: getComputedStyle(doneMetric).backdropFilter,
+      overflow: getComputedStyle(doneMetric).overflow,
       rimGradient: doneMetricRim.backgroundImage,
       rimShadow: doneMetricRim.boxShadow,
       rimLeft: doneMetricRim.left,
@@ -423,6 +425,7 @@ async function runSmoke(ws, appUrl) {
     assert(metrics.doneFilterVisual.rimLeft === '-1px' && metrics.doneFilterVisual.rimRight === '-1px' && metrics.doneFilterVisual.rimBottom === '-1px', 'selected metric lower rim should meet the button boundary');
     assert(metrics.doneFilterVisual.inheritedFrame === 'none', 'selected metric should not keep the inherited glossy top frame');
     assert(metrics.doneFilterVisual.backgroundImage === 'none', 'selected metric should not place an opaque dark background over its lower glow');
+    assert(metrics.doneFilterVisual.backdropFilter === 'none' && metrics.doneFilterVisual.overflow === 'visible', 'selected metric should expose its lower glow outside the transparent hit area');
 
     await click('[data-dashboard-filter="active"]', 'active metric filter');
     await waitFor(() => activeScreen() === 'home' && byId('home-task-list')?.dataset.dashboardFilter === 'active', 'active metric did not filter the dashboard');
