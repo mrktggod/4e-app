@@ -96,10 +96,15 @@ try {
     if (typeof currentUser !== 'undefined' && currentUser) currentUser.photoDataUrl = avatarUrl;
     applyUserInfo();
     const avatar = document.querySelector('#user-avatar-small');
+    const heroOrb = document.querySelector('#home .dash-hero-orb');
+    const heroOrbStyle = heroOrb ? getComputedStyle(heroOrb) : null;
     return {
       backgroundImage: avatar ? getComputedStyle(avatar).backgroundImage : '',
       backgroundSize: avatar ? getComputedStyle(avatar).backgroundSize : '',
-      userPhoto: avatar?.dataset.userAvatar === 'true'
+      userPhoto: avatar?.dataset.userAvatar === 'true',
+      heroOrbMask: heroOrbStyle ? (heroOrbStyle.maskImage || heroOrbStyle.webkitMaskImage || '') : '',
+      heroOrbTop: heroOrbStyle ? heroOrbStyle.top : '',
+      heroOrbRight: heroOrbStyle ? heroOrbStyle.right : ''
     };
   }, uploadedAvatarUrl);
   await fs.mkdir(path.dirname(screenshotPath), { recursive: true });
@@ -364,8 +369,11 @@ try {
   if (largeAvatarMetrics.sourceBytes <= 1500000 || !largeAvatarMetrics.photoDataUrl.startsWith('data:image/jpeg;base64,') || largeAvatarMetrics.photoDataUrl.length >= largeAvatarMetrics.sourceBytes) {
     throw new Error(`Telegram should locally compress oversized selected avatars: ${JSON.stringify({ sourceBytes: largeAvatarMetrics.sourceBytes, resultLength: largeAvatarMetrics.photoDataUrl.length })}`);
   }
-  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('contain')) {
+  if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('84%')) {
     throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
+  }
+  if (!darkAvatarMetrics.heroOrbMask.includes('radial-gradient') || darkAvatarMetrics.heroOrbTop !== '14px' || darkAvatarMetrics.heroOrbRight !== '12px') {
+    throw new Error(`Telegram dark dashboard Focus artwork should fade its source canvas before the card edge: ${JSON.stringify(darkAvatarMetrics)}`);
   }
   const { avatar, notification } = homeMetrics;
   if (!avatar || !notification || avatar.width !== 44 || avatar.height !== 44 || notification.width !== 44 || notification.height !== 44 || Math.abs(avatar.topInset - notification.topInset) > 0.5 || Math.abs(avatar.bottomInset - notification.bottomInset) > 0.5 || Math.abs(avatar.focusGap - notification.focusGap) > 0.5) {
@@ -405,7 +413,7 @@ try {
   if (visibleInnerGlobal.length) throw new Error(`legacy global nav visible on inner pages: ${JSON.stringify(visibleInnerGlobal)}`);
   const visibleInnerHomeNav = pageMetrics.filter((item) => item.homeNavVisible);
   if (visibleInnerHomeNav.length) throw new Error(`dashboard nav visible on inactive inner pages: ${JSON.stringify(visibleInnerHomeNav)}`);
-  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.heroMetricsGap < 24 || lightTelegramMetrics.heroMetricsGap > 30 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < 1 || lightTelegramMetrics.centerBottomInset < 1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || !lightTelegramMetrics.avatarUserPhoto || !lightTelegramMetrics.avatarBackgroundImage.includes('data:image/svg+xml') || !lightTelegramMetrics.avatarBackgroundSize.startsWith('contain') || lightTelegramMetrics.sectionTitleDisplay !== 'none' || lightTelegramMetrics.avatarBackgroundImage.includes('dashboard-light-avatar.png') || lightTelegramMetrics.avatarFallbackImageVisible || !lightTelegramMetrics.profileAvatarUserPhoto || !lightTelegramMetrics.profileAvatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.taskHeight !== 72) {
+  if (lightTelegramMetrics.theme !== 'light' || lightTelegramMetrics.metricsHeight !== 48 || lightTelegramMetrics.heroMetricsGap < 24 || lightTelegramMetrics.heroMetricsGap > 30 || lightTelegramMetrics.navHeight !== 66 || lightTelegramMetrics.navBottomGap < 32 || lightTelegramMetrics.centerWidth !== 62 || lightTelegramMetrics.centerHeight !== 62 || lightTelegramMetrics.centerTopInset < 1 || lightTelegramMetrics.centerBottomInset < 1 || Math.abs(lightTelegramMetrics.todayTopInset - lightTelegramMetrics.calendarTopInset) > 1 || !lightTelegramMetrics.centerBackgroundImage.includes('dashboard-light-center-20260806.png') || !lightTelegramMetrics.avatarUserPhoto || !lightTelegramMetrics.avatarBackgroundImage.includes('data:image/svg+xml') || !lightTelegramMetrics.avatarBackgroundSize.startsWith('84%') || lightTelegramMetrics.sectionTitleDisplay !== 'none' || lightTelegramMetrics.avatarBackgroundImage.includes('dashboard-light-avatar.png') || lightTelegramMetrics.avatarFallbackImageVisible || !lightTelegramMetrics.profileAvatarUserPhoto || !lightTelegramMetrics.profileAvatarBackgroundImage.includes('data:image/svg+xml') || lightTelegramMetrics.taskHeight !== 72) {
     throw new Error(`Telegram light dashboard should match compact dark-mode geometry: ${JSON.stringify(lightTelegramMetrics)}`);
   }
   if (lightTelegramMetrics.avatarWidth !== 44 || lightTelegramMetrics.avatarHeight !== 44 || lightTelegramMetrics.notificationWidth !== 44 || lightTelegramMetrics.notificationHeight !== 44 || Math.abs(lightTelegramMetrics.avatarTopInset - lightTelegramMetrics.notificationTopInset) > 0.5 || Math.abs(lightTelegramMetrics.avatarFocusGap - lightTelegramMetrics.notificationFocusGap) > 0.5) {
