@@ -414,6 +414,7 @@ async function runSmoke(ws, appUrl) {
       overflow: getComputedStyle(doneMetric).overflow,
       rimGradient: doneMetricRim.backgroundImage,
       rimShadow: doneMetricRim.boxShadow,
+      rimTop: doneMetricRim.top,
       rimLeft: doneMetricRim.left,
       rimRight: doneMetricRim.right,
       rimBottom: doneMetricRim.bottom,
@@ -422,7 +423,7 @@ async function runSmoke(ws, appUrl) {
     assert(metrics.doneFilterTaskIds.length === 1 && metrics.doneFilterTaskIds[0] === 'home-smoke-done', 'done metric should show completed tasks below metrics');
     assert(metrics.doneFilterVisual.active && metrics.doneFilterVisual.pressed === 'true', 'selected metric should expose its local filter state');
     assert(metrics.doneFilterVisual.rimGradient.includes('linear-gradient') && metrics.doneFilterVisual.rimShadow !== 'none', 'selected metric should emit a gradient lower glass rim');
-    assert(metrics.doneFilterVisual.rimLeft === '-1px' && metrics.doneFilterVisual.rimRight === '-1px' && metrics.doneFilterVisual.rimBottom === '-1px', 'selected metric lower rim should meet the button boundary');
+    assert(metrics.doneFilterVisual.rimTop === '44px' && metrics.doneFilterVisual.rimLeft === '-1px' && metrics.doneFilterVisual.rimRight === '-1px' && metrics.doneFilterVisual.rimBottom === '-2px', 'selected metric lower rim should resolve at the lower button boundary');
     assert(metrics.doneFilterVisual.inheritedFrame === 'none', 'selected metric should not keep the inherited glossy top frame');
     assert(metrics.doneFilterVisual.backgroundImage === 'none', 'selected metric should not place an opaque dark background over its lower glow');
     assert(metrics.doneFilterVisual.boxShadow === 'none' && metrics.doneFilterVisual.backdropFilter === 'none' && metrics.doneFilterVisual.overflow === 'visible', 'selected metric should expose only its lower glow outside the transparent hit area');

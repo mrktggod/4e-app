@@ -860,10 +860,14 @@ body #home#home .dash-metric.is-active-filter::after {
   content: '';
   position: absolute;
   z-index: 0;
+  /* `.dash-glass::after` sets `inset: 1px`; reset its top edge explicitly.
+     Leaving it in place over-constrains this 3px rim and the browser paints
+     it at the top instead of using the intended lower edge. */
+  top: auto;
   right: -1px;
-  bottom: -1px;
+  bottom: -2px;
   left: -1px;
-  height: 3px;
+  height: 4px;
   pointer-events: none;
   border-radius: 0 0 999px 999px;
   background: linear-gradient(90deg,
@@ -873,8 +877,8 @@ body #home#home .dash-metric.is-active-filter::after {
     rgba(102, 255, 185, .34) 88%,
     rgba(101, 255, 175, .10) 100%);
   box-shadow:
-    0 2px 5px rgba(181, 255, 128, .38),
-    0 5px 9px rgba(75, 255, 165, .16);
+    0 3px 7px rgba(181, 255, 128, .48),
+    0 8px 16px rgba(75, 255, 165, .24);
 }
 
 /* The base glass uses a glossy top frame.  A selected metric has its own
