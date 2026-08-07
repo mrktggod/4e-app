@@ -373,8 +373,8 @@ try {
   if (!darkAvatarMetrics.userPhoto || !darkAvatarMetrics.backgroundImage.includes('data:image/svg+xml') || !darkAvatarMetrics.backgroundSize.startsWith('cover')) {
     throw new Error(`Telegram dark dashboard should show the saved user avatar: ${JSON.stringify(darkAvatarMetrics)}`);
   }
-  if (!darkAvatarMetrics.heroOrbMask.includes('radial-gradient') || darkAvatarMetrics.heroOrbTop !== '14px' || darkAvatarMetrics.heroOrbRight !== '12px') {
-    throw new Error(`Telegram dark dashboard Focus artwork should fade its source canvas before the card edge: ${JSON.stringify(darkAvatarMetrics)}`);
+  if (!darkAvatarMetrics.heroOrbMask.includes('linear-gradient') || darkAvatarMetrics.heroOrbTop !== '14px' || darkAvatarMetrics.heroOrbRight !== '12px') {
+    throw new Error(`Telegram dark dashboard Focus artwork should fade only its horizontal source edges: ${JSON.stringify(darkAvatarMetrics)}`);
   }
   const { avatar, notification } = homeMetrics;
   if (!avatar || !notification || avatar.width !== 44 || avatar.height !== 44 || notification.width !== 44 || notification.height !== 44 || Math.abs(avatar.topInset - notification.topInset) > 0.5 || Math.abs(avatar.bottomInset - notification.bottomInset) > 0.5 || Math.abs(avatar.focusGap - notification.focusGap) > 0.5) {
