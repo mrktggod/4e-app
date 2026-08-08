@@ -7,12 +7,15 @@ type AppWindow = Window & {
 
 async function prepareAuthedShell(page) {
   await page.addInitScript(() => {
+    localStorage.setItem('chetam_onboarded', '1');
     localStorage.setItem('chetam_onboarding_done', '1');
     localStorage.setItem('chetam_token', 'playwright-layout-token');
+    localStorage.setItem('chetam_theme', 'dark');
   });
   await page.route('**/*', route => {
     const url = route.request().url();
-    if (url.includes('/auth/me')) {
+    const pathname = new URL(url).pathname;
+    if (pathname === '/auth/me') {
       return route.fulfill({
         contentType: 'application/json',
         body: JSON.stringify({
@@ -21,10 +24,22 @@ async function prepareAuthedShell(page) {
         }),
       });
     }
-    if (url.includes('/tasks')) {
+    if (pathname === '/tasks') {
       return route.fulfill({
         contentType: 'application/json',
         body: JSON.stringify({ ok: true, tasks: [] }),
+      });
+    }
+    if (pathname === '/tariff-config') {
+      return route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true, config: null }),
+      });
+    }
+    if (pathname === '/notifications' || pathname.startsWith('/analytics/')) {
+      return route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true, items: [] }),
       });
     }
     return route.continue();
@@ -49,11 +64,13 @@ async function expectNoViewportOverflow(page) {
     const doc = document.documentElement;
     return {
       innerWidth: window.innerWidth,
+      theme: doc.getAttribute('data-theme') || '',
       htmlScrollWidth: doc.scrollWidth,
       bodyScrollWidth: document.body.scrollWidth,
     };
   });
 
+  expect(metrics.theme, 'web smoke should exercise dark theme').toBe('dark');
   expect(metrics.htmlScrollWidth, 'html horizontal overflow').toBeLessThanOrEqual(metrics.innerWidth + 1);
   expect(metrics.bodyScrollWidth, 'body horizontal overflow').toBeLessThanOrEqual(metrics.innerWidth + 1);
 }

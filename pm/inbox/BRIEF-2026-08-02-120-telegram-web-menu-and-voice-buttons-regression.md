@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-08-02-120-telegram-web-menu-and-voice-buttons-regression
 
