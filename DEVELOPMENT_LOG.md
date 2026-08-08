@@ -404,6 +404,14 @@ Git Bash UI architecture guard failed on existing branch state:
 
 **Commit:** pending
 
+## 2026-08-08 — 4e morning acceptance
+
+- Проведена утренняя приёмка по X:\Projects\4-ai-secretary.
+- Сегодняшний COWORK-NIGHT-REVIEW отсутствует; старый heartbeat не принят. Зафиксирован DELIVERY-GAP.
+- Прочитаны только свежая pre-dawn сводка, новые brief-отчёты, release queue, метрика и открытые PR; ночные тесты повторно не запускались.
+- Созданы `pm/outbox/REPORT-MORNING-ACCEPTANCE-2026-08-08.md` и `pm/outbox/MANUAL-ACTIONS-2026-08-08-morning.md`.
+- Runtime, main, merge, deployment, платежи, цены, auth-код, live Telegram/VK и секреты не менялись.
+
 ## 2026-07-26
 
 ### VK task completion feedback
