@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-08-02-119-remove-home-show-all-button
 
