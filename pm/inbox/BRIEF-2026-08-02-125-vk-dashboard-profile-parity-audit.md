@@ -1,4 +1,4 @@
-status: NEW
+status: DONE
 
 # BRIEF-2026-08-02-125-vk-dashboard-profile-parity-audit
 
