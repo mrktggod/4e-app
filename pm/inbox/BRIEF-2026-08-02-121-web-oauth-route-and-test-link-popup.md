@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-08-02-121-web-oauth-route-and-test-link-popup
 
