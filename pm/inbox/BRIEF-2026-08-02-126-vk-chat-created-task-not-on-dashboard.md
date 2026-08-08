@@ -1,4 +1,4 @@
-status: NEW
+status: NEED-CLAUDE
 
 # BRIEF-2026-08-02-126-vk-chat-created-task-not-on-dashboard
 
